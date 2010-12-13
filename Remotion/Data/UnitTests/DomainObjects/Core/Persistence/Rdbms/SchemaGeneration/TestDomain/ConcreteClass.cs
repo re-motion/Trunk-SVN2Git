@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_ConcreteClass")]
   public abstract class ConcreteClass : DomainObject
   {
     public static ConcreteClass NewObject()

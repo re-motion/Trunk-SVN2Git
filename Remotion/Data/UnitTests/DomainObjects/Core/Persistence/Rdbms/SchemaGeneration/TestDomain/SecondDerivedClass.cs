@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 {
   [Instantiable]
   [Uses (typeof(PersistentMixin))]
-  [ClassID("SchemaGeneration_SecondDerivedClass")]
   public abstract class SecondDerivedClass : ConcreteClass
   {
     public new static SecondDerivedClass NewObject()

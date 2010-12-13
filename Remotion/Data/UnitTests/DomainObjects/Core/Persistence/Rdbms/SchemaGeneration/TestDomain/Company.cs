@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain
 {
   [FirstStorageGroupAttribute]
-  [ClassID("SchemaGeneration_Company")]
   public abstract class Company : DomainObject
   {
     public static Company NewObject ()

@@ -18,7 +18,6 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain
 {
-  [ClassID("SchemaGeneration_Partner")]
   public abstract class Partner : Company
   {
     public new static Partner NewObject()

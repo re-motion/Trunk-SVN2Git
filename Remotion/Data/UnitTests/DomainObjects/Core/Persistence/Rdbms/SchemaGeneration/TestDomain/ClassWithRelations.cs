@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable ("TableWithRelations")]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_ClassWithRelations")]
   public abstract class ClassWithRelations : DomainObject
   {
     public static ClassWithRelations NewObject()

@@ -136,16 +136,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddToCreateTableScript ()
     {
       string expectedStatement =
-          "CREATE TABLE [dbo].[SchemaGeneration_Ceo]\r\n"
+          "CREATE TABLE [dbo].[Ceo]\r\n"
           + "(\r\n"
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
           + "  [ClassID] varchar (100) NOT NULL,\r\n"
           + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- SchemaGeneration_Ceo columns\r\n"
+          + "  -- Ceo columns\r\n"
           + "  [Name] nvarchar (100) NOT NULL,\r\n"
           + "  [CompanyID] uniqueidentifier NULL,\r\n"
           + "  [CompanyIDClassID] varchar (100) NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_SchemaGeneration_Ceo] PRIMARY KEY CLUSTERED ([ID])\r\n"
+          + "  CONSTRAINT [PK_Ceo] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
@@ -159,21 +159,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddToCreateTableScriptWithConcreteClass ()
     {
       string expectedStatement =
-          "CREATE TABLE [dbo].[SchemaGeneration_Customer]\r\n"
+          "CREATE TABLE [dbo].[Customer]\r\n"
           + "(\r\n"
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
           + "  [ClassID] varchar (100) NOT NULL,\r\n"
           + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- SchemaGeneration_Company columns\r\n"
+          + "  -- Company columns\r\n"
           + "  [Name] nvarchar (100) NOT NULL,\r\n"
           + "  [PhoneNumber] nvarchar (100) NULL,\r\n"
           + "  [AddressID] uniqueidentifier NULL,\r\n\r\n"
-          + "  -- SchemaGeneration_Customer columns\r\n"
+          + "  -- Customer columns\r\n"
           + "  [CustomerType] int NOT NULL,\r\n"
           + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
           + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
           + "  [LicenseCode] nvarchar (max) NULL,\r\n\r\n"
-          + "  CONSTRAINT [PK_SchemaGeneration_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
+          + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
@@ -248,27 +248,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddToCreateTableScriptWithDerivedClasses ()
     {
-      string expectedStatement = "CREATE TABLE [dbo].[SchemaGeneration_ConcreteClass]\r\n"
+      string expectedStatement = "CREATE TABLE [dbo].[ConcreteClass]\r\n"
                                  + "(\r\n"
                                  + "  [ID] uniqueidentifier NOT NULL,\r\n"
                                  + "  [ClassID] varchar (100) NOT NULL,\r\n"
                                  + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-                                 + "  -- SchemaGeneration_ConcreteClass columns\r\n"
+                                 + "  -- ConcreteClass columns\r\n"
                                  + "  [PropertyInConcreteClass] nvarchar (100) NOT NULL,\r\n\r\n"
-                                 + "  -- SchemaGeneration_DerivedClass columns\r\n"
+                                 + "  -- DerivedClass columns\r\n"
                                  + "  [PropertyInDerivedClass] nvarchar (100) NULL,\r\n"
                                  + "  [PersistentProperty] nvarchar (max) NULL,\r\n\r\n"
-                                 + "  -- SchemaGeneration_DerivedOfDerivedClass columns\r\n"
+                                 + "  -- DerivedOfDerivedClass columns\r\n"
                                  + "  [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,\r\n"
                                  + "  [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
-                                 + "  -- SchemaGeneration_SecondDerivedClass columns\r\n"
+                                 + "  -- SecondDerivedClass columns\r\n"
                                  + "  [PropertyInSecondDerivedClass] nvarchar (100) NULL,\r\n"
                                  + "  [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,\r\n\r\n"
-                                 + "  CONSTRAINT [PK_SchemaGeneration_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                 + "  CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions.GetMandatory ("SchemaGeneration_ConcreteClass"), stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions.GetMandatory ("ConcreteClass"), stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -277,16 +277,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddToCreateTableScriptWithRelationToClassWithoutInheritance ()
     {
-      string expectedStatement = "CREATE TABLE [dbo].[SchemaGeneration_OrderItem]\r\n"
+      string expectedStatement = "CREATE TABLE [dbo].[OrderItem]\r\n"
                                  + "(\r\n"
                                  + "  [ID] uniqueidentifier NOT NULL,\r\n"
                                  + "  [ClassID] varchar (100) NOT NULL,\r\n"
                                  + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-                                 + "  -- SchemaGeneration_OrderItem columns\r\n"
+                                 + "  -- OrderItem columns\r\n"
                                  + "  [Position] int NOT NULL,\r\n"
                                  + "  [Product] nvarchar (100) NOT NULL,\r\n"
                                  + "  [OrderID] uniqueidentifier NULL,\r\n\r\n"
-                                 + "  CONSTRAINT [PK_SchemaGeneration_OrderItem] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                 + "  CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  [ID] uniqueidentifier NOT NULL,\r\n"
           + "  [ClassID] varchar (100) NOT NULL,\r\n"
           + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-          + "  -- SchemaGeneration_ClassWithoutProperties columns\r\n\r\n"
+          + "  -- ClassWithoutProperties columns\r\n\r\n"
           + "  CONSTRAINT [PK_TableWithoutProperties] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
@@ -317,8 +317,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddToDropTableScript ()
     {
-      string expectedScript = "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SchemaGeneration_Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
-                              + "  DROP TABLE [dbo].[SchemaGeneration_Customer]\r\n";
+      string expectedScript = "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
+                              + "  DROP TABLE [dbo].[Customer]\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToDropTableScript (MappingConfiguration.ClassDefinitions[typeof (Customer)], stringBuilder);
@@ -335,43 +335,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableBuilder.AddTables (classes);
 
-      string expectedCreateTableScript = "CREATE TABLE [dbo].[SchemaGeneration_Customer]\r\n"
+      string expectedCreateTableScript = "CREATE TABLE [dbo].[Customer]\r\n"
                                          + "(\r\n"
                                          + "  [ID] uniqueidentifier NOT NULL,\r\n"
                                          + "  [ClassID] varchar (100) NOT NULL,\r\n"
                                          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-                                         + "  -- SchemaGeneration_Company columns\r\n"
+                                         + "  -- Company columns\r\n"
                                          + "  [Name] nvarchar (100) NOT NULL,\r\n"
                                          + "  [PhoneNumber] nvarchar (100) NULL,\r\n"
                                          + "  [AddressID] uniqueidentifier NULL,\r\n\r\n"
-                                         + "  -- SchemaGeneration_Customer columns\r\n"
+                                         + "  -- Customer columns\r\n"
                                          + "  [CustomerType] int NOT NULL,\r\n"
                                          + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
                                          + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
                                          + "  [LicenseCode] nvarchar (max) NULL,\r\n\r\n"
-                                         + "  CONSTRAINT [PK_SchemaGeneration_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                         + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                          + ")\r\n\r\n"
-                                         + "CREATE TABLE [dbo].[SchemaGeneration_Order]\r\n"
+                                         + "CREATE TABLE [dbo].[Order]\r\n"
                                          + "(\r\n"
                                          + "  [ID] uniqueidentifier NOT NULL,\r\n"
                                          + "  [ClassID] varchar (100) NOT NULL,\r\n"
                                          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
-                                         + "  -- SchemaGeneration_Order columns\r\n"
+                                         + "  -- Order columns\r\n"
                                          + "  [Number] int NOT NULL,\r\n"
                                          + "  [Priority] int NOT NULL,\r\n"
                                          + "  [CustomerID] uniqueidentifier NULL,\r\n"
                                          + "  [CustomerIDClassID] varchar (100) NULL,\r\n"
                                          + "  [OfficialID] varchar (255) NULL,\r\n\r\n"
-                                         + "  CONSTRAINT [PK_SchemaGeneration_Order] PRIMARY KEY CLUSTERED ([ID])\r\n"
+                                         + "  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                          + ")\r\n";
 
       Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateTableScript());
 
       string expectedDropTableScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SchemaGeneration_Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP TABLE [dbo].[SchemaGeneration_Customer]\r\n\r\n"
-          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SchemaGeneration_Order' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP TABLE [dbo].[SchemaGeneration_Order]\r\n";
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP TABLE [dbo].[Customer]\r\n\r\n"
+          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP TABLE [dbo].[Order]\r\n";
 
       Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropTableScript());
     }

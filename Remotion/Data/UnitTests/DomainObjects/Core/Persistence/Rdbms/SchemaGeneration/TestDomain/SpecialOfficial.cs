@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain
 {
   [Instantiable]
-  [ClassID("SchemaGeneration_SpecialOfficial")]
   public abstract class SpecialOfficial : Official
   {
     public static new SpecialOfficial NewObject ()

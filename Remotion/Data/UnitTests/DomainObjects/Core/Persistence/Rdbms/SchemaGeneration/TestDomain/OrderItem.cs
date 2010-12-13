@@ -22,7 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_OrderItem")]
   public abstract class OrderItem : DomainObject
   {
     public static OrderItem NewObject ()

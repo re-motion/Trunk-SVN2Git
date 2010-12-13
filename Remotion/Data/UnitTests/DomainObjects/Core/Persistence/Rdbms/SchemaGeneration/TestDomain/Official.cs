@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [SecondStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_Official")]
   public abstract class Official : DomainObject
   {
     public static Official NewObject()

@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_Order]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Order')\r\n"
+          + "    FROM [dbo].[Order]\r\n"
+          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -61,11 +61,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Customer)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode])\r\n"
+          "CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_Customer]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Customer')\r\n"
+          + "    FROM [dbo].[Customer]\r\n"
+          + "    WHERE [ClassID] IN ('Customer')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -77,11 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
+          "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_ConcreteClass', 'SchemaGeneration_DerivedClass', 'SchemaGeneration_DerivedOfDerivedClass', 'SchemaGeneration_SecondDerivedClass')\r\n"
+          + "    FROM [dbo].[ConcreteClass]\r\n"
+          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -93,15 +93,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])\r\n"
+          "CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], null, null, null\r\n"
-          + "    FROM [dbo].[SchemaGeneration_Customer]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Customer', 'SchemaGeneration_DevelopmentPartner')\r\n"
+          + "    FROM [dbo].[Customer]\r\n"
+          + "    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')\r\n"
           + "  UNION ALL\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], null, null, null, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_DevelopmentPartner]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Customer', 'SchemaGeneration_DevelopmentPartner')\r\n";
+          + "    FROM [dbo].[DevelopmentPartner]\r\n"
+          + "    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
     }
@@ -112,11 +112,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Partner)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])\r\n"
+          "CREATE VIEW [dbo].[PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_DevelopmentPartner]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_DevelopmentPartner')\r\n"
+          + "    FROM [dbo].[DevelopmentPartner]\r\n"
+          + "    WHERE [ClassID] IN ('DevelopmentPartner')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -128,11 +128,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (DerivedClass)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID])\r\n"
+          "CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_DerivedClass', 'SchemaGeneration_DerivedOfDerivedClass')\r\n"
+          + "    FROM [dbo].[ConcreteClass]\r\n"
+          + "    WHERE [ClassID] IN ('DerivedClass', 'DerivedOfDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -144,11 +144,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])\r\n"
+          "CREATE VIEW [dbo].[ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp]\r\n"
           + "    FROM [dbo].[TableWithoutProperties]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_ClassWithoutProperties')\r\n"
+          + "    WHERE [ClassID] IN ('ClassWithoutProperties')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
@@ -169,18 +169,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_Order]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Order')\r\n"
+          + "    FROM [dbo].[Order]\r\n"
+          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n"
           + "GO\r\n\r\n"
-          + "CREATE VIEW [dbo].[SchemaGeneration_ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
+          + "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_ConcreteClass', 'SchemaGeneration_DerivedClass', 'SchemaGeneration_DerivedOfDerivedClass', 'SchemaGeneration_SecondDerivedClass')\r\n"
+          + "    FROM [dbo].[ConcreteClass]\r\n"
+          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -196,18 +196,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddViews (classes);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[SchemaGeneration_OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_Order]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_Order')\r\n"
+          + "    FROM [dbo].[Order]\r\n"
+          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n"
           + "GO\r\n\r\n"
-          + "CREATE VIEW [dbo].[SchemaGeneration_ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
+          + "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
-          + "    FROM [dbo].[SchemaGeneration_ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('SchemaGeneration_ConcreteClass', 'SchemaGeneration_DerivedClass', 'SchemaGeneration_DerivedOfDerivedClass', 'SchemaGeneration_SecondDerivedClass')\r\n"
+          + "    FROM [dbo].[ConcreteClass]\r\n"
+          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -219,8 +219,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[SchemaGeneration_OrderView]\r\n";
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[OrderView]\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
     }
@@ -231,8 +231,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[SchemaGeneration_CompanyView]\r\n";
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[CompanyView]\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
     }
@@ -244,10 +244,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[SchemaGeneration_OrderView]\r\n\r\n"
-          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[SchemaGeneration_CompanyView]\r\n";
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[OrderView]\r\n\r\n"
+          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[CompanyView]\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
     }

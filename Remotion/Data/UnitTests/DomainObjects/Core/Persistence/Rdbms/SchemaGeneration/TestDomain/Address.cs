@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_Address")]
   public abstract class Address : DomainObject
   {
     public static Address NewObject()

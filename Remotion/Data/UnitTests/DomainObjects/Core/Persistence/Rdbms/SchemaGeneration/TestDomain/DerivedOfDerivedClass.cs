@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain
 {
   [Instantiable]
-  [ClassID("SchemaGeneration_DerivedOfDerivedClass")]
   public abstract class DerivedOfDerivedClass : DerivedClass
   {
     public new static DerivedOfDerivedClass NewObject()

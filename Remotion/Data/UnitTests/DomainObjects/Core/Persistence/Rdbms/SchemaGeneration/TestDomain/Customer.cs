@@ -22,7 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [Instantiable]
   [Uses (typeof (ProductLicenseMixin))]
-  [ClassID("SchemaGeneration_Customer")]
   public abstract class Customer : Company
   {
     public new static Customer NewObject()

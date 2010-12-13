@@ -48,8 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof(OrderItem)]);
 
       string expectedScript =
-          "ALTER TABLE [dbo].[SchemaGeneration_OrderItem] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[SchemaGeneration_Order] ([ID])\r\n";
+          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
-          "ALTER TABLE [dbo].[SchemaGeneration_Order] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[SchemaGeneration_Customer] ([ID])\r\n";
+          "ALTER TABLE [dbo].[Order] ADD\r\n"
+          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
@@ -73,10 +73,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
-          "ALTER TABLE [dbo].[SchemaGeneration_OrderItem] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[SchemaGeneration_Order] ([ID])\r\n\r\n"
-          + "ALTER TABLE [dbo].[SchemaGeneration_Order] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[SchemaGeneration_Customer] ([ID])\r\n";
+          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
+          + "ALTER TABLE [dbo].[Order] ADD\r\n"
+          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       string expectedScript =
           "ALTER TABLE [dbo].[TableWithRelations] ADD\r\n"
-          + "  CONSTRAINT [FK_TableWithRelations_DerivedClassID] FOREIGN KEY ([DerivedClassID]) REFERENCES [dbo].[SchemaGeneration_ConcreteClass] ([ID])\r\n";
+          + "  CONSTRAINT [FK_TableWithRelations_DerivedClassID] FOREIGN KEY ([DerivedClassID]) REFERENCES [dbo].[ConcreteClass] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
@@ -244,10 +244,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddConstraints (classes);
 
       string expectedScript =
-          "ALTER TABLE [dbo].[SchemaGeneration_OrderItem] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[SchemaGeneration_Order] ([ID])\r\n\r\n"
-          + "ALTER TABLE [dbo].[SchemaGeneration_Order] ADD\r\n"
-          + "  CONSTRAINT [FK_SchemaGeneration_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[SchemaGeneration_Customer] ([ID])\r\n";
+          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
+          + "ALTER TABLE [dbo].[Order] ADD\r\n"
+          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "SET @statement = ''\r\n"
           + "SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
           + "    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id \r\n"
-          + "    WHERE fk.xtype = 'F' AND t.name IN ('TableWithRelations', 'SchemaGeneration_ConcreteClass')\r\n"
+          + "    WHERE fk.xtype = 'F' AND t.name IN ('TableWithRelations', 'ConcreteClass')\r\n"
           + "    ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n";
 

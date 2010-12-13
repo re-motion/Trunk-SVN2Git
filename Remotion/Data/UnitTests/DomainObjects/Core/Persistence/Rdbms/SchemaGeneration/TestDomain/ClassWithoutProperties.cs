@@ -21,7 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [Instantiable]
   [DBTable ("TableWithoutProperties")]
   [FirstStorageGroupAttribute]
-  [ClassID("SchemaGeneration_ClassWithoutProperties")]
   public abstract class ClassWithoutProperties : DomainObject
   {
   }

@@ -22,7 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable]
   [Instantiable]
   [Uses (typeof (ProductLicenseMixin))]
-  [ClassID("SchemaGeneration_DevelopmentPartner")]
   public abstract class DevelopmentPartner : Partner
   {
     public new static DevelopmentPartner NewObject()

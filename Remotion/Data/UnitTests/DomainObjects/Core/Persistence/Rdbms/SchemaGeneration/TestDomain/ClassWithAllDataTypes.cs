@@ -22,7 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [DBTable ("TableWithAllDataTypes")]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  [ClassID("SchemaGeneration_ClassWithAllDataTypes")]
   public abstract class ClassWithAllDataTypes : DomainObject
   {
     public enum EnumType
