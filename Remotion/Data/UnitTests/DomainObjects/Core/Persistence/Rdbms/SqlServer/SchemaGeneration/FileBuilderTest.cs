@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   //TODO: Run the generated SQL File against a database in the UnitTests and integrate this into the build
   //      Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
   [TestFixture]
-  public class FileBuilderTest : StandardMappingTest
+  public class FileBuilderTest : SchemaGenerationTestBase
   {
     private RdbmsProviderDefinition _firstStorageProviderDefinition;
     private RdbmsProviderDefinition _secondStorageProviderDefinition;
@@ -49,8 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
-      ;
-
+      
       if (Directory.Exists ("TestDirectory"))
         Directory.Delete ("TestDirectory", true);
     }
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       FileBuilder sqlFileBuilder =
           new FileBuilder (
-              FileBuilder.GetClassesInStorageProvider (Configuration.ClassDefinitions, _secondStorageProviderDefinition),
+              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _secondStorageProviderDefinition),
               _secondStorageProviderDefinition);
 
       Assert.AreEqual (_secondStorageProviderSetupDBScript, sqlFileBuilder.GetScript());
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void BuildWithMappingConfiguration ()
     {
-      FileBuilderBase.Build (Configuration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
+      FileBuilderBase.Build (MappingConfiguration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
       Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));

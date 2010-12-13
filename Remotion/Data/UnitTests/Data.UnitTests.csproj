@@ -636,6 +636,8 @@
     <Compile Include="DomainObjects\Core\Persistence\Model\StorageEntityTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SchemaGenerationTestBase.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
@@ -678,6 +680,7 @@
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlStorageObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SchemaGenerationConfiguration.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />

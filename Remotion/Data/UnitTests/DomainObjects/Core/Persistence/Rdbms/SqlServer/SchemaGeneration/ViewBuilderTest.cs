@@ -17,12 +17,13 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class ViewBuilderTest : StandardMappingTest
+  public class ViewBuilderTest : SchemaGenerationTestBase
   {
     private ViewBuilder _viewBuilder;
 
@@ -41,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddView ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Order)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
@@ -57,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithConcreteDerivedClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Customer)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Customer)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode])\r\n"
@@ -73,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithConcreteBaseClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(ConcreteClass)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithAbstractClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Company)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])\r\n"
@@ -108,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithAbstractClassWithSingleConcreteConcrete ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Partner)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Partner)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])\r\n"
@@ -124,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithDerivedClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(DerivedClass)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (DerivedClass)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID])\r\n"
@@ -140,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithClassWithoutProperties ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(ClassWithoutProperties)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])\r\n"
@@ -156,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewWithAbstractWithoutConcreteTable ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(AbstractWithoutConcreteClass)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (AbstractWithoutConcreteClass)]);
 
       Assert.IsEmpty (_viewBuilder.GetCreateViewScript());
     }
@@ -164,8 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddViewTwice ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Order)]);
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof (ConcreteClass)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
 
       string expectedScript =
           "CREATE VIEW [dbo].[SchemaGeneration_OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
@@ -189,8 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddViews ()
     {
       ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      classes.Add (Configuration.ClassDefinitions[typeof(Order)]);
-      classes.Add (Configuration.ClassDefinitions[typeof(ConcreteClass)]);
+      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Order)]);
+      classes.Add (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
 
       _viewBuilder.AddViews (classes);
 
@@ -215,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropViewScriptWithConcreteClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Order)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       string expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
@@ -227,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropViewScriptWithAbstractClass ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Company)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
@@ -239,8 +240,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropViewScriptWithTwoClasses ()
     {
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Order)]);
-      _viewBuilder.AddView (Configuration.ClassDefinitions[typeof(Company)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Order)]);
+      _viewBuilder.AddView (MappingConfiguration.ClassDefinitions[typeof (Company)]);
 
       string expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SchemaGeneration_OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"

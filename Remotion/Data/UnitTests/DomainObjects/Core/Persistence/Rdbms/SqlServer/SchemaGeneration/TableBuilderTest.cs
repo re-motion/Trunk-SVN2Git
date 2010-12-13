@@ -25,14 +25,15 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class TableBuilderTest : StandardMappingTest
+  public class TableBuilderTest : SchemaGenerationTestBase
   {
-    private enum Int32Enum : int
+    private enum Int32Enum
     {
     }
 
@@ -115,11 +116,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (
           "uniqueidentifier",
           _tableBuilder.GetSqlDataType (
-              Configuration.ClassDefinitions[typeof (OrderItem)].GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain.OrderItem.Order")));
+              MappingConfiguration.ClassDefinitions[typeof (OrderItem)].GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain.OrderItem.Order")));
       Assert.AreEqual (
           "varchar (255)",
           _tableBuilder.GetSqlDataType (
-              Configuration.ClassDefinitions[typeof (Customer)].GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain.Customer.PrimaryOfficial")));
+              MappingConfiguration.ClassDefinitions[typeof (Customer)].GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain.Customer.PrimaryOfficial")));
     }
 
     [Test]
@@ -148,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (Configuration.ClassDefinitions[typeof(Ceo)], stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions[typeof (Ceo)], stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -176,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (Configuration.ClassDefinitions[typeof(Customer)], stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions[typeof (Customer)], stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -267,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (Configuration.ClassDefinitions.GetMandatory ("SchemaGeneration_ConcreteClass"), stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions.GetMandatory ("SchemaGeneration_ConcreteClass"), stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -289,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (Configuration.ClassDefinitions[typeof(OrderItem)], stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions[typeof (OrderItem)], stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -308,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript (Configuration.ClassDefinitions[typeof(ClassWithoutProperties)], stringBuilder);
+      _tableBuilder.AddToCreateTableScript (MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)], stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -320,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                               + "  DROP TABLE [dbo].[SchemaGeneration_Customer]\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToDropTableScript (Configuration.ClassDefinitions[typeof(Customer)], stringBuilder);
+      _tableBuilder.AddToDropTableScript (MappingConfiguration.ClassDefinitions[typeof (Customer)], stringBuilder);
 
       Assert.AreEqual (expectedScript, stringBuilder.ToString());
     }
@@ -329,8 +330,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void IntegrationTest ()
     {
       ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      classes.Add (Configuration.ClassDefinitions[typeof(Customer)]);
-      classes.Add (Configuration.ClassDefinitions[typeof(Order)]);
+      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Customer)]);
+      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Order)]);
 
       _tableBuilder.AddTables (classes);
 

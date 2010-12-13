@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Remotion.Configuration;
@@ -28,69 +29,70 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Factories
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public abstract class BaseConfiguration
+  public class SchemaGenerationConfiguration
   {
-    public static ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
-    {
-      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray());
-      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
-
-      return FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (
-          typeDiscoveryService,
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain",
-          "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain",
-          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain"
-          );
-    }
-
+    private static SchemaGenerationConfiguration s_instance;
     private readonly StorageConfiguration _storageConfiguration;
     private readonly MappingLoaderConfiguration _mappingLoaderConfiguration;
-    private readonly QueryConfiguration _queryConfiguration;
     private readonly MappingConfiguration _mappingConfiguration;
+    private readonly QueryConfiguration _queryConfiguration;
 
-    protected BaseConfiguration ()
+    public SchemaGenerationConfiguration ()
     {
-      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create();
-      
+      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create ();
+
       _storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection, 
+          storageProviderDefinitionCollection,
           storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
-      
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (
-              new TestDomainAttribute(), 
-              DatabaseTest.c_testDomainProviderID));
+              new FirstStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationFirstStorageProviderID));
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (
-              new StorageProviderStubAttribute(), 
-              DatabaseTest.c_unitTestStorageProviderStubID));
+              new SecondStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationSecondStorageProviderID));
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (
-              new TableInheritanceTestDomainAttribute(), 
-              TableInheritanceMappingTest.TableInheritanceTestDomainProviderID));
-     
-      _mappingLoaderConfiguration = new MappingLoaderConfiguration();
-      _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");
+              new InternalStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationInternalStorageProviderID));
+
+      _mappingLoaderConfiguration = new MappingLoaderConfiguration ();
+      _queryConfiguration = new QueryConfiguration ();
       DomainObjectsConfiguration.SetCurrent (
           new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
 
-      var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
+      var typeDiscoveryService = GetTypeDiscoveryService (GetType ().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
           new MappingReflector (typeDiscoveryService), new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
+    }
+
+    public static SchemaGenerationConfiguration Instance
+    {
+      get
+      {
+        if (s_instance == null)
+        {
+          Debugger.Break ();
+          throw new InvalidOperationException ("SchemaGenerationConfiguration has not been Initialized by invoking Initialize()");
+        }
+        return s_instance;
+      }
+    }
+
+    public static void Initialize ()
+    {
+      s_instance = new SchemaGenerationConfiguration ();
     }
 
     public MappingConfiguration GetMappingConfiguration ()
@@ -107,5 +109,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
     }
+
+    public ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
+    {
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray ());
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
+      return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist(
+          typeDiscoveryService,
+          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain");
+    }
+
   }
 }

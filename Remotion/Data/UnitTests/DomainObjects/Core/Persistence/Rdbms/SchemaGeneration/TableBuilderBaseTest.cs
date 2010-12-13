@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 {
   //TODO: Cover execution path from GetColumnList (ClassDefinition) to GetColumn (PropertyDefinition, bool)
   [TestFixture]
-  public class TableBuilderBaseTest : StandardMappingTest
+  public class TableBuilderBaseTest : SchemaGenerationTestBase
   {
     private MockRepository _mocks;
     private TableBuilderBase _stubTableBuilder;
@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _mocks = new MockRepository();
       _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>();
-      _orderClass = Configuration.ClassDefinitions[typeof (Order)];
-      _customerClass = Configuration.ClassDefinitions[typeof (Customer)];
+      _orderClass = MappingConfiguration.ClassDefinitions[typeof (Order)];
+      _customerClass = MappingConfiguration.ClassDefinitions[typeof (Customer)];
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithAbstractClass ()
     {
-      _stubTableBuilder.AddTable (Configuration.ClassDefinitions[typeof(Company)]);
+      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(Company)]);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedClassWithoutEntityName ()
     {
-      _stubTableBuilder.AddTable (Configuration.ClassDefinitions[typeof(DerivedClass)]);
+      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(DerivedClass)]);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedClassWithEntityName ()
     {
-      _stubTableBuilder.AddTable (Configuration.ClassDefinitions[typeof(SecondDerivedClass)]);
+      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(SecondDerivedClass)]);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedOfDerivedClassWithEntityName ()
     {
-      _stubTableBuilder.AddTable (Configuration.ClassDefinitions[typeof(DerivedOfDerivedClass)]);
+      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(DerivedOfDerivedClass)]);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
