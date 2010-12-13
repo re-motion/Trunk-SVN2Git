@@ -64,9 +64,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
 
-      FileBuilderBase fileBuilder =
-          (FileBuilderBase) TypesafeActivator.CreateInstance (fileBuilderType).With (classDefinitionsForStorageProvider, rdbmsProviderDefinition);
-
+      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder (classDefinitionsForStorageProvider);
+      
       File.WriteAllText (fileName, fileBuilder.GetScript ());
     }
 
