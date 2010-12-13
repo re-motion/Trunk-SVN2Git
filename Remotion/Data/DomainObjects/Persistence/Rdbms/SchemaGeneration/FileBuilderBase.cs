@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using System.IO;
@@ -29,13 +28,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     // static members and constants
 
-    public static void Build (
-        Type fileBuilderType,
-        MappingConfiguration mappingConfiguration,
-        StorageConfiguration storageConfiguration, 
-        string outputPath)
+    public static void Build (MappingConfiguration mappingConfiguration, StorageConfiguration storageConfiguration, string outputPath)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("fileBuilderType", fileBuilderType, typeof (FileBuilderBase));
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
       ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
@@ -48,17 +42,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       {
         RdbmsProviderDefinition rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
-          Build (fileBuilderType, mappingConfiguration, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
+          Build (mappingConfiguration, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
       }
     }
 
-    public static void Build (
-        Type fileBuilderType,
-        MappingConfiguration mappingConfiguration, 
-        RdbmsProviderDefinition rdbmsProviderDefinition, 
-        string fileName)
+    public static void Build (MappingConfiguration mappingConfiguration, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("fileBuilderType", fileBuilderType, typeof (FileBuilderBase));
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 

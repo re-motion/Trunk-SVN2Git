@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void BuildWithMappingConfiguration ()
     {
-      FileBuilderBase.Build (typeof (FileBuilder), Configuration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
+      FileBuilderBase.Build (Configuration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
       Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
@@ -146,7 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       mockRepository.ReplayAll();
 
       FileBuilderBase.Build (
-          typeof (FileBuilder),
           new MappingConfiguration (
               mappingLoaderStub, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))),
           DomainObjectsConfiguration.Current.Storage,
