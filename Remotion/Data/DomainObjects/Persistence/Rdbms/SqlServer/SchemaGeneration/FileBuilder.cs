@@ -23,8 +23,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     public const string DefaultSchema = "dbo";
 
-    public FileBuilder (MappingConfiguration mappingConfiguration, RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (mappingConfiguration, rdbmsProviderDefinition)
+    public FileBuilder (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+        : base (classDefinitions, rdbmsProviderDefinition)
     {
     }
 

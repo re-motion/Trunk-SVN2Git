@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("fileBuilderType", fileBuilderType, typeof (FileBuilderBase));
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
-      ArgumentUtility.CheckNotNull ("persistenceConfiguration", storageConfiguration);
+      ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
       if (outputPath != string.Empty && !Directory.Exists (outputPath))
@@ -62,10 +62,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-      FileBuilderBase fileBuilder = 
-          (FileBuilderBase) TypesafeActivator.CreateInstance (fileBuilderType).With (mappingConfiguration, rdbmsProviderDefinition);
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
+
+      FileBuilderBase fileBuilder =
+          (FileBuilderBase) TypesafeActivator.CreateInstance (fileBuilderType).With (classDefinitionsForStorageProvider, rdbmsProviderDefinition);
 
       File.WriteAllText (fileName, fileBuilder.GetScript ());
+    }
+
+    public static ClassDefinitionCollection GetClassesInStorageProvider (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
+      foreach (ClassDefinition currentClass in classDefinitions)
+      {
+        if (currentClass.StorageEntityDefinition.StorageProviderDefinition.Name == rdbmsProviderDefinition.Name)
+          classes.Add (currentClass);
+      }
+
+      return classes;
     }
 
     public static string GetFileName (StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders)
@@ -82,45 +96,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath,  fileName);
     }
 
-    // member fields
+    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+    private readonly ClassDefinitionCollection _classes;
 
-    private MappingConfiguration _mappingConfiguration;
-    private RdbmsProviderDefinition _rdbmsProviderDefinition;
-
-    private ClassDefinitionCollection _classes;
-
-    // construction and disposing
-
-    public FileBuilderBase (MappingConfiguration mappingConfiguration, RdbmsProviderDefinition rdbmsProviderDefinition)
+    protected FileBuilderBase (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-      _mappingConfiguration = mappingConfiguration;
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _classes = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, _rdbmsProviderDefinition.Name);
-    }
-
-    private ClassDefinitionCollection GetClassesInStorageProvider (ClassDefinitionCollection classDefinitions, string storageProviderID)
-    {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      foreach (ClassDefinition currentClass in classDefinitions)
-      {
-        if (currentClass.StorageEntityDefinition.StorageProviderDefinition.Name == _rdbmsProviderDefinition.Name)
-          classes.Add (currentClass);
-      }
-
-      return classes;
+      _classes = GetClassesInStorageProvider (classDefinitions, _rdbmsProviderDefinition);
     }
 
     // methods and properties
 
     public abstract string GetScript ();
-
-    public MappingConfiguration MappingConfiguration
-    {
-      get { return _mappingConfiguration; }
-    }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {

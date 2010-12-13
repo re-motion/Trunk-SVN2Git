@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -47,7 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     public override void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp();;
+      base.TestFixtureSetUp();
+      ;
 
       if (Directory.Exists ("TestDirectory"))
         Directory.Delete ("TestDirectory", true);
@@ -63,12 +65,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var mappingLoader =
           new MappingReflector (
               FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (
-                ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(), 
-                typeof (Order).Namespace));
+                  ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
+                  typeof (Order).Namespace));
       var persistenceModelLoader = new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
       var mappingConfiguration = new MappingConfiguration (mappingLoader, persistenceModelLoader);
 
-      _fileBuilder = new FileBuilder (mappingConfiguration, _firstStorageProviderDefinition);
+      _fileBuilder = new FileBuilder (
+          FileBuilder.GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, _firstStorageProviderDefinition),
+          _firstStorageProviderDefinition);
       _firstStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProvider.sql");
       _firstStorageProviderSetupDBScriptWithoutTables = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
       _secondStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_SecondStorageProvider.sql");
@@ -100,7 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
-      FileBuilder sqlFileBuilder = new FileBuilder (Configuration, _secondStorageProviderDefinition);
+      FileBuilder sqlFileBuilder =
+          new FileBuilder (
+              FileBuilder.GetClassesInStorageProvider (Configuration.ClassDefinitions, _secondStorageProviderDefinition),
+              _secondStorageProviderDefinition);
 
       Assert.AreEqual (_secondStorageProviderSetupDBScript, sqlFileBuilder.GetScript());
     }
@@ -132,10 +139,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
       SetupResult.For (mappingLoaderStub.GetClassDefinitions()).Return (new ClassDefinition[0]);
       SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
-      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator ()).Return (CreateClassDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator ()).Return (CreatePropertyDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator ()).Return (CreateRelationDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator ()).Return (CreateSortExpressionValidator ());
+      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator()).Return (CreateRelationDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator()).Return (CreateSortExpressionValidator());
       mockRepository.ReplayAll();
 
       FileBuilderBase.Build (
@@ -146,27 +153,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-      Assert.AreEqual (_firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.AreEqual (
+          _firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
     }
 
     private ClassDefinitionValidator CreateClassDefinitionValidator ()
     {
-      return new ClassDefinitionValidator ();
+      return new ClassDefinitionValidator();
     }
 
     private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
     {
-      return new PropertyDefinitionValidator ();
+      return new PropertyDefinitionValidator();
     }
 
     private RelationDefinitionValidator CreateRelationDefinitionValidator ()
     {
-      return new RelationDefinitionValidator ();
+      return new RelationDefinitionValidator();
     }
 
     private SortExpressionValidator CreateSortExpressionValidator ()
     {
-      return new SortExpressionValidator ();
+      return new SortExpressionValidator();
     }
   }
 }
