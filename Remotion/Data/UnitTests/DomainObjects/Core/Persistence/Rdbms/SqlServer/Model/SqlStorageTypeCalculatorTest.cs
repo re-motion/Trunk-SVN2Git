@@ -20,11 +20,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.Model
 {
   [TestFixture]
   public class SqlStorageTypeCalculatorTest

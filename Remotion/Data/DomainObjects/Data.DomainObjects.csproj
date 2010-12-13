@@ -315,7 +315,7 @@
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\StorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\RdbmsPersistenceModelLoader.cs" />
-    <Compile Include="Persistence\Rdbms\Model\SqlStorageTypeCalculator.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\TableDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnionViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />

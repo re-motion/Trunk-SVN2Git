@@ -17,11 +17,11 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
 {
   /// <summary>
   /// <see cref="SqlStorageTypeCalculator"/> calculates the SQL Server-specific type for a column in a relational database.
