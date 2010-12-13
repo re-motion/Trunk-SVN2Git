@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class RdbmsProviderDefinition: StorageProviderDefinition
   {
     private readonly string _connectionString;
-
+    
     public RdbmsProviderDefinition (string name, Type factoryType, string connectionString)
         : base (name, factoryType)
     {
@@ -40,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       string connectionStringName = GetAndRemoveNonEmptyStringAttribute (config, "connectionString", name, true);
       _connectionString = ConfigurationWrapper.Current.GetConnectionString (connectionStringName, true).ConnectionString;
+    }
+
+    public new IRdbmsStorageObjectFactory Factory
+    {
+      get { return (IRdbmsStorageObjectFactory) base.Factory; }
     }
 
     public string ConnectionString

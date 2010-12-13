@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   /// <summary>
   /// The <see cref="SqlStorageObjectFactory"/> is responsible to create SQL Server-specific storage provider instances.
   /// </summary>
-  public class SqlStorageObjectFactory : IStorageObjectFactory
+  public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
     private readonly RdbmsProviderDefinition _storageProviderDefinition;
     private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
