@@ -639,10 +639,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\FileBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TableBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\ViewBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TableBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ViewBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\AbstractWithoutConcreteClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\Address.cs" />
@@ -1656,9 +1656,9 @@
     <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProvider.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
-    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SqlServer\TestData\SetupDB_SecondStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_FirstStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_SecondStorageProvider.sql" />
     <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

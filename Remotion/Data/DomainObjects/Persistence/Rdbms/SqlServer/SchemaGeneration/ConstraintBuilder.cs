@@ -17,9 +17,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   public class ConstraintBuilder : ConstraintBuilderBase
   {

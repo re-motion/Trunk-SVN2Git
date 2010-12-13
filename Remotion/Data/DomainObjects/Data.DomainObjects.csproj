@@ -273,10 +273,10 @@
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilderBase.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\ConstraintBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\FileBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\TableBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlServer\ViewBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\TableBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ViewBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewBuilderBase.cs" />
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />

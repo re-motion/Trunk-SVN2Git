@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.SqlServer
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   public class FileBuilder : FileBuilderBase
   {

@@ -63,7 +63,7 @@
         <include asis="true" name="System.Xml.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.UnitTests">
-        <include name="DomainObjects/Core/Persistence/Rdbms/SchemaGeneration/SqlServer/TestData/*.sql" />
+        <include name="DomainObjects/Core/Persistence/Rdbms/SqlServer/SchemaGeneration/TestData/*.sql" />
         <include name="DomainObjects/Core/Resources/*.*" />
         <exclude name="DomainObjects/Core/Resources/*.cs" />
       </resources>
