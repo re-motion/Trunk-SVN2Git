@@ -17,12 +17,16 @@
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Mixins;
 using Remotion.Utilities;
@@ -98,6 +102,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
       Assert.That (((RdbmsPersistenceModelLoader) result).StoragePropertyDefinitionFactory, Is.TypeOf (typeof (ColumnDefinitionFactory)));
       Assert.That (((RdbmsPersistenceModelLoader) result).StorageProviderID, Is.EqualTo ("TestDomain"));
+    }
+
+    [Test]
+    public void CreateSchemaFileBuilder ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      var tableDefinition = new TableDefinition (_rdbmsProviderDefinition, "Order", "OrderView", new ColumnDefinition[0]);
+      classDefinition.SetStorageEntity (tableDefinition);
+      
+      var result = _sqlProviderFactory.CreateSchemaFileBuilder(new ClassDefinitionCollection(new[]{classDefinition}, true, true));
+
+      Assert.That (result, Is.TypeOf (typeof (FileBuilder)));
+      Assert.That (result.Classes.Count, Is.EqualTo (1));
+      Assert.That (result.Classes[0], Is.SameAs (classDefinition));
+      Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
   }
 }

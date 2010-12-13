@@ -15,10 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection.Emit;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -85,6 +89,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       return new RdbmsPersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition, storageProviderDefinitionFinder);
+    }
+
+    public virtual FileBuilderBase CreateSchemaFileBuilder (ClassDefinitionCollection classDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      return new FileBuilder (classDefinitions, _storageProviderDefinition);
     }
   }
 }

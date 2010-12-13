@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
@@ -23,5 +25,6 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// </summary>
   public interface IRdbmsStorageObjectFactory : IStorageObjectFactory
   {
+    FileBuilderBase CreateSchemaFileBuilder (ClassDefinitionCollection classDefinitions);
   }
 }
