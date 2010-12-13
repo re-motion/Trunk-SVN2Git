@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
     public string SchemaOutputDirectory = string.Empty;
 
     [CommandLineStringArgument ("schemaBuilder", true,
-        Description = "The assembly qualified type name of the schema file builder to use for generating the SQL scripts.",
+        Description = "This parameter is obsolete and should no longer be used. (The schema file builder is now retrieved from the storage provider definition.)",
         Placeholder = "Namespace.ClassName,AssemblyName")]
     public string SchemaFileBuilderTypeName = typeof (FileBuilder).AssemblyQualifiedName;
 
