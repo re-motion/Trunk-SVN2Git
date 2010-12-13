@@ -114,12 +114,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected virtual void BuildSchema ()
     {
-      Type sqlFileBuilderType = TypeUtility.GetType (_rdbmsToolsParameter.SchemaFileBuilderTypeName, true);
-      FileBuilderBase.Build (
-          sqlFileBuilderType,
-          MappingConfiguration.Current,
-          DomainObjectsConfiguration.Current.Storage,
-          _rdbmsToolsParameter.SchemaOutputDirectory);
+      if (!string.IsNullOrEmpty (_rdbmsToolsParameter.SchemaFileBuilderTypeName))
+        throw new NotSupportedException ("The SchemaFileBuilderTypeName parameter is obsolete and should no longer be used. "
+          +"(The schema file builder is now retrieved from the storage provider definition.)");
+
+      FileBuilderBase.Build (MappingConfiguration.Current, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameter.SchemaOutputDirectory);
     }
   }
 }
