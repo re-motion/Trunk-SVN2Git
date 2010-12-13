@@ -675,10 +675,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\SecondStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestDomain\SpecialOfficial.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SortExpressionSqlGeneratorTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlDialectTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlDialectTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlStorageObjectFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlStorageObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\GetDefaultValueIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\IntegrationTests\TestDomain\BaseClassWithMixinWithInterface.cs" />
@@ -1287,7 +1287,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderSaveNewTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlProviderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\ValueConverterTest.cs">

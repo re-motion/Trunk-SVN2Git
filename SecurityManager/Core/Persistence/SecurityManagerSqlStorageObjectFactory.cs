@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 
 namespace Remotion.SecurityManager.Persistence
 {

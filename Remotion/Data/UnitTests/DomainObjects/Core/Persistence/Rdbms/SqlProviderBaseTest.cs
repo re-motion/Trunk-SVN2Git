@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms

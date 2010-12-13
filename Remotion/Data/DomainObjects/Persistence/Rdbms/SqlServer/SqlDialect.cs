@@ -16,7 +16,7 @@
 // 
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
   /// <summary>
   /// Defines the <see cref="ISqlDialect"/> for MS SQL Server.

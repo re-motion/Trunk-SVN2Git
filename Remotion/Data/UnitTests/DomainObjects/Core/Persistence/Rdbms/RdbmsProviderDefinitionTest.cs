@@ -23,6 +23,7 @@ using Remotion.Configuration;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Configuration;
 
@@ -60,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
-      config.Add ("factoryType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlStorageObjectFactory");
+      config.Add ("factoryType", "Remotion.Data.DomainObjects::Persistence.Rdbms.SqlServer.SqlStorageObjectFactory");
       config.Add ("connectionString", "SqlProvider");
 
       RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", config);
