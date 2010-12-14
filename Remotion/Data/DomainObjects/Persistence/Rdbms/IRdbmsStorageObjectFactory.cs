@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
-// TODO Review 3579: Move to Rdbms namespace
-namespace Remotion.Data.DomainObjects.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
   /// <see cref="IStorageObjectFactory"/> defines the API for all relational database management system storage object factories.

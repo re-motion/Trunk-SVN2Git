@@ -93,9 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      // TODO Review 3579: Remove call to GetClassesInStorageProvider => classDefinitions is already the right collection
-      // TODO Review 3579: Add check: All classes must have the given rdbmsProviderDefinition, otherwise throw an ArgumentException
-      _classes = GetClassesInStorageProvider (classDefinitions, _rdbmsProviderDefinition);
+      _classes = classDefinitions;
     }
 
     // methods and properties

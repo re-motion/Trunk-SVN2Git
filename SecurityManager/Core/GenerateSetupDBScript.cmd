@@ -2,9 +2,9 @@
 setlocal
 set buildconf=Debug
 if not "%1"=="" set buildconf=%1
-echo Running .\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\%buildconf%\dbschema.exe from %CD%...
+echo Running .\..\..\Remotion\Data\DomainObjects.RdbmsTools\bin\%buildconf%\dbschema.exe from %CD%...
 
-.\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\%buildconf%\dbschema.exe ^
+.\..\..\Remotion\Data\DomainObjects.RdbmsTools\bin\%buildconf%\dbschema.exe ^
     "/baseDirectory:bin\%buildconf%" ^
     "/config:..\Clients.Web\web.config" ^
     "/schema" ^

@@ -16,7 +16,7 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
-<project xmlns="nant-schema" name="Remotion.Data.DomainObjects.RdbmsTools.Console">
+<project xmlns="nant-schema" name="Remotion.Data.DomainObjects.RdbmsTools">
   
   <target name="build" description="perform a build">
     <csc  target="exe"
