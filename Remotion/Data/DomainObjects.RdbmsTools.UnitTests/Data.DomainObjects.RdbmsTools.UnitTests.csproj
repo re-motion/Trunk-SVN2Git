@@ -107,6 +107,10 @@
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.RdbmsTools.Console\Data.DomainObjects.RdbmsTools.Console.csproj">
+      <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
+      <Name>Data.DomainObjects.RdbmsTools.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj">
       <Project>{C5E0C110-5BC5-4E30-B3CF-4C6012FEE1EF}</Project>
       <Name>Data.DomainObjects.RdbmsTools</Name>

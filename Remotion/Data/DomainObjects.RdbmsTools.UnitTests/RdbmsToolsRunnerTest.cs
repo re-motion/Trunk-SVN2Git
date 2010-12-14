@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.RdbmsTools.Console;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
 {
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     [Test]
     public void CreateAppDomainSetup ()
     {
-      RdbmsToolsParameter parameter = new RdbmsToolsParameter ();
+      var parameter = new RdbmsToolsParameters ();
       parameter.BaseDirectory = @"c:\foobar";
       AppDomainSetup setup = RdbmsToolsRunner.CreateAppDomainSetup (parameter);
       Assert.That (setup.ApplicationName, Is.EqualTo ("RdbmsTools"));
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     [Test]
     public void CreateAppDomainSetup_WithAbsoluteConfigFilePath ()
     {
-      RdbmsToolsParameter parameter = new RdbmsToolsParameter ();
+      var parameter = new RdbmsToolsParameters ();
       parameter.BaseDirectory = @"c:\foobar";
       string codeBaseUri = Assembly.GetExecutingAssembly().EscapedCodeBase;
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test.config");
@@ -60,7 +61,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
         MatchType = MessageMatch.Contains)]
     public void CreateAppDomainSetup_WithAbsoluteConfigFilePath_FileNotFound ()
     {
-      RdbmsToolsParameter parameter = new RdbmsToolsParameter ();
+      var parameter = new RdbmsToolsParameters ();
       parameter.BaseDirectory = @"c:\foobar";
       string codeBaseUri = Assembly.GetExecutingAssembly ().EscapedCodeBase;
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test12313.config");
@@ -75,7 +76,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     [Test]
     public void CreateAppDomainSetup_WithPathRelativeToCurrentDirectory ()
     {
-      RdbmsToolsParameter parameter = new RdbmsToolsParameter ();
+      var parameter = new RdbmsToolsParameters ();
       parameter.BaseDirectory = @"c:\foobar";
       string codeBaseUri = Assembly.GetExecutingAssembly ().EscapedCodeBase;
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test.config");
@@ -98,7 +99,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
         MatchType = MessageMatch.Contains)]
     public void CreateAppDomainSetup_WithPathRelativeToCurrentDirectory_FileNotFound ()
     {
-      RdbmsToolsParameter parameter = new RdbmsToolsParameter ();
+      var parameter = new RdbmsToolsParameters ();
       parameter.BaseDirectory = @"c:\foobar";
       string codeBaseUri = Assembly.GetExecutingAssembly ().EscapedCodeBase;
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test123.config");

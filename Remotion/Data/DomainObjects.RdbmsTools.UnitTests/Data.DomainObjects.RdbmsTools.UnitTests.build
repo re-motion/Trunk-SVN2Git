@@ -39,6 +39,7 @@
         <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.RdbmsTools.dll"/>
+        <include asis="true" name="${build.test.outputdir}/dbschema.exe"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.dll"/>
         <include asis="true" name="${build.test.outputdir}/nunit.framework.dll"/>
