@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection.Emit;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -28,9 +27,8 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 {
-  // TODO Review 3580: Move to Sql2005 sub-namespace, adapt exception message in StorageConfiguration, adapt config files.
   /// <summary>
   /// The <see cref="SqlStorageObjectFactory"/> is responsible to create SQL Server-specific storage provider instances.
   /// </summary>

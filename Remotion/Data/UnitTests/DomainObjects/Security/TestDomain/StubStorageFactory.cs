@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
