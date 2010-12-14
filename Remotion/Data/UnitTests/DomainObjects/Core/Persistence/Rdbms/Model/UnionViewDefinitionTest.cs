@@ -100,9 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();
 
-      var fakeResult = new TableDefinition (_storageProviderDefinition, "Test", "TestView", Enumerable.Empty<ColumnDefinition> ());
-
-      visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition)).Return (fakeResult);
+      visitorMock.Expect (mock => mock.VisitUnionViewDefinition (_unionViewDefinition));
       visitorMock.Replay ();
 
       _unionViewDefinition.Accept (visitorMock);

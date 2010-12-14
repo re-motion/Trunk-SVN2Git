@@ -23,8 +23,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IEntityDefinitionVisitor
   {
-    IEntityDefinition VisitTableDefinition (TableDefinition tableDefinition);
-    IEntityDefinition VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition);
-    IEntityDefinition VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition);
+    void VisitTableDefinition (TableDefinition tableDefinition);
+    void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition);
+    void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition);
   }
 }
