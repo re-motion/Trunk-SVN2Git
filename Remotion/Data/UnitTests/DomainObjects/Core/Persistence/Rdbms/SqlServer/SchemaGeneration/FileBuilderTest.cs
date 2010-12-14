@@ -20,7 +20,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
@@ -28,9 +27,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
-using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -50,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
-      
+
       if (Directory.Exists ("TestDirectory"))
         Directory.Delete ("TestDirectory", true);
     }
@@ -62,17 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _firstStorageProviderDefinition = SchemaGenerationFirstStorageProviderDefinition;
       _secondStorageProviderDefinition = SchemaGenerationSecondStorageProviderDefinition;
 
-      var mappingLoader =
-          new MappingReflector (
-              FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (
-                  ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
-                  typeof (Order).Namespace));
-      var persistenceModelLoader = new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage));
-      var mappingConfiguration = new MappingConfiguration (mappingLoader, persistenceModelLoader);
-
-      _fileBuilder = new FileBuilder (
-          FileBuilder.GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, _firstStorageProviderDefinition),
-          _firstStorageProviderDefinition);
+      _fileBuilder = new FileBuilder (_firstStorageProviderDefinition);
       _firstStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProvider.sql");
       _firstStorageProviderSetupDBScriptWithoutTables = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
       _secondStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_SecondStorageProvider.sql");
@@ -104,18 +90,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
-      FileBuilder sqlFileBuilder =
-          new FileBuilder (
-              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _secondStorageProviderDefinition),
-              _secondStorageProviderDefinition);
+      FileBuilder sqlFileBuilder = new FileBuilder (_secondStorageProviderDefinition);
 
-      Assert.AreEqual (_secondStorageProviderSetupDBScript, sqlFileBuilder.GetScript());
+      Assert.AreEqual (
+          _secondStorageProviderSetupDBScript,
+          sqlFileBuilder.GetScript (FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _secondStorageProviderDefinition)));
     }
 
     [Test]
     public void GetScriptForFirstStorageProvider ()
     {
-      Assert.AreEqual (_firstStorageProviderSetupDBScript, _fileBuilder.GetScript());
+      Assert.AreEqual (
+          _firstStorageProviderSetupDBScript,
+          _fileBuilder.GetScript (FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _firstStorageProviderDefinition)));
     }
 
     [Test]

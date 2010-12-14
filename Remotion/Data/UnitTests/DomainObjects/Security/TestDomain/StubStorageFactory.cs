@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -63,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition, storageProviderDefinitionFinder);
     }
 
-    public FileBuilderBase CreateSchemaFileBuilder (ClassDefinitionCollection classDefinitions)
+    public FileBuilderBase CreateSchemaFileBuilder ()
     {
-      return new FileBuilder (classDefinitions, _storageProviderDefinition);
+      return new FileBuilder (_storageProviderDefinition);
     }
   }
 }

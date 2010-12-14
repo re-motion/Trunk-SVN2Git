@@ -90,11 +90,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new RdbmsPersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition, storageProviderDefinitionFinder);
     }
 
-    public virtual FileBuilderBase CreateSchemaFileBuilder (ClassDefinitionCollection classDefinitions)
+    public virtual FileBuilderBase CreateSchemaFileBuilder ()
     {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-
-      return new FileBuilder (classDefinitions, _storageProviderDefinition);
+      return new FileBuilder (_storageProviderDefinition);
     }
   }
 }

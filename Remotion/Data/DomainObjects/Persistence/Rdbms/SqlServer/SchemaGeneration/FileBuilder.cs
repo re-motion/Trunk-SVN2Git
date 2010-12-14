@@ -23,8 +23,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     public const string DefaultSchema = "dbo";
 
-    public FileBuilder (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (classDefinitions, rdbmsProviderDefinition)
+    public FileBuilder (RdbmsProviderDefinition rdbmsProviderDefinition)
+        : base (rdbmsProviderDefinition)
     {
     }
 
@@ -35,16 +35,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return temp.Substring (0, temp.IndexOf (";"));
     }
 
-    public override string GetScript ()
+    public override string GetScript (ClassDefinitionCollection classDefinitions)
     {
       ViewBuilder viewBuilder = CreateViewBuilder();
-      viewBuilder.AddViews (Classes);
+      viewBuilder.AddViews (classDefinitions);
 
       TableBuilder tableBuilder = CreateTableBuilder();
-      tableBuilder.AddTables (Classes);
+      tableBuilder.AddTables (classDefinitions);
 
       ConstraintBuilder constraintBuilder = CreateConstraintBuilder();
-      constraintBuilder.AddConstraints (Classes);
+      constraintBuilder.AddConstraints (classDefinitions);
 
       return string.Format (
           "USE {0}\r\n"

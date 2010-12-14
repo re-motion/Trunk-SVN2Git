@@ -108,15 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
-      var tableDefinition = new TableDefinition (_rdbmsProviderDefinition, "Order", "OrderView", new ColumnDefinition[0]);
-      classDefinition.SetStorageEntity (tableDefinition);
-      
-      var result = _sqlProviderFactory.CreateSchemaFileBuilder(new ClassDefinitionCollection(new[]{classDefinition}, true, true));
+      var result = _sqlProviderFactory.CreateSchemaFileBuilder();
 
       Assert.That (result, Is.TypeOf (typeof (FileBuilder)));
-      Assert.That (result.Classes.Count, Is.EqualTo (1));
-      Assert.That (result.Classes[0], Is.SameAs (classDefinition));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
   }

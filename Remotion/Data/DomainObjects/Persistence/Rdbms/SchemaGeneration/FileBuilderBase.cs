@@ -52,9 +52,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
-      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder (classDefinitionsForStorageProvider);
+      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder ();
 
-      var script = fileBuilder.GetScript ();
+      var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
       File.WriteAllText (fileName, script);
     }
 
@@ -85,29 +85,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
-    private readonly ClassDefinitionCollection _classes;
-
-    protected FileBuilderBase (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+    
+    protected FileBuilderBase (RdbmsProviderDefinition rdbmsProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _classes = classDefinitions;
     }
 
     // methods and properties
 
-    public abstract string GetScript ();
+    public abstract string GetScript (ClassDefinitionCollection classDefinitions);
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {
       get { return _rdbmsProviderDefinition; }
     }
-
-    public ClassDefinitionCollection Classes
-    {
-      get { return _classes; }
-    }
+    
   }
 }
