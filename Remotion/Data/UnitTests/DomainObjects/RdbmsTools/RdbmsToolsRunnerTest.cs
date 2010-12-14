@@ -21,10 +21,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.RdbmsTools.Console;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
+namespace Remotion.Data.UnitTests.DomainObjects.RdbmsTools
 {
-  using Text = NUnit.Framework.SyntaxHelpers.Text;
-
   [TestFixture]
   public class RdbmsToolsRunnerTest
   {

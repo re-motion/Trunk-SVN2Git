@@ -73,7 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RdbmsToolsRunnerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.UnitTests.build">
       <SubType>Designer</SubType>

@@ -55,6 +55,7 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Security.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Security.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.dll"/>
+        <include asis="true" name="${build.test.outputdir}/dbschema.exe"/>
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
@@ -72,6 +73,7 @@
     <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
       <fileset>
         <include name="DomainObjects/Database/*.sql" />
+        <include name="Test.config" />
       </fileset>
     </copy>
 
@@ -88,7 +90,7 @@
         <include name="DomainObjects/Security/Remotion.Data.UnitTests.DomainObjects.Security.*.xml" />
       </fileset>
     </copy>
-
+        
 
   </target>
   

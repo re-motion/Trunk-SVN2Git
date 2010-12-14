@@ -171,6 +171,10 @@
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Name>Web.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.RdbmsTools.Console\Data.DomainObjects.RdbmsTools.Console.csproj">
+      <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
+      <Name>Data.DomainObjects.RdbmsTools.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
@@ -863,6 +867,7 @@
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\IMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinStub.cs" />
+    <Compile Include="DomainObjects\RdbmsTools\RdbmsToolsRunnerTest.cs" />
     <Compile Include="DomainObjects\Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="DomainObjects\Security\ObjectBindingIntegrationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
@@ -1645,6 +1650,9 @@
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />
     <None Include="DomainObjects\Database\DataDomainObjects_DropFulltextIndices.sql" />
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
+    <None Include="Test.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\AssemblyInfoTemplate.cs">
       <SubType>Code</SubType>
     </None>
