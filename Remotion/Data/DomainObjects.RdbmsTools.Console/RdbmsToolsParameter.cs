@@ -54,6 +54,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.Console
         Placeholder = "directory")]
     public string SchemaOutputDirectory = string.Empty;
 
+    // TODO Review 3579: Check Visual Studio build: Some projects still call dbschema with the obsolete parameter.
     [CommandLineStringArgument ("schemaBuilder", true,
         Description = "This parameter is obsolete and should no longer be used. (The schema file builder is now retrieved from the storage provider definition.)",
         Placeholder = "Namespace.ClassName,AssemblyName")]

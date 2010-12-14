@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,37 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  public class StubStorageFactory : IRdbmsStorageObjectFactory
+  internal class InvalidRdbmsStorageObjectFactory : IStorageObjectFactory
   {
-    private readonly RdbmsProviderDefinition _storageProviderDefinition;
-
-    public StubStorageFactory (RdbmsProviderDefinition storageProviderDefinition)
+    public InvalidRdbmsStorageObjectFactory (RdbmsProviderDefinition definition)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      _storageProviderDefinition = storageProviderDefinition;
+      Dev.Null = definition;
     }
 
     public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
     {
-      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
-
-      return new StubStorageProvider (_storageProviderDefinition, persistenceListener);
+      throw new NotImplementedException();
     }
 
     public TypeConversionProvider CreateTypeConversionProvider ()
@@ -60,13 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new RdbmsPersistenceModelLoader (
-          new ColumnDefinitionFactory (new SqlStorageTypeCalculator()), _storageProviderDefinition, storageProviderDefinitionFinder);
-    }
-
-    public FileBuilderBase CreateSchemaFileBuilder (ClassDefinitionCollection classDefinitions)
-    {
-      return new FileBuilder (classDefinitions, _storageProviderDefinition);
+      throw new NotImplementedException();
     }
   }
 }

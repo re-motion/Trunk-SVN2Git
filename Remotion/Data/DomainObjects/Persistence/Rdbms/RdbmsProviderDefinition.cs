@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Configuration;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
@@ -30,6 +31,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         : base (name, factoryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
+      ArgumentUtility.CheckTypeIsAssignableFrom ("factoryType", factoryType, typeof (IRdbmsStorageObjectFactory));
+
       _connectionString = connectionString;
     }
 
@@ -37,6 +40,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         : base (name, config)
     {
       ArgumentUtility.CheckNotNull ("config", config);
+
+      if (!(base.Factory is IRdbmsStorageObjectFactory))
+      {
+        var message = string.Format (
+            "The factory type for the storage provider defined by '{0}' must implement the 'IRdbmsStorageObjectFactory' interface. "
+            + "'{1}' does not implement that interface.", 
+            name,
+            base.Factory.GetType().Name);
+        throw new ConfigurationErrorsException (message);
+      }
 
       string connectionStringName = GetAndRemoveNonEmptyStringAttribute (config, "connectionString", name, true);
       _connectionString = ConfigurationWrapper.Current.GetConnectionString (connectionStringName, true).ConnectionString;

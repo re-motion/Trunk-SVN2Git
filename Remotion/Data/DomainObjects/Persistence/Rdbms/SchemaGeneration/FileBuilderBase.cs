@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       bool createMultipleFiles = storageConfiguration.StorageProviderDefinitions.Count > 1;
       foreach (StorageProviderDefinition storageProviderDefinition in storageConfiguration.StorageProviderDefinitions)
       {
-        RdbmsProviderDefinition rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
+        var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
           Build (mappingConfiguration, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
       }
@@ -52,15 +52,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
-
       var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder (classDefinitionsForStorageProvider);
-      
-      File.WriteAllText (fileName, fileBuilder.GetScript ());
+
+      var script = fileBuilder.GetScript ();
+      File.WriteAllText (fileName, script);
     }
 
     public static ClassDefinitionCollection GetClassesInStorageProvider (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
     {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
+      var classes = new ClassDefinitionCollection (false);
       foreach (ClassDefinition currentClass in classDefinitions)
       {
         if (currentClass.StorageEntityDefinition.StorageProviderDefinition.Name == rdbmsProviderDefinition.Name)
@@ -93,6 +93,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
+      // TODO Review 3579: Remove call to GetClassesInStorageProvider => classDefinitions is already the right collection
+      // TODO Review 3579: Add check: All classes must have the given rdbmsProviderDefinition, otherwise throw an ArgumentException
       _classes = GetClassesInStorageProvider (classDefinitions, _rdbmsProviderDefinition);
     }
 

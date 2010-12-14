@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
+// TODO Review 3579: Move to Rdbms namespace
 namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>

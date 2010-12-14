@@ -75,6 +75,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = 
+        "The factory type for the storage provider defined by 'Provider' must implement the 'IRdbmsStorageObjectFactory' interface. "
+        + "'InvalidRdbmsStorageObjectFactory' does not implement that interface.")]
+    public void Initialize_FromConfig_InvalidFactoryType ()
+    {
+      NameValueCollection config = new NameValueCollection ();
+      config.Add ("description", "The Description");
+      config.Add ("factoryType", typeof (InvalidRdbmsStorageObjectFactory).AssemblyQualifiedName);
+      config.Add ("connectionString", "SqlProvider");
+
+      new RdbmsProviderDefinition ("Provider", config);
+    }
+
+    [Test]
     [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "The attribute 'factoryType' is missing in the configuration of the 'Provider' provider.")]
     public void Initialize_FromConfig_WithMissingFactoryType ()

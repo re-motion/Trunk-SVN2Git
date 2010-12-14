@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.Console
     protected virtual void BuildSchema ()
     {
       if (!string.IsNullOrEmpty (_rdbmsToolsParameters.SchemaFileBuilderTypeName))
-        throw new NotSupportedException ("The SchemaFileBuilderTypeName parameter is obsolete and should no longer be used. "
+        throw new NotSupportedException ("The schemaBuilder parameter is obsolete and should no longer be used. "
           +"(The schema file builder is now retrieved from the storage provider definition.)");
 
       FileBuilderBase.Build (MappingConfiguration.Current, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameters.SchemaOutputDirectory);
