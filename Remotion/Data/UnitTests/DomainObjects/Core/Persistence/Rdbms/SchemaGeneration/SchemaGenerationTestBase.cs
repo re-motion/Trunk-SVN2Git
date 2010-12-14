@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
@@ -34,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [SetUp]
     public virtual void SetUp ()
     {
-      var setUpFixture = new SetUpFixture ();
-      setUpFixture.SetUp ();
+      DomainObjectsConfiguration.SetCurrent (SchemaGenerationConfiguration.Instance.GetDomainObjectsConfiguration());
+      MappingConfiguration.SetCurrent (SchemaGenerationConfiguration.Instance.GetMappingConfiguration());
     }
 
     [TearDown]

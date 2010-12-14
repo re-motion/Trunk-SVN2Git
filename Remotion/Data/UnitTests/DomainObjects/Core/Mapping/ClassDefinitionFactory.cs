@@ -105,9 +105,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, mixins);
     }
 
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, StorageProviderDefinition storageProviderDefinition, params Type[] mixins)
+    {
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, mixins);
+    }
+
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
     {
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, baseClass, mixins);
+    }
+
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
+    {
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, baseClass, mixins);
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
@@ -140,7 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ReflectionBasedClassDefinition CreateFinishedFileSystemItemDefinitionWithDerivedClasses ()
     {
-      var fileSystemItemClassDefinition = CreateReflectionBasedClassDefinition (typeof (FileSystemItem), null, Type.EmptyTypes);
+      var fileSystemItemClassDefinition = CreateReflectionBasedClassDefinition (
+          typeof (FileSystemItem), (ReflectionBasedClassDefinition) null, Type.EmptyTypes);
       var fileClassDefinition = CreateFinishedClassDefinition (typeof (File), fileSystemItemClassDefinition);
       var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);
 

@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -89,7 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
-          new MappingReflector (typeDiscoveryService), new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
+          new MappingReflector (typeDiscoveryService), 
+          new PersistenceModelLoader (new StorageProviderDefinitionFinder (_storageConfiguration)));
       MappingConfiguration.SetCurrent (_mappingConfiguration);
     }
 

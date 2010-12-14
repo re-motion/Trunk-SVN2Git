@@ -146,6 +146,7 @@
     </Compile>
     <Compile Include="UnitTesting\ClassWithSerializationCallbacksBase.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryService.cs" />
+    <Compile Include="UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryService.cs" />
     <Compile Include="UnitTesting\Reflection\TypeDiscovery\NullTypeDiscoveryService.cs" />
     <Compile Include="UnitTesting\Resources\ResourceNotFoundException.cs" />
     <Compile Include="UnitTesting\Resources\ResourceUtility.cs" />

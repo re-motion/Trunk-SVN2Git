@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
@@ -27,55 +26,17 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   public class SchemaGenerationConfiguration
   {
     private static SchemaGenerationConfiguration s_instance;
-    private readonly StorageConfiguration _storageConfiguration;
-    private readonly MappingLoaderConfiguration _mappingLoaderConfiguration;
-    private readonly MappingConfiguration _mappingConfiguration;
-    private readonly QueryConfiguration _queryConfiguration;
-
-    public SchemaGenerationConfiguration ()
-    {
-      ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = StorageProviderDefinitionFactory.Create ();
-
-      _storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection,
-          storageProviderDefinitionCollection[DatabaseTest.DefaultStorageProviderID]);
-      _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (
-              new FirstStorageGroupAttribute (),
-              DatabaseTest.SchemaGenerationFirstStorageProviderID));
-      _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (
-              new SecondStorageGroupAttribute (),
-              DatabaseTest.SchemaGenerationSecondStorageProviderID));
-      _storageConfiguration.StorageGroups.Add (
-          new StorageGroupElement (
-              new InternalStorageGroupAttribute (),
-              DatabaseTest.SchemaGenerationInternalStorageProviderID));
-
-      _mappingLoaderConfiguration = new MappingLoaderConfiguration ();
-      _queryConfiguration = new QueryConfiguration ();
-      DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
-
-      var typeDiscoveryService = GetTypeDiscoveryService (GetType ().Assembly);
-
-      _mappingConfiguration = new MappingConfiguration (
-          new MappingReflector (typeDiscoveryService), new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
-      MappingConfiguration.SetCurrent (_mappingConfiguration);
-    }
 
     public static SchemaGenerationConfiguration Instance
     {
@@ -95,6 +56,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       s_instance = new SchemaGenerationConfiguration ();
     }
 
+    private readonly StorageConfiguration _storageConfiguration;
+    private readonly MappingLoaderConfiguration _mappingLoaderConfiguration;
+    private readonly MappingConfiguration _mappingConfiguration;
+    private readonly QueryConfiguration _queryConfiguration;
+    private FakeDomainObjectsConfiguration _domainObjectsConfiguration;
+
+    public SchemaGenerationConfiguration ()
+    {
+      var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>
+                                                {
+                                                    new RdbmsProviderDefinition (
+                                                        DatabaseTest.SchemaGenerationFirstStorageProviderID,
+                                                        typeof (SqlStorageObjectFactory),
+                                                        DatabaseTest.TestDomainConnectionString),
+                                                    new RdbmsProviderDefinition (
+                                                        DatabaseTest.SchemaGenerationSecondStorageProviderID,
+                                                        typeof (SqlStorageObjectFactory),
+                                                        DatabaseTest.TestDomainConnectionString),
+                                                    new RdbmsProviderDefinition (
+                                                        DatabaseTest.SchemaGenerationInternalStorageProviderID,
+                                                        typeof (SqlStorageObjectFactory),
+                                                        DatabaseTest.TestDomainConnectionString)
+                                                };
+
+      _storageConfiguration = new StorageConfiguration (
+          storageProviderDefinitionCollection, 
+          null);
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new FirstStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationFirstStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new SecondStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationSecondStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new InternalStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationInternalStorageProviderID));
+
+      _mappingLoaderConfiguration = new MappingLoaderConfiguration ();
+      _queryConfiguration = new QueryConfiguration ();
+
+      var typeDiscoveryService = GetTypeDiscoveryService (GetType ().Assembly);
+
+      _mappingConfiguration = new MappingConfiguration (
+          new MappingReflector (typeDiscoveryService), 
+          new PersistenceModelLoader (new StorageProviderDefinitionFinder (_storageConfiguration)));
+      _domainObjectsConfiguration = new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
+    }
+
     public MappingConfiguration GetMappingConfiguration ()
     {
       return _mappingConfiguration;
@@ -107,18 +119,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public FakeDomainObjectsConfiguration GetDomainObjectsConfiguration ()
     {
-      return new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration);
+      return _domainObjectsConfiguration;
     }
 
     public ITypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
     {
-      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray ());
-      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+      var baseTypeDiscoveryService = new FixedTypeDiscoveryService (Assembly.GetExecutingAssembly ().GetTypes());
 
       return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist(
-          typeDiscoveryService,
+          baseTypeDiscoveryService,
           "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain");
     }
 

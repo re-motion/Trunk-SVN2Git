@@ -47,7 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithResolvedPropertyType ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), null, Type.EmptyTypes);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (Order), (ReflectionBasedClassDefinition) null, Type.EmptyTypes);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),

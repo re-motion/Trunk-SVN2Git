@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [SetUpFixture]
   public class SetUpFixture
@@ -26,7 +26,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [SetUp]
     public void SetUp ()
     {
-      SchemaGenerationConfiguration.Initialize ();
+      try
+      {
+        // This does not set the current configuration properties, SchemaGenerationTestBase.TestFixtureSetUp does this
+        SchemaGenerationConfiguration.Initialize ();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine ("SetUpFixture failed: " + ex);
+        Console.WriteLine ();
+        throw;
+      }
     }
   }
 }

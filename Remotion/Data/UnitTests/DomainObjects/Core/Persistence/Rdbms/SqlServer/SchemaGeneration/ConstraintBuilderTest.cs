@@ -85,14 +85,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddConstraintWithTwoConstraints ()
     {
       var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
-      var firstClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
+      var firstClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), SchemaGenerationFirstStorageProviderDefinition);
       var properties = new List<PropertyDefinition>();
       properties.Add (CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
       properties.Add (CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
       firstClass.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
-      var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address));
-      var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee));
+      var secondClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Address), SchemaGenerationFirstStorageProviderDefinition);
+      var thirdClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Employee), SchemaGenerationFirstStorageProviderDefinition);
 
       var endPointDefinition1 = new RelationEndPointDefinition (firstClass, "SecondClass", false);
       var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (secondClass, "FirstClass", false, CardinalityType.Many,typeof (DomainObjectCollection),"sort", typeof(Employee).GetProperty("Name"));
@@ -156,12 +156,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddConstraintWithRelationInDerivedClass ()
     {
       var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
-      var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
+      var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), SchemaGenerationFirstStorageProviderDefinition);
       baseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), baseClass);
+      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), SchemaGenerationFirstStorageProviderDefinition, baseClass);
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] {CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent)}, true));
 
-      ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner));
+      ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DevelopmentPartner), SchemaGenerationFirstStorageProviderDefinition);
       var endPointDefinition1 = new RelationEndPointDefinition (derivedClass, "OtherClass", false);
       var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name"));
       new RelationDefinition ("OtherClassToDerivedClass", endPointDefinition1, endPointDefinition2);

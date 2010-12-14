@@ -49,22 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
-              DatabaseTest.SchemaGenerationFirstStorageProviderID,
-              typeof (SqlStorageObjectFactory),
-              DatabaseTest.TestDomainConnectionString));
-      storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (
-              DatabaseTest.SchemaGenerationSecondStorageProviderID,
-              typeof (SqlStorageObjectFactory),
-              DatabaseTest.TestDomainConnectionString));
-      storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (
-              DatabaseTest.SchemaGenerationInternalStorageProviderID,
-              typeof (SqlStorageObjectFactory),
-              DatabaseTest.TestDomainConnectionString));
-
-      storageProviderDefinitionCollection.Add (
-          new RdbmsProviderDefinition (
               TableInheritanceMappingTest.TableInheritanceTestDomainProviderID,
               typeof (SqlStorageObjectFactory),
               DatabaseTest.TestDomainConnectionString));

@@ -54,7 +54,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
         : this()
     {
       ArgumentUtility.CheckNotNull ("providers", providers);
-      ArgumentUtility.CheckNotNull ("defaultProvider", defaultProvider);
 
       _defaultStorageProviderDefinitionHelper.Provider = defaultProvider;
 

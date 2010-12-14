@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _tableBuilder = new TableBuilder();
-      _classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      _classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), SchemaGenerationFirstStorageProviderDefinition);
     }
 
     [Test]
@@ -187,11 +187,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
       var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
-      var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass));
+      var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass), SchemaGenerationFirstStorageProviderDefinition);
       abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent)}, true));
-      
-      var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), abstractClass);
+
+      var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), SchemaGenerationFirstStorageProviderDefinition, abstractClass);
       derivedAbstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (
               derivedAbstractClass,
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               StorageClass.Persistent)}, true));
       
       var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          typeof (DerivedConcreteClass), derivedAbstractClass);
+          typeof (DerivedConcreteClass), SchemaGenerationFirstStorageProviderDefinition, derivedAbstractClass);
       derivedConcreteClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           CreatePropertyDefinition (
               derivedConcreteClass,
