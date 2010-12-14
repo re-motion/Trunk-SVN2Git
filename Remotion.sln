@@ -70,7 +70,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects", "Remot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.PerformanceTests", "Remotion\Data\DomainObjects.PerformanceTests\Data.DomainObjects.PerformanceTests.csproj", "{717B711E-97AB-4751-97C5-C0491D1919FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.RdbmsTools.Console", "Remotion\Data\DomainObjects.RdbmsTools.Console\Data.DomainObjects.RdbmsTools.Console.csproj", "{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.RdbmsTools", "Remotion\Data\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj", "{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Security", "Remotion\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj", "{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}"
 EndProject

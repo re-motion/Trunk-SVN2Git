@@ -171,7 +171,7 @@
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Name>Web.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.RdbmsTools.Console\Data.DomainObjects.RdbmsTools.Console.csproj">
+    <ProjectReference Include="..\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj">
       <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
       <Name>Data.DomainObjects.RdbmsTools.Console</Name>
     </ProjectReference>

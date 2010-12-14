@@ -18,7 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Text.CommandLine;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools.Console
+namespace Remotion.Data.DomainObjects.RdbmsToolsS
 {
   [Flags]
   public enum OperationMode

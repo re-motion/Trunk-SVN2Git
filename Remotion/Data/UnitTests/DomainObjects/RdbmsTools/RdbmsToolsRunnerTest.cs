@@ -19,7 +19,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.RdbmsTools.Console;
+using Remotion.Data.DomainObjects.RdbmsToolsS;
 
 namespace Remotion.Data.UnitTests.DomainObjects.RdbmsTools
 {
