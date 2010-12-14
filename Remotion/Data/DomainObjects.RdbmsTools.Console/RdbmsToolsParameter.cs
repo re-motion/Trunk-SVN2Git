@@ -18,7 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Text.CommandLine;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools
+namespace Remotion.Data.DomainObjects.RdbmsTools.Console
 {
   [Flags]
   public enum OperationMode
@@ -28,11 +28,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   }
 
   /// <summary>
-  /// <see cref="RdbmsToolsParameter"/> type is a combination of a parameter object for <see cref="RdbmsToolsRunner"/> 
+  /// <see cref="RdbmsToolsParameters"/> type is a combination of a parameter object for <see cref="RdbmsToolsRunner"/> 
   /// and a command line arguments class as required by <see cref="CommandLineClassParser"/>.
   /// </summary>
   [Serializable]
-  public class RdbmsToolsParameter
+  public class RdbmsToolsParameters
   {
     [CommandLineModeArgument (true)]
     public OperationMode Mode = OperationMode.BuildSchema;
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
         Description = "Verbose output")]
     public bool Verbose;
 
-    public RdbmsToolsParameter ()
+    public RdbmsToolsParameters ()
     {
     }
   }

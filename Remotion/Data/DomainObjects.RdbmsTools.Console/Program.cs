@@ -23,11 +23,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.Console
   {
     private static int Main (string[] args)
     {
-      RdbmsToolsParameter rdbmsToolsParameter;
-      CommandLineClassParser<RdbmsToolsParameter> parser = new CommandLineClassParser<RdbmsToolsParameter> ();
+      RdbmsToolsParameters rdbmsToolsParameters;
+      CommandLineClassParser<RdbmsToolsParameters> parser = new CommandLineClassParser<RdbmsToolsParameters> ();
       try
       {
-        rdbmsToolsParameter = parser.Parse (args);
+        rdbmsToolsParameters = parser.Parse (args);
       }
       catch (CommandLineArgumentException e)
       {
@@ -39,12 +39,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.Console
 
       try
       {
-        RdbmsToolsRunner rdbmsToolsRunner = RdbmsToolsRunner.Create (rdbmsToolsParameter);
+        RdbmsToolsRunner rdbmsToolsRunner = RdbmsToolsRunner.Create (rdbmsToolsParameters);
         rdbmsToolsRunner.Run();
       }
       catch (Exception e)
       {
-        if (rdbmsToolsParameter.Verbose)
+        if (rdbmsToolsParameters.Verbose)
         {
           System.Console.Error.WriteLine ("Execution aborted. Exception stack:");
           for (; e != null; e = e.InnerException)

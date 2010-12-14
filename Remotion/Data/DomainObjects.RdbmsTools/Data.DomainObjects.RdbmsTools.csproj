@@ -69,9 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RdbmsToolsParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RdbmsToolsRunner.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.build">
       <SubType>Designer</SubType>
     </None>

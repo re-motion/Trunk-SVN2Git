@@ -29,7 +29,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Logging;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools
+namespace Remotion.Data.DomainObjects.RdbmsTools.Console
 {
   /// <summary>
   /// The <see cref="RdbmsToolsRunner"/> type contains the encapsulates the execution of the various functionality provided by the 
@@ -38,21 +38,21 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   [Serializable]
   public class RdbmsToolsRunner : AppDomainRunnerBase
   {
-    public static RdbmsToolsRunner Create (RdbmsToolsParameter rdbmsToolsParameter)
+    public static RdbmsToolsRunner Create (RdbmsToolsParameters rdbmsToolsParameters)
     {
-      AppDomainSetup appDomainSetup = CreateAppDomainSetup (rdbmsToolsParameter);
-      return new RdbmsToolsRunner (appDomainSetup, rdbmsToolsParameter);
+      AppDomainSetup appDomainSetup = CreateAppDomainSetup (rdbmsToolsParameters);
+      return new RdbmsToolsRunner (appDomainSetup, rdbmsToolsParameters);
     }
 
-    public static AppDomainSetup CreateAppDomainSetup (RdbmsToolsParameter rdbmsToolsParameter)
+    public static AppDomainSetup CreateAppDomainSetup (RdbmsToolsParameters rdbmsToolsParameters)
     {
       AppDomainSetup appDomainSetup = new AppDomainSetup();
       appDomainSetup.ApplicationName = "RdbmsTools";
-      appDomainSetup.ApplicationBase = rdbmsToolsParameter.BaseDirectory;
+      appDomainSetup.ApplicationBase = rdbmsToolsParameters.BaseDirectory;
 
-      if (!string.IsNullOrEmpty (rdbmsToolsParameter.ConfigFile))
+      if (!string.IsNullOrEmpty (rdbmsToolsParameters.ConfigFile))
       {
-        appDomainSetup.ConfigurationFile = Path.GetFullPath (rdbmsToolsParameter.ConfigFile);
+        appDomainSetup.ConfigurationFile = Path.GetFullPath (rdbmsToolsParameters.ConfigFile);
         if (!File.Exists (appDomainSetup.ConfigurationFile))
         {
           throw new FileNotFoundException (
@@ -65,22 +65,22 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       return appDomainSetup;
     }
 
-    private readonly RdbmsToolsParameter _rdbmsToolsParameter;
+    private readonly RdbmsToolsParameters _rdbmsToolsParameters;
 
-    protected RdbmsToolsRunner (AppDomainSetup appDomainSetup, RdbmsToolsParameter rdbmsToolsParameter)
+    protected RdbmsToolsRunner (AppDomainSetup appDomainSetup, RdbmsToolsParameters rdbmsToolsParameters)
         : base (appDomainSetup)
     {
-      _rdbmsToolsParameter = rdbmsToolsParameter;
+      _rdbmsToolsParameters = rdbmsToolsParameters;
     }
 
     protected override void CrossAppDomainCallbackHandler ()
     {
-      if (_rdbmsToolsParameter.Verbose)
+      if (_rdbmsToolsParameters.Verbose)
         LogManager.InitializeConsole();
 
       InitializeConfiguration();
 
-      if ((_rdbmsToolsParameter.Mode & OperationMode.BuildSchema) != 0)
+      if ((_rdbmsToolsParameters.Mode & OperationMode.BuildSchema) != 0)
         BuildSchema();
     }
 
@@ -114,11 +114,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected virtual void BuildSchema ()
     {
-      if (!string.IsNullOrEmpty (_rdbmsToolsParameter.SchemaFileBuilderTypeName))
+      if (!string.IsNullOrEmpty (_rdbmsToolsParameters.SchemaFileBuilderTypeName))
         throw new NotSupportedException ("The SchemaFileBuilderTypeName parameter is obsolete and should no longer be used. "
           +"(The schema file builder is now retrieved from the storage provider definition.)");
 
-      FileBuilderBase.Build (MappingConfiguration.Current, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameter.SchemaOutputDirectory);
+      FileBuilderBase.Build (MappingConfiguration.Current, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameters.SchemaOutputDirectory);
     }
   }
 }
