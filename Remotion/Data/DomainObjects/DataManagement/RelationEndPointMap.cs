@@ -19,7 +19,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -134,10 +133,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterRealObjectEndPoint", "endPointID");
-
-      if (endPointID.Definition.IsVirtual)
-        throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "endPointID");
-
+      CheckVirtuality (endPointID, false, "RegisterRealObjectEndPoint", "endPointID");
+      
       var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer);
       Add (objectEndPoint);
 
@@ -172,9 +169,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     //{
     //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
     //  CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
-
-    //  if (endPointID.Definition.IsVirtual)
-    //    throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "endPointID");
+    //  CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
 
     //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
     //  if (objectEndPoint == null)
@@ -218,9 +213,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
-
-      if (!endPointID.Definition.IsVirtual)
-        throw new ArgumentException ("End point ID must refer to a virtual end point.", "endPointID");
+      CheckVirtuality (endPointID, true, "RegisterVirtualObjectEndPoint", "endPointID");
 
       var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
       Add (objectEndPoint);
@@ -233,9 +226,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     //{
     //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
     //  CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
-
-    //  if (!endPointID.Definition.IsVirtual)
-    //    throw new ArgumentException ("End point ID must refer to a virtual end point.", "endPointID");
+    //  CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
 
     //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
     //  if (objectEndPoint == null)
@@ -414,10 +405,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (endPointID.Definition.Cardinality != expectedCardinality)
       {
-        throw new ArgumentException (String.Format (
-            "{0} can only be called for end points with a cardinality of '{1}'.",
-            methodName,
-            expectedCardinality), argumentName);
+        var message = string.Format ("{0} can only be called for end points with a cardinality of '{1}'.", methodName, expectedCardinality);
+        throw new ArgumentException (message, argumentName);
+      }
+    }
+
+    private void CheckVirtuality (
+        RelationEndPointID endPointID,
+        bool expectedVirtualness,
+        string methodName,
+        string argumentName)
+    {
+      if (endPointID.Definition.IsVirtual != expectedVirtualness)
+      {
+        if (expectedVirtualness)
+        {
+          var message = string.Format ("{0} can only be called for virtual end points.", methodName);
+          throw new ArgumentException (message, argumentName);
+        }
+        else
+        {
+          var message = string.Format ("{0} can only be called for non-virtual end points.", methodName);
+          throw new ArgumentException (message, argumentName);
+        }
       }
     }
 
