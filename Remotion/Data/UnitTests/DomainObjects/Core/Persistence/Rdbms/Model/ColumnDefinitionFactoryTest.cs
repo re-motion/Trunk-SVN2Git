@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -24,13 +25,14 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
 using ClassNotInMapping = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.ClassNotInMapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class ColumnDefinitionFactoryTest
+  public class ColumnDefinitionFactoryTest : StandardMappingTest
   {
     private StorageTypeCalculator _storageTypeCalculatorStub;
     private ColumnDefinitionFactory _columnDefinitionFactory;
@@ -43,17 +45,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ReflectionBasedClassDefinition _classBelowBelowDbTableAttribute;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return ("varchar(100)");
       _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
+      _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
+      _fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
       _classAboveDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassNotInMapping));
+      _classAboveDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _classWithDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), _classAboveDbTableAttribute);
+      _classWithDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _classBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Partner), _classWithDbTableAttribute);
+      _classBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _classBelowBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Distributor), _classBelowDbTableAttribute);
+      _classBelowBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
     }
 
     [Test]
@@ -72,6 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateStoragePropertyDefinition_UsePropertyName ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Distributor));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
       StubStorageTypeCalculator (propertyDefinition);
@@ -244,9 +255,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result.IsNullable, Is.True);
     }
 
+    [Test]
+    public void CreaeStoragePropertyDefinition_NonRelationProperty_GetsNoClassIdColumn ()
+    {
+      var classDefinition = Configuration.ClassDefinitions[typeof (Order)];
+      var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof(Order).FullName+".OrderNumber"];
+
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result, Is.TypeOf(typeof(SimpleColumnDefinition)));
+    }
+
+    [Test]
+    public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionThatISNotPartOfTheMapping_GetsNotClassIDColumn ()
+    {
+      var classDefinition = Configuration.ClassDefinitions[typeof (ClassWithManySideRelationProperties)];
+      
+      var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (ClassWithManySideRelationProperties).FullName + ".BidirectionalOneToOne"];
+
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result, Is.TypeOf (typeof (SimpleColumnDefinition)));
+    }
+
+    [Test]
+    public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionWithBaseClassAndNoDerivedClasses_GetsClassIDColumn ()
+    {
+      var classDefinition = Configuration.ClassDefinitions[typeof (ClassWithoutRelatedClassIDColumn)];
+
+      var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (ClassWithoutRelatedClassIDColumn).FullName + ".Distributor"];
+
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.Name, Is.EqualTo ("DistributorID"));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.IsNullable, Is.True);
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.PropertyType, Is.SameAs(typeof(ObjectID)));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.StorageType, Is.EqualTo("test"));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.Name, Is.EqualTo("ClassID"));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.IsNullable, Is.False);
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.PropertyType, Is.SameAs(typeof (string)));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
+    }
+
+    [Test]
+    public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionWithoutBaseClassAndWithDerivedClasses_GetsClassIDColumn ()
+    {
+      var classDefinition = Configuration.ClassDefinitions[typeof (Ceo)];
+
+      var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (Ceo).FullName + ".Company"];
+
+      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
+
+      var result = _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
+    }
+
     private void StubStorageTypeCalculator (PropertyDefinition propertyDefinition)
     {
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("storage type");
     }
+
+    
   }
 }

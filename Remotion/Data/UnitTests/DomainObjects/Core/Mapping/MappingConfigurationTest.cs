@@ -278,6 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsLoaded ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),

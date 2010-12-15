@@ -28,14 +28,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
-    protected override string SqlDataTypeObjectID
+    public override string SqlDataTypeObjectID
     {
       get { return "uniqueidentifier"; }
     }
 
-    protected override string SqlDataTypeSerializedObjectID
+    public override string SqlDataTypeSerializedObjectID
     {
       get { return "varchar (255)"; }
+    }
+
+    public override string SqlDataTypeClassID
+    {
+      get { return "varchar (100)"; }
     }
 
     public override string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)

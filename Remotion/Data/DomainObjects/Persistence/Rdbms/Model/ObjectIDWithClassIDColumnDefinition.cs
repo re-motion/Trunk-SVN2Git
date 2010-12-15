@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -35,8 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _objectIDColumn = objectIDColumn;
       _classIDColumn = classIDColumn;
     }
-    
-    public string Name
+
+    string IStoragePropertyDefinition.Name
     {
       get { return _objectIDColumn.Name; }
     }

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -27,8 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public abstract class StorageTypeCalculator
   {
-    protected abstract string SqlDataTypeObjectID { get; }
-    protected abstract string SqlDataTypeSerializedObjectID { get; }
+    public abstract string SqlDataTypeObjectID { get; }
+    public abstract string SqlDataTypeSerializedObjectID { get; }
+    public abstract string SqlDataTypeClassID { get; }
 
     public virtual string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {

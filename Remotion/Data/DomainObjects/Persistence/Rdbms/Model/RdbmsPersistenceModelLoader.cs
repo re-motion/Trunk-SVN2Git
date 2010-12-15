@@ -166,8 +166,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         propertyDefinition.SetStorageProperty (storageProperty);
       }
 
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as SimpleColumnDefinition;
-      if (columnDefinition == null)
+      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
+      if (columnDefinition==null)
       {
         throw new MappingException (
             string.Format (

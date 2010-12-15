@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -43,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_columnDefinition.ObjectIDColumn, Is.SameAs (_objectIDColumn));
       Assert.That (_columnDefinition.ClassIDColumn, Is.SameAs (_classIDColumn));
-      Assert.That (_columnDefinition.Name, Is.EqualTo ("ObjectID"));
+      Assert.That (((IColumnDefinition) _columnDefinition).Name, Is.EqualTo ("ObjectID"));
     }
 
     [Test]

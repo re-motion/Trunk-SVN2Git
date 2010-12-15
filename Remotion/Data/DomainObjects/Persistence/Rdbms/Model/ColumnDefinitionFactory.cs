@@ -47,13 +47,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
       if (storageType != null)
-        return new SimpleColumnDefinition (
+      {
+        var columnDefinition = new SimpleColumnDefinition (
             GetColumnName (propertyDefinition.PropertyInfo),
             propertyDefinition.PropertyType,
             storageType,
             propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
+
+        if (!HasClassIDColumn (propertyDefinition, providerDefinitionFinder))
+          return columnDefinition;
+        
+        var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+        return new ObjectIDWithClassIDColumnDefinition (columnDefinition, classIdColumnDefinition);
+      }
       else
+      {
         return new UnsupportedStorageTypeColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
+      }
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)
@@ -67,6 +77,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return propertyInfo.Name + "ID";
 
       return propertyInfo.Name;
+    }
+
+    private bool HasClassIDColumn (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
+
+      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      if (relationEndPointDefinition != null)
+      {
+        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+        var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
+        var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
+       
+        if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy 
+          && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
+          return true;
+      }
+      return false;
     }
 
     private bool MustBeNullable (PropertyDefinition propertyDefinition)
