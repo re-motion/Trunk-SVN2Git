@@ -16,6 +16,7 @@
 // 
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -37,6 +38,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     public override string GetScript (ClassDefinitionCollection classDefinitions)
     {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      // TODO Review 3596: Add check: All classes must have the given rdbmsProviderDefinition, otherwise throw an ArgumentException (Add a CheckClassDefinitions method to the base class)
+
       ViewBuilder viewBuilder = CreateViewBuilder();
       viewBuilder.AddViews (classDefinitions);
 
