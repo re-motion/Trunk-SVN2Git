@@ -141,6 +141,10 @@
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mixins.MixerTools\Core.Mixins.MixerTools.csproj">
+      <Project>{152DAF45-13C9-4A73-90D0-DF774ED12528}</Project>
+      <Name>Core.Mixins.MixerTools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mixins.Samples\Core.Mixins.Samples.csproj">
       <Project>{9731FCDD-0F9F-41C5-B691-8AA9101CE249}</Project>
       <Name>Core.Mixins.Samples</Name>

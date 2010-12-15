@@ -398,7 +398,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Core.UnitTests" depends="Core.Core, Core.Mixins.Samples, Development.Core">
+  <target name="Core.UnitTests" depends="Core.Core, Core.Mixins.MixerTools, Core.Mixins.Samples, Development.Core">
     <property name="project.name" value="Core.UnitTests" />
     <property name="project.dir" value="Remotion/Core/UnitTests" />
     <property name="project.output" value="Remotion.UnitTests" />

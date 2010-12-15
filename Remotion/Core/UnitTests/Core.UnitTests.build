@@ -48,6 +48,7 @@
         <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
         <include name="${build.test.outputdir}/Remotion.Mixins.Samples.dll"/>
+        <include name="${build.test.outputdir}/TypeMixer.exe"/>
         <include name="${build.test.outputdir}/Microsoft.Practices.ServiceLocation.dll"/>
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include asis="true" name="System.dll"/>

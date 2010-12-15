@@ -463,8 +463,6 @@
     <Compile Include="Mixins\MixinTypeUtility.cs" />
     <Compile Include="Mixins\Utilities\MixedObjectInstantiationScope.cs" />
     <Compile Include="Mixins\MixerTools\Mixer.cs" />
-    <Compile Include="Mixins\MixerTools\MixerParameters.cs" />
-    <Compile Include="Mixins\MixerTools\MixerRunner.cs" />
     <Compile Include="Mixins\MixinConfiguration.ActiveConfiguration.cs" />
     <Compile Include="Mixins\MixinConfiguration.Build.cs" />
     <Compile Include="Mixins\MixinConfiguration.cs" />
