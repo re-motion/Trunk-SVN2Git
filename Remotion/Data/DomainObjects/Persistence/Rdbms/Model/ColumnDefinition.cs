@@ -58,5 +58,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _isNullable; }
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("{0} {1} {2}", Name, StorageType, IsNullable ? "NULL" : "NOT NULL");
+    }
   }
 }
