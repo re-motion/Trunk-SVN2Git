@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       // TableDefinition
       var baseStorageEntityDefinition = GetEntityDefinition (classDefinition.BaseClass);
 
-      var actualAndBaseClassColumns = new HashSet<SimpleColumnDefinition> (GetColumnDefinitionsForHierarchy (classDefinition));
+      var actualAndBaseClassColumns = new HashSet<IColumnDefinition> (GetColumnDefinitionsForHierarchy (classDefinition));
 
       return new FilterViewDefinition (
           _storageProviderDefinition,
@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
 
-    private SimpleColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    private IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent);
 
@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return columnDefinition;
     }
 
-    private IEnumerable<SimpleColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
       var allClassesInHierarchy = classDefinition
         .CreateSequence (cd => cd.BaseClass)

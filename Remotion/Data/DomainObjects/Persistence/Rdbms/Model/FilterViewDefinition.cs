@@ -30,11 +30,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _viewName;
     private readonly IEntityDefinition _baseEntity;
     private readonly string _classID;
-    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public FilterViewDefinition (
-        StorageProviderDefinition storageProviderDefinition, string viewName, IEntityDefinition baseEntity, string classID, Func<SimpleColumnDefinition, bool> columnFilter)
+        StorageProviderDefinition storageProviderDefinition, string viewName, IEntityDefinition baseEntity, string classID, Func<IColumnDefinition, bool> columnFilter)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
-    public ReadOnlyCollection<SimpleColumnDefinition> GetColumns ()
+    public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
     }

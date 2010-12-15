@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IEntityDefinition : IStorageEntityDefinition
   {
-    ReadOnlyCollection<SimpleColumnDefinition> GetColumns ();
+    ReadOnlyCollection<IColumnDefinition> GetColumns ();
     void Accept (IEntityDefinitionVisitor visitor);
   }
 }
