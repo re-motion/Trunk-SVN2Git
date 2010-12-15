@@ -205,6 +205,7 @@
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDWithClassIDColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRule.cs" />

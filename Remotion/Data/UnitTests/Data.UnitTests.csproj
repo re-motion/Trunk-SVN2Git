@@ -613,6 +613,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />

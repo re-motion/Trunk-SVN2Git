@@ -46,11 +46,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
-      return new SimpleColumnDefinition (
-          GetColumnName (propertyDefinition.PropertyInfo),
-          propertyDefinition.PropertyType,
-          storageType ?? "not supported",
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
+      if (storageType != null)
+        return new SimpleColumnDefinition (
+            GetColumnName (propertyDefinition.PropertyInfo),
+            propertyDefinition.PropertyType,
+            storageType,
+            propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
+      else
+        return new UnsupportedStorageTypeColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)
