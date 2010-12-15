@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
     private readonly RdbmsProviderDefinition _storageProviderDefinition;
-    private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
+    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly Type _storageProviderType;
 
     public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
 
       _storageProviderDefinition = storageProviderDefinition;
-      _storagePropertyDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator ());
+      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator ());
       _storageProviderType = storageProviderType;
     }
 
@@ -63,9 +63,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       get { return _storageProviderDefinition; }
     }
 
-    protected IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory
+    protected IColumnDefinitionFactory ColumnDefinitionFactory
     {
-      get { return _storagePropertyDefinitionFactory; }
+      get { return _columnDefinitionFactory; }
     }
 
     public virtual StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new RdbmsPersistenceModelLoader (StoragePropertyDefinitionFactory, StorageProviderDefinition, storageProviderDefinitionFinder);
+      return new RdbmsPersistenceModelLoader (ColumnDefinitionFactory, StorageProviderDefinition, storageProviderDefinitionFinder);
     }
 
     public virtual FileBuilderBase CreateSchemaFileBuilder ()

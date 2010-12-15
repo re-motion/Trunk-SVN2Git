@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.Persistence.Model;
+using System;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
-  public class FakeColumnDefinition : IStoragePropertyDefinition
+  public class FakeColumnDefinition : IColumnDefinition
   {
     private readonly string _name;
 
@@ -30,6 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public string Name
     {
       get { return _name; }
+    }
+
+    public void Accept (IColumnDefinitionVisitor visitor)
+    {
+      
     }
   }
 }

@@ -32,20 +32,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class RdbmsPersistenceModelLoader : IPersistenceModelLoader
   {
-    private readonly IStoragePropertyDefinitionFactory _storagePropertyDefinitionFactory;
+    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public RdbmsPersistenceModelLoader (
-        IStoragePropertyDefinitionFactory storagePropertyDefinitionFactory,
+        IColumnDefinitionFactory columnDefinitionFactory,
         StorageProviderDefinition storageProviderDefinition,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionFactory", storagePropertyDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
-      _storagePropertyDefinitionFactory = storagePropertyDefinitionFactory;
+      _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
       _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
@@ -55,9 +55,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageProviderDefinition.Name; }
     }
 
-    public IStoragePropertyDefinitionFactory StoragePropertyDefinitionFactory
+    public IColumnDefinitionFactory ColumnDefinitionFactory
     {
-      get { return _storagePropertyDefinitionFactory; }
+      get { return _columnDefinitionFactory; }
     }
 
     public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)
@@ -161,21 +161,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
-        var storageProperty = _storagePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
         propertyDefinition.SetStorageProperty (storageProperty);
       }
 
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
-      if (columnDefinition == null)
-      {
-        throw new MappingException (
-            string.Format (
-                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      return columnDefinition;
+      return (IColumnDefinition) propertyDefinition.StoragePropertyDefinition; //TODO Review 2590: StoragePropertyDefiniton is always IColumnDefinition!??
     }
 
     private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)

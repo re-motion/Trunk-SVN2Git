@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -28,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="SimpleColumnDefinition"/> from a <see cref="PropertyDefinition"/>.
   /// </summary>
-  public class ColumnDefinitionFactory : IStoragePropertyDefinitionFactory
+  public class ColumnDefinitionFactory : IColumnDefinitionFactory
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
 
@@ -39,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _storageTypeCalculator = storageTypeCalculator;
     }
 
-    public IStoragePropertyDefinition CreateStoragePropertyDefinition (
+    public IColumnDefinition CreateColumnDefinition (
         PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -64,6 +63,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       {
         return new UnsupportedStorageTypeColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
       }
+    }
+
+    public ObjectIDWithClassIDColumnDefinition CreateIDColumnDefinition ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
+      var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+
+      return new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIdColumnDefinition);
+    }
+
+    public SimpleColumnDefinition CreateTimestampColumnDefinition ()
+    {
+      return new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false);
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)

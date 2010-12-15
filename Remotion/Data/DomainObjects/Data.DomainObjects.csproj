@@ -287,7 +287,7 @@
     <Compile Include="Persistence\StorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />
-    <Compile Include="Persistence\Model\IStoragePropertyDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />

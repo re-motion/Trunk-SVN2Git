@@ -14,17 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IStoragePropertyDefinitionFactory"/> defines the API to create a <see cref="IStoragePropertyDefinition"/>. 
+  /// <see cref="IColumnDefinitionFactory"/> defines the API to create a <see cref="IStoragePropertyDefinition"/>. 
   /// </summary>
-  public interface IStoragePropertyDefinitionFactory
+  public interface IColumnDefinitionFactory
   {
-    IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder);
+    IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder);
+    ObjectIDWithClassIDColumnDefinition CreateIDColumnDefinition ();
+    SimpleColumnDefinition CreateTimestampColumnDefinition ();
   }
 }
