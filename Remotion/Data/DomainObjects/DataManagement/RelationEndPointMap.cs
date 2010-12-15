@@ -19,6 +19,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -143,14 +144,75 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
       Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
 
-      if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && objectEndPoint.OppositeObjectID != null)
+      if (objectEndPoint.OppositeObjectID != null)
       {
         var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, objectEndPoint.ObjectID);
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+        {
+          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, objectEndPoint.ObjectID);
+        }
+        // TODO 3401
+        // else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
+        // {
+        //   "RegisterInCollectionEndPoint"
+        //   var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
+        //   // TODO 3401: end-point must be added if not exists:
+        //   if (oppositeEndPoint == null)
+        //     oppositeEndPoint = RegisterCollectionEndPoint (oppositeVirtualEndPointID, null);
+        //
+        //   oppositeEndPoint.RegisterOriginalObject (objectEndPoint.GetDomainObject());
+        // }
       }
-      
+
       return objectEndPoint;
     }
+
+    // TODO 3475:
+    //public void UnregisterRealObjectEndPoint (RelationEndPointID endPointID)
+    //{
+    //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+    //  CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
+
+    //  if (endPointID.Definition.IsVirtual)
+    //    throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "endPointID");
+
+    //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
+    //  if (objectEndPoint == null)
+    //    throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+
+    //  if (objectEndPoint.HasChanged)
+    //  {
+    //    var message = string.Format (
+    //        "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.", 
+    //        endPointID);
+    //    throw new InvalidOperationException (message);
+    //  }
+
+    //  var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
+    //  Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+
+    //  RemoveEndPoint (endPointID);
+
+    //  if (objectEndPoint.OppositeObjectID != null)
+    //  {
+    //    var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+    //    if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+    //    {
+    //      UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
+    //    }
+    //    else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
+    //    {
+    //      "UnregisterFromCollectionEndPoint"
+    //      var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
+    //      // TODO 3401: end-point can be relied on
+    //      if (oppositeEndPoint != null)
+    //      {
+    //        oppositeEndPoint.UnregisterOriginalObject (objectEndPoint.ObjectID);
+    //        oppositeEndPoint.Unload ();
+    //      }
+    //    }
+    //  }
+    //}
 
     public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
@@ -166,6 +228,30 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
+    // TODO 3475:
+    //public void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
+    //{
+    //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+    //  CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
+
+    //  if (!endPointID.Definition.IsVirtual)
+    //    throw new ArgumentException ("End point ID must refer to a virtual end point.", "endPointID");
+
+    //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
+    //  if (objectEndPoint == null)
+    //    throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+
+    //  if (objectEndPoint.HasChanged)
+    //  {
+    //    var message = string.Format (
+    //        "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
+    //        endPointID);
+    //    throw new InvalidOperationException (message);
+    //  }
+
+    //  RemoveEndPoint (objectEndPoint.ID);
+    //}
+
     public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContentsOrNull)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -177,14 +263,69 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint;
     }
 
+    // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
+    // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      if (dataContainer.State == StateType.New)
-        RegisterEndPointsForNewDataContainer (dataContainer);
-      else
-        RegisterEndPointsForExistingDataContainer (dataContainer);
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      {
+        if (!endPointID.Definition.IsVirtual)
+          RegisterRealObjectEndPoint (endPointID, dataContainer);
+        else if (endPointID.Definition.Cardinality == CardinalityType.One)
+          RegisterVirtualObjectEndPoint (endPointID, null);
+        else
+          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      }
+    }
+
+    // TODO 3475:
+    // When unregistering a DataContainer, its real end-points are always unregistered. This will indirectly unregister opposite virtual end-points.
+    // If the DataContainer is New, the virtual end-points are unregistered as well.
+    // If the DataContainer is not New, virtual object end-points with a null Original value are also unregistered because they are owned by this DataContainer.
+    //public void UnregisterEndPointsForDataContainer (DataContainer dataContainer)
+    //{
+    //  ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    //  foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+    //  {
+    //    if (!endPointID.Definition.IsVirtual)
+    //      UnregisterRealObjectEndPoint (endPointID);
+    //    else if (endPointID.Definition.Cardinality == CardinalityType.One)
+    //      UnregisterVirtualObjectEndPoint (endPointID);
+    //    else
+    //      UnregisterCollectionEndPoint (endPointID);
+    //  }
+    //}
+
+    // TODO 3475:
+    //public IEnumerable<RelationEndPoint> GetUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
+    //{
+    //  ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    //  return from endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer)
+    //         let loadedEndPoint = this[endPointID]
+    //         where loadedEndPoint != null && loadedEndPoint.HasChanged
+    //         select loadedEndPoint;
+    //}
+
+    private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
+    {
+      var includeVirtualEndPoints = dataContainer.State == StateType.New;
+      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+      {
+        if (!endPointID.Definition.IsVirtual || includeVirtualEndPoints)
+        {
+          yield return endPointID;
+        }
+        else if (endPointID.Definition.Cardinality == CardinalityType.One)
+        {
+          var loadedVirtualObjectEndPoint = (ObjectEndPoint) this[endPointID];
+          if (loadedVirtualObjectEndPoint != null && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
+            yield return endPointID;
+        }
+      }
     }
 
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
@@ -263,30 +404,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
-    }
-
-    private void RegisterEndPointsForNewDataContainer (DataContainer dataContainer)
-    {
-      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        if (endPointID.Definition.Cardinality == CardinalityType.Many)
-          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
-        else if (endPointID.Definition.IsVirtual)
-          RegisterVirtualObjectEndPoint (endPointID, null);
-        else
-          RegisterRealObjectEndPoint (endPointID, dataContainer);
-      }
-    }
-
-    private void RegisterEndPointsForExistingDataContainer (DataContainer dataContainer)
-    {
-      var realObjectEndPointIDs = from endPointDefinition in dataContainer.ClassDefinition.GetRelationEndPointDefinitions ()
-                                  where !endPointDefinition.IsVirtual
-                                  let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
-                                  select endPointID;
-
-      foreach (var realEndPointID in realObjectEndPointIDs)
-        RegisterRealObjectEndPoint (realEndPointID, dataContainer);
     }
 
     private void CheckCardinality (
