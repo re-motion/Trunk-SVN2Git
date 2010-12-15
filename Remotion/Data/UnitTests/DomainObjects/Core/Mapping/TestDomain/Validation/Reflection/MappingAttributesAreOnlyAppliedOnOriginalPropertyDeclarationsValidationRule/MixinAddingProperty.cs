@@ -23,10 +23,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
   public class MixinAddingProperty : DomainObjectMixin<DomainObject>
   {
     [StorageClassNone]
-    public int Property1 { get; set; }
+    public virtual int Property1 { get; set; }
 
-    public int Property2 { get; set; }
+    public virtual int Property2 { get; set; }
 
-    public int Property3 { get; set; }
+    public virtual int Property3 { get; set; }
   }
 }
