@@ -73,7 +73,6 @@
     <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
       <fileset>
         <include name="DomainObjects/Database/*.sql" />
-        <include name="Test.config" />
       </fileset>
     </copy>
 
@@ -88,6 +87,12 @@
     <copy todir="${build.test.outputdir}/Security" flatten="true" overwrite="true">
       <fileset failonempty="true">
         <include name="DomainObjects/Security/Remotion.Data.UnitTests.DomainObjects.Security.*.xml" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.test.outputdir}/DomainObjects/RdbmsTools" flatten="true" overwrite="true">
+      <fileset failonempty="true">
+        <include name="DomainObjects/RdbmsTools/Test.config" />
       </fileset>
     </copy>
         

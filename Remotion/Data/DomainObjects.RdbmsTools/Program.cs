@@ -17,7 +17,7 @@
 using System;
 using Remotion.Text.CommandLine;
 
-namespace Remotion.Data.DomainObjects.RdbmsToolsS
+namespace Remotion.Data.DomainObjects.RdbmsTools
 {
   public class Program
   {

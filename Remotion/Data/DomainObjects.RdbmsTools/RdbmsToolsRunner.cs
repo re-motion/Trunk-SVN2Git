@@ -29,7 +29,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Logging;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.RdbmsToolsS
+namespace Remotion.Data.DomainObjects.RdbmsTools
 {
   /// <summary>
   /// The <see cref="RdbmsToolsRunner"/> type contains the encapsulates the execution of the various functionality provided by the 

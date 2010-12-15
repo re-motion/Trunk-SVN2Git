@@ -1650,7 +1650,7 @@
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />
     <None Include="DomainObjects\Database\DataDomainObjects_DropFulltextIndices.sql" />
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
-    <None Include="Test.config">
+    <None Include="DomainObjects\RdbmsTools\Test.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\AssemblyInfoTemplate.cs">

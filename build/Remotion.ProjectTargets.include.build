@@ -480,7 +480,7 @@
   </target>
 
   <target name="Data.UnitTests" depdends="
-          Core.Core, Data.Linq, Data.Linq.UnitTests, Data.DomainObjects, Data.DomainObjects.Security
+          Core.Core, Data.Linq, Data.Linq.UnitTests, Data.DomainObjects, Data.DomainObjects.RdbmsTools, Data.DomainObjects.Security
           Development.Core, Development.Data, Development.Web, Security.Interfaces, Security">
     <property name="project.name" value="Data.UnitTests" />
     <property name="project.dir" value="Remotion/Data/UnitTests" />
