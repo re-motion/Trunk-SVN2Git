@@ -8,7 +8,7 @@
     <ProjectGuid>{152DAF45-13C9-4A73-90D0-DF774ED12528}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Mixins.MixerTool.Console</RootNamespace>
+    <RootNamespace>Remotion.Mixins.MixerTools</RootNamespace>
     <AssemblyName>TypeMixer</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -80,7 +80,7 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Core.Mixins.MixerTool.Console.build">
+    <None Include="Core.Mixins.MixerTools.build">
       <SubType>Designer</SubType>
     </None>
     <None Include="..\..\..\remotion.snk">

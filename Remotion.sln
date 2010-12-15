@@ -60,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Core", "Remotion\Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Interfaces", "Remotion\Core\Interfaces\Core.Interfaces.csproj", "{BD061F4A-A9E6-461E-A804-7999623A0060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.MixerTool.Console", "Remotion\Core\Mixins.MixerTool.Console\Core.Mixins.MixerTool.Console.csproj", "{152DAF45-13C9-4A73-90D0-DF774ED12528}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.MixerTools", "Remotion\Core\Mixins.MixerTools\Core.Mixins.MixerTools.csproj", "{152DAF45-13C9-4A73-90D0-DF774ED12528}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.Samples", "Remotion\Core\Mixins.Samples\Core.Mixins.Samples.csproj", "{9731FCDD-0F9F-41C5-B691-8AA9101CE249}"
 EndProject

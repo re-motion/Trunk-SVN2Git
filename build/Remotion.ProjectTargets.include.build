@@ -22,7 +22,7 @@
   <!--======================= PROJECT GROUPS =======================-->
 
   <target name="all" depends="prereq, Remotion.License, Dms.License, SecurityManager.License,
-      Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, Core.Scripting,
+      Core.Interfaces, Core.Core, Core.Mixins.MixerTools, Core.Scripting,
       Development.CodeDom, Development.Core, Development.Data, 
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security, Web.Legacy,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Legacy, 
@@ -83,9 +83,9 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Core.Mixins.MixerTool.Console" depends="Core.Core">
-    <property name="project.name" value="Core.Mixins.MixerTool.Console" />
-    <property name="project.dir" value="Remotion/Core/Mixins.MixerTool.Console" />
+  <target name="Core.Mixins.MixerTools" depends="Core.Core">
+    <property name="project.name" value="Core.Mixins.MixerTools" />
+    <property name="project.dir" value="Remotion/Core/Mixins.MixerTools" />
     <property name="project.output" value="TypeMixer" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
