@@ -202,6 +202,9 @@
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRule.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ObjectIDWithClassIDColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRule.cs" />

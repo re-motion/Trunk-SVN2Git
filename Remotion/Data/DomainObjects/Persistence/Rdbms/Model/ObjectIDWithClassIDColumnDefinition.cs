@@ -19,55 +19,43 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class SimpleColumnDefinition : IColumnDefinition
+  /// <summary>
+  /// The <see cref="ObjectIDWithClassIDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
+  /// </summary>
+  public class ObjectIDWithClassIDColumnDefinition : IColumnDefinition
   {
-    private readonly string _name;
-    private readonly Type _propertyType;
-    private readonly bool _isNullable;
-    private readonly string _storageType;
+    private readonly SimpleColumnDefinition _objectIDColumn;
+    private readonly SimpleColumnDefinition _classIDColumn;
 
-    public SimpleColumnDefinition (string name, Type propertyType, string storageType, bool isNullable)
+    public ObjectIDWithClassIDColumnDefinition (SimpleColumnDefinition objectIDColumn, SimpleColumnDefinition classIDColumn)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
-      ArgumentUtility.CheckNotNullOrEmpty ("storageType", storageType);
-      
-      _name = name;
-      _propertyType = propertyType;
-      _storageType = storageType;
-      _isNullable = isNullable;
-    }
+      ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
+      ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
 
+      _objectIDColumn = objectIDColumn;
+      _classIDColumn = classIDColumn;
+    }
+    
     public string Name
     {
-      get { return _name; }
+      get { return _objectIDColumn.Name; }
     }
 
-    public Type PropertyType
+    public SimpleColumnDefinition ObjectIDColumn
     {
-      get { return _propertyType; }
+      get { return _objectIDColumn; }
     }
 
-    public string StorageType
+    public SimpleColumnDefinition ClassIDColumn
     {
-      get { return _storageType; }
-    }
-
-    public bool IsNullable
-    {
-      get { return _isNullable; }
+      get { return _classIDColumn; }
     }
 
     public void Accept (IColumnDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      visitor.VisitSimpleColumnDefinition (this);
-    }
-
-    public override string ToString ()
-    {
-      return string.Format ("{0} {1} {2}", Name, StorageType, IsNullable ? "NULL" : "NOT NULL");
+      visitor.VisitObjectIDWithClassIDColumnDefinition (this);
     }
   }
 }

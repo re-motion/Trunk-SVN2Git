@@ -17,48 +17,46 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class SimpleColumnDefinitionTest
+  public class ObjectIDWithClassIDColumnDefinitionTest
   {
-    private SimpleColumnDefinition _columnDefinition;
-    private Type _type;
-    public string DummyProperty { get; set; }
-    public string OtherProperty { get; set; }
+    private SimpleColumnDefinition _objectIDColumn;
+    private SimpleColumnDefinition _classIDColumn;
+    private ObjectIDWithClassIDColumnDefinition _columnDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _type = typeof (string);
-      _columnDefinition = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+      _objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      _classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
+      _columnDefinition = new ObjectIDWithClassIDColumnDefinition (_objectIDColumn, _classIDColumn);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_columnDefinition.Name, Is.EqualTo ("Name"));
-      Assert.That (_columnDefinition.PropertyType, Is.SameAs(_type));
-      Assert.That (_columnDefinition.StorageType, Is.EqualTo("varchar"));
-      Assert.That (_columnDefinition.IsNullable, Is.True);
+      Assert.That (_columnDefinition.ObjectIDColumn, Is.SameAs (_objectIDColumn));
+      Assert.That (_columnDefinition.ClassIDColumn, Is.SameAs (_classIDColumn));
+      Assert.That (_columnDefinition.Name, Is.EqualTo ("ObjectID"));
     }
 
     [Test]
     public void Accept ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor>();
+      var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor> ();
 
-      visitorMock.Expect (mock => mock.VisitSimpleColumnDefinition (_columnDefinition));
-      visitorMock.Replay();
+      visitorMock.Expect (mock => mock.VisitObjectIDWithClassIDColumnDefinition (_columnDefinition));
+      visitorMock.Replay ();
 
       _columnDefinition.Accept (visitorMock);
 
-      visitorMock.VerifyAllExpectations();
+      visitorMock.VerifyAllExpectations ();
     }
-
   }
 }
