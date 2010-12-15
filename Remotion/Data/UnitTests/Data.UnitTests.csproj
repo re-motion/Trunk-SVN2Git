@@ -270,6 +270,8 @@
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedMappingObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyHasStorageClassNoneAttribute\ClassWithOppositeProperty.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyHasStorageClassNoneAttribute\OppositeClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\ClassWithOppositeProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\OppositePropertyIsAlsoDeclaredInBaseClass\OppositeClass.cs" />

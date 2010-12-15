@@ -588,6 +588,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       CreateRelationReflector (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (classType), propertyInfo);
     }
 
+    [Test]
+    public void GetOppositePropertyInfo_WithStorageClassNoneOppositeProperty ()
+    {
+      var originatingClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TestDomain.RelationReflector.OppositePropertyHasStorageClassNoneAttribute.ClassWithOppositeProperty));
+      var originatingProperty = originatingClass.ClassType.GetProperty ("OppositeProperty");
+      var endPointFactoryStub = MockRepository.GenerateStub<IRelationEndPointDefinitionFactory>();
+
+      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver, endPointFactoryStub);
+
+      var oppositePropertyInfo = (PropertyInfo) PrivateInvoke.InvokeNonPublicMethod (relationReflector, "GetOppositePropertyInfo");
+      Assert.That (oppositePropertyInfo, Is.Null);
+    }
+
     private Type GetClassWithInvalidBidirectionalRelationLeftSide ()
     {
       return typeof (ClassWithInvalidBidirectionalRelationLeftSide);
