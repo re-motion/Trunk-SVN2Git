@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
+      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
       return propertyDefinition;
     }
 

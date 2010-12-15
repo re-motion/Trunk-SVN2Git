@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
-    private readonly ReadOnlyCollection<ColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public UnionViewDefinition (StorageProviderDefinition storageProviderDefinition, string viewName, IEnumerable<IEntityDefinition> unionedEntities)
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName; }
     }
 
-    public ReadOnlyCollection<ColumnDefinition> GetColumns ()
+    public ReadOnlyCollection<SimpleColumnDefinition> GetColumns ()
     {
       return _columns;
     }

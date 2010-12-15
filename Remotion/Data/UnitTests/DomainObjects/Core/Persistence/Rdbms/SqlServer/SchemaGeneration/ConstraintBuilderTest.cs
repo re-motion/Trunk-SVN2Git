@@ -111,9 +111,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       secondClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
       thirdClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition4 }, true));
 
-      firstClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "FirstEntity", "FirstEntityView", new ColumnDefinition[0]));
-      secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new ColumnDefinition[0]));
-      thirdClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "ThirdEntity", "ThirdEntityView", new ColumnDefinition[0]));
+      firstClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "FirstEntity", "FirstEntityView", new SimpleColumnDefinition[0]));
+      secondClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "SecondEntity", "SecondEntityView", new SimpleColumnDefinition[0]));
+      thirdClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "ThirdEntity", "ThirdEntityView", new SimpleColumnDefinition[0]));
 
       firstClass.SetDerivedClasses (new ClassDefinitionCollection ());
       secondClass.SetDerivedClasses (new ClassDefinitionCollection ());
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue?isNullable.Value:true));
+      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue?isNullable.Value:true));
       return propertyDefinition;
     }
 
@@ -170,9 +170,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       derivedClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1 }, true));
       otherClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
 
-      baseClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new ColumnDefinition[0]));
-      derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new ColumnDefinition[0]));
-      otherClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new ColumnDefinition[0]));
+      baseClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new SimpleColumnDefinition[0]));
+      derivedClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "DerivedClassEntity", "DerivedClassEntityView", new SimpleColumnDefinition[0]));
+      otherClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new SimpleColumnDefinition[0]));
 
       baseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
       derivedClass.SetDerivedClasses (new ClassDefinitionCollection());

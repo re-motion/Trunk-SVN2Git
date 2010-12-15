@@ -66,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _derivedClass.SetDerivedClasses (new ClassDefinitionCollection ());
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
-      _tableDefinition1 = new TableDefinition (storageProviderDefinition, "TableName1", null, new ColumnDefinition[0]);
-      _tableDefinition2 = new TableDefinition (storageProviderDefinition, "TableName2", null, new ColumnDefinition[0]);
+      _tableDefinition1 = new TableDefinition (storageProviderDefinition, "TableName1", null, new SimpleColumnDefinition[0]);
+      _tableDefinition2 = new TableDefinition (storageProviderDefinition, "TableName2", null, new SimpleColumnDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0]);
     }
 

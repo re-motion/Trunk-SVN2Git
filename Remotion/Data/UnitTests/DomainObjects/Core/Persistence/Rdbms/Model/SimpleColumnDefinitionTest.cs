@@ -22,9 +22,9 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class ColumnDefinitionTest
+  public class SimpleColumnDefinitionTest
   {
-    private ColumnDefinition _columnDefinition;
+    private SimpleColumnDefinition _columnDefinition;
     private Type _type;
     public string DummyProperty { get; set; }
     public string OtherProperty { get; set; }
@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _type = typeof (string);
-      _columnDefinition = new ColumnDefinition ("Name", _type, "varchar", true);
+      _columnDefinition = new SimpleColumnDefinition ("Name", _type, "varchar", true);
     }
 
     [Test]

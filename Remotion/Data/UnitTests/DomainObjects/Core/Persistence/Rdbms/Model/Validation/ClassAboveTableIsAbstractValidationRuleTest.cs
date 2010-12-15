@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           typeof (DerivedValidationDomainObjectClass),
           false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
-      _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new ColumnDefinition[0]);
+      _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new SimpleColumnDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0]);
     }
 

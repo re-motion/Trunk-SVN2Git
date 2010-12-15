@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               true,
               102,
               StorageClass.Persistent)}, true));
-      derivedConcreteClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "EntityName", "ViewName", new ColumnDefinition[0]));
+      derivedConcreteClass.SetStorageEntity (new TableDefinition (storageProviderDefinition, "EntityName", "ViewName", new SimpleColumnDefinition[0]));
 
       abstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedAbstractClass }, true, true));
       derivedAbstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedConcreteClass }, true, true));
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new ColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue? isNullable.Value:true));
+      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue? isNullable.Value:true));
       return propertyDefinition;
     }
   }

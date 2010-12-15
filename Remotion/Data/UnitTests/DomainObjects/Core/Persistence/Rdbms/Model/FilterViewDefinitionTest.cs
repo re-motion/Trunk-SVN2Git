@@ -25,9 +25,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class FilterViewDefinitionTest
   {
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
-    private ColumnDefinition _column3;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
+    private SimpleColumnDefinition _column3;
     private TableDefinition _entityDefinition;
     private FilterViewDefinition _filterViewDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _column1 = new ColumnDefinition ("Column1", typeof(string), "varchar", true);
-      _column2 = new ColumnDefinition ("Column2", typeof(string), "varchar", true);
-      _column3 = new ColumnDefinition ("Column3", typeof(string), "varchar", true);
+      _column1 = new SimpleColumnDefinition ("Column1", typeof(string), "varchar", true);
+      _column2 = new SimpleColumnDefinition ("Column2", typeof(string), "varchar", true);
+      _column3 = new SimpleColumnDefinition ("Column3", typeof(string), "varchar", true);
       _entityDefinition = new TableDefinition (_storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 });
 
       _filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, "Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);

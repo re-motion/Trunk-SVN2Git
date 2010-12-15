@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> ("NoAttribute");
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new ColumnDefinition ("NoAttribute", typeof (string), "varchar", true));
+      actual.SetStorageProperty (new SimpleColumnDefinition ("NoAttribute", typeof (string), "varchar", true));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.NoAttribute",
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassHavingStorageSpecificIdentifierAttribute> ("StorageSpecificName");
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new ColumnDefinition ("CustomName", typeof (string), "varchar", true));
+      actual.SetStorageProperty (new SimpleColumnDefinition ("CustomName", typeof (string), "varchar", true));
 
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute.StorageSpecificName",

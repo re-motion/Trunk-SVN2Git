@@ -277,7 +277,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeColumnDefinition.cs" />

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("BooleanProperty");
 
       PropertyDefinition actual = propertyReflector.GetMetadata();
-      actual.SetStorageProperty (new ColumnDefinition ("Boolean", typeof (bool), "bit", true));
+      actual.SetStorageProperty (new SimpleColumnDefinition ("Boolean", typeof (bool), "bit", true));
 
       Assert.IsInstanceOfType (typeof (ReflectionBasedPropertyDefinition), actual);
       Assert.IsNotNull (actual);

@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetStorageEntityDefinition ()
     {
-      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new SimpleColumnDefinition[0]);
 
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Class 'DomainBase' is read-only.")]
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
-      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new ColumnDefinition[0]);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Tablename", "Viewname", new SimpleColumnDefinition[0]);
       _domainBaseClass.SetReadOnly();
 
       _domainBaseClass.SetStorageEntity (tableDefinition);

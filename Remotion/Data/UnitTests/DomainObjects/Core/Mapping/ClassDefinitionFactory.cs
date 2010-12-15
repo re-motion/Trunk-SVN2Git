@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (entityName != null)
       {
         classDefinition.SetStorageEntity (
-            new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID + "View", new ColumnDefinition[0]));
+            new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID + "View", new SimpleColumnDefinition[0]));
       }
       else
       {

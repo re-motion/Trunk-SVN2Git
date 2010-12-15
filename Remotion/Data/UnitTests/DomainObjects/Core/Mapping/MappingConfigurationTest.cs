@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedNameResolver _nameResolver;
 
     private TableDefinition _fakeStorageEntityDefinition = new TableDefinition (
-        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new ColumnDefinition[0]);
+        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new SimpleColumnDefinition[0]);
 
     public override void SetUp ()
     {
@@ -315,10 +315,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (2));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (((ColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
+      Assert.That (((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
-          ((ColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
+          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
     }
 
     [Test]

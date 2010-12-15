@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
       StubStorageTypeCalculator (propertyDefinition);
       
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.Name, Is.EqualTo ("ParentFolderID"));
       Assert.That (result.PropertyType, Is.SameAs (typeof (ObjectID)));
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageTypeCalculator (propertyDefinition);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.PropertyType, Is.SameAs (typeof (bool)));
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageTypeCalculator (propertyDefinition);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.StorageType, Is.EqualTo ("storage type"));
     }
@@ -127,8 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       StubStorageTypeCalculator (nullablePropertyDefinition);
       StubStorageTypeCalculator (nonNullablePropertyDefinition);
 
-      var nullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nullablePropertyDefinition, _storageProviderDefinitionFinder);
-      var nonNullableResult = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nonNullablePropertyDefinition, _storageProviderDefinitionFinder);
+      var nullableResult = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nullablePropertyDefinition, _storageProviderDefinitionFinder);
+      var nonNullableResult = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (nonNullablePropertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (nullableResult.IsNullable, Is.True);
       Assert.That (nonNullableResult.IsNullable, Is.False);
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return (null);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.StorageType, Is.EqualTo ("not supported"));
     }
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), false);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.False);
     }
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), true);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), false);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.False);
     }
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), true);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), false);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), true);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute, StorageClass.Persistent, typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn"), false);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute, StorageClass.Persistent, typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn"), true);
 
-      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.IsNullable, Is.True);
     }

@@ -29,18 +29,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition;
-    private ColumnDefinition _column1;
-    private ColumnDefinition _column2;
-    private ColumnDefinition _column3;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
+    private SimpleColumnDefinition _column3;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _column1 = new ColumnDefinition ("Column1", typeof(string), "varchar", true);
-      _column2 = new ColumnDefinition ("Column2", typeof(string), "varchar", true);
-      _column3 = new ColumnDefinition ("Column3", typeof(string), "varchar", true);
+      _column1 = new SimpleColumnDefinition ("Column1", typeof(string), "varchar", true);
+      _column2 = new SimpleColumnDefinition ("Column2", typeof(string), "varchar", true);
+      _column3 = new SimpleColumnDefinition ("Column3", typeof(string), "varchar", true);
 
       _tableDefinition1 = new TableDefinition (_storageProviderDefinition, "Table1", "View1", new[] { _column1 });
       _tableDefinition2 = new TableDefinition (_storageProviderDefinition, "Table2", "View2", new[] { _column2, _column3 });

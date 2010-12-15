@@ -26,7 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="ColumnDefinition"/> from a <see cref="PropertyDefinition"/>.
+  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="SimpleColumnDefinition"/> from a <see cref="PropertyDefinition"/>.
   /// </summary>
   public class ColumnDefinitionFactory : IStoragePropertyDefinitionFactory
   {
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
-      return new ColumnDefinition (
+      return new SimpleColumnDefinition (
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
           storageType ?? "not supported",

@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class TableDefinitionTest
   {
-    private ColumnDefinition[] _columns;
+    private SimpleColumnDefinition[] _columns;
     private TableDefinition _tableDefintion;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _columns = new[] { new ColumnDefinition ("COL1", typeof(string), "varchar", true) };
+      _columns = new[] { new SimpleColumnDefinition ("COL1", typeof(string), "varchar", true) };
       _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns);
     }
 

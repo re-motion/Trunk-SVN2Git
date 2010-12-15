@@ -20,14 +20,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class ColumnDefinition : IStoragePropertyDefinition
+  public class SimpleColumnDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
     private readonly string _storageType;
 
-    public ColumnDefinition (string name, Type propertyType, string storageType, bool isNullable)
+    public SimpleColumnDefinition (string name, Type propertyType, string storageType, bool isNullable)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);

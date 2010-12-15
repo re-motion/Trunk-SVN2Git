@@ -287,7 +287,7 @@
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\FilterViewDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\Model\ColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\SimpleColumnDefinition.cs" />
     <Compile Include="Mapping\Validation\IClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidatorRule.cs" />
     <Compile Include="Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRule.cs" />
