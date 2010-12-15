@@ -54,9 +54,17 @@ namespace Remotion.UnitTests.Mixins.Validation
 
     public void AssertSuccess (IValidationLog log)
     {
-      Assert.AreEqual (0, log.GetNumberOfFailures ());
-      Assert.AreEqual (0, log.GetNumberOfWarnings ());
-      Assert.AreEqual (0, log.GetNumberOfUnexpectedExceptions ());
+      try
+      {
+        Assert.AreEqual (0, log.GetNumberOfFailures ());
+        Assert.AreEqual (0, log.GetNumberOfWarnings ());
+        Assert.AreEqual (0, log.GetNumberOfUnexpectedExceptions ());
+      }
+      catch (AssertionException)
+      {
+        ConsoleDumper.DumpValidationResults (log.GetResults ());
+        throw;
+      }
     }
   }
 }
