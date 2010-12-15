@@ -247,8 +247,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoints = (from endPointID in dataContainer.AssociatedRelationEndPointIDs
                      let endPoint = _relationEndPointMap[endPointID]
                      where endPoint != null
-                     where EnsureEndPointReferencesNothing (endPoint)
-                     select endPoint).ToArray();
+                     select EnsureEndPointReferencesNothing (endPoint)).ToArray();
       }
       catch (InvalidOperationException ex)
       {
@@ -319,7 +318,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return DataContainerMap[id];
     }
 
-    private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
+    private RelationEndPoint EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
     {
       Maybe.ForValue (relationEndPoint as IObjectEndPoint)
           .Where (endPoint => endPoint.OppositeObjectID != null)
@@ -335,7 +334,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                   SeparatedStringBuilder.Build (", ", endPoint.OppositeDomainObjects, (DomainObject obj) => obj.ID.ToString())))
           .Do (message => { throw new InvalidOperationException (message); });
 
-      return true;
+      return relationEndPoint;
     }
 
     public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)
