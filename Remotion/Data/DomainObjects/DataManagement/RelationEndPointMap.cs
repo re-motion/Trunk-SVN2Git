@@ -221,27 +221,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
-    // TODO 3475:
-    //public void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
-    //{
-    //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-    //  CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
-    //  CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
+    public void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
+      CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
 
-    //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
-    //  if (objectEndPoint == null)
-    //    throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+      var objectEndPoint = (ObjectEndPoint) this[endPointID];
+      if (objectEndPoint == null)
+        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
-    //  if (objectEndPoint.HasChanged)
-    //  {
-    //    var message = string.Format (
-    //        "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
-    //        endPointID);
-    //    throw new InvalidOperationException (message);
-    //  }
+      if (objectEndPoint.HasChanged)
+      {
+        var message = string.Format (
+            "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
+            endPointID);
+        throw new InvalidOperationException (message);
+      }
 
-    //  RemoveEndPoint (objectEndPoint.ID);
-    //}
+      RemoveEndPoint (endPointID);
+    }
 
     public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContentsOrNull)
     {

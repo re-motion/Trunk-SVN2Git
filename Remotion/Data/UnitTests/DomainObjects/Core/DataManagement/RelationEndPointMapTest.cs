@@ -288,6 +288,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterVirtualObjectEndPoint_RemovesEndPoint ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      Assert.That (_map[id], Is.Not.Null);
+      
+      _map.UnregisterVirtualObjectEndPoint (id);
+
+      Assert.That (_map[id], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end-point is not part of this map.\r\nParameter name: endPointID")]
+    public void RegisterVirtualObjectEndPoint_ThrowsWhenNotRegistered()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      _map.UnregisterVirtualObjectEndPoint (id);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot unload end-point "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because it has "
+        + "changed. End-points can only be unregistered when they are unchanged.")]
+    public void RegisterVirtualObjectEndPoint_ThrowsWhenChanged ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      Assert.That (_map[id], Is.Not.Null);
+
+      objectEndPoint.OppositeObjectID = null;
+      Assert.That (objectEndPoint.HasChanged, Is.True);
+
+      try
+      {
+        _map.UnregisterVirtualObjectEndPoint (id);
+      }
+      finally
+      {
+        Assert.That (_map[id], Is.SameAs (objectEndPoint));
+      }
+    }
+
+    [Test]
     public void RegisterRealObjectEndPoint_CreatesRealObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
