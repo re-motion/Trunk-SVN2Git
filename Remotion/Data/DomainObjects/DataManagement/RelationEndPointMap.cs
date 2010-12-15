@@ -128,6 +128,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
+    // When registering a non-virtual end-point, the opposite virtual object end-point (if any) is registered as well.
+    // TODO 3401: If the opposite end-point is a collection, the end-point is registered in that collection.
     public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, DataContainer foreignKeyDataContainer)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -164,50 +166,46 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
-    // TODO 3475:
-    //public void UnregisterRealObjectEndPoint (RelationEndPointID endPointID)
-    //{
-    //  ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-    //  CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
-    //  CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
+    // When unregistering a non-virtual end-point, the opposite virtual object end-point (if any) is unregistered as well.
+    // If the opposite end-point is a collection, that collection is put into unloaded state. // TODO 3401: In addition, the end-point is unregistered 
+    // as an item of that collection.
+    public void UnregisterRealObjectEndPoint (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
+      CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
 
-    //  var objectEndPoint = (ObjectEndPoint) this[endPointID];
-    //  if (objectEndPoint == null)
-    //    throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+      var objectEndPoint = (ObjectEndPoint) this[endPointID];
+      if (objectEndPoint == null)
+        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
-    //  if (objectEndPoint.HasChanged)
-    //  {
-    //    var message = string.Format (
-    //        "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.", 
-    //        endPointID);
-    //    throw new InvalidOperationException (message);
-    //  }
+      CheckUnchangedForUnload (endPointID, objectEndPoint);
 
-    //  var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
-    //  Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+      RemoveEndPoint (endPointID);
 
-    //  RemoveEndPoint (endPointID);
+      var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
+      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
 
-    //  if (objectEndPoint.OppositeObjectID != null)
-    //  {
-    //    var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-    //    if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-    //    {
-    //      UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
-    //    }
-    //    else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
-    //    {
-    //      "UnregisterFromCollectionEndPoint"
-    //      var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
-    //      // TODO 3401: end-point can be relied on
-    //      if (oppositeEndPoint != null)
-    //      {
-    //        oppositeEndPoint.UnregisterOriginalObject (objectEndPoint.ObjectID);
-    //        oppositeEndPoint.Unload ();
-    //      }
-    //    }
-    //  }
-    //}
+      if (objectEndPoint.OppositeObjectID != null)
+      {
+        var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+        {
+          UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
+        }
+        else
+        {
+          var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
+          // TODO 3401: end-point can be relied on (but add a guard clause against anonymous end-points)
+          if (oppositeEndPoint != null)
+          {
+            Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
+            // TODO 3401: oppositeEndPoint.UnregisterOriginalObject (objectEndPoint.ObjectID);
+            oppositeEndPoint.Unload ();
+          }
+        }
+      }
+    }
 
     public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
@@ -231,13 +229,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
-      if (objectEndPoint.HasChanged)
-      {
-        var message = string.Format (
-            "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
-            endPointID);
-        throw new InvalidOperationException (message);
-      }
+      CheckUnchangedForUnload (endPointID, objectEndPoint);
 
       RemoveEndPoint (endPointID);
     }
@@ -427,6 +419,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
           var message = string.Format ("{0} can only be called for non-virtual end points.", methodName);
           throw new ArgumentException (message, argumentName);
         }
+      }
+    }
+
+    private void CheckUnchangedForUnload (RelationEndPointID endPointID, IEndPoint objectEndPoint)
+    {
+      if (objectEndPoint.HasChanged)
+      {
+        var message = string.Format (
+            "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
+            endPointID);
+        throw new InvalidOperationException (message);
       }
     }
 
