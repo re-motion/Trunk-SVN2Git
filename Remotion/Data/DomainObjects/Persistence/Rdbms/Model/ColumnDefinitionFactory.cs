@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -37,30 +39,38 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _storageTypeCalculator = storageTypeCalculator;
     }
 
-    public IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
+    public IStoragePropertyDefinition CreateStoragePropertyDefinition (
+        PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
-      var storageType = _storageTypeCalculator.GetStorageType(propertyDefinition, providerDefinitionFinder);
+      var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
       return new ColumnDefinition (
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
           storageType ?? "not supported",
-          propertyDefinition.IsNullable);
+          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
     }
 
     private string GetColumnName (PropertyInfo propertyInfo)
     {
       var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
-      
+
       if (attribute != null)
         return attribute.Identifier;
-      
+
       if (ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
         return propertyInfo.Name + "ID";
-      
+
       return propertyInfo.Name;
+    }
+
+    private bool MustBeNullable (PropertyDefinition propertyDefinition)
+    {
+      return propertyDefinition.ClassDefinition.BaseClass != null
+             && propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass).Any (
+                 cd => AttributeUtility.IsDefined (cd.ClassType, typeof (DBTableAttribute), false));
     }
   }
 }

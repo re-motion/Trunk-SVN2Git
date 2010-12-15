@@ -21,11 +21,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using ClassNotInMapping = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.ClassNotInMapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -37,17 +37,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ReflectionBasedClassDefinition _classWithAllDataTypesDefinition;
     private ReflectionBasedClassDefinition _fileSystemItemClassDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private StorageProviderDefinition _storageProviderDefinition;
+    private ReflectionBasedClassDefinition _classAboveDbTableAttribute;
+    private ReflectionBasedClassDefinition _classWithDbTableAttribute;
+    private ReflectionBasedClassDefinition _classBelowDbTableAttribute;
+    private ReflectionBasedClassDefinition _classBelowBelowDbTableAttribute;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator> ();
       _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
       _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
+      _classAboveDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassNotInMapping));
+      _classWithDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), _classAboveDbTableAttribute);
+      _classBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Partner), _classWithDbTableAttribute);
+      _classBelowBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Distributor), _classBelowDbTableAttribute);
     }
 
     [Test]
@@ -138,6 +144,94 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result.StorageType, Is.EqualTo ("not supported"));
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassAboveDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), false);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.False);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassAboveDbTableAttribute_And_PropertyDefinitionIsNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), true);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassWithDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), false);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.False);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassWithDbTableAttribute_And_PropertyDefinitionIsNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), true);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), false);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassBelowDbTableAttribute_And_PropertyDefinitionIsNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), true);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classBelowBelowDbTableAttribute, StorageClass.Persistent, typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn"), false);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
+    }
+
+    [Test]
+    public void CreateStoragePropertyDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNullabe ()
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classBelowBelowDbTableAttribute, StorageClass.Persistent, typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn"), true);
+
+      var result = (ColumnDefinition) _columnDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+
+      Assert.That (result.IsNullable, Is.True);
     }
 
     private void StubStorageTypeCalculator (PropertyDefinition propertyDefinition)

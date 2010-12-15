@@ -148,6 +148,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ReflectionBasedClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
+        bool? isNullable
+      )
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      return Create (
+          classDefinition,
+          propertyInfo.Name,
+          propertyInfo.PropertyType,
+          isNullable,
+          null,
+          storageClass,
+          propertyInfo,
+          GetFakeStorageProperty (propertyInfo.Name));
+    }
+
+    public static ReflectionBasedPropertyDefinition Create (
+        ReflectionBasedClassDefinition classDefinition,
+        StorageClass storageClass,
+        PropertyInfo propertyInfo,
         string columnName)
     {
       return Create (
