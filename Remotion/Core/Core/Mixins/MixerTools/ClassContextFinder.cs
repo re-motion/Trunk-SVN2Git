@@ -22,7 +22,7 @@ using Remotion.Mixins.Context;
 using Remotion.Utilities;
 using Remotion.Logging;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.Mixins.MixerTools
 {
   public class ClassContextFinder : IClassContextFinder
   {

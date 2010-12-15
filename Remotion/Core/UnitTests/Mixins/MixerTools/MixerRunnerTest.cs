@@ -20,9 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.MixerTool;
+using Remotion.Mixins.MixerTools;
 
-namespace Remotion.UnitTests.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools
 {
   [TestFixture]
   public class MixerRunnerTest

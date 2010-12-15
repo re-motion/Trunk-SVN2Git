@@ -23,13 +23,13 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.MixerTool;
+using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.TypeDiscovery;
 using System.Linq;
 using Remotion.UnitTests.Mixins.TestDomain;
 
-namespace Remotion.UnitTests.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools
 {
   [Serializable]
   [TestFixture]

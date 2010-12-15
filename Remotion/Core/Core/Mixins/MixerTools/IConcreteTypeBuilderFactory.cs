@@ -14,20 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Mixins.Validation;
-using Remotion.Utilities;
+using Remotion.Mixins.CodeGeneration;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.Mixins.MixerTools
 {
-  public class ValidationErrorEventArgs : EventArgs
+  public interface IConcreteTypeBuilderFactory
   {
-    public ValidationErrorEventArgs (ValidationException validationException)
-    {
-      ArgumentUtility.CheckNotNull ("validationException", validationException);
-      ValidationException = validationException;
-    }
-
-    public ValidationException ValidationException { get; private set; }
+    IConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory);
+    string GetSignedModulePath (string assemblyOutputDirectory);
+    string GetUnsignedModulePath (string assemblyOutputDirectory);
   }
 }

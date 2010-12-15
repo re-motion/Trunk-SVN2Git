@@ -380,11 +380,11 @@
     <Compile Include="Mixins\Definitions\TestDomain\ClassWithExplicitInterfaceImplementation.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\IInterfaceWithAllKindsOfMembers.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\TestClassDefinition.cs" />
-    <Compile Include="Mixins\MixerTool\ClassContextFinderTest.cs" />
-    <Compile Include="Mixins\MixerTool\ConcreteTypeBuilderFactoryTest.cs" />
-    <Compile Include="Mixins\MixerTool\TestDomain\ClassWithIgnoreAttribute.cs" />
-    <Compile Include="Mixins\MixerTool\TestDomain\GenericDerivedNullTarget.cs" />
-    <Compile Include="Mixins\MixerTool\TestDomain\IDerivedIBaseType2.cs" />
+    <Compile Include="Mixins\MixerTools\ClassContextFinderTest.cs" />
+    <Compile Include="Mixins\MixerTools\ConcreteTypeBuilderFactoryTest.cs" />
+    <Compile Include="Mixins\MixerTools\TestDomain\ClassWithIgnoreAttribute.cs" />
+    <Compile Include="Mixins\MixerTools\TestDomain\GenericDerivedNullTarget.cs" />
+    <Compile Include="Mixins\MixerTools\TestDomain\IDerivedIBaseType2.cs" />
     <Compile Include="Mixins\MixinTest.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixinWithDoubleBindingInformation.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixinWithoutBindingInformation.cs" />
@@ -724,10 +724,10 @@
     <Compile Include="Mixins\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes1.cs" />
     <Compile Include="Mixins\Globalization\TestDomain\MixinAddingMultiLingualResourcesAttributes2.cs" />
     <Compile Include="Mixins\Utilities\MixedObjectInstantiationScopeTest.cs" />
-    <Compile Include="Mixins\MixerTool\MixerRunnerTest.cs" />
-    <Compile Include="Mixins\MixerTool\MixerTest.cs" />
-    <Compile Include="Mixins\MixerTool\Mixer_IntegrationTest.cs" />
-    <Content Include="Mixins\MixerTool\SampleAssembly\SampleTypes.cs">
+    <Compile Include="Mixins\MixerTools\MixerRunnerTest.cs" />
+    <Compile Include="Mixins\MixerTools\MixerTest.cs" />
+    <Compile Include="Mixins\MixerTools\Mixer_IntegrationTest.cs" />
+    <Content Include="Mixins\MixerTools\SampleAssembly\SampleTypes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\ColorExtensions.resx">

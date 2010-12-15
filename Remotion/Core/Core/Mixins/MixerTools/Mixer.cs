@@ -29,7 +29,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.Mixins.MixerTools
 {
   /// <summary>
   /// Provides functionality for pre-generating mixed types and saving them to disk to be later loaded via 

@@ -18,7 +18,7 @@ using System.IO;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.Mixins.MixerTools
 {
   public class ConcreteTypeBuilderFactory : IConcreteTypeBuilderFactory
   {

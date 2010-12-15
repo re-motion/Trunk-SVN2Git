@@ -14,19 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Utilities;
+using Remotion.UnitTests.Mixins.TestDomain;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools.TestDomain
 {
-  public class ErrorEventArgs : EventArgs
+  public interface IDerivedIBaseType2 : IBaseType2
   {
-    public ErrorEventArgs (Exception exception)
-    {
-      ArgumentUtility.CheckNotNull ("exception", exception);
-      Exception = exception;
-    }
-
-    public Exception Exception { get; private set; }
   }
 }

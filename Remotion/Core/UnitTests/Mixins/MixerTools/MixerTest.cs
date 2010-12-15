@@ -21,16 +21,16 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.MixerTool;
+using Remotion.Mixins.MixerTools;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy;
 using Rhino.Mocks;
-using ErrorEventArgs=Remotion.Mixins.MixerTool.ErrorEventArgs;
+using ErrorEventArgs = Remotion.Mixins.MixerTools.ErrorEventArgs;
 
-namespace Remotion.UnitTests.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools
 {
   [Serializable]
   [TestFixture]

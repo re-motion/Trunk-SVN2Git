@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.MixerTool;
+using Remotion.Mixins.MixerTools;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools
 {
   [TestFixture]
   public class ConcreteTypeBuilderFactoryTest

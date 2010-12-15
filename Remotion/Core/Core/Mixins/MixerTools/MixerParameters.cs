@@ -17,7 +17,7 @@
 using System;
 using Remotion.Text.CommandLine;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.Mixins.MixerTools
 {
   [Serializable]
   public class MixerParameters

@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.UnitTests.Mixins.TestDomain;
+using System.Collections.Generic;
+using Remotion.Mixins.Context;
 
-namespace Remotion.UnitTests.Mixins.MixerTool.TestDomain
+namespace Remotion.Mixins.MixerTools
 {
-  // ReSharper disable UnusedTypeParameter
-  public class GenericDerivedNullTarget<T> : NullTarget
+  public interface IClassContextFinder
   {
+    IEnumerable<ClassContext> FindClassContexts (MixinConfiguration configuration);
   }
-
-  // ReSharper restore UnusedTypeParameter
 }

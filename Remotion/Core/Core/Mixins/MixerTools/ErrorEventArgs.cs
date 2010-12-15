@@ -15,16 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins;
+using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Mixins.MixerTool.SampleAssembly
+namespace Remotion.Mixins.MixerTools
 {
-  public class BaseType
+  public class ErrorEventArgs : EventArgs
   {
-  }
+    public ErrorEventArgs (Exception exception)
+    {
+      ArgumentUtility.CheckNotNull ("exception", exception);
+      Exception = exception;
+    }
 
-  [Extends (typeof (BaseType))]
-  public class Mixin
-  {
+    public Exception Exception { get; private set; }
   }
 }

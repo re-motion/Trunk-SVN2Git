@@ -21,13 +21,13 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.MixerTool;
-using Remotion.UnitTests.Mixins.MixerTool.TestDomain;
+using Remotion.Mixins.MixerTools;
 using System.Linq;
+using Remotion.UnitTests.Mixins.MixerTools.TestDomain;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.UnitTests.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools
 {
   [TestFixture]
   public class ClassContextFinderTest

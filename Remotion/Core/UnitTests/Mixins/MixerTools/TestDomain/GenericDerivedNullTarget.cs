@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Mixins.CodeGeneration;
+using Remotion.UnitTests.Mixins.TestDomain;
 
-namespace Remotion.Mixins.MixerTool
+namespace Remotion.UnitTests.Mixins.MixerTools.TestDomain
 {
-  public interface IConcreteTypeBuilderFactory
+  // ReSharper disable UnusedTypeParameter
+  public class GenericDerivedNullTarget<T> : NullTarget
   {
-    IConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory);
-    string GetSignedModulePath (string assemblyOutputDirectory);
-    string GetUnsignedModulePath (string assemblyOutputDirectory);
   }
+
+  // ReSharper restore UnusedTypeParameter
 }
