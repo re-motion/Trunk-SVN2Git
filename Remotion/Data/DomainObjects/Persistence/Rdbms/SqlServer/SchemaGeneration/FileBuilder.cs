@@ -40,8 +40,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      // TODO Review 3596: Add check: All classes must have the given rdbmsProviderDefinition, otherwise throw an ArgumentException (Add a CheckClassDefinitions method to the base class)
-
+      CheckClassDefinitions (classDefinitions);
+      
       ViewBuilder viewBuilder = CreateViewBuilder();
       viewBuilder.AddViews (classDefinitions);
 

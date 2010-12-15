@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using System.IO;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
@@ -52,13 +52,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
-      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder ();
+      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder();
 
       var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
       File.WriteAllText (fileName, script);
     }
 
-    public static ClassDefinitionCollection GetClassesInStorageProvider (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+    public static ClassDefinitionCollection GetClassesInStorageProvider (
+        ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
     {
       var classes = new ClassDefinitionCollection (false);
       foreach (ClassDefinition currentClass in classDefinitions)
@@ -81,11 +82,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       else
         fileName = "SetupDB.sql";
 
-      return Path.Combine (outputPath,  fileName);
+      return Path.Combine (outputPath, fileName);
     }
 
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
-    
+
     protected FileBuilderBase (RdbmsProviderDefinition rdbmsProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
@@ -93,14 +94,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
     }
 
-    // methods and properties
-
-    public abstract string GetScript (ClassDefinitionCollection classDefinitions);
-
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {
       get { return _rdbmsProviderDefinition; }
     }
-    
+
+    public abstract string GetScript (ClassDefinitionCollection classDefinitions);
+
+    protected void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)
+    {
+      foreach (ClassDefinition classDefinition in classDefinitions)
+      {
+        if (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name != _rdbmsProviderDefinition.Name)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Class '{0}' has storage provider '{1}' defined, but storage provider '{2}' is required.",
+                  classDefinition.ID,
+                  classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+                  _rdbmsProviderDefinition.Name));
+        }
+      }
+    }
   }
 }

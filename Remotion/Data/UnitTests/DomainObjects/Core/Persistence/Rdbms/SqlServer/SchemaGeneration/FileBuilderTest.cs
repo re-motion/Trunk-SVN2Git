@@ -106,6 +106,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Class 'Official' has storage provider 'SchemaGenerationSecondStorageProvider' defined, but storage provider 'SchemaGenerationFirstStorageProvider' is required."
+        )]
+    public void GetScriptForFirstWrongStorageProvider ()
+    {
+      Assert.AreEqual (
+          _firstStorageProviderSetupDBScript,
+          _fileBuilder.GetScript (
+              FileBuilder.GetClassesInStorageProvider (
+                  new ClassDefinitionCollection (new[]{ MappingConfiguration.ClassDefinitions["Official"]}, true, true), _secondStorageProviderDefinition)));
+    }
+
+    [Test]
     public void BuildWithMappingConfiguration ()
     {
       FileBuilderBase.Build (MappingConfiguration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
