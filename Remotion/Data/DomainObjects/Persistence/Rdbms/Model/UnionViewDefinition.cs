@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -33,16 +33,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
-    public UnionViewDefinition (StorageProviderDefinition storageProviderDefinition, string viewName, IEnumerable<IEntityDefinition> unionedEntities)
+    public UnionViewDefinition (
+        StorageProviderDefinition storageProviderDefinition,
+        string viewName,
+        IEnumerable<IEntityDefinition> unionedEntities,
+        IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
+      ArgumentUtility.CheckNotNull ("columns", columns);
 
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _unionedEntities = unionedEntities.ToList().AsReadOnly();
-      _columns = _unionedEntities.SelectMany (entity => entity.GetColumns ()).Distinct().ToList ().AsReadOnly ();
+      _columns = columns.ToList ().AsReadOnly ();
     }
 
     public string StorageProviderID

@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsValidated ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", new TableDefinition[0]);
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", new TableDefinition[0], new SimpleColumnDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,

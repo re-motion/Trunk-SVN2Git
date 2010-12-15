@@ -36,12 +36,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _column1 = new SimpleColumnDefinition ("Column1", typeof(string), "varchar", true);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof(string), "varchar", true);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof(string), "varchar", true);
+      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
+      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true);
+      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true);
       _entityDefinition = new TableDefinition (_storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 });
 
-      _filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, "Test", _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      _filterViewDefinition = new FilterViewDefinition (
+          _storageProviderDefinition, "Test", _entityDefinition, "CLASSID",  new[]{_column1, _column2, _column3});
     }
 
     [Test]
@@ -51,13 +52,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
       Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
       Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
-      Assert.That (_filterViewDefinition.StorageProviderDefinition, Is.SameAs(_storageProviderDefinition));
+      Assert.That (_filterViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, "CLASSID", col => col == _column1 || col == _column3);
+      var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, "CLASSID", new IColumnDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
@@ -70,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void LegacyViewName ()
     {
-      Assert.That (_filterViewDefinition.LegacyViewName, Is.EqualTo("Test"));
+      Assert.That (_filterViewDefinition.LegacyViewName, Is.EqualTo ("Test"));
     }
 
     [Test]
@@ -78,20 +79,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _filterViewDefinition.GetColumns();
 
-      Assert.That (result, Is.EqualTo (new[] { _column1, _column3 }));
+      Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
     }
 
     [Test]
     public void Accept ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();
+      var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
 
       visitorMock.Expect (mock => mock.VisitFilterViewDefinition (_filterViewDefinition));
-      visitorMock.Replay ();
+      visitorMock.Replay();
 
       _filterViewDefinition.Accept (visitorMock);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.VerifyAllExpectations();
     }
   }
 }

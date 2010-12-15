@@ -29,6 +29,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
+using Customer = Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
+using Folder = Remotion.Data.UnitTests.DomainObjects.TestDomain.Folder;
 using Order = Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -74,26 +76,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
 
-      var typeWithDBTableAttribute1 = typeof (Order);
-      var typeWithDBTableAttribute2 = typeof (Company);
-      var typeWithoutDBTableAttribute1 = typeof (Distributor);
-      var typeWithoutDBTableAttribute2 = typeof (Partner);
-      var typeWithoutDBTableAttribute3 = typeof (Supplier);
-
-      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithoutDBTableAttribute1, null);
-      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithoutDBTableAttribute1, _baseBaseClassDefinition);
-      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithDBTableAttribute1, _baseClassDefinition);
-      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithDBTableAttribute2, _baseClassDefinition);
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithoutDBTableAttribute1, _tableClassDefinition2);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeWithoutDBTableAttribute2, _tableClassDefinition2);
-      _derivedDerivedClassDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeWithoutDBTableAttribute3, _derivedClassDefinition2);
+      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Customer), null);
+      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Folder), _baseBaseClassDefinition);
+      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Order), _baseClassDefinition);
+      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Company), _baseClassDefinition);
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Distributor), _tableClassDefinition2);
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Partner), _tableClassDefinition2);
+      _derivedDerivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof(Supplier), _derivedClassDefinition2);
 
       _baseBaseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _baseClassDefinition }, true, true));
       _baseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _tableClassDefinition1, _tableClassDefinition2 }, true, true));
@@ -183,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       AssertUnionViewDefinition (
           _baseBaseClassDefinition,
           _storageProviderID,
-          "DistributorView",
+          "CustomerView",
           new[] { _baseClassDefinition.StorageEntityDefinition },
           new[]
           {
@@ -225,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       AssertUnionViewDefinition (
           _baseClassDefinition,
           _storageProviderID,
-          "DistributorView",
+          "FolderView",
           new[] { _tableClassDefinition1.StorageEntityDefinition, _tableClassDefinition2.StorageEntityDefinition },
           new[]
           {

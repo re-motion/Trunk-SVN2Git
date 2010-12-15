@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -34,20 +35,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public FilterViewDefinition (
-        StorageProviderDefinition storageProviderDefinition, string viewName, IEntityDefinition baseEntity, string classID, Func<IColumnDefinition, bool> columnFilter)
+        StorageProviderDefinition storageProviderDefinition,
+        string viewName,
+        IEntityDefinition baseEntity,
+        string classID,
+        IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
-      ArgumentUtility.CheckNotNull ("columnFilter", columnFilter);
+      ArgumentUtility.CheckNotNull ("columns", columns);
 
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _baseEntity = baseEntity;
       _classID = classID;
-
-      _columns = _baseEntity.GetColumns().Where (columnFilter).ToList().AsReadOnly();
+      _columns = columns.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
