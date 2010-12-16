@@ -112,9 +112,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private bool MustBeNullable (PropertyDefinition propertyDefinition)
     {
-      return propertyDefinition.ClassDefinition.BaseClass != null
-             && propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass).Any (
-                 cd => AttributeUtility.IsDefined (cd.ClassType, typeof (DBTableAttribute), false));
+      // CreateSequence can deal with null source objects
+      var baseClasses = propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
+      return baseClasses.Any (cd => AttributeUtility.IsDefined (cd.ClassType, typeof (DBTableAttribute), false));
     }
   }
 }
