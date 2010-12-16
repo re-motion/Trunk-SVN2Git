@@ -241,7 +241,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         string message = string.Format (
             "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
-            domainObject.GetPublicDomainObjectType ().FullName,
+            domainObject.ID.ClassDefinition.ClassType.FullName,
             typeof (T).FullName);
 
         throw new UnexpectedQueryResultException (message);

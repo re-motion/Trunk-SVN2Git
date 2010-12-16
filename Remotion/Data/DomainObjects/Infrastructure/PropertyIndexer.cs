@@ -280,7 +280,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public PropertyAccessor Find (string shortPropertyName)
     {
       ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
-      return Find (_domainObject.GetPublicDomainObjectType(), shortPropertyName);
+      return Find (_domainObject.ID.ClassDefinition.ClassType, shortPropertyName);
     }
 
     /// <summary>

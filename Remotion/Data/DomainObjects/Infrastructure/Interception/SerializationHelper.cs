@@ -45,7 +45,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       info.SetType (typeof (SerializationHelper));
 
-      Type publicDomainObjectType = concreteObject.GetPublicDomainObjectType();
+      Assertion.IsTrue (concreteObject.GetPublicDomainObjectType() == concreteObject.ID.ClassDefinition.ClassType);
+
+      Type publicDomainObjectType = concreteObject.ID.ClassDefinition.ClassType;
       info.AddValue ("PublicDomainObjectType.AssemblyQualifiedName", publicDomainObjectType.AssemblyQualifiedName);
       
       object[] baseMemberValues = null;

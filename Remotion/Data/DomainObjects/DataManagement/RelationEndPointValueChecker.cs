@@ -46,19 +46,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var endPointObject = endPoint.GetDomainObject ();
       if (otherDomainObject.HasBindingTransaction)
       {
-        transactionInfo.AppendFormat (" The {0} object is bound to a BindingClientTransaction.", otherDomainObject.GetPublicDomainObjectType ().Name);
+        transactionInfo.AppendFormat (" The {0} object is bound to a BindingClientTransaction.", otherDomainObject.ID.ClassDefinition.ClassType.Name);
         if (endPointObject.HasBindingTransaction)
         {
           transactionInfo.AppendFormat (
               " The {0} object owning the property is also bound, but to a different BindingClientTransaction.",
-              endPointObject.GetPublicDomainObjectType ().Name);
+              endPointObject.ID.ClassDefinition.ClassType.Name);
         }
       }
       else if (endPointObject.HasBindingTransaction)
       {
         transactionInfo.AppendFormat (
             " The {0} object owning the property is bound to a BindingClientTransaction.", 
-            endPointObject.GetPublicDomainObjectType ().Name);
+            endPointObject.ID.ClassDefinition.ClassType.Name);
       }
       return transactionInfo.ToString();
     }

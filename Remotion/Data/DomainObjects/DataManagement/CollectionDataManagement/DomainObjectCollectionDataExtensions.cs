@@ -33,22 +33,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       data.Insert (data.Count, domainObject);
     }
 
-    public static void AddRange (this IDomainObjectCollectionData data, IEnumerable<DomainObject> items)
+    public static void AddRange (this IDomainObjectCollectionData data, IEnumerable<DomainObject> domainObjects)
     {
       ArgumentUtility.CheckNotNull ("data", data);
-      ArgumentUtility.CheckNotNull ("items", items);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      foreach (var domainObject in items)
+      foreach (var domainObject in domainObjects)
         Add (data, domainObject);
     }
 
-    public static void AddRangeAndCheckItems (this IDomainObjectCollectionData data, IEnumerable<DomainObject> items, Type requiredItemType)
+    public static void AddRangeAndCheckItems (this IDomainObjectCollectionData data, IEnumerable<DomainObject> domainObjects, Type requiredItemType)
     {
       ArgumentUtility.CheckNotNull ("data", data);
-      ArgumentUtility.CheckNotNull ("items", items);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       var index = 0;
-      foreach (var domainObject in items)
+      foreach (var domainObject in domainObjects)
       {
         if (domainObject == null)
           throw new ArgumentItemNullException ("domainObjects", index);
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
         if (requiredItemType != null && !requiredItemType.IsInstanceOfType (domainObject))
         {
-          throw new ArgumentItemTypeException ("domainObjects", index, requiredItemType, domainObject.GetPublicDomainObjectType());
+          throw new ArgumentItemTypeException ("domainObjects", index, requiredItemType, domainObject.ID.ClassDefinition.ClassType);
         }
 
         data.Add (domainObject);
@@ -66,13 +66,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
     }
 
-    public static void ReplaceContents (this IDomainObjectCollectionData data, IEnumerable<DomainObject> items)
+    public static void ReplaceContents (this IDomainObjectCollectionData data, IEnumerable<DomainObject> domainObjects)
     {
       ArgumentUtility.CheckNotNull ("data", data);
-      ArgumentUtility.CheckNotNull ("items", items);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       data.Clear ();
-      data.AddRange (items);
+      data.AddRange (domainObjects);
     }
 
     public static bool SetEquals (this IDomainObjectCollectionData collection, IEnumerable<DomainObject> comparedSet)

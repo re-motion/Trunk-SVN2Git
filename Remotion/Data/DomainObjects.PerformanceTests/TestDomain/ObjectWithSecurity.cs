@@ -151,15 +151,20 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 
     Type ISecurableObject.GetSecurableType ()
     {
-      return GetPublicDomainObjectType ();
+      return ID.ClassDefinition.ClassType;
     }
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       if (_securityContext == null)
       {
-        _securityContext =
-            SecurityContext.Create (GetPublicDomainObjectType (), null, null, null, new Dictionary<string, EnumWrapper> (), new EnumWrapper[0]);
+        _securityContext = SecurityContext.Create (
+            ((ISecurableObject) this).GetSecurableType(),
+            null,
+            null,
+            null,
+            new Dictionary<string, EnumWrapper>(),
+            new EnumWrapper[0]);
       }
       return _securityContext;
     }
