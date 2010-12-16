@@ -160,7 +160,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result, Is.TypeOf (typeof (UnsupportedStorageTypeColumnDefinition)));
-      Assert.That (((UnsupportedStorageTypeColumnDefinition) result).Name, Is.EqualTo ("Boolean"));
     }
 
     [Test]
@@ -186,6 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     // TODO Review 3605: Refactor the tests for nullability to always test nullable/not nullable in one test
+    // TODO Review 3605: Refactor the tests to use StubStorageTypeCalculator method
 
     [Test]
     public void CreateColumnDefinition_ClassWithDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()

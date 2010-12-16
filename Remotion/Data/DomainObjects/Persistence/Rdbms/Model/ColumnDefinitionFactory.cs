@@ -46,33 +46,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
-      if (storageType != null)
-      {
-        var columnDefinition = new SimpleColumnDefinition (
-            GetColumnName (propertyDefinition.PropertyInfo),
-            propertyDefinition.PropertyType,
-            storageType,
-            propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
+      if (storageType == null)
+        return new UnsupportedStorageTypeColumnDefinition();
 
-        var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
-        if (relationEndPointDefinition == null)
-          return columnDefinition;
+      var columnDefinition = new SimpleColumnDefinition (
+          GetColumnName (propertyDefinition.PropertyInfo),
+          propertyDefinition.PropertyType,
+          storageType,
+          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
 
-        return CreateRelationColumnDefinition (propertyDefinition, providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
-      }
-      else
-      {
-        return new UnsupportedStorageTypeColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
-      }
+      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+      if (relationEndPointDefinition == null)
+        return columnDefinition;
+
+      return CreateRelationColumnDefinition (propertyDefinition, providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
     }
 
     private IColumnDefinition CreateRelationColumnDefinition (
-        PropertyDefinition propertyDefinition, 
-        IStorageProviderDefinitionFinder providerDefinitionFinder, 
-        IRelationEndPointDefinition relationEndPointDefinition, 
+        PropertyDefinition propertyDefinition,
+        IStorageProviderDefinitionFinder providerDefinitionFinder,
+        IRelationEndPointDefinition relationEndPointDefinition,
         SimpleColumnDefinition foreignKeyColumnDefinition)
     {
-      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
       var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
       var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
 

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
@@ -30,25 +29,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new UnsupportedStorageTypeColumnDefinition("Test");
+      _columnDefinition = new UnsupportedStorageTypeColumnDefinition();
     }
 
     [Test]
-    public void Initialize ()
-    {
-      Assert.That (_columnDefinition.Name, Is.EqualTo ("Test"));
-    }
-
-    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Unsupported properties cannot be visited.")]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor>();
-
       visitorMock.Replay();
 
       _columnDefinition.Accept (visitorMock);
-
-      visitorMock.VerifyAllExpectations();
     }
   }
 }

@@ -15,28 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   public class UnsupportedStorageTypeColumnDefinition : IColumnDefinition
   {
-    private readonly string _name;
-
-    public UnsupportedStorageTypeColumnDefinition (string name)
+    string IStoragePropertyDefinition.Name
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-
-      _name = name;
-    }
-    public string Name
-    {
-      get { return _name; }
+      get { return "unsupported property"; }
     }
 
     public void Accept (IColumnDefinitionVisitor visitor)
     {
-      
+      throw new InvalidOperationException ("Unsupported properties cannot be visited.");
     }
   }
 }
