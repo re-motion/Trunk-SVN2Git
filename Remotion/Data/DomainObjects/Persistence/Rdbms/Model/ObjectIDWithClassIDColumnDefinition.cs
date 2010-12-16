@@ -20,6 +20,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  // TODO Review 3588: Rename to IDColumnDefinition
+  // TODO Review 3588: Change so that classIDColumn can be null; add HasClassIDColumn property
   /// <summary>
   /// The <see cref="ObjectIDWithClassIDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>

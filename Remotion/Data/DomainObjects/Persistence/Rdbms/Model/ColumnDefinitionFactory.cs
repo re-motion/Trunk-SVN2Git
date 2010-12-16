@@ -25,7 +25,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="SimpleColumnDefinition"/> from a <see cref="PropertyDefinition"/>.
+  /// The <see cref="ColumnDefinitionFactory"/> is responsible to create a <see cref="IColumnDefinition"/> objects for <see cref="PropertyDefinition"/>
+  /// instances.
   /// </summary>
   public class ColumnDefinitionFactory : IColumnDefinitionFactory
   {
@@ -53,15 +54,38 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             storageType,
             propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
 
-        if (!HasClassIDColumn (propertyDefinition, providerDefinitionFinder))
+        var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
+        if (relationEndPointDefinition == null)
           return columnDefinition;
-        
-        var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
-        return new ObjectIDWithClassIDColumnDefinition (columnDefinition, classIdColumnDefinition);
+
+        return CreateRelationColumnDefinition (propertyDefinition, providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
       }
       else
       {
         return new UnsupportedStorageTypeColumnDefinition (GetColumnName (propertyDefinition.PropertyInfo));
+      }
+    }
+
+    private IColumnDefinition CreateRelationColumnDefinition (
+        PropertyDefinition propertyDefinition, 
+        IStorageProviderDefinitionFinder providerDefinitionFinder, 
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        SimpleColumnDefinition foreignKeyColumnDefinition)
+    {
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+      var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
+      var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
+
+      if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
+          && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
+      {
+        var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+        return new ObjectIDWithClassIDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
+      }
+      else
+      {
+        // TODO Review 3588: Change to return ObjectIDWithClassIDColumnDefinition, but with null classID
+        return foreignKeyColumnDefinition;
       }
     }
 
@@ -89,25 +113,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return propertyInfo.Name + "ID";
 
       return propertyInfo.Name;
-    }
-
-    private bool HasClassIDColumn (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
-
-      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
-      if (relationEndPointDefinition != null)
-      {
-        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
-        var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
-        var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
-       
-        if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy 
-          && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
-          return true;
-      }
-      return false;
     }
 
     private bool MustBeNullable (PropertyDefinition propertyDefinition)

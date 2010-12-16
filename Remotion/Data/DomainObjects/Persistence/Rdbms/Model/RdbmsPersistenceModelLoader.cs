@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       return (IColumnDefinition) propertyDefinition.StoragePropertyDefinition;
-          //TODO Review 2590: StoragePropertyDefiniton is always IColumnDefinition!??
+      //TODO Review 2590: StoragePropertyDefiniton is always IColumnDefinition!??
     }
 
     private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
@@ -181,8 +181,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
                               where pd.StorageClass == StorageClass.Persistent
                               select GetColumnDefinition (pd);
 
-      return new IColumnDefinition[] { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
-        .Concat (columnDefinitions);
+      return new IColumnDefinition[]
+             {
+                 _columnDefinitionFactory.CreateIDColumnDefinition(),
+                 _columnDefinitionFactory.CreateTimestampColumnDefinition()
+             }
+          .Concat (columnDefinitions);
     }
   }
 }
