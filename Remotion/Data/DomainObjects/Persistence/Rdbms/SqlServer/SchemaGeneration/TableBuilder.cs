@@ -16,112 +16,74 @@
 // 
 using System;
 using System.Text;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   public class TableBuilder : TableBuilderBase
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public TableBuilder ()
     {
     }
 
-    // methods and properties
-
-    public override string GetSqlDataType (PropertyDefinition propertyDefinition)
+    public override void AddToCreateTableScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      var storageProviderFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      var storageType = new SqlStorageTypeCalculator ().GetStorageType (propertyDefinition, storageProviderFinder);
-
-      if (storageType == null)
-      {
-        throw new InvalidOperationException (string.Format (
-                "Data type '{0}' is not supported.\r\nDeclaring type: '{1}'\r\nProperty: '{2}'",
-                propertyDefinition.PropertyType,
-                propertyDefinition.ClassDefinition.ClassType.FullName,
-                propertyDefinition.PropertyName));
-      }
-      return storageType;
-    }
-
-    protected override string SqlDataTypeClassID
-    {
-      get { return "varchar (100)"; }
-    }
-
-    public override void AddToCreateTableScript (ClassDefinition classDefinition, StringBuilder createTableStringBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
 
       createTableStringBuilder.AppendFormat (
           "CREATE TABLE [{0}].[{1}]\r\n"
           + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n\r\n"
           + "{2}  CONSTRAINT [PK_{1}] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n",
           FileBuilder.DefaultSchema,
-          classDefinition.StorageEntityDefinition.LegacyEntityName,
-          GetColumnList (classDefinition));
+          tableDefinition.TableName,
+          GetColumnList(tableDefinition));
     }
 
-    public override void AddToDropTableScript (ClassDefinition classDefinition, StringBuilder dropTableStringBuilder)
+    public override void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("dropTableStringBuilder", dropTableStringBuilder);
 
       dropTableStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP TABLE [{1}].[{0}]\r\n",
-          classDefinition.StorageEntityDefinition.LegacyEntityName,
+          tableDefinition.TableName,
           FileBuilder.DefaultSchema);
     }
 
-    public override string GetColumn (PropertyDefinition propertyDefinition, bool forceNullable)
+    private string GetColumnList (TableDefinition tableDefinition)
     {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      string nullable;
-      if (propertyDefinition.IsNullable || forceNullable)
-        nullable = " NULL";
-      else
-        nullable = " NOT NULL";
+      var columnList = new StringBuilder ();
+      foreach (var columnDefinition in tableDefinition.GetColumns ())
+      {
+        if (columnDefinition is SimpleColumnDefinition)
+        {
+          columnList.AppendLine (GetColumnString ((SimpleColumnDefinition) columnDefinition));
+        }
+        else if (columnDefinition is ObjectIDWithClassIDColumnDefinition)
+        {
+          var objectIDColumn = ((ObjectIDWithClassIDColumnDefinition) columnDefinition).ObjectIDColumn;
+          columnList.AppendLine (GetColumnString (objectIDColumn));
+          columnList.AppendLine (GetColumnString (((ObjectIDWithClassIDColumnDefinition) columnDefinition).ClassIDColumn));
+        }
+      }
+      return columnList.ToString();
+    }
 
+    private string GetColumnString (SimpleColumnDefinition columnDefinition)
+    {
       return string.Format (
-          "  [{0}] {1}{2},\r\n{3}",
-          propertyDefinition.StoragePropertyDefinition.Name,
-          GetSqlDataType (propertyDefinition),
-          nullable,
-          GetClassIDColumn (propertyDefinition));
+          "  [{0}] {1}{2},",
+          columnDefinition.Name,
+          columnDefinition.StorageType,
+          columnDefinition.IsNullable ? " NULL" : " NOT NULL");
     }
 
-    protected override string ColumnListOfParticularClassFormatString
-    {
-      get { return "  -- {0} columns\r\n{1}\r\n"; }
-    }
-
-    private string GetClassIDColumn (PropertyDefinition propertyDefinition)
-    {
-      if (!HasClassIDColumn (propertyDefinition))
-        return string.Empty;
-
-      return string.Format ("  [{0}] {1} NULL,\r\n", RdbmsProvider.GetClassIDColumnName (propertyDefinition.StoragePropertyDefinition.Name), SqlDataTypeClassID);
-    }
   }
 }

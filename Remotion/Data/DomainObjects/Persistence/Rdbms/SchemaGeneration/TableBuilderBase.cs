@@ -14,25 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class TableBuilderBase
   {
-    // types
-
-    // static members and constants
-
-    public static bool IsConcreteTable (ClassDefinition classDefinition)
-    {
-      return classDefinition.StorageEntityDefinition.LegacyEntityName != null
-             && (classDefinition.BaseClass == null || classDefinition.BaseClass.GetEntityName() == null);
-    }
-
     public static bool HasClassIDColumn (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -40,22 +31,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition != null)
       {
-        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition(); 
+        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
 
         if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
-            && propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name 
-                == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
+            && propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
+            == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
           return true;
       }
       return false;
     }
 
-    // member fields
-
     private readonly StringBuilder _createTableStringBuilder;
     private readonly StringBuilder _dropTableStringBuilder;
-
-    // construction and disposing
 
     protected TableBuilderBase ()
     {
@@ -63,14 +50,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropTableStringBuilder = new StringBuilder();
     }
 
-    // methods and properties
+    public abstract void AddToCreateTableScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder);
 
-    public abstract string GetSqlDataType (PropertyDefinition propertyDefinition);
-    public abstract void AddToCreateTableScript (ClassDefinition concreteTableClassDefinition, StringBuilder createTableStringBuilder);
-    public abstract void AddToDropTableScript (ClassDefinition concreteTableClassDefinition, StringBuilder dropTableStringBuilder);
-    public abstract string GetColumn (PropertyDefinition propertyDefinition, bool forceNullable);
-    protected abstract string ColumnListOfParticularClassFormatString { get; }
-    protected abstract string SqlDataTypeClassID { get; }
+    public abstract void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder);
 
     public string GetCreateTableScript ()
     {
@@ -94,78 +76,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (IsConcreteTable (classDefinition))
+      var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
+      if (tableDefinition!=null)
       {
-        AddToCreateTableScript (classDefinition);
-        AddToDropTableScript (classDefinition);
+        AddToCreateTableScript (tableDefinition);
+        AddToDropTableScript (tableDefinition);
       }
     }
 
-    private void AddToCreateTableScript (ClassDefinition classDefinition)
+    private void AddToCreateTableScript (TableDefinition tableDefinition)
     {
       if (_createTableStringBuilder.Length != 0)
         _createTableStringBuilder.Append ("\r\n");
 
-      AddToCreateTableScript (classDefinition, _createTableStringBuilder);
+      AddToCreateTableScript (tableDefinition, _createTableStringBuilder);
     }
 
-    private void AddToDropTableScript (ClassDefinition classDefinition)
+    private void AddToDropTableScript (TableDefinition tableDefinition)
     {
       if (_dropTableStringBuilder.Length != 0)
         _dropTableStringBuilder.Append ("\r\n");
 
-      AddToDropTableScript (classDefinition, _dropTableStringBuilder);
+      AddToDropTableScript (tableDefinition, _dropTableStringBuilder);
     }
 
-    protected string GetColumnList (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      string columnList = string.Empty;
-      ClassDefinition currentClassDefinition = classDefinition;
-      var addedStorageProperties = new HashSet<string>();
-
-      while (currentClassDefinition != null)
-      {
-        columnList = GetColumnListOfParticularClass (currentClassDefinition, false, addedStorageProperties) + columnList;
-
-        currentClassDefinition = currentClassDefinition.BaseClass;
-      }
-
-      var columnListStringBuilder = new StringBuilder();
-      AppendColumnListOfDerivedClasses (classDefinition, columnListStringBuilder, addedStorageProperties);
-      columnList += columnListStringBuilder.ToString();
-      return columnList;
-    }
-
-    private void AppendColumnListOfDerivedClasses (
-        ClassDefinition classDefinition, StringBuilder columnListStringBuilder, HashSet<string> addedStorageProperties)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("columnListStringBuilder", columnListStringBuilder);
-      ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
-
-      foreach (ClassDefinition derivedClassDefinition in classDefinition.DerivedClasses)
-      {
-        columnListStringBuilder.Append (GetColumnListOfParticularClass (derivedClassDefinition, true, addedStorageProperties));
-        AppendColumnListOfDerivedClasses (derivedClassDefinition, columnListStringBuilder, addedStorageProperties);
-      }
-    }
-
-    private string GetColumnListOfParticularClass (ClassDefinition classDefinition, bool forceNullable, HashSet<string> addedStorageProperties)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("addedStorageProperties", addedStorageProperties);
-
-      var columnListStringBuilder = new StringBuilder();
-
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent())
-      {
-        if (addedStorageProperties.Add (propertyDefinition.StoragePropertyDefinition.Name))
-          columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
-      }
-
-      return string.Format (ColumnListOfParticularClassFormatString, classDefinition.ID, columnListStringBuilder);
-    }
   }
 }

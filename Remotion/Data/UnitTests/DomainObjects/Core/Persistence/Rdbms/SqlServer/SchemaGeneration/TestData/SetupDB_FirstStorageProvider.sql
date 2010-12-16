@@ -102,13 +102,10 @@ CREATE TABLE [dbo].[Address]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Address columns
   [Street] nvarchar (100) NOT NULL,
   [Zip] nvarchar (10) NOT NULL,
   [City] nvarchar (100) NOT NULL,
   [Country] nvarchar (100) NOT NULL,
-
   CONSTRAINT [PK_Address] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -117,12 +114,9 @@ CREATE TABLE [dbo].[Ceo]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Ceo columns
   [Name] nvarchar (100) NOT NULL,
   [CompanyID] uniqueidentifier NULL,
   [CompanyIDClassID] varchar (100) NULL,
-
   CONSTRAINT [PK_Ceo] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -131,8 +125,6 @@ CREATE TABLE [dbo].[TableWithAllDataTypes]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- ClassWithAllDataTypes columns
   [Boolean] bit NOT NULL,
   [Byte] tinyint NOT NULL,
   [Date] datetime NOT NULL,
@@ -178,7 +170,6 @@ CREATE TABLE [dbo].[TableWithAllDataTypes]
   [NaSingleWithNullValue] real NULL,
   [NullableBinary] varbinary (100) NULL,
   [NullableBinaryWithoutMaxLength] varbinary (max) NULL,
-
   CONSTRAINT [PK_TableWithAllDataTypes] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -187,9 +178,6 @@ CREATE TABLE [dbo].[TableWithoutProperties]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- ClassWithoutProperties columns
-
   CONSTRAINT [PK_TableWithoutProperties] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -198,11 +186,8 @@ CREATE TABLE [dbo].[TableWithRelations]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- ClassWithRelations columns
   [DerivedClassID] uniqueidentifier NULL,
   [DerivedClassIDClassID] varchar (100) NULL,
-
   CONSTRAINT [PK_TableWithRelations] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -211,18 +196,13 @@ CREATE TABLE [dbo].[Customer]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Company columns
   [Name] nvarchar (100) NOT NULL,
   [PhoneNumber] nvarchar (100) NULL,
   [AddressID] uniqueidentifier NULL,
-
-  -- Customer columns
   [CustomerType] int NOT NULL,
   [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,
   [PrimaryOfficialID] varchar (255) NULL,
   [LicenseCode] nvarchar (max) NULL,
-
   CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -231,22 +211,13 @@ CREATE TABLE [dbo].[ConcreteClass]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- ConcreteClass columns
   [PropertyInConcreteClass] nvarchar (100) NOT NULL,
-
-  -- DerivedClass columns
   [PropertyInDerivedClass] nvarchar (100) NULL,
   [PersistentProperty] nvarchar (max) NULL,
-
-  -- DerivedOfDerivedClass columns
   [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,
   [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,
-
-  -- SecondDerivedClass columns
   [PropertyInSecondDerivedClass] nvarchar (100) NULL,
   [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,
-
   CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -255,20 +226,13 @@ CREATE TABLE [dbo].[DevelopmentPartner]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Company columns
   [Name] nvarchar (100) NOT NULL,
   [PhoneNumber] nvarchar (100) NULL,
   [AddressID] uniqueidentifier NULL,
-
-  -- Partner columns
   [Description] nvarchar (255) NOT NULL,
   [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,
-
-  -- DevelopmentPartner columns
   [Competences] nvarchar (255) NOT NULL,
   [LicenseCode] nvarchar (max) NULL,
-
   CONSTRAINT [PK_DevelopmentPartner] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -277,11 +241,8 @@ CREATE TABLE [dbo].[Employee]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Employee columns
   [Name] nvarchar (100) NOT NULL,
   [SupervisorID] uniqueidentifier NULL,
-
   CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -290,14 +251,11 @@ CREATE TABLE [dbo].[Order]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Order columns
   [Number] int NOT NULL,
   [Priority] int NOT NULL,
   [CustomerID] uniqueidentifier NULL,
   [CustomerIDClassID] varchar (100) NULL,
   [OfficialID] varchar (255) NULL,
-
   CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -306,12 +264,9 @@ CREATE TABLE [dbo].[OrderItem]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- OrderItem columns
   [Position] int NOT NULL,
   [Product] nvarchar (100) NOT NULL,
   [OrderID] uniqueidentifier NULL,
-
   CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])
 )
 GO

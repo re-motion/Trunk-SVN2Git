@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -185,17 +187,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           .Reverse()
           .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
 
-      var columnDefinitions = from cd in allClassesInHierarchy
-                              from PropertyDefinition pd in cd.MyPropertyDefinitions
-                              where pd.StorageClass == StorageClass.Persistent
-                              select GetColumnDefinition (pd);
+      IEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
+          (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1, 
+          tuple => tuple.Item1.GetHashCode());
 
-      return new IColumnDefinition[]
-             {
-                 _columnDefinitionFactory.CreateIDColumnDefinition(),
-                 _columnDefinitionFactory.CreateTimestampColumnDefinition()
-             }
-          .Concat (columnDefinitions);
+      var columnDefinitions = (from cd in allClassesInHierarchy
+                               from PropertyDefinition pd in cd.MyPropertyDefinitions
+                               where pd.StorageClass == StorageClass.Persistent
+                               select Tuple.Create (pd.PropertyInfo, GetColumnDefinition (pd)))
+                               .Distinct (equalityComparer)
+                               .Select (tuple => tuple.Item2);
+
+      return new IColumnDefinition[] { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
+        .Concat (columnDefinitions);
     }
   }
 }

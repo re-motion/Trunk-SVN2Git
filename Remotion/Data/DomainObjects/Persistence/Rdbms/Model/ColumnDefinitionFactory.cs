@@ -75,14 +75,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
           && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
       {
-        var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+        var classIdColumnDefinition = new SimpleColumnDefinition (
+            RdbmsProvider.GetClassIDColumnName (GetColumnName(propertyDefinition.PropertyInfo)),
+            typeof(string),
+            _storageTypeCalculator.SqlDataTypeClassID,
+            true);
+        
         return new ObjectIDWithClassIDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }
       else
-      {
         // TODO Review 3588: Change to return ObjectIDWithClassIDColumnDefinition, but with null classID
         return foreignKeyColumnDefinition;
-      }
     }
 
     public ObjectIDWithClassIDColumnDefinition CreateIDColumnDefinition ()

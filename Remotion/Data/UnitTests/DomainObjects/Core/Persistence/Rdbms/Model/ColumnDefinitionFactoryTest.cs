@@ -308,8 +308,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.IsNullable, Is.True);
       Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.StorageType, Is.EqualTo ("test"));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.Name, Is.EqualTo ("ClassID"));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.IsNullable, Is.False);
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.Name, Is.EqualTo ("DistributorIDClassID"));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.IsNullable, Is.True);
       Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
     }

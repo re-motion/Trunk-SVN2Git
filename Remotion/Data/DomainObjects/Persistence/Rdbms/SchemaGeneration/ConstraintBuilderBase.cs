@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -83,10 +84,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (TableBuilderBase.IsConcreteTable (classDefinition))
+      var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
+      if (tableDefinition!=null)
       {
         AddToCreateConstraintScript (classDefinition);
-        _entityNamesForDropConstraintScript.Add (classDefinition.StorageEntityDefinition.LegacyEntityName);
+        _entityNamesForDropConstraintScript.Add (tableDefinition.TableName);
       }
     }
 

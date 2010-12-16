@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
@@ -28,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Customer = Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Folder = Remotion.Data.UnitTests.DomainObjects.TestDomain.Folder;
@@ -100,13 +102,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
       _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
-      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (_baseBaseClassDefinition, "BaseBaseProperty");
-      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty");
-      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (_tableClassDefinition1, "TableProperty1");
-      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2");
-      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (_derivedClassDefinition1, "DerivedProperty1");
-      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (_derivedClassDefinition2, "DerivedProperty2");
-      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (_derivedDerivedClassDefinition, "DerivedDerivedProperty");
+      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
+          _baseBaseClassDefinition, "BaseBaseProperty", typeof (Customer).GetProperty ("CustomerSince"));
+      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (Folder).GetProperty ("FileSystemItems"));
+      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (
+          _tableClassDefinition1, "TableProperty1", typeof (Order).GetProperty ("OrderNumber"));
+      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2", typeof (Company).GetProperty ("Name"));
+      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (
+          _derivedClassDefinition1, "DerivedProperty1", typeof (Distributor).GetProperty ("NumberOfShops"));
+      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (
+          _derivedClassDefinition2, "DerivedProperty2", typeof (Partner).GetProperty ("ContactPerson"));
+      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (
+          _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (Supplier).GetProperty ("SupplierQuality"));
 
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true);
       _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false);
@@ -472,12 +479,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void ApplyPersistentModelToHierarchy_PropertiesWithSamePropertyInfoAreFiltered ()
+    {
+      var classDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+              typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
+      var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "Test1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          propertyInfo,
+          null);
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          "Test2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          propertyInfo,
+          null);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
+
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (propertyDefinition1, _storageProviderDefinitionFinder))
+          .Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (propertyDefinition2, _storageProviderDefinitionFinder))
+          .Return (_fakeColumnDefinition1);
+      MockSpecialColumns (1);
+      _columnDefinitionFactoryMock.Replay ();
+
+      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations ();
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (3)); //instead of 4 (ID, ClassID and propertxdefinition)
+    }
+
+    [Test]
     public void ApplyPersistenceModelToHierarchy_ColumnDefinitionsIsSetForAbstractClassWithoutDerivations ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
           typeof (AbstractClassWithoutDerivations), null);
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      var propertyDefinition = CreateAndAddPropertyDefinition (classDefinition, "DomainBase");
+      var propertyDefinition = CreateAndAddPropertyDefinition (
+          classDefinition, "DomainBase", typeof (AbstractClassWithoutDerivations).GetProperty ("DomainBase"));
 
       _columnDefinitionFactoryMock.Expect (mock => mock.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder)).Return
           (_fakeColumnDefinition1);
@@ -498,8 +549,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory'\r\n"
-        + "Property: 'FakeProperty'")]
+        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'\r\n"
+        + "Property: 'CustomerSince'")]
     public void StoragePropertyDefinitionIsNoColumnDefinition ()
     {
       var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
@@ -559,12 +610,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
     }
 
-    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName)
+    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
+        ReflectionBasedClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           propertyName,
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          propertyInfo,
           null);
+
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       return propertyDefinition;
     }

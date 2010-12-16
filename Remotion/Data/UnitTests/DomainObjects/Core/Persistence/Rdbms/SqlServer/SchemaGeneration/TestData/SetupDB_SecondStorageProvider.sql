@@ -30,15 +30,10 @@ CREATE TABLE [dbo].[Official]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-
-  -- Official columns
   [Name] nvarchar (100) NOT NULL,
   [ResponsibleForOrderPriority] int NOT NULL,
   [ResponsibleForCustomerType] int NOT NULL,
-
-  -- SpecialOfficial columns
   [Speciality] nvarchar (255) NULL,
-
   CONSTRAINT [PK_Official] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
