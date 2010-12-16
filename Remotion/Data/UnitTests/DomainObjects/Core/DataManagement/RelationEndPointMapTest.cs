@@ -311,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot unload end-point "
+        "Cannot remove end-point "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because it has "
         + "changed. End-points can only be unregistered when they are unchanged.")]
     public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
@@ -458,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot unload end-point "
+        "Cannot remove end-point "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' because "
         + "it has changed. End-points can only be unregistered when they are unchanged.")]
     public void UnregisterRealObjectEndPoint_ThrowsWhenChanged ()

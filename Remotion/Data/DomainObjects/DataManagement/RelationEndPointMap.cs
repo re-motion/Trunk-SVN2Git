@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
-      CheckUnchangedForUnload (endPointID, objectEndPoint);
+      CheckUnchangedForUnregister (endPointID, objectEndPoint);
 
       RemoveEndPoint (endPointID);
 
@@ -229,7 +229,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
-      CheckUnchangedForUnload (endPointID, objectEndPoint);
+      CheckUnchangedForUnregister (endPointID, objectEndPoint);
 
       RemoveEndPoint (endPointID);
     }
@@ -422,12 +422,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void CheckUnchangedForUnload (RelationEndPointID endPointID, IEndPoint objectEndPoint)
+    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IEndPoint objectEndPoint)
     {
       if (objectEndPoint.HasChanged)
       {
         var message = string.Format (
-            "Cannot unload end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
+            "Cannot remove end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
             endPointID);
         throw new InvalidOperationException (message);
       }
