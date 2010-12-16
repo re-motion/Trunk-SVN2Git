@@ -671,6 +671,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     // TODO 3475: Tests for New DC
+    // TODO 3475: Tests for modified end-points
 
     [Test]
     public void CommitAllEndPoints_CommitsEndPoints ()
