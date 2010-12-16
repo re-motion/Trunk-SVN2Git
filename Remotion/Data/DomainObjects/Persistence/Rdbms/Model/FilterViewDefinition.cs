@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly string _viewName;
     private readonly IEntityDefinition _baseEntity;
-    private readonly string _classID;
+    private readonly ReadOnlyCollection<string> _classIDs;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
@@ -38,19 +38,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         string viewName,
         IEntityDefinition baseEntity,
-        string classID,
+        IEnumerable<string> classIDs,
         IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
-      ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
+      ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _baseEntity = baseEntity;
-      _classID = classID;
+      _classIDs = classIDs.ToList().AsReadOnly();
       _columns = columns.ToList().AsReadOnly();
     }
 
@@ -74,9 +74,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _baseEntity; }
     }
 
-    public string ClassID
+    public ReadOnlyCollection<string> ClassIDs
     {
-      get { return _classID; }
+      get { return _classIDs; }
     }
 
     public string LegacyEntityName

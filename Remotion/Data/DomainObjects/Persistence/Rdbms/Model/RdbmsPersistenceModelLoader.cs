@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageProviderDefinition,
           GetViewName (classDefinition),
           baseStorageEntityDefinition,
-          classDefinition.ID,
+          GetClassWithAllDerivedClasses (classDefinition).Select (cd => cd.ID),
           GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
@@ -182,10 +182,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
-      var allClassesInHierarchy = classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Reverse()
-          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
+      var allClassesInHierarchy = GetAllClassForHierarchy (classDefinition);
 
       IEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
           (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1, 
@@ -200,6 +197,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return new IColumnDefinition[] { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
         .Concat (columnDefinitions);
+    }
+
+    private IEnumerable<ClassDefinition> GetAllClassForHierarchy (ClassDefinition classDefinition)
+    {
+      return classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Reverse ()
+          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+    }
+
+    private IEnumerable<ClassDefinition> GetClassWithAllDerivedClasses (ClassDefinition classDefinition)
+    {
+      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
     }
   }
 }

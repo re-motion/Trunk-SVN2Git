@@ -45,14 +45,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           "Test",
           _entityDefinition,
-          "CLASSID",
+          new[] { "ClassId1", "ClassId2" },
           new[] { _column1, _column3 });
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_filterViewDefinition.ClassID, Is.EqualTo ("CLASSID"));
+      Assert.That (_filterViewDefinition.ClassIDs.Count, Is.EqualTo (2));
+      Assert.That (_filterViewDefinition.ClassIDs[0], Is.EqualTo ("ClassId1"));
+      Assert.That (_filterViewDefinition.ClassIDs[1], Is.EqualTo ("ClassId2"));
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
       Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
       Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
@@ -62,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, "CLASSID", new IColumnDefinition[0]);
+      var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, new[]{"ClassId"}, new IColumnDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
