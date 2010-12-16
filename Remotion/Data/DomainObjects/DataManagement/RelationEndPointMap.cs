@@ -207,7 +207,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
@@ -262,24 +262,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // TODO 3475:
     // When unregistering a DataContainer, its real end-points are always unregistered. This will indirectly unregister opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are unregistered as well.
     // If the DataContainer is not New, virtual object end-points with a null Original value are also unregistered because they are owned by this DataContainer.
-    //public void UnregisterEndPointsForDataContainer (DataContainer dataContainer)
-    //{
-    //  ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+    public void UnregisterEndPointsForDataContainer (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-    //  foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-    //  {
-    //    if (!endPointID.Definition.IsVirtual)
-    //      UnregisterRealObjectEndPoint (endPointID);
-    //    else if (endPointID.Definition.Cardinality == CardinalityType.One)
-    //      UnregisterVirtualObjectEndPoint (endPointID);
-    //    else
-    //      UnregisterCollectionEndPoint (endPointID);
-    //  }
-    //}
+      // TODO 3475: if (GetUnregisterableEndPointsForDataContainer (dataContainer).Any()) throw;
+
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      {
+        if (!endPointID.Definition.IsVirtual)
+          UnregisterRealObjectEndPoint (endPointID);
+        else if (endPointID.Definition.Cardinality == CardinalityType.One)
+          UnregisterVirtualObjectEndPoint (endPointID);
+        // TODO 3475
+        //else
+        //  UnregisterCollectionEndPoint (endPointID);
+      }
+    }
 
     // TODO 3475:
     //public IEnumerable<RelationEndPoint> GetUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
@@ -291,24 +293,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     //         where loadedEndPoint != null && loadedEndPoint.HasChanged
     //         select loadedEndPoint;
     //}
-
-    private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
-    {
-      var includeVirtualEndPoints = dataContainer.State == StateType.New;
-      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        if (!endPointID.Definition.IsVirtual || includeVirtualEndPoints)
-        {
-          yield return endPointID;
-        }
-        else if (endPointID.Definition.Cardinality == CardinalityType.One)
-        {
-          var loadedVirtualObjectEndPoint = (ObjectEndPoint) this[endPointID];
-          if (loadedVirtualObjectEndPoint != null && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
-            yield return endPointID;
-        }
-      }
-    }
 
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
@@ -386,6 +370,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
+    }
+
+    private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
+    {
+      var includeVirtualEndPoints = dataContainer.State == StateType.New;
+      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+      {
+        if (!endPointID.Definition.IsVirtual || includeVirtualEndPoints)
+        {
+          yield return endPointID;
+        }
+        else if (endPointID.Definition.Cardinality == CardinalityType.One)
+        {
+          var loadedVirtualObjectEndPoint = (ObjectEndPoint) this[endPointID];
+          if (loadedVirtualObjectEndPoint != null && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
+            yield return endPointID;
+        }
+      }
     }
 
     private void CheckCardinality (
