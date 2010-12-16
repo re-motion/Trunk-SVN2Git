@@ -20,8 +20,8 @@ using System.Collections.Generic;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// <see cref="DelegateBasedEqualityComparer{T}"/> implements <see cref="IEqualityComparer{T}"/> to compare two objects on the specified 
-  /// comparison- an hash delegate.
+  /// <see cref="DelegateBasedEqualityComparer{T}"/> implements <see cref="IEqualityComparer{T}"/> to compare two objects and calculate hash codes 
+  /// with the specified delegates.
   /// </summary>
   /// <typeparam name="T">The type of the objects to be compared.</typeparam>
   public class DelegateBasedEqualityComparer<T> : IEqualityComparer<T>
