@@ -165,8 +165,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         propertyDefinition.SetStorageProperty (storageProperty);
       }
 
-      return (IColumnDefinition) propertyDefinition.StoragePropertyDefinition;
-      //TODO Review 2590: StoragePropertyDefiniton is always IColumnDefinition!??
+      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
+      if (columnDefinition == null)
+      {
+        throw new MappingException (
+            string.Format (
+                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
+                propertyDefinition.PropertyInfo.DeclaringType.FullName,
+                propertyDefinition.PropertyInfo.Name));
+      }
+
+      return columnDefinition;
     }
 
     private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)

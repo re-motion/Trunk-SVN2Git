@@ -15,15 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
-  public class FakeColumnDefinition : IColumnDefinition
+  public class FakeStoragePropertyDefinition : IStoragePropertyDefinition
   {
     private readonly string _name;
 
-    public FakeColumnDefinition (string name)
+    public FakeStoragePropertyDefinition (string name)
     {
       _name = name;
     }

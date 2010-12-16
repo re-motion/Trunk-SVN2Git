@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IColumnDefinitionFactory"/> defines the API to create a <see cref="IStoragePropertyDefinition"/>. 
+  /// <see cref="IColumnDefinitionFactory"/> defines the API to create instances of <see cref="IColumnDefinition"/>. 
   /// </summary>
   public interface IColumnDefinitionFactory
   {

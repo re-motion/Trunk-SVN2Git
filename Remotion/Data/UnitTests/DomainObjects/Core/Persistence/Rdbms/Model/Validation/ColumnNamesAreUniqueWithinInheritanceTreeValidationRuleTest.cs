@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property1"));
+          new FakeStoragePropertyDefinition ("Property1"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName2",
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new FakeColumnDefinition ("Property2"));
+          new FakeStoragePropertyDefinition ("Property2"));
 
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new FakeColumnDefinition ("Property"));
+          new FakeStoragePropertyDefinition ("Property"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property"));
+          new FakeStoragePropertyDefinition ("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1}, true));
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new FakeColumnDefinition ("Property1"));
+          new FakeStoragePropertyDefinition ("Property1"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property2"));
+          new FakeStoragePropertyDefinition ("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new FakeColumnDefinition ("Property"));
+          new FakeStoragePropertyDefinition ("Property"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property"));
+          new FakeStoragePropertyDefinition ("Property"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new FakeColumnDefinition ("Property1"));
+          new FakeStoragePropertyDefinition ("Property1"));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -294,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeColumnDefinition ("Property2"));
+          new FakeStoragePropertyDefinition ("Property2"));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());

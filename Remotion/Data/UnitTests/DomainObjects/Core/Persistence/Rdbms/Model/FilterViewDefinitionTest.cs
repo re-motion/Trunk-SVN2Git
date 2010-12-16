@@ -42,7 +42,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _entityDefinition = new TableDefinition (_storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 });
 
       _filterViewDefinition = new FilterViewDefinition (
-          _storageProviderDefinition, "Test", _entityDefinition, "CLASSID",  new[]{_column1, _column2, _column3});
+          _storageProviderDefinition,
+          "Test",
+          _entityDefinition,
+          "CLASSID",
+          new[] { _column1, _column3 });
     }
 
     [Test]
@@ -79,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _filterViewDefinition.GetColumns();
 
-      Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
+      Assert.That (result, Is.EqualTo (new[] { _column1, _column3 }));
     }
 
     [Test]

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       if (name == null)
         return null;
       else
-        return new FakeColumnDefinition (name);
+        return new FakeStoragePropertyDefinition (name);
     }
 
     public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, Type propertyType)

@@ -95,6 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public SimpleColumnDefinition CreateTimestampColumnDefinition ()
     {
+      // TODO Review 3590: Move "rowversion" string to _storageTypeCalculator.SqlDataTypeTimestamp
       return new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false);
     }
 

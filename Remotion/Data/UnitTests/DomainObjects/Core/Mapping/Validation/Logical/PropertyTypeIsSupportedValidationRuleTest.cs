@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           true,
           20,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithStorageClassPersistent"));
+      propertyDefinition.SetStorageProperty(new FakeStoragePropertyDefinition ("PropertyWithStorageClassPersistent"));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
+      propertyDefinition.SetStorageProperty(new FakeStoragePropertyDefinition ("PropertyWithTypeObjectWithStorageClassPersistent"));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           true,
           null,
           StorageClass.Persistent);
-      propertyDefinition.SetStorageProperty(new FakeColumnDefinition ("RelationPropertyWithStorageClassPersistent"));
+      propertyDefinition.SetStorageProperty(new FakeStoragePropertyDefinition ("RelationPropertyWithStorageClassPersistent"));
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 

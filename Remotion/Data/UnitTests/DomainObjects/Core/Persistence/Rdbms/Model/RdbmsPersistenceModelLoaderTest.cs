@@ -496,6 +496,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
+        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ReflectionBasedPropertyDefinitionFactory'\r\n"
+        + "Property: 'FakeProperty'")]
+    public void StoragePropertyDefinitionIsNoColumnDefinition ()
+    {
+      var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
+      _baseBasePropertyDefinition.SetStorageProperty (fakeResult);
+
+      MockSpecialColumns (1);
+      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_tableClassDefinition1);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidCastException))]
     public void StorageEntityDefinitionDoesNotImplementIEntityDefinition ()
     {
@@ -557,15 +571,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     private void MockSpecialColumns (int columnCount)
     {
-      for (var i = 0; i < columnCount; i++)
-      {
-        _columnDefinitionFactoryMock
-            .Expect (mock => mock.CreateIDColumnDefinition())
-            .Return (_fakeIDColumnDefinition);
-        _columnDefinitionFactoryMock
-            .Expect (mock => mock.CreateTimestampColumnDefinition())
-            .Return (_fakeTimestampColumnDefinition);
-      }
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateIDColumnDefinition())
+          .Return (_fakeIDColumnDefinition)
+          .Repeat.Times (columnCount);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateTimestampColumnDefinition())
+          .Return (_fakeTimestampColumnDefinition)
+          .Repeat.Times (columnCount);
     }
   }
 }
