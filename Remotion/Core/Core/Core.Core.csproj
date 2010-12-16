@@ -256,6 +256,7 @@
     <Compile Include="ServiceLocation\DefaultServiceConfigurationDiscoveryService.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceConfigurationEntry.cs" />
+    <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />

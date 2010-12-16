@@ -415,6 +415,7 @@
     <Compile Include="Utilities\ArgumentTypeExceptionTest.cs" />
     <Compile Include="Utilities\CompoundComparerTest.cs" />
     <Compile Include="Utilities\DelegateBasedComparerTest.cs" />
+    <Compile Include="Utilities\DelegateBasedEqualityComparerTest.cs" />
     <Compile Include="Utilities\PropertyRestorerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
