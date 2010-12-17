@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -44,10 +46,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return "GO\r\n\r\n"; }
     }
 
-    public override void AddViewForConcreteClassToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder)
+    public override void AddFilterViewToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
+
+      var filterViewDefinition = (FilterViewDefinition) classDefinition.StorageEntityDefinition;
 
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
@@ -57,10 +61,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    WHERE [ClassID] IN ({4})\r\n"
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
-          classDefinition.StorageEntityDefinition.LegacyViewName,
+          filterViewDefinition.ViewName,
           GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
           classDefinition.GetEntityName(),
-          GetClassIDList (GetClassDefinitionsForWhereClause (classDefinition)));
+          GetClassIDList (filterViewDefinition.ClassIDs));
     }
 
     public override void AddViewForAbstractClassToCreateViewScript (
@@ -169,6 +173,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         classIDListBuilder.AppendFormat ("'{0}'", classDefinition.ID);
       }
       return classIDListBuilder.ToString();
+    }
+
+    private string GetClassIDList (IEnumerable<string> classIDs)
+    {
+      return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
     }
   }
 }

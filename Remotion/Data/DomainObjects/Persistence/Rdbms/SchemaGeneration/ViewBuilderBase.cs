@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -43,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     // methods and properties
 
-    public abstract void AddViewForConcreteClassToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder);
+    public abstract void AddFilterViewToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses, StringBuilder createViewStringBuilder);
     public abstract void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder);
     public abstract string CreateViewSeparator { get; }
@@ -68,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      if (classDefinition.GetEntityName () != null)
+      if (classDefinition.StorageEntityDefinition is FilterViewDefinition)
       {
         AddViewForConcreteClassToCreateViewScript (classDefinition);
         AddToDropViewScript (classDefinition);
@@ -87,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private void AddViewForConcreteClassToCreateViewScript (ClassDefinition classDefinition)
     {
       AppendCreateViewSeparator ();
-      AddViewForConcreteClassToCreateViewScript (classDefinition, _createViewStringBuilder);
+      AddFilterViewToCreateViewScript (classDefinition, _createViewStringBuilder);
     }
 
     private void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
