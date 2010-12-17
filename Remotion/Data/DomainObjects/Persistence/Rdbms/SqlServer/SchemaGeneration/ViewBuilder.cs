@@ -63,8 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           FileBuilder.DefaultSchema,
           filterViewDefinition.ViewName,
           GetColumnList (filterViewDefinition.GetColumns()),
-          // GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
-          classDefinition.GetEntityName(),
+          filterViewDefinition.GetBaseTable().TableName,
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
 
