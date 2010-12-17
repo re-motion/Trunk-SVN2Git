@@ -185,85 +185,70 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (resultNullable.IsNullable, Is.True);
     }
 
-    // TODO Review 3605: Refactor the tests for nullability to always test nullable/not nullable in one test
-    // TODO Review 3605: Refactor the tests to use StubStorageTypeCalculator method
-
     [Test]
-    public void CreateColumnDefinition_ClassWithDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    public void CreateColumnDefinition_ClassWithDbTableAttribute()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), false);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
-
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
-
-      Assert.That (result.IsNullable, Is.False);
-    }
-
-    [Test]
-    public void CreateColumnDefinition_ClassWithDbTableAttribute_And_PropertyDefinitionIsNullabe ()
-    {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), true);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      StubStorageTypeCalculator (propertyDefinitionNotNullable);
+      StubStorageTypeCalculator (propertyDefinitionNullable);
 
-      Assert.That (result.IsNullable, Is.True);
+      var resultNotNullable =
+           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable, _storageProviderDefinitionFinder);
+      var resultNullable =
+          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable, _storageProviderDefinitionFinder);
+
+      Assert.That (resultNotNullable.IsNullable, Is.False);
+      Assert.That (resultNullable.IsNullable, Is.True);
     }
 
     [Test]
-    public void CreateColumnDefinition_ClassBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
+    public void CreateColumnDefinition_ClassBelowDbTableAttribute ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), false);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
-
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
-
-      Assert.That (result.IsNullable, Is.True);
-    }
-
-    [Test]
-    public void CreateColumnDefinition_ClassBelowDbTableAttribute_And_PropertyDefinitionIsNullabe ()
-    {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), true);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      StubStorageTypeCalculator (propertyDefinitionNotNullable);
+      StubStorageTypeCalculator (propertyDefinitionNullable);
 
-      Assert.That (result.IsNullable, Is.True);
+      var resultNotNullable =
+           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable, _storageProviderDefinitionFinder);
+      var resultNullable =
+          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable, _storageProviderDefinitionFinder);
+
+      Assert.That (resultNotNullable.IsNullable, Is.True);
+      Assert.That (resultNullable.IsNullable, Is.True);
     }
 
     [Test]
     public void CreateColumnDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
           typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
           false);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
+      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+         _classBelowBelowDbTableAttribute,
+         StorageClass.Persistent,
+         typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
+         true);
 
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+      StubStorageTypeCalculator (propertyDefinitionNotNullable);
+      StubStorageTypeCalculator (propertyDefinitionNullable);
 
-      Assert.That (result.IsNullable, Is.True);
-    }
+      var resultNotNullable =
+           (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable, _storageProviderDefinitionFinder);
+      var resultNullable =
+          (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNullable, _storageProviderDefinitionFinder);
 
-    [Test]
-    public void CreateColumnDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNullabe ()
-    {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classBelowBelowDbTableAttribute,
-          StorageClass.Persistent,
-          typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
-          true);
-      _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition, _storageProviderDefinitionFinder)).Return ("test");
-
-      var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
-
-      Assert.That (result.IsNullable, Is.True);
+      Assert.That (resultNotNullable.IsNullable, Is.True);
+      Assert.That (resultNullable.IsNullable, Is.True);
     }
 
     [Test]
