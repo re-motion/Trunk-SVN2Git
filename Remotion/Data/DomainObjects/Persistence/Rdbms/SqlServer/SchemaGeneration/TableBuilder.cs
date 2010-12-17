@@ -24,6 +24,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class TableBuilder : TableBuilderBase
   {
+    private class ColumnDefinitionVisitor : IColumnDefinitionVisitor
+    {
+      private readonly StringBuilder _columnList = new StringBuilder();
+
+      public string GetColumnList ()
+      {
+        return _columnList.ToString ();
+      }
+
+      public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
+      {
+        _columnList.AppendLine (GetColumnString (simpleColumnDefinition));
+      }
+
+      public void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
+      {
+        objectIDWithClassIDColumnDefinition.ObjectIDColumn.Accept (this);
+        objectIDWithClassIDColumnDefinition.ClassIDColumn.Accept (this);
+      }
+
+      private string GetColumnString (SimpleColumnDefinition columnDefinition)
+      {
+        return string.Format (
+            "  [{0}] {1}{2},",
+            columnDefinition.Name,
+            columnDefinition.StorageType,
+            columnDefinition.IsNullable ? " NULL" : " NOT NULL");
+      }
+    }
+
     public TableBuilder ()
     {
     }
@@ -59,31 +89,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var columnList = new StringBuilder ();
+      var visitor = new ColumnDefinitionVisitor ();
+
       foreach (var columnDefinition in tableDefinition.GetColumns ())
-      {
-        if (columnDefinition is SimpleColumnDefinition)
-        {
-          columnList.AppendLine (GetColumnString ((SimpleColumnDefinition) columnDefinition));
-        }
-        else if (columnDefinition is ObjectIDWithClassIDColumnDefinition)
-        {
-          var objectIDColumn = ((ObjectIDWithClassIDColumnDefinition) columnDefinition).ObjectIDColumn;
-          columnList.AppendLine (GetColumnString (objectIDColumn));
-          columnList.AppendLine (GetColumnString (((ObjectIDWithClassIDColumnDefinition) columnDefinition).ClassIDColumn));
-        }
-      }
-      return columnList.ToString();
-    }
+        columnDefinition.Accept (visitor);
 
-    private string GetColumnString (SimpleColumnDefinition columnDefinition)
-    {
-      return string.Format (
-          "  [{0}] {1}{2},",
-          columnDefinition.Name,
-          columnDefinition.StorageType,
-          columnDefinition.IsNullable ? " NULL" : " NOT NULL");
+      return visitor.GetColumnList();
     }
-
   }
 }
