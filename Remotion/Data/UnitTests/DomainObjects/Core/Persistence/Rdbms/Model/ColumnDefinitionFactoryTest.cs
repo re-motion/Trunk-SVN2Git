@@ -53,6 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageTypeCalculatorStub = MockRepository.GenerateStub<StorageTypeCalculator>();
       _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return ("varchar(100)");
       _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeObjectID).Return ("guid");
+      _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeTimestamp).Return ("rowversion");
       _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
       _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());

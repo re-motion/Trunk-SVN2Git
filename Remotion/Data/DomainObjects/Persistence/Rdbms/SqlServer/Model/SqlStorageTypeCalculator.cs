@@ -43,6 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       get { return "varchar (100)"; }
     }
 
+    public override string SqlDataTypeTimestamp
+    {
+      get { return "rowversion"; }
+    }
+
     public override string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

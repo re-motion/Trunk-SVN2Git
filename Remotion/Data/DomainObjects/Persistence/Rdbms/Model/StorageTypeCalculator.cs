@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public abstract string SqlDataTypeObjectID { get; }
     public abstract string SqlDataTypeSerializedObjectID { get; }
     public abstract string SqlDataTypeClassID { get; }
+    public abstract string SqlDataTypeTimestamp { get; }
 
     public virtual string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
