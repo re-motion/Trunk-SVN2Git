@@ -19,6 +19,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -207,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
@@ -222,7 +223,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
+      CheckCardinality (endPointID, CardinalityType.One, "UnregisterVirtualObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
 
       var objectEndPoint = (ObjectEndPoint) this[endPointID];
@@ -243,6 +244,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Add (collectionEndPoint);
 
       return collectionEndPoint;
+    }
+
+    public void UnregisterCollectionEndPoint (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.Many, "UnregisterCollectionEndPoint", "endPointID");
+
+      var collectionEndPoint = (CollectionEndPoint) this[endPointID];
+      if (collectionEndPoint == null)
+        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+
+      CheckUnchangedForUnregister (endPointID, collectionEndPoint);
+      
+      RemoveEndPoint (endPointID);
     }
 
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
@@ -269,7 +284,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      // TODO 3475: if (GetUnregisterableEndPointsForDataContainer (dataContainer).Any()) throw;
+      var unregisterableEndPoints = GetUnregisterableEndPointsForDataContainer (dataContainer);
+      if (unregisterableEndPoints.Length > 0)
+      {
+        var message = string.Format (
+            "Cannot unregister the following relation end-points: {0}. Relation end-points can only be removed when they are unchanged.",
+            SeparatedStringBuilder.Build (", ", unregisterableEndPoints, endPoint => "'" + endPoint + "'"));
+        throw new InvalidOperationException (message);
+      }
 
       foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
@@ -277,22 +299,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
           UnregisterRealObjectEndPoint (endPointID);
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
           UnregisterVirtualObjectEndPoint (endPointID);
-        // TODO 3475
-        //else
-        //  UnregisterCollectionEndPoint (endPointID);
+        else
+          UnregisterCollectionEndPoint (endPointID);
       }
     }
 
-    // TODO 3475:
-    //public IEnumerable<RelationEndPoint> GetUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
-    //{
-    //  ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+    public RelationEndPoint[] GetUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-    //  return from endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer)
-    //         let loadedEndPoint = this[endPointID]
-    //         where loadedEndPoint != null && loadedEndPoint.HasChanged
-    //         select loadedEndPoint;
-    //}
+      return (from endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer)
+              let loadedEndPoint = this[endPointID]
+              where loadedEndPoint != null && loadedEndPoint.HasChanged
+              select loadedEndPoint).ToArray();
+    }
 
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
@@ -424,9 +444,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IEndPoint objectEndPoint)
+    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IEndPoint endPoint)
     {
-      if (objectEndPoint.HasChanged)
+      if (endPoint.HasChanged)
       {
         var message = string.Format (
             "Cannot remove end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",

@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -271,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
@@ -283,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
@@ -292,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_RemovesEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
+      _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
       Assert.That (_map[id], Is.Not.Null);
       
       _map.UnregisterVirtualObjectEndPoint (id);
@@ -318,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
       Assert.That (_map[id], Is.Not.Null);
 
       objectEndPoint.OppositeObjectID = null;
@@ -485,12 +484,87 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterCollectionEndPoint_RegistersEndPoint_NullInitialContents ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPoint = _map.RegisterCollectionEndPoint (endPointID, null);
+
+      Assert.That (_map[endPointID], Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (endPoint));
+
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void RegisterCollectionEndPoint_RegistersEndPoint_NonNullInitialContents ()
+    {
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+
+      Assert.That (_map[endPointID], Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (endPoint));
+
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
+    }
+
+    [Test]
     public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
       Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
+    }
+
+    [Test]
+    public void UnregisterCollectionObjectEndPoint_UnregistersEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      _map.UnregisterCollectionEndPoint (endPointID);
+
+      Assert.That (_map[endPointID], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end-point is not part of this map.\r\nParameter name: endPointID")]
+    public void UnregisterCollectionObjectEndPoint_ThrowsWhenNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      _map.UnregisterCollectionEndPoint (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot remove end-point "
+        + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' because "
+        + "it has changed. End-points can only be unregistered when they are unchanged.")]
+    public void UnregisterCollectionEndPoint_ThrowsWhenChanged ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      collectionEndPoint.CreateRemoveCommand (item).Perform(); // no bidirectional changes, no events - it's only a fake item
+      Assert.That (collectionEndPoint.HasChanged, Is.True);
+
+      try
+      {
+        _map.UnregisterCollectionEndPoint (endPointID);
+      }
+      finally
+      {
+        Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      }
     }
 
     [Test]
@@ -647,7 +721,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      var virtualEndPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID, DomainObjectIDs.OrderTicket1);
+      var virtualEndPoint = _map.RegisterVirtualObjectEndPoint (endPointID, DomainObjectIDs.OrderTicket1);
       virtualEndPoint.OppositeObjectID = null; // the current value is ignored
       Assert.That (_map[endPointID], Is.Not.Null);
 
@@ -662,7 +736,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      CallRegisterVirtualObjectEndPoint (_map, endPointID, null);
+      _map.RegisterVirtualObjectEndPoint (endPointID, null);
       Assert.That (_map[endPointID], Is.Not.Null);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -670,8 +744,107 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.Null);
     }
 
-    // TODO 3475: Tests for New DC
-    // TODO 3475: Tests for modified end-points
+    [Test]
+    public void UnregisterEndPointsForDataContainer_New_UnregistersVirtualObjectEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      _map.UnregisterEndPointsForDataContainer (dataContainer);
+
+      Assert.That (_map[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void UnregisterEndPointsForDataContainer_New_UnregistersRealObjectEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      _map.UnregisterEndPointsForDataContainer (dataContainer);
+
+      Assert.That (_map[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void UnregisterEndPointsForDataContainer_New_UnregistersCollectionEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      _map.UnregisterEndPointsForDataContainer (dataContainer);
+
+      Assert.That (_map[endPointID], Is.Null);
+    }
+
+    // TODO 3475: Empty collection end-points should be unregistered for existing DCs, too
+    
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot unregister the following relation end-points: "
+        + "'RealObjectEndPoint: "
+        + "OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. "
+        + "Relation end-points can only be removed when they are unchanged.")]
+    public void UnregisterEndPointsForDataContainer_WithUnregisterableEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+
+      var objectEndPoint = (ObjectEndPoint) _map[endPointID];
+      Assert.That (objectEndPoint, Is.Not.Null);
+      objectEndPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      Assert.That (objectEndPoint.HasChanged, Is.True);
+
+      _map.UnregisterEndPointsForDataContainer (dataContainer);
+    }
+
+    [Test]
+    public void GetUnregisterableEndPointsForDataContainer()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+
+      var objectEndPoint = (ObjectEndPoint) _map[endPointID];
+      Assert.That (objectEndPoint, Is.Not.Null);
+      objectEndPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      Assert.That (objectEndPoint.HasChanged, Is.True);
+
+      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+
+      Assert.That (result, Is.EqualTo (new[] { objectEndPoint }));
+    }
+
+    [Test]
+    public void GetUnregisterableEndPointsForDataContainer_None ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+
+      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    public void GetUnregisterableEndPointsForDataContainer_EndPointNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateNewDataContainer (endPointID);
+      Assert.That (_map[endPointID], Is.Null);
+
+      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+
+      Assert.That (result, Is.Empty);
+    }
 
     [Test]
     public void CommitAllEndPoints_CommitsEndPoints ()
@@ -769,11 +942,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           null,
           pd => pd.DefaultValue);
       return foreignKeyDataContainer;
-    }
-
-    private VirtualObjectEndPoint CallRegisterVirtualObjectEndPoint (RelationEndPointMap map, RelationEndPointID endPointID, ObjectID oppositeObjectID)
-    {
-      return (VirtualObjectEndPoint) PrivateInvoke.InvokeNonPublicMethod (map, "RegisterVirtualObjectEndPoint", endPointID, oppositeObjectID);
     }
   }
 }
