@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     public abstract void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddTableViewToCreateViewScript (TableDefinition tableDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddUnionViewToCreateViewScript (UnionViewDefinition unionViewDefinition, StringBuilder createViewStringBuilder);
-    public abstract void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder);
+    public abstract void AddToDropViewScript (IEntityDefinition entityDefinition, StringBuilder dropViewStringBuilder);
     
     public abstract string CreateViewSeparator { get; }
 
@@ -63,12 +63,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       if (classDefinition.StorageEntityDefinition is FilterViewDefinition)
       {
         AddFilterViewToCreateViewScript ((FilterViewDefinition) classDefinition.StorageEntityDefinition);
-        AddToDropViewScript (classDefinition);
+        AddToDropViewScript ((IEntityDefinition) classDefinition.StorageEntityDefinition);
       }
       else if (classDefinition.StorageEntityDefinition is TableDefinition)
       {
         AddTableViewToCreateViewScript ((TableDefinition) classDefinition.StorageEntityDefinition);
-        AddToDropViewScript (classDefinition);
+        AddToDropViewScript ((IEntityDefinition) classDefinition.StorageEntityDefinition);
       }
       else
       {
@@ -76,25 +76,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         if (((UnionViewDefinition) classDefinition.StorageEntityDefinition).GetAllTables().Any())
         {
           AddUnionViewToCreateViewScript ((UnionViewDefinition) classDefinition.StorageEntityDefinition);
-          AddToDropViewScript (classDefinition);
+          AddToDropViewScript ((IEntityDefinition) classDefinition.StorageEntityDefinition);
         }
       }
     }
 
     private void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition)
     {
+      Assertion.IsNotNull (filterViewDefinition.ViewName, "Change implementation when null views are allowed");
+
       AppendCreateViewSeparator ();
       AddFilterViewToCreateViewScript (filterViewDefinition, _createViewStringBuilder);
     }
 
     private void AddTableViewToCreateViewScript (TableDefinition tableDefinition)
     {
+      Assertion.IsNotNull (tableDefinition.ViewName, "Change implementation when null views are allowed");
+
       AppendCreateViewSeparator ();
       AddTableViewToCreateViewScript (tableDefinition, _createViewStringBuilder);
     }
 
     private void AddUnionViewToCreateViewScript (UnionViewDefinition unionViewDefinition)
     {
+      Assertion.IsNotNull (unionViewDefinition.ViewName, "Change implementation when null views are allowed");
+
       AppendCreateViewSeparator ();
       AddUnionViewToCreateViewScript (unionViewDefinition, _createViewStringBuilder);
     }
@@ -105,12 +111,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         _createViewStringBuilder.Append (CreateViewSeparator);
     }
 
-    private void AddToDropViewScript (ClassDefinition classDefinition)
+    private void AddToDropViewScript (IEntityDefinition entityDefinition)
     {
+      Assertion.IsNotNull (entityDefinition.ViewName, "Change implementation when null views are allowed");
+
       if (_dropViewStringBuilder.Length != 0)
         _dropViewStringBuilder.Append ("\r\n");
 
-      AddToDropViewScript (classDefinition, _dropViewStringBuilder);
+      AddToDropViewScript (entityDefinition, _dropViewStringBuilder);
     }
   }
 }

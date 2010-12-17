@@ -118,15 +118,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         createViewStringBuilder.Append ("  WITH CHECK OPTION\r\n");
     }
 
-    public override void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder)
+    public override void AddToDropViewScript (IEntityDefinition entityDefinition, StringBuilder dropViewStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
       ArgumentUtility.CheckNotNull ("dropViewStringBuilder", dropViewStringBuilder);
 
       dropViewStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP VIEW [{1}].[{0}]\r\n",
-          classDefinition.StorageEntityDefinition.LegacyViewName,
+          entityDefinition.ViewName,
           FileBuilder.DefaultSchema);
     }
 
