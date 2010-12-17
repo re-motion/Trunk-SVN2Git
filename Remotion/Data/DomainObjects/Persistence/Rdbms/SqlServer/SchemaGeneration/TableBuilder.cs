@@ -58,12 +58,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var visitor = new SqlDeclarationColumnDefinitionVisitor ();
+      var visitor = new SqlDeclarationListColumnDefinitionVisitor ();
 
       foreach (var columnDefinition in tableDefinition.GetColumns ())
         columnDefinition.Accept (visitor);
 
-      return visitor.GetColumnList();
+      return visitor.GetDeclarationList();
     }
   }
 }

@@ -54,15 +54,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       var filterViewDefinition = (FilterViewDefinition) classDefinition.StorageEntityDefinition;
 
       createViewStringBuilder.AppendFormat (
-          "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp]{2}\r\n"
+          + "  SELECT {2}\r\n"
           + "    FROM [{0}].[{3}]\r\n"
           + "    WHERE [ClassID] IN ({4})\r\n"
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
           filterViewDefinition.ViewName,
-          GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
+          GetColumnList (filterViewDefinition.GetColumns()),
+          // GetColumnList (GetGroupedPropertyDefinitions (classDefinition)),
           classDefinition.GetEntityName(),
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
@@ -160,6 +161,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storagePropertyName));
       }
       return stringBuilder.ToString();
+    }
+
+    private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions)
+    {
+      var visitor = new SqlNameListColumnDefinitionVisitor ();
+
+      foreach (var columnDefinition in columnDefinitions)
+        columnDefinition.Accept (visitor);
+
+      return visitor.GetNameList ();
     }
 
     private string GetClassIDList (ClassDefinitionCollection classDefinitionCollection)

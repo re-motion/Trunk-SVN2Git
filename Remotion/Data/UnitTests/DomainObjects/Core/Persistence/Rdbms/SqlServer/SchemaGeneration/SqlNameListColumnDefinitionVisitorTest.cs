@@ -23,38 +23,40 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlDeclarationColumnDefinitionVisitorTest
+  public class SqlNameListColumnDefinitionVisitorTest
   {
-    private SqlDeclarationColumnDefinitionVisitor _visitor;
+    private SqlNameListColumnDefinitionVisitor _visitor;
 
     [SetUp]
     public void SetUp ()
     {
-      _visitor = new SqlDeclarationColumnDefinitionVisitor ();
+      _visitor = new SqlNameListColumnDefinitionVisitor ();
     }
 
     [Test]
-    public void VisitSimpleColumnDefinition_Nullable ()
+    public void VisitSimpleColumnDefinition ()
     {
       var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
 
       _visitor.VisitSimpleColumnDefinition (column);
-      var result = _visitor.GetColumnList ();
+      var result = _visitor.GetNameList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1] integer NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("[C1]"));
     }
 
     [Test]
-    public void VisitSimpleColumnDefinition_NotNullable ()
+    public void VisitSimpleColumnDefinition_SecondColumn ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", false);
+      var column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
+      var column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true);
 
-      _visitor.VisitSimpleColumnDefinition (column);
-      var result = _visitor.GetColumnList ();
+      _visitor.VisitSimpleColumnDefinition (column1);
+      _visitor.VisitSimpleColumnDefinition (column2);
+      var result = _visitor.GetNameList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1] integer NOT NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("[C1], [C2]"));
     }
-
+    
     [Test]
     public void VisitObjectIDWithClassIDColumnDefinition ()
     {
@@ -63,9 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var column = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
 
       _visitor.VisitObjectIDWithClassIDColumnDefinition (column);
-      var result = _visitor.GetColumnList ();
+      var result = _visitor.GetNameList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL,\r\n  [C1ClassID] integer NOT NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("[C1ID], [C1ClassID]"));
     }
   }
 }
