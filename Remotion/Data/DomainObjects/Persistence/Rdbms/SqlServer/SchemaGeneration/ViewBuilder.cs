@@ -16,7 +16,6 @@
 // 
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Text;
@@ -24,21 +23,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  /// <summary>
+  /// Generates SQL Server-specific views for the persistence model.
+  /// </summary>
   public class ViewBuilder : ViewBuilderBase
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public ViewBuilder ()
     {
     }
-
-    // methods and properties
 
     public override string CreateViewSeparator
     {

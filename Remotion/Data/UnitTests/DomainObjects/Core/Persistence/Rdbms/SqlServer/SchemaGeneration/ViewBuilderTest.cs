@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -52,6 +56,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
+    }
+
+    [Test]
+    public void AddView_NonEntityDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), SchemaGenerationFirstStorageProviderDefinition);
+      classDefinition.SetStorageEntity (MockRepository.GenerateStub<IStorageEntityDefinition> ());
+      
+      _viewBuilder.AddView (classDefinition);
+      Assert.AreEqual ("", _viewBuilder.GetCreateViewScript ());
     }
 
     [Test]
