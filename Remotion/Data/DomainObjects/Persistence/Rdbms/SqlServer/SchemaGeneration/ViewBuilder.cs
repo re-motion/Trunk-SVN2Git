@@ -46,12 +46,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return "GO\r\n\r\n"; }
     }
 
-    public override void AddFilterViewToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder)
+    public override void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
-
-      var filterViewDefinition = (FilterViewDefinition) classDefinition.StorageEntityDefinition;
 
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"

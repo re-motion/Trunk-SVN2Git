@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     // methods and properties
 
-    public abstract void AddFilterViewToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder);
+    public abstract void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses, StringBuilder createViewStringBuilder);
     public abstract void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder);
     public abstract string CreateViewSeparator { get; }
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       if (classDefinition.StorageEntityDefinition is FilterViewDefinition)
       {
-        AddViewForConcreteClassToCreateViewScript (classDefinition);
+        AddFilterViewToCreateViewScript ((FilterViewDefinition) classDefinition.StorageEntityDefinition);
         AddToDropViewScript (classDefinition);
       }
       else
@@ -85,10 +85,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    private void AddViewForConcreteClassToCreateViewScript (ClassDefinition classDefinition)
+    private void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition)
     {
       AppendCreateViewSeparator ();
-      AddFilterViewToCreateViewScript (classDefinition, _createViewStringBuilder);
+      AddFilterViewToCreateViewScript (filterViewDefinition, _createViewStringBuilder);
     }
 
     private void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
