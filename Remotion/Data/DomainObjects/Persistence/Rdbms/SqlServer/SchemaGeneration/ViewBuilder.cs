@@ -66,29 +66,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     }
 
     public override void AddTableViewToCreateViewScript (
-        ClassDefinition classDefinition,
+        TableDefinition tableDefinition,
         StringBuilder createViewStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
 
-      var groupedPropertyDefinitions = GetGroupedPropertyDefinitions (classDefinition);
-
       createViewStringBuilder.AppendFormat (
-          "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
-          + "  WITH SCHEMABINDING AS\r\n",
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
+          + "  WITH SCHEMABINDING AS\r\n"
+          + "  SELECT {2}\r\n"
+          + "    FROM [{0}].[{3}]\r\n"
+          + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
-          classDefinition.StorageEntityDefinition.LegacyViewName,
-          GetColumnList (groupedPropertyDefinitions));
-
-        createViewStringBuilder.AppendFormat (
-            "  SELECT [ID], [ClassID], [Timestamp]{0}\r\n"
-            + "    FROM [{1}].[{2}]\r\n",
-            GetColumnListForUnionSelect (classDefinition, groupedPropertyDefinitions),
-            FileBuilder.DefaultSchema,
-            classDefinition.StorageEntityDefinition.LegacyEntityName);
-
-      createViewStringBuilder.Append ("  WITH CHECK OPTION\r\n");
+          tableDefinition.ViewName,
+          GetColumnList (tableDefinition.GetColumns()),
+          tableDefinition.TableName);
     }
 
     public override void AddUnionViewToCreateViewScript (
