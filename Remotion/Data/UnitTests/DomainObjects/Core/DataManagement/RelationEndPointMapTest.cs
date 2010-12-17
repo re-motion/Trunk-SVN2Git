@@ -783,8 +783,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.Null);
     }
 
-    // TODO 3475: Empty collection end-points should be unregistered for existing DCs, too
-    
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "Cannot unregister the following relation end-points: "
