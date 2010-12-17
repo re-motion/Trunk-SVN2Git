@@ -47,6 +47,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
+      if (!(baseEntity is TableDefinition || baseEntity is FilterViewDefinition))
+      {
+        throw new ArgumentTypeException (
+            "The base entity must either be a TableDefinition or a FilterViewDefinition.",
+            "baseEntity",
+            null,
+            baseEntity.GetType());
+      }
+
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
       _baseEntity = baseEntity;
@@ -92,6 +101,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
+    }
+
+    public TableDefinition GetBaseTable ()
+    {
+      var current = BaseEntity;
+      while (current is FilterViewDefinition)
+        current = ((FilterViewDefinition) current).BaseEntity;
+      
+      return (TableDefinition) current;
     }
 
     public void Accept (IEntityDefinitionVisitor visitor)

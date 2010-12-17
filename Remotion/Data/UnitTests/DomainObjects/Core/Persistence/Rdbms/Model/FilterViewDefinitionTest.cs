@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -62,6 +63,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void Initialization_WithBaseFilterViewEntity ()
+    {
+      new FilterViewDefinition (_storageProviderDefinition, "Test", _filterViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
+        "The base entity must either be a TableDefinition or a FilterViewDefinition.\r\nParameter name: baseEntity")]
+    public void Initialization_WithInvalidBaseEntity ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (_storageProviderDefinition, "TestUnion", new IEntityDefinition[0], new IColumnDefinition[0]);
+      new FilterViewDefinition (_storageProviderDefinition, "Test", unionViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
+    }
+
+    [Test]
     public void Initialization_ViewNameNull ()
     {
       var filterViewDefinition = new FilterViewDefinition (_storageProviderDefinition, null, _entityDefinition, new[]{"ClassId"}, new IColumnDefinition[0]);
@@ -86,6 +102,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _filterViewDefinition.GetColumns();
 
       Assert.That (result, Is.EqualTo (new[] { _column1, _column3 }));
+    }
+
+    [Test]
+    public void GetBaseTable ()
+    {
+      var table = _filterViewDefinition.GetBaseTable ();
+
+      Assert.That (table, Is.SameAs (_entityDefinition));
+    }
+
+    [Test]
+    public void GetBaseTable_IndirectTable ()
+    {
+      var derivedFilterViewDefinition = new FilterViewDefinition (
+          _storageProviderDefinition,
+          "Test",
+          _filterViewDefinition,
+          new[] { "x" },
+          new IColumnDefinition[0]);
+
+      var table = derivedFilterViewDefinition.GetBaseTable ();
+
+      Assert.That (table, Is.SameAs (_entityDefinition));
     }
 
     [Test]
