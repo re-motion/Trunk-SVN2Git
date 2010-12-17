@@ -65,7 +65,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
 
-    public override void AddViewForAbstractClassToCreateViewScript (
+    public override void AddTableViewToCreateViewScript (
+        ClassDefinition classDefinition,
+        StringBuilder createViewStringBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
+
+      var groupedPropertyDefinitions = GetGroupedPropertyDefinitions (classDefinition);
+
+      createViewStringBuilder.AppendFormat (
+          "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
+          + "  WITH SCHEMABINDING AS\r\n",
+          FileBuilder.DefaultSchema,
+          classDefinition.StorageEntityDefinition.LegacyViewName,
+          GetColumnList (groupedPropertyDefinitions));
+
+        createViewStringBuilder.AppendFormat (
+            "  SELECT [ID], [ClassID], [Timestamp]{0}\r\n"
+            + "    FROM [{1}].[{2}]\r\n",
+            GetColumnListForUnionSelect (classDefinition, groupedPropertyDefinitions),
+            FileBuilder.DefaultSchema,
+            classDefinition.StorageEntityDefinition.LegacyEntityName);
+
+      createViewStringBuilder.Append ("  WITH CHECK OPTION\r\n");
+    }
+
+    public override void AddUnionViewToCreateViewScript (
         ClassDefinition classDefinition,
         ClassDefinitionCollection concreteClasses,
         StringBuilder createViewStringBuilder)

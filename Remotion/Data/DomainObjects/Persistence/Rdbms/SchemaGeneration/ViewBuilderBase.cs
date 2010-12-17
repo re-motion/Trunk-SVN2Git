@@ -45,7 +45,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     // methods and properties
 
     public abstract void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder);
-    public abstract void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses, StringBuilder createViewStringBuilder);
+    public abstract void AddTableViewToCreateViewScript (ClassDefinition classDefinition, StringBuilder createViewStringBuilder);
+    public abstract void AddUnionViewToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses, StringBuilder createViewStringBuilder);
     public abstract void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder);
     public abstract string CreateViewSeparator { get; }
 
@@ -74,12 +75,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         AddFilterViewToCreateViewScript ((FilterViewDefinition) classDefinition.StorageEntityDefinition);
         AddToDropViewScript (classDefinition);
       }
+      else if (classDefinition.StorageEntityDefinition is TableDefinition)
+      {
+        AddTableViewToCreateViewScript (classDefinition);
+        AddToDropViewScript (classDefinition);
+      }
       else
       {
         ClassDefinitionCollection concreteClasses = GetConcreteClasses (classDefinition);
         if (concreteClasses.Count != 0)
         {
-          AddViewForAbstractClassToCreateViewScript (classDefinition, concreteClasses);
+          AddUnionViewToCreateViewScript (classDefinition, concreteClasses);
           AddToDropViewScript (classDefinition);
         }
       }
@@ -91,10 +97,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       AddFilterViewToCreateViewScript (filterViewDefinition, _createViewStringBuilder);
     }
 
-    private void AddViewForAbstractClassToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
+    private void AddTableViewToCreateViewScript (ClassDefinition classDefinition)
     {
       AppendCreateViewSeparator ();
-      AddViewForAbstractClassToCreateViewScript (classDefinition, concreteClasses, _createViewStringBuilder);
+      AddTableViewToCreateViewScript (classDefinition, _createViewStringBuilder);
+    }
+
+    private void AddUnionViewToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
+    {
+      AppendCreateViewSeparator ();
+      AddUnionViewToCreateViewScript (classDefinition, concreteClasses, _createViewStringBuilder);
     }
 
     private void AppendCreateViewSeparator ()
