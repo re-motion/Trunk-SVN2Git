@@ -75,7 +75,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
 
       var groupedPropertyDefinitions = GetGroupedPropertyDefinitions (classDefinition);
-      string classIDListForWhereClause = GetClassIDList (GetClassDefinitionsForWhereClause (classDefinition));
 
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
@@ -92,12 +91,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
         createViewStringBuilder.AppendFormat (
             "  SELECT [ID], [ClassID], [Timestamp]{0}\r\n"
-            + "    FROM [{1}].[{2}]\r\n"
-            + "    WHERE [ClassID] IN ({3})\r\n",
+            + "    FROM [{1}].[{2}]\r\n",
             GetColumnListForUnionSelect (tableRootClass, groupedPropertyDefinitions),
             FileBuilder.DefaultSchema,
-            tableRootClass.StorageEntityDefinition.LegacyEntityName,
-            classIDListForWhereClause);
+            tableRootClass.StorageEntityDefinition.LegacyEntityName);
 
         numberOfSelects++;
       }
@@ -168,19 +165,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         columnDefinition.Accept (visitor);
 
       return visitor.GetNameList ();
-    }
-
-    private string GetClassIDList (ClassDefinitionCollection classDefinitionCollection)
-    {
-      StringBuilder classIDListBuilder = new StringBuilder();
-      foreach (ClassDefinition classDefinition in classDefinitionCollection)
-      {
-        if (classIDListBuilder.Length != 0)
-          classIDListBuilder.Append (", ");
-
-        classIDListBuilder.AppendFormat ("'{0}'", classDefinition.ID);
-      }
-      return classIDListBuilder.ToString();
     }
 
     private string GetClassIDList (IEnumerable<string> classIDs)

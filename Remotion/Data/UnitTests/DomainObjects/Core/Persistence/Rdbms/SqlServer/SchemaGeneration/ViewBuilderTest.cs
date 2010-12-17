@@ -49,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
           + "    FROM [dbo].[Order]\r\n"
-          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -65,7 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]\r\n"
           + "    FROM [dbo].[Customer]\r\n"
-          + "    WHERE [ClassID] IN ('Customer')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -81,7 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
           + "    FROM [dbo].[ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -97,11 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], null, null, null\r\n"
           + "    FROM [dbo].[Customer]\r\n"
-          + "    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')\r\n"
           + "  UNION ALL\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], null, null, null, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]\r\n"
-          + "    FROM [dbo].[DevelopmentPartner]\r\n"
-          + "    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')\r\n";
+          + "    FROM [dbo].[DevelopmentPartner]\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
     }
@@ -116,7 +111,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]\r\n"
           + "    FROM [dbo].[DevelopmentPartner]\r\n"
-          + "    WHERE [ClassID] IN ('DevelopmentPartner')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -148,7 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp]\r\n"
           + "    FROM [dbo].[TableWithoutProperties]\r\n"
-          + "    WHERE [ClassID] IN ('ClassWithoutProperties')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
@@ -173,14 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
           + "    FROM [dbo].[Order]\r\n"
-          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n"
           + "GO\r\n\r\n"
           + "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
           + "    FROM [dbo].[ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
@@ -200,14 +191,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
           + "    FROM [dbo].[Order]\r\n"
-          + "    WHERE [ClassID] IN ('Order')\r\n"
           + "  WITH CHECK OPTION\r\n"
           + "GO\r\n\r\n"
           + "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]\r\n"
           + "    FROM [dbo].[ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());

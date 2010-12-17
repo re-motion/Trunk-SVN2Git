@@ -300,18 +300,15 @@ CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNum
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], null, null, null
     FROM [dbo].[Customer]
-    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')
   UNION ALL
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], null, null, null, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]
     FROM [dbo].[DevelopmentPartner]
-    WHERE [ClassID] IN ('Customer', 'DevelopmentPartner')
 GO
 
 CREATE VIEW [dbo].[AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country]
     FROM [dbo].[Address]
-    WHERE [ClassID] IN ('Address')
   WITH CHECK OPTION
 GO
 
@@ -319,7 +316,6 @@ CREATE VIEW [dbo].[CeoView] ([ID], [ClassID], [Timestamp], [Name], [CompanyID], 
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [CompanyID], [CompanyIDClassID]
     FROM [dbo].[Ceo]
-    WHERE [ClassID] IN ('Ceo')
   WITH CHECK OPTION
 GO
 
@@ -327,7 +323,6 @@ CREATE VIEW [dbo].[ClassWithAllDataTypesView] ([ID], [ClassID], [Timestamp], [Bo
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Boolean], [Byte], [Date], [DateTime], [Decimal], [Double], [Enum], [ExtensibleEnum], [Guid], [Int16], [Int32], [Int64], [Single], [String], [StringWithoutMaxLength], [Binary], [BinaryWithoutMaxLength], [NaBoolean], [NaByte], [NaDate], [NaDateTime], [NaDecimal], [NaDouble], [NaEnum], [NaGuid], [NaInt16], [NaInt32], [NaInt64], [NaSingle], [StringWithNullValue], [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary], [NullableBinaryWithoutMaxLength]
     FROM [dbo].[TableWithAllDataTypes]
-    WHERE [ClassID] IN ('ClassWithAllDataTypes')
   WITH CHECK OPTION
 GO
 
@@ -335,7 +330,6 @@ CREATE VIEW [dbo].[ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp]
     FROM [dbo].[TableWithoutProperties]
-    WHERE [ClassID] IN ('ClassWithoutProperties')
   WITH CHECK OPTION
 GO
 
@@ -343,7 +337,6 @@ CREATE VIEW [dbo].[ClassWithRelationsView] ([ID], [ClassID], [Timestamp], [Deriv
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID]
     FROM [dbo].[TableWithRelations]
-    WHERE [ClassID] IN ('ClassWithRelations')
   WITH CHECK OPTION
 GO
 
@@ -351,7 +344,6 @@ CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNu
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]
     FROM [dbo].[Customer]
-    WHERE [ClassID] IN ('Customer')
   WITH CHECK OPTION
 GO
 
@@ -359,7 +351,6 @@ CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyIn
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]
     FROM [dbo].[ConcreteClass]
-    WHERE [ClassID] IN ('ConcreteClass', 'DerivedClass', 'DerivedOfDerivedClass', 'SecondDerivedClass')
   WITH CHECK OPTION
 GO
 
@@ -383,7 +374,6 @@ CREATE VIEW [dbo].[PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNum
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]
     FROM [dbo].[DevelopmentPartner]
-    WHERE [ClassID] IN ('DevelopmentPartner')
   WITH CHECK OPTION
 GO
 
@@ -391,7 +381,6 @@ CREATE VIEW [dbo].[DevelopmentPartnerView] ([ID], [ClassID], [Timestamp], [Name]
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]
     FROM [dbo].[DevelopmentPartner]
-    WHERE [ClassID] IN ('DevelopmentPartner')
   WITH CHECK OPTION
 GO
 
@@ -399,7 +388,6 @@ CREATE VIEW [dbo].[EmployeeView] ([ID], [ClassID], [Timestamp], [Name], [Supervi
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [SupervisorID]
     FROM [dbo].[Employee]
-    WHERE [ClassID] IN ('Employee')
   WITH CHECK OPTION
 GO
 
@@ -407,7 +395,6 @@ CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]
     FROM [dbo].[Order]
-    WHERE [ClassID] IN ('Order')
   WITH CHECK OPTION
 GO
 
@@ -415,7 +402,6 @@ CREATE VIEW [dbo].[OrderItemView] ([ID], [ClassID], [Timestamp], [Position], [Pr
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Position], [Product], [OrderID]
     FROM [dbo].[OrderItem]
-    WHERE [ClassID] IN ('OrderItem')
   WITH CHECK OPTION
 GO
 

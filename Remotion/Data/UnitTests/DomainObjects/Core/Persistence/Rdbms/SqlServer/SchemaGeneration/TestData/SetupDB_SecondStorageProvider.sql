@@ -46,7 +46,6 @@ CREATE VIEW [dbo].[OfficialView] ([ID], [ClassID], [Timestamp], [Name], [Respons
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality]
     FROM [dbo].[Official]
-    WHERE [ClassID] IN ('Official', 'SpecialOfficial')
   WITH CHECK OPTION
 GO
 
