@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
-      var allClassesInHierarchy = GetAllClassForHierarchy (classDefinition);
+      var allClassesInHierarchy = GetAllClassesForHierarchy (classDefinition);
 
       IEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
           (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1, 
@@ -199,7 +199,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         .Concat (columnDefinitions);
     }
 
-    private IEnumerable<ClassDefinition> GetAllClassForHierarchy (ClassDefinition classDefinition)
+    private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
     {
       return classDefinition
           .CreateSequence (cd => cd.BaseClass)

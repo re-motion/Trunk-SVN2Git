@@ -29,7 +29,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Customer = Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Folder = Remotion.Data.UnitTests.DomainObjects.TestDomain.Folder;
@@ -74,6 +73,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ObjectIDWithClassIDColumnDefinition _fakeIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     
+    // Test Domain:
+    //
+    //                 BaseBase
+    //                     |
+    //                   Base
+    //                 /      \
+    //            Table1       Table2
+    //                         /    \
+    //                   Derived1  Derived2
+    //                                |
+    //                          DerivedDerived
+    //                                |
+    //                       DerivedDerivedDerived
+    //
+    // All Base classes are persisted as UnionViewDefinitions, all Tables as TableDefinitions, all Derived as FilterViewDefinitions.
+
     [SetUp]
     public void SetUp ()
     {
