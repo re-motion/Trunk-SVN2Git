@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -25,29 +24,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class ViewBuilderBase
   {
-    // types
+    private readonly StringBuilder _createViewStringBuilder;
+    private readonly StringBuilder _dropViewStringBuilder;
 
-    // static members and constants
-
-    // member fields
-
-    private StringBuilder _createViewStringBuilder;
-    private StringBuilder _dropViewStringBuilder;
-
-    // construction and disposing
-
-    public ViewBuilderBase ()
+    protected ViewBuilderBase ()
     {
       _createViewStringBuilder = new StringBuilder ();
       _dropViewStringBuilder = new StringBuilder ();
     }
 
-    // methods and properties
-
     public abstract void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddTableViewToCreateViewScript (TableDefinition tableDefinition, StringBuilder createViewStringBuilder);
-    public abstract void AddUnionViewToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses, StringBuilder createViewStringBuilder);
+    public abstract void AddUnionViewToCreateViewScript (UnionViewDefinition unionViewDefinition, StringBuilder createViewStringBuilder);
     public abstract void AddToDropViewScript (ClassDefinition classDefinition, StringBuilder dropViewStringBuilder);
+    
     public abstract string CreateViewSeparator { get; }
 
     public string GetCreateViewScript ()
@@ -82,10 +72,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
       else
       {
-        ClassDefinitionCollection concreteClasses = GetConcreteClasses (classDefinition);
-        if (concreteClasses.Count != 0)
+        // TODO 3606: Remove this check
+        if (((UnionViewDefinition) classDefinition.StorageEntityDefinition).GetAllTables().Any())
         {
-          AddUnionViewToCreateViewScript (classDefinition, concreteClasses);
+          AddUnionViewToCreateViewScript ((UnionViewDefinition) classDefinition.StorageEntityDefinition);
           AddToDropViewScript (classDefinition);
         }
       }
@@ -103,10 +93,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       AddTableViewToCreateViewScript (tableDefinition, _createViewStringBuilder);
     }
 
-    private void AddUnionViewToCreateViewScript (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
+    private void AddUnionViewToCreateViewScript (UnionViewDefinition unionViewDefinition)
     {
       AppendCreateViewSeparator ();
-      AddUnionViewToCreateViewScript (classDefinition, concreteClasses, _createViewStringBuilder);
+      AddUnionViewToCreateViewScript (unionViewDefinition, _createViewStringBuilder);
     }
 
     private void AppendCreateViewSeparator ()
@@ -121,124 +111,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         _dropViewStringBuilder.Append ("\r\n");
 
       AddToDropViewScript (classDefinition, _dropViewStringBuilder);
-    }
-
-    protected ClassDefinitionCollection GetConcreteClasses (ClassDefinition abstractClassDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("abstractClassDefinition", abstractClassDefinition);
-
-      ClassDefinitionCollection concreteClasses = new ClassDefinitionCollection (false);
-      FillConcreteClasses (abstractClassDefinition, concreteClasses);
-      return concreteClasses;
-    }
-
-    private void FillConcreteClasses (ClassDefinition classDefinition, ClassDefinitionCollection concreteClasses)
-    {
-      if (classDefinition.GetEntityName () != null)
-      {
-        concreteClasses.Add (classDefinition);
-        return;
-      }
-
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-        FillConcreteClasses (derivedClass, concreteClasses);
-    }
-
-    protected ClassDefinitionCollection GetClassDefinitionsForWhereClause (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      ClassDefinitionCollection classDefinitionsForWhereClause = new ClassDefinitionCollection (false);
-
-      if (classDefinition.GetEntityName () != null)
-        classDefinitionsForWhereClause.Add (classDefinition);
-
-      FillClassDefinitionsForWhereClauseWithDerivedClasses (classDefinition, classDefinitionsForWhereClause);
-
-      return classDefinitionsForWhereClause;
-    }
-
-    private void FillClassDefinitionsForWhereClauseWithDerivedClasses (
-        ClassDefinition classDefinition,
-        ClassDefinitionCollection classDefinitionsForWhereClause)
-    {
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-      {
-        if (derivedClass.GetEntityName () != null)
-          classDefinitionsForWhereClause.Add (derivedClass);
-
-        FillClassDefinitionsForWhereClauseWithDerivedClasses (derivedClass, classDefinitionsForWhereClause);
-      }
-    }
-
-    protected bool IsPartOfInheritanceBranch (ClassDefinition classDefinitionOfBranch, ClassDefinition classDefinitionToEvaluate)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinitionOfBranch", classDefinitionOfBranch);
-      ArgumentUtility.CheckNotNull ("classDefinitionToEvaluate", classDefinitionToEvaluate);
-
-      if (classDefinitionOfBranch == classDefinitionToEvaluate)
-        return true;
-
-      ClassDefinition baseClass = classDefinitionOfBranch.BaseClass;
-      while (baseClass != null)
-      {
-        if (baseClass == classDefinitionToEvaluate)
-          return true;
-        baseClass = baseClass.BaseClass;
-      }
-
-      return IsDerivedClass (classDefinitionOfBranch, classDefinitionToEvaluate);
-    }
-
-    private bool IsDerivedClass (ClassDefinition classDefinition, ClassDefinition classDefinitionToEvaluate)
-    {
-      if (classDefinition.DerivedClasses.Contains (classDefinitionToEvaluate))
-        return true;
-
-      foreach (ClassDefinition derivedClasses in classDefinition.DerivedClasses)
-      {
-        if (IsDerivedClass (derivedClasses, classDefinitionToEvaluate))
-          return true;
-      }
-
-      return false;
-    }
-
-    protected IEnumerable<IGrouping<string , PropertyDefinition>> GetGroupedPropertyDefinitions (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      List<PropertyDefinition> allPropertyDefinitions = new List<PropertyDefinition> ();
-      FillAllPropertyDefinitionsFromBaseClasses (classDefinition, allPropertyDefinitions);
-
-      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.MyPropertyDefinitions.GetAllPersistent ())
-        allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
-
-      FillAllPropertyDefinitionsFromDerivedClasses (classDefinition, allPropertyDefinitions);
-
-      return allPropertyDefinitions.GroupBy (propertyDefinition => propertyDefinition.StoragePropertyDefinition.Name);
-    }
-
-    private void FillAllPropertyDefinitionsFromBaseClasses (ClassDefinition classDefinition, List<PropertyDefinition> allPropertyDefinitions)
-    {
-      if (classDefinition.BaseClass == null)
-        return;
-
-      FillAllPropertyDefinitionsFromBaseClasses (classDefinition.BaseClass, allPropertyDefinitions);
-
-      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.BaseClass.MyPropertyDefinitions.GetAllPersistent ())
-        allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
-    }
-
-    private void FillAllPropertyDefinitionsFromDerivedClasses (ClassDefinition classDefinition, List<PropertyDefinition> allPropertyDefinitions)
-    {
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-      {
-        foreach (PropertyDefinition propertyDefinitionInDerivedClass in derivedClass.MyPropertyDefinitions.GetAllPersistent ())
-          allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
-
-        FillAllPropertyDefinitionsFromDerivedClasses (derivedClass, allPropertyDefinitions);
-      }
     }
   }
 }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -85,15 +84,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     }
 
     public override void AddUnionViewToCreateViewScript (
-        ClassDefinition classDefinition,
-        ClassDefinitionCollection concreteClasses,
+        UnionViewDefinition unionViewDefinition,
         StringBuilder createViewStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("concreteClasses", concreteClasses);
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
-
-      var unionViewDefinition = (UnionViewDefinition) classDefinition.StorageEntityDefinition;
 
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
@@ -133,49 +128,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  DROP VIEW [{1}].[{0}]\r\n",
           classDefinition.StorageEntityDefinition.LegacyViewName,
           FileBuilder.DefaultSchema);
-    }
-
-    private string GetColumnListForUnionSelect (ClassDefinition classDefinitionForUnionSelect, IEnumerable<IGrouping<string , PropertyDefinition>> groupedPropertyDefinitions)
-    {
-      StringBuilder stringBuilder = new StringBuilder();
-
-      foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
-      {
-        var storagePropertyName = propertyDefinitionGroup.Key;
-
-        if (propertyDefinitionGroup.Any (
-                propertyDefinition => IsPartOfInheritanceBranch (classDefinitionForUnionSelect, propertyDefinition.ClassDefinition)))
-        {
-          stringBuilder.AppendFormat (", [{0}]", storagePropertyName);
-
-          if (TableBuilder.HasClassIDColumn (propertyDefinitionGroup.First ()))
-            stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storagePropertyName));
-        }
-        else
-        {
-          stringBuilder.Append (", null");
-
-          if (TableBuilder.HasClassIDColumn (propertyDefinitionGroup.First ()))
-            stringBuilder.Append (", null");
-        }
-      }
-      return stringBuilder.ToString();
-    }
-
-    private string GetColumnList (IEnumerable<IGrouping<string , PropertyDefinition>> groupedPropertyDefinitions)
-    {
-      StringBuilder stringBuilder = new StringBuilder();
-      foreach (var propertyDefinitionGroup in groupedPropertyDefinitions)
-      {
-        var storagePropertyName = propertyDefinitionGroup.Key;
-        var propertyDefinition = propertyDefinitionGroup.First ();
-
-        stringBuilder.AppendFormat (", [{0}]", storagePropertyName);
-
-        if (TableBuilder.HasClassIDColumn (propertyDefinition))
-          stringBuilder.AppendFormat (", [{0}]", RdbmsProvider.GetClassIDColumnName (storagePropertyName));
-      }
-      return stringBuilder.ToString();
     }
 
     private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)

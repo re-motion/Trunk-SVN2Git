@@ -24,23 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class TableBuilderBase
   {
-    public static bool HasClassIDColumn (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
-      if (relationEndPointDefinition != null)
-      {
-        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
-
-        if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
-            && propertyDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-            == oppositeEndPointDefinition.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
-          return true;
-      }
-      return false;
-    }
-
     private readonly StringBuilder _createTableStringBuilder;
     private readonly StringBuilder _dropTableStringBuilder;
 
