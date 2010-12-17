@@ -67,5 +67,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL,\r\n  [C1ClassID] integer NOT NULL,\r\n"));
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot declare a non-existing column.")]
+    public void VisitNullColumnDefinition ()
+    {
+      var column = new NullColumnDefinition ();
+
+      _visitor.VisitNullColumnDefinition (column);
+    }
   }
 }

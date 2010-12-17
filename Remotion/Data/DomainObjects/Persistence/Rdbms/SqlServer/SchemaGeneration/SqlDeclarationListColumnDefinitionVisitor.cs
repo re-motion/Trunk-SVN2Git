@@ -52,5 +52,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       objectIDWithClassIDColumnDefinition.ObjectIDColumn.Accept (this);
       objectIDWithClassIDColumnDefinition.ClassIDColumn.Accept (this);
     }
+
+    public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
+
+      throw new NotSupportedException ("Cannot declare a non-existing column.");
+    }
   }
 }

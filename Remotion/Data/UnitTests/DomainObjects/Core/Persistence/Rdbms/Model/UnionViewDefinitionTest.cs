@@ -107,6 +107,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CreateFullColumnList ()
+    {
+      var column4 = new SimpleColumnDefinition ("Test", typeof (int), "integer", false);
+      var availableColumns = new[] { _column3, column4, _column1 };
+
+      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
+
+      Assert.That (result.Length, Is.EqualTo (3));
+      Assert.That (result[0], Is.SameAs (_column1));
+      Assert.That (result[1], Is.TypeOf (typeof (NullColumnDefinition)));
+      Assert.That (result[2], Is.SameAs (_column3));
+    }
+
+    [Test]
+    public void CreateFullColumnList_ChecksByNameNotByReference ()
+    {
+      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, typeof (object), "test", false);
+      var availableColumns = new[] { column1WithDifferentReference, _column2, _column3 };
+
+      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { column1WithDifferentReference, _column2, _column3 }));
+    }
+
+    [Test]
     public void GetAllTables ()
     {
       var result = _unionViewDefinition.GetAllTables().ToArray();

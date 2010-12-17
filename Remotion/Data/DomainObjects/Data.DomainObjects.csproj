@@ -204,6 +204,7 @@
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\Model\NullColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ObjectIDWithClassIDColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />

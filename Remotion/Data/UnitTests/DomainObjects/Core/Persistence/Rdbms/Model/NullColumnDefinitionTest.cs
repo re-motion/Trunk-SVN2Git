@@ -15,16 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  /// <summary>
-  /// <see cref="IColumnDefinitionVisitor"/> defines the API for all column definition visitors.
-  /// </summary>
-  public interface IColumnDefinitionVisitor
+  [TestFixture]
+  public class NullColumnDefinitionTest
   {
-    void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition);
-    void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition);
-    void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition);
+    private NullColumnDefinition _columnDefinition;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _columnDefinition = new NullColumnDefinition ();
+    }
+
+    [Test]
+    public void Accept ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor>();
+
+      visitorMock.Expect (mock => mock.VisitNullColumnDefinition (_columnDefinition));
+      visitorMock.Replay();
+
+      _columnDefinition.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations();
+    }
+
   }
 }

@@ -100,6 +100,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columns;
     }
 
+    public IEnumerable<IColumnDefinition> CreateFullColumnList (IEnumerable<IColumnDefinition> availableColumns)
+    {
+      ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
+
+      var availableColumnsByName = availableColumns.ToDictionary (column => column.Name);
+      foreach (var requiredColumn in _columns)
+      {
+        IColumnDefinition availableColumn;
+        if (availableColumnsByName.TryGetValue (requiredColumn.Name, out availableColumn))
+          yield return availableColumn;
+        else
+          yield return new NullColumnDefinition ();
+      }
+    }
+
     // Always returns at least one table
     public IEnumerable<TableDefinition> GetAllTables ()
     {

@@ -528,13 +528,13 @@ GO
 
 CREATE VIEW [dbo].[MetadataObjectView] ([ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], [Value], [StatePropertyID], [StatePropertyIDClassID], [BaseSecurableClassID], [BaseSecurableClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], [Value], [StatePropertyID], [StatePropertyIDClassID], null, null
+  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], [Value], [StatePropertyID], [StatePropertyIDClassID], NULL
     FROM [dbo].[EnumValueDefinition]
   UNION ALL
-  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], null, null, null, [BaseSecurableClassID], [BaseSecurableClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], NULL, NULL, [BaseSecurableClassID], [BaseSecurableClassIDClassID]
     FROM [dbo].[SecurableClassDefinition]
   UNION ALL
-  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], null, null, null, null, null
+  SELECT [ID], [ClassID], [Timestamp], [Index], [MetadataItemID], [Name], NULL, NULL, NULL
     FROM [dbo].[StatePropertyDefinition]
 GO
 

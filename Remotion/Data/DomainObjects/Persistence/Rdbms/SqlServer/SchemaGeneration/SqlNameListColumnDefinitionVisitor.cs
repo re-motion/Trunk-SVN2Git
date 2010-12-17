@@ -26,15 +26,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlNameListColumnDefinitionVisitor : IColumnDefinitionVisitor
   {
+    private readonly bool _allowNullColumns;
     private readonly StringBuilder _nameList = new StringBuilder ();
+
+    public SqlNameListColumnDefinitionVisitor (bool allowNullColumns)
+    {
+      _allowNullColumns = allowNullColumns;
+    }
+
+    public string GetNameList ()
+    {
+      return _nameList.ToString ();
+    }
 
     public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
     {
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
       
-      if (_nameList.Length > 0)
-        _nameList.Append (", ");
-
+      AppendSeparatorIfRequired();
       _nameList.Append ("[").Append (simpleColumnDefinition.Name).Append ("]");
     }
 
@@ -46,9 +55,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       objectIDWithClassIDColumnDefinition.ClassIDColumn.Accept (this);
     }
 
-    public string GetNameList ()
+    public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
     {
-      return _nameList.ToString ();
+      ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
+
+      if (!_allowNullColumns)
+        throw new NotSupportedException ("Null columns are not supported at this point.");
+
+      AppendSeparatorIfRequired ();
+      _nameList.Append ("NULL");
+    }
+
+    private void AppendSeparatorIfRequired ()
+    {
+      if (_nameList.Length > 0)
+        _nameList.Append (", ");
     }
   }
 }

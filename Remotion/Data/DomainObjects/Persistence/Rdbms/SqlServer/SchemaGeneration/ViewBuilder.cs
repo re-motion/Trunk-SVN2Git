@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
           filterViewDefinition.ViewName,
-          GetColumnList (filterViewDefinition.GetColumns()),
+          GetColumnList (filterViewDefinition.GetColumns(), false),
           filterViewDefinition.GetBaseTable().TableName,
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  WITH CHECK OPTION\r\n",
           FileBuilder.DefaultSchema,
           tableDefinition.ViewName,
-          GetColumnList (tableDefinition.GetColumns()),
+          GetColumnList (tableDefinition.GetColumns (), false),
           tableDefinition.TableName);
     }
 
@@ -93,27 +93,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNullOrEmpty ("concreteClasses", concreteClasses);
       ArgumentUtility.CheckNotNull ("createViewStringBuilder", createViewStringBuilder);
 
-      var groupedPropertyDefinitions = GetGroupedPropertyDefinitions (classDefinition);
+      var unionViewDefinition = (UnionViewDefinition) classDefinition.StorageEntityDefinition;
 
       createViewStringBuilder.AppendFormat (
-          "CREATE VIEW [{0}].[{1}] ([ID], [ClassID], [Timestamp]{2})\r\n"
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n",
           FileBuilder.DefaultSchema,
-          classDefinition.StorageEntityDefinition.LegacyViewName,
-          GetColumnList (groupedPropertyDefinitions));
+          unionViewDefinition.ViewName,
+          GetColumnList (unionViewDefinition.GetColumns (), false));
 
       int numberOfSelects = 0;
-      foreach (ClassDefinition tableRootClass in concreteClasses)
+      foreach (var tableDefinition in unionViewDefinition.GetAllTables())
       {
         if (numberOfSelects > 0)
           createViewStringBuilder.AppendFormat ("  UNION ALL\r\n");
 
+        var availableTableColumns = tableDefinition.GetColumns();
+        var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
         createViewStringBuilder.AppendFormat (
-            "  SELECT [ID], [ClassID], [Timestamp]{0}\r\n"
+            "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]\r\n",
-            GetColumnListForUnionSelect (tableRootClass, groupedPropertyDefinitions),
+            GetColumnList (unionedColumns, true),
             FileBuilder.DefaultSchema,
-            tableRootClass.StorageEntityDefinition.LegacyEntityName);
+            tableDefinition.TableName);
 
         numberOfSelects++;
       }
@@ -176,9 +178,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return stringBuilder.ToString();
     }
 
-    private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions)
+    private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
     {
-      var visitor = new SqlNameListColumnDefinitionVisitor ();
+      var visitor = new SqlNameListColumnDefinitionVisitor (allowNulls);
 
       foreach (var columnDefinition in columnDefinitions)
         columnDefinition.Accept (visitor);
