@@ -44,10 +44,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
+      var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
+      for (int i = 0; i < unionedEntitiesList.Count; ++i)
+      {
+        var unionedEntity = unionedEntitiesList[i];
+        if (!(unionedEntity is TableDefinition || unionedEntity is UnionViewDefinition))
+        {
+          throw new ArgumentItemTypeException (
+              "unionedEntities",
+              i,
+              null,
+              unionedEntity.GetType(),
+              "The unioned entities must either be a TableDefinitions or UnionViewDefinitions.");
+        }
+      }
+
       _storageProviderDefinition = storageProviderDefinition;
       _viewName = viewName;
-      _unionedEntities = unionedEntities.ToList().AsReadOnly();
-      _columns = columns.ToList ().AsReadOnly ();
+      _unionedEntities = unionedEntitiesList;
+      _columns = columns.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
@@ -83,6 +98,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
+    }
+
+    // Always returns at least one table
+    public IEnumerable<TableDefinition> GetAllTables ()
+    {
+      foreach (var entityDefinition in _unionedEntities)
+      {
+        if (entityDefinition is TableDefinition)
+          yield return (TableDefinition) entityDefinition;
+        else
+        {
+          foreach (var derivedTable in ((UnionViewDefinition) entityDefinition).GetAllTables())
+            yield return derivedTable;
+        }
+      }
     }
 
     public void Accept (IEntityDefinitionVisitor visitor)

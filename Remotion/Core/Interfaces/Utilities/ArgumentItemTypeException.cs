@@ -40,6 +40,15 @@ namespace Remotion.Utilities
       _actualType = actualType;
     }
 
+    public ArgumentItemTypeException ([InvokerParameterName] string argumentName, int index, Type expectedType, Type actualType, string message)
+      : base (message, argumentName)
+    {
+      _argumentName = argumentName;
+      _index = index;
+      _expectedType = expectedType;
+      _actualType = actualType;
+    }
+
     public ArgumentItemTypeException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {

@@ -18,7 +18,9 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Utilities;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -65,6 +67,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void Initialization_WithUnionedUnionEntity ()
+    {
+      new UnionViewDefinition (_storageProviderDefinition, null, new[] { _unionViewDefinition }, new IColumnDefinition[0]);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage =
+        "The unioned entities must either be a TableDefinitions or UnionViewDefinitions.\r\nParameter name: unionedEntities")]
+    public void Initialization_WithInvalidUnionedEntity ()
+    {
+      var filterViewDefinition = new FilterViewDefinition (
+          _storageProviderDefinition, 
+          "ViewName", 
+          _tableDefinition1, 
+          new[] { "x" }, 
+          new IColumnDefinition[0]);
+      new UnionViewDefinition (_storageProviderDefinition, null, new[] { filterViewDefinition }, new IColumnDefinition[0]);
+    }
+
+    [Test]
     public void LegacyEntityName ()
     {
       Assert.That (_unionViewDefinition.LegacyEntityName, Is.Null);
@@ -82,6 +104,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _unionViewDefinition.GetColumns();
 
       Assert.That (result, Is.EqualTo (new[] { _column1, _column2, _column3 }));
+    }
+
+    [Test]
+    public void GetAllTables ()
+    {
+      var result = _unionViewDefinition.GetAllTables().ToArray();
+
+      Assert.That (result, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2 }));
+    }
+
+    [Test]
+    public void GetAllTables_IndirectTables ()
+    {
+      var tableDefinition3 = new TableDefinition (_storageProviderDefinition, "Table3", "View", new IColumnDefinition[0]);
+      var baseUnionDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          "UnionView",
+          new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
+          new IColumnDefinition[0]);
+
+      var result = baseUnionDefinition.GetAllTables ().ToArray ();
+
+      Assert.That (result, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2, tableDefinition3 }));
     }
 
     [Test]

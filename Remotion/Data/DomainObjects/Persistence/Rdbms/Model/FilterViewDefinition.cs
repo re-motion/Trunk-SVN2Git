@@ -103,6 +103,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columns;
     }
 
+    // Always returns a table
     public TableDefinition GetBaseTable ()
     {
       var current = BaseEntity;
