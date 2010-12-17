@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -24,36 +23,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class TableBuilder : TableBuilderBase
   {
-    private class ColumnDefinitionVisitor : IColumnDefinitionVisitor
-    {
-      private readonly StringBuilder _columnList = new StringBuilder();
-
-      public string GetColumnList ()
-      {
-        return _columnList.ToString ();
-      }
-
-      public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
-      {
-        _columnList.AppendLine (GetColumnString (simpleColumnDefinition));
-      }
-
-      public void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
-      {
-        objectIDWithClassIDColumnDefinition.ObjectIDColumn.Accept (this);
-        objectIDWithClassIDColumnDefinition.ClassIDColumn.Accept (this);
-      }
-
-      private string GetColumnString (SimpleColumnDefinition columnDefinition)
-      {
-        return string.Format (
-            "  [{0}] {1}{2},",
-            columnDefinition.Name,
-            columnDefinition.StorageType,
-            columnDefinition.IsNullable ? " NULL" : " NOT NULL");
-      }
-    }
-
     public TableBuilder ()
     {
     }
@@ -89,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var visitor = new ColumnDefinitionVisitor ();
+      var visitor = new SqlDeclarationColumnDefinitionVisitor ();
 
       foreach (var columnDefinition in tableDefinition.GetColumns ())
         columnDefinition.Accept (visitor);

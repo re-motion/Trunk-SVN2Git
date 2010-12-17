@@ -280,6 +280,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlDeclarationColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\TableBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ViewBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableBuilderBase.cs" />
