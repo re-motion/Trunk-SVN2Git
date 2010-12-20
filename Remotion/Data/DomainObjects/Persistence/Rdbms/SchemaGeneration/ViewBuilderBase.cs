@@ -19,7 +19,6 @@ using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
@@ -123,12 +122,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
-      // TODO 3606: Remove this check
-      if (unionViewDefinition.GetAllTables ().Any ())
-      {
-        AddUnionViewToCreateViewScript (unionViewDefinition);
-        AddToDropViewScript (unionViewDefinition);
-      }
+      AddUnionViewToCreateViewScript (unionViewDefinition);
+      AddToDropViewScript (unionViewDefinition);
     }
 
     void IEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
@@ -137,6 +132,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       AddFilterViewToCreateViewScript (filterViewDefinition);
       AddToDropViewScript (filterViewDefinition);
+    }
+
+    void IEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
+
+      //Nothing to do here
     }
   }
 }

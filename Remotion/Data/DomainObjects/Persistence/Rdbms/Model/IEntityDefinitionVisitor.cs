@@ -26,5 +26,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     void VisitTableDefinition (TableDefinition tableDefinition);
     void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition);
     void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition);
+    void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition);
   }
 }

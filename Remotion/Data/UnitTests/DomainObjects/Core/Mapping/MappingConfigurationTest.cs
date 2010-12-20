@@ -174,7 +174,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistenceModelIsValidated ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", new TableDefinition[0], new SimpleColumnDefinition[0]);
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
+          "Test",
+          new IEntityDefinition[] { new TableDefinition(UnitTestDomainStorageProviderDefinition, "Test", "TestView", new IColumnDefinition[0])},
+          new IColumnDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
@@ -187,12 +190,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       StubMockMappingLoader (classDefinition);
 
-      var persistenceModelLoaderStub = _mockRepository.Stub<IPersistenceModelLoader> ();
+      var persistenceModelLoaderStub = _mockRepository.Stub<IPersistenceModelLoader>();
       persistenceModelLoaderStub
           .Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything));
       persistenceModelLoaderStub
           .Stub (stub => stub.CreatePersistenceMappingValidator (Arg<ClassDefinition>.Is.Anything))
-          .Return (new PersistenceMappingValidator (new ClassAboveTableIsAbstractValidationRule ()));
+          .Return (new PersistenceMappingValidator (new ClassAboveTableIsAbstractValidationRule()));
 
       _mockRepository.ReplayAll();
 
@@ -202,9 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistenceModelIsValidated_OverAllRootClasses ()
     {
-      var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader> ();
-      var validatorMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator> ();
-      var validatorMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator> ();
+      var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader>();
+      var validatorMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
+      var validatorMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
       var rootClass1 = ClassDefinitionFactory.CreateFinishedClassDefinition (typeof (Order));
       var rootClass2 = ClassDefinitionFactory.CreateFinishedClassDefinition (typeof (OrderTicket));
@@ -215,35 +218,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       persistenceModelLoaderMock
           .Expect (mock => mock.ApplyPersistenceModelToHierarchy (rootClass2))
           .WhenCalled (mi => rootClass2.SetStorageEntity (_fakeStorageEntityDefinition));
-      
+
       persistenceModelLoaderMock.Expect (mock => mock.CreatePersistenceMappingValidator (rootClass1)).Return (validatorMock1);
       persistenceModelLoaderMock.Expect (mock => mock.CreatePersistenceMappingValidator (rootClass2)).Return (validatorMock2);
-      persistenceModelLoaderMock.Replay ();
+      persistenceModelLoaderMock.Replay();
 
       validatorMock1
-          .Expect (mock => mock.Validate (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[]{ rootClass1 })))
+          .Expect (mock => mock.Validate (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { rootClass1 })))
           .Return (new MappingValidationResult[0]);
       validatorMock2
           .Expect (mock => mock.Validate (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { rootClass2 })))
           .Return (new MappingValidationResult[0]);
-      validatorMock1.Replay ();
-      validatorMock2.Replay ();
+      validatorMock1.Replay();
+      validatorMock2.Replay();
 
       StubMockMappingLoader (new[] { rootClass1, rootClass2 }, new RelationDefinition[0], true);
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderMock);
 
-      persistenceModelLoaderMock.VerifyAllExpectations ();
-      validatorMock1.VerifyAllExpectations ();
-      validatorMock2.VerifyAllExpectations ();
+      persistenceModelLoaderMock.VerifyAllExpectations();
+      validatorMock1.VerifyAllExpectations();
+      validatorMock2.VerifyAllExpectations();
     }
 
     [Test]
     public void PersistenceModelIsValidated_OverAllDerivedClasses ()
     {
-      var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader> ();
-      var validatorMock = MockRepository.GenerateStrictMock<IPersistenceMappingValidator> ();
+      var persistenceModelLoaderMock = MockRepository.GenerateStrictMock<IPersistenceModelLoader>();
+      var validatorMock = MockRepository.GenerateStrictMock<IPersistenceMappingValidator>();
 
       var rootClass = ClassDefinitionFactory.CreateFinishedFileSystemItemDefinitionWithDerivedClasses();
       var derivedClass1 = rootClass.DerivedClasses[0];
@@ -251,27 +254,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       persistenceModelLoaderMock
           .Expect (mock => mock.ApplyPersistenceModelToHierarchy (rootClass)).WhenCalled (
-          mi =>
-          {
-            rootClass.SetStorageEntity (_fakeStorageEntityDefinition);
-            derivedClass1.SetStorageEntity (_fakeStorageEntityDefinition);
-            derivedClass2.SetStorageEntity (_fakeStorageEntityDefinition);
-          });
+              mi =>
+              {
+                rootClass.SetStorageEntity (_fakeStorageEntityDefinition);
+                derivedClass1.SetStorageEntity (_fakeStorageEntityDefinition);
+                derivedClass2.SetStorageEntity (_fakeStorageEntityDefinition);
+              });
       persistenceModelLoaderMock.Expect (mock => mock.CreatePersistenceMappingValidator (rootClass)).Return (validatorMock);
-      persistenceModelLoaderMock.Replay ();
+      persistenceModelLoaderMock.Replay();
 
       validatorMock
           .Expect (mock => mock.Validate (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { rootClass, derivedClass1, derivedClass2 })))
           .Return (new MappingValidationResult[0]);
-      validatorMock.Replay ();
+      validatorMock.Replay();
 
       StubMockMappingLoader (new[] { rootClass, derivedClass1, derivedClass2 }, new RelationDefinition[0], true);
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderMock);
 
-      persistenceModelLoaderMock.VerifyAllExpectations ();
-      validatorMock.VerifyAllExpectations ();
+      persistenceModelLoaderMock.VerifyAllExpectations();
+      validatorMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -316,7 +319,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (4));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
-      Assert.That (((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
+      Assert.That (
+          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
           ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));

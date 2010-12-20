@@ -135,12 +135,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private IStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition)
     {
       var derivedStorageEntityDefinitions =
-          from ClassDefinition derivedClass in classDefinition.DerivedClasses
-          select GetEntityDefinition (derivedClass);
-
+          (from ClassDefinition derivedClass in classDefinition.DerivedClasses
+          select GetEntityDefinition (derivedClass)).Where(ed=>!(ed is NullEntityDefinition));
+      
       IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
-      if (!derivedStorageEntityDefinitions.Any())
-        columns = new IColumnDefinition[0];
+      if (!derivedStorageEntityDefinitions.Any ())
+        return new NullEntityDefinition(_storageProviderDefinition);
 
       return new UnionViewDefinition (_storageProviderDefinition, GetViewName (classDefinition), derivedStorageEntityDefinitions, columns);
     }

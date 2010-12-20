@@ -41,7 +41,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _validationRule = new OnlyOneTablePerHierarchyValidationRule();
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new SimpleColumnDefinition[0]);
-      _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0], new SimpleColumnDefinition[0]);
+      _unionViewDefinition = new UnionViewDefinition (
+          storageProviderDefinition,
+          null,
+          new IEntityDefinition[] { new TableDefinition (storageProviderDefinition, "Test", null, new IColumnDefinition[0]) },
+          new SimpleColumnDefinition[0]);
 
       _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",
@@ -106,8 +110,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       var validationResult = _validationRule.Validate (_classDefinitionWithBaseClass);
 
-      var expectedMessage = "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      var expectedMessage =
+          "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -128,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           true,
           baseOfBaseClassDefinition,
           null,
-          new PersistentMixinFinderMock(typeof(DomainObject), new Type[0]));
+          new PersistentMixinFinderMock (typeof (DomainObject), new Type[0]));
       var classDefinitionWithBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "EntityNameMatchesParentEntityNameDomainObject",
           "EntityName",
@@ -142,15 +147,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
       baseClassDefinition.SetStorageEntity (_unionViewDefinition);
       baseOfBaseClassDefinition.SetStorageEntity (_tableDefinition);
-      
+
       var validationResult = _validationRule.Validate (classDefinitionWithBaseClass);
 
-      var expectedMessage = 
-        "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      var expectedMessage =
+          "Class 'DerivedValidationDomainObjectClass' must not define a table when its base class 'BaseOfBaseValidationDomainObjectClass' also defines one.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
-    
   }
 }

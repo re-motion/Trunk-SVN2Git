@@ -53,7 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _tableDefinition = new TableDefinition (storageProviderDefinition, "TableName", null, new SimpleColumnDefinition[0]);
-      _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0], new SimpleColumnDefinition[0]);
+      _unionViewDefinition = new UnionViewDefinition (
+          storageProviderDefinition,
+          null,
+          new IEntityDefinition[] { new TableDefinition (storageProviderDefinition, "Test", null, new IColumnDefinition[0]) },
+          new SimpleColumnDefinition[0]);
     }
 
     [Test]
@@ -100,10 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_noAbstractClassDefinition);
 
       var expectedMessage = "Neither class 'DerivedValidationDomainObjectClass' nor its base classes are mapped to a table. "
-        +"Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+                            + "Make class 'DerivedValidationDomainObjectClass' abstract or define a table for it or one of its base classes.\r\n\r\n"
+                            +
+                            "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-    
   }
 }

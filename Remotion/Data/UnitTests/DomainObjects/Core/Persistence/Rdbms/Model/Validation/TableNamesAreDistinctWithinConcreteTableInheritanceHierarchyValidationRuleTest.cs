@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -63,12 +64,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1 }, true, true));
       _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedClass }, true, true));
-      _derivedClass.SetDerivedClasses (new ClassDefinitionCollection ());
+      _derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
       _tableDefinition1 = new TableDefinition (storageProviderDefinition, "TableName1", null, new SimpleColumnDefinition[0]);
       _tableDefinition2 = new TableDefinition (storageProviderDefinition, "TableName2", null, new SimpleColumnDefinition[0]);
-      _unionViewDefinition = new UnionViewDefinition (storageProviderDefinition, null, new TableDefinition[0], new SimpleColumnDefinition[0]);
+      _unionViewDefinition = new UnionViewDefinition (
+          storageProviderDefinition,
+          null,
+          new IEntityDefinition[] { new TableDefinition (storageProviderDefinition, "Test", null, new IColumnDefinition[0]) },
+          new SimpleColumnDefinition[0]);
     }
 
     [Test]
@@ -80,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void InheritanceRoot_NoTableDefinition()
+    public void InheritanceRoot_NoTableDefinition ()
     {
       _baseOfBaseClass.SetStorageEntity (_unionViewDefinition);
       _derivedBaseClass1.SetStorageEntity (_unionViewDefinition);
@@ -125,9 +130,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
-        +"specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
-        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
+      var expectedMessage =
+          "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
+          + "specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -140,12 +146,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
-      var expectedMessage = "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
-        + "specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
+      var expectedMessage =
+          "At least two classes in different inheritance branches derived from abstract class 'BaseOfBaseValidationDomainObjectClass' "
+          + "specify the same entity name 'TableName1', which is not allowed.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-    
-
   }
 }

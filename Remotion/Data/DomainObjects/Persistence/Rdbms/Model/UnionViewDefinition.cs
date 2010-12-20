@@ -40,8 +40,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
+      ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
