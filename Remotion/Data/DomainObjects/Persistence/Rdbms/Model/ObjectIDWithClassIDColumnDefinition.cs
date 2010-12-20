@@ -27,13 +27,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ObjectIDWithClassIDColumnDefinition : IColumnDefinition
   {
-    private readonly SimpleColumnDefinition _objectIDColumn;
-    private readonly SimpleColumnDefinition _classIDColumn;
+    private readonly IColumnDefinition _objectIDColumn;
+    private readonly IColumnDefinition _classIDColumn;
 
-    public ObjectIDWithClassIDColumnDefinition (SimpleColumnDefinition objectIDColumn, SimpleColumnDefinition classIDColumn)
+    public ObjectIDWithClassIDColumnDefinition (IColumnDefinition objectIDColumn, IColumnDefinition classIDColumn)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
-      ArgumentUtility.CheckNotNull ("classIDColumn", classIDColumn);
 
       _objectIDColumn = objectIDColumn;
       _classIDColumn = classIDColumn;
@@ -44,12 +43,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _objectIDColumn.Name; }
     }
 
-    public SimpleColumnDefinition ObjectIDColumn
+    public IColumnDefinition ObjectIDColumn
     {
       get { return _objectIDColumn; }
     }
 
-    public SimpleColumnDefinition ClassIDColumn
+    public IColumnDefinition ClassIDColumn
     {
       get { return _classIDColumn; }
     }
@@ -59,6 +58,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitObjectIDWithClassIDColumnDefinition (this);
+    }
+
+    public bool Equals (IColumnDefinition other)
+    {
+      if (other == null || other.GetType() != GetType())
+        return false;
+
+      var castOther = (ObjectIDWithClassIDColumnDefinition) other;
+      return Equals (castOther.ObjectIDColumn, ObjectIDColumn) && Equals (castOther.ClassIDColumn, ClassIDColumn);
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as IColumnDefinition);
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (ObjectIDColumn, ClassIDColumn);
     }
   }
 }

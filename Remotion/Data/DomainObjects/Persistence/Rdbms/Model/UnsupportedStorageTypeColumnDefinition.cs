@@ -30,5 +30,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       throw new InvalidOperationException ("Unsupported properties cannot be visited.");
     }
+
+    public bool Equals (IColumnDefinition other)
+    {
+      return other != null && other.GetType () == GetType ();
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as IColumnDefinition);
+    }
+
+    public override int GetHashCode ()
+    {
+      return 0;
+    }
   }
 }

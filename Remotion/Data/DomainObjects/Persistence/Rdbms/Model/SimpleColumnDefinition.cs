@@ -65,6 +65,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       visitor.VisitSimpleColumnDefinition (this);
     }
 
+    public bool Equals (IColumnDefinition other)
+    {
+      if (other == null || other.GetType () != GetType ())
+        return false;
+
+      var castOther = (SimpleColumnDefinition) other;
+      return castOther.Name == Name 
+          && castOther.PropertyType == PropertyType 
+          && castOther.StorageType == StorageType 
+          && castOther.IsNullable == IsNullable;
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as IColumnDefinition);
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (Name, PropertyType, StorageType, IsNullable);
+    }
+
     public override string ToString ()
     {
       return string.Format ("{0} {1} {2}", Name, StorageType, IsNullable ? "NULL" : "NOT NULL");

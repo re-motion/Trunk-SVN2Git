@@ -290,14 +290,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.Name, Is.EqualTo ("DistributorID"));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.IsNullable, Is.True);
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn.StorageType, Is.EqualTo ("test"));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.Name, Is.EqualTo ("DistributorIDClassID"));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.IsNullable, Is.True);
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
+      var objectIDColumn = (SimpleColumnDefinition) ((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn;
+      var classIDColumn = (SimpleColumnDefinition) ((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn;
+
+      Assert.That (objectIDColumn.Name, Is.EqualTo ("DistributorID"));
+      Assert.That (objectIDColumn.IsNullable, Is.True);
+      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
+      Assert.That (objectIDColumn.StorageType, Is.EqualTo ("test"));
+      Assert.That (classIDColumn.Name, Is.EqualTo ("DistributorIDClassID"));
+      Assert.That (classIDColumn.IsNullable, Is.True);
+      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (classIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
     }
 
     [Test]
@@ -319,14 +322,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _columnDefinitionFactory.CreateIDColumnDefinition();
 
-      Assert.That (result.ObjectIDColumn.Name, Is.EqualTo ("ID"));
-      Assert.That (result.ObjectIDColumn.IsNullable, Is.False);
-      Assert.That (result.ObjectIDColumn.PropertyType, Is.SameAs (typeof (Guid)));
-      Assert.That (result.ObjectIDColumn.StorageType, Is.EqualTo ("guid"));
-      Assert.That (result.ClassIDColumn.Name, Is.EqualTo ("ClassID"));
-      Assert.That (result.ClassIDColumn.IsNullable, Is.False);
-      Assert.That (result.ClassIDColumn.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (result.ClassIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
+      var objectIDColumn = (SimpleColumnDefinition) result.ObjectIDColumn;
+      var classIDColumn = (SimpleColumnDefinition) result.ClassIDColumn;
+
+      Assert.That (objectIDColumn.Name, Is.EqualTo ("ID"));
+      Assert.That (objectIDColumn.IsNullable, Is.False);
+      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (Guid)));
+      Assert.That (objectIDColumn.StorageType, Is.EqualTo ("guid"));
+      Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
+      Assert.That (classIDColumn.IsNullable, Is.False);
+      Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
+      Assert.That (classIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
     }
 
     [Test]

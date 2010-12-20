@@ -60,5 +60,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       visitorMock.VerifyAllExpectations();
     }
 
+    [Test]
+    public void Equals_True ()
+    {
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+
+      Assert.That (_columnDefinition.Equals (other), Is.True);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.True);
+    }
+
+    [Test]
+    public void Equals_False_DifferentType ()
+    {
+      var other = new NullColumnDefinition();
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentName ()
+    {
+      var other = new SimpleColumnDefinition ("Name2", _type, "varchar", true);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentPropertyType ()
+    {
+      var other = new SimpleColumnDefinition ("Name", typeof (object), "varchar", true);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentStorageType ()
+    {
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar2", true);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentNullability ()
+    {
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", false);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_Null ()
+    {
+      Assert.That (_columnDefinition.Equals ((IColumnDefinition) null), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) null), Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects ()
+    {
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+
+      Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
+    }
+
   }
 }

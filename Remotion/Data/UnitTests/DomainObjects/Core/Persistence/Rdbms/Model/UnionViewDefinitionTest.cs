@@ -121,14 +121,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList_ChecksByNameNotByReference ()
+    public void CreateFullColumnList_ChecksByContentNotByReference ()
     {
-      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, typeof (object), "test", false);
+      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable);
       var availableColumns = new[] { column1WithDifferentReference, _column2, _column3 };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
 
       Assert.That (result, Is.EqualTo (new[] { column1WithDifferentReference, _column2, _column3 }));
+    }
+
+    [Test]
+    public void CreateFullColumnList_WithNullColumnDefinition ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          "Test",
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { new NullColumnDefinition() });
+
+      var availableColumns = new[] { _column1 };
+
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0], Is.TypeOf (typeof (NullColumnDefinition)));
+    }
+
+    [Test]
+    public void CreateFullColumnList_WithObjectIDWithClassIDColumnDefinition_NotFound ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          "Test",
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { new ObjectIDWithClassIDColumnDefinition (_column1, _column2) });
+
+      var availableColumns = new[] { _column1 };
+
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0], Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result[0]).ObjectIDColumn, Is.SameAs (_column1));
+      Assert.That (((ObjectIDWithClassIDColumnDefinition) result[0]).ClassIDColumn, Is.TypeOf (typeof (NullColumnDefinition)));
+    }
+
+    [Test]
+    public void CreateFullColumnList_WithObjectIDWithClassIDColumnDefinition_Found ()
+    {
+      var columnDefinition = new ObjectIDWithClassIDColumnDefinition (_column1, _column2);
+      var unionViewDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          "Test",
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { columnDefinition });
+
+      var availableColumns = new[] { columnDefinition };
+
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0], Is.SameAs (columnDefinition));
     }
 
     [Test]

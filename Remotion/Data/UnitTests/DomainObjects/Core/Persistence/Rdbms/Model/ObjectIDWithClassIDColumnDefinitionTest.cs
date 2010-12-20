@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -30,6 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _objectIDColumn;
     private SimpleColumnDefinition _classIDColumn;
     private ObjectIDWithClassIDColumnDefinition _columnDefinition;
+    private ObjectIDWithClassIDColumnDefinition _columnDefinitionWithoutClassID;
 
     [SetUp]
     public void SetUp ()
@@ -37,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
       _classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
       _columnDefinition = new ObjectIDWithClassIDColumnDefinition (_objectIDColumn, _classIDColumn);
+      _columnDefinitionWithoutClassID = new ObjectIDWithClassIDColumnDefinition (_objectIDColumn, null);
     }
 
     [Test]
@@ -58,6 +59,94 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Equals_True_WithClassIDColumns ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+
+      Assert.That (_columnDefinition.Equals (other), Is.True);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.True);
+    }
+
+    [Test]
+    public void Equals_True_NoClassIDColumns ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+
+      Assert.That (_columnDefinitionWithoutClassID.Equals (other), Is.True);
+      Assert.That (_columnDefinitionWithoutClassID.Equals ((object) other), Is.True);
+    }
+
+    [Test]
+    public void Equals_False_DifferentType ()
+    {
+      var other = new NullColumnDefinition ();
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentObjectIDColumn ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (int), "uniqueidentifier", false);
+      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_DifferentClassIDColumn ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (int), "varchar", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_NullClassIDColumn ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_Null ()
+    {
+      Assert.That (_columnDefinition.Equals ((IColumnDefinition) null), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) null), Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+
+      Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects_NoClassIDColumn ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
+      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+
+      Assert.That (_columnDefinitionWithoutClassID.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }
   }
 }

@@ -203,8 +203,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                  + "  [PersistentProperty] nvarchar (max) NULL,\r\n"
                                  + "  [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,\r\n"
                                  + "  [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,\r\n"
+                                 + "  [ClassWithRelationsInDerivedOfDerivedClassIDClassID] varchar (100) NULL,\r\n"
                                  + "  [PropertyInSecondDerivedClass] nvarchar (100) NULL,\r\n"
                                  + "  [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,\r\n"
+                                 + "  [ClassWithRelationsInSecondDerivedClassIDClassID] varchar (100) NULL,\r\n"
                                  + "  CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();

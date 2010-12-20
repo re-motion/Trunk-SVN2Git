@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
@@ -45,5 +46,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       visitorMock.VerifyAllExpectations();
     }
 
+    [Test]
+    public void Equals_True ()
+    {
+      var other = new NullColumnDefinition ();
+
+      Assert.That (_columnDefinition.Equals (other), Is.True);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.True);
+    }
+
+    [Test]
+    public void Equals_False_DifferentType ()
+    {
+      var other = new SimpleColumnDefinition ("Test", typeof (int), "kk", false);
+
+      Assert.That (_columnDefinition.Equals (other), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) other), Is.False);
+    }
+
+    [Test]
+    public void Equals_False_Null ()
+    {
+      Assert.That (_columnDefinition.Equals ((IColumnDefinition) null), Is.False);
+      Assert.That (_columnDefinition.Equals ((object) null), Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects ()
+    {
+      var other = new NullColumnDefinition ();
+
+      Assert.That (_columnDefinition.GetHashCode(), Is.EqualTo (other.GetHashCode()));     
+    }
   }
 }

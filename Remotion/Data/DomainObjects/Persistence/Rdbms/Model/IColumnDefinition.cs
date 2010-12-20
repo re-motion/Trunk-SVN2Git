@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="IColumnDefinition"/> defines the API for all column definitions.
   /// </summary>
-  public interface IColumnDefinition : IStoragePropertyDefinition
+  public interface IColumnDefinition : IStoragePropertyDefinition, IEquatable<IColumnDefinition>
   {
     void Accept (IColumnDefinitionVisitor visitor);
   }

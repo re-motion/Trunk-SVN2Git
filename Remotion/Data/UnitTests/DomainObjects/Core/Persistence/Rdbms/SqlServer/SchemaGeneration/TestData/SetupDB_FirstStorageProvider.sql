@@ -17,6 +17,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithA
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithoutPropertiesView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[ClassWithoutPropertiesView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithRelationsBaseView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ClassWithRelationsBaseView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithRelationsView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[ClassWithRelationsView]
 
@@ -49,6 +52,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderItemV
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SecondDerivedClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[SecondDerivedClassView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SiblingOfClassWithRelationsView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SiblingOfClassWithRelationsView]
 GO
 
 -- Drop foreign keys of all tables that will be created below
@@ -56,7 +62,7 @@ DECLARE @statement nvarchar (4000)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'Order', 'OrderItem')
+    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'Order', 'OrderItem', 'SiblingOfTableWithRelations')
     ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
@@ -94,6 +100,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AN
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'OrderItem' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[OrderItem]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SiblingOfTableWithRelations' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[SiblingOfTableWithRelations]
 GO
 
 -- Create all tables
@@ -216,8 +225,10 @@ CREATE TABLE [dbo].[ConcreteClass]
   [PersistentProperty] nvarchar (max) NULL,
   [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,
   [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,
+  [ClassWithRelationsInDerivedOfDerivedClassIDClassID] varchar (100) NULL,
   [PropertyInSecondDerivedClass] nvarchar (100) NULL,
   [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,
+  [ClassWithRelationsInSecondDerivedClassIDClassID] varchar (100) NULL,
   CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])
 )
 
@@ -268,6 +279,15 @@ CREATE TABLE [dbo].[OrderItem]
   [Product] nvarchar (100) NOT NULL,
   [OrderID] uniqueidentifier NULL,
   CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])
+)
+
+CREATE TABLE [dbo].[SiblingOfTableWithRelations]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  [IntProperty] int NOT NULL,
+  CONSTRAINT [PK_SiblingOfTableWithRelations] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
 
@@ -333,6 +353,15 @@ CREATE VIEW [dbo].[ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])
   WITH CHECK OPTION
 GO
 
+CREATE VIEW [dbo].[ClassWithRelationsBaseView] ([ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID], [IntProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID], NULL
+    FROM [dbo].[TableWithRelations]
+  UNION ALL
+  SELECT [ID], [ClassID], [Timestamp], NULL, NULL, [IntProperty]
+    FROM [dbo].[SiblingOfTableWithRelations]
+GO
+
 CREATE VIEW [dbo].[ClassWithRelationsView] ([ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID]
@@ -347,24 +376,24 @@ CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNu
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID])
+CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID]
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID]
     FROM [dbo].[ConcreteClass]
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID])
+CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID]
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID]
     FROM [dbo].[ConcreteClass]
     WHERE [ClassID] IN ('DerivedClass', 'DerivedOfDerivedClass')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[DerivedOfDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID])
+CREATE VIEW [dbo].[DerivedOfDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID]
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID]
     FROM [dbo].[ConcreteClass]
     WHERE [ClassID] IN ('DerivedOfDerivedClass')
   WITH CHECK OPTION
@@ -405,10 +434,17 @@ CREATE VIEW [dbo].[OrderItemView] ([ID], [ClassID], [Timestamp], [Position], [Pr
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[SecondDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [PersistentProperty])
+CREATE VIEW [dbo].[SecondDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID], [PersistentProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [PersistentProperty]
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID], [PersistentProperty]
     FROM [dbo].[ConcreteClass]
     WHERE [ClassID] IN ('SecondDerivedClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SiblingOfClassWithRelationsView] ([ID], [ClassID], [Timestamp], [IntProperty])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [IntProperty]
+    FROM [dbo].[SiblingOfTableWithRelations]
   WITH CHECK OPTION
 GO

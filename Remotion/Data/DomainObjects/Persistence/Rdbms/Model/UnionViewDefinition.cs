@@ -28,6 +28,52 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class UnionViewDefinition : IEntityDefinition
   {
+    private class ColumnDefinitionFinder : IColumnDefinitionVisitor
+    {
+      private readonly HashSet<IColumnDefinition> _availableColumns;
+
+      private IColumnDefinition _foundColumn;
+
+      public ColumnDefinitionFinder (IEnumerable<IColumnDefinition> availableColumns)
+      {
+        _availableColumns = new HashSet<IColumnDefinition> (availableColumns);
+      }
+
+      public IColumnDefinition FindColumn (IColumnDefinition columnDefinition)
+      {
+        _foundColumn = null;
+        columnDefinition.Accept (this);
+        return _foundColumn;
+      }
+
+      void IColumnDefinitionVisitor.VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
+      {
+        if (_availableColumns.Contains (simpleColumnDefinition))
+          _foundColumn = simpleColumnDefinition;
+        else
+          _foundColumn = new NullColumnDefinition ();
+      }
+
+      void IColumnDefinitionVisitor.VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
+      {
+        if (_availableColumns.Contains (objectIDWithClassIDColumnDefinition))
+        {
+          _foundColumn = objectIDWithClassIDColumnDefinition;
+        }
+        else
+        {
+          var objectIDColumn = FindColumn (objectIDWithClassIDColumnDefinition.ObjectIDColumn);
+          var classIDColumn = FindColumn (objectIDWithClassIDColumnDefinition.ClassIDColumn);
+          _foundColumn = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+        }
+      }
+
+      public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
+      {
+        _foundColumn = new NullColumnDefinition ();
+      }
+    }
+
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
@@ -100,19 +146,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return _columns;
     }
 
-    public IEnumerable<IColumnDefinition> CreateFullColumnList (IEnumerable<IColumnDefinition> availableColumns)
+    public IColumnDefinition[] CreateFullColumnList (IEnumerable<IColumnDefinition> availableColumns)
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
-      var availableColumnsByName = availableColumns.ToDictionary (column => column.Name);
-      foreach (var requiredColumn in _columns)
-      {
-        IColumnDefinition availableColumn;
-        if (availableColumnsByName.TryGetValue (requiredColumn.Name, out availableColumn))
-          yield return availableColumn;
-        else
-          yield return new NullColumnDefinition ();
-      }
+      var finder = new ColumnDefinitionFinder (availableColumns);
+      return _columns.Select (c => finder.FindColumn (c)).ToArray ();
     }
 
     // Always returns at least one table

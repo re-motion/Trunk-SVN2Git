@@ -22,5 +22,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitNullColumnDefinition (this);
     }
+
+    public bool Equals (IColumnDefinition other)
+    {
+      return other != null && other.GetType () == GetType ();
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as IColumnDefinition);
+    }
+
+    public override int GetHashCode ()
+    {
+      return 0;
+    }
   }
 }
