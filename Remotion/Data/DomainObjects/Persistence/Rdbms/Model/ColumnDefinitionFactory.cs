@@ -76,24 +76,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
       {
         var classIdColumnDefinition = new SimpleColumnDefinition (
-            RdbmsProvider.GetClassIDColumnName (GetColumnName(propertyDefinition.PropertyInfo)),
-            typeof(string),
+            RdbmsProvider.GetClassIDColumnName (GetColumnName (propertyDefinition.PropertyInfo)),
+            typeof (string),
             _storageTypeCalculator.SqlDataTypeClassID,
             true);
-        
-        return new ObjectIDWithClassIDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
+
+        return new IDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }
       else
-        // TODO Review 3588: Change to return ObjectIDWithClassIDColumnDefinition, but with null classID
-        return foreignKeyColumnDefinition;
+      {
+        return new IDColumnDefinition (foreignKeyColumnDefinition, null);
+      }
     }
 
-    public ObjectIDWithClassIDColumnDefinition CreateIDColumnDefinition ()
+    public IDColumnDefinition CreateIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
       var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
 
-      return new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIdColumnDefinition);
+      return new IDColumnDefinition (objectIDColumn, classIdColumnDefinition);
     }
 
     public SimpleColumnDefinition CreateTimestampColumnDefinition ()

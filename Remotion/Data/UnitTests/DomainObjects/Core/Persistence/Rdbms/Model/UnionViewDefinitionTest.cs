@@ -155,22 +155,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           "Test",
           new[] { _tableDefinition1, _tableDefinition2 },
-          new[] { new ObjectIDWithClassIDColumnDefinition (_column1, _column2) });
+          new[] { new IDColumnDefinition (_column1, _column2) });
 
       var availableColumns = new[] { _column1 };
 
       var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result[0]).ObjectIDColumn, Is.SameAs (_column1));
-      Assert.That (((ObjectIDWithClassIDColumnDefinition) result[0]).ClassIDColumn, Is.TypeOf (typeof (NullColumnDefinition)));
+      Assert.That (result[0], Is.TypeOf (typeof (IDColumnDefinition)));
+      Assert.That (((IDColumnDefinition) result[0]).ObjectIDColumn, Is.SameAs (_column1));
+      Assert.That (((IDColumnDefinition) result[0]).ClassIDColumn, Is.TypeOf (typeof (NullColumnDefinition)));
     }
 
     [Test]
     public void CreateFullColumnList_WithObjectIDWithClassIDColumnDefinition_Found ()
     {
-      var columnDefinition = new ObjectIDWithClassIDColumnDefinition (_column1, _column2);
+      var columnDefinition = new IDColumnDefinition (_column1, _column2);
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           "Test",
@@ -183,6 +183,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.SameAs (columnDefinition));
+    }
+
+    [Test]
+    public void CreaeFullColumnList_NullColumn ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          "Test",
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new IColumnDefinition[] { null });
+
+      var result = unionViewDefinition.CreateFullColumnList (new[]{new SimpleColumnDefinition("Test", typeof(string), "varchar", false)}).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result[0], Is.Null);
     }
 
     [Test]

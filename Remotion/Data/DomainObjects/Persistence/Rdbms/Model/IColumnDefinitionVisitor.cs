@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IColumnDefinitionVisitor
   {
     void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition);
-    void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition);
+    void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition);
     void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition);
   }
 }

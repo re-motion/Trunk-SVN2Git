@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IColumnDefinitionFactory
   {
     IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder);
-    ObjectIDWithClassIDColumnDefinition CreateIDColumnDefinition ();
+    IDColumnDefinition CreateIDColumnDefinition ();
     SimpleColumnDefinition CreateTimestampColumnDefinition ();
   }
 }

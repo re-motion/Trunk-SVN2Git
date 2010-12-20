@@ -58,16 +58,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
     
     [Test]
-    public void VisitObjectIDWithClassIDColumnDefinition ()
+    public void VisitIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
       var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
-      var column = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
-      _visitorAllowingNulls.VisitObjectIDWithClassIDColumnDefinition (column);
+      _visitorAllowingNulls.VisitIDColumnDefinition (column);
       var result = _visitorAllowingNulls.GetNameList ();
 
       Assert.That (result, Is.EqualTo ("[C1ID], [C1ClassID]"));
+    }
+
+    [Test]
+    public void VisitIDColumnDefinition_ClassIDColumnIsNull ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
+      var column = new IDColumnDefinition (objectIDColumn, null);
+
+      _visitorAllowingNulls.VisitIDColumnDefinition (column);
+      var result = _visitorAllowingNulls.GetNameList ();
+
+      Assert.That (result, Is.EqualTo ("[C1ID]"));
     }
 
     [Test]

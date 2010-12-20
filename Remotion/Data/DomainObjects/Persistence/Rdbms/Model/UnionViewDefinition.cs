@@ -42,7 +42,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       public IColumnDefinition FindColumn (IColumnDefinition columnDefinition)
       {
         _foundColumn = null;
-        columnDefinition.Accept (this);
+        if(columnDefinition!=null)
+          columnDefinition.Accept (this);
         return _foundColumn;
       }
 
@@ -54,17 +55,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _foundColumn = new NullColumnDefinition ();
       }
 
-      void IColumnDefinitionVisitor.VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
+      void IColumnDefinitionVisitor.VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
       {
-        if (_availableColumns.Contains (objectIDWithClassIDColumnDefinition))
+        if (_availableColumns.Contains (idColumnDefinition))
         {
-          _foundColumn = objectIDWithClassIDColumnDefinition;
+          _foundColumn = idColumnDefinition;
         }
         else
         {
-          var objectIDColumn = FindColumn (objectIDWithClassIDColumnDefinition.ObjectIDColumn);
-          var classIDColumn = FindColumn (objectIDWithClassIDColumnDefinition.ClassIDColumn);
-          _foundColumn = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+          var objectIDColumn = FindColumn (idColumnDefinition.ObjectIDColumn);
+          var classIDColumn = FindColumn (idColumnDefinition.ClassIDColumn);
+          _foundColumn = new IDColumnDefinition (objectIDColumn, classIDColumn);
         }
       }
 

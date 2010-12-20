@@ -20,17 +20,15 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  // TODO Review 3588: Rename to IDColumnDefinition
-  // TODO Review 3588: Change so that classIDColumn can be null; add HasClassIDColumn property
   /// <summary>
-  /// The <see cref="ObjectIDWithClassIDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
+  /// The <see cref="IDColumnDefinition"/> represents an <see cref="ObjectID"/>-column with a class id.
   /// </summary>
-  public class ObjectIDWithClassIDColumnDefinition : IColumnDefinition
+  public class IDColumnDefinition : IColumnDefinition
   {
     private readonly IColumnDefinition _objectIDColumn;
     private readonly IColumnDefinition _classIDColumn;
 
-    public ObjectIDWithClassIDColumnDefinition (IColumnDefinition objectIDColumn, IColumnDefinition classIDColumn)
+    public IDColumnDefinition (IColumnDefinition objectIDColumn, IColumnDefinition classIDColumn)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
 
@@ -53,11 +51,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classIDColumn; }
     }
 
+    public bool HasClassIDColumn
+    {
+      get { return _classIDColumn != null; }
+    }
+
     public void Accept (IColumnDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      visitor.VisitObjectIDWithClassIDColumnDefinition (this);
+      visitor.VisitIDColumnDefinition (this);
     }
 
     public bool Equals (IColumnDefinition other)
@@ -65,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (other == null || other.GetType() != GetType())
         return false;
 
-      var castOther = (ObjectIDWithClassIDColumnDefinition) other;
+      var castOther = (IDColumnDefinition) other;
       return Equals (castOther.ObjectIDColumn, ObjectIDColumn) && Equals (castOther.ClassIDColumn, ClassIDColumn);
     }
 

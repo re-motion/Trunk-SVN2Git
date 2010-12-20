@@ -64,19 +64,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void VisitObjectIDWithClassIDColumnDefinition ()
+    public void VisitIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
       var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
-      var column = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ClassID")).Return ("[C1ClassID]");
       
-      _visitor.VisitObjectIDWithClassIDColumnDefinition (column);
+      _visitor.VisitIDColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
 
       Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL,\r\n  [C1ClassID] integer NOT NULL"));
+    }
+
+    [Test]
+    public void VisitIDColumnDefinition_ClassIDColumnIsNull ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
+      var column = new IDColumnDefinition (objectIDColumn, null);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
+
+      _visitor.VisitIDColumnDefinition (column);
+      var result = _visitor.GetDeclarationList ();
+
+      Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL"));
     }
 
     [Test]

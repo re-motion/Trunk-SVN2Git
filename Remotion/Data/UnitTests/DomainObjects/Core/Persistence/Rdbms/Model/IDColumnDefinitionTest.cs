@@ -24,20 +24,20 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class ObjectIDWithClassIDColumnDefinitionTest
+  public class IDColumnDefinitionTest
   {
     private SimpleColumnDefinition _objectIDColumn;
     private SimpleColumnDefinition _classIDColumn;
-    private ObjectIDWithClassIDColumnDefinition _columnDefinition;
-    private ObjectIDWithClassIDColumnDefinition _columnDefinitionWithoutClassID;
+    private IDColumnDefinition _columnDefinition;
+    private IDColumnDefinition _columnDefinitionWithoutClassID;
 
     [SetUp]
     public void SetUp ()
     {
       _objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
       _classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
-      _columnDefinition = new ObjectIDWithClassIDColumnDefinition (_objectIDColumn, _classIDColumn);
-      _columnDefinitionWithoutClassID = new ObjectIDWithClassIDColumnDefinition (_objectIDColumn, null);
+      _columnDefinition = new IDColumnDefinition (_objectIDColumn, _classIDColumn);
+      _columnDefinitionWithoutClassID = new IDColumnDefinition (_objectIDColumn, null);
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor> ();
 
-      visitorMock.Expect (mock => mock.VisitObjectIDWithClassIDColumnDefinition (_columnDefinition));
+      visitorMock.Expect (mock => mock.VisitIDColumnDefinition (_columnDefinition));
       visitorMock.Replay ();
 
       _columnDefinition.Accept (visitorMock);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
       var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var other = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_True_NoClassIDColumns ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+      var other = new IDColumnDefinition (objectIDColumn, null);
 
       Assert.That (_columnDefinitionWithoutClassID.Equals (other), Is.True);
       Assert.That (_columnDefinitionWithoutClassID.Equals ((object) other), Is.True);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (int), "uniqueidentifier", false);
       var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var other = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
       var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (int), "varchar", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var other = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Equals_False_NullClassIDColumn ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+      var other = new IDColumnDefinition (objectIDColumn, null);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
       var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
+      var other = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetHashCode_EqualObjects_NoClassIDColumn ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("ObjectID", typeof (ObjectID), "uniqueidentifier", false);
-      var other = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, null);
+      var other = new IDColumnDefinition (objectIDColumn, null);
 
       Assert.That (_columnDefinitionWithoutClassID.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }

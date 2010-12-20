@@ -55,12 +55,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           simpleColumnDefinition.IsNullable ? " NULL" : " NOT NULL");
     }
 
-    public virtual void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
+    public virtual void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("objectIDWithClassIDColumnDefinition", objectIDWithClassIDColumnDefinition);
+      ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);
 
-      objectIDWithClassIDColumnDefinition.ObjectIDColumn.Accept (this);
-      objectIDWithClassIDColumnDefinition.ClassIDColumn.Accept (this);
+      idColumnDefinition.ObjectIDColumn.Accept (this);
+      if(idColumnDefinition.HasClassIDColumn)
+        idColumnDefinition.ClassIDColumn.Accept (this);
     }
 
     public virtual void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)

@@ -275,7 +275,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
-      Assert.That (result, Is.TypeOf (typeof (SimpleColumnDefinition)));
+      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
+      Assert.That (((IDColumnDefinition) result).HasClassIDColumn, Is.False);
     }
 
     [Test]
@@ -289,9 +290,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
-      var objectIDColumn = (SimpleColumnDefinition) ((ObjectIDWithClassIDColumnDefinition) result).ObjectIDColumn;
-      var classIDColumn = (SimpleColumnDefinition) ((ObjectIDWithClassIDColumnDefinition) result).ClassIDColumn;
+      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
+      Assert.That (((IDColumnDefinition) result).HasClassIDColumn, Is.True);
+      var objectIDColumn = (SimpleColumnDefinition) ((IDColumnDefinition) result).ObjectIDColumn;
+      var classIDColumn = (SimpleColumnDefinition) ((IDColumnDefinition) result).ClassIDColumn;
 
       Assert.That (objectIDColumn.Name, Is.EqualTo ("DistributorID"));
       Assert.That (objectIDColumn.IsNullable, Is.True);
@@ -314,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var result = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
 
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithClassIDColumnDefinition)));
+      Assert.That (result, Is.TypeOf (typeof (IDColumnDefinition)));
     }
 
     [Test]

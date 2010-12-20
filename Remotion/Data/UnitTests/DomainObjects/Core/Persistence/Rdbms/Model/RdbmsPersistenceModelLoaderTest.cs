@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _fakeColumnDefinition7;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private ObjectIDWithClassIDColumnDefinition _fakeIDColumnDefinition;
+    private IDColumnDefinition _fakeIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
 
     // Test Domain:
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true);
       _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false);
       _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true);
-      _fakeIDColumnDefinition = new ObjectIDWithClassIDColumnDefinition (_fakeColumnDefinition1, _fakeColumnDefinition2);
+      _fakeIDColumnDefinition = new IDColumnDefinition (_fakeColumnDefinition1, _fakeColumnDefinition2);
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false);
 
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
