@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         relationChangingCalled = true;
 
-        Assert.That (args.RelationEndPointDefintion.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
         Assert.That (args.NewRelatedObject, Is.Null);
         Assert.That (args.OldRelatedObject, Is.SameAs (_removedRelatedObject));
 

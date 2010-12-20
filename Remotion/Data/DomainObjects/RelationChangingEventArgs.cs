@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public class RelationChangingEventArgs : EventArgs
   {
-    private readonly IRelationEndPointDefinition _relationEndPointDefintion;
+    private readonly IRelationEndPointDefinition _relationEndPointDefinition;
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      _relationEndPointDefintion = relationEndPointDefinition;
+      _relationEndPointDefinition = relationEndPointDefinition;
       _oldRelatedObject = oldRelatedObject;
       _newRelatedObject = newRelatedObject;
     }
@@ -68,9 +68,9 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the relation endpoint defintion of the <see cref="PropertyValue"/> that has been changed due to the relation change.
     /// </summary>
-    public IRelationEndPointDefinition RelationEndPointDefintion
+    public IRelationEndPointDefinition RelationEndPointDefinition
     {
-      get { return _relationEndPointDefintion; }
+      get { return _relationEndPointDefinition; }
     }
   }
 }

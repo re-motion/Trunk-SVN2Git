@@ -516,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (newOrder1),
             Arg<RelationChangingEventArgs>.Matches (
                 args =>
-                args.RelationEndPointDefintion.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
+                args.RelationEndPointDefinition.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
                 && args.OldRelatedObject == null
                 && args.NewRelatedObject is OrderTicket));
 

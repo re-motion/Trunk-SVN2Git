@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       this.Expect (
           mock => RelationChanging (
               Arg.Is (sender),
-              Arg<RelationChangingEventArgs>.Matches (args => args.RelationEndPointDefintion == relationEndPointDefinition)
+              Arg<RelationChangingEventArgs>.Matches (args => args.RelationEndPointDefinition == relationEndPointDefinition)
                       ));
     }
 

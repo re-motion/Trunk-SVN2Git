@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     protected virtual void DomainObject_RelationChanging (object sender, RelationChangingEventArgs args)
     {
       _hasRelationChangingEventBeenCalled = true;
-      _changingRelationPropertyName = args.RelationEndPointDefintion.PropertyName;
+      _changingRelationPropertyName = args.RelationEndPointDefinition.PropertyName;
       _oldRelatedObject = args.OldRelatedObject;
       _newRelatedObject = args.NewRelatedObject;
 
