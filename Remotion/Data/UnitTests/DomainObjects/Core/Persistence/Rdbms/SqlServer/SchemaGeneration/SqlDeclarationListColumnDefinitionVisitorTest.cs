@@ -17,8 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -26,17 +28,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlDeclarationListColumnDefinitionVisitorTest
   {
     private SqlDeclarationListColumnDefinitionVisitor _visitor;
+    private ISqlDialect _sqlDialectStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _visitor = new SqlDeclarationListColumnDefinitionVisitor ();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _visitor = new SqlDeclarationListColumnDefinitionVisitor (_sqlDialectStub);
     }
 
     [Test]
     public void VisitSimpleColumnDefinition_Nullable ()
     {
       var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
       _visitor.VisitSimpleColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
@@ -48,6 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void VisitSimpleColumnDefinition_NotNullable ()
     {
       var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", false);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
       _visitor.VisitSimpleColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
@@ -62,6 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
       var column = new ObjectIDWithClassIDColumnDefinition (objectIDColumn, classIDColumn);
 
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ClassID")).Return ("[C1ClassID]");
+      
       _visitor.VisitObjectIDWithClassIDColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
 

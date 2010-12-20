@@ -27,6 +27,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   public class SqlDeclarationListColumnDefinitionVisitor : IColumnDefinitionVisitor
   {
     private readonly StringBuilder _columnList = new StringBuilder();
+    private readonly ISqlDialect _sqlDialect;
+
+    public SqlDeclarationListColumnDefinitionVisitor (ISqlDialect sqlDialect)
+    {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      _sqlDialect = sqlDialect;
+    }
 
     public string GetDeclarationList ()
     {
@@ -41,8 +49,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         _columnList.Append (",\r\n");
       
       _columnList.AppendFormat (
-          "  [{0}] {1}{2}",
-          simpleColumnDefinition.Name,
+          "  {0} {1}{2}",
+          _sqlDialect.DelimitIdentifier(simpleColumnDefinition.Name),
           simpleColumnDefinition.StorageType,
           simpleColumnDefinition.IsNullable ? " NULL" : " NOT NULL");
     }
