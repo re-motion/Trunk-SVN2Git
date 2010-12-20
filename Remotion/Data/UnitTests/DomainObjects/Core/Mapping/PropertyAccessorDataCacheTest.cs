@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _orderCache = CreatePropertyAccessorDataCache (typeof (Order));
       _distributorCache = CreatePropertyAccessorDataCache (typeof (Distributor));
       _closedGenericClassCache = CreatePropertyAccessorDataCache (typeof (ClosedGenericClassWithManySideRelationProperties));
-      _derivedClassWithMixedPropertiesCache = CreatePropertyAccessorDataCache (typeof (DerivedClassWithMixedProperties));
+      _derivedClassWithMixedPropertiesCache = CreatePropertyAccessorDataCache (typeof (DerivedClassWithDifferentProperties));
     }
 
     [Test]
@@ -202,13 +202,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void FindPropertyAccessorData_WithShadowedProperty ()
     {
-      var shadowingResult = _derivedClassWithMixedPropertiesCache.FindPropertyAccessorData (typeof (DerivedClassWithMixedProperties), "String");
+      var shadowingResult = _derivedClassWithMixedPropertiesCache.FindPropertyAccessorData (typeof (DerivedClassWithDifferentProperties), "String");
       var shadowingExpected =
-          _derivedClassWithMixedPropertiesCache.GetMandatoryPropertyAccessorData (typeof (DerivedClassWithMixedProperties), "String");
+          _derivedClassWithMixedPropertiesCache.GetMandatoryPropertyAccessorData (typeof (DerivedClassWithDifferentProperties), "String");
       Assert.That (shadowingResult, Is.EqualTo (shadowingExpected));
 
-      var shadowedResult = _derivedClassWithMixedPropertiesCache.FindPropertyAccessorData (typeof (ClassWithMixedProperties), "String");
-      var shadowedExpected = _derivedClassWithMixedPropertiesCache.GetMandatoryPropertyAccessorData (typeof (ClassWithMixedProperties), "String");
+      var shadowedResult = _derivedClassWithMixedPropertiesCache.FindPropertyAccessorData (typeof (ClassWithDifferentProperties), "String");
+      var shadowedExpected = _derivedClassWithMixedPropertiesCache.GetMandatoryPropertyAccessorData (typeof (ClassWithDifferentProperties), "String");
       Assert.That (shadowedResult, Is.EqualTo (shadowedExpected));
     }
 

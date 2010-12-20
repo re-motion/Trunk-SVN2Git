@@ -19,48 +19,35 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
 {
-  [DBTable]
-  [TestDomain]
   [Instantiable]
-  public abstract class ClassWithMixedProperties: ClassWithMixedPropertiesNotInMapping
+  public abstract class DerivedClassWithoutStorageGroupWithDifferentProperties : ClassWithoutStorageGroupWithDifferentProperties
   {
-    protected ClassWithMixedProperties ()
+    protected DerivedClassWithoutStorageGroupWithDifferentProperties()
     {
     }
 
-    [StorageClassNone]
-    public object Unmanaged
+    public override int Int32
     {
-      get { return null; }
+      get { return 0; }
       set { }
     }
 
-    public abstract int Int32 { get; set; }
+    public abstract string OtherString { get; set; }
 
-    public virtual string String
-    {
-      get
-      {
-        return CurrentProperty.GetValue<string> (); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
-      }
-      set
-      {
-        CurrentProperty.SetValue (value); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
-      }
-    }
+    [DBColumn ("NewString")]
+    public new abstract string String { get; set; }
 
-    public abstract ClassWithOneSideRelationProperties UnidirectionalOneToOne { get; set; }
-
+    [DBColumn ("DerivedPrivateString")]
     private string PrivateString
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"]
-            .GetValue<string> ();
+        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithMixedProperties.PrivateString"]
+            .GetValue<string>();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"]
+        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithMixedProperties.PrivateString"]
             .SetValue (value);
       }
     }

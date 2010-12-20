@@ -656,8 +656,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      var derivedClass = (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
-      ClassWithMixedProperties baseClass = derivedClass;
+      var derivedClass = (DerivedClassWithDifferentProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+      ClassWithDifferentProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";
       baseClass.String = "Base";

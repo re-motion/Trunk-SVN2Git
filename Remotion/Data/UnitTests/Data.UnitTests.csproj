@@ -1498,7 +1498,7 @@
     <Compile Include="DomainObjects\TestDomain\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
     <Compile Include="DomainObjects\TestDomain\OrderWithNewPropertyAccessBase.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClosedGenericClass.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithInterface.cs" />
@@ -1510,7 +1510,7 @@
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\GenericClassWithOneSideRelationPropertiesNotInMapping.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\GenericClassNotInMapping.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\IInterfaceWithProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\SpecificOrderCollection.cs" />
     <Compile Include="DomainObjects\TestDomain\StorageProviderStubAttribute.cs" />
@@ -1564,15 +1564,15 @@
     </Compile>
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithBinaryProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationProperties.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithMixedPropertiesNotInMapping.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithDifferentPropertiesNotInMapping.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithStringProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithMixedProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\DerivedClassWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\SpecialOfficial.cs">
       <SubType>Code</SubType>
     </Compile>

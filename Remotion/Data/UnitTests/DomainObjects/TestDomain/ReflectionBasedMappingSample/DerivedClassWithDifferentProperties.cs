@@ -19,20 +19,36 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
 {
-  public abstract class ClassWithMixedPropertiesNotInMapping : DomainObject
+  [Instantiable]
+  public abstract class DerivedClassWithDifferentProperties : ClassWithDifferentProperties
   {
-    protected ClassWithMixedPropertiesNotInMapping ()
+    protected DerivedClassWithDifferentProperties()
     {
     }
 
-    public abstract string BaseString { get; set; }
-
-    public abstract ClassWithOneSideRelationProperties BaseUnidirectionalOneToOne { get; set; }
-
-    private ClassWithOneSideRelationProperties BasePrivateUnidirectionalOneToOne
+    public override int Int32
     {
-      get { throw new NotImplementedException (); }
-      set { throw new NotImplementedException (); }
+      get { return 0; }
+      set { }
+    }
+
+    public abstract string OtherString { get; set; }
+
+    [DBColumn ("NewString")]
+    public new abstract string String { get; set; }
+
+    [DBColumn ("DerivedPrivateString")]
+    private string PrivateString
+    {
+      get {
+        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithDifferentProperties.PrivateString"]
+            .GetValue<string> ();
+      }
+      set
+      {
+        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithDifferentProperties.PrivateString"]
+            .SetValue (value);
+      }
     }
   }
 }

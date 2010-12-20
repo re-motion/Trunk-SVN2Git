@@ -48,10 +48,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Obsolete]
     public void GetPropertyName ()
     {
-      PropertyInfo propertyInfo = typeof (DerivedClassWithMixedProperties).GetProperty ("Int32");
+      PropertyInfo propertyInfo = typeof (DerivedClassWithDifferentProperties).GetProperty ("Int32");
 
       Assert.AreEqual (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithMixedProperties.Int32",
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.Int32",
           ReflectionUtility.GetPropertyName (propertyInfo));
     }
 

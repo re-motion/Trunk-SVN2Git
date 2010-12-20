@@ -22,9 +22,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
   [DBTable]
   //No StorageGroup
   [Instantiable]
-  public abstract class ClassWithoutStorageGroupWithMixedProperties : DomainObject
+  public abstract class ClassWithoutStorageGroupWithDifferentProperties : DomainObject
   {
-    protected ClassWithoutStorageGroupWithMixedProperties ()
+    protected ClassWithoutStorageGroupWithDifferentProperties ()
     {
     }
 
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"].SetValue (value);
+        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"].SetValue (value);
       }
     }
   }

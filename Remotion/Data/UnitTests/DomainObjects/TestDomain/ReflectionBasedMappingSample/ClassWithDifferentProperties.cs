@@ -19,34 +19,48 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
 {
+  [DBTable]
+  [TestDomain]
   [Instantiable]
-  public abstract class DerivedClassWithMixedProperties : ClassWithMixedProperties
+  public abstract class ClassWithDifferentProperties: ClassWithDifferentPropertiesNotInMapping
   {
-    protected DerivedClassWithMixedProperties()
+    protected ClassWithDifferentProperties ()
     {
     }
 
-    public override int Int32
+    [StorageClassNone]
+    public object Unmanaged
     {
-      get { return 0; }
+      get { return null; }
       set { }
     }
 
-    public abstract string OtherString { get; set; }
+    public abstract int Int32 { get; set; }
 
-    [DBColumn ("NewString")]
-    public new abstract string String { get; set; }
+    public virtual string String
+    {
+      get
+      {
+        return CurrentProperty.GetValue<string> (); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
+      }
+      set
+      {
+        CurrentProperty.SetValue (value); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
+      }
+    }
 
-    [DBColumn ("DerivedPrivateString")]
+    public abstract ClassWithOneSideRelationProperties UnidirectionalOneToOne { get; set; }
+
     private string PrivateString
     {
-      get {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithMixedProperties.PrivateString"]
+      get
+      {
+        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"]
             .GetValue<string> ();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.DerivedClassWithMixedProperties.PrivateString"]
+        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"]
             .SetValue (value);
       }
     }

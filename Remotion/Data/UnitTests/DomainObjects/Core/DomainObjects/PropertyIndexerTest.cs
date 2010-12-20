@@ -278,14 +278,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ShortNameAndTypeWithShadowedProperties ()
     {
-      var classWithMixedProperties = (DerivedClassWithMixedProperties) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+      var classWithMixedProperties = (DerivedClassWithDifferentProperties) 
+          LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer(classWithMixedProperties);
       Assert.That (
-                  indexer[typeof (DerivedClassWithMixedProperties), "String"], Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+                  indexer[typeof (DerivedClassWithDifferentProperties), "String"], Is.EqualTo (indexer[typeof (DerivedClassWithDifferentProperties).FullName + ".String"]));
       Assert.That (
-                  indexer[typeof (ClassWithMixedProperties), "String"], Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
+                  indexer[typeof (ClassWithDifferentProperties), "String"], Is.EqualTo (indexer[typeof (ClassWithDifferentProperties).FullName + ".String"]));
     }
 
     [Test]
@@ -316,14 +316,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Find_Generic_WithInferredType ()
     {
       var classWithMixedProperties =
-          (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+          (DerivedClassWithDifferentProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
       var indexer = new PropertyIndexer (classWithMixedProperties);
       
       var resultOnDerived = indexer.Find (classWithMixedProperties, "String");
-      Assert.That (resultOnDerived, Is.EqualTo (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"]));
+      Assert.That (resultOnDerived, Is.EqualTo (indexer[typeof (DerivedClassWithDifferentProperties).FullName + ".String"]));
 
-      var resultOnBase = indexer.Find ((ClassWithMixedProperties) classWithMixedProperties, "String");
-      Assert.That (resultOnBase, Is.EqualTo (indexer[typeof (ClassWithMixedProperties).FullName + ".String"]));
+      var resultOnBase = indexer.Find ((ClassWithDifferentProperties) classWithMixedProperties, "String");
+      Assert.That (resultOnBase, Is.EqualTo (indexer[typeof (ClassWithDifferentProperties).FullName + ".String"]));
     }
 
     [Test]
