@@ -655,9 +655,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlNameListColumnDefinitionVisitorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\NameListColumnDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlDeclarationListColumnDefinitionVisitorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\DeclarationListColumnDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TableBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ViewBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableBuilderBaseTest.cs" />

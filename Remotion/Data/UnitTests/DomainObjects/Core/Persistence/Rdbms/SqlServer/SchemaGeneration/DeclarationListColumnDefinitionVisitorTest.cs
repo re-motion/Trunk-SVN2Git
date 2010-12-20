@@ -25,16 +25,16 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlDeclarationListColumnDefinitionVisitorTest
+  public class DeclarationListColumnDefinitionVisitorTest
   {
-    private SqlDeclarationListColumnDefinitionVisitor _visitor;
+    private DeclarationListColumnDefinitionVisitor _visitor;
     private ISqlDialect _sqlDialectStub;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _visitor = new SqlDeclarationListColumnDefinitionVisitor (_sqlDialectStub);
+      _visitor = new DeclarationListColumnDefinitionVisitor (_sqlDialectStub);
     }
 
     [Test]

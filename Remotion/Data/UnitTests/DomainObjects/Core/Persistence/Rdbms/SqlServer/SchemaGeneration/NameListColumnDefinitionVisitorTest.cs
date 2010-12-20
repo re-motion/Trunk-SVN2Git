@@ -23,14 +23,14 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlNameListColumnDefinitionVisitorTest
+  public class NameListColumnDefinitionVisitorTest
   {
-    private SqlNameListColumnDefinitionVisitor _visitorAllowingNulls;
+    private NameListColumnDefinitionVisitor _visitorAllowingNulls;
 
     [SetUp]
     public void SetUp ()
     {
-      _visitorAllowingNulls = new SqlNameListColumnDefinitionVisitor (true);
+      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var column = new NullColumnDefinition ();
 
-      var visitorNotAllowingNulls = new SqlNameListColumnDefinitionVisitor (false);
+      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false);
       visitorNotAllowingNulls.VisitNullColumnDefinition (column);
     }
   }

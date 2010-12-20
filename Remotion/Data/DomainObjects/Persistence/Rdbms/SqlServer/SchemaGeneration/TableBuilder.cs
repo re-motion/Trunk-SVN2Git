@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var visitor = new SqlDeclarationListColumnDefinitionVisitor (SqlDialect.Instance);
+      var visitor = new DeclarationListColumnDefinitionVisitor (SqlDialect.Instance);
 
       foreach (var columnDefinition in tableDefinition.GetColumns ())
         columnDefinition.Accept (visitor);
