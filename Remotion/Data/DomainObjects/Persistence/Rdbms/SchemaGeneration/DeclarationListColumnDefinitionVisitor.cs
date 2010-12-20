@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -19,32 +19,40 @@ using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// Visits <see cref="IColumnDefinition"/> objects and generates a list of column names for the visited columns.
+  /// Visits <see cref="IColumnDefinition"/> objects and generates a list of SQL declarations for the visited columns.
   /// </summary>
-  public class NameListColumnDefinitionVisitor : IColumnDefinitionVisitor
+  public class DeclarationListColumnDefinitionVisitor : IColumnDefinitionVisitor
   {
-    private readonly bool _allowNullColumns;
-    private readonly StringBuilder _nameList = new StringBuilder ();
+    private readonly StringBuilder _columnList = new StringBuilder();
+    private readonly ISqlDialect _sqlDialect;
 
-    public NameListColumnDefinitionVisitor (bool allowNullColumns)
+    public DeclarationListColumnDefinitionVisitor (ISqlDialect sqlDialect)
     {
-      _allowNullColumns = allowNullColumns;
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      _sqlDialect = sqlDialect;
     }
 
-    public string GetNameList ()
+    public string GetDeclarationList ()
     {
-      return _nameList.ToString ();
+      return _columnList.ToString();
     }
 
     public virtual void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
     {
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
+
+      if (_columnList.Length > 0)
+        _columnList.Append (",\r\n");
       
-      AppendSeparatorIfRequired();
-      _nameList.Append ("[").Append (simpleColumnDefinition.Name).Append ("]");
+      _columnList.AppendFormat (
+          "  {0} {1}{2}",
+          _sqlDialect.DelimitIdentifier(simpleColumnDefinition.Name),
+          simpleColumnDefinition.StorageType,
+          simpleColumnDefinition.IsNullable ? " NULL" : " NOT NULL");
     }
 
     public virtual void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)
@@ -59,17 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
 
-      if (!_allowNullColumns)
-        throw new NotSupportedException ("Null columns are not supported at this point.");
-
-      AppendSeparatorIfRequired ();
-      _nameList.Append ("NULL");
-    }
-
-    private void AppendSeparatorIfRequired ()
-    {
-      if (_nameList.Length > 0)
-        _nameList.Append (", ");
+      throw new NotSupportedException ("Cannot declare a non-existing column.");
     }
   }
 }
