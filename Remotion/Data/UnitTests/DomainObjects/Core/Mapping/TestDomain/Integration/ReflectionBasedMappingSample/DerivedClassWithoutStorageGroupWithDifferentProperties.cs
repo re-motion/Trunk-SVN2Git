@@ -19,9 +19,9 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
   [Instantiable]
-  public abstract class DerivedClassWithoutStorageGroupWithMixedProperties : ClassWithoutStorageGroupWithMixedProperties
+  public abstract class DerivedClassWithoutStorageGroupWithDifferentProperties : ClassWithoutStorageGroupWithDifferentProperties
   {
-    protected DerivedClassWithoutStorageGroupWithMixedProperties()
+    protected DerivedClassWithoutStorageGroupWithDifferentProperties()
     {
     }
 
@@ -41,12 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithMixedProperties.PrivateString"]
+        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithDifferentProperties.PrivateString"]
             .GetValue<string>();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithMixedProperties.PrivateString"]
+        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithoutStorageGroupWithDifferentProperties.PrivateString"]
             .SetValue (value);
       }
     }

@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
   [DBTable]
-  //No StorageGroup
+  [TestDomain]
   [Instantiable]
-  public abstract class ClassWithoutStorageGroupWithDifferentProperties : DomainObject
+  public abstract class ClassWithDifferentProperties: ClassWithDifferentPropertiesNotInMapping
   {
-    protected ClassWithoutStorageGroupWithDifferentProperties ()
+    protected ClassWithDifferentProperties ()
     {
     }
 
@@ -41,25 +40,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.String"]
-            .GetValue<string> ();
+        return CurrentProperty.GetValue<string> (); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
       }
-      set { Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.String"]
-            .SetValue (value); }
+      set
+      {
+        CurrentProperty.SetValue (value); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
+      }
     }
 
-    public abstract ClassWithOneSideRelationProperties UnidirectionalOneToOne { get; set; }
+    public abstract ClassWithVirtualRelationEndPoints UnidirectionalOneToOne { get; set; }
 
     private string PrivateString
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.PrivateString"]
+        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"]
             .GetValue<string> ();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"].SetValue (value);
+        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"]
+            .SetValue (value);
       }
     }
   }

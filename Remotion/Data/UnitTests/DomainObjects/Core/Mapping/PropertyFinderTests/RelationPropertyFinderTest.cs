@@ -39,33 +39,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (DerivedClassWithMixedProperties),
+          typeof (DerivedClassWithDifferentProperties),
           true,
           true,
           new ReflectionBasedNameResolver(),
           classDefinition.PersistentMixinFinder);
 
-      Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithMixedProperties)));
+      Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
     }
 
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithMixedProperties), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithDifferentProperties), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
           Is.EquivalentTo (
               new[]
               {
-                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
-                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
-                  GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne")
+                  GetProperty (typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne")
               }));
     }
 

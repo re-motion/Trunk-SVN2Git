@@ -65,9 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetPropertyName_ForOverriddenProperty ()
     {
       _propertyInformationStub.Stub (stub => stub.Name).Return ("Int32");
-      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (ClassWithMixedProperties));
+      _propertyInformationStub.Stub (stub => stub.GetOriginalDeclaringType ()).Return (typeof (ClassWithDifferentProperties));
       string name = _resolver.GetPropertyName (_propertyInformationStub);
-      Assert.That (name, Is.EqualTo (typeof (ClassWithMixedProperties).FullName + ".Int32"));
+      Assert.That (name, Is.EqualTo (typeof (ClassWithDifferentProperties).FullName + ".Int32"));
     }
 
     [Test]

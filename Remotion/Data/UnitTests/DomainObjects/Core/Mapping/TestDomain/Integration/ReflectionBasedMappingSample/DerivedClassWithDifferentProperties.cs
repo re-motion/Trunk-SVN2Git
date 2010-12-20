@@ -18,48 +18,34 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
-  [DBTable]
-  [TestDomain]
   [Instantiable]
-  public abstract class ClassWithMixedProperties: ClassWithMixedPropertiesNotInMapping
+  public abstract class DerivedClassWithDifferentProperties : ClassWithDifferentProperties
   {
-    protected ClassWithMixedProperties ()
+    protected DerivedClassWithDifferentProperties()
     {
     }
 
-    [StorageClassNone]
-    public object Unmanaged
+    public override int Int32
     {
-      get { return null; }
+      get { return 0; }
       set { }
     }
 
-    public abstract int Int32 { get; set; }
+    public abstract string OtherString { get; set; }
 
-    public virtual string String
-    {
-      get
-      {
-        return CurrentProperty.GetValue<string> (); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
-      }
-      set
-      {
-        CurrentProperty.SetValue (value); // CurrentProperty used on purpose here - tests whether shadowed properties work correctly
-      }
-    }
+    [DBColumn ("NewString")]
+    public new abstract string String { get; set; }
 
-    public abstract ClassWithVirtualRelationEndPoints UnidirectionalOneToOne { get; set; }
-
+    [DBColumn ("DerivedPrivateString")]
     private string PrivateString
     {
-      get
-      {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"]
+      get {
+        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithDifferentProperties.PrivateString"]
             .GetValue<string> ();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"]
+        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.DerivedClassWithDifferentProperties.PrivateString"]
             .SetValue (value);
       }
     }

@@ -39,35 +39,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder =
           new PropertyFinder (
-              typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+              typeof (ClassWithDifferentProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
-      Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
+      Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithDifferentProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
     }
 
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties));
+      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder =
           new PropertyFinder (
-              typeof (ClassWithMixedProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
+              typeof (ClassWithDifferentProperties), classDefinition, true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
           Is.EqualTo (
               new[]
               {
-                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseString"),
-                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
-                  GetProperty (typeof (ClassWithMixedPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
-                  GetProperty (typeof (ClassWithMixedProperties), "Int32"),
-                  GetProperty (typeof (ClassWithMixedProperties), "String"),
-                  GetProperty (typeof (ClassWithMixedProperties), "UnidirectionalOneToOne"),
-                  GetProperty (typeof (ClassWithMixedProperties), "PrivateString")
+                  GetProperty (typeof (ClassWithDifferentPropertiesNotInMapping), "BaseString"),
+                  GetProperty (typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithDifferentProperties), "Int32"),
+                  GetProperty (typeof (ClassWithDifferentProperties), "String"),
+                  GetProperty (typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne"),
+                  GetProperty (typeof (ClassWithDifferentProperties), "PrivateString")
               }));
     }
 

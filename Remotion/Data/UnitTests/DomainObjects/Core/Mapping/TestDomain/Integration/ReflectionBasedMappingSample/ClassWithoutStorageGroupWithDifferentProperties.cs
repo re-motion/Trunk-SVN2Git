@@ -21,9 +21,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
   [DBTable]
   //No StorageGroup
   [Instantiable]
-  public abstract class ClassWithoutStorageGroupWithMixedProperties : DomainObject
+  public abstract class ClassWithoutStorageGroupWithDifferentProperties : DomainObject
   {
-    protected ClassWithoutStorageGroupWithMixedProperties ()
+    protected ClassWithoutStorageGroupWithDifferentProperties ()
     {
     }
 
@@ -40,10 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithMixedProperties.String"]
+        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.String"]
             .GetValue<string> ();
       }
-      set { Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithMixedProperties.String"]
+      set { Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.String"]
             .SetValue (value); }
     }
 
@@ -53,12 +53,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     {
       get
       {
-        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithMixedProperties.PrivateString"]
+        return Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithoutStorageGroupWithDifferentProperties.PrivateString"]
             .GetValue<string> ();
       }
       set
       {
-        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithMixedProperties.PrivateString"].SetValue (value);
+        Properties["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithDifferentProperties.PrivateString"].SetValue (value);
       }
     }
   }
