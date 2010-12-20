@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 {
@@ -27,6 +29,46 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
   /// </summary>
   public class ColumnNamesAreUniqueWithinInheritanceTreeValidationRule : IPersistenceMappingValidationRule
   {
+    private class ColumnDefinitionVisitor : IColumnDefinitionVisitor
+    {
+      public static IEnumerable<KeyValuePair<string, List<PropertyDefinition>>> GroupByName (IEnumerable<PropertyDefinition> propertyDefinitions)
+      {
+        var visitor = new ColumnDefinitionVisitor();
+        foreach (var propertyDefinition in propertyDefinitions)
+        {
+          visitor._currentProperty = propertyDefinition;
+          ((IColumnDefinition) propertyDefinition.StoragePropertyDefinition).Accept (visitor);
+        }
+
+        return visitor._propertyDefinitionsByName;
+      }
+
+
+      private readonly MultiDictionary<string, PropertyDefinition> _propertyDefinitionsByName;
+      private PropertyDefinition _currentProperty;
+
+      private ColumnDefinitionVisitor ()
+      {
+        _propertyDefinitionsByName = new MultiDictionary<string, PropertyDefinition>();
+      }
+
+      void IColumnDefinitionVisitor.VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
+      {
+        _propertyDefinitionsByName[simpleColumnDefinition.Name].Add (_currentProperty);
+      }
+
+      void IColumnDefinitionVisitor.VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
+      {
+        idColumnDefinition.ObjectIDColumn.Accept (this);
+        if (idColumnDefinition.HasClassIDColumn)
+          idColumnDefinition.ClassIDColumn.Accept (this);
+      }
+
+      void IColumnDefinitionVisitor.VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
+      {
+      }
+    }
+
     public ColumnNamesAreUniqueWithinInheritanceTreeValidationRule ()
     {
     }
@@ -37,45 +79,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
       {
-        var propertyDefinitionsByName = new Dictionary<string, PropertyDefinition>();
-
         var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()
             .SelectMany (cd => cd.MyPropertyDefinitions);
-        var allPropertyDefinitions = classDefinition.MyPropertyDefinitions.Concat (derivedPropertyDefinitions);
-        
-        foreach (var propertyDefinition in allPropertyDefinitions)
-          yield return ValidateStorageSpecificPropertyNames (propertyDefinition, propertyDefinitionsByName);
-      }
-      else
-        yield return MappingValidationResult.CreateValidResult();
-    }
+        var allPropertyDefinitions =
+            classDefinition.MyPropertyDefinitions.Concat(derivedPropertyDefinitions).Where (pd => pd.StorageClass == StorageClass.Persistent);
 
-    private MappingValidationResult ValidateStorageSpecificPropertyNames (
-        PropertyDefinition propertyDefinition, IDictionary<string, PropertyDefinition> propertyDefinitionsByName)
-    {
-      if (propertyDefinition.StorageClass == StorageClass.Persistent && propertyDefinition.StoragePropertyDefinition != null)
-      {
-        PropertyDefinition basePropertyDefinition;
-        if (propertyDefinitionsByName.TryGetValue (propertyDefinition.StoragePropertyDefinition.Name, out basePropertyDefinition))
+        var groupedPropertyDefinitionsByName = ColumnDefinitionVisitor.GroupByName (allPropertyDefinitions);
+        foreach (var keyVakuePair in groupedPropertyDefinitionsByName)
         {
-          if (!propertyDefinition.PropertyInfo.Equals (basePropertyDefinition.PropertyInfo))
+          if (keyVakuePair.Value.Count > 1 && !keyVakuePair.Value[0].PropertyInfo.Equals (keyVakuePair.Value[1].PropertyInfo))
           {
-            return MappingValidationResult.CreateInvalidResultForProperty (
-                propertyDefinition.PropertyInfo,
+            yield return MappingValidationResult.CreateInvalidResultForProperty (
+                keyVakuePair.Value[0].PropertyInfo,
                 "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
                 + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-                propertyDefinition.PropertyInfo.Name,
-                propertyDefinition.ClassDefinition.ClassType.Name,
-                propertyDefinition.StoragePropertyDefinition.Name,
-                basePropertyDefinition.ClassDefinition.ClassType.Name,
-                basePropertyDefinition.PropertyInfo.Name);
+                keyVakuePair.Value[0].PropertyInfo.Name,
+                keyVakuePair.Value[0].ClassDefinition.ClassType.Name,
+                keyVakuePair.Value[0].StoragePropertyDefinition.Name,
+                keyVakuePair.Value[1].ClassDefinition.ClassType.Name,
+                keyVakuePair.Value[1].PropertyInfo.Name);
           }
         }
-
-        propertyDefinitionsByName[propertyDefinition.StoragePropertyDefinition.Name] = propertyDefinition;
       }
-
-      return MappingValidationResult.CreateValidResult();
+      yield return MappingValidationResult.CreateValidResult();
     }
   }
 }

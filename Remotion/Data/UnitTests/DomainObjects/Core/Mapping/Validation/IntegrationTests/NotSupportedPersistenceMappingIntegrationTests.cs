@@ -25,11 +25,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
   {
     //ColumnNamesAreUniqueWithinInheritanceTreeValidationRule
     [Test]
-    [ExpectedException(typeof(MappingException), ExpectedMessage = 
-      "Property 'DuplicatedPropertyInTree' of class 'DerivedDerivedClass' must not define storage specific name 'DuplicatedPropertyInTree', "
-      +"because class 'BaseClass' in same inheritance hierarchy already defines property 'DuplicatedPropertyInTree' with the same storage specific name.\r\n\r\n"
+    [ExpectedException(typeof(MappingException), ExpectedMessage =
+      "Property 'DuplicatedPropertyInTree' of class 'BaseClass' must not define storage specific name 'DuplicatedPropertyInTree', "
+      +"because class 'DerivedDerivedClass' in same inheritance hierarchy already defines property 'DuplicatedPropertyInTree' with the same storage "
+      +"specific name.\r\n\r\n"
       + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedPersistenceMapping."
-      + "SamePropertyNameInInheritanceHierarchy.DerivedDerivedClass\r\n"
+      + "SamePropertyNameInInheritanceHierarchy.BaseClass\r\n"
       + "Property: DuplicatedPropertyInTree")]
     public void SamePropertyNameInInheritanceHierarchy ()
     {

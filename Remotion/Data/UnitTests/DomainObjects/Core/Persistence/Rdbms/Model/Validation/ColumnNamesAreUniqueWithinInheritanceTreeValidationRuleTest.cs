@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -84,11 +87,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new SimpleColumnDefinition("Property", typeof(string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           StorageClass.None,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"));
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -108,12 +113,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           classDefinition, 
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          "Property");
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          "Property");
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
 
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -122,11 +127,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Property 'PropertyWithStorageClassPersistent' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
-          +"because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage "
-          +"specific name.\r\n\r\n"
+          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
+          + "because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property "
+          +"'PropertyWithStorageClassPersistent' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
-          + "Property: PropertyWithStorageClassPersistent";
+          + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -143,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeStoragePropertyDefinition ("Property1"));
+          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           "FirstName2",
@@ -152,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
-          new FakeStoragePropertyDefinition ("Property2"));
+          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true));
 
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
@@ -173,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new FakeStoragePropertyDefinition ("Property"));
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -182,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeStoragePropertyDefinition ("Property"));
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{ propertyDefinition1}, true));
@@ -194,10 +199,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
-          +"'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
-          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
-          + "Property: Property";
+          "Property 'BaseProperty' of class 'BaseValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass\r\n"
+          + "Property: BaseProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -212,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
-          new FakeStoragePropertyDefinition ("Property1"));
+          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -221,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeStoragePropertyDefinition ("Property2"));
+          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1}, true));
@@ -246,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new FakeStoragePropertyDefinition ("Property"));
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -255,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeStoragePropertyDefinition ("Property"));
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -267,10 +272,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
-          +"'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
-          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.OtherDerivedValidationHierarchyClass\r\n"
-          + "Property: OtherProperty";
+          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'OtherDerivedValidationHierarchyClass' in same inheritance hierarchy already defines property 'OtherProperty' with the same storage specific name.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
+          + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -285,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (OtherDerivedValidationHierarchyClass).GetProperty ("OtherProperty"),
-          new FakeStoragePropertyDefinition ("Property1"));
+          new SimpleColumnDefinition ("Property1", typeof (string), "varchar", true));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass2,
           "FirstName2",
@@ -294,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           StorageClass.Persistent,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
-          new FakeStoragePropertyDefinition ("Property2"));
+          new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true));
 
       _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection());
