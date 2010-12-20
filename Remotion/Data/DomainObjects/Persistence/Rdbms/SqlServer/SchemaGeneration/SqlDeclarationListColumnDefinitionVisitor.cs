@@ -37,12 +37,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
 
+      if (_columnList.Length > 0)
+        _columnList.Append (",\r\n");
+      
       _columnList.AppendFormat (
-          "  [{0}] {1}{2},",
+          "  [{0}] {1}{2}",
           simpleColumnDefinition.Name,
           simpleColumnDefinition.StorageType,
           simpleColumnDefinition.IsNullable ? " NULL" : " NOT NULL");
-      _columnList.AppendLine ();
     }
 
     public void VisitObjectIDWithClassIDColumnDefinition (ObjectIDWithClassIDColumnDefinition objectIDWithClassIDColumnDefinition)

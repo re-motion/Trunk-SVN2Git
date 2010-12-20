@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       createTableStringBuilder.AppendFormat (
           "CREATE TABLE [{0}].[{1}]\r\n"
           + "(\r\n"
-          + "{2}  CONSTRAINT [PK_{1}] PRIMARY KEY CLUSTERED ([ID])\r\n"
+          + "{2},\r\n  CONSTRAINT [PK_{1}] PRIMARY KEY CLUSTERED ([ID])\r\n"
           + ")\r\n",
           FileBuilder.DefaultSchema,
           tableDefinition.TableName,

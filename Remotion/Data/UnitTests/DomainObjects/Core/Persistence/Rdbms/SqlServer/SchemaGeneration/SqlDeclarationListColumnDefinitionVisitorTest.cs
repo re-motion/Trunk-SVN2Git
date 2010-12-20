@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _visitor.VisitSimpleColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1] integer NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("  [C1] integer NULL"));
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _visitor.VisitSimpleColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1] integer NOT NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("  [C1] integer NOT NULL"));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _visitor.VisitObjectIDWithClassIDColumnDefinition (column);
       var result = _visitor.GetDeclarationList ();
 
-      Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL,\r\n  [C1ClassID] integer NOT NULL,\r\n"));
+      Assert.That (result, Is.EqualTo ("  [C1ID] integer NOT NULL,\r\n  [C1ClassID] integer NOT NULL"));
     }
 
     [Test]
