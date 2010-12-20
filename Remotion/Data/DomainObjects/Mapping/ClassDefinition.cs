@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private readonly string _id;
 
+    [NonSerialized]
     private bool _isReadOnly;
 
     [NonSerialized]
