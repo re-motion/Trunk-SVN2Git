@@ -18,9 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.Linq.Utilities;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.FunctionalProgramming;
 
@@ -59,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable();
 
-      var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
+      var domainObjectIDs = new TableInheritance.DomainObjectIDs (Configuration);
 
       var insertedIDs = Enumerable.Range (0, 4000).Select (x => Guid.NewGuid ()).ToArray ();
       var insertStatements = insertedIDs.Select (

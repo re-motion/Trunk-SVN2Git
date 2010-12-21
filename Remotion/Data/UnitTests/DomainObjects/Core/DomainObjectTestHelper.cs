@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Order.StaticInitializationHandler += handler;
       try
       {
-        Order.GetObject (new DomainObjectIDs().Order1); // indirect call of FinishReferenceInitialization
+        Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1); // indirect call of FinishReferenceInitialization
       }
       finally
       {

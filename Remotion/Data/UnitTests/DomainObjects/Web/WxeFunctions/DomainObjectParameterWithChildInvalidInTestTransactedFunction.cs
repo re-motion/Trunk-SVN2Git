@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       Assert.AreSame (Transaction.GetNativeTransaction<ClientTransaction>(), ClientTransactionScope.CurrentTransaction);
 
       DomainObjectParameterTestTransactedFunction childFunction = (DomainObjectParameterTestTransactedFunction) ChildFunction;
-      ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes2);
+      ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs(MappingConfiguration.Current).ClassWithAllDataTypes2);
       inParameter.Delete();
       childFunction.InParameter = inParameter;
 

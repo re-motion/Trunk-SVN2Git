@@ -209,25 +209,26 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      ClassDefinition classDefinitionByClassType = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ClassType);
-      ClassDefinition classDefinitionByClassID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ID);
+      //TODO RM-3618: add mapping configuration parameter ??
+      //ClassDefinition classDefinitionByClassType = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ClassType);
+      //ClassDefinition classDefinitionByClassID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ID);
 
-      if (!ReferenceEquals (classDefinitionByClassID, classDefinitionByClassType))
-      {
-        throw CreateArgumentException (
-            "classDefinition",
-            "The ClassID '{0}' and the ClassType '{1}' do not refer to the same ClassDefinition in the mapping configuration.",
-            classDefinition.ID,
-            classDefinition.ClassType);
-      }
+      //if (!ReferenceEquals (classDefinitionByClassID, classDefinitionByClassType))
+      //{
+      //  throw CreateArgumentException (
+      //      "classDefinition",
+      //      "The ClassID '{0}' and the ClassType '{1}' do not refer to the same ClassDefinition in the mapping configuration.",
+      //      classDefinition.ID,
+      //      classDefinition.ClassType);
+      //}
 
-      if (!ReferenceEquals (classDefinitionByClassID, classDefinition))
-      {
-        throw CreateArgumentException (
-            "classDefinition",
-            "The provided ClassDefinition '{0}' is not the same reference as the ClassDefinition found in the mapping configuration.",
-            classDefinition.ID);
-      }
+      //if (!ReferenceEquals (classDefinitionByClassID, classDefinition))
+      //{
+      //  throw CreateArgumentException (
+      //      "classDefinition",
+      //      "The provided ClassDefinition '{0}' is not the same reference as the ClassDefinition found in the mapping configuration.",
+      //      classDefinition.ID);
+      //}
 
       Initialize (classDefinition, value, "classDefinition");
     }
@@ -247,10 +248,7 @@ namespace Remotion.Data.DomainObjects
 
       CheckValue ("value", value);
 
-      StorageProviderDefinition storageProviderDefinition =
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name);
-
-      storageProviderDefinition.CheckIdentityType (value.GetType());
+      classDefinition.StorageEntityDefinition.StorageProviderDefinition.CheckIdentityType (value.GetType ());
 
       _cachedClassDefinition = classDefinition;
       _classID = classDefinition.ID;

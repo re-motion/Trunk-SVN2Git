@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
@@ -41,11 +42,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     private void Step1 ()
     {
       ClientTransaction transactionBefore = ClientTransactionScope.CurrentTransaction;
-      Order order1 = Order.GetObject (new DomainObjectIDs().Order1);
+      Order order1 = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
       order1.OrderNumber = 7;
       TheOrder = order1;
 
-      Order order2 = Order.GetObject (new DomainObjectIDs().Order2);
+      Order order2 = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order2);
 
       transactionBefore.Rollback();
 
@@ -74,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
       loadedCalled = false;
 
-      Order.GetObject (new DomainObjectIDs().Order3);
+      Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order3);
 
       Assert.IsFalse (loadedCalled);
     }

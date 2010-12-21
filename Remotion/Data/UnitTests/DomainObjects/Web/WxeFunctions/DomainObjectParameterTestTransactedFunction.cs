@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
@@ -79,10 +80,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       Assert.IsTrue (ClientTransactionScope.CurrentTransaction.IsEnlisted (InParameter));
       Assert.IsTrue (ClientTransactionScope.CurrentTransaction.IsEnlisted (InParameterArray[0]));
 
-      OutParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes1);
+      OutParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs (MappingConfiguration.Current).ClassWithAllDataTypes1);
       OutParameter.Int32Property = InParameter.Int32Property + 5;
 
-      OutParameterArray = new[] {ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes2)};
+      OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (new DomainObjectIDs (MappingConfiguration.Current).ClassWithAllDataTypes2) };
       OutParameterArray[0].Int32Property = InParameterArray[0].Int32Property + 5;
     }
   }

@@ -19,7 +19,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping;
@@ -82,15 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
      
       _mappingLoaderConfiguration = new MappingLoaderConfiguration();
       _queryConfiguration = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml");
-      DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (_mappingLoaderConfiguration, _storageConfiguration, _queryConfiguration));
-
+     
       var typeDiscoveryService = GetTypeDiscoveryService (GetType().Assembly);
 
       _mappingConfiguration = new MappingConfiguration (
           new MappingReflector (typeDiscoveryService), 
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (_storageConfiguration)));
-      MappingConfiguration.SetCurrent (_mappingConfiguration);
     }
 
     public MappingConfiguration GetMappingConfiguration ()

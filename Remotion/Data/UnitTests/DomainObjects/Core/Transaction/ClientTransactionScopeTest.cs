@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -226,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (mock.EnterScope (AutoRollbackBehavior.None))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderNumber = 0xbadf00d;
         order.OrderTicket = OrderTicket.NewObject();
         order.OrderItems.Add (OrderItem.NewObject());
@@ -242,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.None))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderNumber = 0xbadf00d;
 
         scope.ScopedTransaction.Rollback();
@@ -259,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderNumber = 0xbadf00d;
       }
 
@@ -268,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderTicket = OrderTicket.NewObject();
       }
 
@@ -277,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderItems.Add (OrderItem.NewObject());
       }
 
@@ -292,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderNumber = 0xbadf00d;
         scope.ScopedTransaction.Rollback();
       }
@@ -302,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
-        Order order = Order.GetObject (new DomainObjectIDs().Order1);
+        Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
         order.OrderNumber = 0xbadf00d;
         scope.ScopedTransaction.Rollback();
 
@@ -366,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void NoAutoEnlisting ()
     {
-      Order order = Order.GetObject (new DomainObjectIDs().Order1);
+      Order order = Order.GetObject (new DomainObjectIDs (MappingConfiguration.Current).Order1);
       Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {

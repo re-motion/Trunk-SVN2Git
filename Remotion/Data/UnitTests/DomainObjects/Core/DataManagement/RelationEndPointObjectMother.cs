@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -86,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static CollectionEndPoint CreateCollectionEndPoint_Customer1_Orders (params Order[] initialContents)
     {
-      var customerEndPointID = CreateRelationEndPointID (new DomainObjectIDs().Customer1, "Orders");
+      var customerEndPointID = CreateRelationEndPointID (new DomainObjectIDs (MappingConfiguration.Current).Customer1, "Orders");
       return CreateCollectionEndPoint (customerEndPointID, initialContents);
     }
 

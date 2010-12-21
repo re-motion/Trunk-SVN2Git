@@ -407,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Assert.IsNull (classDefinition.GetEntityName());
 
         var loader = new DataContainerLoader (provider);
-        var domainObjectIDs = new DomainObjectIDs();
+        var domainObjectIDs = new DomainObjectIDs(Configuration);
         DataContainerCollection dataContainers = loader.LoadDataContainersByRelatedID (
             classDefinition,
             ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),
@@ -444,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
         var loader = new DataContainerLoader (loaderHelperMock, provider);
 
-        var domainObjectIDs = new DomainObjectIDs();
+        var domainObjectIDs = new DomainObjectIDs(Configuration);
         loader.LoadDataContainersByRelatedID (
             classDefinition,
             ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),

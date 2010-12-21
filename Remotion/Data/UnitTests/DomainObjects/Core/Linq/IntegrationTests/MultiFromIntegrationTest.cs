@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   where domainBase.CreatedAt == new DateTime (2006, 01, 03)
                   select domainBase;
       
-      var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
+      var domainObjectIDs = new TableInheritance.DomainObjectIDs (Configuration);
       CheckQueryResult (query, domainObjectIDs.Person);
     }
   }
