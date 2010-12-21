@@ -31,7 +31,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public abstract string SqlDataTypeClassID { get; }
     public abstract string SqlDataTypeTimestamp { get; }
 
-    public virtual string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+
+    protected StorageTypeCalculator (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+
+      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
+    }
+
+    protected IStorageProviderDefinitionFinder StorageProviderDefinitionFinder
+    {
+      get { return _storageProviderDefinitionFinder; }
+    }
+
+    public virtual string GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       
@@ -40,8 +54,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         var oppositeClass = propertyDefinition.ClassDefinition.GetOppositeClassDefinition (propertyDefinition.PropertyName);
         Assertion.IsNotNull (oppositeClass, "When a property has type ObjectID, there must be an opposite class definition.");
 
-        var leftStorageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
-        var rightStorageProviderDefinition = storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass);
+        var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
+        var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass);
         if (leftStorageProviderDefinition.Name == rightStorageProviderDefinition.Name)
           return SqlDataTypeObjectID;
         else

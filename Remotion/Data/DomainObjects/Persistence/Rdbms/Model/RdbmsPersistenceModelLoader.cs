@@ -36,20 +36,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
-    public RdbmsPersistenceModelLoader (
-        IColumnDefinitionFactory columnDefinitionFactory,
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public RdbmsPersistenceModelLoader (IColumnDefinitionFactory columnDefinitionFactory, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
-
+      
       _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
-      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
     public string StorageProviderID
@@ -163,7 +157,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
-        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition, _storageProviderDefinitionFinder);
+        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
         propertyDefinition.SetStorageProperty (storageProperty);
       }
 

@@ -31,21 +31,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ColumnDefinitionFactory : IColumnDefinitionFactory
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
+    private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
 
-    public ColumnDefinitionFactory (StorageTypeCalculator storageTypeCalculator)
+    public ColumnDefinitionFactory (StorageTypeCalculator storageTypeCalculator, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
-
-      _storageTypeCalculator = storageTypeCalculator;
-    }
-
-    public IColumnDefinition CreateColumnDefinition (
-        PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder providerDefinitionFinder)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
-      var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition, providerDefinitionFinder);
+      _storageTypeCalculator = storageTypeCalculator;
+      _providerDefinitionFinder = providerDefinitionFinder;
+    }
+
+    public IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      
+      var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
       if (storageType == null)
         return new UnsupportedStorageTypeColumnDefinition();
 
@@ -59,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (relationEndPointDefinition == null)
         return columnDefinition;
 
-      return CreateRelationColumnDefinition (propertyDefinition, providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
+      return CreateRelationColumnDefinition (propertyDefinition, _providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
     }
 
     private IColumnDefinition CreateRelationColumnDefinition (

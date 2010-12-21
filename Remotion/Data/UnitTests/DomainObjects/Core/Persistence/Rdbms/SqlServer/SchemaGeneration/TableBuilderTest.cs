@@ -58,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     private TableBuilder _tableBuilder;
-    private ReflectionBasedClassDefinition _classDefintion;
     private ColumnDefinitionFactory _columnDefinitionFactory;
     private StorageProviderDefinitionFinder _providerDefinitionFinder;
 
@@ -67,9 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _tableBuilder = new TableBuilder();
-      _classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), SchemaGenerationFirstStorageProviderDefinition);
-      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator());
       _providerDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator(_providerDefinitionFinder), _providerDefinitionFinder);
     }
 
     //TODO: Move to TableBuilderBaseTest
@@ -167,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       derivedAbstractClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       derivedConcreteClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
-      var persistenceModelLoader = new RdbmsPersistenceModelLoader (_columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition, _providerDefinitionFinder);
+      var persistenceModelLoader = new RdbmsPersistenceModelLoader (_columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition);
       persistenceModelLoader.ApplyPersistenceModelToHierarchy (abstractClass);
 
       string expectedStatement =

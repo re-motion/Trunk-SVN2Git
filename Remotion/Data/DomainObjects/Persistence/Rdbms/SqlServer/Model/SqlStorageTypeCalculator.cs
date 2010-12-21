@@ -28,6 +28,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
   /// </summary>
   public class SqlStorageTypeCalculator : StorageTypeCalculator
   {
+    public SqlStorageTypeCalculator (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+        : base(storageProviderDefinitionFinder)
+    {
+    }
+
     public override string SqlDataTypeObjectID
     {
       get { return "uniqueidentifier"; }
@@ -48,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       get { return "rowversion"; }
     }
 
-    public override string GetStorageType (PropertyDefinition propertyDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public override string GetStorageType (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       
@@ -62,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model
       if (propertyDefinition.PropertyType == typeof (Byte[]))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
-      return base.GetStorageType (propertyDefinition, storageProviderDefinitionFinder);
+      return base.GetStorageType (propertyDefinition);
     }
 
     private static string GetSqlDataType (Type type)
