@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       catch (ArgumentException ex)
       {
         string expectedMessage = string.Format (
-            "An ObjectID cannot be constructed for abstract type '{0}' of class '{1}'.\r\nParameter name: classType",
+            "An ObjectID cannot be constructed for abstract type '{0}' of class '{1}'.\r\nParameter name: classDefinition",
             typeof (DomainBase).AssemblyQualifiedName, "TI_DomainBase");
 
         Assert.AreEqual (expectedMessage, ex.Message);
