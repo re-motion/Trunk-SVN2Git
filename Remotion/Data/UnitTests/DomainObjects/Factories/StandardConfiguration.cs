@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private StandardConfiguration()
     {
-      _domainObjectIDs = new DomainObjectIDs();
+      _domainObjectIDs = new DomainObjectIDs ();
     }
 
     public DomainObjectIDs GetDomainObjectIDs()
