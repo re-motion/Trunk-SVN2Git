@@ -79,13 +79,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new RdbmsPersistenceModelLoader (
-          CreateColumnDefinitionFactory (storageProviderDefinitionFinder), StorageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+
+      var columnDefinitionFactory = CreateColumnDefinitionFactory (storageProviderDefinitionFinder);
+      var entityDefinitionFactory = CreateEntityDefinitionFactory (columnDefinitionFactory);
+
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, StorageProviderDefinition);
     }
 
     public virtual FileBuilderBase CreateSchemaFileBuilder ()
     {
       return new FileBuilder (_storageProviderDefinition);
+    }
+
+    protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (IColumnDefinitionFactory columnDefinitionFactory)
+    {
+      return new EntityDefinitionFactory (columnDefinitionFactory, _storageProviderDefinition);
     }
 
     protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (IStorageProviderDefinitionFinder providerDefinitionFinder)

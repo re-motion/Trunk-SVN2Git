@@ -16,7 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -25,19 +31,132 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class EntityDefinitionFactory : IEntityDefinitionFactory
   {
+    private readonly IColumnDefinitionFactory _columnDefinitionFactory;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
+
+    public EntityDefinitionFactory (IColumnDefinitionFactory columnDefinitionFactory, StorageProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      _columnDefinitionFactory = columnDefinitionFactory;
+      _storageProviderDefinition = storageProviderDefinition;
+    }
+
     public virtual IEntityDefinition CreateTableDefinition (ClassDefinition classDefinition)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      return new TableDefinition (
+          _storageProviderDefinition,
+          GetTableName (classDefinition),
+          GetViewName (classDefinition),
+          GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     public virtual IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
+
+      return new FilterViewDefinition (
+          _storageProviderDefinition,
+          GetViewName (classDefinition),
+          baseEntity,
+          GetClassIDsForBranch (classDefinition),
+          GetColumnDefinitionsForHierarchy (classDefinition));
     }
 
     public virtual IEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IEntityDefinition> unionedEntities)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
+
+      IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
+      if (!unionedEntities.Any())
+        return new NullEntityDefinition (_storageProviderDefinition);
+
+      return new UnionViewDefinition (_storageProviderDefinition, GetViewName (classDefinition), unionedEntities, columns);
+    }
+
+    protected virtual string GetTableName (ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      var tableAttribute = AttributeUtility.GetCustomAttribute<DBTableAttribute> (classDefinition.ClassType, false);
+      if (tableAttribute == null)
+      {
+        throw new MappingException (
+            string.Format ("Class '{0}' has no '{1}' defined.", classDefinition.ID, typeof (DBTableAttribute).Name));
+      }
+
+      return string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
+    }
+
+    protected virtual string GetViewName (ClassDefinition classDefinition)
+    {
+      return classDefinition.ID + "View";
+    }
+
+    protected virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      
+      Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent); //TODO 3620: throw exception
+
+      if (propertyDefinition.StoragePropertyDefinition == null)
+      {
+        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+        propertyDefinition.SetStorageProperty (storageProperty);
+      }
+
+      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
+      if (columnDefinition == null)
+      {
+        throw new MappingException (
+            string.Format (
+                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
+                propertyDefinition.PropertyInfo.DeclaringType.FullName,
+                propertyDefinition.PropertyInfo.Name));
+      }
+
+      return columnDefinition;
+    }
+
+    protected virtual IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      var allClassesInHierarchy = GetAllClassesForHierarchy (classDefinition);
+
+      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
+          (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1,
+          tuple => tuple.Item1.GetHashCode());
+
+      var columnDefinitions =
+          (from cd in allClassesInHierarchy
+           from PropertyDefinition pd in cd.MyPropertyDefinitions
+           where pd.StorageClass == StorageClass.Persistent
+           select Tuple.Create (pd.PropertyInfo, GetColumnDefinition (pd)))
+              .Distinct (equalityComparer)
+              .Select (tuple => tuple.Item2);
+
+      return new IColumnDefinition[]
+             { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
+          .Concat (columnDefinitions);
+    }
+
+    private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
+    {
+      return classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Reverse()
+          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
+    }
+
+    private IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
+    {
+      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()).Select (cd => cd.ID);
     }
   }
 }

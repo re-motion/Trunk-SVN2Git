@@ -15,10 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -36,12 +33,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly IEntityDefinitionFactory _entityDefinitionFactory;
 
-    public RdbmsPersistenceModelLoader (IColumnDefinitionFactory columnDefinitionFactory, StorageProviderDefinition storageProviderDefinition)
+    public RdbmsPersistenceModelLoader (
+        IEntityDefinitionFactory entityDefinitionFactory,
+        IColumnDefinitionFactory columnDefinitionFactory,
+        StorageProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      
+
+      _entityDefinitionFactory = entityDefinitionFactory;
       _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
     }
@@ -49,6 +52,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public string StorageProviderID
     {
       get { return _storageProviderDefinition.Name; }
+    }
+
+    public IEntityDefinitionFactory EntityDefinitionFactory
+    {
+      get { return _entityDefinitionFactory; }
     }
 
     public IColumnDefinitionFactory ColumnDefinitionFactory
@@ -91,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       var tableAttribute = AttributeUtility.GetCustomAttribute<DBTableAttribute> (classDefinition.ClassType, false);
       if (tableAttribute != null)
-        return CreateTableDefinition (classDefinition, tableAttribute);
+        return _entityDefinitionFactory.CreateTableDefinition (classDefinition);
 
       var hasBaseClassWithDBTableAttribute = classDefinition
           .CreateSequence (cd => cd.BaseClass)
@@ -103,14 +111,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return CreateUnionViewDefinition (classDefinition);
     }
 
-    private IStorageEntityDefinition CreateTableDefinition (ClassDefinition classDefinition, DBTableAttribute tableAttribute)
-    {
-      string tableName = string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
-
-      return new TableDefinition (
-          _storageProviderDefinition, tableName, GetViewName (classDefinition), GetColumnDefinitionsForHierarchy (classDefinition));
-    }
-
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
     {
       // The following call is potentially recursive (GetEntityDefinition -> EnsurePersistenceModelApplied -> CreateFilterViewDefinition), but this is
@@ -118,30 +118,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       // TableDefinition
       var baseStorageEntityDefinition = GetEntityDefinition (classDefinition.BaseClass);
 
-      return new FilterViewDefinition (
-          _storageProviderDefinition,
-          GetViewName (classDefinition),
-          baseStorageEntityDefinition,
-          GetClassWithAllDerivedClasses (classDefinition).Select (cd => cd.ID),
-          GetColumnDefinitionsForHierarchy (classDefinition));
+      return _entityDefinitionFactory.CreateFilterViewDefinition (classDefinition, baseStorageEntityDefinition);
     }
 
     private IStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition)
     {
       var derivedStorageEntityDefinitions =
           (from ClassDefinition derivedClass in classDefinition.DerivedClasses
-          select GetEntityDefinition (derivedClass)).Where(ed=>!(ed is NullEntityDefinition));
-      
-      IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
-      if (!derivedStorageEntityDefinitions.Any ())
-        return new NullEntityDefinition(_storageProviderDefinition);
+           select GetEntityDefinition (derivedClass)).Where (ed => !(ed is NullEntityDefinition));
 
-      return new UnionViewDefinition (_storageProviderDefinition, GetViewName (classDefinition), derivedStorageEntityDefinitions, columns);
-    }
-
-    private string GetViewName (ClassDefinition classDefinition)
-    {
-      return classDefinition.ID + "View";
+      return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
     }
 
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
@@ -150,60 +136,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
-
-    private IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
-    {
-      Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent);
-
-      if (propertyDefinition.StoragePropertyDefinition == null)
-      {
-        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
-        propertyDefinition.SetStorageProperty (storageProperty);
-      }
-
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
-      if (columnDefinition == null)
-      {
-        throw new MappingException (
-            string.Format (
-                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      return columnDefinition;
-    }
-
-    private IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
-    {
-      var allClassesInHierarchy = GetAllClassesForHierarchy (classDefinition);
-
-      IEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
-          (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1, 
-          tuple => tuple.Item1.GetHashCode());
-
-      var columnDefinitions = (from cd in allClassesInHierarchy
-                               from PropertyDefinition pd in cd.MyPropertyDefinitions
-                               where pd.StorageClass == StorageClass.Persistent
-                               select Tuple.Create (pd.PropertyInfo, GetColumnDefinition (pd)))
-                               .Distinct (equalityComparer)
-                               .Select (tuple => tuple.Item2);
-
-      return new IColumnDefinition[] { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
-        .Concat (columnDefinitions);
-    }
-
-    private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
-    {
-      return classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Reverse ()
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
-    }
-
-    private IEnumerable<ClassDefinition> GetClassWithAllDerivedClasses (ClassDefinition classDefinition)
-    {
-      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
-    }
+    
   }
 }

@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     [InternalStorageGroup]
     [DBTable]
-    [ClassID("TableBuilderTest_AbstractClass")]
+    [ClassID ("TableBuilderTest_AbstractClass")]
     private abstract class AbstractClass : DomainObject
     {
     }
@@ -60,6 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private TableBuilder _tableBuilder;
     private ColumnDefinitionFactory _columnDefinitionFactory;
     private StorageProviderDefinitionFinder _providerDefinitionFinder;
+    private EntityDefinitionFactory _entityDefinitionFactory;
 
     public override void SetUp ()
     {
@@ -67,7 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableBuilder = new TableBuilder();
       _providerDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator(_providerDefinitionFinder), _providerDefinitionFinder);
+      _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator (_providerDefinitionFinder), _providerDefinitionFinder);
+      _entityDefinitionFactory = new EntityDefinitionFactory (_columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition);
     }
 
     //TODO: Move to TableBuilderBaseTest
@@ -87,7 +89,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition, stringBuilder);
+      _tableBuilder.AddToCreateTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -113,7 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
+      _tableBuilder.AddToCreateTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -126,36 +130,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var dummyPropertyInfo2 = typeof (Order).GetProperty ("Priority");
       var dummyPropertyInfo3 = typeof (Order).GetProperty ("Customer");
 
-      var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (AbstractClass), SchemaGenerationFirstStorageProviderDefinition);
-      abstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
-          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), dummyPropertyInfo1, true, 100, StorageClass.Persistent)}, true));
+      var abstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (AbstractClass), SchemaGenerationFirstStorageProviderDefinition);
+      abstractClass.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  CreatePropertyDefinition (
+                      abstractClass,
+                      "PropertyInAbstractClass",
+                      "PropertyInAbstractClass",
+                      typeof (string),
+                      dummyPropertyInfo1,
+                      true,
+                      100,
+                      StorageClass.Persistent)
+              },
+              true));
       PrivateInvoke.SetNonPublicField (abstractClass, "_storageEntityDefinition", null);
 
-      var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedAbstractClass), SchemaGenerationFirstStorageProviderDefinition, abstractClass);
-      derivedAbstractClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
-          CreatePropertyDefinition (
-              derivedAbstractClass,
-              "PropertyInAbstractDerivedClass",
-              "PropertyInAbstractDerivedClass",
-              typeof (string),
-              dummyPropertyInfo2,
-              false,
-              101,
-              StorageClass.Persistent)}, true));
+      var derivedAbstractClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          typeof (DerivedAbstractClass), SchemaGenerationFirstStorageProviderDefinition, abstractClass);
+      derivedAbstractClass.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  CreatePropertyDefinition (
+                      derivedAbstractClass,
+                      "PropertyInAbstractDerivedClass",
+                      "PropertyInAbstractDerivedClass",
+                      typeof (string),
+                      dummyPropertyInfo2,
+                      false,
+                      101,
+                      StorageClass.Persistent)
+              },
+              true));
       PrivateInvoke.SetNonPublicField (derivedAbstractClass, "_storageEntityDefinition", null);
-      
+
       var derivedConcreteClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           typeof (DerivedConcreteClass), SchemaGenerationFirstStorageProviderDefinition, derivedAbstractClass);
-      derivedConcreteClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
-          CreatePropertyDefinition (
-              derivedConcreteClass,
-              "PropertyInDerivedConcreteClass",
-              "PropertyInDerivedConcreteClass",
-              typeof (string),
-              dummyPropertyInfo3,
-              true,
-              102,
-              StorageClass.Persistent)}, true));
+      derivedConcreteClass.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  CreatePropertyDefinition (
+                      derivedConcreteClass,
+                      "PropertyInDerivedConcreteClass",
+                      "PropertyInDerivedConcreteClass",
+                      typeof (string),
+                      dummyPropertyInfo3,
+                      true,
+                      102,
+                      StorageClass.Persistent)
+              },
+              true));
       PrivateInvoke.SetNonPublicField (derivedConcreteClass, "_storageEntityDefinition", null);
 
       abstractClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedAbstractClass }, true, true));
@@ -165,7 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       derivedAbstractClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       derivedConcreteClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
-      var persistenceModelLoader = new RdbmsPersistenceModelLoader (_columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition);
+      var persistenceModelLoader = new RdbmsPersistenceModelLoader (
+          _entityDefinitionFactory, _columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition);
       persistenceModelLoader.ApplyPersistenceModelToHierarchy (abstractClass);
 
       string expectedStatement =
@@ -208,8 +238,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions.GetMandatory ("ConcreteClass").StorageEntityDefinition, stringBuilder);
-      
+      _tableBuilder.AddToCreateTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions.GetMandatory ("ConcreteClass").StorageEntityDefinition, stringBuilder);
+
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
 
@@ -229,7 +260,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                  + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition, stringBuilder);
+      _tableBuilder.AddToCreateTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -247,7 +279,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + ")\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToCreateTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)].StorageEntityDefinition, stringBuilder);
+      _tableBuilder.AddToCreateTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -259,7 +292,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                               + "  DROP TABLE [dbo].[Customer]\r\n";
       StringBuilder stringBuilder = new StringBuilder();
 
-      _tableBuilder.AddToDropTableScript ((TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
+      _tableBuilder.AddToDropTableScript (
+          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedScript, stringBuilder.ToString());
     }
@@ -329,7 +363,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue? isNullable.Value:true));
+      propertyDefinition.SetStorageProperty (
+          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
       return propertyDefinition;
     }
   }

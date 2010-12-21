@@ -58,9 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new RdbmsPersistenceModelLoader (
-          new ColumnDefinitionFactory (new SqlStorageTypeCalculator(storageProviderDefinitionFinder), storageProviderDefinitionFinder),
-          _storageProviderDefinition);
+      var columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator(storageProviderDefinitionFinder), storageProviderDefinitionFinder);
+      var entityDefinitionFactory = new EntityDefinitionFactory (columnDefinitionFactory, _storageProviderDefinition);
+
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, _storageProviderDefinition);
     }
 
     public FileBuilderBase CreateSchemaFileBuilder ()
