@@ -230,30 +230,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException))]
-    [Ignore ("TODO RM-3618: Remove?")]
-    public void InitializeWithUnknownClassDefinitionID ()
-    {
-      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", TestDomainStorageProviderDefinition, typeof (Order), false);
-      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
-
-      new ObjectID (unknownDefinition, value);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The ClassID 'Order' and the ClassType 'Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs.ObjectIDTest+InvalidDomainObject'"
-        + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
-    [Ignore ("TODO RM-3618: Remove?")]
-    public void InitializeWithUnknownClassDefinitionType ()
-    {
-      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (InvalidDomainObject), false);
-      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
-
-      new ObjectID (unknownDefinition, value);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void InitializeWithEmptyGuid ()
     {
@@ -265,27 +241,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithEmptyString ()
     {
       new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], string.Empty);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The ClassID 'Order' and the ClassType 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'"
-        + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
-    [Ignore ("TODO RM-3618: Remove?")]
-    public void InitializeWithInvalidClassDefinition ()
-    {
-      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Customer), false);
-      new ObjectID (invalidDefinition, Guid.NewGuid ());
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The provided ClassDefinition 'Order' is not the same reference as the ClassDefinition found in the mapping configuration.\r\nParameter name: classDefinition")]
-    [Ignore("TODO RM-3618: Remove?")]
-    public void InitializeWithClassDefinitionNotPartOfMappingConfiguration ()
-    {
-      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
-      new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
     [Test]

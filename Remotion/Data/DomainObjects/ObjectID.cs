@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -116,18 +114,14 @@ namespace Remotion.Data.DomainObjects
       return ObjectIDStringSerializer.Instance.TryParse (objectIDString, out result);
     }
 
-    // member fields
-
-    private string _classID;
     private object _value;
+    private string _classID;
 
     [NonSerialized]
     private int _cachedHashCode;
     [NonSerialized]
-    private ClassDefinition _cachedClassDefinition;
-
-    // construction and disposing
-
+    private ClassDefinition _classDefinition;
+    
     /// <summary>
     /// Initializes a new instance of the <b>ObjectID</b> class with the specified class ID and ID value.
     /// </summary>
@@ -150,11 +144,8 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="Mapping.MappingException"/>The specified <paramref name="classID"/> could not be found in the mapping configuration.
     public ObjectID (string classID, object value)
+      : this (MappingConfiguration.Current.ClassDefinitions.GetMandatory (ArgumentUtility.CheckNotNullOrEmpty ("classID", classID)), value)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classID);
-      Initialize (classDefinition, value, "classID");
     }
 
     /// <summary>
@@ -178,11 +169,8 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="Mapping.MappingException"/>The specified <paramref name="classType"/> could not be found in the mapping configuration.
     public ObjectID (Type classType, object value)
+      : this (MappingConfiguration.Current.ClassDefinitions.GetMandatory (ArgumentUtility.CheckNotNull ("classType", classType)), value)
     {
-      ArgumentUtility.CheckNotNull ("classType", classType);
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classType);
-      Initialize (classDefinition, value, "classType");
     }
 
     /// <summary>
@@ -209,38 +197,12 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      //TODO RM-3618: add mapping configuration parameter ??
-      //ClassDefinition classDefinitionByClassType = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ClassType);
-      //ClassDefinition classDefinitionByClassID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ID);
-
-      //if (!ReferenceEquals (classDefinitionByClassID, classDefinitionByClassType))
-      //{
-      //  throw CreateArgumentException (
-      //      "classDefinition",
-      //      "The ClassID '{0}' and the ClassType '{1}' do not refer to the same ClassDefinition in the mapping configuration.",
-      //      classDefinition.ID,
-      //      classDefinition.ClassType);
-      //}
-
-      //if (!ReferenceEquals (classDefinitionByClassID, classDefinition))
-      //{
-      //  throw CreateArgumentException (
-      //      "classDefinition",
-      //      "The provided ClassDefinition '{0}' is not the same reference as the ClassDefinition found in the mapping configuration.",
-      //      classDefinition.ID);
-      //}
-
-      Initialize (classDefinition, value, "classDefinition");
-    }
-
-    private void Initialize (ClassDefinition classDefinition, object value, string argumentName)
-    {
       ArgumentUtility.CheckNotNull ("value", value);
 
       if (classDefinition.IsAbstract)
       {
         throw CreateArgumentException (
-            argumentName,
+            "classDefinition",
             "An ObjectID cannot be constructed for abstract type '{0}' of class '{1}'.",
             classDefinition.ClassType.AssemblyQualifiedName,
             classDefinition.ID);
@@ -250,12 +212,10 @@ namespace Remotion.Data.DomainObjects
 
       classDefinition.StorageEntityDefinition.StorageProviderDefinition.CheckIdentityType (value.GetType ());
 
-      _cachedClassDefinition = classDefinition;
-      _classID = classDefinition.ID;
+      _classDefinition = classDefinition;
+      _classID = _classDefinition.ID;
       _value = value;
     }
-
-    // methods and properties
 
     /// <summary>
     /// Gets the ID of the <see cref="Persistence.StorageProvider"/> which stores the object.
@@ -289,12 +249,12 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public ClassDefinition ClassDefinition
     {
-      get 
-      { 
-        if (_cachedClassDefinition == null)
-          _cachedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID); // this method is thread-safe
+      get
+      {
+        if (_classDefinition == null)
+          _classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID); // this method is thread-safe
 
-        return _cachedClassDefinition;
+        return _classDefinition;
       }
     }
 
