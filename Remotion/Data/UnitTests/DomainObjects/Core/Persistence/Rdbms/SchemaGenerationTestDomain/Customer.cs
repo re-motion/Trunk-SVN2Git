@@ -15,13 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [DBTable ("SiblingOfTableWithRelations")]
+  [DBTable]
   [Instantiable]
-  public class SiblingOfClassWithRelations : ClassWithRelationsBase
+  [Uses (typeof (ProductLicenseMixin))]
+  public abstract class Customer : Company
   {
-    public virtual int IntProperty { get; set; }
+    public new static Customer NewObject()
+    {
+      return DomainObject.NewObject<Customer> ();
+    }
+
+    protected Customer()
+    {
+    }
+
+    [DBColumn ("CustomerType")]
+    public abstract CustomerType Type { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    [DBColumn ("CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches")]
+    public abstract string PropertyWithIdenticalNameInDifferentInheritanceBranches { get; set; }
+
+    [DBBidirectionalRelation ("Customer", SortExpression = "Number ASC")]
+    public abstract ObjectList<Order> Orders { get; }
+
+    [Mandatory]
+    public abstract Official PrimaryOfficial { get; set; }
   }
 }

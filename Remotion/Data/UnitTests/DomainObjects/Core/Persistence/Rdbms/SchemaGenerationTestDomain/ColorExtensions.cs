@@ -14,37 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects;
+using System.Reflection;
+using Remotion.ExtensibleEnums;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [DBTable]
-  [SecondStorageGroupAttribute]
-  [Instantiable]
-  public abstract class Official : DomainObject
+  public static class ColorExtensions
   {
-    public static Official NewObject()
+    public static Color Red (this ExtensibleEnumDefinition<Color> definition)
     {
-      return DomainObject.NewObject<Official> ();
+      return new Color (MethodBase.GetCurrentMethod());
     }
 
-    public static Official GetObject (ObjectID id)
+    public static Color Green (this ExtensibleEnumDefinition<Color> definition)
     {
-      return DomainObject.GetObject<Official> (id);
+      return new Color (MethodBase.GetCurrentMethod ());
     }
 
-    protected Official()
+    public static Color Blue (this ExtensibleEnumDefinition<Color> definition)
     {
+      return new Color (MethodBase.GetCurrentMethod ());
     }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Name { get; set; }
-
-    public abstract OrderPriority ResponsibleForOrderPriority { get; set; }
-
-    public abstract CustomerType ResponsibleForCustomerType { get; set; }
-
-    [DBBidirectionalRelation ("Official")]
-    public abstract ObjectList<Order> Orders { get; }
   }
 }

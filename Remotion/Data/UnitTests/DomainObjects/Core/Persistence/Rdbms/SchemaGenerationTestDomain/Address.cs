@@ -16,30 +16,36 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
   [DBTable]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  public abstract class Ceo : DomainObject
+  public abstract class Address : DomainObject
   {
-    public static Ceo NewObject()
+    public static Address NewObject()
     {
-      return DomainObject.NewObject<Ceo> ();
+      return DomainObject.NewObject<Address> ();
     }
 
-    protected Ceo()
+    protected Address()
     {
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Name { get; set; }
+    public abstract string Street { get; set; }
 
-    [DBBidirectionalRelation ("Ceo", ContainsForeignKey = true)]
+    [StringProperty (IsNullable = false, MaximumLength = 10)]
+    public abstract string Zip { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string City { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string Country { get; set; }
+
+    [DBBidirectionalRelation ("Address")]
     [Mandatory]
     public abstract Company Company { get; set; }
-
-    [StorageClassTransaction]
-    public abstract string TransactionalProperty { get; set; }
   }
 }

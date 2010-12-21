@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.ExtensibleEnums;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
   [Serializable]
   public class Color : ExtensibleEnum<Color>

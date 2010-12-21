@@ -16,36 +16,41 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
   [DBTable]
   [FirstStorageGroupAttribute]
   [Instantiable]
-  public abstract class Address : DomainObject
+  public abstract class Order : DomainObject
   {
-    public static Address NewObject()
+    public static Order NewObject()
     {
-      return DomainObject.NewObject<Address> ();
+      return DomainObject.NewObject<Order> ();
     }
 
-    protected Address()
+    protected Order()
     {
     }
 
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Street { get; set; }
+    public abstract int Number { get; set; }
 
-    [StringProperty (IsNullable = false, MaximumLength = 10)]
-    public abstract string Zip { get; set; }
+    public abstract OrderPriority Priority { get; set; }
 
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string City { get; set; }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Country { get; set; }
-
-    [DBBidirectionalRelation ("Address")]
+    [DBBidirectionalRelation ("Orders")]
     [Mandatory]
-    public abstract Company Company { get; set; }
+    public abstract Customer Customer { get; set; }
+
+    [DBBidirectionalRelation ("Orders")]
+    [Mandatory]
+    public abstract Official Official { get; set; }
+
+    [DBBidirectionalRelation ("Order")]
+    [Mandatory]
+    public abstract ObjectList<OrderItem> OrderItems { get; set; }
+
+    [DBBidirectionalRelation ("TransactionOrder")]
+    [StorageClassTransaction]
+    [Mandatory]
+    public abstract ObjectList<OrderItem> TransactionOrderItems { get; set; }
   }
 }

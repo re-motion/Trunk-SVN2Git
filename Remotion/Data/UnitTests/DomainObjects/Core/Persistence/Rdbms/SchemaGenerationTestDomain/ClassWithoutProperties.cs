@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+using Remotion.Data.DomainObjects;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  public enum CustomerType
+  [Instantiable]
+  [DBTable ("TableWithoutProperties")]
+  [FirstStorageGroupAttribute]
+  public abstract class ClassWithoutProperties : DomainObject
   {
-    Standard = 0,
-    Premium = 1,
-    Gold = 2
   }
 }

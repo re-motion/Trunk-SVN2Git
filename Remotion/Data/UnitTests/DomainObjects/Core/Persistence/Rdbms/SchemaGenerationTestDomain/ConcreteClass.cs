@@ -16,12 +16,26 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  public class FirstStorageGroupAttribute : DBStorageGroupAttribute
+  [DBTable]
+  [FirstStorageGroupAttribute]
+  [Instantiable]
+  public abstract class ConcreteClass : DomainObject
   {
-    public FirstStorageGroupAttribute()
+    public static ConcreteClass NewObject()
+    {
+      return DomainObject.NewObject<ConcreteClass> ();
+    }
+
+    protected ConcreteClass()
     {
     }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string PropertyInConcreteClass { get; set; }
+
+    [StorageClassTransaction]
+    public abstract string TransactionalProperty { get; set; }
   }
 }

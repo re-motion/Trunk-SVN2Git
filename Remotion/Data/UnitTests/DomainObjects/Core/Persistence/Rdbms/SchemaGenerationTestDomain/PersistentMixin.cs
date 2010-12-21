@@ -15,27 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [Instantiable]
-  [Uses (typeof(PersistentMixin))]
-  public abstract class SecondDerivedClass : ConcreteClass
+  public class PersistentMixin : DomainObjectMixin<DomainObject>
   {
-    public new static SecondDerivedClass NewObject()
+    public string PersistentProperty
     {
-      return DomainObject.NewObject<SecondDerivedClass> ();
+      get { return Properties[typeof (ProductLicenseMixin), "PersistentProperty"].GetValue<string> (); }
+      set { Properties[typeof (ProductLicenseMixin), "PersistentProperty"].SetValue (value); }
     }
-
-    protected SecondDerivedClass()
-    {
-    }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string PropertyInSecondDerivedClass { get; set; }
-
-    [DBColumn ("ClassWithRelationsInSecondDerivedClassID")]
-    public abstract ClassWithRelations ClassWithRelationsToSecondDerivedClass { get; set; }
   }
 }

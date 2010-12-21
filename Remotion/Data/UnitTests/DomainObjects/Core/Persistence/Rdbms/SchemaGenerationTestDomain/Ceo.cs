@@ -14,26 +14,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
-using Remotion.ExtensibleEnums;
+using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  public static class ColorExtensions
+  [DBTable]
+  [FirstStorageGroupAttribute]
+  [Instantiable]
+  public abstract class Ceo : DomainObject
   {
-    public static Color Red (this ExtensibleEnumDefinition<Color> definition)
+    public static Ceo NewObject()
     {
-      return new Color (MethodBase.GetCurrentMethod());
+      return DomainObject.NewObject<Ceo> ();
     }
 
-    public static Color Green (this ExtensibleEnumDefinition<Color> definition)
+    protected Ceo()
     {
-      return new Color (MethodBase.GetCurrentMethod ());
     }
 
-    public static Color Blue (this ExtensibleEnumDefinition<Color> definition)
-    {
-      return new Color (MethodBase.GetCurrentMethod ());
-    }
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string Name { get; set; }
+
+    [DBBidirectionalRelation ("Ceo", ContainsForeignKey = true)]
+    [Mandatory]
+    public abstract Company Company { get; set; }
+
+    [StorageClassTransaction]
+    public abstract string TransactionalProperty { get; set; }
   }
 }

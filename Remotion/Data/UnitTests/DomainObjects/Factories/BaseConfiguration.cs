@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           typeDiscoveryService,
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain",
           "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain",
-          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain"
+          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain"
           );
     }
 

@@ -28,7 +28,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       return FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist(
           baseTypeDiscoveryService,
-          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain");
+          "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain");
     }
 
   }

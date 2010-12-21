@@ -14,33 +14,37 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
+  [DBTable]
   [FirstStorageGroupAttribute]
-  public abstract class Company : DomainObject
+  [Instantiable]
+  public abstract class OrderItem : DomainObject
   {
-    public static Company NewObject ()
+    public static OrderItem NewObject ()
     {
-      return DomainObject.NewObject<Company> ();
+      return DomainObject.NewObject<OrderItem> ();
     }
 
-    protected Company ()
+    protected OrderItem ()
     {
     }
+
+    public abstract int Position { get; set; }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Name { get; set; }
+    public abstract string Product { get; set; }
 
-    [StringProperty (MaximumLength = 100)]
-    public abstract string PhoneNumber { get; set; }
-
-    [DBBidirectionalRelation ("Company")]
+    [DBBidirectionalRelation ("OrderItems")]
     [Mandatory]
-    public abstract Ceo Ceo { get; set; }
+    public abstract Order Order { get; set; }
 
-    [DBBidirectionalRelation ("Company", ContainsForeignKey = true)]
-    public abstract Address Address { get; set; }
+    [DBBidirectionalRelation ("TransactionOrderItems")]
+    [StorageClassTransaction]
+    [Mandatory]
+    public abstract Order TransactionOrder { get; set; }
   }
 }

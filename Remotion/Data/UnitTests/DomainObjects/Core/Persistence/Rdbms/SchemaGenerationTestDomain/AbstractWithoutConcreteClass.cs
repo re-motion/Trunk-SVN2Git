@@ -14,28 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects;
-using Remotion.Mixins;
-
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [Instantiable]
-  [Uses (typeof (PersistentMixin))]
-  public abstract class DerivedClass : ConcreteClass
+  public abstract class AbstractWithoutConcreteClass : Company
   {
-    public new static DerivedClass NewObject()
+    public new static AbstractWithoutConcreteClass NewObject()
     {
-      return DomainObject.NewObject<DerivedClass> ();
+      return NewObject<AbstractWithoutConcreteClass> ();
     }
 
-    protected DerivedClass()
+    protected AbstractWithoutConcreteClass()
     {
     }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string PropertyInDerivedClass { get; set; }
-
-    [StorageClassTransaction]
-    public abstract string TransactionalProperty2 { get; set; }
   }
 }

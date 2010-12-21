@@ -16,21 +16,10 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [Instantiable]
-  public abstract class SpecialOfficial : Official
+  [FirstStorageGroupAttribute]
+  public abstract class ClassWithRelationsBase : DomainObject
   {
-    public static new SpecialOfficial NewObject ()
-    {
-      return DomainObject.NewObject <SpecialOfficial>();
-    }
-
-    protected SpecialOfficial()
-    {
-    }
-
-    [StringProperty (IsNullable = false, MaximumLength = 255)]
-    public abstract string Speciality { get; set;}
   }
 }

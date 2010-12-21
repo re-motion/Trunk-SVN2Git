@@ -16,41 +16,24 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [DBTable]
-  [FirstStorageGroupAttribute]
   [Instantiable]
-  public abstract class Order : DomainObject
+  public abstract class DerivedOfDerivedClass : DerivedClass
   {
-    public static Order NewObject()
+    public new static DerivedOfDerivedClass NewObject()
     {
-      return DomainObject.NewObject<Order> ();
+      return DomainObject.NewObject<DerivedOfDerivedClass> ();
     }
 
-    protected Order()
+    protected DerivedOfDerivedClass()
     {
     }
 
-    public abstract int Number { get; set; }
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string PropertyInDerivedOfDerivedClass { get; set; }
 
-    public abstract OrderPriority Priority { get; set; }
-
-    [DBBidirectionalRelation ("Orders")]
-    [Mandatory]
-    public abstract Customer Customer { get; set; }
-
-    [DBBidirectionalRelation ("Orders")]
-    [Mandatory]
-    public abstract Official Official { get; set; }
-
-    [DBBidirectionalRelation ("Order")]
-    [Mandatory]
-    public abstract ObjectList<OrderItem> OrderItems { get; set; }
-
-    [DBBidirectionalRelation ("TransactionOrder")]
-    [StorageClassTransaction]
-    [Mandatory]
-    public abstract ObjectList<OrderItem> TransactionOrderItems { get; set; }
+    [DBColumn ("ClassWithRelationsInDerivedOfDerivedClassID")]
+    public abstract ClassWithRelations ClassWithRelationsToDerivedOfDerivedClass { get; set; }
   }
 }

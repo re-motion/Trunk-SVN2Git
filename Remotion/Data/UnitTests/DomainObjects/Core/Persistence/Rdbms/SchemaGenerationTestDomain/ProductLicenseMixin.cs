@@ -16,29 +16,14 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain
 {
-  [DBTable]
-  [FirstStorageGroupAttribute]
-  [Instantiable]
-  public abstract class Employee : DomainObject
+  public class ProductLicenseMixin : DomainObjectMixin<DomainObject>
   {
-    public static Employee NewObject ()
+    public string LicenseCode
     {
-      return DomainObject.NewObject<Employee> ();
+      get { return Properties[typeof (ProductLicenseMixin), "LicenseCode"].GetValue<string> (); }
+      set { Properties[typeof (ProductLicenseMixin), "LicenseCode"].SetValue (value); }
     }
-
-    protected Employee ()
-    {
-    }
-
-    [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public abstract string Name { get; set; }
-
-    [DBBidirectionalRelation ("Supervisor")]
-    public abstract ObjectList<Employee> Subordinates { get; }
-
-    [DBBidirectionalRelation ("Subordinates")]
-    public abstract Employee Supervisor { get; set; }
   }
 }
