@@ -202,8 +202,10 @@
     <Compile Include="Mapping\Validation\Logical\SortExpressionIsValidValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRule.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\EntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IDColumnDefinition.cs" />
