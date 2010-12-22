@@ -633,10 +633,57 @@
   </target>
 
   <target name="relinq-addzip" depends="relinq-checkzip">
+    <!--
+      TODO: Add <if> task to check whether the ${relinq-zipfile.name} exists
+    -->    
+    
     <copy file="${relinq-zipfile.name}" todir="${relinq-ToDir}" />
     <copy file="${relinq-sourcezipfile.name}" todir="${relinq-ToDir}" />
     <copy file="${relinq-zipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}"/>
     <copy file="${relinq-sourcezipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}" />
+
+    <!--<call target="relinq-addzip-codeplex" /> TODO-->
+  </target>
+
+  <target name="relinq-addzip-codeplex">
+    <!-- Run Codeplex upload here
+      
+      Use <exec> task.
+      While developing, use <echo> task to output all parameter values.
+    
+      CodeplexReleaseTool.exe
+        createRelease 
+        /projectName="re-linq" 
+        /name="${build.version.noconfig}" 
+        /description="This is build ${build.version.noconfig} of re-linq. Find the complete release notes for the build here: <a href="https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+RM+AND+component%3D%22Data.Linq%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22${build.version.noconfig}%22++ORDER+BY+issuetype%2Ccomponent">release notes</a>."
+        /releaseDate="TODO: Find current date in NAnt"
+        /status="Stable"
+        /showToPublic="false" TODO: later true
+        /isDefaultRelease="true"
+        /username="..."
+        /password
+      
+      CodeplexReleaseTool.exe 
+        uploadFiles
+        /projectName="re-linq" 
+        /releaseName="${build.version.noconfig}" 
+        /FileName="${relinq-zipfile.name}" TODO: Perhaps strip directory if included
+        /FileDataPath="${relinq-zipfile.name}"
+        /FileType="RuntimeBinary"
+        /username="..."
+        /password="..."
+        
+      CodeplexReleaseTool.exe 
+        uploadFiles
+        /projectName="re-linq" 
+        /releaseName="${build.version.noconfig}" 
+        /FileName="${relinq-sourcezipfile.name}" TODO: Perhaps strip directory if included
+        /FileDataPath="${relinq-sourcezipfile.name}"
+        /FileType="SourceCode"
+        /username="..."
+        /password="..."
+        
+    -->
   </target>
 
   <target name="relinq-zipfilename" depends="init-build-version">
@@ -650,6 +697,10 @@
 
   <target name="relinq-zip" depends="relinq-zipfilename">
     <delete file="${relinq-zipfile.name}" />
+    <!--
+      TODO: Adapt release note generator xslt to generate no/empty file when no issues in current version
+      TODO: Add <if> task to check whether this file exists/is not empty: ${release-notes.directory.full}\ReleaseNotes_${build.version.noconfig}.html
+    -->
     <zip zipfile="${relinq-zipfile.name}">
       <fileset basedir="${build.basedir}">
         <include name="**/Remotion.Data.Linq.*" />
@@ -666,6 +717,10 @@
 
   <target name="relinq-sourcezip" depends="relinq-zipfilename">
     <delete file="${relinq-sourcezipfile.name}"/>
+    <!--
+      TODO: Adapt release note generator xslt to generate no/empty file when no issues in current version
+      TODO: Add <if> task to check whether this file exists/is not empty: ${release-notes.directory.full}\ReleaseNotes_${build.version.noconfig}.html
+    -->
     <zip zipfile="${relinq-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
         <include name="Remotion-Linq.sln" />
