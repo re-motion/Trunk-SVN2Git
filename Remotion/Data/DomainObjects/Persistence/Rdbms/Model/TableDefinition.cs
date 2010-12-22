@@ -87,5 +87,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       visitor.VisitTableDefinition (this);
     }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

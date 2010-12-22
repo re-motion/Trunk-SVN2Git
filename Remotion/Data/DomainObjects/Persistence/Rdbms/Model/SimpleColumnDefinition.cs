@@ -91,5 +91,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return string.Format ("{0} {1} {2}", Name, StorageType, IsNullable ? "NULL" : "NOT NULL");
     }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

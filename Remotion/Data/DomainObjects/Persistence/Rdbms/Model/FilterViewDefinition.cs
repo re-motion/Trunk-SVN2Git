@@ -118,5 +118,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFilterViewDefinition (this);
     }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

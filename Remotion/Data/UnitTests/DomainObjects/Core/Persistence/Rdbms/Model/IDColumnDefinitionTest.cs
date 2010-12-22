@@ -49,6 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void IsNull ()
+    {
+      Assert.That (_columnDefinition.IsNull, Is.False);
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IColumnDefinitionVisitor> ();

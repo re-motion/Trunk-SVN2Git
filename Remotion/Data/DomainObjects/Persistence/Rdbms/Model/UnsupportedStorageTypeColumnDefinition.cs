@@ -45,5 +45,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return 0;
     }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="IEntityDefinition"/> defines the API for an entity definition for a relational database.
   /// </summary>
-  public interface IEntityDefinition : IStorageEntityDefinition
+  public interface IEntityDefinition : IStorageEntityDefinition, INullObject
   {
     string ViewName { get; }
     ReadOnlyCollection<IColumnDefinition> GetColumns ();

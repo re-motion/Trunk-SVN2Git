@@ -176,5 +176,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       visitor.VisitUnionViewDefinition (this);
     }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

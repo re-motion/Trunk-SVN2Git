@@ -21,7 +21,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  // TODO Review 3606: Implement INullObject on IEntityDefinition and IColumnDefinition
   /// <summary>
   /// The <see cref="NullEntityDefinition"/> represents a non-existing entity.
   /// </summary>
@@ -71,6 +70,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitNullEntityDefinition (this);
+    }
+
+    public bool IsNull
+    {
+      get { return true; }
     }
   }
 }

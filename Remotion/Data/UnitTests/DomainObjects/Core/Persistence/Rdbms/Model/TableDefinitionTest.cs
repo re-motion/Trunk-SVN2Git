@@ -84,5 +84,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       visitorMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (_tableDefintion.IsNull, Is.False);
+    }
   }
 }

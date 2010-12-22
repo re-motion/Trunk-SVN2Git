@@ -23,6 +23,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       visitor.VisitNullColumnDefinition (this);
     }
 
+    public bool IsNull
+    {
+      get { return true; }
+    }
+
     public bool Equals (IColumnDefinition other)
     {
       return other != null && other.GetType () == GetType ();
@@ -37,5 +42,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return 0;
     }
+    
   }
 }
