@@ -73,6 +73,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
 
       IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
+
+      // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629)
       if (!unionedEntities.Any())
         return new NullEntityDefinition (_storageProviderDefinition);
 

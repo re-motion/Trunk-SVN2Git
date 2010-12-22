@@ -129,8 +129,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private IStorageEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition)
     {
       var derivedStorageEntityDefinitions =
-          (from ClassDefinition derivedClass in classDefinition.DerivedClasses
-           select GetEntityDefinition (derivedClass)).Where (ed => !(ed is NullEntityDefinition));
+          from ClassDefinition derivedClass in classDefinition.DerivedClasses
+          let entityDefinition = GetEntityDefinition (derivedClass)
+          where !(entityDefinition is NullEntityDefinition) // TODO Review 3606: Use IsNull
+          select entityDefinition;
 
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
     }
