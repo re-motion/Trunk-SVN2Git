@@ -122,6 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           FileBuilder.DefaultSchema);
     }
 
+    // TODO Review 3613: Move to base class, make protected, inject ISqlDialect into ViewBuilderBase (like with TableBuilderBase)
     private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
     {
       var visitor = new NameListColumnDefinitionVisitor (allowNulls);
@@ -132,6 +133,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return visitor.GetNameList ();
     }
 
+    // TODO Review 3613: Move to base class
     private string GetClassIDList (IEnumerable<string> classIDs)
     {
       return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");

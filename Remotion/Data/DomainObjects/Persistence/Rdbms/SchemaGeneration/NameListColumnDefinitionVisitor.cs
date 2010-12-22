@@ -44,6 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
       
       AppendSeparatorIfRequired();
+      // TODO Review 3613: Use injected ISqlDialect to delimit identifier
       _nameList.Append ("[").Append (simpleColumnDefinition.Name).Append ("]");
     }
 

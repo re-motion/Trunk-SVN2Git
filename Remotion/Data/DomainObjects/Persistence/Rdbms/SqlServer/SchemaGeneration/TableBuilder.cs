@@ -54,6 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           FileBuilder.DefaultSchema);
     }
 
+    // TODO Review 3613: Move this to the base class; instead of SqlDialect.Instance, add an ISqlDialect parameter to TableBuilderBase's ctor
     private string GetColumnList (TableDefinition tableDefinition)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
