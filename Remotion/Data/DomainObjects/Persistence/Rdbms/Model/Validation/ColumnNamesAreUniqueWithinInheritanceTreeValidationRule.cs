@@ -76,6 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var validationResults = new List<MappingValidationResult>();
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
       {
         var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()
@@ -85,34 +86,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
 
         var groupedPropertyDefinitionsByName = ColumnDefinitionVisitor.GroupByName (allPropertyDefinitions);
         foreach (var keyValuePair in groupedPropertyDefinitionsByName)
-          yield return ValidatePropertyGroup (keyValuePair.Key, keyValuePair.Value);
+          validationResults.AddRange(ValidatePropertyGroup (keyValuePair.Key, keyValuePair.Value));
       }
+      return validationResults;
     }
 
-    private MappingValidationResult ValidatePropertyGroup (string columnName, IList<PropertyDefinition> propertyDefinitions)
+    private IEnumerable<MappingValidationResult> ValidatePropertyGroup (string columnName, IList<PropertyDefinition> propertyDefinitions)
     {
       if (propertyDefinitions.Count > 1)
       {
         var referenceProperty = propertyDefinitions[0];
-        // TODO Review 3608: Add a test where more than one properties define different names; more than one validation error should occur
-        // TODO Review 3608: Implement by using Where instead of FirstOrDefault, then iterating over the items
-        var differentProperty = propertyDefinitions.FirstOrDefault (pd => pd.PropertyInfo != referenceProperty.PropertyInfo);
-        if (differentProperty != null)
+        var differentProperties = propertyDefinitions.Where (pd => pd.PropertyInfo != referenceProperty.PropertyInfo);
+        if (differentProperties.Any ())
         {
-          return MappingValidationResult.CreateInvalidResultForProperty (
-              propertyDefinitions[0].PropertyInfo,
-              "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
-              + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-              // TODO Review 3608: Turn around referenceProperty and differentProperty
-              referenceProperty.PropertyInfo.Name,
-              referenceProperty.ClassDefinition.ClassType.Name,
-              columnName,
-              differentProperty.ClassDefinition.ClassType.Name,
-              differentProperty.PropertyInfo.Name);
+          foreach (var differentProperty in differentProperties)
+          {
+            yield return MappingValidationResult.CreateInvalidResultForProperty (
+                propertyDefinitions[0].PropertyInfo,
+                "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
+                + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
+                differentProperty.PropertyInfo.Name,
+                differentProperty.ClassDefinition.ClassType.Name,
+                columnName,
+                referenceProperty.ClassDefinition.ClassType.Name,
+                referenceProperty.PropertyInfo.Name);
+          }
+        }
+        else
+        {
+          yield return MappingValidationResult.CreateValidResult ();
         }
       }
-
-      return MappingValidationResult.CreateValidResult ();
     }
   }
 }

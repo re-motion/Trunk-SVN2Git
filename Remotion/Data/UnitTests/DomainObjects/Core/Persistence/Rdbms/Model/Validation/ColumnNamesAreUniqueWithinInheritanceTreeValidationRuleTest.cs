@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
@@ -127,9 +128,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (classDefinition);
 
       var expectedMessage =
-          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
+          "Property 'PropertyWithStorageClassPersistent' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', "
           + "because class 'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property "
-          +"'PropertyWithStorageClassPersistent' with the same storage specific name.\r\n\r\n"
+          +"'Property' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
@@ -169,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
+    public void InheritanceRoot_TwoPersistentPropertiesWithSameStorageSpecificPropertyNameInSameInheritanceHierarchieLevel ()
     {
       var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
           _derivedBaseClass1, "FirstName1",
@@ -199,11 +200,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'BaseProperty' of class 'BaseValidationDomainObjectClass' must not define storage specific name 'Property', because class "
-          + "'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
+          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'BaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseProperty' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseValidationDomainObjectClass\r\n"
           + "Property: BaseProperty";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
+    }
+
+    [Test]
+    public void InheritanceRoot_ThreePersistentPropertiesWithSameStorageSpecificPropertyName ()
+    {
+      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _baseOfBaseClass, "FirstName1",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (BaseOfBaseValidationDomainObjectClass).GetProperty ("BaseOfBaseProperty"),
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
+      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedBaseClass1,
+          "FirstName2",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (BaseValidationDomainObjectClass).GetProperty ("BaseProperty"),
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
+      var propertyDefinition3 = ReflectionBasedPropertyDefinitionFactory.Create (
+          _derivedClass,
+          "FirstName3",
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"),
+          new SimpleColumnDefinition ("Property", typeof (string), "varchar", true));
+
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
+      _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition2 }, true));
+      _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition3 }, true));
+      _derivedBaseClass1.SetReadOnly ();
+      
+      var validationResults = _validationRule.Validate (_baseOfBaseClass).ToArray();
+
+      Assert.That (validationResults.Length, Is.EqualTo (2));
+
+      var expectedMessage1 =
+          "Property 'BaseProperty' of class 'BaseValidationDomainObjectClass' must not define storage specific name 'Property', because class "
+          + "'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseOfBaseProperty' with the same storage specific name.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass\r\n"
+          + "Property: BaseOfBaseProperty";
+      var expectedMessage2 =
+          "Property 'Property' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
+          +"'BaseOfBaseValidationDomainObjectClass' in same inheritance hierarchy already defines property 'BaseOfBaseProperty' with the same storage "
+          + "specific name.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.BaseOfBaseValidationDomainObjectClass\r\n"
+          + "Property: BaseOfBaseProperty";
+      AssertMappingValidationResult (validationResults[0], false, expectedMessage1);
+      AssertMappingValidationResult (validationResults[1], false, expectedMessage2);
     }
 
     [Test]
@@ -272,8 +328,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 
       var expectedMessage =
-          "Property 'Property' of class 'DerivedValidationDomainObjectClass' must not define storage specific name 'Property', because class "
-          + "'OtherDerivedValidationHierarchyClass' in same inheritance hierarchy already defines property 'OtherProperty' with the same storage specific name.\r\n\r\n"
+          "Property 'OtherProperty' of class 'OtherDerivedValidationHierarchyClass' must not define storage specific name 'Property', because class "
+          + "'DerivedValidationDomainObjectClass' in same inheritance hierarchy already defines property 'Property' with the same storage specific name.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
           + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);

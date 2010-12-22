@@ -7,6 +7,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validati
 {
   public class BaseOfBaseValidationDomainObjectClass : DomainObject
   {
-    
+    public string BaseOfBaseProperty { get; set; }
   }
 }
