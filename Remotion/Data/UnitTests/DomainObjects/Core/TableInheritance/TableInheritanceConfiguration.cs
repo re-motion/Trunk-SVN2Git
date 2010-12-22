@@ -37,14 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public static void Initialize()
     {
       s_instance = new TableInheritanceConfiguration();
-      s_instance._domainObjectIDs = new DomainObjectIDs (s_instance.GetMappingConfiguration());
     }
 
-    private DomainObjectIDs _domainObjectIDs;
+    private readonly DomainObjectIDs _domainObjectIDs;
 
     private TableInheritanceConfiguration()
     {
-      
+      _domainObjectIDs = new DomainObjectIDs (GetMappingConfiguration ());
     }
 
     public DomainObjectIDs GetDomainObjectIDs()

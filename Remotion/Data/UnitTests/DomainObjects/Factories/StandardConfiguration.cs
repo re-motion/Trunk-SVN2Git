@@ -39,14 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static void Initialize()
     {
       s_instance = new StandardConfiguration();
-      s_instance._domainObjectIDs = new DomainObjectIDs (s_instance.GetMappingConfiguration());
     }
 
-    private DomainObjectIDs _domainObjectIDs;
+    private readonly DomainObjectIDs _domainObjectIDs;
 
     private StandardConfiguration()
     {
-      
+      _domainObjectIDs = new DomainObjectIDs (GetMappingConfiguration ());      
     }
 
     public DomainObjectIDs GetDomainObjectIDs()
