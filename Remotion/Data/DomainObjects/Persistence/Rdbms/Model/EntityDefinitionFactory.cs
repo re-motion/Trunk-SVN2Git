@@ -108,6 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
+
         var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
         propertyDefinition.SetStorageProperty (storageProperty);
       }
