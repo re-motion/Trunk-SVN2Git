@@ -43,7 +43,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
         return visitor._propertyDefinitionsByName;
       }
 
-
       private readonly MultiDictionary<string, PropertyDefinition> _propertyDefinitionsByName;
       private PropertyDefinition _currentProperty;
 
@@ -85,23 +84,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
             classDefinition.MyPropertyDefinitions.Concat(derivedPropertyDefinitions).Where (pd => pd.StorageClass == StorageClass.Persistent);
 
         var groupedPropertyDefinitionsByName = ColumnDefinitionVisitor.GroupByName (allPropertyDefinitions);
-        foreach (var keyVakuePair in groupedPropertyDefinitionsByName)
+        foreach (var keyValuePair in groupedPropertyDefinitionsByName)
+          yield return ValidatePropertyGroup (keyValuePair.Key, keyValuePair.Value);
+      }
+    }
+
+    private MappingValidationResult ValidatePropertyGroup (string columnName, IList<PropertyDefinition> propertyDefinitions)
+    {
+      if (propertyDefinitions.Count > 1)
+      {
+        var referenceProperty = propertyDefinitions[0];
+        // TODO Review 3608: Add a test where more than one properties define different names; more than one validation error should occur
+        // TODO Review 3608: Implement by using Where instead of FirstOrDefault, then iterating over the items
+        var differentProperty = propertyDefinitions.FirstOrDefault (pd => pd.PropertyInfo != referenceProperty.PropertyInfo);
+        if (differentProperty != null)
         {
-          if (keyVakuePair.Value.Count > 1 && !keyVakuePair.Value[0].PropertyInfo.Equals (keyVakuePair.Value[1].PropertyInfo))
-          {
-            yield return MappingValidationResult.CreateInvalidResultForProperty (
-                keyVakuePair.Value[0].PropertyInfo,
-                "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
-                + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-                keyVakuePair.Value[0].PropertyInfo.Name,
-                keyVakuePair.Value[0].ClassDefinition.ClassType.Name,
-                keyVakuePair.Value[0].StoragePropertyDefinition.Name,
-                keyVakuePair.Value[1].ClassDefinition.ClassType.Name,
-                keyVakuePair.Value[1].PropertyInfo.Name);
-          }
+          return MappingValidationResult.CreateInvalidResultForProperty (
+              propertyDefinitions[0].PropertyInfo,
+              "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
+              + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
+              // TODO Review 3608: Turn around referenceProperty and differentProperty
+              referenceProperty.PropertyInfo.Name,
+              referenceProperty.ClassDefinition.ClassType.Name,
+              columnName,
+              differentProperty.ClassDefinition.ClassType.Name,
+              differentProperty.PropertyInfo.Name);
         }
       }
-      yield return MappingValidationResult.CreateValidResult();
+
+      return MappingValidationResult.CreateValidResult ();
     }
   }
 }
