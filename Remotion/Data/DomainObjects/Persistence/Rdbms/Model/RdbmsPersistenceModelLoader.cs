@@ -78,13 +78,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      EnsurePersistenceModelApplied (classDefinition);
-
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-        ApplyPersistenceModelToHierarchy (derivedClass);
+      EnsureAllStorageEntitiesCreated (classDefinition);
     }
 
-    private void EnsurePersistenceModelApplied (ClassDefinition classDefinition)
+    private void EnsureAllStorageEntitiesCreated (ClassDefinition classDefinition)
+    {
+      EnsureStorageEntitiesCreated (classDefinition);
+
+      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
+        EnsureAllStorageEntitiesCreated (derivedClass);
+    }
+
+    private void EnsureStorageEntitiesCreated (ClassDefinition classDefinition)
     {
       if (classDefinition.StorageEntityDefinition == null)
       {
@@ -113,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
     {
-      // The following call is potentially recursive (GetEntityDefinition -> EnsurePersistenceModelApplied -> CreateFilterViewDefinition), but this is
+      // The following call is potentially recursive (GetEntityDefinition -> EnsureStorageEntitiesCreated -> CreateFilterViewDefinition), but this is
       // guaranteed to terminate because we know at this point that there is a class in the classDefinition's base hierarchy that will get a 
       // TableDefinition
       var baseStorageEntityDefinition = GetEntityDefinition (classDefinition.BaseClass);
@@ -132,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IEntityDefinition GetEntityDefinition (ClassDefinition classDefinition)
     {
-      EnsurePersistenceModelApplied (classDefinition);
+      EnsureStorageEntitiesCreated (classDefinition);
 
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
