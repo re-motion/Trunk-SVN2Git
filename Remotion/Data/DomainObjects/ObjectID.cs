@@ -114,13 +114,11 @@ namespace Remotion.Data.DomainObjects
       return ObjectIDStringSerializer.Instance.TryParse (objectIDString, out result);
     }
 
-    private object _value;
-    private string _classID;
+    private readonly ClassDefinition _classDefinition;
+    private readonly object _value;
 
     [NonSerialized]
     private int _cachedHashCode;
-    [NonSerialized]
-    private ClassDefinition _classDefinition;
     
     /// <summary>
     /// Initializes a new instance of the <b>ObjectID</b> class with the specified class ID and ID value.
@@ -196,7 +194,6 @@ namespace Remotion.Data.DomainObjects
     public ObjectID (ClassDefinition classDefinition, object value)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
       ArgumentUtility.CheckNotNull ("value", value);
 
       if (classDefinition.IsAbstract)
@@ -213,7 +210,6 @@ namespace Remotion.Data.DomainObjects
       classDefinition.StorageEntityDefinition.StorageProviderDefinition.CheckIdentityType (value.GetType ());
 
       _classDefinition = classDefinition;
-      _classID = _classDefinition.ID;
       _value = value;
     }
 
@@ -241,7 +237,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string ClassID
     {
-      get { return _classID; }
+      get { return _classDefinition.ID; }
     }
 
     /// <summary>
@@ -249,13 +245,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public ClassDefinition ClassDefinition
     {
-      get
-      {
-        if (_classDefinition == null)
-          _classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID); // this method is thread-safe
-
-        return _classDefinition;
-      }
+      get { return _classDefinition; }
     }
 
     /// <summary>
@@ -282,7 +272,7 @@ namespace Remotion.Data.DomainObjects
       // Note: We assume that a hash code value of 0 means that it wasn't initialized. In the very unlikely situation that 
       // _classID.GetHashCode () == _value.GetHashCode (), the XOR operation would yield 0 and thus the hash code would be recalculated on each call.
       if (_cachedHashCode == 0)
-        _cachedHashCode = _classID.GetHashCode () ^ _value.GetHashCode ();
+        _cachedHashCode = _classDefinition.GetHashCode () ^ _value.GetHashCode ();
       
       return _cachedHashCode;
     }

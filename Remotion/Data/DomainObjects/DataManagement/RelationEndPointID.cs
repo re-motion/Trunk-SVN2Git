@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// This type implements custom serialization. It serializes the class definition ID, the relation end point name, and the objectID.
   /// </remarks>
   [Serializable]
-  public sealed class RelationEndPointID : ISerializable
+  public sealed class RelationEndPointID
   {
     public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
     {
@@ -67,7 +67,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly IRelationEndPointDefinition _definition;
     private readonly ObjectID _objectID;
 
-    private readonly int _cachedHashCode;
+    [NonSerialized]
+    private int _cachedHashCode;
 
     public RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
     {
@@ -98,6 +99,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override int GetHashCode ()
     {
+      // Use lazy initialization because of deserialization.
+
+      // Note: The following code is not completely thread-safe - the hash code might be calculated twice on different threads. 
+      // However, we can assume that an int assignment is atomic (and the XOR operation is fully performed before the assignment takes place), 
+      // so no half-calculated values should become visible.
+
+      // Note: We assume that a hash code value of 0 means that it wasn't initialized. In the very unlikely situation that 
+      // the hash code is really 0, it would be recalculated on each call.
+
+      if (_cachedHashCode == 0)
+        _cachedHashCode = CalculateHashCode ();
+
       return _cachedHashCode;
     }
 
@@ -127,30 +140,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var propertyName = Definition.PropertyName;
       return (_objectID != null ? _objectID.GetHashCode () : 0) ^ (propertyName != null ? propertyName.GetHashCode () : 0);
     }
-
-    #region Serialization
-
-    // ReSharper disable UnusedMember.Local
-    private RelationEndPointID (SerializationInfo info, StreamingContext context)
-    {
-      var classDefinitionID = info.GetString ("classDefinitionID");
-      var propertyName = info.GetString ("propertyName");
-      
-      _definition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
-      _objectID = (ObjectID) info.GetValue ("objectID", typeof (ObjectID));
-
-      _cachedHashCode = CalculateHashCode ();
-    }
-    // ReSharper restore UnusedMember.Local
-
-    void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      info.AddValue ("classDefinitionID", _definition.ClassDefinition.ID);
-      info.AddValue ("propertyName", _definition.PropertyName);
-      info.AddValue ("objectID", _objectID);
-    }
-
-    #endregion
   }
 }
