@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
 
-      // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629)
+      // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629; include test)
       if (!unionedEntities.Any())
         return new NullEntityDefinition (_storageProviderDefinition);
 
@@ -98,6 +98,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     protected virtual string GetViewName (ClassDefinition classDefinition)
     {
       return classDefinition.ID + "View";
+    }
+
+    protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
+    {
+      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ()).Select (cd => cd.ID);
     }
 
     protected virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
@@ -155,11 +160,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           .CreateSequence (cd => cd.BaseClass)
           .Reverse()
           .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
-    }
-
-    private IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
-    {
-      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()).Select (cd => cd.ID);
     }
   }
 }
