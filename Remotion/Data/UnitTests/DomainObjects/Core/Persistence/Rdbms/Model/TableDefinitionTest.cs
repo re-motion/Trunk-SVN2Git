@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
 
@@ -28,13 +29,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition[] _columns;
     private TableDefinition _tableDefintion;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private PrimaryKeyConstraintDefinition[] _constraints;
 
     [SetUp]
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _columns = new[] { new SimpleColumnDefinition ("COL1", typeof(string), "varchar", true) };
-      _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns);
+      _columns = new[] { new SimpleColumnDefinition ("COL1", typeof (string), "varchar", true) };
+      _constraints = new[]
+                     {
+                         new PrimaryKeyConstraintDefinition (
+                             "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false) })
+                     };
+      _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns, _constraints);
     }
 
     [Test]
@@ -42,13 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_tableDefintion.TableName, Is.EqualTo ("Test"));
       Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
-      Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs(_storageProviderDefinition));
+      Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Test", null, _columns);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Test", null, _columns, _constraints);
       Assert.That (tableDefinition.ViewName, Is.Null);
     }
 
@@ -65,11 +72,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void Constraints ()
+    {
+      var result = _tableDefintion.Constraints;
+
+      Assert.That (result, Is.EqualTo (_constraints));
+    }
+
+    [Test]
     public void GetColumns ()
     {
-      var result  = _tableDefintion.GetColumns ();
+      var result = _tableDefintion.GetColumns();
 
-      Assert.That (result, Is.EqualTo (_columns));  
+      Assert.That (result, Is.EqualTo (_columns));
     }
 
     [Test]

@@ -203,12 +203,16 @@
     <Compile Include="Mapping\Validation\Logical\StorageGroupTypesAreSameWithinInheritanceTreeRule.cs" />
     <Compile Include="Persistence\Rdbms\IRdbmsStorageObjectFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ITableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IDColumnDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\PrimaryKeyConstraintDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule.cs" />

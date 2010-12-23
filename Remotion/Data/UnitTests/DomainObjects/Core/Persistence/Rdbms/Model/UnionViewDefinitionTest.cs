@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -43,8 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true);
 
-      _tableDefinition1 = new TableDefinition (_storageProviderDefinition, "Table1", "View1", new[] { _column1 });
-      _tableDefinition2 = new TableDefinition (_storageProviderDefinition, "Table2", "View2", new[] { _column2, _column3 });
+      _tableDefinition1 = new TableDefinition (_storageProviderDefinition, "Table1", "View1", new[] { _column1 }, new ITableConstraintDefinition[0]);
+      _tableDefinition2 = new TableDefinition (
+          _storageProviderDefinition, "Table2", "View2", new[] { _column2, _column3 }, new ITableConstraintDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition, "Test", new[] { _tableDefinition1, _tableDefinition2 }, new[] { _column1, _column2, _column3 });
     }
@@ -78,10 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_WithInvalidUnionedEntity ()
     {
       var filterViewDefinition = new FilterViewDefinition (
-          _storageProviderDefinition, 
-          "ViewName", 
-          _tableDefinition1, 
-          new[] { "x" }, 
+          _storageProviderDefinition,
+          "ViewName",
+          _tableDefinition1,
+          new[] { "x" },
           new IColumnDefinition[0]);
       new UnionViewDefinition (_storageProviderDefinition, null, new[] { filterViewDefinition }, new IColumnDefinition[0]);
     }
@@ -126,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable);
       var availableColumns = new[] { column1WithDifferentReference, _column2, _column3 };
 
-      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+      var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { column1WithDifferentReference, _column2, _column3 }));
     }
@@ -142,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var availableColumns = new[] { _column1 };
 
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.TypeOf (typeof (NullColumnDefinition)));
@@ -159,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var availableColumns = new[] { _column1 };
 
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.TypeOf (typeof (IDColumnDefinition)));
@@ -179,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var availableColumns = new[] { columnDefinition };
 
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray ();
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.SameAs (columnDefinition));
@@ -194,7 +195,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { _tableDefinition1, _tableDefinition2 },
           new IColumnDefinition[] { null });
 
-      var result = unionViewDefinition.CreateFullColumnList (new[]{new SimpleColumnDefinition("Test", typeof(string), "varchar", false)}).ToArray ();
+      var result =
+          unionViewDefinition.CreateFullColumnList (new[] { new SimpleColumnDefinition ("Test", typeof (string), "varchar", false) }).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
@@ -211,14 +213,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetAllTables_IndirectTables ()
     {
-      var tableDefinition3 = new TableDefinition (_storageProviderDefinition, "Table3", "View", new IColumnDefinition[0]);
+      var tableDefinition3 = new TableDefinition (
+          _storageProviderDefinition, "Table3", "View", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           "UnionView",
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
           new IColumnDefinition[0]);
 
-      var result = baseUnionDefinition.GetAllTables ().ToArray ();
+      var result = baseUnionDefinition.GetAllTables().ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2, tableDefinition3 }));
     }

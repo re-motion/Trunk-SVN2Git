@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinitionCollection _collection;
     private ReflectionBasedClassDefinition _classDefinition;
-    
+
     // construction and disposing
 
     // methods and properties
@@ -44,8 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      _classDefinition.SetStorageEntity (new TableDefinition (UnitTestDomainStorageProviderDefinition, "Order", "OrderView", new SimpleColumnDefinition[0]));
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
+      _classDefinition.SetStorageEntity (
+          new TableDefinition (
+              UnitTestDomainStorageProviderDefinition, "Order", "OrderView", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]));
       _collection = new ClassDefinitionCollection();
     }
 
@@ -73,7 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       try
       {
         _collection.Add (
-            ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OtherID", "OtherTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false));
+            ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+                "OtherID", "OtherTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false));
         Assert.Fail ("Expected an ArgumentException.");
       }
       catch (ArgumentException e)
@@ -97,7 +101,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void AddTwiceWithSameClassID ()
     {
       _collection.Add (_classDefinition);
-      _collection.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Customer), false));
+      _collection.Add (
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Customer), false));
     }
 
     [Test]
@@ -141,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           _classDefinition.ID,
-          StorageModelTestHelper.GetEntityName(_classDefinition),
+          StorageModelTestHelper.GetEntityName (_classDefinition),
           UnitTestDomainStorageProviderDefinition,
           _classDefinition.ClassType,
           false,

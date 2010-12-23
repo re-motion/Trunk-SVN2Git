@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           TestDomainStorageProviderDefinition,
           "Test",
           null,
-          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDCOlumn, simpleColumn });
+          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDCOlumn, simpleColumn }, new ITableConstraintDefinition[0]);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");

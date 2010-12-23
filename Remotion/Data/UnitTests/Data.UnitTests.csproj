@@ -280,9 +280,11 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InvalidRdbmsStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ColumnDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullEntityDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\IDColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\PrimaryKeyConstraintDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />

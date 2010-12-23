@@ -40,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true);
-      _entityDefinition = new TableDefinition (_storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 });
+      _entityDefinition = new TableDefinition (
+          _storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 }, new ITableConstraintDefinition[0]);
 
       _filterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           "TestUnion",
-          new IEntityDefinition[] { new TableDefinition (_storageProviderDefinition, "Test", null, new IColumnDefinition[0]) },
+          new IEntityDefinition[] { new TableDefinition (_storageProviderDefinition, "Test", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]) },
           new IColumnDefinition[0]);
       new FilterViewDefinition (_storageProviderDefinition, "Test", unionViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
     }

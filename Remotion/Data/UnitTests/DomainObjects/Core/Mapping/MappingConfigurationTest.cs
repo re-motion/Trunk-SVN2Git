@@ -49,7 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ReflectionBasedNameResolver _nameResolver;
 
     private TableDefinition _fakeStorageEntityDefinition = new TableDefinition (
-        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "Test", new SimpleColumnDefinition[0]);
+        DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
+        "Test",
+        "Test",
+        new SimpleColumnDefinition[0],
+        new ITableConstraintDefinition[0]);
 
     public override void SetUp ()
     {
@@ -176,7 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var unionViewDefinition = new UnionViewDefinition (
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
           "Test",
-          new IEntityDefinition[] { new TableDefinition(UnitTestDomainStorageProviderDefinition, "Test", "TestView", new IColumnDefinition[0])},
+          new IEntityDefinition[]
+          { new TableDefinition (UnitTestDomainStorageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]) },
           new IColumnDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",

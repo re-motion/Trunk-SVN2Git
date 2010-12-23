@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -88,16 +87,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id, string entityName, StorageProviderDefinition storageProviderDefinition, Type classType, bool isAbstract, params Type[] persistentMixins)
+        string id,
+        string entityName,
+        StorageProviderDefinition storageProviderDefinition,
+        Type classType,
+        bool isAbstract,
+        params Type[] persistentMixins)
     {
       return CreateReflectionBasedClassDefinition (
           id, entityName, storageProviderDefinition, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
-        string id, string entityName, StorageProviderDefinition storageProviderDefinition, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
+        string id,
+        string entityName,
+        StorageProviderDefinition storageProviderDefinition,
+        Type classType,
+        bool isAbstract,
+        IPersistentMixinFinder persistentMixinFinder)
     {
-      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderDefinition, classType, isAbstract, null, null, persistentMixinFinder);
+      return CreateReflectionBasedClassDefinition (
+          id, entityName, storageProviderDefinition, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
@@ -105,17 +115,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, StorageProviderDefinition storageProviderDefinition, params Type[] mixins)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
+        Type type, StorageProviderDefinition storageProviderDefinition, params Type[] mixins)
     {
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
+        Type type, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
     {
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, baseClass, mixins);
     }
 
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (
+        Type type, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition baseClass, params Type[] mixins)
     {
       return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, baseClass, mixins);
     }
@@ -131,9 +144,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = CreateReflectionBasedClassDefinition (classType, baseClass);
 
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
-      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       return classDefinition;
     }
@@ -156,20 +169,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);
 
       fileSystemItemClassDefinition.SetDerivedClasses (new ClassDefinitionCollection { fileClassDefinition, folderClassDefinition });
-      fileSystemItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
-      fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      fileSystemItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
       return fileSystemItemClassDefinition;
     }
 
-    private static void SetStorageEntityName (string entityName, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition classDefinition)
+    private static void SetStorageEntityName (
+        string entityName, StorageProviderDefinition storageProviderDefinition, ReflectionBasedClassDefinition classDefinition)
     {
-      if (storageProviderDefinition==null)
+      if (storageProviderDefinition == null)
         storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (entityName != null)
       {
         classDefinition.SetStorageEntity (
-            new TableDefinition (storageProviderDefinition, entityName, classDefinition.ID + "View", new SimpleColumnDefinition[0]));
+            new TableDefinition (
+                storageProviderDefinition, entityName, classDefinition.ID + "View", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]));
       }
       else
       {

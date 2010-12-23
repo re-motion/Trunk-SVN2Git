@@ -147,7 +147,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy_AlreadyHasPersistenceModelApplied_AndNoDerivedClassDefinitions ()
     {
-      var storageEntityDefinition = new TableDefinition (_storageProviderDefinition, "Test", "TestView", new SimpleColumnDefinition[] { });
+      var storageEntityDefinition = new TableDefinition (
+          _storageProviderDefinition, "Test", "TestView", new SimpleColumnDefinition[] { }, new ITableConstraintDefinition[0]);
       _derivedDerivedDerivedClassDefinition.SetStorageEntity (storageEntityDefinition);
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedDerivedClassDefinition);
@@ -175,18 +176,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _entityDefinitionFactoryMock
           .Expect (mock => mock.CreateTableDefinition (Arg.Is (_tableClassDefinition2))).Return (_fakeEntityDefinitionTable2);
       _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedClassDefinition1), Arg.Is(_fakeEntityDefinitionTable2))).Return (
+          .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedClassDefinition1), Arg.Is (_fakeEntityDefinitionTable2))).Return (
               _fakeEntityDefinitionDerived1);
       _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedClassDefinition2), Arg.Is(_fakeEntityDefinitionTable2))).Return (
+          .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedClassDefinition2), Arg.Is (_fakeEntityDefinitionTable2))).Return (
               _fakeEntityDefinitionDerived2);
       _entityDefinitionFactoryMock
           .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedDerivedClassDefinition), Arg.Is (_fakeEntityDefinitionDerived2))).Return (
               _fakeEntityDefinitionDerivedDerived);
       _entityDefinitionFactoryMock
-          .Expect (mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedDerivedDerivedClassDefinition), Arg.Is (_fakeEntityDefinitionDerivedDerived))).Return (
+          .Expect (
+              mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedDerivedDerivedClassDefinition), Arg.Is (_fakeEntityDefinitionDerivedDerived))).
+          Return (
               _fakeEntityDefinitionDerivedDerivedDerived);
-      
+
       _entityDefinitionFactoryMock.Replay();
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_baseBaseClassDefinition);
@@ -201,17 +204,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_derivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionDerivedDerived));
       Assert.That (_derivedDerivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionDerivedDerivedDerived));
     }
-    
+
     [Test]
     public void ApplyPersistenceModelToHierarchy_AbstractClassWithAbstractDerivedClassesWhichHasNoDerivations ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
           typeof (AbstractClassWithoutDerivations), null);
       var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
-      derivedClass.SetStorageEntity (new NullEntityDefinition(_storageProviderDefinition));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection(new[]{derivedClass}, true, true));
+      derivedClass.SetStorageEntity (new NullEntityDefinition (_storageProviderDefinition));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
       derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
-      
+
       _entityDefinitionFactoryMock.Expect (
           mock => mock.CreateUnionViewDefinition (
               Arg.Is (classDefinition), Arg<IEnumerable<IEntityDefinition>>.List.Equal (Enumerable.Empty<IEntityDefinition>()))).Return (
@@ -221,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
 
       _entityDefinitionFactoryMock.VerifyAllExpectations();
-      Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs(_fakeEntityDefinitionBaseBase));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionBaseBase));
     }
 
     [Test]

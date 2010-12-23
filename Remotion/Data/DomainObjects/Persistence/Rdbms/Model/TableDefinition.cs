@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -32,18 +32,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _tableName;
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
 
-    public TableDefinition (StorageProviderDefinition storageProviderDefinition, string tableName, string viewName, IEnumerable<IColumnDefinition> columns)
+    public TableDefinition (
+        StorageProviderDefinition storageProviderDefinition,
+        string tableName,
+        string viewName,
+        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<ITableConstraintDefinition> constraints)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
       ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("constraints", constraints);
 
       _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
       _viewName = viewName;
       _columns = columns.ToList().AsReadOnly();
+      _constraints = constraints.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
@@ -64,6 +72,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public string ViewName
     {
       get { return _viewName; }
+    }
+
+    public ReadOnlyCollection<ITableConstraintDefinition> Constraints
+    {
+      get { return _constraints; }
     }
 
     public string LegacyEntityName

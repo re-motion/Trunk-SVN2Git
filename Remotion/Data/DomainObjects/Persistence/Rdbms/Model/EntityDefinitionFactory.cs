@@ -47,11 +47,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var tableName = GetTableName (classDefinition);
+      var columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
+      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName(tableName), true, new[] { columns[0] });
+      
       return new TableDefinition (
           _storageProviderDefinition,
-          GetTableName (classDefinition),
+          tableName,
           GetViewName (classDefinition),
-          GetColumnDefinitionsForHierarchy (classDefinition));
+          columns,
+          new[] { clusteredPrimaryKeyConstraint });
     }
 
     public virtual IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity)
@@ -98,6 +103,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     protected virtual string GetViewName (ClassDefinition classDefinition)
     {
       return classDefinition.ID + "View";
+    }
+
+    protected virtual string GetPrimaryKeyName (string tableName)
+    {
+      return string.Format ("PK_{0}", tableName);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
