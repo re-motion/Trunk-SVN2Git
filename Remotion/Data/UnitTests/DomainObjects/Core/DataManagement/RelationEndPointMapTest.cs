@@ -804,7 +804,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetUnregisterableEndPointsForDataContainer()
+    public void GetNonUnregisterableEndPointsForDataContainer()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = CreateNewDataContainer (endPointID);
@@ -815,31 +815,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       objectEndPoint.OppositeObjectID = DomainObjectIDs.Order1;
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
-      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+      var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
 
       Assert.That (result, Is.EqualTo (new[] { objectEndPoint }));
     }
 
     [Test]
-    public void GetUnregisterableEndPointsForDataContainer_None ()
+    public void GetNonUnregisterableEndPointsForDataContainer_OppositeCollectionEndPoint ()
+    {
+      var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var dataContainer = CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
+      var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
+      var item1 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, dataContainer.ID);
+
+      var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var oppositeCollectionEndPoint = _map.RegisterCollectionEndPoint (oppositeCollectionEndPointID, new[] { item1 });
+
+      var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);
+
+      oppositeCollectionEndPoint.CreateAddCommand (item2).Perform ();
+      Assert.That (realEndPoint.HasChanged, Is.False);
+      Assert.That (oppositeCollectionEndPoint.HasChanged, Is.True);
+
+      var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
+
+      Assert.That (result, Is.EqualTo (new[] { realEndPoint })); // realEndPoint has not changed, but its opposite end-point has
+    }
+
+    [Test]
+    public void GetNonUnregisterableEndPointsForDataContainer_None ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
-      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+      var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
 
       Assert.That (result, Is.Empty);
     }
 
     [Test]
-    public void GetUnregisterableEndPointsForDataContainer_EndPointNotRegistered ()
+    public void GetNonUnregisterableEndPointsForDataContainer_EndPointNotRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = CreateNewDataContainer (endPointID);
       Assert.That (_map[endPointID], Is.Null);
 
-      var result = _map.GetUnregisterableEndPointsForDataContainer (dataContainer);
+      var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
 
       Assert.That (result, Is.Empty);
     }

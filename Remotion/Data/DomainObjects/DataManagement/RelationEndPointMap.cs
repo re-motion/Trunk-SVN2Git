@@ -19,6 +19,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections;
@@ -284,7 +285,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      var unregisterableEndPoints = GetUnregisterableEndPointsForDataContainer (dataContainer);
+      var unregisterableEndPoints = GetNonUnregisterableEndPointsForDataContainer (dataContainer);
       if (unregisterableEndPoints.Length > 0)
       {
         var message = string.Format (
@@ -304,13 +305,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public RelationEndPoint[] GetUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
+    public RelationEndPoint[] GetNonUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       return (from endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer)
               let loadedEndPoint = this[endPointID]
-              where loadedEndPoint != null && loadedEndPoint.HasChanged
+              where loadedEndPoint != null && !IsUnregisterable (loadedEndPoint)
               select loadedEndPoint).ToArray();
     }
 
@@ -444,15 +445,38 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IEndPoint endPoint)
+    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, RelationEndPoint endPoint)
     {
-      if (endPoint.HasChanged)
+      if (!IsUnregisterable(endPoint))
       {
         var message = string.Format (
             "Cannot remove end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
             endPointID);
         throw new InvalidOperationException (message);
       }
+    }
+
+    private bool IsUnregisterable (RelationEndPoint endPoint)
+    {
+      // An end-point must be unchanged to be unregisterable.
+      if (endPoint.HasChanged)
+        return false;
+
+      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
+      // must be unchanged. Virtual end-points cannot exist in changed state without their opposite real end-points.
+      // (This only affects 1:n relations: for those, the opposite virtual end-point can be changed although the (one of many) real end-point is 
+      // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
+      var maybeOppositeEndPoint =
+          Maybe.ForValue (endPoint)
+              .Where (ep => !ep.Definition.IsVirtual)
+              .Select (ep => ep as ObjectEndPoint)
+              .Where (ep => ep.OppositeObjectID != null)
+              .Select (ep => new RelationEndPointID (ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
+              .Select (oppositeID => this[oppositeID]);
+      if (maybeOppositeEndPoint.Where (oppositeEndPoint => oppositeEndPoint.HasChanged).HasValue)
+        return false;
+
+      return true;
     }
 
     #region Serialization

@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -37,7 +35,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly RelationEndPointMap _relationEndPointMap;
 
     private readonly DataContainer[] _unloadedDataContainers;
-    private readonly RelationEndPoint[] _unloadedEndPoints;
     private readonly string[] _unloadProblems;
 
     private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
@@ -61,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       var unloadProblems = new List<string>();
 
       _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, unloadProblems);
-      _unloadedEndPoints = GetAndCheckUnloadedEndPoints (_unloadedDataContainers, unloadProblems);
+      CheckAffectedEndPoints (_unloadedDataContainers, unloadProblems);
 
       _unloadProblems = unloadProblems.ToArray();
 
@@ -71,11 +68,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public DataContainer[] UnloadedDataContainers
     {
       get { return _unloadedDataContainers; }
-    }
-
-    public RelationEndPoint[] UnloadedEndPoints
-    {
-      get { return _unloadedEndPoints; }
     }
 
     public bool CanUnload
@@ -113,7 +105,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       EnsureCanUnload();
 
-      UnregisterEndPoints (_unloadedEndPoints);
+      // UnregisterEndPoints (_unloadedEndPoints);
       UnregisterDataContainers (_unloadedDataContainers);
     }
 
@@ -159,22 +151,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return affectedDataContainers;
     }
 
-    private RelationEndPoint[] GetAndCheckUnloadedEndPoints (
-        IEnumerable<DataContainer> unloadedDataContainers,
-        ICollection<string> problemAggregator)
+    private void CheckAffectedEndPoints (IEnumerable<DataContainer> unloadedDataContainers, ICollection<string> problemAggregator)
     {
-      // All end-points associated with a DataContainer to be unloaded must be unchanged, even if they are not unloaded.
-      var associatedEndPoints = from dataContainer in unloadedDataContainers
-                                from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
-                                where associatedEndPoint != null
-                                select EnsureUnchanged (dataContainer.ID, associatedEndPoint, problemAggregator);
-
-      // All unloaded end-points must be unchanged. (We don't need to re-check the associated end-point, they have already been checked.)
-      return (from associatedEndPoint in associatedEndPoints
-              from unloadedEndPoint in GetUnloadedEndPoints (associatedEndPoint)
-              select EnsureUnchanged (associatedEndPoint.ObjectID, unloadedEndPoint, problemAggregator))
-          .ToArray();
+      // All end-points associated with a DataContainer to be unloaded must be unchanged, even if they are not unloaded. This is to avoid "mixed" 
+      // States where an object is in state Changed and NotLoadedYet at the same time.
+      var changedAssociatedEndPoints = from dataContainer in unloadedDataContainers
+                                       from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                                       let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
+                                       where associatedEndPoint != null && associatedEndPoint.HasChanged
+                                       select new { DataContainer = dataContainer, EndPoint = associatedEndPoint };
+      
+      // These are the "technically required" end-points
+      var nonUnregisterableEndPoints = from dataContainer in unloadedDataContainers
+                                       from endPoint in _relationEndPointMap.GetNonUnregisterableEndPointsForDataContainer (dataContainer)
+                                       select new { DataContainer = dataContainer, EndPoint = endPoint };
+      
+      foreach (var problematicEndPoint in changedAssociatedEndPoints.Union (nonUnregisterableEndPoints))
+      {
+        var message = String.Format (
+            "Object '{0}' cannot be unloaded because one of its relations has been changed. Only unchanged objects that are not part of changed "
+            + "relations can be unloaded." + Environment.NewLine + "Changed relation: '{1}'.",
+            problematicEndPoint.DataContainer.ID,
+            problematicEndPoint.EndPoint.RelationDefinition.ID);
+        problemAggregator.Add (message);
+      }
     }
 
     private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
@@ -186,83 +186,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return loadedEndPoint;
     }
 
-    private IEnumerable<RelationEndPoint> GetUnloadedEndPoints (RelationEndPoint endPointOfUnloadedDataContainer)
-    {
-      // If it is a real end-point, it must be unloaded. Real end-points cannot exist without their DataContainer.
-      var maybeRealEndPoint = Maybe
-          .ForValue (endPointOfUnloadedDataContainer)
-          .Where (endPoint => !endPoint.Definition.IsVirtual);
-
-      // If it is a virtual object end-point and the opposite object is null, it must be unloaded. Virtual end-points pointing to null cannot exist 
-      // without their DataContainer.
-      var maybeVirtualNullEndPoint =
-          Maybe.ForValue (endPointOfUnloadedDataContainer)
-              .Where (endPoint => endPoint.Definition.IsVirtual)
-              .Where (endPoint => endPoint.Definition.Cardinality == CardinalityType.One)
-              .Where (endPoint => ((ObjectEndPoint) endPoint).OppositeObjectID == null);
-
-      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
-      // must be unloaded. Virtual end-points cannot exist without their opposite real end-points.
-      // In this case, the unloaded opposite virtual end-point must be unchanged. (This only affects 1:n relations where the virtual end-point can be 
-      // changed although the (one of many) real end-point is unchanged. For 1:1 relations, the real and virtual end-points are always changed 
-      // together.)
-      var maybeOppositeEndPoint =
-          Maybe.ForValue (endPointOfUnloadedDataContainer)
-              .Where (endPoint => !endPoint.Definition.IsVirtual)
-              .Select (endPoint => endPoint as ObjectEndPoint)
-              .Where (endPoint => endPoint.OppositeObjectID != null)
-              .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition()))
-              .Select (oppositeID => _relationEndPointMap[oppositeID]);
-
-      // What's not unloaded:
-      // - Virtual object end-points whose opposite object is not null. The life-time of virtual object end-points is defined by the life-time of 
-      //   the real end-points (unless they point to null).
-      // - Virtual collection end-points. The life-time of virtual collection end-points is defined by the life-time of the full set of its real 
-      //   end-points.
-      // - Opposite real end-points. The life-time of real end-points is coupled to the life-time of the DataContainer.
-
-      // What must not be changed:
-      // - All end-points of the object being unloaded.
-      // - The opposite virtual end-point if it is unloaded.
-
-      return Maybe.EnumerateValues (
-          maybeRealEndPoint,
-          maybeVirtualNullEndPoint,
-          maybeOppositeEndPoint); // filters out not loaded opposite end points
-    }
-
-    private RelationEndPoint EnsureUnchanged (ObjectID unloadedObjectID, RelationEndPoint endPoint, ICollection<string> problemAggregator)
-    {
-      if (endPoint.HasChanged)
-      {
-        var message = String.Format (
-            "Object '{0}' cannot be unloaded because one of its relations has been changed. Only unchanged objects can be unloaded. "
-            + "Changed end point: '{1}'.",
-            unloadedObjectID,
-            endPoint.ID);
-        problemAggregator.Add (message);
-      }
-
-      return endPoint;
-    }
-
     private void UnregisterDataContainers (IEnumerable<DataContainer> dataContainers)
     {
       foreach (var dataContainer in dataContainers)
-        _dataContainerMap.Remove (dataContainer.ID);
-    }
-
-    private void UnregisterEndPoints (IEnumerable<RelationEndPoint> unloadedEndPoints)
-    {
-      foreach (var unloadedEndPoint in unloadedEndPoints)
       {
-        if (unloadedEndPoint.Definition.Cardinality == CardinalityType.One)
-          _relationEndPointMap.RemoveEndPoint (unloadedEndPoint.ID);
-        else
-        {
-          var unloadedCollectionEndPoint = (CollectionEndPoint) unloadedEndPoint;
-          unloadedCollectionEndPoint.Unload();
-        }
+        _relationEndPointMap.UnregisterEndPointsForDataContainer (dataContainer);
+        _dataContainerMap.Remove (dataContainer.ID);
       }
     }
   }

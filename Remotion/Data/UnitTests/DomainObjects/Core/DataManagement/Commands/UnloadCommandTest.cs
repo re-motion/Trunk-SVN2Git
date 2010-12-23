@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -111,9 +110,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects can be unloaded. Changed end point: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
+        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. "
+        + "Only unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relation: "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void EnsureCanUnload_ThrowsOnChangedAssociatedEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -127,8 +127,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. "
-        + "Only unchanged objects can be unloaded. Changed end point: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
+        + "Only unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relation: "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void EnsureCanUnload_ThrowsOnChangedOppositeEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -165,133 +166,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       Assert.That (command.UnloadedDataContainers, Is.EqualTo (new[] { _dataContainerMap[DomainObjectIDs.Order1] }));
-    }
-
-    [Test]
-    public void AffectedEndPointIDs ()
-    {
-      EnsureDataAvailable (DomainObjectIDs.Order1);
-      EnsureDataAvailable (DomainObjectIDs.Order2);
-
-      var dataContainer1 = _dataContainerMap[DomainObjectIDs.Order1];
-      var dataContainer2 = _dataContainerMap[DomainObjectIDs.Order2];
-
-      var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-
-      var expectedEndPoint1 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "Official")];
-      var expectedEndPoint2 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "Official")];
-      var notExpectedEndPoint1 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "OrderItems")];
-      var notExpectedEndPoint2 = _relationEndPointMap[RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "OrderTicket")];
-
-      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint1));
-      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint2));
-      Assert.That (command.UnloadedEndPoints, List.Not.Contains (notExpectedEndPoint1));
-      Assert.That (command.UnloadedEndPoints, List.Not.Contains (notExpectedEndPoint2));
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_RealEndPoint ()
-    {
-      var realEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      Assert.That (realEndPoint.Definition.IsVirtual, Is.False);
-
-      CheckAffectedEndPointsContains (DomainObjectIDs.OrderTicket1, realEndPoint);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_VirtualEndPointWithNullValue ()
-    {
-      var loadedVirtualEndPointWithNullValue = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
-      Assert.That (loadedVirtualEndPointWithNullValue.Definition.IsVirtual, Is.True);
-
-      EnsureEndPointAvailable (loadedVirtualEndPointWithNullValue);
-      Assert.That (
-          ((ObjectEndPoint) _dataManager.RelationEndPointMap[loadedVirtualEndPointWithNullValue]).OppositeObjectID, Is.Null);
-
-      CheckAffectedEndPointsContains (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_OppositeVirtualObjectEndPoint ()
-    {
-      var oppositeVirtualObjectEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      Assert.That (oppositeVirtualObjectEndPoint.Definition.Cardinality, Is.EqualTo (CardinalityType.One));
-      Assert.That (oppositeVirtualObjectEndPoint.Definition.IsVirtual, Is.True);
-
-      CheckAffectedEndPointsContains (DomainObjectIDs.OrderTicket1, oppositeVirtualObjectEndPoint);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_OppositeVirtualCollectionEndPoint ()
-    {
-      var oppositeCollectionEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (oppositeCollectionEndPoint.Definition.Cardinality, Is.EqualTo (CardinalityType.Many));
-      Assert.That (oppositeCollectionEndPoint.Definition.IsVirtual, Is.True);
-
-      EnsureEndPointAvailable (oppositeCollectionEndPoint);
-
-      CheckAffectedEndPointsContains (DomainObjectIDs.OrderItem1, oppositeCollectionEndPoint);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_VirtualObjectEndPoint_NotContained ()
-    {
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      Assert.That (virtualObjectEndPointID.Definition.IsVirtual, Is.True);
-
-      EnsureEndPointAvailable (virtualObjectEndPointID);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Order1, virtualObjectEndPointID);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_VirtualObjectEndPoint_NullAndNotLoaded_NotContained ()
-    {
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
-      Assert.That (_dataManager.RelationEndPointMap[virtualObjectEndPointID], Is.Null);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Employee1, virtualObjectEndPointID);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_VirtualCollectionEndPoint_NotContained ()
-    {
-      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      EnsureEndPointAvailable (collectionEndPointID);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Order1, collectionEndPointID);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_OppositeRealObjectEndPoint_NotContained ()
-    {
-      var oppositeRealObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      Assert.That (oppositeRealObjectEndPointID.Definition.IsVirtual, Is.False);
-
-      EnsureEndPointAvailable (oppositeRealObjectEndPointID);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Order1, oppositeRealObjectEndPointID);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_OppositeVirtualObjectEndPoint_OfNull_NotContained ()
-    {
-      var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Computer4, "Employee");
-      var oppositeVirtualObjectEndPointID = new RelationEndPointID (null, realEndPointID.Definition.GetOppositeEndPointDefinition());
-      Assert.That (oppositeVirtualObjectEndPointID.Definition.IsVirtual, Is.True);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Computer4, oppositeVirtualObjectEndPointID);
-
-      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[realEndPointID]).OppositeObjectID, Is.Null);
-    }
-
-    [Test]
-    public void AffectedEndPointIDs_OppositeVirtualCollectionEndPoint_NotLoaded_NotContained ()
-    {
-      var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (_dataManager.RelationEndPointMap[oppositeCollectionEndPointID], Is.Null);
-
-      CheckAffectedEndPointIDsNotContains (DomainObjectIDs.OrderItem1, oppositeCollectionEndPointID);
     }
 
     [Test]
@@ -597,6 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (_relationEndPointMap[oppositeVirtualEndPointID], Is.Null);
     }
 
+
     [Test]
     public void Perform_KeepsRelationsWithoutForeignKeys ()
     {
@@ -612,6 +487,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       Assert.That (_relationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
       Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
+    }
+
+    [Test]
+    public void Perform_KeepsCollectionRelations ()
+    {
+      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var oppositeRealEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      _relationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
+
+      Assert.That (_relationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataAvailable, Is.True);
+
+      var command = CreateCommand (DomainObjectIDs.Order1);
+      command.Perform ();
+
+      Assert.That (_relationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataAvailable, Is.True);
     }
 
     [Test]
@@ -689,33 +583,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (_dataContainerMap[DomainObjectIDs.Order2], Is.Not.Null);
     }
 
-    private void CheckAffectedEndPointsContains (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
-    {
-      var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
-      var command = CreateCommand (domainObject.ID);
-
-      var expectedEndPoint = _relationEndPointMap[expectedEndPointID];
-      Assert.That (expectedEndPoint, Is.Not.Null, "Expected end-point ID does not exist: '{0}'", expectedEndPointID);
-      Assert.That (command.UnloadedEndPoints, List.Contains (expectedEndPoint));
-    }
-
-    private void CheckAffectedEndPointIDsNotContains (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
-    {
-      var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
-      var command = CreateCommand (domainObject.ID);
-      var endPointIDs = command.UnloadedEndPoints;
-
-      Assert.That (endPointIDs, List.Not.Contains (unexpectedEndPointID));
-    }
-
     private void EnsureDataAvailable (ObjectID objectID)
     {
       _transaction.EnsureDataAvailable (objectID);
-    }
-
-    private void EnsureEndPointAvailable (RelationEndPointID endPointID)
-    {
-      _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
     }
 
     private UnloadCommand CreateCommand (params ObjectID[] objectIDs)
