@@ -168,7 +168,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
                       select o;
 
       IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
-      Assert.That (query.Statement, Is.EqualTo ("SELECT [t0].* FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] > @1)"));
+      Assert.That (query.Statement, Is.EqualTo (
+        "SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID],[t0].[CustomerIDClassID] "
+        +"FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] > @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.ID, Is.EqualTo ("<dynamico queryo>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));

@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Utilities;
 
@@ -27,6 +30,48 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
+    //TODO 3572: move visitor to a new class file and make it public !?
+    private class SqlColumnListColumnDefinitionVisitor : IColumnDefinitionVisitor
+    {
+      private readonly IList<SimpleColumnDefinition> columnDefinitions;
+      private readonly string _tableAlias;
+
+      public SqlColumnListColumnDefinitionVisitor (string tableAlias)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+        
+        _tableAlias = tableAlias;
+        columnDefinitions = new List<SimpleColumnDefinition>();
+      }
+
+      public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
+      {
+        ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
+
+        columnDefinitions.Add (simpleColumnDefinition);
+      }
+
+      public void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
+      {
+        ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);
+
+        idColumnDefinition.ObjectIDColumn.Accept (this);
+        if (idColumnDefinition.HasClassIDColumn)
+          idColumnDefinition.ClassIDColumn.Accept (this);
+      }
+
+      public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
+      {
+        ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
+
+      }
+
+      public IEnumerable<SqlColumnDefinitionExpression> GetSqlColumns ()
+      {
+        return columnDefinitions.Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, _tableAlias, cd.Name, false));
+      }
+    }
+
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -34,9 +79,13 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
-      var starColumn = new SqlColumnDefinitionExpression (classDefinition.ClassType, tableAlias, "*", false);
 
-      return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, starColumn);
+      var visitor = new SqlColumnListColumnDefinitionVisitor(tableAlias);
+      foreach (var columnDefinition in ((IEntityDefinition) classDefinition.StorageEntityDefinition).GetColumns ())
+        columnDefinition.Accept (visitor);
+      var tableColumns = visitor.GetSqlColumns().ToArray();
+
+      return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, tableColumns);
     }
 
     public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)

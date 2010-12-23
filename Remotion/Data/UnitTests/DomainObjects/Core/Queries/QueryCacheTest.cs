@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -26,13 +25,14 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
   [TestFixtureAttribute]
-  public class QueryCacheTest
+  public class QueryCacheTest : StandardMappingTest
   {
     private QueryCache _cache;
 
     [SetUp]
-    public void SetUp()
+    public override void SetUp()
     {
+      base.SetUp();
       _cache = new QueryCache();
     }
 
@@ -41,7 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       IQuery query = _cache.GetQuery<Order> ("id", orders => from o in orders where o.OrderNumber > 1 select o);
 
-      Assert.That (query.Statement, Is.EqualTo ("SELECT [t0].* FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] > @1)"));
+      Assert.That (query.Statement, Is.EqualTo (
+        "SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID],[t0].[CustomerIDClassID] "
+        +"FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] > @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.ID, Is.EqualTo ("id"));
     }

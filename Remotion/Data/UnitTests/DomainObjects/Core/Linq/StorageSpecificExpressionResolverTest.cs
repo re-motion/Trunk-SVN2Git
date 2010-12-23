@@ -29,14 +29,15 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class StorageSpecificExpressionResolverTest
+  public class StorageSpecificExpressionResolverTest : StandardMappingTest
   {
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private ReflectionBasedClassDefinition _classDefinition;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver();
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
     }
@@ -44,11 +45,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
+      var idColumnDefinition = new IDColumnDefinition (
+          new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false),
+          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false));
+      var idColumnDefinitionWithoutClassIDCOlumn = new IDColumnDefinition (
+          new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false), null);
+      var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
+      var tableDefinition = new TableDefinition (
+          TestDomainStorageProviderDefinition,
+          "Test",
+          null,
+          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDCOlumn, simpleColumn });
+      _classDefinition.SetStorageEntity (tableDefinition);
+
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
       var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
-      var starColumn = new SqlColumnDefinitionExpression (typeof (Order), "o", "*", false);
-      var expectedExpression = new SqlEntityDefinitionExpression (typeof (Order), "o", null, primaryKeyColumn, starColumn);
+      var idColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", false);
+      var classIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
+      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "o", "ForeignKey", false);
+      var column = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
+
+      var expectedExpression = new SqlEntityDefinitionExpression (
+          typeof (Order), "o", null, primaryKeyColumn, new[] { idColumn, classIdColumn, foreignKeyColumn, column });
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
@@ -94,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (result.ColumnName, Is.EqualTo ("ID"));
       Assert.That (result.IsPrimaryKey, Is.True);
-      Assert.That (result.OwningTableAlias, Is.EqualTo("o"));
+      Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
     }
 
@@ -112,9 +131,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoin_LeftSideIsReal_RightSideIsVirtual ()
     {
-      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer", typeof(ObjectID), null, null,StorageClass.Persistent); 
+      var propertyDefinition = CreatePropertyDefinition (
+          _classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-     
+
       var leftEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
       var rightEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       var entityExpression = new SqlEntityDefinitionExpression (
@@ -127,8 +147,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result.ForeignTableInfo, Is.TypeOf (typeof (ResolvedSimpleTableInfo)));
       Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).TableName, Is.EqualTo ("OrderView"));
       Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).TableAlias, Is.EqualTo ("o"));
-      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).ItemType, Is.SameAs (typeof(Order)));
-      
+      Assert.That (((ResolvedSimpleTableInfo) result.ForeignTableInfo).ItemType, Is.SameAs (typeof (Order)));
+
       Assert.That (((SqlColumnExpression) result.LeftKey).ColumnName, Is.EqualTo ("Customer"));
       Assert.That (((SqlColumnExpression) result.LeftKey).OwningTableAlias, Is.EqualTo ("c"));
       Assert.That (result.LeftKey.Type, Is.EqualTo (typeof (ObjectID)));
@@ -142,14 +162,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoin_LeftSideIsVirtual_RightSideIsReal ()
     {
-      var propertyDefinition = CreatePropertyDefinition (_classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
+      var propertyDefinition = CreatePropertyDefinition (
+          _classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       var rightEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
 
       var entityExpression = new SqlEntityDefinitionExpression (
-         typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+          typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
@@ -157,8 +178,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.False);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName,
-        Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
+    private PropertyDefinition CreatePropertyDefinition (
+        ReflectionBasedClassDefinition classDefinition,
+        string propertyName,
+        string columnName,
+        Type propertyType,
+        bool? isNullable,
+        int? maxLength,
+        StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
       var propertyDefinition = new ReflectionBasedPropertyDefinition (
@@ -169,9 +196,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
+      propertyDefinition.SetStorageProperty (
+          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
       return propertyDefinition;
     }
-
   }
 }
