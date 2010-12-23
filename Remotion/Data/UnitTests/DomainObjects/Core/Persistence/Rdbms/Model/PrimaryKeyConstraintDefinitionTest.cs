@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -42,6 +43,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_constraint.ConstraintName, Is.EqualTo ("Test"));
       Assert.That (_constraint.Clustered, Is.True);
       Assert.That (_constraint.Columns, Is.EqualTo (new IColumnDefinition[] { _column1, _column2 }));
+    }
+
+    [Test]
+    public void Accept ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ITableConstraintDefinitionVisitor> ();
+
+      visitorMock.Expect (mock => mock.VisitPrimaryKeyConstraintDefinition (_constraint));
+      visitorMock.Replay ();
+
+      _constraint.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
     }
   }
 }

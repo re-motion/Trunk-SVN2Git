@@ -88,6 +88,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void IsNull ()
+    {
+      Assert.That (_tableDefintion.IsNull, Is.False);
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor>();
@@ -99,11 +105,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       visitorMock.VerifyAllExpectations();
     }
-
-    [Test]
-    public void IsNull ()
-    {
-      Assert.That (_tableDefintion.IsNull, Is.False);
-    }
+   
   }
 }

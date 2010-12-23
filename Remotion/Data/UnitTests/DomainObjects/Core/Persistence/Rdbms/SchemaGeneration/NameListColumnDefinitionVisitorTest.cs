@@ -29,12 +29,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private NameListColumnDefinitionVisitor _visitorAllowingNulls;
     private ISqlDialect _sqlDialectStub;
+    private NameListColumnDefinitionVisitor _visitorIgnoringClassIDColumns;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
+      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, true, _sqlDialectStub);
+      _visitorIgnoringClassIDColumns = new NameListColumnDefinitionVisitor (true, false, _sqlDialectStub);
     }
 
     [Test]
@@ -83,6 +85,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
+    public void VisitColumnDefinition_IgnoringClassIDs ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
+      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
+      var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
+      
+      _visitorIgnoringClassIDColumns.VisitIDColumnDefinition (column);
+      var result = _visitorIgnoringClassIDColumns.GetNameList ();
+
+      Assert.That (result, Is.EqualTo ("[C1ID]"));
+    }
+
+    [Test]
     public void VisitIDColumnDefinition_ClassIDColumnIsNull ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
@@ -113,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var column = new NullColumnDefinition ();
 
-      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false, _sqlDialectStub);
+      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false, true, _sqlDialectStub);
       visitorNotAllowingNulls.VisitNullColumnDefinition (column);
     }
   }

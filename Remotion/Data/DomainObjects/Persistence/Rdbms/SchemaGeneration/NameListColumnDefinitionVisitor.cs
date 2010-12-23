@@ -29,12 +29,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly bool _allowNullColumns;
     private readonly StringBuilder _nameList = new StringBuilder ();
     private readonly ISqlDialect _sqlDialect;
+    private readonly bool _includeClassIdColumns;
 
-    public NameListColumnDefinitionVisitor (bool allowNullColumns, ISqlDialect sqlDialect)
+    public NameListColumnDefinitionVisitor (bool allowNullColumns, bool includeClassIdColumns, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       _allowNullColumns = allowNullColumns;
+      _includeClassIdColumns = includeClassIdColumns;
       _sqlDialect = sqlDialect;
     }
 
@@ -56,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);
 
       idColumnDefinition.ObjectIDColumn.Accept (this);
-      if(idColumnDefinition.HasClassIDColumn)
+      if(idColumnDefinition.HasClassIDColumn && _includeClassIdColumns)
         idColumnDefinition.ClassIDColumn.Accept (this);
     }
 

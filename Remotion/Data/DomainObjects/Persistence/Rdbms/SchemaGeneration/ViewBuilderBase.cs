@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
     {
-      var visitor = new NameListColumnDefinitionVisitor (allowNulls, _sqlDialect);
+      var visitor = new NameListColumnDefinitionVisitor (allowNulls, true, _sqlDialect);
 
       foreach (var columnDefinition in columnDefinitions)
         columnDefinition.Accept (visitor);

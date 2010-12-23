@@ -23,6 +23,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class TableBuilder : TableBuilderBase
   {
+
+
     public TableBuilder () : base (SqlDialect.Instance)
     {
     }
@@ -33,13 +35,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
 
       createTableStringBuilder.AppendFormat (
-          "CREATE TABLE [{0}].[{1}]\r\n"
-          + "(\r\n"
-          + "{2},\r\n  CONSTRAINT [PK_{1}] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n",
+          "CREATE TABLE [{0}].[{1}]\r\n(\r\n{2},\r\n  {3}\r\n)\r\n",
           FileBuilder.DefaultSchema,
           tableDefinition.TableName,
-          GetColumnList(tableDefinition));
+          GetColumnList(tableDefinition),
+          GetPrimaryKeyConstraintStatement(tableDefinition));
     }
 
     public override void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder)

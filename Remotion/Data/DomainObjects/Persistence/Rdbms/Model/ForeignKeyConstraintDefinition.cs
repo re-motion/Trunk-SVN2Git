@@ -54,6 +54,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraintName; }
     }
 
+    public void Accept (ITableConstraintDefinitionVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      visitor.VisitForeignKeyConstraintDefinition (this);
+    }
+
     public TableDefinition ReferencedTable
     {
       get { return _referencedTable; }

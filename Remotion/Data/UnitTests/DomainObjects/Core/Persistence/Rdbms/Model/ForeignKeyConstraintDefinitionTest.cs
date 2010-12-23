@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
@@ -57,6 +58,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_InvalidColumns ()
     {
       new ForeignKeyConstraintDefinition ("Test", _referencedTable, new[] { _referencingColumn }, new IColumnDefinition[0]);
+    }
+
+    [Test]
+    public void Accept ()
+    {
+      var visitorMock = MockRepository.GenerateStrictMock<ITableConstraintDefinitionVisitor> ();
+
+      visitorMock.Expect (mock => mock.VisitForeignKeyConstraintDefinition(_constraint));
+      visitorMock.Replay ();
+
+      _constraint.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
     }
   }
 }

@@ -24,5 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface ITableConstraintDefinition
   {
     string ConstraintName { get; }
+    void Accept (ITableConstraintDefinitionVisitor visitor);
   }
 }

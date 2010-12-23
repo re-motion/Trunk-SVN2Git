@@ -98,5 +98,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return visitor.GetDeclarationList ();
     }
 
+    protected string GetPrimaryKeyConstraintStatement (TableDefinition tableDefinition)
+    {
+      var visitor = new PrimaryKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialect);
+
+      foreach (var constraint in tableDefinition.Constraints)
+        constraint.Accept (visitor);
+
+      return visitor.GetConstraintStatement();
+    }
+
   }
 }

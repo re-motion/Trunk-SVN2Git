@@ -653,6 +653,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ClassWithRelationsBase.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\SiblingOfClassWithRelations.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />

@@ -48,8 +48,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = GetTableName (classDefinition);
-      var columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
-      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName(tableName), true, new[] { columns[0] });
+      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
+      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
+      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+
+      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy);
+      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName(tableName), true, new[] { idColumnDefinition });
       
       return new TableDefinition (
           _storageProviderDefinition,
@@ -64,12 +68,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
 
+      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
+      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
+      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+      
+      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy);
       return new FilterViewDefinition (
           _storageProviderDefinition,
           GetViewName (classDefinition),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          GetColumnDefinitionsForHierarchy (classDefinition));
+          columns);
     }
 
     public virtual IEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IEntityDefinition> unionedEntities)
@@ -77,7 +86,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
 
-      IColumnDefinition[] columns = GetColumnDefinitionsForHierarchy (classDefinition).ToArray();
+      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
+      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
+      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+
+      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToArray();
 
       // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629; include test)
       if (!unionedEntities.Any())
@@ -159,9 +172,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
               .Distinct (equalityComparer)
               .Select (tuple => tuple.Item2);
 
-      return new IColumnDefinition[]
-             { _columnDefinitionFactory.CreateIDColumnDefinition(), _columnDefinitionFactory.CreateTimestampColumnDefinition() }
-          .Concat (columnDefinitions);
+      return columnDefinitions;
     }
 
     private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
