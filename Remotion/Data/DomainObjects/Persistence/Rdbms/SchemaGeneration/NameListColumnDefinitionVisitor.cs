@@ -28,10 +28,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   {
     private readonly bool _allowNullColumns;
     private readonly StringBuilder _nameList = new StringBuilder ();
+    private readonly ISqlDialect _sqlDialect;
 
-    public NameListColumnDefinitionVisitor (bool allowNullColumns)
+    public NameListColumnDefinitionVisitor (bool allowNullColumns, ISqlDialect sqlDialect)
     {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
       _allowNullColumns = allowNullColumns;
+      _sqlDialect = sqlDialect;
     }
 
     public string GetNameList ()
@@ -44,8 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
       
       AppendSeparatorIfRequired();
-      // TODO Review 3613: Use injected ISqlDialect to delimit identifier
-      _nameList.Append ("[").Append (simpleColumnDefinition.Name).Append ("]");
+      _nameList.Append (_sqlDialect.DelimitIdentifier(simpleColumnDefinition.Name));
     }
 
     public virtual void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)

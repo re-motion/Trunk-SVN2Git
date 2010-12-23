@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -28,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class ViewBuilder : ViewBuilderBase
   {
-    public ViewBuilder ()
+    public ViewBuilder () : base(SqlDialect.Instance)
     {
     }
 
@@ -121,22 +119,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           entityDefinition.ViewName,
           FileBuilder.DefaultSchema);
     }
-
-    // TODO Review 3613: Move to base class, make protected, inject ISqlDialect into ViewBuilderBase (like with TableBuilderBase)
-    private string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
-    {
-      var visitor = new NameListColumnDefinitionVisitor (allowNulls);
-
-      foreach (var columnDefinition in columnDefinitions)
-        columnDefinition.Accept (visitor);
-
-      return visitor.GetNameList ();
-    }
-
-    // TODO Review 3613: Move to base class
-    private string GetClassIDList (IEnumerable<string> classIDs)
-    {
-      return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
-    }
+    
   }
 }

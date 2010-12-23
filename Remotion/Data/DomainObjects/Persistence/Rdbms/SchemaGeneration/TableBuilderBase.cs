@@ -26,9 +26,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   {
     private readonly StringBuilder _createTableStringBuilder;
     private readonly StringBuilder _dropTableStringBuilder;
+    private readonly ISqlDialect _sqlDialect;
 
-    protected TableBuilderBase ()
+    protected TableBuilderBase (ISqlDialect sqlDialect)
     {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      _sqlDialect = sqlDialect;
       _createTableStringBuilder = new StringBuilder();
       _dropTableStringBuilder = new StringBuilder();
     }
@@ -80,6 +84,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         _dropTableStringBuilder.Append ("\r\n");
 
       AddToDropTableScript (tableDefinition, _dropTableStringBuilder);
+    }
+
+    protected string GetColumnList (TableDefinition tableDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+
+      var visitor = new DeclarationListColumnDefinitionVisitor (_sqlDialect);
+
+      foreach (var columnDefinition in tableDefinition.GetColumns ())
+        columnDefinition.Accept (visitor);
+
+      return visitor.GetDeclarationList ();
     }
 
   }

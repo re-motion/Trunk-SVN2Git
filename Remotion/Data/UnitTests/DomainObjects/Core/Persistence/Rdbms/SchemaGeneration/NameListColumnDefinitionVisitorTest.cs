@@ -17,8 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
@@ -26,17 +28,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class NameListColumnDefinitionVisitorTest
   {
     private NameListColumnDefinitionVisitor _visitorAllowingNulls;
+    private ISqlDialect _sqlDialectStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true);
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
     }
 
     [Test]
     public void VisitSimpleColumnDefinition ()
     {
       var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
       _visitorAllowingNulls.VisitSimpleColumnDefinition (column);
       var result = _visitorAllowingNulls.GetNameList ();
@@ -49,6 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
       var column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
 
       _visitorAllowingNulls.VisitSimpleColumnDefinition (column1);
       _visitorAllowingNulls.VisitSimpleColumnDefinition (column2);
@@ -64,6 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
       var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ClassID")).Return ("[C1ClassID]");
+
       _visitorAllowingNulls.VisitIDColumnDefinition (column);
       var result = _visitorAllowingNulls.GetNameList ();
 
@@ -75,6 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
       var column = new IDColumnDefinition (objectIDColumn, null);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
 
       _visitorAllowingNulls.VisitIDColumnDefinition (column);
       var result = _visitorAllowingNulls.GetNameList ();
@@ -99,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var column = new NullColumnDefinition ();
 
-      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false);
+      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false, _sqlDialectStub);
       visitorNotAllowingNulls.VisitNullColumnDefinition (column);
     }
   }

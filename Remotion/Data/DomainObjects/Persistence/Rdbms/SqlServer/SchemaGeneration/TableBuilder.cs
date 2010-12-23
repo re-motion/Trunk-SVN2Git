@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class TableBuilder : TableBuilderBase
   {
-    public TableBuilder ()
+    public TableBuilder () : base (SqlDialect.Instance)
     {
     }
 
@@ -53,18 +53,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           tableDefinition.TableName,
           FileBuilder.DefaultSchema);
     }
-
-    // TODO Review 3613: Move this to the base class; instead of SqlDialect.Instance, add an ISqlDialect parameter to TableBuilderBase's ctor
-    private string GetColumnList (TableDefinition tableDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-
-      var visitor = new DeclarationListColumnDefinitionVisitor (SqlDialect.Instance);
-
-      foreach (var columnDefinition in tableDefinition.GetColumns ())
-        columnDefinition.Accept (visitor);
-
-      return visitor.GetDeclarationList();
-    }
+    
   }
 }

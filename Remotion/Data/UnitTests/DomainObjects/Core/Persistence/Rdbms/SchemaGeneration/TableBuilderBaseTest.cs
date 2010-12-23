@@ -17,8 +17,10 @@
 using System;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
@@ -33,13 +35,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private TableBuilderBase _stubTableBuilder;
     private ClassDefinition _orderClass;
     private ClassDefinition _customerClass;
+    private ISqlDialect _sqlDialectStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _mocks = new MockRepository();
-      _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>(_sqlDialectStub);
       _orderClass = MappingConfiguration.ClassDefinitions[typeof (Order)];
       _customerClass = MappingConfiguration.ClassDefinitions[typeof (Customer)];
     }

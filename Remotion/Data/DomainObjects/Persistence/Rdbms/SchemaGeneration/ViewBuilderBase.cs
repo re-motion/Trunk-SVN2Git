@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -29,9 +31,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   { 
     private readonly StringBuilder _createViewStringBuilder;
     private readonly StringBuilder _dropViewStringBuilder;
+    private readonly ISqlDialect _sqlDialect;
 
-    protected ViewBuilderBase ()
+    protected ViewBuilderBase (ISqlDialect sqlDialect)
     {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      _sqlDialect = sqlDialect;
       _createViewStringBuilder = new StringBuilder ();
       _dropViewStringBuilder = new StringBuilder ();
     }
@@ -68,6 +74,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var entityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
       if (entityDefinition != null)
         entityDefinition.Accept (this);
+    }
+
+    protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
+    {
+      var visitor = new NameListColumnDefinitionVisitor (allowNulls, _sqlDialect);
+
+      foreach (var columnDefinition in columnDefinitions)
+        columnDefinition.Accept (visitor);
+
+      return visitor.GetNameList ();
+    }
+
+    protected string GetClassIDList (IEnumerable<string> classIDs)
+    {
+      return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
     }
 
     private void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition)
