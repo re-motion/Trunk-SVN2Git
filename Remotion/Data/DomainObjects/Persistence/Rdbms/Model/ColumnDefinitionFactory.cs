@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _providerDefinitionFinder = providerDefinitionFinder;
     }
 
-    public IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
+    public virtual IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       
@@ -63,13 +63,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return CreateRelationColumnDefinition (propertyDefinition, _providerDefinitionFinder, relationEndPointDefinition, columnDefinition);
     }
 
-    private IColumnDefinition CreateRelationColumnDefinition (
+    public virtual IDColumnDefinition CreateIDColumnDefinition ()
+    {
+      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
+      var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+
+      return new IDColumnDefinition (objectIDColumn, classIdColumnDefinition);
+    }
+
+    public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()
+    {
+      return new SimpleColumnDefinition ("Timestamp", typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false);
+    }
+
+    protected virtual IColumnDefinition CreateRelationColumnDefinition (
         PropertyDefinition propertyDefinition,
         IStorageProviderDefinitionFinder providerDefinitionFinder,
         IRelationEndPointDefinition relationEndPointDefinition,
         SimpleColumnDefinition foreignKeyColumnDefinition)
     {
-      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
       var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
       var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
 
@@ -90,20 +103,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
     }
 
-    public IDColumnDefinition CreateIDColumnDefinition ()
-    {
-      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
-      var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
-
-      return new IDColumnDefinition (objectIDColumn, classIdColumnDefinition);
-    }
-
-    public SimpleColumnDefinition CreateTimestampColumnDefinition ()
-    {
-      return new SimpleColumnDefinition ("Timestamp", typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false);
-    }
-
-    private string GetColumnName (PropertyInfo propertyInfo)
+    protected virtual string GetColumnName (PropertyInfo propertyInfo)
     {
       var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return propertyInfo.Name;
     }
 
-    private bool MustBeNullable (PropertyDefinition propertyDefinition)
+    protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)
     {
       // CreateSequence can deal with null source objects
       var baseClasses = propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
