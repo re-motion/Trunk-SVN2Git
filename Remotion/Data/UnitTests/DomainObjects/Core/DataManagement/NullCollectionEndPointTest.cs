@@ -117,6 +117,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void MarkDataAvailable ()
+    {
+      _nullEndPoint.MarkDataAvailable();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void SetOppositeCollectionAndNotify ()
     {

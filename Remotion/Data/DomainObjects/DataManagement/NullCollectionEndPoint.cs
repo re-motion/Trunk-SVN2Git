@@ -111,6 +111,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { throw new InvalidOperationException ("It is not possible to get the OriginalCollectionReference from a NullCollectionEndPoint."); }
     }
 
+    public void MarkDataAvailable ()
+    {
+      // ignore
+    }
+
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
     {
       throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint.");
