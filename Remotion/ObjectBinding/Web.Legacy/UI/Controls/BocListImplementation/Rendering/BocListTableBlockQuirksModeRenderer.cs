@@ -245,13 +245,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       RenderSelectorColumnDeclaration (renderingContext, isTextXml);
 
       foreach (var renderer in columnRenderers)
-      {
-        renderer.RenderDataColumnDeclaration (
-            new BocColumnRenderingContext (
-                renderingContext.HttpContext, renderingContext.Writer, renderingContext.Control, renderer.ColumnDefinition, renderer.ColumnIndex),
-            isTextXml);
-      }
-
+        renderer.RenderDataColumnDeclaration (renderingContext, isTextXml);
+      
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (renderingContext.Control) && columnRenderers.Length == 0)
       {

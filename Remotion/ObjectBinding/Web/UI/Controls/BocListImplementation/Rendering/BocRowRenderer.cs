@@ -62,16 +62,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       GetSelectorColumnRenderer().RenderTitleCell (renderingContext);
 
       foreach (var columnRenderer in renderingContext.ColumnRenderers)
-      {
-        columnRenderer.RenderTitleCell (
-            new BocColumnRenderingContext (
-                renderingContext.HttpContext,
-                renderingContext.Writer,
-                renderingContext.Control,
-                columnRenderer.ColumnDefinition,
-                columnRenderer.ColumnIndex));
-      }
-
+        columnRenderer.RenderTitleCell (renderingContext);
+      
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
@@ -162,17 +154,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderDataCells (BocListRenderingContext renderingContext, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       foreach (BocColumnRenderer columnRenderer in renderingContext.ColumnRenderers)
-      {
-        columnRenderer.RenderDataCell (
-            new BocColumnRenderingContext (
-                renderingContext.HttpContext,
-                renderingContext.Writer,
-                renderingContext.Control,
-                columnRenderer.ColumnDefinition,
-                columnRenderer.ColumnIndex),
-            rowIndex,
-            dataRowRenderEventArgs);
-      }
+        columnRenderer.RenderDataCell (renderingContext, rowIndex, dataRowRenderEventArgs);
     }
 
     private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked)

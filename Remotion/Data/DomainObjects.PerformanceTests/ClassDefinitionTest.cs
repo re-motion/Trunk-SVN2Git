@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
-using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Console.WriteLine ("Expected average duration of GetOppositeClassDefinition on reference system: ~0,25 탎");
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var endPoints = classDefinition.GetRelationEndPointDefinitions ().ToList ();
+      var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
       var stopwatch = new Stopwatch();
@@ -62,14 +62,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Console.WriteLine ("Expected average duration of GetMandatoryOppositeClassDefinition on reference system: ~0,25 탎");
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var endPoints = classDefinition.GetRelationEndPointDefinitions ().ToList();
+      var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
+      var stopwatch = new Stopwatch();
+      stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
         found &= classDefinition.GetMandatoryOppositeClassDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
-      stopwatch.Stop ();
+      stopwatch.Stop();
 
       Console.WriteLine (found);
 
@@ -87,14 +87,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Console.WriteLine ("Expected average duration of GetOppositeEndPointDefinition on reference system: ~0,25 탎");
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var endPoints = classDefinition.GetRelationEndPointDefinitions ().ToList ();
+      var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
+      var stopwatch = new Stopwatch();
+      stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
         found &= classDefinition.GetOppositeEndPointDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
-      stopwatch.Stop ();
+      stopwatch.Stop();
 
       Console.WriteLine (found);
 
@@ -112,14 +112,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       Console.WriteLine ("Expected average duration of GetMandatoryOppositeEndPointDefinition on reference system: ~0,25 탎");
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var endPoints = classDefinition.GetRelationEndPointDefinitions ().ToList ();
+      var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
+      var stopwatch = new Stopwatch();
+      stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
         found &= classDefinition.GetMandatoryOppositeEndPointDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
-      stopwatch.Stop ();
+      stopwatch.Stop();
 
       Console.WriteLine (found);
 
@@ -135,13 +135,16 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public void SetStorageEntity ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
-      var tableDefinition = new TableDefinition (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, "Test", "TestView", new SimpleColumnDefinition[] { }, TODO);
+      var tableDefinition = new TableDefinition (
+          DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
+          "Test",
+          "TestView",
+          new SimpleColumnDefinition[] { },
+          new ITableConstraintDefinition[0]);
 
-      Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs(tableDefinition));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs (tableDefinition));
       classDefinition.SetStorageEntity (tableDefinition);
       Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs (tableDefinition));
     }
-
-
   }
 }
