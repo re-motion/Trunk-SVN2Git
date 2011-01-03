@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
     DomainObjectCollection OriginalCollectionReference { get; }
 
+    void MarkDataAvailable ();
+
     void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
 
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
