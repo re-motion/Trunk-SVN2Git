@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,26 +15,28 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
-namespace Remotion.Development.UnitTesting
+namespace Remotion.Development.UnitTesting.PEVerifyPathSources
 {
-  public class PEVerifyException : Exception
+  public class FixedPEVerifyPathSource : IPEVerifyPathSource
   {
-    public PEVerifyException (string message) : base (message)
+    private readonly string _path;
+
+    public FixedPEVerifyPathSource (string path)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
+      _path = path;
     }
 
-    public PEVerifyException (string message, Exception inner) : base (message, inner)
+    public string GetPEVerifyPath (PEVerifyVersion version)
     {
+      return  _path;
     }
 
-    public PEVerifyException (int resultCode, string output) : base (ConstructMessage (resultCode, output))
+    public string GetLookupDiagnostics (PEVerifyVersion version)
     {
-    }
-
-    private static string ConstructMessage (int code, string output)
-    {
-      return string.Format ("PEVerify returned {0}.\n{1}", code, output);
+      return "Path: " + _path;
     }
   }
 }

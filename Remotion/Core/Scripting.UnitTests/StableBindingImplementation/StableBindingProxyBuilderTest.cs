@@ -722,7 +722,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope, bool strongNamed)
     {
       var path = moduleScope.SaveAssembly (strongNamed);
-      PEVerifier.VerifyPEFile (path);
+      PEVerifier.CreateDefault ().VerifyPEFile (path);
     }
 
     private MethodInfo GetAnyInstanceMethod (Type type, string name)

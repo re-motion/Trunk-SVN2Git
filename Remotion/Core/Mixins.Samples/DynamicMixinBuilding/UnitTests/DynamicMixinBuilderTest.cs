@@ -98,12 +98,12 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
       if (DynamicMixinBuilder.Scope.StrongNamedModule != null)
       {
         DynamicMixinBuilder.Scope.SaveAssembly (true);
-        PEVerifier.VerifyPEFile (DynamicMixinBuilder.Scope.StrongNamedModule.FullyQualifiedName);
+        PEVerifier.CreateDefault().VerifyPEFile (DynamicMixinBuilder.Scope.StrongNamedModule.FullyQualifiedName);
       }
       if (DynamicMixinBuilder.Scope.WeakNamedModule != null)
       {
         DynamicMixinBuilder.Scope.SaveAssembly (false);
-        PEVerifier.VerifyPEFile (DynamicMixinBuilder.Scope.WeakNamedModule.FullyQualifiedName);
+        PEVerifier.CreateDefault ().VerifyPEFile (DynamicMixinBuilder.Scope.WeakNamedModule.FullyQualifiedName);
       }
     }
 

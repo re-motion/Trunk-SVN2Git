@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
 #if !NO_PEVERIFY
       foreach (string path in paths)
-        PEVerifier.VerifyPEFile (path);
+        PEVerifier.CreateDefault ().VerifyPEFile (path);
 #endif
 
       base.TestFixtureTearDown ();

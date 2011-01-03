@@ -15,26 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 
-namespace Remotion.Development.UnitTesting
+namespace Remotion.Development.UnitTesting.PEVerifyPathSources
 {
-  public class PEVerifyException : Exception
+  public abstract class PotentialPEVerifyPathSourceBase : IPEVerifyPathSource
   {
-    public PEVerifyException (string message) : base (message)
+    public string GetPEVerifyPath (PEVerifyVersion version)
     {
+      var potentialPath = GetPotentialPEVerifyPath (version);
+      if (potentialPath != null && File.Exists (potentialPath))
+        return potentialPath;
+
+      return null;
     }
 
-    public PEVerifyException (string message, Exception inner) : base (message, inner)
-    {
-    }
+    public abstract string GetLookupDiagnostics (PEVerifyVersion version);
 
-    public PEVerifyException (int resultCode, string output) : base (ConstructMessage (resultCode, output))
-    {
-    }
-
-    private static string ConstructMessage (int code, string output)
-    {
-      return string.Format ("PEVerify returned {0}.\n{1}", code, output);
-    }
+    protected abstract string GetPotentialPEVerifyPath (PEVerifyVersion version);
   }
 }

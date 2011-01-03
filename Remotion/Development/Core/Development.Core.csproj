@@ -123,6 +123,7 @@
     <Compile Include="UnitTesting\AppDomainRunner.cs" />
     <Compile Include="UnitTesting\AssemblyCompiler.cs" />
     <Compile Include="UnitTesting\AssemblyCompilationException.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\CompoundPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigSystemHelper.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigurationHelper.cs" />
     <Compile Include="UnitTesting\Configuration\FakeConfigurationWrapper.cs" />
@@ -131,8 +132,11 @@
     <Compile Include="UnitTesting\Data\SqlClient\SqlBatchCommandException.cs" />
     <Compile Include="UnitTesting\Dev.cs" />
     <Compile Include="UnitTesting\Configuration\FakeInternalConfigSystem.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\FixedPEVerifyPathSource.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\DotNetSdk20PEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\IMockRepository.cs" />
     <Compile Include="UnitTesting\IO\TempFile.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\IPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
     <Compile Include="UnitTesting\MethodNotFoundException.cs" />
     <Compile Include="UnitTesting\MixinWithSerializationCallbacks.cs" />
@@ -141,6 +145,8 @@
     <Compile Include="UnitTesting\ObjectMother\QueueMother.cs" />
     <Compile Include="UnitTesting\PEVerifier.cs" />
     <Compile Include="UnitTesting\PEVerifyException.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\PEVerifyVersion.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\PotentialPEVerifyPathSourceBase.cs" />
     <Compile Include="UnitTesting\PrivateInvoke.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -159,6 +165,9 @@
     <Compile Include="UnitTesting\SerializationCallbackTester.cs" />
     <Compile Include="UnitTesting\Serializer.cs" />
     <Compile Include="UnitTesting\ThreadRunner.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk6PEVerifyPathSource.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk70aPEVerifyPathSource.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk71PEVerifyPathSource.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.Core.build">
       <SubType>Designer</SubType>

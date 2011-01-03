@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       }
 
       foreach (string path in paths)
-        PEVerifier.VerifyPEFile (path);
+        PEVerifier.CreateDefault ().VerifyPEFile (path);
 
 #endif
 

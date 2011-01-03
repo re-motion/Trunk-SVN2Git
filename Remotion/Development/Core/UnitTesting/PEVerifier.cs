@@ -16,139 +16,104 @@
 // 
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
-using Microsoft.Win32;
+using Remotion.Development.UnitTesting.PEVerifyPathSources;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
 {
-  public static class PEVerifier
+  public class PEVerifier
   {
-    public const string c_sdkRegistryKey = @"SOFTWARE\Microsoft\.NETFramework";
-    public const string c_sdkRegistryValue = "sdkInstallRootv2.0";
-
-    public const string c_windowsSdkRegistryKey = @"SOFTWARE\Microsoft\Microsoft SDKs\Windows";
-    public const string c_windowsSdkRegistryVersionValue = "CurrentVersion";
-    public const string c_windowsSdkRegistryInstallationFolderValue = "InstallationFolder";
-
-    private static string s_peVerifyPath = null;
-
-    public static string DefaultPEVerifyPath
+    public static PEVerifier CreateDefault ()
     {
-      get
+      return
+          new PEVerifier (
+              new CompoundPEVerifyPathSource (
+                  new DotNetSdk20PEVerifyPathSource(),
+                  new WindowsSdk6PEVerifyPathSource(),
+                  new WindowsSdk70aPEVerifyPathSource(),
+                  new WindowsSdk71PEVerifyPathSource()));
+    }
+
+    private readonly IPEVerifyPathSource _pathSource;
+
+    public PEVerifier (IPEVerifyPathSource pathSource)
+    {
+      _pathSource = pathSource;
+    }
+
+    public string GetVerifierPath (PEVerifyVersion version)
+    {
+      string verifierPath = _pathSource.GetPEVerifyPath (version);
+      if (verifierPath == null)
       {
-        string path = GetFrameworkSDKPath ();
-
-        if (Directory.Exists (Path.Combine (path, "bin")))
-          return Path.Combine (path, @"bin\PEVerify.exe");
-        else //.NET 4.0 RC1 on Windows 7
-          return Path.Combine (path, "PEVerify.exe");
+        var message = string.Format (
+            "PEVerify for version '{0}' could not be found. Locations searched:\r\n{1}",
+            version,
+            _pathSource.GetLookupDiagnostics (version));
+        throw new PEVerifyException (message);
       }
+      return verifierPath;
     }
 
-    public static string GetFrameworkSDKPath ()
+    public PEVerifyVersion GetDefaultVerifierVersion ()
     {
-      string path;
-      try
-      {
-        path = GetSDKPathFromRegistry();
-        if (path == null)
-          path = GetWindowsSDKPathFromRegistry();
-      }
-      catch (Exception ex)
-      {
-        throw CreateSdkNotFoundException (ex, ex.Message);
-      }
-
-      if (path == null)
-        throw CreateSdkNotFoundException (null, "Registry key not found.");
-      else
-        return path;
+      return Environment.Version.Major == 4 ? PEVerifyVersion.DotNet4 : PEVerifyVersion.DotNet2;
     }
 
-    private static string GetSDKPathFromRegistry ()
-    {
-      return (string) Registry.LocalMachine.OpenSubKey (c_sdkRegistryKey, false).GetValue (c_sdkRegistryValue);
-    }
 
-    private static string GetWindowsSDKPathFromRegistry ()
-    {
-      string windowsSDKVersion = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey, false).GetValue (c_windowsSdkRegistryVersionValue);
-
-      if (windowsSDKVersion == "7.0.30128") //.NET 4.0 RC1 on Windows 7
-        windowsSDKVersion = "v7.0A\\WinSDK-NetFx40Tools";
-
-      string installationFolder = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey + "\\" + windowsSDKVersion, false).GetValue (c_windowsSdkRegistryInstallationFolderValue);
-      return installationFolder;
-    }
-
-    private static Exception CreateSdkNotFoundException (Exception inner, string reason)
-    {
-      string message = string.Format ("Cannot retrieve framework SDK location from {0}\\{1} or {2}\\[{3}]\\{4}: {5}", 
-        c_sdkRegistryKey, c_sdkRegistryValue, c_windowsSdkRegistryKey, c_windowsSdkRegistryVersionValue, c_windowsSdkRegistryInstallationFolderValue, reason);
-      return new InvalidOperationException (message, inner);
-    }
-
-    public static string PEVerifyPath
-    {
-      get 
-      { 
-        if (s_peVerifyPath == null)
-          s_peVerifyPath = DefaultPEVerifyPath;
-
-        return s_peVerifyPath; 
-      }
-      set
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-        s_peVerifyPath = value;
-      }
-    }
-
-    public static void VerifyPEFile (string modulePath)
-    {
-      ArgumentUtility.CheckNotNull ("modulePath", modulePath);
-
-      Process process = new Process();
-
-      string verifierPath = PEVerifyPath;
-      if (!File.Exists (verifierPath))
-        throw new PEVerifyException ("PEVerify could not be found at path '" + verifierPath + "'.");
-      else
-      {
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.FileName = verifierPath;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        process.StartInfo.Arguments = modulePath;
-        process.Start();
-        
-        bool finished = process.WaitForExit (10000);
-        if (!finished)
-          process.Kill();
-
-        string output = process.StandardOutput.ReadToEnd();
-        Console.WriteLine ("PEVerify: " + process.ExitCode);
-
-        if (!finished)
-          throw new PEVerifyException ("PEVerify needed more than ten seconds to complete. Output was: " + output);
-
-        if (process.ExitCode != 0)
-        {
-          Console.WriteLine (output);
-          throw new PEVerifyException (process.ExitCode, output);
-        }
-
-      }
-    }
-
-    public static void VerifyPEFile (Assembly assembly)
+    public void VerifyPEFile (Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
 
       VerifyPEFile (assembly.ManifestModule.FullyQualifiedName);
+    }
+
+    public void VerifyPEFile (Assembly assembly, PEVerifyVersion version)
+    {
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      VerifyPEFile (assembly.ManifestModule.FullyQualifiedName, version);
+    }
+
+    public void VerifyPEFile (string modulePath)
+    {
+      ArgumentUtility.CheckNotNull ("modulePath", modulePath);
+
+      var version = GetDefaultVerifierVersion();
+      VerifyPEFile (modulePath, version);
+    }
+
+    public void VerifyPEFile (string modulePath, PEVerifyVersion version)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("modulePath", modulePath);
+
+      var process = StartPEVerifyProcess (modulePath, version);
+
+      string output = process.StandardOutput.ReadToEnd();
+      process.WaitForExit();
+
+      Console.WriteLine ("PEVerify exited with code {0}.", process.ExitCode);
+      if (process.ExitCode != 0)
+      {
+        Console.WriteLine (output);
+        throw new PEVerifyException (process.ExitCode, output);
+      }
+    }
+
+    private Process StartPEVerifyProcess (string modulePath, PEVerifyVersion version)
+    {
+      string verifierPath = GetVerifierPath(version);
+
+      var process = new Process();
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.FileName = verifierPath;
+      process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+      process.StartInfo.Arguments = modulePath;
+      process.Start();
+      return process;
     }
   }
 }

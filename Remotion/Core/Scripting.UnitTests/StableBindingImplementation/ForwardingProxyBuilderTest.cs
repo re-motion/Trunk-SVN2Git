@@ -394,7 +394,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     private void SaveAndVerifyModuleScopeAssembly (bool strongNamed)
     {
       var path = _moduleScope.SaveAssembly (strongNamed);
-      PEVerifier.VerifyPEFile (path);
+      PEVerifier.CreateDefault().VerifyPEFile (path);
     }
   }
 }

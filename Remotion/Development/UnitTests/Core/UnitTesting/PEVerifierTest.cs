@@ -16,51 +16,65 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using System.IO;
+using Remotion.Development.UnitTesting.PEVerifyPathSources;
+using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class PEVerifierTest
   {
-    [SetUp]
-    public void SetUp()
+    [Test]
+    public void GetVerifierPath ()
     {
-      PEVerifier.PEVerifyPath = PEVerifier.DefaultPEVerifyPath;
-    }
+      var pathSourceStub = MockRepository.GenerateStub<IPEVerifyPathSource> ();
+      pathSourceStub.Stub (stub => stub.GetPEVerifyPath (PEVerifyVersion.DotNet4)).Return ("test");
+      var verifier = new PEVerifier (pathSourceStub);
 
-    [TearDown]
-    public void TearDown ()
-    {
-      PEVerifier.PEVerifyPath = PEVerifier.DefaultPEVerifyPath;
+      var path = verifier.GetVerifierPath (PEVerifyVersion.DotNet4);
+
+      Assert.That (path, Is.EqualTo ("test"));
     }
 
     [Test]
-    public void PEVerifyPath ()
+    [ExpectedException (typeof (PEVerifyException), ExpectedMessage = "PEVerify for version 'DotNet4' could not be found. Locations searched:\r\nx")]
+    public void GetVerifierPath_NotFound ()
     {
-      Assert.That (File.Exists (PEVerifier.PEVerifyPath));
+      var pathSourceStub = MockRepository.GenerateStub<IPEVerifyPathSource> ();
+      pathSourceStub.Stub (stub => stub.GetPEVerifyPath (PEVerifyVersion.DotNet4)).Return (null);
+      pathSourceStub.Stub (stub => stub.GetLookupDiagnostics (PEVerifyVersion.DotNet4)).Return ("x");
+      var verifier = new PEVerifier (pathSourceStub);
+
+      verifier.GetVerifierPath (PEVerifyVersion.DotNet4);
     }
 
     [Test]
-    public void VerifyMSCorlib ()
+    public void CreateDefault_FindsVerifier ()
     {
-      PEVerifier.VerifyPEFile (typeof (object).Assembly);
+      var verifier = PEVerifier.CreateDefault ();
+
+      var path = verifier.GetVerifierPath (PEVerifyVersion.DotNet4);
+
+      Assert.That (path, Is.Not.Null);
+      Assert.That (File.Exists (path), Is.True);
+    }
+    
+    [Test]
+    public void VerifyPEFile_MSCorlib ()
+    {
+      var verifier = PEVerifier.CreateDefault ();
+      verifier.VerifyPEFile (typeof (object).Assembly);
     }
 
     [Test]
-    [ExpectedException (typeof (PEVerifyException), ExpectedMessage = "PEVerify returned 1", MatchType = MessageMatch.Contains)]
-    public void VerifyInvalidPath ()
+    [ExpectedException (typeof (PEVerifyException), ExpectedMessage = "PEVerify returned 1.", MatchType = MessageMatch.Contains)]
+    public void VerifyPEFile_InvalidPath ()
     {
-      PEVerifier.VerifyPEFile ("Foobar whatever");
-    }
-
-    [Test]
-    [ExpectedException (typeof (PEVerifyException), ExpectedMessage = "PEVerify could not be found at path 'Foobar whatever'.")]
-    public void VerifyWithPEVerifyNotFound ()
-    {
-      PEVerifier.PEVerifyPath = "Foobar whatever";
-      PEVerifier.VerifyPEFile (typeof (object).Assembly);
+      var verifier = PEVerifier.CreateDefault ();
+      verifier.VerifyPEFile ("Foobar whatever");
     }
   }
 }
