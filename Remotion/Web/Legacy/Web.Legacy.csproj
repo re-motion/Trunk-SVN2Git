@@ -79,6 +79,7 @@
     <Compile Include="Factories\QuirksModeResourceUrlFactory.cs" />
     <Compile Include="Infrastructure\Factories\QuirksModeResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\QuirksModeResourceUrlResolver.cs" />
+    <Compile Include="LegacyServiceConfigurationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButtonQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerPageQuirksModeRenderer.cs" />
@@ -106,6 +107,10 @@
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>

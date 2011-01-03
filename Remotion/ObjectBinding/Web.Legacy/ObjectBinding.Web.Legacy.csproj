@@ -78,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BocLegacyServiceConfigurationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListQuirksModeCssClassDefinition.cs" />

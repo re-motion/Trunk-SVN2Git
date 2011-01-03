@@ -15,20 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Web;
 using Autofac;
 using AutofacContrib.CommonServiceLocator;
-using log4net;
 using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
+using Remotion.Logging;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Legacy;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
@@ -39,7 +41,10 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Configuration;
+using Remotion.Web.Legacy;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
+using System.Linq;
+using LogManager = log4net.LogManager;
 
 namespace OBWTest
 {
@@ -94,26 +99,27 @@ namespace OBWTest
       if (PreferQuirksModeRendering)
       {
         var builder = new ContainerBuilder();
-
         var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
-        var configuration = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService);
-        foreach (var entry in configuration)
-        {
-          if (entry.Lifetime == LifetimeKind.Singleton)
-            builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerLifetimeScope();
-          else
-            builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency();
-        }
-
-        builder.RegisterAssemblyTypes (typeof (QuirksModeRendererBase<>).Assembly, typeof (BocQuirksModeRendererBase<>).Assembly)
-            .Where (t => t.Namespace.EndsWith (".Rendering") || t.Namespace.EndsWith (".Factories"))
-            .AsImplementedInterfaces().SingleInstance();
+        RegisterTypes(builder, DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService));
+        RegisterTypes (builder, LegacyServiceConfigurationService.GetConfiguration());
+        RegisterTypes (builder, BocLegacyServiceConfigurationService.GetConfiguration ());
         
         var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
         ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
 
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer>() is BocListQuirksModeRenderer);
-        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer>() is BocTextValueQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer> () is BocListQuirksModeRenderer);
+        Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
+      }
+    }
+
+    private void RegisterTypes (ContainerBuilder builder, IEnumerable<ServiceConfigurationEntry> configuration)
+    {
+      foreach (var entry in configuration)
+      {
+        if (entry.Lifetime == LifetimeKind.Singleton)
+          builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerLifetimeScope ();
+        else
+          builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency ();
       }
     }
 
