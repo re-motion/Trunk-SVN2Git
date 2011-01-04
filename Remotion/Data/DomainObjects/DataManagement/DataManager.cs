@@ -197,20 +197,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
     }
 
-    public void RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> relatedObjects)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
-
-      if (endPointID.Definition.Cardinality != CardinalityType.Many)
-        throw new ArgumentException ("EndPointID must specify a collection-valued end point.", "endPointID");
-
-      if (_relationEndPointMap[endPointID] != null)
-        throw new InvalidOperationException (string.Format ("An end point with ID '{0}' already exists in this transaction.", endPointID));
-
-      _relationEndPointMap.RegisterCollectionEndPoint (endPointID, relatedObjects);
-    }
-
     public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);

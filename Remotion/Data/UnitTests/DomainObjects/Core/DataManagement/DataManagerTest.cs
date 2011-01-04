@@ -400,47 +400,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterCollectionEndPoint ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var order1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var order2 = DomainObjectMother.CreateFakeObject<Order> ();
-      
-      _dataManager.RegisterCollectionEndPoint (endPointID, new[] { order1, order2 });
-
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      Assert.That (endPoint, Is.Not.Null);
-
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { order1, order2 }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "EndPointID must specify a collection-valued end point.\r\nParameter name: endPointID")]
-    public void RegisterCollectionEndPoint_InvalidCardinality ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var order1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var order2 = DomainObjectMother.CreateFakeObject<Order> ();
-
-      _dataManager.RegisterCollectionEndPoint (endPointID, new[] { order1, order2 });
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "An end point with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' already exists in this transaction.")]
-    public void RegisterCollectionEndPoint_EndPointAlreadyExists ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var order1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var order2 = DomainObjectMother.CreateFakeObject<Order> ();
-
-      _dataManager.RegisterCollectionEndPoint (endPointID, new[] { order1, order2 });
-      _dataManager.RegisterCollectionEndPoint (endPointID, new[] { order1, order2 });
-    }
-
-    [Test]
     public void MarkCollectionEndPointComplete ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
