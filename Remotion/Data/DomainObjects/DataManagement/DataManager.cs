@@ -211,6 +211,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.RegisterCollectionEndPoint (endPointID, relatedObjects);
     }
 
+    public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+      _relationEndPointMap.MarkCollectionEndPointComplete (relationEndPointID);
+    }
+
     public void Commit ()
     {
       var deletedDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.Deleted).ToList();

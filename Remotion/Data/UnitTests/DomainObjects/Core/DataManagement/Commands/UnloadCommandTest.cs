@@ -295,8 +295,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transaction.EnlistDomainObject (unloadedObject);
       Assert.That (unloadedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+      
       command.Begin ();
 
       Assert.That (loadedObject.OnUnloadingCalled, Is.True);
@@ -323,8 +324,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       command.Begin();
 
@@ -337,8 +338,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (order1.ID, order2.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+
       command.Begin ();
 
       Assert.That (order1.OnUnloadingCalled, Is.True);
@@ -356,8 +358,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transaction.EnlistDomainObject (unloadedObject);
       Assert.That (unloadedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+
       command.End ();
 
       Assert.That (loadedObject.OnUnloadedCalled, Is.True);
@@ -384,8 +387,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       using (ClientTransactionScope.EnterNullScope ())
       {
         command.End();
@@ -400,8 +403,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (order1.ID, order2.ID);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
+      
       command.End ();
 
       Assert.That (order1.OnUnloadedCalled, Is.True);

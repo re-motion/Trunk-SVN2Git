@@ -159,12 +159,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         // accessing relation property
 
-        _extensionMock.RelationReading (null, null, (IRelationEndPointDefinition)null, ValueAccess.Current);
+        _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
         LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
         if (expectParentRead)
         {
-          _extensionMock.RelationReading (null, null, (IRelationEndPointDefinition) null, ValueAccess.Current);
+          _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
           LastCall.Constraints (Mocks_Is.Same (transaction.ParentTransaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
           if (expectedRelatedObjectIDs.Any ())
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         // accessing relation property a second time
 
-        _extensionMock.RelationReading (null, null, (IRelationEndPointDefinition) null, ValueAccess.Current);
+        _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
         LastCall.Constraints (Mocks_Is.Same (transaction), Mocks_Is.Anything(), Mocks_Is.Anything(), Mocks_Is.Anything());
 
 
@@ -515,7 +515,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Official official = _order1.Official;
       Customer customer = _order1.Customer;
       OrderCollection customerOrders = customer.Orders;
+      customerOrders.EnsureDataAvailable ();
       ObjectList<Order> officialOrders = official.Orders;
+      officialOrders.EnsureDataAvailable ();
       Dev.Null = orderTicket.Order; // preload
 
       var order1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);

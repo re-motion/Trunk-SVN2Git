@@ -142,28 +142,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer);
       Add (objectEndPoint);
 
-      var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
-      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-      if (objectEndPoint.OppositeObjectID != null)
-      {
-        var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-        {
-          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, objectEndPoint.ObjectID);
-        }
-        // TODO 3401
-        // else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
-        // {
-        //   "RegisterInCollectionEndPoint"
-        //   var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
-        //   // TODO 3401: end-point must be added if not exists:
-        //   if (oppositeEndPoint == null)
-        //     oppositeEndPoint = RegisterCollectionEndPoint (oppositeVirtualEndPointID, null);
-        //
-        //   oppositeEndPoint.RegisterOriginalObject (objectEndPoint.GetDomainObject());
-        // }
-      }
+      RegisterOppositeForRealObjectEndPoint (objectEndPoint);
 
       return objectEndPoint;
     }
@@ -177,7 +156,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
 
-      var objectEndPoint = (ObjectEndPoint) this[endPointID];
+      var objectEndPoint = (RealObjectEndPoint) this[endPointID];
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
@@ -185,28 +164,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       RemoveEndPoint (endPointID);
 
-      var oppositeVirtualEndPointDefinition = objectEndPoint.Definition.GetOppositeEndPointDefinition ();
-      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-      if (objectEndPoint.OppositeObjectID != null)
-      {
-        var oppositeVirtualEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-        {
-          UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
-        }
-        else
-        {
-          var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
-          // TODO 3401: end-point can be relied on (but add a guard clause against anonymous end-points)
-          if (oppositeEndPoint != null)
-          {
-            Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
-            // TODO 3401: oppositeEndPoint.UnregisterOriginalObject (objectEndPoint.ObjectID);
-            oppositeEndPoint.Unload ();
-          }
-        }
-      }
+      UnregisterOppositeForRealObjectEndPoint(objectEndPoint);
     }
 
     public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
@@ -259,6 +217,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckUnchangedForUnregister (endPointID, collectionEndPoint);
       
       RemoveEndPoint (endPointID);
+    }
+
+    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
+      CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
+
+      var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
+      endPoint.MarkDataAvailable ();
     }
 
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
@@ -319,12 +287,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (endPointID.Definition.IsAnonymous)
-      {
-        throw new InvalidOperationException (
-            "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
-            + "relations.");
-      }
+      CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
       if (!endPointID.Definition.IsVirtual)
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
@@ -445,6 +408,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    private void CheckNotAnonymous (RelationEndPointID endPointID, string methodName, string argumentName)
+    {
+      if (endPointID.Definition.IsAnonymous)
+      {
+        var message = string.Format ("{0} cannot be called for anonymous end points.", methodName);
+        throw new ArgumentException (message, argumentName);
+      }
+    }
+
     private void CheckUnchangedForUnregister (RelationEndPointID endPointID, RelationEndPoint endPoint)
     {
       if (!IsUnregisterable(endPoint))
@@ -477,6 +449,60 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return false;
 
       return true;
+    }
+
+    private void RegisterOppositeForRealObjectEndPoint (RealObjectEndPoint realObjectEndPoint)
+    {
+      var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
+      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+
+      if (realObjectEndPoint.OppositeObjectID != null)
+      {
+        var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+        {
+          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
+        }
+        else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
+        {
+          var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
+
+          var collectionItemReference = ClientTransaction.GetObjectReference (realObjectEndPoint.ObjectID);
+          oppositeEndPoint.RegisterOriginalObject (collectionItemReference);
+        }
+      }
+    }
+
+    private void UnregisterOppositeForRealObjectEndPoint (RealObjectEndPoint realObjectEndPoint)
+    {
+      Assertion.IsFalse (realObjectEndPoint.HasChanged, "Deregistration currently only works for unchanged end-points");
+
+      var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
+      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+
+      if (realObjectEndPoint.OppositeObjectID != null)
+      {
+        var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+        {
+          UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
+        }
+        else
+        {
+          var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
+          if (oppositeEndPoint != null)
+          {
+            Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
+            oppositeEndPoint.UnregisterOriginalObject (realObjectEndPoint.ObjectID);
+            oppositeEndPoint.Unload ();
+          }
+        }
+      }
+    }
+
+    private CollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
+    {
+      return (CollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID, null);
     }
 
     #region Serialization

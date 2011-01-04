@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void RelationEndPointMap_Content ()
     {
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      Assert.That (_relationEndPointMap.Count, Is.EqualTo (5));
+      Assert.That (_relationEndPointMap.Count, Is.EqualTo (7));
 
       var deserializedMap = (RelationEndPointMap) Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.Not.Null);
       Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
 
-      Assert.That (deserializedMap.Count, Is.EqualTo (5));
+      Assert.That (deserializedMap.Count, Is.EqualTo (7));
 
       var collectionEndPoint = (CollectionEndPoint)
           deserializedMap[new RelationEndPointID (DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"))];

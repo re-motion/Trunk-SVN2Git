@@ -28,7 +28,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -520,15 +519,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _persistenceStrategyMock
           .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
           .Return (new[] { _order1DataContainer });
-      _persistenceStrategyMock
-          .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
-          .Return (new[] { _order2DataContainer });
       _fetcherMock
-          .Expect (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order2DataContainer.ID),
-              Arg.Is (endPointDefinition)))
-          .WhenCalled (mi => CheckLoadedObject (((IEnumerable<DomainObject>) mi.Arguments[1]).Single(), _order2DataContainer));
+          .Expect (mock => mock.PerformEagerFetching (
+              Arg<DomainObject[]>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
+              Arg.Is (endPointDefinition),
+              Arg.Is (fetchQueryStub),
+              Arg.Is (_objectLoader)));
 
       _mockRepository.ReplayAll ();
 
@@ -555,76 +551,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
 
-      _fetcherMock.AssertWasNotCalled (mock => mock.CorrelateAndRegisterFetchResults (
-          Arg<IEnumerable<DomainObject>>.Is.Anything,
-          Arg<IEnumerable<DomainObject>>.Is.Anything,
-          Arg<IRelationEndPointDefinition>.Is.Anything));
-    }
-
-    [Test]
-    public void LoadCollectionQueryResult_WithFetching_NoFetchedObjects_RegistersEmpty ()
-    {
-      var fetchQueryStub = CreateFakeQuery ();
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-      _fakeQuery.EagerFetchQueries.Add (endPointDefinition, fetchQueryStub);
-
-      _persistenceStrategyMock
-          .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _order1DataContainer });
-      _persistenceStrategyMock
-          .Expect (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
-          .Return (new DataContainer[0]);
-      _fetcherMock
-          .Expect (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
-              Arg<IEnumerable<DomainObject>>.Matches (list => !list.Any()),
-              Arg.Is (endPointDefinition)));
-
-      _mockRepository.ReplayAll ();
-
-      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      CheckLoadedObject (result[0], _order1DataContainer);
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void LoadCollectionQueryResult_WithFetching_Events ()
-    {
-      var fetchQueryStub = CreateFakeQuery ();
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-      _fakeQuery.EagerFetchQueries.Add (endPointDefinition, fetchQueryStub);
-
-      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
-
-      ExpectObjectsLoading (_order1DataContainer.ID);
-      ExpectObjectsLoaded (transactionEventReceiver, _order1DataContainer);
-      ExpectObjectsLoading (_order2DataContainer.ID);
-      ExpectObjectsLoaded (null, _order2DataContainer); // on second call, do not expect transaction receiver to be empty
-
-      _persistenceStrategyMock
-          .Stub (mock => mock.LoadDataContainersForQuery (_fakeQuery))
-          .Return (new[] { _order1DataContainer });
-      _persistenceStrategyMock
-          .Stub (mock => mock.LoadDataContainersForQuery (fetchQueryStub))
-          .Return (new[] { _order2DataContainer });
-      _fetcherMock
-          .Stub (mock => mock.CorrelateAndRegisterFetchResults (
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
-              Arg<IEnumerable<DomainObject>>.Matches (list => list.Single ().ID == _order2DataContainer.ID),
-              Arg.Is (endPointDefinition)));
-
-      _mockRepository.ReplayAll ();
-
-      var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
-
-      _mockRepository.VerifyAll ();
-
-      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (2));
-      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[0] }));
-      Assert.That (transactionEventReceiver.LoadedDomainObjects[1], Is.EqualTo (new[] { _order2DataContainer.DomainObject }));
+      _fetcherMock.AssertWasNotCalled (mock => mock.PerformEagerFetching (
+          Arg<DomainObject[]>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything,
+          Arg<IQuery>.Is.Anything,
+          Arg<IObjectLoader>.Is.Anything));
     }
 
     [Test]

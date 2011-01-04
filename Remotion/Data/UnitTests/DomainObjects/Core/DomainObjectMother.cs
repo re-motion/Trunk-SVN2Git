@@ -53,6 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return CreateObjectInOtherTransaction<T>();
     }
 
+    public static T CreateFakeObject<T> (ObjectID id) where T : DomainObject
+    {
+      return GetObjectReference<T> (ClientTransaction.CreateRootTransaction (), id);
+    }
+
     public static T GetObjectReference<T> (ClientTransaction clientTransaction, ObjectID objectID) where T : DomainObject
     {
       return (T) LifetimeService.GetObjectReference (clientTransaction, objectID);

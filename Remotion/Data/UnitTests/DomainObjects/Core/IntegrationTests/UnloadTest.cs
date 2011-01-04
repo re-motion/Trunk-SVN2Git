@@ -256,6 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderTicket = order1.OrderTicket;
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
+      customerOrders.EnsureDataAvailable ();
 
       customer.EnsureDataAvailable ();
 

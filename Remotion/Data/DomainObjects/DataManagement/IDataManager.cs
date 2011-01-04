@@ -52,6 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     
     void RegisterDataContainer (DataContainer dataContainer);
     void RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> relatedObjects);
+    void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID);
     
     void Commit ();
     void Rollback ();

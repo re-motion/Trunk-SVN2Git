@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
-using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -38,8 +37,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ObjectLoader));
-
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _eventSink;
@@ -155,27 +152,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value);
+          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this);
       }
 
       return resultArray;
-    }
-
-    private void PerformEagerFetching (DomainObject[] originalObjects, IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
-    {
-      s_log.DebugFormat (
-          "Eager fetching objects for {0} via query {1} ('{2}').", 
-          relationEndPointDefinition.PropertyName, 
-          fetchQuery.ID, 
-          fetchQuery.Statement);
-
-      var fetchedObjects = LoadCollectionQueryResult<DomainObject> (fetchQuery);
-      s_log.DebugFormat (
-          "The eager fetch query yielded {0} related objects for {1} original objects.", 
-          fetchedObjects.Length, 
-          originalObjects.Length);
-
-      _fetcher.CorrelateAndRegisterFetchResults(originalObjects, fetchedObjects, relationEndPointDefinition);
     }
 
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)

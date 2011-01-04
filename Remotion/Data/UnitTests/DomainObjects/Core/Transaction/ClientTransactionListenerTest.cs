@@ -259,8 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer newCustomer = Customer.NewObject();
       
       // preload all related objects
-      foreach (var otherOrder in oldCustomer.Orders)
-        Dev.Null = otherOrder;
+      oldCustomer.Orders.EnsureDataAvailable ();
 
       var oldCustomerEndPointID = oldCustomer.Orders.AssociatedEndPointID;
       var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;
@@ -361,6 +360,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (mock => mock.TransactionCommitting (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (
+            ClientTransactionMock, 
+            RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"), 
+            false));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (
+            ClientTransactionMock,
+            RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders"),
+            false));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionCommitted (
             Arg.Is (ClientTransactionMock), 
@@ -387,6 +394,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (mock => mock.TransactionRollingBack (
             Arg.Is (ClientTransactionMock), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (
+            ClientTransactionMock,
+            RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"),
+            false));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (
+            ClientTransactionMock,
+            RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders"),
+            false));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Unchanged));
         _strictListenerMock.Expect (mock => mock.TransactionRolledBack (
             Arg.Is (ClientTransactionMock), 
@@ -416,6 +431,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                 Arg.Is (ClientTransactionMock), 
                 Arg<RelationEndPoint>.Matches (
                     rep => rep.PropertyName == typeof (Company).FullName + ".IndustrialSector" && rep.ObjectID == DomainObjectIDs.Customer1)));
+        _strictListenerMock.Expect (
+            mock => mock.RelationEndPointMapRegistering (
+                Arg.Is (ClientTransactionMock),
+                Arg<RelationEndPoint>.Matches (
+                    rep => rep.PropertyName == typeof (IndustrialSector).FullName + ".Companies" && rep.ObjectID == DomainObjectIDs.IndustrialSector1)));
 
         _strictListenerMock.Expect (mock => mock.ObjectsLoaded (
             Arg.Is (ClientTransactionMock), 

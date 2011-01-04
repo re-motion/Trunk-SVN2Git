@@ -353,7 +353,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         official = _order1.Official;
         customer = _order1.Customer;
         customerOrders = customer.Orders;
+        customerOrders.EnsureDataAvailable ();
         officialOrders = official.Orders;
+        officialOrders.EnsureDataAvailable ();
         Dev.Null = orderTicket.Order; // preload
       }
 
@@ -1489,7 +1491,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         // accessing relation property
 
-        _extensionMock.RelationReading (null, null, (IRelationEndPointDefinition) null, ValueAccess.Current);
+        _extensionMock.RelationReading (null, null, null, ValueAccess.Current);
         LastCall.IgnoreArguments ();
 
         if (expectedRelatedObjectIDs.Any())
@@ -1512,7 +1514,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         // accessing relation property a second time
 
-        _extensionMock.RelationReading (transaction, null, (IRelationEndPointDefinition) null, ValueAccess.Current);
+        _extensionMock.RelationReading (transaction, null, null, ValueAccess.Current);
         LastCall.IgnoreArguments ();
 
         if (expectingCollection)

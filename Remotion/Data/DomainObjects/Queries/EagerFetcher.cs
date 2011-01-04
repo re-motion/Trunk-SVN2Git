@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -43,47 +41,52 @@ namespace Remotion.Data.DomainObjects.Queries
       _dataManager = dataManager;
     }
 
-    public void CorrelateAndRegisterFetchResults (
-        IEnumerable<DomainObject> originalObjects, 
-        IEnumerable<DomainObject> fetchedObjects, 
-        IRelationEndPointDefinition relationEndPointDefinition)
+    public void PerformEagerFetching (DomainObject[] originalObjects, IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery, IObjectLoader fetchQueryResultLoader)
     {
-      if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
-      {
-        var collatedResult = CollateRelatedObjects (relationEndPointDefinition, fetchedObjects);
-        foreach (var originalObject in originalObjects)
-        {
-          if (originalObject != null)
-          {
-            CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
+      s_log.DebugFormat (
+          "Eager fetching objects for {0} via query {1} ('{2}').",
+          relationEndPointDefinition.PropertyName,
+          fetchQuery.ID,
+          fetchQuery.Statement);
 
-            var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
-            RegisterRelationResult (relationEndPointID, collatedResult[originalObject].Distinct ());
-          }
+      CheckOriginalObjects (relationEndPointDefinition, originalObjects);
+
+      // Executing the query will automatically register all virtual end-points. Collection end-points will be explicitly marked complete below
+      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery);
+      s_log.DebugFormat (
+          "The eager fetch query yielded {0} related objects for {1} original objects.",
+          fetchedObjects.Length,
+          originalObjects.Length);
+
+      CheckFetchedObjects (relationEndPointDefinition, fetchedObjects);
+
+      if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
+        MarkCollectionEndPointsComplete (relationEndPointDefinition, originalObjects);
+    }
+
+    private void CheckOriginalObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originalObjects)
+    {
+      foreach (var originalObject in originalObjects)
+      {
+        if (originalObject != null)
+        {
+          CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
         }
       }
     }
 
-    private MultiDictionary<DomainObject, DomainObject> CollateRelatedObjects (
+    private void CheckFetchedObjects (
         IRelationEndPointDefinition relationEndPointDefinition, 
-        IEnumerable<DomainObject> relatedObjects)
+        IEnumerable<DomainObject> fetchedObjects)
     {
-      var result = new MultiDictionary<DomainObject, DomainObject>();
       var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
       var loggedNullRelatedObject = false;
 
-      foreach (var relatedObject in relatedObjects)
+      foreach (var fetchedObject in fetchedObjects)
       {
-        if (relatedObject != null)
+        if (fetchedObject != null)
         {
-          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
-
-          var relationEndPointID = new RelationEndPointID (relatedObject.ID, oppositeEndPointDefinition);
-          var originatingObject = _dataManager.RelationEndPointMap.GetRelatedObject (relationEndPointID, true);
-          if (originatingObject != null)
-            result.Add (originatingObject, relatedObject);
-          else
-            LogRelatedObjectPointingBackToNull (relatedObject);
+          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, fetchedObject, oppositeEndPointDefinition);
         }
         else if (!loggedNullRelatedObject)
         {
@@ -91,30 +94,18 @@ namespace Remotion.Data.DomainObjects.Queries
           loggedNullRelatedObject = true;
         }
       }
-      return result;
     }
 
-    private void RegisterRelationResult (RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
+    private void MarkCollectionEndPointsComplete (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originalObjects)
     {
-      if (_dataManager.RelationEndPointMap[relationEndPointID] == null)
+      foreach (var originalObject in originalObjects)
       {
-        _dataManager.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
+        if (originalObject != null)
+        {
+          var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
+          _dataManager.MarkCollectionEndPointComplete (relationEndPointID);
+        }
       }
-      else
-      {
-        LogRelatedObjectsAlreadyRegistered(relationEndPointID, relatedObjects);
-      }
-    }
-
-    private void LogRelatedObjectsAlreadyRegistered (RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
-    {
-      s_log.WarnFormat (
-          "The eager fetch query for relation end point '{0}' returned {1} related objects for object '{2}', but that object already "
-          + "has {3} related objects.",
-          relationEndPointID.Definition.PropertyName,
-          relatedObjects.Count(),
-          relationEndPointID.ObjectID,
-          ((ICollectionEndPoint) _dataManager.RelationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
     }
 
     private void LogNullRelatedObject (IRelationEndPointDefinition relationEndPointDefinition)
@@ -122,13 +113,6 @@ namespace Remotion.Data.DomainObjects.Queries
       s_log.WarnFormat (
           "The eager fetch query for relation end point '{0}' returned at least one null object.",
           relationEndPointDefinition.PropertyName);
-    }
-
-    private void LogRelatedObjectPointingBackToNull (DomainObject relatedObject)
-    {
-      s_log.DebugFormat (
-          "The eager fetch query returned related object '{0}', which has a null original object.",
-          relatedObject.ID);
     }
 
     private void CheckClassDefinitionOfOriginalObject (IRelationEndPointDefinition relationEndPointDefinition, DomainObject originalObject)

@@ -441,6 +441,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void MarkCollectionEndPointComplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      _dataManager.MarkCollectionEndPointComplete (endPointID);
+
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      Assert.That (endPoint, Is.Not.Null);
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
+    }
+
+    [Test]
     public void IsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);

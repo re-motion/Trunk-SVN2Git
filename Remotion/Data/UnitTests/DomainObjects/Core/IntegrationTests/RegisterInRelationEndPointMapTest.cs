@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       DataContainer distributorContainer = TestDataContainerFactory.CreateDistributor2DataContainer ();
       _endPoints.RegisterEndPointsForDataContainer (distributorContainer);
 
-      Assert.AreEqual (3, _endPoints.Count);
+      Assert.AreEqual (4, _endPoints.Count);
     }
 
     [Test]
@@ -99,14 +99,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       _endPoints.RegisterEndPointsForDataContainer (orderContainer);
 
-      Assert.AreEqual (2, _endPoints.Count, "Count");
+      Assert.AreEqual (4, _endPoints.Count, "Count");
 
       Assert.AreEqual (
           DomainObjectIDs.Customer1,
           ((ObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")]).OppositeObjectID);
+      Assert.IsNotNull (_endPoints[new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders")]);
 
       Assert.AreEqual (DomainObjectIDs.Official1,
                        ((ObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")]).OppositeObjectID);
+      Assert.IsNotNull (_endPoints[new RelationEndPointID (DomainObjectIDs.Official1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders")]);
     }
   }
 }

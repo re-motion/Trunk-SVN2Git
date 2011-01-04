@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -166,9 +167,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
-        + "relations.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "GetRelationEndPointWithLazyLoad cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
@@ -370,6 +370,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionAlreadyRegistered ()
+    {
+      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (collectionEndPointID, new DomainObject[0]);
+
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+
+      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
+      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (collectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+    }
+
+    [Test]
+    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionNotRegisteredYet ()
+    {
+      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+
+      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      var itemReference = ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.OrderItem1);
+      Assert.That (itemReference, Is.Not.Null);
+      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+      collectionEndPoint.MarkDataAvailable ();
+      Assert.That (collectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+    }
+
+    [Test]
+    public void RegisterRealObjectEndPoint_WithOppositeAnonymousEndPoint()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
+
+      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+    }
+
+    [Test]
     public void UnregisterRealObjectEndPoint_UnregistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -388,8 +433,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (_map[oppositeEndPointID], Is.Not.Null);
 
@@ -403,17 +448,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
+      
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      _map.RegisterCollectionEndPoint (oppositeEndPointID, new DomainObject[0]);
-      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
-      Assert.That (_map[oppositeEndPointID].IsDataAvailable, Is.True);
+      var oppositeCollectionEndPoint = (CollectionEndPoint)  _map[oppositeEndPointID];
+      Assert.That (oppositeCollectionEndPoint, Is.Not.Null);
+      oppositeCollectionEndPoint.MarkDataAvailable ();
+      Assert.That (oppositeCollectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (oppositeCollectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
 
       _map.UnregisterRealObjectEndPoint (id);
 
-      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
-      Assert.That (_map[oppositeEndPointID].IsDataAvailable, Is.False);
+      Assert.That (_map[oppositeEndPointID], Is.SameAs (oppositeCollectionEndPoint));
+      Assert.That (oppositeCollectionEndPoint.IsDataAvailable, Is.False);
+
+      oppositeCollectionEndPoint.MarkDataAvailable ();
+      Assert.That (oppositeCollectionEndPoint.OppositeDomainObjects, List.Not.Contains (itemReference));
+      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
@@ -424,6 +478,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      _map.UnregisterCollectionEndPoint (oppositeEndPointID); // remove the CollectionEndPoint that was added by RegisterRealObjectEndPoint
       Assert.That (_map[oppositeEndPointID], Is.Null);
 
       _map.UnregisterRealObjectEndPoint (id);
@@ -565,6 +620,72 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
       }
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (_map[endPointID], Is.Null);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      var collectionEndPoint = (CollectionEndPoint) _map[endPointID];
+      Assert.That (collectionEndPoint, Is.Not.Null);
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointRegistered_Incomplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+      collectionEndPoint.Unload ();
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointRegistered_AlreadyComplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "MarkCollectionEndPointComplete can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
+    public void MarkCollectionEndPointComplete_ChecksCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      _map.MarkCollectionEndPointComplete (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+    public void MarkCollectionEndPointComplete_ChecksAnonymity ()
+    {
+      var endPointID = new RelationEndPointID (DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
+      _map.MarkCollectionEndPointComplete (endPointID);
     }
 
     [Test]
@@ -826,10 +947,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var dataContainer = CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
       var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
-      var item1 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, dataContainer.ID);
 
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeCollectionEndPoint = _map.RegisterCollectionEndPoint (oppositeCollectionEndPointID, new[] { item1 });
+      var oppositeCollectionEndPoint = (CollectionEndPoint) _map[oppositeCollectionEndPointID];
+      oppositeCollectionEndPoint.MarkDataAvailable (); // mark the current state as the "full" state of the collection
 
       var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);
 
