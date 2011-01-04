@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects
 public class ClientTransaction
 {
   /// <summary>
-  /// Creates a new root <see cref="ClientTransaction"/>, specifically a <see cref="RootPersistenceStrategy"/>.
+  /// Creates a new root <see cref="ClientTransaction"/>, which uses a <see cref="RootPersistenceStrategy"/>.
   /// </summary>
   /// <returns>A new root <see cref="ClientTransaction"/> instance.</returns>
   /// <remarks>The object returned by this method can be extended with <b>Mixins</b> by configuring the <see cref="MixinConfiguration.ActiveConfiguration"/>
