@@ -77,18 +77,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData CollectionData
     {
-      get
-      {
-        return _collectionData;
-      }
+      get { return _collectionData; }
     }
 
     public IDomainObjectCollectionData OriginalCollectionData
     {
-      get
-      {
-        return _collectionData.OriginalData;
-      }
+      get { return _collectionData.OriginalData; }
     }
 
     public void RegisterOriginalObject (DomainObject domainObject)
@@ -113,17 +107,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       if (!IsDataAvailable)
       {
-        var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
-
-        // TODO 3401: This will change later: LoadRelatedObjects will cause the DataContainers to be registered, which will in turn cause the 
-        // foreign keys' reflections to be registered in this collection via RegisterOriginalObject. No ReplaceContents/Commit required.
-        _collectionData.ReplaceContents (contents);
-        _collectionData.Commit (); // makes original collection identical to current
+        _clientTransaction.LoadRelatedObjects (_endPointID);
 
         MarkDataAvailable ();
-
-        // TODO 3401: This will also change: the change state is not necessarily false after the change described above.
-        RaiseChangeStateNotification (false);
       }
     }
 

@@ -370,7 +370,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPoint.EnsureDataAvailable ();
 
       Assert.That (endPoint.IsDataAvailable, Is.True);
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
     }
 
     [Test]
@@ -489,14 +488,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.IsDataAvailable, Is.False);
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
+
       endPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (endPoint.IsDataAvailable, Is.True);
       Assert.That (originalCollection.IsDataAvailable, Is.True);
-      Assert.That (
-          originalCollection, 
-          Is.EquivalentTo (new[] { _order1, _orderWithoutOrderItem }), 
-          "The data should be loaded before setting the new collection.");
     }
 
     [Test]

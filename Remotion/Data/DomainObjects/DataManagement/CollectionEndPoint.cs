@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
-      // TODO 3406: Inject DataKeeper from the outside
+      // TODO 3401: Inject DataKeeper from the outside
       _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull);
 
       var collectionType = id.Definition.PropertyType;

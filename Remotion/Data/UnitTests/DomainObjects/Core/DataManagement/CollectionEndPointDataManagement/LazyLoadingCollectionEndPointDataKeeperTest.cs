@@ -191,7 +191,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _clientTransactionMock
           .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (new[] { _domainObject2, _domainObject3 });
+          .Return (new[] { _domainObject2, _domainObject3 })
+          .WhenCalled (mi => 
+          {
+            // Simulate what's usually done by RelationEndPointMap when new related objects are registered
+            _unloadedDataKeeper.RegisterOriginalObject (_domainObject2);
+            _unloadedDataKeeper.RegisterOriginalObject (_domainObject3);
+          });
       _clientTransactionMock.Replay ();
       
       Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
@@ -205,31 +211,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void EnsureDataAvailable_Unloaded_CausesStateUpdate ()
-    {
-      _clientTransactionMock
-          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (new[] { _domainObject2, _domainObject3 });
-      _clientTransactionMock.Replay ();
-
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransactionMock);
-      _unloadedDataKeeper.EnsureDataAvailable ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransactionMock, _endPointID, false));
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
-    }
-
-    [Test]
     public void EnsureDataAvailable_Unloaded_WithSortComparer ()
     {
+      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, _comparer123, null);
+
       _clientTransactionMock
           .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (new[] { _domainObject3, _domainObject1, _domainObject2 });
+          .Return (new[] { _domainObject3, _domainObject1, _domainObject2 })
+          .WhenCalled (mi =>
+          {
+            // Simulate what's usually done by RelationEndPointMap when new related objects are registered
+            dataKeeper.RegisterOriginalObject (_domainObject3);
+            dataKeeper.RegisterOriginalObject (_domainObject1);
+            dataKeeper.RegisterOriginalObject (_domainObject2);
+          });
       _clientTransactionMock.Replay ();
 
-      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionMock, _endPointID, _comparer123, null);
       Assert.That (dataKeeper.IsDataAvailable, Is.False);
 
       dataKeeper.EnsureDataAvailable ();
@@ -346,33 +343,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Unload_CausesDataStoreToBeReloaded ()
-    {
-      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-
-      _loadedDataKeeper.Unload ();
-
-      StubLoadRelatedObjects (_domainObject2);
-      _loadedDataKeeper.EnsureDataAvailable();
-
-      Assert.That (_loadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
-    }
-
-    [Test]
-    public void Unload_CausesOriginalObjectsToBeReloaded ()
-    {
-      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
-
-      _loadedDataKeeper.Unload ();
-
-      StubLoadRelatedObjects (_domainObject2);
-      _loadedDataKeeper.EnsureDataAvailable ();
-
-      Assert.That (_loadedDataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
-      Assert.That (_loadedDataKeeper.OriginalCollectionData.IsReadOnly, Is.True);
-    }
-
-    [Test]
     public void Serializable_Loaded ()
     {
       var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
@@ -450,15 +420,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _loadedDataKeeper.CollectionData.Clear();
 
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransactionMock, _endPointID, null));
-    }
-
-    private void StubLoadRelatedObjects (params DomainObject[] relatedObjects)
-    {
-      _clientTransactionMock
-          .Stub (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
-          .Return (relatedObjects);
-
-      _clientTransactionMock.Replay ();
     }
 
     private int Compare123 (DomainObject x, DomainObject y)
