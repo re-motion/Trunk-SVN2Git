@@ -35,6 +35,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.ClientTransaction.GetObject (endPoint.ObjectID, true);
     }
 
+    public static DomainObject GetDomainObjectReference (this IEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (endPoint.ObjectID == null)
+        return null;
+
+      return endPoint.ClientTransaction.GetObjectReference (endPoint.ObjectID);
+    }
+
     public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject oppositeObject) where T : IEndPoint
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

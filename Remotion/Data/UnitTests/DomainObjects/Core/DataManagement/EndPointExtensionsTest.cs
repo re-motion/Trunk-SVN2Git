@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
@@ -37,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var domainObject = endPointStub.GetDomainObject ();
 
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (domainObject, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
@@ -66,7 +68,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var domainObject = endPointStub.GetDomainObject ();
 
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Deleted));
       Assert.That (domainObject, Is.SameAs (order1));
+    }
+
+    [Test]
+    public void GetDomainObjectReference ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
+
+      var domainObject = endPointStub.GetDomainObjectReference ();
+
+      Assert.That (domainObject.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (domainObject, Is.SameAs (LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1)));
+    }
+
+    [Test]
+    public void GetDomainObjectReference_Null ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      endPointStub.Stub (stub => stub.ObjectID).Return (null);
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
+
+      var domainObject = endPointStub.GetDomainObjectReference ();
+
+      Assert.That (domainObject, Is.Null);
     }
 
     [Test]

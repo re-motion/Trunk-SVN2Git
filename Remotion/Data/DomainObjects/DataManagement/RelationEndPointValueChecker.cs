@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var transactionInfo = new StringBuilder ();
 
-      var endPointObject = endPoint.GetDomainObject ();
+      var endPointObject = endPoint.GetDomainObjectReference ();
       if (otherDomainObject.HasBindingTransaction)
       {
         transactionInfo.AppendFormat (" The {0} object is bound to a BindingClientTransaction.", otherDomainObject.ID.ClassDefinition.ClassType.Name);

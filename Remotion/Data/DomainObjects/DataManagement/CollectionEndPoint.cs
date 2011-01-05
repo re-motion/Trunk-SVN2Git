@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
-      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObject (), ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObjectReference(), ClientTransaction);
 
       EnsureDataAvailable ();
 
@@ -224,7 +224,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataKeeper.CollectionData.Count == 0)
       {
         throw CreateMandatoryRelationNotSetException (
-            this.GetDomainObject(),
+            this.GetDomainObjectReference(),
             PropertyName,
             "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
             PropertyName,

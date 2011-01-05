@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Clear ()
     {
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
 
       EnsureDataAvailable ();
 
@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
 
       EnsureDataAvailable ();
 
@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
 
       EnsureDataAvailable ();
 
@@ -176,7 +176,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
 
       EnsureDataAvailable ();
 
@@ -199,7 +199,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (value, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObject (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
 
       EnsureDataAvailable ();
 
