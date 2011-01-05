@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -401,8 +402,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
       Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
-      collectionEndPoint.MarkDataAvailable ();
-      Assert.That (collectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+      var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (collectionEndPoint);
+      Assert.That (dataKeeper.CollectionData.ToArray(), List.Contains (itemReference));
     }
 
     [Test]
@@ -465,8 +466,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[oppositeEndPointID], Is.SameAs (oppositeCollectionEndPoint));
       Assert.That (oppositeCollectionEndPoint.IsDataAvailable, Is.False);
 
-      oppositeCollectionEndPoint.MarkDataAvailable ();
-      Assert.That (oppositeCollectionEndPoint.OppositeDomainObjects, List.Not.Contains (itemReference));
+      var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (oppositeCollectionEndPoint);
+      Assert.That (dataKeeper.CollectionData.ToArray(), List.Not.Contains (itemReference));
       Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
