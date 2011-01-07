@@ -48,7 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2984: Find a way to deal with this (currently: inconsistent state of relation end points)")]
     public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse ()
     {
       SetDatabaseModifyable ();
@@ -72,7 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2984: Find a way to deal with this (currently: inconsistent state of relation end points)")]
     public void VirtualEndPointQuery_OneMany_ObjectNotIncluded_ThatLocallyPointsToHere ()
     {
       SetDatabaseModifyable ();
@@ -131,7 +129,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 731: Find a way to deal with this (currently: inconsistent relations)")]
     public void ObjectLoaded_WithInconsistentForeignKey_OneMany ()
     {
       SetDatabaseModifyable();
@@ -143,26 +140,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       // in parallel transaction, add a Company to the IndustrialSector
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
 
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
+
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
       var newCompany = Company.GetObject (newCompanyID);
 
-      // this prints true/false => the bidirectional relation is inconsistent
-      Console.WriteLine (
-          "{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
-          newCompany,
-          newCompany.IndustrialSector,
-          newCompany.IndustrialSector == industrialSector);
-      Console.WriteLine (
-          "{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
-          industrialSector,
-          industrialSector.Companies.Count,
-          industrialSector.Companies.ContainsObject (industrialSector));
-
-      Assert.Fail ("TODO 731: Proper behavior yet undecided");
+      Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (2)); // Note: An additional item has been added to the collection.
+      Assert.That (industrialSector.Companies, List.Contains (newCompany));
     }
 
     [Test]
-    [Ignore ("TODO 921: Probably obsolete after COMMONS-731")]
+    [ExpectedException (
+        typeof (ArgumentException), 
+        ExpectedMessage = "The collection already contains an object with ID 'Company",
+        MatchType = MessageMatch.Contains)]
     public void ObjectLoaded_WithInconsistentForeignKey_OneMany_ProblemDetectedInAdd ()
     {
       SetDatabaseModifyable();
@@ -174,19 +166,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       // in parallel transaction, add a Company to the IndustrialSector
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
-      var newCompany = Company.GetObject (newCompanyID); // TODO 731 (re-motion 2.1): This should throw an exception.
+      var newCompany = Company.GetObject (newCompanyID);
 
-      industrialSector.Companies.Add (newCompany); // TODO 921: Throw here
-      Console.WriteLine (
-          "{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
-          newCompany,
-          newCompany.IndustrialSector,
-          newCompany.IndustrialSector == industrialSector);
-      Console.WriteLine (
-          "{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
-          industrialSector,
-          industrialSector.Companies.Count,
-          industrialSector.Companies.ContainsObject (industrialSector));
+      industrialSector.Companies.Add (newCompany);
     }
 
     private IndustrialSector CreateNewIndustrialSector ()
