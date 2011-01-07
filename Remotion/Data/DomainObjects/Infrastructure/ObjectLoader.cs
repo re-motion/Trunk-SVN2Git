@@ -95,21 +95,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (relatedDataContainer != null)
       {
-        var existingDataContainer = _clientTransaction.DataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
-        if (existingDataContainer != null)
-        {
-          var existingOppositeEndPointID = new RelationEndPointID (existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
-          var existingBackPointer = _clientTransaction.DataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
-          var message = string.Format (
-              "Cannot load the related '{0}' of '{1}': The database returned related object '{2}', but that object already exists in the current "
-                  + "ClientTransaction (and points to a different object '{3}').", 
-              relationEndPointID.Definition.PropertyName,
-              relationEndPointID.ObjectID,
-              relatedDataContainer.ID,
-              existingBackPointer != null ? existingBackPointer.ID.ToString() : "null");
-          throw new LoadConflictException (message);
-        }
-
+        CheckRelatedDataContainerForConflicts (relationEndPointID, relatedDataContainer);
         return LoadObject (relatedDataContainer);
       }
       else
@@ -221,7 +207,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private List<DomainObject> LoadObjects (IList<DataContainer> dataContainers)
     {
       var newlyLoadedIDs = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.ID);
-      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (newlyLoadedIDs));
+      RaiseLoadingNotificiations (newlyLoadedIDs);
 
       var loadedDomainObjects = new List<DomainObject> ();
       try
@@ -259,6 +245,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (_clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == dataContainer);
 
       return domainObjectReference;
+    }
+
+    private void CheckRelatedDataContainerForConflicts (RelationEndPointID relationEndPointID, DataContainer relatedDataContainer)
+    {
+      var existingDataContainer = _clientTransaction.DataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
+      if (existingDataContainer != null)
+      {
+        var existingOppositeEndPointID = new RelationEndPointID (existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
+        var existingBackPointer = _clientTransaction.DataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
+        var message = string.Format (
+            "Cannot load the related '{0}' of '{1}': The database returned related object '{2}', but that object already exists in the current "
+            + "ClientTransaction (and points to a different object '{3}').",
+            relationEndPointID.Definition.PropertyName,
+            relationEndPointID.ObjectID,
+            relatedDataContainer.ID,
+            existingBackPointer != null ? existingBackPointer.ID.ToString () : "null");
+        throw new LoadConflictException (message);
+      }
     }
   }
 }
