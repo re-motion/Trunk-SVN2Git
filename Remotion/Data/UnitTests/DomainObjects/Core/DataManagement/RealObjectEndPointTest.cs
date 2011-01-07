@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void OppositeObjectID_Get_FromProperty ()
     {
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      SetForeignKeyProperty(_endPoint, DomainObjectIDs.Order2);
+      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.HasChanged, Is.False);
 
-      SetForeignKeyProperty (_endPoint, DomainObjectIDs.Order2);
+      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
 
-      SetForeignKeyProperty (_endPoint, DomainObjectIDs.Order2);
+      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
 
       _endPoint.Commit ();
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
 
-      SetForeignKeyProperty (_endPoint, DomainObjectIDs.Order2);
+      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
 
       _endPoint.Rollback ();
@@ -165,11 +165,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.False);
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
     }
-
-    private void SetForeignKeyProperty (RealObjectEndPoint endPoint, ObjectID value)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (endPoint.ForeignKeyProperty, "SetValueInternal", value);
-    }
-
   }
 }

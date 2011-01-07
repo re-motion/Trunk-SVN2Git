@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -216,6 +217,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _persistenceStrategyMock.VerifyAllExpectations ();
       CheckLoadedObject (result, _orderTicket1DataContainer);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage = 
+        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "
+        + "points to a different object 'null').")]
+    public void LoadRelatedObject_InconsistentDatabaseResult_DataContainerAlreadyExists_PointsToNull ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _orderTicket1DataContainer.SetDomainObject (LifetimeService.GetObjectReference (_clientTransaction, _orderTicket1DataContainer.ID));
+      _clientTransaction.DataManager.RegisterDataContainer (_orderTicket1DataContainer);
+
+      _persistenceStrategyMock
+          .Expect (mock => mock.LoadRelatedDataContainer (
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]),
+              Arg.Is (endPointID)))
+          .Return (_orderTicket1DataContainer);
+
+      _persistenceStrategyMock.Replay ();
+
+      _objectLoader.LoadRelatedObject (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage = 
+        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "
+        + "points to a different object 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid').")]
+    public void LoadRelatedObject_InconsistentDatabaseResult_DataContainerAlreadyExists_PointsToDifferentObject ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order2;
+      _orderTicket1DataContainer.SetDomainObject (LifetimeService.GetObjectReference (_clientTransaction, _orderTicket1DataContainer.ID));
+      _clientTransaction.DataManager.RegisterDataContainer (_orderTicket1DataContainer);
+
+      _persistenceStrategyMock
+          .Expect (mock => mock.LoadRelatedDataContainer (
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]),
+              Arg.Is (endPointID)))
+          .Return (_orderTicket1DataContainer);
+
+      _persistenceStrategyMock.Replay ();
+
+      _objectLoader.LoadRelatedObject (endPointID);
     }
 
     [Test]

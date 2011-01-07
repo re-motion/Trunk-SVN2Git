@@ -18,7 +18,9 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -26,7 +28,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class RelationInconsistenciesTest : ClientTransactionBaseTest
   {
     [Test]
-    [Ignore ("TODO 2984: Find a way to deal with this (currently: AssertionException)")]
+    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage =
+        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
+        + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
+        + @"object already exists in the current ClientTransaction \(and points to a different object 'null'\).", 
+        MatchType = MessageMatch.Regex)]
     public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsToNull ()
     {
       SetDatabaseModifyable ();
@@ -40,11 +46,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       SetEmployeeInOtherTransaction (computer.ID, employee.ID);
 
-      // Resolve virtual end point - the database says that computer points to employee, but the transaction says it points to null!
-      var computerOfEmployee = employee.Computer;
+      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to null!
+      Dev.Null = employee.Computer;
+    }
 
-      Assert.That (computer.Employee, Is.Null);
-      Assert.That (computerOfEmployee, Is.Null);
+    [Test]
+    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage =
+        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
+        + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
+        + @"object already exists in the current ClientTransaction \(and points to a different object "
+        + @"'Employee\|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e\|System.Guid'\).",
+        MatchType = MessageMatch.Regex)]
+    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse ()
+    {
+      SetDatabaseModifyable ();
+
+      var computer = Computer.NewObject ();
+      computer.Employee = Employee.GetObject (DomainObjectIDs.Employee2);
+      ClientTransactionMock.Commit ();
+
+      Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
+
+      var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+
+      SetEmployeeInOtherTransaction (computer.ID, employee.ID);
+
+      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to Employee2!
+      Dev.Null = employee.Computer;
     }
 
     [Test]

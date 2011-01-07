@@ -158,34 +158,30 @@ namespace Remotion.Data.DomainObjects.DataManagement
       set
       {
         CheckNotDiscarded ();
-        SetValueInternal (value);
+        
+        if (AreValuesDifferent (_value, value))
+        {
+          CheckValue (value, _definition);
+
+          BeginValueSet (value);
+
+          object oldValue = _value;
+          _value = value;
+
+          Touch ();
+
+          EndValueSet (oldValue);
+        }
+        else
+        {
+          Touch();
+        }
       }
     }
 
     public void Touch ()
     {
       _hasBeenTouched = true;
-    }
-
-    private void SetValueInternal (object value)
-    {
-      if (AreValuesDifferent (_value, value))
-      {
-        CheckValue (value, _definition);
-
-        BeginValueSet (value);
-
-        object oldValue = _value;
-        _value = value;
-
-        Touch ();
-
-        EndValueSet (oldValue);
-      }
-      else
-      {
-        Touch();
-      }
     }
 
     /// <summary>

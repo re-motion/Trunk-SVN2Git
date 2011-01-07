@@ -65,14 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("id", id);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { id }));
-
-      InitializeLoadedDataContainer (dataContainer);
-
-      var loadedDomainObject = dataContainer.DomainObject;
-      RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject }));
-
-      return loadedDomainObject;
+      return LoadObject(dataContainer);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
@@ -107,23 +100,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var originatingDataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
 
-      // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
-      // (Like in MergeLoadedDomainObjects.)
-      Assertion.IsTrue (
-          relatedDataContainer == null || _clientTransaction.DataManager.DataContainerMap[relatedDataContainer.ID] == null,
-          "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
-          + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
-
       if (relatedDataContainer != null)
       {
-        RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { relatedDataContainer.ID }));
+        var existingDataContainer = _clientTransaction.DataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
+        if (existingDataContainer != null)
+        {
+          var existingOppositeEndPointID = new RelationEndPointID (existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
+          var existingBackPointer = _clientTransaction.DataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
+          var message = string.Format (
+              "Cannot load the related '{0}' of '{1}': The database returned related object '{2}', but that object already exists in the current "
+                  + "ClientTransaction (and points to a different object '{3}').", 
+              relationEndPointID.Definition.PropertyName,
+              relationEndPointID.ObjectID,
+              relatedDataContainer.ID,
+              existingBackPointer != null ? existingBackPointer.ID.ToString() : "null");
+          throw new RelatedObjectNotLoadableException (message);
+        }
 
-        InitializeLoadedDataContainer (relatedDataContainer);
-
-        var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });
-        RaiseLoadedNotifications (loadedDomainObjects);
-
-        return relatedDataContainer.DomainObject;
+        return LoadObject (relatedDataContainer);
       }
       else
       {
@@ -226,6 +220,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         throw new UnexpectedQueryResultException (message);
       }
+    }
+
+    private DomainObject LoadObject (DataContainer dataContainer)
+    {
+      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
+
+      InitializeLoadedDataContainer (dataContainer);
+
+      var loadedDomainObject = dataContainer.DomainObject;
+      RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject }));
+
+      return loadedDomainObject;
     }
 
     private void InitializeLoadedDataContainer (DataContainer dataContainer)
