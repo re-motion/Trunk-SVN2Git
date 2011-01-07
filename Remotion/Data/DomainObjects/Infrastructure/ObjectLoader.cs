@@ -73,14 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
       var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (idsToBeLoaded));
-
-      foreach (DataContainer dataContainer in dataContainers)
-        InitializeLoadedDataContainer (dataContainer);
-
-      // The dataContainers collection contains no items for those ids that couldn't be found
-      var loadedDomainObjectsWithoutNulls = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.DomainObject);
-      RaiseLoadedNotifications (loadedDomainObjectsWithoutNulls);
+      LoadObjects (dataContainers);
 
       var loadedDomainObjects = (from id in idsToBeLoaded
                                  let dataContainer = dataContainers[id]
@@ -196,14 +189,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
                                        where dataContainer != null && _clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == null
                                        select dataContainer).ToList ();
 
-      var newlyLoadedIDs = ListAdapter.AdaptReadOnly (newlyLoadedDataContainers, dc => dc.ID);
-      RaiseLoadingNotificiations (newlyLoadedIDs);
-
-      foreach (var dataContainer in newlyLoadedDataContainers)
-        InitializeLoadedDataContainer (dataContainer);
-
-      var newlyLoadedDomainObjects = ListAdapter.AdaptReadOnly (newlyLoadedDataContainers, dc => dc.DomainObject);
-      RaiseLoadedNotifications (newlyLoadedDomainObjects);
+      LoadObjects (newlyLoadedDataContainers);
     }
 
     private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
@@ -226,15 +212,35 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
 
-      InitializeLoadedDataContainer (dataContainer);
-
-      var loadedDomainObject = dataContainer.DomainObject;
+      var loadedDomainObject = InitializeLoadedDataContainer (dataContainer);
       RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject }));
 
       return loadedDomainObject;
     }
 
-    private void InitializeLoadedDataContainer (DataContainer dataContainer)
+    private List<DomainObject> LoadObjects (IList<DataContainer> dataContainers)
+    {
+      var newlyLoadedIDs = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.ID);
+      RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (newlyLoadedIDs));
+
+      var loadedDomainObjects = new List<DomainObject> ();
+      try
+      {
+        // Leave forech loop (instead of LINQ query + AddRange) for readability
+        // ReSharper disable LoopCanBeConvertedToQuery
+        foreach (var dataContainer in dataContainers)
+          loadedDomainObjects.Add (InitializeLoadedDataContainer (dataContainer));
+        // ReSharper restore LoopCanBeConvertedToQuery
+      }
+      finally
+      {
+        RaiseLoadedNotifications (loadedDomainObjects.AsReadOnly ());
+      }
+
+      return loadedDomainObjects;
+    }
+
+    private DomainObject InitializeLoadedDataContainer (DataContainer dataContainer)
     {
       var domainObjectReference = _clientTransaction.GetObjectReference (dataContainer.ID);
 
@@ -251,6 +257,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
       Assertion.IsTrue (dataContainer.ClientTransaction == _clientTransaction);
       Assertion.IsTrue (_clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == dataContainer);
+
+      return domainObjectReference;
     }
   }
 }

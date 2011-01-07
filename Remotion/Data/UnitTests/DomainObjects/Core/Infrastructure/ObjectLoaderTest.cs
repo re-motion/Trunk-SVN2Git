@@ -47,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DataContainer _order1DataContainer;
     private DataContainer _order2DataContainer;
     private DataContainer _orderTicket1DataContainer;
+    private DataContainer _orderTicket2DataContainer;
 
     private IQuery _fakeQuery;
 
@@ -66,6 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _order1DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _order2DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
       _orderTicket1DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      _orderTicket2DataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket2, null, pd => pd.DefaultValue);
 
       _fakeQuery = CreateFakeQuery();
     }
@@ -112,14 +114,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. These two pieces of information contradict each other.")]
     public void LoadObject_InconsistentForeignKeys ()
     {
-      var orderTicketDataContainer1 = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      var orderTicketDataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket2, null, pd => pd.DefaultValue);
+      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
 
-      orderTicketDataContainer1.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-      orderTicketDataContainer2.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-      
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket1)).Return (orderTicketDataContainer1);
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket2)).Return (orderTicketDataContainer2);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket1)).Return (_orderTicket1DataContainer);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket2)).Return (_orderTicket2DataContainer);
 
       _persistenceStrategyMock.Replay ();
 
@@ -221,6 +220,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
 
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void LoadObjects_Exception_Events ()
+    {
+      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _persistenceStrategyMock
+            .Expect (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2 }, true))
+          .Return (new DataContainerCollection (new[] { _orderTicket1DataContainer, _orderTicket2DataContainer }, true));
+
+        ExpectObjectsLoading (DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2);
+        ExpectObjectsLoaded (transactionEventReceiver, _orderTicket1DataContainer); // only one of them is actually loaded, the other one raises an exeption
+      }
+
+      _mockRepository.ReplayAll ();
+
+      try
+      {
+        _objectLoader.LoadObjects (new[] { DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2 }, true);
+        Assert.Fail ("Expected LoadConflictException");
+      }
+      catch (LoadConflictException)
+      {
+        // ok
+      }
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_orderTicket1DataContainer.HasDomainObject, Is.True);
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { _orderTicket1DataContainer.DomainObject }));
     }
 
     [Test]
@@ -559,6 +594,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _mockRepository.VerifyAll ();
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[1] }));
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult_Exception_Events ()
+    {
+      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _persistenceStrategyMock
+            .Expect (mock => mock.LoadDataContainersForQuery (_fakeQuery))
+          .Return (new[] { _orderTicket1DataContainer, _orderTicket2DataContainer });
+
+        ExpectObjectsLoading (DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2);
+        ExpectObjectsLoaded (transactionEventReceiver, _orderTicket1DataContainer);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      try
+      {
+        _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
+        Assert.Fail ("Expected LoadConflictException");
+      }
+      catch (LoadConflictException)
+      {
+        // ok
+      }
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_orderTicket1DataContainer.HasDomainObject, Is.True);
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { _orderTicket1DataContainer.DomainObject }));
     }
 
     [Test]
