@@ -105,6 +105,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
+        "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
+        + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. These two pieces of information contradict each other.")]
+    public void LoadObject_InconsistentForeignKeys ()
+    {
+      var orderTicketDataContainer1 = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      var orderTicketDataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket2, null, pd => pd.DefaultValue);
+
+      orderTicketDataContainer1.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      orderTicketDataContainer2.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket1)).Return (orderTicketDataContainer1);
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket2)).Return (orderTicketDataContainer2);
+
+      _persistenceStrategyMock.Replay ();
+
+      _objectLoader.LoadObject (DomainObjectIDs.OrderTicket1);
+      _objectLoader.LoadObject (DomainObjectIDs.OrderTicket2);
+    }
+
+    [Test]
     public void LoadObjects ()
     {
       _persistenceStrategyMock
@@ -220,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage = 
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
         "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "
@@ -243,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage = 
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
         "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "

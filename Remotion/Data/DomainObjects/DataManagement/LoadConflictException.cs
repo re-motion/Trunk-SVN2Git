@@ -21,21 +21,22 @@ using JetBrains.Annotations;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Thrown when a related object cannot be loaded because it would generate an inconsistent state in the <see cref="ClientTransaction"/>.
+  /// Thrown when an object cannot be loaded or a relation cannot be resolved because it would generate an inconsistent state in the 
+  /// <see cref="ClientTransaction"/>.
   /// </summary>
-  public class RelatedObjectNotLoadableException : Exception
+  public class LoadConflictException : Exception
   {
-    public RelatedObjectNotLoadableException (string message)
+    public LoadConflictException (string message)
         : base (message)
     {
     }
 
-    public RelatedObjectNotLoadableException (string message, Exception innerException)
+    public LoadConflictException (string message, Exception innerException)
         : base (message, innerException)
     {
     }
 
-    protected RelatedObjectNotLoadableException ([NotNull] SerializationInfo info, StreamingContext context)
+    protected LoadConflictException ([NotNull] SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
     }

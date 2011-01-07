@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -283,6 +284,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
               select loadedEndPoint).ToArray();
     }
 
+    public void CheckForConflictingForeignKeys (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      {
+        if (!endPointID.Definition.IsVirtual)
+        {
+          var oppositeVirtualEndPointDefinition = endPointID.Definition.GetOppositeEndPointDefinition ();
+          if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+            CheckForConflictingForeignKey (dataContainer, endPointID.Definition, oppositeVirtualEndPointDefinition);
+        }
+      }
+    }
+
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -503,6 +519,41 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private CollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
       return (CollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID, null);
+    }
+
+    // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it
+    // is non-null and points to an object that already points back to another object.
+    private void CheckForConflictingForeignKey (
+        DataContainer dataContainer,
+        IRelationEndPointDefinition foreignKeyEndPointDefinition,
+        IRelationEndPointDefinition oppositeVirtualObjectEndPointDefinition)
+    {
+      Assertion.IsTrue (foreignKeyEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (dataContainer.ClassDefinition));
+      Assertion.IsFalse (foreignKeyEndPointDefinition.IsVirtual);
+      Assertion.IsTrue (oppositeVirtualObjectEndPointDefinition.IsVirtual);
+      Assertion.IsTrue (oppositeVirtualObjectEndPointDefinition.Cardinality == CardinalityType.One);
+
+      var foreignKeyValue =
+          (ObjectID) dataContainer.PropertyValues[foreignKeyEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
+      if (foreignKeyValue == null) // null is never a conflicting foreign key value
+        return;
+
+      var oppositeVirtualEndPointID = new RelationEndPointID (foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
+      var existingOppositeVirtualEndPoint = (VirtualObjectEndPoint) this[oppositeVirtualEndPointID];
+      if (existingOppositeVirtualEndPoint == null) // if the opposite end point does not exist, this is not a conflicting foreign key value
+        return;
+
+      var existingConflictingObjectID = existingOppositeVirtualEndPoint.OriginalOppositeObjectID;
+      var message =
+            string.Format (
+                "The data of object '{0}' conflicts with existing data: It has a foreign key "
+                + "property '{1}' which points to object '{2}'. However, that object has previously been determined to point back to object '{3}'. "
+                + "These two pieces of information contradict each other.",
+                dataContainer.ID,
+                foreignKeyEndPointDefinition.PropertyName,
+                foreignKeyValue,
+                existingConflictingObjectID != null ? existingConflictingObjectID.ToString() : "<null>");
+      throw new InvalidOperationException (message);
     }
 
     #region Serialization

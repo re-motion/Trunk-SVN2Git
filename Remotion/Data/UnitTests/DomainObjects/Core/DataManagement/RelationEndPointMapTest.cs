@@ -989,6 +989,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CheckForConflictingForeignKeys_NoConflicts ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order1);
+      
+      _map.CheckForConflictingForeignKeys (dataContainer);
+    }
+
+    [Test]
+    public void CheckForConflictingForeignKeys_NoConflicts_WithVirtualEndPoints_AndOppositeCollectionEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      // use DataContainer with State New because that owns virtual end-points
+      var dataContainer = CreateNewDataContainer (endPointID);
+
+      _map.CheckForConflictingForeignKeys (dataContainer);
+    }
+
+    [Test]
+    public void CheckForConflictingForeignKeys_NoConflicts_Nulls ()
+    {
+      var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer1 = CreateExistingForeignKeyDataContainer (endPointID1, null);
+      _map.RegisterEndPointsForDataContainer (dataContainer1);
+
+      var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
+      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, null);
+
+      _map.CheckForConflictingForeignKeys (dataContainer2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
+        + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. These two pieces of information contradict each other.")]
+    public void CheckForConflictingForeignKeys_Conflict ()
+    {
+      var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer1 = CreateExistingForeignKeyDataContainer (endPointID1, DomainObjectIDs.Order1);
+      _map.RegisterEndPointsForDataContainer (dataContainer1);
+
+      var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
+      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
+
+      _map.CheckForConflictingForeignKeys (dataContainer2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
+        + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
+        + "'<null>'. These two pieces of information contradict each other.")]
+    public void CheckForConflictingForeignKeys_Conflict_WithNull ()
+    {
+      var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _map.RegisterVirtualObjectEndPoint (endPointID1, null);
+
+      var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
+      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
+
+      _map.CheckForConflictingForeignKeys (dataContainer2);
+    }
+
+    [Test]
     public void CommitAllEndPoints_CommitsEndPoints ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");

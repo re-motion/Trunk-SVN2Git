@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class RelationInconsistenciesTest : ClientTransactionBaseTest
   {
     [Test]
-    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage =
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
         "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
         + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
         + @"object already exists in the current ClientTransaction \(and points to a different object 'null'\).", 
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (RelatedObjectNotLoadableException), ExpectedMessage =
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
         "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
         + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
         + @"object already exists in the current ClientTransaction \(and points to a different object "
@@ -120,7 +120,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 731: Find a way to deal with this (currently: InvalidOperationException)")]
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
+        @"The data of object 'Computer\|.*\|System.Guid' conflicts with existing data: It has a foreign key property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' which points to object "
+        + @"'Employee\|.*\|System.Guid'. However, that object has previously been determined to point back to object "
+        + "'<null>'. These two pieces of information contradict each other.",
+        MatchType = MessageMatch.Regex)]
     public void ObjectLoaded_WithInconsistentForeignKey_OneOne_Null ()
     {
       SetDatabaseModifyable();
@@ -134,11 +139,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       // This computer has a foreign key to employee; but employee's virtual end point already points to null!
       Computer.GetObject (newComputerID);
-      Assert.Fail ("TODO 731: Proper behavior yet undecided");
     }
 
     [Test]
-    [Ignore ("TODO 731: Find a way to deal with this (currently: InvalidOperationException)")]
+    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
+        @"The data of object 'Computer\|.*\|System.Guid' conflicts with existing data: It has a foreign key property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' which points to object "
+        + @"'Employee\|.*|System.Guid'. However, that object has previously been determined to point back to object "
+        + @"'Computer\|.*\|System.Guid'. These two pieces of information contradict each other.",
+        MatchType = MessageMatch.Regex)]
     public void ObjectLoaded_WithInconsistentForeignKey_OneOne_NonNull ()
     {
       SetDatabaseModifyable ();
@@ -153,7 +162,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       // This computer has a foreign key to employee; but employee's virtual end point already points to originalComputer; the new computer's 
       // foreign key contradicts the existing foreign key
       Computer.GetObject (newComputerID);
-      Assert.Fail ("TODO 731: Proper behavior yet undecided");
     }
 
     [Test]

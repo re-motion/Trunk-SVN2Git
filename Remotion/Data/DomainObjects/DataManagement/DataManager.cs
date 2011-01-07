@@ -191,6 +191,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataContainerMap[dataContainer.ID] != null)
         throw new InvalidOperationException (string.Format ("A DataContainer with ID '{0}' already exists in this transaction.", dataContainer.ID));
 
+      _relationEndPointMap.CheckForConflictingForeignKeys (dataContainer);
+
       dataContainer.SetClientTransaction (_clientTransaction);
 
       _dataContainerMap.Register (dataContainer);

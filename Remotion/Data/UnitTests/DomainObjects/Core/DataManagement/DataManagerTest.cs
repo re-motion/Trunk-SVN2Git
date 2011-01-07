@@ -400,6 +400,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterDataContainer_InconsistentForeignKey ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
+
+      var otherDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
+      SetDomainObject (otherDataContainer);
+
+      dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+      otherDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
+
+      _dataManager.RegisterDataContainer (dataContainer);
+      var endPointCountBefore = _dataManager.RelationEndPointMap.Count;
+
+      try
+      {
+        _dataManager.RegisterDataContainer (otherDataContainer);
+        Assert.Fail ("InvalidOperationException was expected.");
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo (
+            "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
+            + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
+            + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
+            + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. These two pieces of information contradict each other."));
+        Assert.That (_dataManager.DataContainerMap[otherDataContainer.ID], Is.Null);
+        Assert.That (otherDataContainer.IsRegistered, Is.False);
+        Assert.That (_dataManager.RelationEndPointMap.Count, Is.EqualTo (endPointCountBefore));
+      }
+    }
+
+    [Test]
     public void MarkCollectionEndPointComplete ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");

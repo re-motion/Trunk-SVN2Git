@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("id", id);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      return LoadObject(dataContainer);
+      return LoadObject (dataContainer);
     }
 
     public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
               relationEndPointID.ObjectID,
               relatedDataContainer.ID,
               existingBackPointer != null ? existingBackPointer.ID.ToString() : "null");
-          throw new RelatedObjectNotLoadableException (message);
+          throw new LoadConflictException (message);
         }
 
         return LoadObject (relatedDataContainer);
@@ -239,7 +239,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var domainObjectReference = _clientTransaction.GetObjectReference (dataContainer.ID);
 
       dataContainer.SetDomainObject (domainObjectReference);
-      _clientTransaction.DataManager.RegisterDataContainer (dataContainer);
+      try
+      {
+        _clientTransaction.DataManager.RegisterDataContainer (dataContainer);
+      }
+      catch (InvalidOperationException ex)
+      {
+        throw new LoadConflictException (ex.Message, ex);
+      }
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
       Assertion.IsTrue (dataContainer.ClientTransaction == _clientTransaction);
