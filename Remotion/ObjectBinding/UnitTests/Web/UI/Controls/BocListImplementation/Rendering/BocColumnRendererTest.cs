@@ -107,15 +107,5 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _columnRenderMock.VerifyAllExpectations();
     }
-
-    [Test]
-    public void name ()
-    {
-      var configuration = LegacyServiceConfigurationService.GetConfiguration ().Concat (BocLegacyServiceConfigurationService.GetConfiguration ());
-
-
-      Console.WriteLine (configuration.ToList().Count);
-      
-    }
   }
 }
