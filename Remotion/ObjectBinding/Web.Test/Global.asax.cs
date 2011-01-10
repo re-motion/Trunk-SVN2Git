@@ -96,6 +96,19 @@ namespace OBWTest
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
           .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
 
+      //if (PreferQuirksModeRendering)
+      //{
+      //  DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator ();
+      //  foreach (var entry in LegacyServiceConfigurationService.GetConfiguration ())
+      //    defaultServiceLocator.Register (entry);
+      //  foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration ())
+      //    defaultServiceLocator.Register (entry);
+
+      //  ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
+
+      //  Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRenderer> () is TabbedMultiViewQuirksModeRenderer);
+      //  Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
+      //}
       if (PreferQuirksModeRendering)
       {
         var builder = new ContainerBuilder();
