@@ -429,7 +429,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2776")]
     public void Query_ClassID_OnColumnOfReferencedEntity ()
     {
       var query = from x in
@@ -447,7 +446,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2819")]
+    [Ignore ("TODO 3662: Invalid SQL is generated when the ClassID of an ID coming from a sub-query is used")]
     public void Query_ClassID_OnReferencedValue ()
     {
       var query = from x in
