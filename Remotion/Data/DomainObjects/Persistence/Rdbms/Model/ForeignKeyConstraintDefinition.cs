@@ -46,19 +46,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _referencedColumns = referencedColumns.ToList().AsReadOnly();
 
       if (_referencingColumns.Count != _referencedColumns.Count)
-        throw new InvalidOperationException ("The referencing- and referenced-columns have a different column count which is not allowed.");
+        // TODO Review 3601: Throw ArgumentException instead (for "referencingColumns")
+        throw new InvalidOperationException ("The referencing and referenced column sets must have the same number of items.");
     }
 
     public string ConstraintName
     {
       get { return _constraintName; }
-    }
-
-    public void Accept (ITableConstraintDefinitionVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      visitor.VisitForeignKeyConstraintDefinition (this);
     }
 
     public TableDefinition ReferencedTable
@@ -74,6 +68,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> ReferencedColumns
     {
       get { return _referencedColumns; }
+    }
+
+    public void Accept (ITableConstraintDefinitionVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      visitor.VisitForeignKeyConstraintDefinition (this);
     }
   }
 }

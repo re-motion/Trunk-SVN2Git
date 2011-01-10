@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ISqlDialect _sqlDialect;
     private readonly bool _includeClassIdColumns;
 
-    //TODO 3601: Remove includeClassIdColumns flag
+    //TODO Review 3601: Remove includeClassIdColumns flag
     public NameListColumnDefinitionVisitor (bool allowNullColumns, bool includeClassIdColumns, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);

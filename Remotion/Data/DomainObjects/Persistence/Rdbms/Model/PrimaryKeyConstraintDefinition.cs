@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly bool _clustered;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
 
-    //TODO 3601: Change to store SimpleColumnDefinitions only
+    //TODO Review 3601: Change to store SimpleColumnDefinitions only
     public PrimaryKeyConstraintDefinition (string constraintName, bool clustered, IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
@@ -47,13 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraintName; }
     }
 
-    public void Accept (ITableConstraintDefinitionVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      visitor.VisitPrimaryKeyConstraintDefinition (this);
-    }
-
+    // TODO Review 3601: Rename to IsClustered/_isClustered
     public bool Clustered
     {
       get { return _clustered; }
@@ -62,6 +56,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> Columns
     {
       get { return _columns; }
+    }
+
+    public void Accept (ITableConstraintDefinitionVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      visitor.VisitPrimaryKeyConstraintDefinition (this);
     }
   }
 }

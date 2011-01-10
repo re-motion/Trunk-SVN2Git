@@ -19,7 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  //TODO 3601: Add bool IsPartOfPrimaryKey flag
+  //TODO Review 3601: Add bool IsPartOfPrimaryKey flag
   /// <summary>
   /// Defines a column in a SQL database.
   /// </summary>

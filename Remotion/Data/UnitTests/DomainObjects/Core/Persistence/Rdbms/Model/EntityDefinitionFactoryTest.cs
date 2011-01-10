@@ -447,6 +447,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         }
 
         //TODO: Check for ForeignKey Constraints
+        // TODO Review 3601: Throw NotSupportedException on unsupported constraints
       }
     }
 

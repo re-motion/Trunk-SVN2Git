@@ -20,6 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  // TODO Review 3601: Docs missing
   public class PrimaryKeyDeclarationTableConstraintDefinitionVisitor : ITableConstraintDefinitionVisitor
   {
     private string _constraintStatement;

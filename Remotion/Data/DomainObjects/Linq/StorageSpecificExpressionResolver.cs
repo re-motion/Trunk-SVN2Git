@@ -30,14 +30,14 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
-    //TODO 3601: Rename to SqlColumnDefinitionFindingVisitor, extract all LINQ-specific code, move rest to Persistence\Rdbms\Model
-    //TODO 3601: Add specific unit tests
+    //TODO Review 3601: Rename to SqlColumnDefinitionFindingVisitor, extract all LINQ-specific code, move rest to Persistence\Rdbms\Model
+    //TODO Review 3601: Add specific unit tests
     private class SqlColumnListColumnDefinitionVisitor : IColumnDefinitionVisitor
     {
-      //TODO 3601: Add a public static FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition>) method
+      //TODO Review 3601: Add a public static FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition>) method
 
-      private readonly IList<SimpleColumnDefinition> _columnDefinitions; //TODO 3601: Becomes a list of SimpleColumnDefinitions
-      private readonly string _tableAlias; //TODO 3601: Remove
+      private readonly IList<SimpleColumnDefinition> _columnDefinitions; //TODO Review 3601: Becomes a list of SimpleColumnDefinitions
+      private readonly string _tableAlias; //TODO Review 3601: Remove
 
       public SqlColumnListColumnDefinitionVisitor (string tableAlias)
       {
@@ -69,11 +69,11 @@ namespace Remotion.Data.DomainObjects.Linq
 
       }
 
-      //TODO 3601: GetSimpleColumns, return ReadOnlyCollection (AsReadOnly)
+      //TODO Review 3601: GetSimpleColumns, return ReadOnlyCollection (AsReadOnly)
       public IEnumerable<SqlColumnDefinitionExpression> GetSqlColumns ()
       {
-        //TODO 3601: Move to ResolveEntityMethod
-        //TODO 3601: Use IsPartOFPrimaryKey property
+        //TODO Review 3601: Move to ResolveEntityMethod
+        //TODO Review 3601: Use IsPartOFPrimaryKey property
         return _columnDefinitions.Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, _tableAlias, cd.Name, false));
       }
     }

@@ -53,7 +53,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
 
       var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
-      //TODO 3601: Use SimpleColumnDefinitionFindingVisitor to get all SimpleColumnDefinitions from the columns above, find all whose IsPartOfPrimaryKey flag is true, use those columns for the PK constraint
+      // TODO Review 3601: Use SimpleColumnDefinitionFindingVisitor to get all SimpleColumnDefinitions from the columns above, find all whose IsPartOfPrimaryKey flag is true, use those columns for the PK constraint
+      // TODO Review 3601: After this, refactor the column list creation into a common GetColumnDefinitionsForEntity method; reuse in CreateFilterViewDefinition and CreateUnionViewDefinition
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName (tableName), true, new[] { idColumnDefinition });
       
       return new TableDefinition (

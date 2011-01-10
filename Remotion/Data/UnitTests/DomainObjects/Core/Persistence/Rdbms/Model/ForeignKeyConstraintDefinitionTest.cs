@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The referencing- and referenced-columns have a different column count which is not allowed.")]
+        "The referencing and referenced column sets must have the same number of items.")]
     public void Initialization_InvalidColumns ()
     {
       new ForeignKeyConstraintDefinition ("Test", _referencedTable, new[] { _referencingColumn }, new IColumnDefinition[0]);
