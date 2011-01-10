@@ -19,6 +19,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  //TODO 3601: Add bool IsPartOfPrimaryKey flag
+  /// <summary>
+  /// Defines a column in a SQL database.
+  /// </summary>
   public class SimpleColumnDefinition : IColumnDefinition
   {
     private readonly string _name;

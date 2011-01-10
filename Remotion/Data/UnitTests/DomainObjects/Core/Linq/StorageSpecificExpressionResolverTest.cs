@@ -48,14 +48,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var idColumnDefinition = new IDColumnDefinition (
           new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false),
           new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false));
-      var idColumnDefinitionWithoutClassIDCOlumn = new IDColumnDefinition (
+      var idColumnDefinitionWithoutClassIDColumn = new IDColumnDefinition (
           new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false), null);
       var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
       var tableDefinition = new TableDefinition (
           TestDomainStorageProviderDefinition,
           "Test",
           null,
-          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDCOlumn, simpleColumn }, new ITableConstraintDefinition[0]);
+          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDColumn, simpleColumn }, new ITableConstraintDefinition[0]);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");

@@ -65,10 +65,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public virtual IDColumnDefinition CreateIDColumnDefinition ()
     {
+      //TODO 3601: Pass "true" for IsPartOfPrimaryKeyFlag here (and test)
       var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
-      var classIdColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+      //TODO 3601: Pass false here
+      var classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
 
-      return new IDColumnDefinition (objectIDColumn, classIdColumnDefinition);
+      return new IDColumnDefinition (objectIDColumn, classIDColumnDefinition);
     }
 
     public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()

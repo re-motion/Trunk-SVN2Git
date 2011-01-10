@@ -30,25 +30,28 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
-    //TODO 3572: move visitor to a new class file and make it public !?
+    //TODO 3601: Rename to SqlColumnDefinitionFindingVisitor, extract all LINQ-specific code, move rest to Persistence\Rdbms\Model
+    //TODO 3601: Add specific unit tests
     private class SqlColumnListColumnDefinitionVisitor : IColumnDefinitionVisitor
     {
-      private readonly IList<SimpleColumnDefinition> columnDefinitions;
-      private readonly string _tableAlias;
+      //TODO 3601: Add a public static FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition>) method
+
+      private readonly IList<SimpleColumnDefinition> _columnDefinitions; //TODO 3601: Becomes a list of SimpleColumnDefinitions
+      private readonly string _tableAlias; //TODO 3601: Remove
 
       public SqlColumnListColumnDefinitionVisitor (string tableAlias)
       {
         ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
         
         _tableAlias = tableAlias;
-        columnDefinitions = new List<SimpleColumnDefinition>();
+        _columnDefinitions = new List<SimpleColumnDefinition>();
       }
 
       public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
       {
         ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
 
-        columnDefinitions.Add (simpleColumnDefinition);
+        _columnDefinitions.Add (simpleColumnDefinition);
       }
 
       public void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
@@ -66,9 +69,12 @@ namespace Remotion.Data.DomainObjects.Linq
 
       }
 
+      //TODO 3601: GetSimpleColumns, return ReadOnlyCollection (AsReadOnly)
       public IEnumerable<SqlColumnDefinitionExpression> GetSqlColumns ()
       {
-        return columnDefinitions.Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, _tableAlias, cd.Name, false));
+        //TODO 3601: Move to ResolveEntityMethod
+        //TODO 3601: Use IsPartOFPrimaryKey property
+        return _columnDefinitions.Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, _tableAlias, cd.Name, false));
       }
     }
 
@@ -81,10 +87,12 @@ namespace Remotion.Data.DomainObjects.Linq
       var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
       var visitor = new SqlColumnListColumnDefinitionVisitor(tableAlias);
-      foreach (var columnDefinition in ((IEntityDefinition) classDefinition.StorageEntityDefinition).GetColumns ())
+      var entityDefinition = (IEntityDefinition) classDefinition.StorageEntityDefinition;
+      foreach (var columnDefinition in entityDefinition.GetColumns ())
         columnDefinition.Accept (visitor);
       var tableColumns = visitor.GetSqlColumns().ToArray();
 
+      //TODO 3572: Find the primary key from the tableColumns => use the First column that has its IsPrimaryKey set to true
       return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, tableColumns);
     }
 

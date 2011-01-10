@@ -52,8 +52,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
       var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
 
-      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy);
-      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName(tableName), true, new[] { idColumnDefinition });
+      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
+      //TODO 3601: Use SimpleColumnDefinitionFindingVisitor to get all SimpleColumnDefinitions from the columns above, find all whose IsPartOfPrimaryKey flag is true, use those columns for the PK constraint
+      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName (tableName), true, new[] { idColumnDefinition });
       
       return new TableDefinition (
           _storageProviderDefinition,
