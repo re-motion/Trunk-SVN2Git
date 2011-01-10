@@ -41,6 +41,7 @@
         <include name="Properties/**/*.cs" />
         <include name="Infrastructure/**/*.cs" />
         <include name="UI/**/*.cs" />
+        <include name="Factories/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
       <references failonempty="true">

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.Factories;
 using Remotion.Web.Legacy.Infrastructure;
 using Remotion.Web.Legacy.Infrastructure.Factories;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
@@ -52,9 +53,7 @@ namespace Remotion.Web.Legacy
       yield return new ServiceConfigurationEntry (typeof (IWebTreeViewRenderer), typeof (WebTreeViewQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IThemedResourceUrlResolver), typeof (QuirksModeResourceUrlResolver), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IThemedResourceUrlResolverFactory), typeof (QuirksModeResourceUrlResolverFactory), LifetimeKind.Singleton);
-      
-      //TODO 3522: resources are not found
-      //yield return new ServiceConfigurationEntry (typeof (IResourceUrlFactory), typeof (QuirksModeResourceUrlFactory), LifetimeKind.Singleton);
+      yield return new ServiceConfigurationEntry (typeof (IResourceUrlFactory), typeof (QuirksModeResourceUrlFactory), LifetimeKind.Singleton);
     }
   }
 }

@@ -22,12 +22,12 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementati
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.Legacy
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy
       yield return new ServiceConfigurationEntry (typeof (IBocRowRenderer), typeof (BocRowQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IBocSelectorColumnRenderer), typeof (BocSelectorColumnQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IBocSimpleColumnRenderer), typeof (BocSimpleColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocBooleanValueResourceSetFactory), typeof (BocBooleanValueResourceSetFactory), LifetimeKind.Singleton);
+      yield return new ServiceConfigurationEntry (typeof (IBocBooleanValueResourceSetFactory), typeof (BocBooleanValueQuirksModeResourceSetFactory), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IBocEnumValueRenderer), typeof (BocEnumValueQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IBocDateTimeValueRenderer), typeof (BocDateTimeValueQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IBocBooleanValueRenderer), typeof (BocBooleanValueQuirksModeRenderer), LifetimeKind.Singleton);
