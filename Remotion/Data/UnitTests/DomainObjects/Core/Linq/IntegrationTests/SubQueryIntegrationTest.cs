@@ -141,14 +141,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2916")]
     public void FirstOrDefault_WithEntity_InSelectAndWhere ()
     {
-      var query = from e in QueryFactory.CreateLinqQuery<Order> ()
-                  where e.OrderItems.FirstOrDefault () != null
-                  select e.OrderItems.OrderBy(oi => oi.ID).FirstOrDefault ();
+      var query = from o in QueryFactory.CreateLinqQuery<Order> ()
+                  where o.OrderItems.FirstOrDefault () != null
+                  select o.OrderItems.OrderBy(oi => oi.ID).FirstOrDefault ();
 
-      CheckQueryResult (query, DomainObjectIDs.OrderItem1);
+      CheckQueryResult (
+          query, 
+          DomainObjectIDs.OrderItem2, 
+          DomainObjectIDs.OrderItem3, 
+          DomainObjectIDs.OrderItem4, 
+          DomainObjectIDs.OrderItem5);
     }
 
     [Test]
