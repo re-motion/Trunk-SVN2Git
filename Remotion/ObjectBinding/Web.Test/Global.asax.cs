@@ -44,6 +44,7 @@ using Remotion.Web.Configuration;
 using Remotion.Web.Legacy;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using System.Linq;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 using LogManager = log4net.LogManager;
 
 namespace OBWTest
@@ -96,43 +97,18 @@ namespace OBWTest
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()
           .AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
 
-      //if (PreferQuirksModeRendering)
-      //{
-      //  DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator ();
-      //  foreach (var entry in LegacyServiceConfigurationService.GetConfiguration ())
-      //    defaultServiceLocator.Register (entry);
-      //  foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration ())
-      //    defaultServiceLocator.Register (entry);
-
-      //  ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
-
-      //  Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<ITabbedMultiViewRenderer> () is TabbedMultiViewQuirksModeRenderer);
-      //  Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
-      //}
       if (PreferQuirksModeRendering)
       {
-        var builder = new ContainerBuilder();
-        var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
-        RegisterTypes(builder, DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (typeDiscoveryService));
-        RegisterTypes (builder, LegacyServiceConfigurationService.GetConfiguration());
-        RegisterTypes (builder, BocLegacyServiceConfigurationService.GetConfiguration ());
-        
-        var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
-        ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
+        DefaultServiceLocator defaultServiceLocator = new DefaultServiceLocator ();
+        foreach (var entry in LegacyServiceConfigurationService.GetConfiguration ())
+          defaultServiceLocator.Register (entry);
+        foreach (var entry in BocLegacyServiceConfigurationService.GetConfiguration ())
+          defaultServiceLocator.Register (entry);
+
+        ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 
         Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocListRenderer> () is BocListQuirksModeRenderer);
         Assertion.IsTrue (SafeServiceLocator.Current.GetInstance<IBocTextValueRenderer> () is BocTextValueQuirksModeRenderer);
-      }
-    }
-
-    private void RegisterTypes (ContainerBuilder builder, IEnumerable<ServiceConfigurationEntry> configuration)
-    {
-      foreach (var entry in configuration)
-      {
-        if (entry.Lifetime == LifetimeKind.Singleton)
-          builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerLifetimeScope ();
-        else
-          builder.RegisterType (entry.ImplementationType).As (entry.ServiceType).InstancePerDependency ();
       }
     }
 

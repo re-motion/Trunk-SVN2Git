@@ -31,17 +31,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   {
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
     private readonly IBocRowRenderer _rowRenderer;
-    private readonly BocColumnRenderer[] _columnRenderers;
-
-    public BocListTableBlockQuirksModeRenderer (
-        BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer, BocColumnRenderer[] columnRenderers)
+    
+    public BocListTableBlockQuirksModeRenderer (BocListQuirksModeCssClassDefinition cssClasses, IBocRowRenderer rowRenderer)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("rowRenderer", rowRenderer);
 
       _cssClasses = cssClasses;
       _rowRenderer = rowRenderer;
-      _columnRenderers = columnRenderers;
     }
 
     public BocListQuirksModeCssClassDefinition CssClasses
@@ -232,7 +229,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup (BocListRenderingContext renderingContext)
     {
-      BocColumnRenderer[] columnRenderers = _columnRenderers;
+      BocColumnRenderer[] columnRenderers = renderingContext.ColumnRenderers;
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Implementation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Infrastructure
@@ -23,6 +24,7 @@ namespace Remotion.Web.Infrastructure
   /// Defines a method for resolving resource urls for the current <see cref="ResourceTheme"/>.
   /// The <see cref="IThemedResourceUrlResolver"/> is only intended for use with controls located <b>Remotion.Web</b> that do not have their own renderers.
   /// </summary>
+  [ConcreteImplementation(typeof(ThemedResourceUrlResolver),Lifetime = LifetimeKind.Singleton)]
   public interface IThemedResourceUrlResolver
   {
     string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl);

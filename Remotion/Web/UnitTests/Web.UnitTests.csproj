@@ -226,6 +226,7 @@
     <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\WebTabRendererAdapterTest.cs" />
     <Compile Include="Core\UI\Controls\WebTreeViewImplementation\IWebTreeViewRendererTest.cs" />
     <Compile Include="Core\UI\HtmlHeadAppenderTest.cs" />
+    <Compile Include="LegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
     </Compile>

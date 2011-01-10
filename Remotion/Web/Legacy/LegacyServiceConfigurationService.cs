@@ -40,11 +40,13 @@ namespace Remotion.Web.Legacy
   {
     public static IEnumerable<ServiceConfigurationEntry> GetConfiguration ()
     {
-      yield return new ServiceConfigurationEntry (typeof (IDatePickerButtonRenderer), typeof (DatePickerButtonQuirksModeRenderer), LifetimeKind.Singleton);
+      yield return new ServiceConfigurationEntry (typeof (IClientScriptBehavior), typeof (QuirksModeClientScriptBehavior), LifetimeKind.Singleton);
+      yield return new ServiceConfigurationEntry (typeof (IResourceUrlFactory), typeof (QuirksModeResourceUrlFactory), LifetimeKind.Singleton);
+      yield return
+          new ServiceConfigurationEntry (typeof (IDatePickerButtonRenderer), typeof (DatePickerButtonQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IDatePickerPageRenderer), typeof (DatePickerPageQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IDropDownMenuRenderer), typeof (DropDownMenuQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IListMenuRenderer), typeof (ListMenuQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IClientScriptBehavior), typeof (QuirksModeClientScriptBehavior), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (ISingleViewRenderer), typeof (SingleViewQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (ITabbedMenuRenderer), typeof (TabbedMenuQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (ITabbedMultiViewRenderer), typeof (TabbedMultiViewRenderer), LifetimeKind.Singleton);
@@ -52,8 +54,9 @@ namespace Remotion.Web.Legacy
       yield return new ServiceConfigurationEntry (typeof (IWebTabStripRenderer), typeof (WebTabStripQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IWebTreeViewRenderer), typeof (WebTreeViewQuirksModeRenderer), LifetimeKind.Singleton);
       yield return new ServiceConfigurationEntry (typeof (IThemedResourceUrlResolver), typeof (QuirksModeResourceUrlResolver), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IThemedResourceUrlResolverFactory), typeof (QuirksModeResourceUrlResolverFactory), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IResourceUrlFactory), typeof (QuirksModeResourceUrlFactory), LifetimeKind.Singleton);
+      yield return
+          new ServiceConfigurationEntry (
+              typeof (IThemedResourceUrlResolverFactory), typeof (QuirksModeResourceUrlResolverFactory), LifetimeKind.Singleton);
     }
   }
 }

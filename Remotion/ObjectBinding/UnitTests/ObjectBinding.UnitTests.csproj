@@ -83,6 +83,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseTest.cs" />
