@@ -15,13 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Web;
-using Autofac;
-using AutofacContrib.CommonServiceLocator;
 using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Implementation;
@@ -31,21 +28,15 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.Legacy;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.Legacy;
-using Remotion.Web.Legacy.UI.Controls.Rendering;
-using System.Linq;
-using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
-using LogManager = log4net.LogManager;
 
 namespace OBWTest
 {
