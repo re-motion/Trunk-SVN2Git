@@ -30,20 +30,23 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
-    //TODO Review 3601: Rename to SqlColumnDefinitionFindingVisitor, extract all LINQ-specific code, move rest to Persistence\Rdbms\Model
-    //TODO Review 3601: Add specific unit tests
-    private class SqlColumnListColumnDefinitionVisitor : IColumnDefinitionVisitor
+    //TODO Review 3601: move to Persistence\Rdbms\Model and add specific unit tests
+    public class SqlColumnDefinitionFindingVisitor : IColumnDefinitionVisitor
     {
-      //TODO Review 3601: Add a public static FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition>) method
-
-      private readonly IList<SimpleColumnDefinition> _columnDefinitions; //TODO Review 3601: Becomes a list of SimpleColumnDefinitions
-      private readonly string _tableAlias; //TODO Review 3601: Remove
-
-      public SqlColumnListColumnDefinitionVisitor (string tableAlias)
+      public static IEnumerable<SimpleColumnDefinition> FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columnDefinitions)
       {
-        ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
-        
-        _tableAlias = tableAlias;
+        ArgumentUtility.CheckNotNull ("columnDefinitions", columnDefinitions);
+
+        var visitor = new SqlColumnDefinitionFindingVisitor();
+        foreach (var columnDefinition in columnDefinitions)
+          columnDefinition.Accept (visitor);
+        return visitor.GetSimpleColumns();
+      }
+
+      private readonly List<SimpleColumnDefinition> _columnDefinitions;
+
+      public SqlColumnDefinitionFindingVisitor ()
+      {
         _columnDefinitions = new List<SimpleColumnDefinition>();
       }
 
@@ -66,15 +69,11 @@ namespace Remotion.Data.DomainObjects.Linq
       public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
       {
         ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
-
       }
 
-      //TODO Review 3601: GetSimpleColumns, return ReadOnlyCollection (AsReadOnly)
-      public IEnumerable<SqlColumnDefinitionExpression> GetSqlColumns ()
+      public IEnumerable<SimpleColumnDefinition> GetSimpleColumns ()
       {
-        //TODO Review 3601: Move to ResolveEntityMethod
-        //TODO Review 3601: Use IsPartOFPrimaryKey property
-        return _columnDefinitions.Select (cd => new SqlColumnDefinitionExpression (cd.PropertyType, _tableAlias, cd.Name, false));
+        return _columnDefinitions.AsReadOnly();
       }
     }
 
@@ -85,12 +84,12 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
-
-      var visitor = new SqlColumnListColumnDefinitionVisitor(tableAlias);
       var entityDefinition = (IEntityDefinition) classDefinition.StorageEntityDefinition;
-      foreach (var columnDefinition in entityDefinition.GetColumns ())
-        columnDefinition.Accept (visitor);
-      var tableColumns = visitor.GetSqlColumns().ToArray();
+
+      //TODO Review 3601: Use IsPartOFPrimaryKey property !?
+      var tableColumns =
+          SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (entityDefinition.GetColumns()).Select (
+              cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, false)).ToArray();
 
       //TODO 3572: Find the primary key from the tableColumns => use the First column that has its IsPrimaryKey set to true
       return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, tableColumns);
