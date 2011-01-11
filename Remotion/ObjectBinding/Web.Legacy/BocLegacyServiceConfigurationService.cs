@@ -34,56 +34,81 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.Legacy
 {
+  /// <summary>
+  /// Provides the service configuration for the legacy rendering support of <b>Remotion.ObjectBinding.Web</b>.
+  /// </summary>
   public static class BocLegacyServiceConfigurationService
   {
     public static IEnumerable<ServiceConfigurationEntry> GetConfiguration ()
     {
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (BocListQuirksModeCssClassDefinition), typeof (BocListQuirksModeCssClassDefinition), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocIndexColumnRenderer), typeof (BocIndexColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocSelectorColumnRenderer), typeof (BocSelectorColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocRowRenderer), typeof (BocRowQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocListTableBlockRenderer), typeof (BocListTableBlockQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocCommandColumnRenderer), typeof (BocCommandColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocCompoundColumnRenderer), typeof (BocCompoundColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocCustomColumnRenderer), typeof (BocCustomColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocDropDownMenuColumnRenderer), typeof (BocDropDownMenuColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocListMenuBlockRenderer), typeof (BocListMenuBlockQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocListNavigationBlockRenderer), typeof (BocListNavigationBlockQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocListRenderer), typeof (BocListQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocRowEditModeColumnRenderer), typeof (BocRowEditModeColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocSimpleColumnRenderer), typeof (BocSimpleColumnQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocBooleanValueResourceSetFactory), typeof (BocBooleanValueQuirksModeResourceSetFactory), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocEnumValueRenderer), typeof (BocEnumValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocDateTimeValueRenderer), typeof (BocDateTimeValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocBooleanValueRenderer), typeof (BocBooleanValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocCheckBoxRenderer), typeof (BocCheckBoxQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return new ServiceConfigurationEntry (typeof (IBocTextValueRenderer), typeof (BocTextValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocMultilineTextValueRenderer), typeof (BocMultilineTextValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (typeof (IBocReferenceValueRenderer), typeof (BocReferenceValueQuirksModeRenderer), LifetimeKind.Singleton);
-      yield return
-          new ServiceConfigurationEntry (
-              typeof (IBocAutoCompleteReferenceValueRenderer), typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), LifetimeKind.Singleton);
+      yield return new ServiceConfigurationEntry (
+          typeof (BocListQuirksModeCssClassDefinition), typeof (BocListQuirksModeCssClassDefinition), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocIndexColumnRenderer), typeof (BocIndexColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocSelectorColumnRenderer), typeof (BocSelectorColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocRowRenderer), typeof (BocRowQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocListTableBlockRenderer), typeof (BocListTableBlockQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocCommandColumnRenderer), typeof (BocCommandColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocCompoundColumnRenderer), typeof (BocCompoundColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocCustomColumnRenderer), typeof (BocCustomColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocDropDownMenuColumnRenderer), typeof (BocDropDownMenuColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocListMenuBlockRenderer), typeof (BocListMenuBlockQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocListNavigationBlockRenderer), typeof (BocListNavigationBlockQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocListRenderer), typeof (BocListQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocRowEditModeColumnRenderer), typeof (BocRowEditModeColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocSimpleColumnRenderer), typeof (BocSimpleColumnQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocBooleanValueResourceSetFactory), typeof (BocBooleanValueQuirksModeResourceSetFactory), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocEnumValueRenderer), typeof (BocEnumValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocDateTimeValueRenderer), typeof (BocDateTimeValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocBooleanValueRenderer), typeof (BocBooleanValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocCheckBoxRenderer), typeof (BocCheckBoxQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocTextValueRenderer), typeof (BocTextValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocMultilineTextValueRenderer), typeof (BocMultilineTextValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocReferenceValueRenderer), typeof (BocReferenceValueQuirksModeRenderer), LifetimeKind.Singleton);
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocAutoCompleteReferenceValueRenderer), typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), LifetimeKind.Singleton);
     }
   }
 }
