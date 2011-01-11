@@ -35,11 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _columns = new[] { new SimpleColumnDefinition ("COL1", typeof (string), "varchar", true) };
+      _columns = new[] { new SimpleColumnDefinition ("COL1", typeof (string), "varchar", true, false) };
       _constraints = new[]
                      {
                          new PrimaryKeyConstraintDefinition (
-                             "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false) })
+                             "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false, false) })
                      };
       _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns, _constraints);
     }

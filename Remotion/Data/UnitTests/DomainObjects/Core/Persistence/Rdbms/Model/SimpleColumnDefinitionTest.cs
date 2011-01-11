@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _type = typeof (string);
-      _columnDefinition = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+      _columnDefinition = new SimpleColumnDefinition ("Name", _type, "varchar", true, true);
     }
 
     [Test]
@@ -45,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_columnDefinition.PropertyType, Is.SameAs(_type));
       Assert.That (_columnDefinition.StorageType, Is.EqualTo("varchar"));
       Assert.That (_columnDefinition.IsNullable, Is.True);
+      Assert.That (_columnDefinition.IsPartOfPrimaryKey, Is.True);
     }
 
     [Test]
@@ -69,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_True ()
     {
-      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.True);
       Assert.That (_columnDefinition.Equals ((object) other), Is.True);
@@ -87,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentName ()
     {
-      var other = new SimpleColumnDefinition ("Name2", _type, "varchar", true);
+      var other = new SimpleColumnDefinition ("Name2", _type, "varchar", true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -96,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentPropertyType ()
     {
-      var other = new SimpleColumnDefinition ("Name", typeof (object), "varchar", true);
+      var other = new SimpleColumnDefinition ("Name", typeof (object), "varchar", true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -105,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentStorageType ()
     {
-      var other = new SimpleColumnDefinition ("Name", _type, "varchar2", true);
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar2", true, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -114,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentNullability ()
     {
-      var other = new SimpleColumnDefinition ("Name", _type, "varchar", false);
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", false, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);
@@ -130,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetHashCode_EqualObjects ()
     {
-      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true);
+      var other = new SimpleColumnDefinition ("Name", _type, "varchar", true, false);
 
       Assert.That (_columnDefinition.GetHashCode (), Is.EqualTo (other.GetHashCode ()));
     }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
@@ -30,69 +29,18 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
-    //TODO Review 3601: move to Persistence\Rdbms\Model and add specific unit tests
-    public class SqlColumnDefinitionFindingVisitor : IColumnDefinitionVisitor
-    {
-      public static IEnumerable<SimpleColumnDefinition> FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columnDefinitions)
-      {
-        ArgumentUtility.CheckNotNull ("columnDefinitions", columnDefinitions);
-
-        var visitor = new SqlColumnDefinitionFindingVisitor();
-        foreach (var columnDefinition in columnDefinitions)
-          columnDefinition.Accept (visitor);
-        return visitor.GetSimpleColumns();
-      }
-
-      private readonly List<SimpleColumnDefinition> _columnDefinitions;
-
-      public SqlColumnDefinitionFindingVisitor ()
-      {
-        _columnDefinitions = new List<SimpleColumnDefinition>();
-      }
-
-      public void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
-
-        _columnDefinitions.Add (simpleColumnDefinition);
-      }
-
-      public void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);
-
-        idColumnDefinition.ObjectIDColumn.Accept (this);
-        if (idColumnDefinition.HasClassIDColumn)
-          idColumnDefinition.ClassIDColumn.Accept (this);
-      }
-
-      public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
-      {
-        ArgumentUtility.CheckNotNull ("nullColumnDefinition", nullColumnDefinition);
-      }
-
-      public IEnumerable<SimpleColumnDefinition> GetSimpleColumns ()
-      {
-        return _columnDefinitions.AsReadOnly();
-      }
-    }
-
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
-      var propertyInfo = typeof (DomainObject).GetProperty ("ID");
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
       var entityDefinition = (IEntityDefinition) classDefinition.StorageEntityDefinition;
-
-      //TODO Review 3601: Use IsPartOFPrimaryKey property !?
       var tableColumns =
           SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (entityDefinition.GetColumns()).Select (
-              cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, false)).ToArray();
+              cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
 
-      //TODO 3572: Find the primary key from the tableColumns => use the First column that has its IsPrimaryKey set to true
-      return new SqlEntityDefinitionExpression (classDefinition.ClassType, tableAlias, null, primaryKeyColumn, tableColumns);
+      return new SqlEntityDefinitionExpression (
+          classDefinition.ClassType, tableAlias, null, tableColumns.Where (c => c.IsPrimaryKey).First(), tableColumns);
     }
 
     public Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition, bool isPrimaryKeyColumn)

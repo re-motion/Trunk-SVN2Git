@@ -48,15 +48,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = GetTableName (classDefinition);
-      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
-      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
-      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+      var columns = GetColumnsDefinitionForEntity(classDefinition);
 
-      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
-      // TODO Review 3601: Use SimpleColumnDefinitionFindingVisitor to get all SimpleColumnDefinitions from the columns above, find all whose IsPartOfPrimaryKey flag is true, use those columns for the PK constraint
-      // TODO Review 3601: After this, refactor the column list creation into a common GetColumnDefinitionsForEntity method; reuse in CreateFilterViewDefinition and CreateUnionViewDefinition
-      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (GetPrimaryKeyName (tableName), true, new[] { idColumnDefinition });
-      
+      var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
+          GetPrimaryKeyName (tableName),
+          true,
+          SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
+
       return new TableDefinition (
           _storageProviderDefinition,
           tableName,
@@ -70,11 +68,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
 
-      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
-      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
-      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+      var columns = GetColumnsDefinitionForEntity (classDefinition);
       
-      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy);
       return new FilterViewDefinition (
           _storageProviderDefinition,
           GetViewName (classDefinition),
@@ -88,11 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
 
-      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
-      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
-      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
-
-      var columns = new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToArray();
+      var columns = GetColumnsDefinitionForEntity (classDefinition);
 
       // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629; include test)
       if (!unionedEntities.Any())
@@ -127,18 +118,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
     {
-      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ()).Select (cd => cd.ID);
+      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()).Select (cd => cd.ID);
     }
 
     protected virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      
+
       Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent); //TODO 3620: throw exception
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
-
         var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
         propertyDefinition.SetStorageProperty (storageProperty);
       }
@@ -154,6 +144,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       return columnDefinition;
+    }
+
+    protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
+    {
+      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
+      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
+      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+
+      return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList ();
     }
 
     protected virtual IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)

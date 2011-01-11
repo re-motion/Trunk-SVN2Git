@@ -54,7 +54,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           GetColumnName (propertyDefinition.PropertyInfo),
           propertyDefinition.PropertyType,
           storageType,
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition));
+          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition), 
+          false);
 
       var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
       if (relationEndPointDefinition == null)
@@ -65,17 +66,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public virtual IDColumnDefinition CreateIDColumnDefinition ()
     {
-      //TODO Review 3601: Pass "true" for IsPartOfPrimaryKeyFlag here (and test)
-      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (Guid), _storageTypeCalculator.SqlDataTypeObjectID, false);
-      //TODO Review 3601: Pass false here
-      var classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false);
+      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
+      var classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
 
       return new IDColumnDefinition (objectIDColumn, classIDColumnDefinition);
     }
 
     public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()
     {
-      return new SimpleColumnDefinition ("Timestamp", typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false);
+      return new SimpleColumnDefinition ("Timestamp", typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
     protected virtual IColumnDefinition CreateRelationColumnDefinition (
@@ -95,7 +94,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             RdbmsProvider.GetClassIDColumnName (GetColumnName (propertyDefinition.PropertyInfo)),
             typeof (string),
             _storageTypeCalculator.SqlDataTypeClassID,
-            true);
+            true,
+            false);
 
         return new IDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }

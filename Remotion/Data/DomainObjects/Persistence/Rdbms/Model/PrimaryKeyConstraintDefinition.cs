@@ -28,17 +28,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class PrimaryKeyConstraintDefinition : ITableConstraintDefinition
   {
     private readonly string _constraintName;
-    private readonly bool _clustered;
-    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
+    private readonly bool _isClustered;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _columns;
 
-    //TODO Review 3601: Change to store SimpleColumnDefinitions only
-    public PrimaryKeyConstraintDefinition (string constraintName, bool clustered, IEnumerable<IColumnDefinition> columns)
+    public PrimaryKeyConstraintDefinition (string constraintName, bool isClustered, IEnumerable<SimpleColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
       _constraintName = constraintName;
-      _clustered = clustered;
+      _isClustered = isClustered;
       _columns = columns.ToList().AsReadOnly();
     }
 
@@ -47,13 +46,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraintName; }
     }
 
-    // TODO Review 3601: Rename to IsClustered/_isClustered
-    public bool Clustered
+    public bool IsClustered
     {
-      get { return _clustered; }
+      get { return _isClustered; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> Columns
+    public ReadOnlyCollection<SimpleColumnDefinition> Columns
     {
       get { return _columns; }
     }

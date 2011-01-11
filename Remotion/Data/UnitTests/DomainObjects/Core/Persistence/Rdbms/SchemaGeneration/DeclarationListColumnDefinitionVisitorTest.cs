@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitSimpleColumnDefinition_Nullable ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
+      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitSimpleColumnDefinition_NotNullable ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", false);
+      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", false, false);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
@@ -66,8 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitIDColumnDefinition ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
-      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, false);
+      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false, false);
       var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitIDColumnDefinition_ClassIDColumnIsNull ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, false);
       var column = new IDColumnDefinition (objectIDColumn, null);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");

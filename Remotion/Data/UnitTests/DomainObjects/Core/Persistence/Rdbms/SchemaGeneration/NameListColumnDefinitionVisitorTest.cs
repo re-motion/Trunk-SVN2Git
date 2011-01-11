@@ -35,14 +35,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, true, _sqlDialectStub);
-      _visitorIgnoringClassIDColumns = new NameListColumnDefinitionVisitor (true, false, _sqlDialectStub);
+      _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
+      _visitorIgnoringClassIDColumns = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
     }
 
     [Test]
     public void VisitSimpleColumnDefinition ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
+      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
@@ -55,8 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitSimpleColumnDefinition_SecondColumn ()
     {
-      var column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true);
-      var column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true);
+      var column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
+      var column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true, false);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitIDColumnDefinition ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
-      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, false);
+      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false, false);
       var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
@@ -85,24 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void VisitColumnDefinition_IgnoringClassIDs ()
-    {
-      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
-      var classIDColumn = new SimpleColumnDefinition ("C1ClassID", typeof (int), "integer", false);
-      var column = new IDColumnDefinition (objectIDColumn, classIDColumn);
-
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
-      
-      _visitorIgnoringClassIDColumns.VisitIDColumnDefinition (column);
-      var result = _visitorIgnoringClassIDColumns.GetNameList ();
-
-      Assert.That (result, Is.EqualTo ("[C1ID]"));
-    }
-
-    [Test]
     public void VisitIDColumnDefinition_ClassIDColumnIsNull ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false);
+      var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, true);
       var column = new IDColumnDefinition (objectIDColumn, null);
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1ID")).Return ("[C1ID]");
@@ -130,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var column = new NullColumnDefinition ();
 
-      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false, true, _sqlDialectStub);
+      var visitorNotAllowingNulls = new NameListColumnDefinitionVisitor (false, _sqlDialectStub);
       visitorNotAllowingNulls.VisitNullColumnDefinition (column);
     }
   }

@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitPrimaryKeyConstraintDefinition ()
     {
-      var column1 = new SimpleColumnDefinition ("COL1", typeof (ObjectID), "uniqueidentifier", false);
-      var column2 = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", true);
+      var column1 = new SimpleColumnDefinition ("COL1", typeof (ObjectID), "uniqueidentifier", false, false);
+      var column2 = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", true, false);
       var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", true, new[] { column1, column2 });
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("PK_Test")).Return ("[PK_Test]");
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only one primary key constraint is allowed.")]
     public void VisitPrimaryKeyConstraintDefinition_Twice ()
     {
-      var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", true, new IColumnDefinition[0]);
+      var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", true, new SimpleColumnDefinition[0]);
 
       _visitor.VisitPrimaryKeyConstraintDefinition (primaryKeyConstraint);
       _visitor.VisitPrimaryKeyConstraintDefinition (primaryKeyConstraint);

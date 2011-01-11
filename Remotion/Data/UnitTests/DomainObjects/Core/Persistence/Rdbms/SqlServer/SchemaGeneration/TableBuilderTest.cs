@@ -364,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           maxLength,
           storageClass);
       propertyDefinition.SetStorageProperty (
-          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
+          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true, false));
       return propertyDefinition;
     }
   }

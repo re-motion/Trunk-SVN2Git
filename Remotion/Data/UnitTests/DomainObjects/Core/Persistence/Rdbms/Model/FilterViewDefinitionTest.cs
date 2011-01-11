@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true);
+      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
+      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
+      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
       _entityDefinition = new TableDefinition (
           _storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 }, new ITableConstraintDefinition[0]);
 

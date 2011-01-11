@@ -20,7 +20,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  // TODO Review 3601: Docs missing
+  /// <summary>
+  /// The <see cref="PrimaryKeyDeclarationTableConstraintDefinitionVisitor"/> visits the <see cref="PrimaryKeyConstraintDefinition"/> and generates 
+  /// the  corresponding constraint statement for it.
+  /// </summary>
   public class PrimaryKeyDeclarationTableConstraintDefinitionVisitor : ITableConstraintDefinitionVisitor
   {
     private string _constraintStatement;
@@ -38,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       if (!string.IsNullOrEmpty (_constraintStatement))
         throw new InvalidOperationException ("Only one primary key constraint is allowed.");
 
-      var nameListVisitor = new NameListColumnDefinitionVisitor (false, false, _sqlDialect);
+      var nameListVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
       foreach (var columnDefinition in primaryKeyConstraintDefinition.Columns)
         columnDefinition.Accept (nameListVisitor);
 

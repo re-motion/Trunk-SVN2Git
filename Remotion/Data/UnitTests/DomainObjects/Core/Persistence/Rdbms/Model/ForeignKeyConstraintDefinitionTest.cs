@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
-      _referencingColumn = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false);
-      _referencedColumn = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", false);
+      _referencingColumn = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false, false);
+      _referencedColumn = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", false, false);
 
       _referencedTable = new TableDefinition (
           _storageProviderDefinition, "TableName", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The referencing and referenced column sets must have the same number of items.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The referencing and referenced column sets must have the same number of items.\r\nParameter name: referencingColumns")]
     public void Initialization_InvalidColumns ()
     {
       new ForeignKeyConstraintDefinition ("Test", _referencedTable, new[] { _referencingColumn }, new IColumnDefinition[0]);

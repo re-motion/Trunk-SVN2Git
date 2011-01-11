@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_DifferentType ()
     {
-      var other = new SimpleColumnDefinition ("Test", typeof (int), "kk", false);
+      var other = new SimpleColumnDefinition ("Test", typeof (int), "kk", false, false);
 
       Assert.That (_columnDefinition.Equals (other), Is.False);
       Assert.That (_columnDefinition.Equals ((object) other), Is.False);

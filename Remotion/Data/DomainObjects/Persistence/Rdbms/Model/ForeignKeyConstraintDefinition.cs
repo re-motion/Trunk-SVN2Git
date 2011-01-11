@@ -46,8 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _referencedColumns = referencedColumns.ToList().AsReadOnly();
 
       if (_referencingColumns.Count != _referencedColumns.Count)
-        // TODO Review 3601: Throw ArgumentException instead (for "referencingColumns")
-        throw new InvalidOperationException ("The referencing and referenced column sets must have the same number of items.");
+        throw new ArgumentException ("The referencing and referenced column sets must have the same number of items.", "referencingColumns");
     }
 
     public string ConstraintName

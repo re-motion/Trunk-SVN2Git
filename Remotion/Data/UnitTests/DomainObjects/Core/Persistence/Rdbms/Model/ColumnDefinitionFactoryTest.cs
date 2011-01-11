@@ -299,10 +299,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (objectIDColumn.IsNullable, Is.True);
       Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (objectIDColumn.StorageType, Is.EqualTo ("test"));
+      Assert.That (objectIDColumn.IsPartOfPrimaryKey, Is.False);
       Assert.That (classIDColumn.Name, Is.EqualTo ("DistributorIDClassID"));
       Assert.That (classIDColumn.IsNullable, Is.True);
       Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (classIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
 
     [Test]
@@ -329,12 +331,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (objectIDColumn.Name, Is.EqualTo ("ID"));
       Assert.That (objectIDColumn.IsNullable, Is.False);
-      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (Guid)));
+      Assert.That (objectIDColumn.IsPartOfPrimaryKey, Is.True);
+      Assert.That (objectIDColumn.PropertyType, Is.SameAs (typeof (ObjectID)));
       Assert.That (objectIDColumn.StorageType, Is.EqualTo ("guid"));
       Assert.That (classIDColumn.Name, Is.EqualTo ("ClassID"));
       Assert.That (classIDColumn.IsNullable, Is.False);
       Assert.That (classIDColumn.PropertyType, Is.SameAs (typeof (string)));
       Assert.That (classIDColumn.StorageType, Is.EqualTo ("varchar(100)"));
+      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
     }
 
     [Test]
@@ -346,6 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result.IsNullable, Is.False);
       Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
       Assert.That (result.StorageType, Is.EqualTo ("rowversion"));
+      Assert.That (result.IsPartOfPrimaryKey, Is.False);
     }
 
     private void StubStorageTypeCalculator (PropertyDefinition propertyDefinition)

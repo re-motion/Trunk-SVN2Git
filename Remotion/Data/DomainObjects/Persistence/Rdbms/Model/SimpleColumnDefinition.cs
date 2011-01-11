@@ -19,7 +19,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  //TODO Review 3601: Add bool IsPartOfPrimaryKey flag
   /// <summary>
   /// Defines a column in a SQL database.
   /// </summary>
@@ -28,9 +27,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly string _name;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
+    private readonly bool _isPartOfPrimaryKey;
     private readonly string _storageType;
 
-    public SimpleColumnDefinition (string name, Type propertyType, string storageType, bool isNullable)
+    public SimpleColumnDefinition (string name, Type propertyType, string storageType, bool isNullable, bool isPartOfPrimaryKey)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
@@ -40,6 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _propertyType = propertyType;
       _storageType = storageType;
       _isNullable = isNullable;
+      _isPartOfPrimaryKey = isPartOfPrimaryKey;
     }
 
     public string Name
@@ -60,6 +61,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public bool IsNullable
     {
       get { return _isNullable; }
+    }
+
+    public bool IsPartOfPrimaryKey
+    {
+      get { return _isPartOfPrimaryKey; }
     }
 
     public void Accept (IColumnDefinitionVisitor visitor)

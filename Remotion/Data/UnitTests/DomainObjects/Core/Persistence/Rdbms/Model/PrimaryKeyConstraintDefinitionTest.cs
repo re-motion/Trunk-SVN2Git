@@ -32,17 +32,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _column1 = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false);
-      _column2 = new SimpleColumnDefinition ("COL2", typeof (int), "integer", true);
-      _constraint = new PrimaryKeyConstraintDefinition ("Test", true, new IColumnDefinition[] { _column1, _column2 });
+      _column1 = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false, true);
+      _column2 = new SimpleColumnDefinition ("COL2", typeof (int), "integer", true, false);
+      _constraint = new PrimaryKeyConstraintDefinition ("Test", true, new[] {  _column1, _column2 });
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_constraint.ConstraintName, Is.EqualTo ("Test"));
-      Assert.That (_constraint.Clustered, Is.True);
-      Assert.That (_constraint.Columns, Is.EqualTo (new IColumnDefinition[] { _column1, _column2 }));
+      Assert.That (_constraint.IsClustered, Is.True);
+      Assert.That (_constraint.Columns, Is.EqualTo (new[] { _column1, _column2 }));
     }
 
     [Test]

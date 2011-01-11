@@ -46,11 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveEntity ()
     {
       var idColumnDefinition = new IDColumnDefinition (
-          new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false),
-          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false));
+          new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true),
+          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false));
       var idColumnDefinitionWithoutClassIDColumn = new IDColumnDefinition (
-          new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false), null);
-      var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
+          new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false, false), null);
+      var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
       var tableDefinition = new TableDefinition (
           TestDomainStorageProviderDefinition,
           "Test",
@@ -60,14 +60,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
-      var primaryKeyColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
-      var idColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", false);
+      var idColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
       var classIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
       var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "o", "ForeignKey", false);
       var column = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
 
       var expectedExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, primaryKeyColumn, new[] { idColumn, classIdColumn, foreignKeyColumn, column });
+          typeof (Order), "o", null, idColumn, new[] { idColumn, classIdColumn, foreignKeyColumn, column });
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
@@ -197,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           maxLength,
           storageClass);
       propertyDefinition.SetStorageProperty (
-          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true));
+          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true, false));
       return propertyDefinition;
     }
   }

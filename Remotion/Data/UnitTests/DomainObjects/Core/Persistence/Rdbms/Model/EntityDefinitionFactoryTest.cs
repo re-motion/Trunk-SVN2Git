@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -57,8 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _fakeColumnDefinition5;
     private SimpleColumnDefinition _fakeColumnDefinition6;
     private SimpleColumnDefinition _fakeColumnDefinition7;
-    private IDColumnDefinition _fakeIDColumnDefinition;
+    private IDColumnDefinition _fakeObjectIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
+    private SimpleColumnDefinition _fakeIDColumnDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -107,15 +109,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (Supplier).GetProperty ("SupplierQuality"));
       _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true);
-      _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false);
-      _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true);
-      _fakeColumnDefinition4 = new SimpleColumnDefinition ("Test4", typeof (int), "int", false);
-      _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true);
-      _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false);
-      _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true);
-      _fakeIDColumnDefinition = new IDColumnDefinition (_fakeColumnDefinition1, _fakeColumnDefinition2);
-      _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false);
+      _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
+      _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false, false);
+      _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition4 = new SimpleColumnDefinition ("Test4", typeof (int), "int", false, false);
+      _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false, false);
+      _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true, false);
+      _fakeObjectIDColumnDefinition = new IDColumnDefinition (_fakeIDColumnDefinition, _fakeColumnDefinition2);
+      _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
     }
 
     [Test]
@@ -143,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "Order",
           "OrderView",
           new IColumnDefinition[]
-          { _fakeIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3 },
+          { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3 },
           new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }) });
     }
 
@@ -186,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderID,
           "Order",
           "OrderView",
-          new IColumnDefinition[] { _fakeIDColumnDefinition, _fakeTimestampColumnDefinition },
+          new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition },
           new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }) });
     }
 
@@ -273,7 +276,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Distributor" },
           new IColumnDefinition[]
           {
-              _fakeIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
               _fakeColumnDefinition3, _fakeColumnDefinition4
           });
     }
@@ -314,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Partner", "Supplier", "File" },
           new IColumnDefinition[]
           {
-              _fakeIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
               _fakeColumnDefinition3, _fakeColumnDefinition5, _fakeColumnDefinition6
           });
     }
@@ -362,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { fakeUnionEntity1, fakeUnionEntity2 },
           new IColumnDefinition[]
           {
-              _fakeIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3,
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3,
               _fakeColumnDefinition4, _fakeColumnDefinition5, _fakeColumnDefinition6, _fakeColumnDefinition7
           });
     }
@@ -441,13 +444,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         {
           Assert.That (tableConstraints[i], Is.TypeOf (typeof (PrimaryKeyConstraintDefinition)));
           Assert.That (
-              ((PrimaryKeyConstraintDefinition) tableConstraints[i]).Clustered, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.Clustered));
+              ((PrimaryKeyConstraintDefinition) tableConstraints[i]).IsClustered, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.IsClustered));
           Assert.That (
               ((PrimaryKeyConstraintDefinition) tableConstraints[i]).Columns, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.Columns));
         }
 
         //TODO: Check for ForeignKey Constraints
-        // TODO Review 3601: Throw NotSupportedException on unsupported constraints
+        
+        //TODO: Throw NotSupportedException on unsupported constraints
       }
     }
 
@@ -503,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _columnDefinitionFactoryMock
           .Expect (mock => mock.CreateIDColumnDefinition())
-          .Return (_fakeIDColumnDefinition);
+          .Return (_fakeObjectIDColumnDefinition);
       _columnDefinitionFactoryMock
           .Expect (mock => mock.CreateTimestampColumnDefinition())
           .Return (_fakeTimestampColumnDefinition);

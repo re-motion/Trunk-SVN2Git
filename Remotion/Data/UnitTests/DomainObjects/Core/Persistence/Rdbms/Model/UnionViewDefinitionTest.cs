@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("SPID", typeof (UnitTestStorageObjectFactoryStub));
-      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true);
-      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true);
+      _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
+      _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
+      _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
 
       _tableDefinition1 = new TableDefinition (_storageProviderDefinition, "Table1", "View1", new[] { _column1 }, new ITableConstraintDefinition[0]);
       _tableDefinition2 = new TableDefinition (
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList ()
     {
-      var column4 = new SimpleColumnDefinition ("Test", typeof (int), "integer", false);
+      var column4 = new SimpleColumnDefinition ("Test", typeof (int), "integer", false, false);
       var availableColumns = new[] { _column3, column4, _column1 };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList_ChecksByContentNotByReference ()
     {
-      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable);
+      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable, false);
       var availableColumns = new[] { column1WithDifferentReference, _column2, _column3 };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new IColumnDefinition[] { null });
 
       var result =
-          unionViewDefinition.CreateFullColumnList (new[] { new SimpleColumnDefinition ("Test", typeof (string), "varchar", false) }).ToArray();
+          unionViewDefinition.CreateFullColumnList (new[] { new SimpleColumnDefinition ("Test", typeof (string), "varchar", false, false) }).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
