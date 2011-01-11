@@ -32,11 +32,11 @@ namespace Remotion.ObjectBinding.UnitTests
     [Test]
     public void GetConfiguration ()
     {
-      var allServiceTypes =
-          DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly }).Select (e => e.ServiceType).
-              ToList();
-      var legacyServiceTypes =
-          allServiceTypes.Except (new[] { typeof (BocListCssClassDefinition) }).Concat (new[] { typeof (BocListQuirksModeCssClassDefinition) });
+      var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IBocList).Assembly })
+          .Select (e => e.ServiceType).ToList();
+      var legacyServiceTypes = allServiceTypes
+          .Except (new[] { typeof (BocListCssClassDefinition) })
+          .Concat (new[] { typeof (BocListQuirksModeCssClassDefinition) });
 
       Assert.That (
           legacyServiceTypes.ToArray(),
@@ -46,9 +46,9 @@ namespace Remotion.ObjectBinding.UnitTests
     [Test]
     public void RegisterLegacyTypesToNewDefaultServiceLocator ()
     {
-      var legacyServiceTypes = BocLegacyServiceConfigurationService.GetConfiguration ();
+      var legacyServiceTypes = BocLegacyServiceConfigurationService.GetConfiguration();
 
-      var locator = new DefaultServiceLocator ();
+      var locator = new DefaultServiceLocator();
       foreach (var serviceConfigurationEntry in legacyServiceTypes)
         locator.Register (serviceConfigurationEntry);
 

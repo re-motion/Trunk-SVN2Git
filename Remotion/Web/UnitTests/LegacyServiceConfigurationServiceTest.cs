@@ -32,10 +32,10 @@ namespace Remotion.Web.UnitTests
     [Test]
     public void GetConfiguration ()
     {
-      var allServiceTypes =
-          DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly }).Select (e => e.ServiceType);
-      var legacyServiceTypes =
-          allServiceTypes.Except (new[] { typeof (IWebTabRenderer), typeof (IScriptUtility), typeof (IMenuTabRenderer), typeof (ResourceTheme) });
+      var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })
+          .Select (e => e.ServiceType);
+      var legacyServiceTypes = allServiceTypes
+          .Except (new[] { typeof (IWebTabRenderer), typeof (IScriptUtility), typeof (IMenuTabRenderer), typeof (ResourceTheme) });
 
       Assert.That (
           legacyServiceTypes.ToArray(), Is.EquivalentTo (LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType).ToArray()));
@@ -44,14 +44,14 @@ namespace Remotion.Web.UnitTests
     [Test]
     public void RegisterLegacyTypesToNewDefaultServiceLocator ()
     {
-      var legacyServiceTypes = LegacyServiceConfigurationService.GetConfiguration ();
+      var legacyServiceTypes = LegacyServiceConfigurationService.GetConfiguration();
 
       var locator = new DefaultServiceLocator();
       foreach (var serviceConfigurationEntry in legacyServiceTypes)
         locator.Register (serviceConfigurationEntry);
 
       foreach (var legacyServiceType in legacyServiceTypes)
-        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf(legacyServiceType.ImplementationType));
+        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationType));
     }
   }
 }
