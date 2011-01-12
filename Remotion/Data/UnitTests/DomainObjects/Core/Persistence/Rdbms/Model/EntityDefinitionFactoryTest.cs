@@ -343,18 +343,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateUnionViewDefinition_NoUnionedEntities ()
-    {
-      MockSpecialColumns();
-      _columnDefinitionFactoryMock.Replay();
-
-      var result = _factory.CreateUnionViewDefinition (_baseBaseClassDefinition, new IEntityDefinition[0]);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf (typeof (NullEntityDefinition)));
-    }
-
-    [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'\r\n"

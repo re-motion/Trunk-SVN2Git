@@ -85,10 +85,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var columns = GetColumnsDefinitionForEntity (classDefinition);
 
-      // TODO Review 3606: Move this to RdbmsPersistenceModelLoader (after 3629; include test)
-      if (!unionedEntities.Any())
-        return new NullEntityDefinition (_storageProviderDefinition);
-
       return new UnionViewDefinition (_storageProviderDefinition, GetViewName (classDefinition), unionedEntities, columns);
     }
 

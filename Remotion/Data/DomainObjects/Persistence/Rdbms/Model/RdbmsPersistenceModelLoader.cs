@@ -166,6 +166,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           where !(entityDefinition.IsNull)
           select entityDefinition;
 
+      if (!derivedStorageEntityDefinitions.Any ())
+        return new NullEntityDefinition (_storageProviderDefinition);
+
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
     }
 

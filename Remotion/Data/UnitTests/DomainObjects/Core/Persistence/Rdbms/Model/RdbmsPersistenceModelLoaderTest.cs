@@ -316,16 +316,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      _entityDefinitionFactoryMock.Expect (
-          mock => mock.CreateUnionViewDefinition (
-              Arg.Is (classDefinition), Arg<IEnumerable<IEntityDefinition>>.List.Equal (Enumerable.Empty<IEntityDefinition>()))).Return (
-                  _fakeEntityDefinitionBaseBase);
       _entityDefinitionFactoryMock.Replay();
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
 
       _entityDefinitionFactoryMock.VerifyAllExpectations();
-      Assert.That (classDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionBaseBase));
+      Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (NullEntityDefinition)));
     }
 
     [Test]
