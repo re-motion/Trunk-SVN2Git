@@ -61,6 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ColumnDefinitionFactory _columnDefinitionFactory;
     private StorageProviderDefinitionFinder _providerDefinitionFinder;
     private EntityDefinitionFactory _entityDefinitionFactory;
+    private ColumnDefinitionResolver _columnDefinitionResolver;
 
     public override void SetUp ()
     {
@@ -69,7 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableBuilder = new TableBuilder();
       _providerDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator (_providerDefinitionFinder), _providerDefinitionFinder);
-      _entityDefinitionFactory = new EntityDefinitionFactory (_columnDefinitionFactory, SchemaGenerationFirstStorageProviderDefinition);
+      _columnDefinitionResolver = new ColumnDefinitionResolver();
+      _entityDefinitionFactory = new EntityDefinitionFactory (
+          _columnDefinitionFactory, _columnDefinitionResolver, SchemaGenerationFirstStorageProviderDefinition);
     }
 
     //TODO: Move to TableBuilderBaseTest

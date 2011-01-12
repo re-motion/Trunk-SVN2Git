@@ -17,11 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -33,13 +30,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly IColumnDefinitionResolver _columnDefinitionResolver;
 
-    public EntityDefinitionFactory (IColumnDefinitionFactory columnDefinitionFactory, StorageProviderDefinition storageProviderDefinition)
+    public EntityDefinitionFactory (
+        IColumnDefinitionFactory columnDefinitionFactory,
+        IColumnDefinitionResolver columnDefinitionResolver,
+        StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _columnDefinitionFactory = columnDefinitionFactory;
+      _columnDefinitionResolver = columnDefinitionResolver;
       _storageProviderDefinition = storageProviderDefinition;
     }
 
@@ -117,69 +120,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()).Select (cd => cd.ID);
     }
 
-    protected virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-
-      if (propertyDefinition.StoragePropertyDefinition == null)
-      {
-        throw new InvalidOperationException (
-            string.Format (
-                "Storage property definition has not been set.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
-      if (columnDefinition == null)
-      {
-        throw new MappingException (
-            string.Format (
-                "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
-                propertyDefinition.PropertyInfo.DeclaringType.FullName,
-                propertyDefinition.PropertyInfo.Name));
-      }
-
-      return columnDefinition;
-    }
-
     protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
     {
       var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
       var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
-      var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
+      var columnDefinitionsForHierarchy = _columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition);
 
       return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
     }
-
-    protected virtual IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      var allClassesInHierarchy = GetAllClassesForHierarchy (classDefinition);
-
-      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
-          (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1,
-          tuple => tuple.Item1.GetHashCode());
-
-      var columnDefinitions =
-          (from cd in allClassesInHierarchy
-           from PropertyDefinition pd in cd.MyPropertyDefinitions
-           where pd.StorageClass == StorageClass.Persistent
-           select Tuple.Create (pd.PropertyInfo, GetColumnDefinition (pd)))
-              .Distinct (equalityComparer)
-              .Select (tuple => tuple.Item2);
-
-      return columnDefinitions;
-    }
-
-    private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
-    {
-      return classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Reverse()
-          .Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
-    }
+    
   }
 }

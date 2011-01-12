@@ -82,7 +82,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       var columnDefinitionFactory = CreateColumnDefinitionFactory (storageProviderDefinitionFinder);
-      var entityDefinitionFactory = CreateEntityDefinitionFactory (columnDefinitionFactory);
+      var columnDefinitionResolver = CreateColumnDefinitionResolver();
+      var entityDefinitionFactory = CreateEntityDefinitionFactory (columnDefinitionFactory, columnDefinitionResolver);
 
       return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, StorageProviderDefinition);
     }
@@ -92,14 +93,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new FileBuilder (_storageProviderDefinition);
     }
 
-    protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (IColumnDefinitionFactory columnDefinitionFactory)
+    protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
+        IColumnDefinitionFactory columnDefinitionFactory, IColumnDefinitionResolver columnDefinitionResolver)
     {
-      return new EntityDefinitionFactory (columnDefinitionFactory, _storageProviderDefinition);
+      return new EntityDefinitionFactory (columnDefinitionFactory, columnDefinitionResolver, _storageProviderDefinition);
+    }
+
+    protected virtual IColumnDefinitionResolver CreateColumnDefinitionResolver ()
+    {
+      return new ColumnDefinitionResolver();
     }
 
     protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
-      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator(providerDefinitionFinder), providerDefinitionFinder);
+      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), providerDefinitionFinder);
     }
   }
 }

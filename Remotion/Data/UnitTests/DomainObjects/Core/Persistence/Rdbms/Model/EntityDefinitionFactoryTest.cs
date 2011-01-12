@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -32,9 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class EntityDefinitionFactoryTest
   {
+    private string _storageProviderID;
     private EntityDefinitionFactory _factory;
     private IColumnDefinitionFactory _columnDefinitionFactoryMock;
-    private string _storageProviderID;
+    private IColumnDefinitionResolver _columnDefinitionResolverMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private ReflectionBasedClassDefinition _baseBaseClassDefinition;
     private ReflectionBasedClassDefinition _baseClassDefinition;
@@ -44,31 +44,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ReflectionBasedClassDefinition _derivedClassDefinition2;
     private ReflectionBasedClassDefinition _derivedDerivedClassDefinition;
     private ReflectionBasedClassDefinition _derivedDerivedDerivedClassDefinition;
-    private ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
-    private ReflectionBasedPropertyDefinition _basePropertyDefinition;
-    private ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
-    private ReflectionBasedPropertyDefinition _tablePropertyDefinition2;
-    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition1;
-    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition2;
-    private ReflectionBasedPropertyDefinition _derivedDerivedPropertyDefinition;
     private SimpleColumnDefinition _fakeColumnDefinition1;
-    private SimpleColumnDefinition _fakeColumnDefinition2;
-    private SimpleColumnDefinition _fakeColumnDefinition3;
-    private SimpleColumnDefinition _fakeColumnDefinition4;
-    private SimpleColumnDefinition _fakeColumnDefinition5;
-    private SimpleColumnDefinition _fakeColumnDefinition6;
-    private SimpleColumnDefinition _fakeColumnDefinition7;
     private IDColumnDefinition _fakeObjectIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     private SimpleColumnDefinition _fakeIDColumnDefinition;
-
+    
     [SetUp]
     public void SetUp ()
     {
       _storageProviderID = "DefaultStorageProvider";
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
-      _factory = new EntityDefinitionFactory (_columnDefinitionFactoryMock, _storageProviderDefinition);
+      _columnDefinitionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();
+      _factory = new EntityDefinitionFactory (_columnDefinitionFactoryMock, _columnDefinitionResolverMock, _storageProviderDefinition);
 
       _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Customer), null);
       _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
@@ -94,58 +82,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
       _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedDerivedClassDefinition }, true, true));
       _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-
-      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
-          _baseBaseClassDefinition, "BaseBaseProperty", typeof (Customer).GetProperty ("CustomerSince"));
-      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (Folder).GetProperty ("FileSystemItems"));
-      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _tableClassDefinition1, "TableProperty1", typeof (Order).GetProperty ("OrderNumber"));
-      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2", typeof (Company).GetProperty ("Name"));
-      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition1, "DerivedProperty1", typeof (Distributor).GetProperty ("NumberOfShops"));
-      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition2, "DerivedProperty2", typeof (Partner).GetProperty ("ContactPerson"));
-      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (
-          _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (Supplier).GetProperty ("SupplierQuality"));
-      _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-
+      
       _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false, false);
-      _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition4 = new SimpleColumnDefinition ("Test4", typeof (int), "int", false, false);
-      _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true, false);
-      _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false, false);
-      _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true, false);
-      _fakeObjectIDColumnDefinition = new IDColumnDefinition (_fakeIDColumnDefinition, _fakeColumnDefinition2);
+      _fakeObjectIDColumnDefinition = new IDColumnDefinition (_fakeIDColumnDefinition, _fakeColumnDefinition1);
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
-
-      _baseBasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition1);
-      _basePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);
-      _tablePropertyDefinition1.SetStorageProperty (_fakeColumnDefinition3);
-      _tablePropertyDefinition2.SetStorageProperty (_fakeColumnDefinition4);
-      _derivedPropertyDefinition1.SetStorageProperty (_fakeColumnDefinition5);
-      _derivedPropertyDefinition2.SetStorageProperty (_fakeColumnDefinition6);
-      _derivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
     }
 
     [Test]
     public void CreateTableDefinition ()
     {
+      _columnDefinitionResolverMock
+          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_tableClassDefinition1))
+          .Return (new[] { _fakeColumnDefinition1 });
+      _columnDefinitionResolverMock.Replay();
+
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
 
       var result = _factory.CreateTableDefinition (_tableClassDefinition1);
 
+      _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       AssertTableDefinition (
           result,
           _storageProviderID,
           "Order",
           "OrderView",
-          new IColumnDefinition[]
-          { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3 },
+          new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
           new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }) });
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Folder' has no 'DBTableAttribute' defined.")]
+    public void CreateTableDefinition_ClassHasNoDBTableAttribute_ThrowsException ()
+    {
+      _factory.CreateTableDefinition (_baseClassDefinition);
     }
 
     [Test]
@@ -157,6 +129,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
+      _columnDefinitionResolverMock
+          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (classDefinition))
+          .Return (new[] { _fakeColumnDefinition1 });
+      _columnDefinitionResolverMock.Replay ();
+
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
 
@@ -164,118 +141,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result.TableName, Is.EqualTo ("ClassHavingStorageSpecificIdentifierAttributeTable"));
 
+      _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
     }
-
-    [Test]
-    public void CreateTableDefinition_NonPersistentPropertiesAreFiltered ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      MockSpecialColumns();
-
-      _columnDefinitionFactoryMock.Replay();
-
-      var result = _factory.CreateTableDefinition (classDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations();
-      AssertTableDefinition (
-          result,
-          _storageProviderID,
-          "Order",
-          "OrderView",
-          new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }) });
-    }
-
-    [Test]
-    public void CreateTableDefinition_PropertiesWithSamePropertyInfoAreFiltered ()
-    {
-      var classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-              typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          "Test1",
-          typeof (string),
-          null,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          "Test2",
-          typeof (string),
-          null,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      propertyDefinition1.SetStorageProperty (_fakeColumnDefinition1);
-      propertyDefinition2.SetStorageProperty (_fakeColumnDefinition2);
-
-      MockSpecialColumns();
-      _columnDefinitionFactoryMock.Replay();
-
-      var result = (TableDefinition) _factory.CreateTableDefinition (classDefinition);
-
-      _columnDefinitionFactoryMock.VerifyAllExpectations();
-      Assert.That (result.GetColumns().Count, Is.EqualTo (3)); //instead of 4 (ID, ClassID and propertxdefinition)
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-      "Storage property definition has not been set.\r\n"
-      +"Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute'\r\n"
-      +"Property: 'StorageSpecificName'")]
-    public void CreateTableDefinition_StoragePropertyDefinitionHasNotBeenSet ()
-    {
-      var classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-              typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
-      var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          "Test1",
-          typeof (string),
-          null,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-
-      MockSpecialColumns();
-
-      _factory.CreateTableDefinition (classDefinition);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Folder' has no 'DBTableAttribute' defined.")]
-    public void CreateTableDefinition_ClassHasNoDBTableAttribute_ThrowsException ()
-    {
-      _factory.CreateTableDefinition (_baseClassDefinition);
-    }
-
+    
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithoutDerivations ()
     {
       var fakeBaseEntityDefiniton = new TableDefinition (
           _storageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
 
+      _columnDefinitionResolverMock
+          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_derivedClassDefinition1))
+          .Return (new[] { _fakeColumnDefinition1 });
+      _columnDefinitionResolverMock.Replay ();
+
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
 
       var result = _factory.CreateFilterViewDefinition (_derivedClassDefinition1, fakeBaseEntityDefiniton);
 
+      _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       AssertFilterViewDefinition (
           result,
@@ -285,8 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Distributor" },
           new IColumnDefinition[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
-              _fakeColumnDefinition4, _fakeColumnDefinition5
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           });
     }
 
@@ -296,11 +181,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var fakeBaseEntityDefiniton = new TableDefinition (
           _storageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
 
+      _columnDefinitionResolverMock
+          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_derivedClassDefinition2))
+          .Return (new[] { _fakeColumnDefinition1 });
+      _columnDefinitionResolverMock.Replay ();
+
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
 
       var result = _factory.CreateFilterViewDefinition (_derivedClassDefinition2, fakeBaseEntityDefiniton);
 
+      _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       AssertFilterViewDefinition (
           result,
@@ -310,8 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { "Partner", "Supplier", "File" },
           new IColumnDefinition[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2,
-              _fakeColumnDefinition4, _fakeColumnDefinition6, _fakeColumnDefinition7
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           });
     }
 
@@ -322,13 +212,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition, "Test1", "TestView1", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
       var fakeUnionEntity2 = new TableDefinition (
           _storageProviderDefinition, "Test2", "TestView2", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
-      
+
+      _columnDefinitionResolverMock
+          .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_baseBaseClassDefinition))
+          .Return (new[] { _fakeColumnDefinition1 });
+      _columnDefinitionResolverMock.Replay ();
+
       MockSpecialColumns();
 
       _columnDefinitionFactoryMock.Replay();
 
       var result = _factory.CreateUnionViewDefinition (_baseBaseClassDefinition, new IEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
 
+      _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       AssertUnionViewDefinition (
           result,
@@ -337,26 +233,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new[] { fakeUnionEntity1, fakeUnionEntity2 },
           new IColumnDefinition[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1, _fakeColumnDefinition2, _fakeColumnDefinition3,
-              _fakeColumnDefinition4, _fakeColumnDefinition5, _fakeColumnDefinition6, _fakeColumnDefinition7
+              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           });
     }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'\r\n"
-        + "Property: 'CustomerSince'")]
-    public void StoragePropertyDefinitionIsNoColumnDefinition ()
-    {
-      var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
-      _baseBasePropertyDefinition.SetStorageProperty (fakeResult);
-
-      MockSpecialColumns();
-
-      _factory.CreateTableDefinition (_tableClassDefinition1);
-    }
-
+    
     private void AssertTableDefinition (
         IEntityDefinition entityDefinition,
         string storageProviderID,
@@ -421,24 +301,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((UnionViewDefinition) entityDefinition).ViewName, Is.EqualTo (viewName));
       Assert.That (((UnionViewDefinition) entityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
       Assert.That (((UnionViewDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
-    }
-
-
-    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
-    {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          propertyName,
-          typeof (string),
-          null,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-      return propertyDefinition;
     }
 
     private void MockSpecialColumns ()

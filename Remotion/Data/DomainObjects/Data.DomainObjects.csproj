@@ -178,6 +178,8 @@
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlColumnDefinitionFindingVisitor.cs" />
     <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
