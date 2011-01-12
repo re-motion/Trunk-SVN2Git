@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private ForeignKeyConstraintDefinition _constraint;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
-    private TableDefinition _referencedTable;
+    private string _referencedTableName;
     private SimpleColumnDefinition _referencingColumn;
     private SimpleColumnDefinition _referencedColumn;
 
@@ -38,16 +38,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _referencingColumn = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false, false);
       _referencedColumn = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", false, false);
 
-      _referencedTable = new TableDefinition (
-          _storageProviderDefinition, "TableName", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
-      _constraint = new ForeignKeyConstraintDefinition ("Test", _referencedTable, new[] { _referencingColumn }, new[] { _referencedColumn });
+      _referencedTableName = "TableName";
+      _constraint = new ForeignKeyConstraintDefinition ("Test", _referencedTableName, new[] { _referencingColumn }, new[] { _referencedColumn });
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_constraint.ConstraintName, Is.EqualTo ("Test"));
-      Assert.That (_constraint.ReferencedTable, Is.SameAs (_referencedTable));
+      Assert.That (_constraint.ReferencedTableName, Is.SameAs (_referencedTableName));
       Assert.That (_constraint.ReferencingColumns, Is.EqualTo (new[] { _referencingColumn }));
       Assert.That (_constraint.ReferencedColumns, Is.EqualTo (new[] { _referencedColumn }));
     }
@@ -57,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         "The referencing and referenced column sets must have the same number of items.\r\nParameter name: referencingColumns")]
     public void Initialization_InvalidColumns ()
     {
-      new ForeignKeyConstraintDefinition ("Test", _referencedTable, new[] { _referencingColumn }, new IColumnDefinition[0]);
+      new ForeignKeyConstraintDefinition ("Test", _referencedTableName, new[] { _referencingColumn }, new SimpleColumnDefinition[0]);
     }
 
     [Test]

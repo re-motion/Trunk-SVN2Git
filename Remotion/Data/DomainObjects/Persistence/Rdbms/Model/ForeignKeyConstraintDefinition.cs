@@ -22,26 +22,29 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// The <see cref="PrimaryKeyConstraintDefinition"/> represents a foreign key constraint in a relational database management system.
+  /// </summary>
   public class ForeignKeyConstraintDefinition : ITableConstraintDefinition
   {
     private readonly string _constraintName;
-    private readonly TableDefinition _referencedTable;
-    private readonly ReadOnlyCollection<IColumnDefinition> _referencingColumns;
-    private readonly ReadOnlyCollection<IColumnDefinition> _referencedColumns;
+    private readonly string _referencedTableName;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencingColumns;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencedColumns;
 
     public ForeignKeyConstraintDefinition (
         string constraintName,
-        TableDefinition referencedTable,
-        IEnumerable<IColumnDefinition> referencingColumns,
-        IEnumerable<IColumnDefinition> referencedColumns)
+        string referencedTableName,
+        IEnumerable<SimpleColumnDefinition> referencingColumns,
+        IEnumerable<SimpleColumnDefinition> referencedColumns)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
-      ArgumentUtility.CheckNotNull ("referencedTable", referencedTable);
+      ArgumentUtility.CheckNotNull ("referencedTableName", referencedTableName);
       ArgumentUtility.CheckNotNull ("referencingColumns", referencingColumns);
       ArgumentUtility.CheckNotNull ("referencedColumns", referencedColumns);
 
       _constraintName = constraintName;
-      _referencedTable = referencedTable;
+      _referencedTableName = referencedTableName;
       _referencingColumns = referencingColumns.ToList().AsReadOnly();
       _referencedColumns = referencedColumns.ToList().AsReadOnly();
 
@@ -54,17 +57,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraintName; }
     }
 
-    public TableDefinition ReferencedTable
+    public string ReferencedTableName
     {
-      get { return _referencedTable; }
+      get { return _referencedTableName; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> ReferencingColumns
+    public ReadOnlyCollection<SimpleColumnDefinition> ReferencingColumns
     {
       get { return _referencingColumns; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> ReferencedColumns
+    public ReadOnlyCollection<SimpleColumnDefinition> ReferencedColumns
     {
       get { return _referencedColumns; }
     }
