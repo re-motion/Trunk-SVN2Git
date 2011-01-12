@@ -17,8 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -60,6 +62,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IEntityDefinition _fakeEntityDefinitionDerived2;
     private IEntityDefinition _fakeEntityDefinitionDerivedDerived;
     private IEntityDefinition _fakeEntityDefinitionDerivedDerivedDerived;
+    private ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
+    private ReflectionBasedPropertyDefinition _basePropertyDefinition;
+    private ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
+    private ReflectionBasedPropertyDefinition _tablePropertyDefinition2;
+    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition1;
+    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition2;
+    private ReflectionBasedPropertyDefinition _derivedDerivedPropertyDefinition;
+    private SimpleColumnDefinition _fakeIDColumnDefinition;
+    private SimpleColumnDefinition _fakeColumnDefinition1;
+    private SimpleColumnDefinition _fakeColumnDefinition2;
+    private SimpleColumnDefinition _fakeColumnDefinition3;
+    private SimpleColumnDefinition _fakeColumnDefinition4;
+    private SimpleColumnDefinition _fakeColumnDefinition5;
+    private SimpleColumnDefinition _fakeColumnDefinition6;
+    private SimpleColumnDefinition _fakeColumnDefinition7;
+    private IColumnDefinitionFactory _columnDefinitionFactoryMock;
 
     // Test Domain:
     //
@@ -108,14 +126,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedDerivedClassDefinition }, true, true));
       _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
-      _baseBaseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _tableClassDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _tableClassDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _derivedClassDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _derivedClassDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _derivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
+          _baseBaseClassDefinition, "BaseBaseProperty", typeof (Customer).GetProperty ("CustomerSince"));
+      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (Folder).GetProperty ("FileSystemItems"));
+      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (
+          _tableClassDefinition1, "TableProperty1", typeof (Order).GetProperty ("OrderNumber"));
+      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2", typeof (Company).GetProperty ("Name"));
+      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (
+          _derivedClassDefinition1, "DerivedProperty1", typeof (Distributor).GetProperty ("NumberOfShops"));
+      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (
+          _derivedClassDefinition2, "DerivedProperty2", typeof (Partner).GetProperty ("ContactPerson"));
+      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (
+          _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (Supplier).GetProperty ("SupplierQuality"));
+      _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
 
       _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IEntityDefinition>();
       _fakeEntityDefinitionBase = MockRepository.GenerateStub<IEntityDefinition>();
@@ -126,9 +149,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeEntityDefinitionDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
       _fakeEntityDefinitionDerivedDerivedDerived = MockRepository.GenerateStub<IEntityDefinition>();
 
+      _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
+      _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false, false);
+      _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition4 = new SimpleColumnDefinition ("Test4", typeof (int), "int", false, false);
+      _fakeColumnDefinition5 = new SimpleColumnDefinition ("Test5", typeof (string), "varchar", true, false);
+      _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false, false);
+      _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true, false);
+      
       _entityDefinitionFactoryMock = MockRepository.GenerateStrictMock<IEntityDefinitionFactory>();
-      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactoryMock, MockRepository.GenerateStub<IColumnDefinitionFactory>(), _storageProviderDefinition);
+      _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
+      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (_entityDefinitionFactoryMock, _columnDefinitionFactoryMock, _storageProviderDefinition);
     }
 
     [Test]
@@ -150,9 +182,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var storageEntityDefinition = new TableDefinition (
           _storageProviderDefinition, "Test", "TestView", new SimpleColumnDefinition[] { }, new ITableConstraintDefinition[0]);
       _derivedDerivedDerivedClassDefinition.SetStorageEntity (storageEntityDefinition);
-
+      _baseBasePropertyDefinition.SetStorageProperty(_fakeColumnDefinition1);
+      _basePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);
+      _tablePropertyDefinition1.SetStorageProperty (_fakeColumnDefinition3);
+      _tablePropertyDefinition2.SetStorageProperty (_fakeColumnDefinition4);
+      _derivedPropertyDefinition1.SetStorageProperty (_fakeColumnDefinition5);
+      _derivedPropertyDefinition2.SetStorageProperty (_fakeColumnDefinition6);
+      _derivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
+      
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedDerivedClassDefinition);
 
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
       _entityDefinitionFactoryMock.VerifyAllExpectations();
       Assert.That (_derivedDerivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (storageEntityDefinition));
     }
@@ -160,6 +200,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy ()
     {
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_baseBasePropertyDefinition))
+          .Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_basePropertyDefinition))
+          .Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_tablePropertyDefinition1))
+          .Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_tablePropertyDefinition2))
+          .Return (_fakeColumnDefinition4);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_derivedPropertyDefinition1))
+          .Return (_fakeColumnDefinition5);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_derivedPropertyDefinition2))
+          .Return (_fakeColumnDefinition6);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_derivedDerivedPropertyDefinition))
+          .Return (_fakeColumnDefinition7);
+      _columnDefinitionFactoryMock.Replay();
+
       _entityDefinitionFactoryMock
           .Expect (
               mock => mock.CreateUnionViewDefinition (
@@ -189,11 +252,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               mock => mock.CreateFilterViewDefinition (Arg.Is (_derivedDerivedDerivedClassDefinition), Arg.Is (_fakeEntityDefinitionDerivedDerived))).
           Return (
               _fakeEntityDefinitionDerivedDerivedDerived);
-
       _entityDefinitionFactoryMock.Replay();
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_baseBaseClassDefinition);
 
+      _columnDefinitionFactoryMock.VerifyAllExpectations();
       _entityDefinitionFactoryMock.VerifyAllExpectations();
       Assert.That (_baseBaseClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionBaseBase));
       Assert.That (_baseClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionBase));
@@ -203,6 +266,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_derivedClassDefinition2.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionDerived2));
       Assert.That (_derivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionDerivedDerived));
       Assert.That (_derivedDerivedDerivedClassDefinition.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionDerivedDerivedDerived));
+
+      Assert.That (_baseBasePropertyDefinition.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition1));
+      Assert.That (_basePropertyDefinition.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition2));
+      Assert.That (_tablePropertyDefinition1.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition3));
+      Assert.That (_tablePropertyDefinition2.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition4));
+      Assert.That (_derivedPropertyDefinition1.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition5));
+      Assert.That (_derivedPropertyDefinition2.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition6));
+      Assert.That (_derivedDerivedPropertyDefinition.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition7));
+    }
+
+    [Test]
+    public void ApplyPersistenceModelToHierarchy_DerivedClassDefinition_EnsureColumnDefinitionsAreCreatedForBaseClassProperties ()
+    {
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_baseBasePropertyDefinition))
+          .Return (_fakeColumnDefinition1);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_basePropertyDefinition))
+          .Return (_fakeColumnDefinition2);
+      _columnDefinitionFactoryMock
+          .Expect (mock => mock.CreateColumnDefinition (_tablePropertyDefinition1))
+          .Return (_fakeColumnDefinition3);
+      _columnDefinitionFactoryMock.Replay ();
+
+      _entityDefinitionFactoryMock
+          .Expect (mock => mock.CreateTableDefinition (Arg.Is (_tableClassDefinition1))).Return (_fakeEntityDefinitionTable1);
+      _entityDefinitionFactoryMock.Replay();
+
+      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_tableClassDefinition1);
+
+      _columnDefinitionFactoryMock.VerifyAllExpectations ();
+      _entityDefinitionFactoryMock.VerifyAllExpectations();
+      Assert.That (_tableClassDefinition1.StorageEntityDefinition, Is.SameAs (_fakeEntityDefinitionTable1));
+      Assert.That (_baseBasePropertyDefinition.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition1));
+      Assert.That (_basePropertyDefinition.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition2));
+      Assert.That (_tablePropertyDefinition1.StoragePropertyDefinition, Is.SameAs (_fakeColumnDefinition3));
     }
 
     [Test]
@@ -214,6 +313,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       derivedClass.SetStorageEntity (new NullEntityDefinition (_storageProviderDefinition));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
       derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       _entityDefinitionFactoryMock.Expect (
           mock => mock.CreateUnionViewDefinition (
@@ -233,8 +334,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var invalidStorageEntityDefinition = MockRepository.GenerateStub<IStorageEntityDefinition>();
       _derivedClassDefinition2.SetStorageEntity (invalidStorageEntityDefinition);
+      _baseBasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition1);
+      _basePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);
+      _tablePropertyDefinition1.SetStorageProperty (_fakeColumnDefinition3);
+      _tablePropertyDefinition2.SetStorageProperty (_fakeColumnDefinition4);
+      _derivedPropertyDefinition1.SetStorageProperty (_fakeColumnDefinition5);
+      _derivedPropertyDefinition2.SetStorageProperty (_fakeColumnDefinition6);
+      _derivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
+    }
+
+    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
+        ReflectionBasedClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
+    {
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition,
+          propertyName,
+          typeof (string),
+          null,
+          null,
+          StorageClass.Persistent,
+          propertyInfo,
+          null);
+
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      return propertyDefinition;
     }
   }
 }

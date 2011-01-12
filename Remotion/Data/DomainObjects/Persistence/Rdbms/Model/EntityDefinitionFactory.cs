@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = GetTableName (classDefinition);
-      var columns = GetColumnsDefinitionForEntity(classDefinition);
+      var columns = GetColumnsDefinitionForEntity (classDefinition);
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
           GetPrimaryKeyName (tableName),
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
 
       var columns = GetColumnsDefinitionForEntity (classDefinition);
-      
+
       return new FilterViewDefinition (
           _storageProviderDefinition,
           GetViewName (classDefinition),
@@ -125,12 +125,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent); //TODO 3620: throw exception
 
       if (propertyDefinition.StoragePropertyDefinition == null)
       {
-        var storageProperty = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
-        propertyDefinition.SetStorageProperty (storageProperty);
+        throw new InvalidOperationException (
+            string.Format (
+                "Storage property definition has not been set.\r\nDeclaring type: '{0}'\r\nProperty: '{1}'",
+                propertyDefinition.PropertyInfo.DeclaringType.FullName,
+                propertyDefinition.PropertyInfo.Name));
       }
 
       var columnDefinition = propertyDefinition.StoragePropertyDefinition as IColumnDefinition;
@@ -148,11 +150,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
     {
-      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition ();
-      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition ();
+      var idColumnDefinition = _columnDefinitionFactory.CreateIDColumnDefinition();
+      var timestampColumnDefinition = _columnDefinitionFactory.CreateTimestampColumnDefinition();
       var columnDefinitionsForHierarchy = GetColumnDefinitionsForHierarchy (classDefinition);
 
-      return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList ();
+      return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
     }
 
     protected virtual IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)

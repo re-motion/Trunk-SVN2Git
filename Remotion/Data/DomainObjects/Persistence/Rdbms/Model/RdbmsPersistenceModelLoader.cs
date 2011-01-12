@@ -78,6 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      EnsureAllStoragePropertiesCreated (classDefinition);
       EnsureAllStorageEntitiesCreated (classDefinition);
     }
 
@@ -114,6 +115,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return CreateFilterViewDefinition (classDefinition);
 
       return CreateUnionViewDefinition (classDefinition);
+    }
+
+    private void EnsureAllStoragePropertiesCreated (ClassDefinition classDefinition)
+    {
+      var allClassDefinitions = classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+      
+      foreach (var cd in allClassDefinitions)
+        EnsureStoragePropertiesCreated (cd);
+    }
+
+    private void EnsureStoragePropertiesCreated (ClassDefinition classDefinition)
+    {
+      foreach (var propertyDefinition in classDefinition.MyPropertyDefinitions.Where(pd=>pd.StorageClass==StorageClass.Persistent))
+      {
+        if (propertyDefinition.StoragePropertyDefinition == null)
+        {
+          var storagePropertyDefinition = CreateStoragePropertyDefinition (propertyDefinition);
+          propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+        }
+
+        Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition);
+      }
+    }
+
+    private IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
+    {
+      Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent);
+
+      return _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
