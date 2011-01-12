@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return columnDefinitions;
     }
 
-    protected virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 

@@ -15,17 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Mapping;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
-  /// <summary>
-  /// <see cref="IColumnDefinitionResolver"/> defines the API for all column definition resolver implementations.
-  /// </summary>
-  public interface IColumnDefinitionResolver
+  [TestFixture]
+  public class StorageNameCalculatorTest
   {
-    IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
+    private StorageNameCalculator _calculator;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _calculator = new StorageNameCalculator();
+    }
+
+    //TODO 3607: add tests
   }
 }

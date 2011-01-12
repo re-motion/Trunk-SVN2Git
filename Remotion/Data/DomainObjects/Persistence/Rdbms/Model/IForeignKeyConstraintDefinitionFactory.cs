@@ -21,11 +21,10 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IColumnDefinitionResolver"/> defines the API for all column definition resolver implementations.
+  /// <see cref="IForeignKeyConstraintDefinitionFactory"/> defines the API for all foreign key constraint definition factories.
   /// </summary>
-  public interface IColumnDefinitionResolver
+  public interface IForeignKeyConstraintDefinitionFactory
   {
-    IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
+    IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition);
   }
 }

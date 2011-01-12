@@ -15,17 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IColumnDefinitionResolver"/> defines the API for all column definition resolver implementations.
+  /// <see cref="IStorageNameCalculator"/> defines the API for all storage name calculators that provide methods to obtain names for RDBMS items.
   /// </summary>
-  public interface IColumnDefinitionResolver
+  public interface IStorageNameCalculator
   {
-    IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition);
-    IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition);
+    string GetTableName (ClassDefinition classDefinition);
+    string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition);
+    //TODO 3607: add other methods 
   }
 }

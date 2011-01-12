@@ -179,7 +179,10 @@
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IForeignKeyConstraintDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IStorageNameCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlColumnDefinitionFindingVisitor.cs" />
     <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
@@ -217,6 +220,7 @@
     <Compile Include="Persistence\Rdbms\Model\NullEntityDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IDColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\PrimaryKeyConstraintDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\StorageNameCalculator.cs" />
     <Compile Include="Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRule.cs" />
     <Compile Include="Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRule.cs" />

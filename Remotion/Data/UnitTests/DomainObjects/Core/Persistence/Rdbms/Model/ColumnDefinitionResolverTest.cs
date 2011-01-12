@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateTableDefinition_NonPersistentPropertiesAreFiltered ()
+    public void GetColumnDefinitionsForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateTableDefinition_PropertiesWithSamePropertyInfoAreFiltered ()
+    public void GetColumnDefinitionsForHierarchy_PropertiesWithSamePropertyInfoAreFiltered ()
     {
       var classDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
@@ -183,11 +183,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void GetColumnDefinition ()
+    {
+      var result = _resolver.GetColumnDefinition (_baseBasePropertyDefinition);
+
+      Assert.That (result, Is.SameAs (_fakeColumnDefinition1));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
       "Storage property definition has not been set.\r\n"
       + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassHavingStorageSpecificIdentifierAttribute'\r\n"
       + "Property: 'StorageSpecificName'")]
-    public void CreateTableDefinition_StoragePropertyDefinitionHasNotBeenSet ()
+    public void GetColumnDefinition_CreateTableDefinition_StoragePropertyDefinitionHasNotBeenSet ()
     {
       var classDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
@@ -205,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
 
-      _resolver.GetColumnDefinitionsForHierarchy (classDefinition).ToArray ();
+      _resolver.GetColumnDefinition (propertyDefinition1);
     }
 
     [Test]
@@ -213,12 +221,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
         + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'\r\n"
         + "Property: 'CustomerSince'")]
-    public void StoragePropertyDefinitionIsNoColumnDefinition ()
+    public void GetColumnDefinition_StoragePropertyDefinitionIsNoColumnDefinition ()
     {
       var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
       _baseBasePropertyDefinition.SetStorageProperty (fakeResult);
 
-      _resolver.GetColumnDefinitionsForHierarchy (_tableClassDefinition1).ToArray ();
+      _resolver.GetColumnDefinition (_baseBasePropertyDefinition);
     }
 
     private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
