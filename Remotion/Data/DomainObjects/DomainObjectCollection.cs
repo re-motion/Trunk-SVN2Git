@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -30,30 +31,6 @@ namespace Remotion.Data.DomainObjects
   /// Represents a collection of <see cref="DomainObject"/>s.
   /// </summary>
   /// <remarks>
-  /// <para>
-  /// If a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, consider the following about ordering:
-  /// <list type="bullet">
-  ///   <item>
-  ///     When loading the collection from the database (via loading an object in a root transaction), the order of items is defined
-  ///     by the sort order of the relation (see <see cref="BidirectionalRelationAttribute.SortExpression"/>). If there is no sort
-  ///     order, the order of items is undefined.
-  ///   </item>
-  ///   <item>
-  ///     When committing a root transaction, the order of items in the collection is ignored; the next time the object is loaded
-  ///     in another root transaction, the sort order is again defined by the sort order (or undefined). Specifically, if only the
-  ///     order of items changed in a 1:n relation, the respective objects will not be written to the database at all, as they will not
-  ///     be considered to have changed.
-  ///   </item>
-  ///   <item>
-  ///     When loading the collection from a parent transaction via loading an object in a subtransaction, the order of items is the same
-  ///     as in the parent transaction.
-  ///   </item>
-  ///   <item>
-  ///     When committing a subtransaction, the order of items in the collection is propagated to the parent transaction. After the commit,
-  ///     the parent transaction's collection will have the items in the same order as the committed subtransaction.
-  ///   </item>
-  /// </list>
-  /// </para>
   /// <para>
   /// A derived collection with additional state should override at least the following methods:
   /// <list type="table">
@@ -95,6 +72,116 @@ namespace Remotion.Data.DomainObjects
   ///       A derived collection should recalculate its internal state to match the new items passed 
   ///       as an argument to this method.
   ///     </description>
+  ///   </item>
+  /// </list>
+  /// </para>
+  /// <para>
+  /// When a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, the contents of the collection is lazily loaded.
+  /// This means that the contents is usually not loaded together with the object owning the collection, but later, eg., when the collection's items
+  /// are first accessed. In a root transaction, the collection's contents is loaded by executing a query on the underlying data source. This causes
+  /// all items in the collection to be registered with the owning <see cref="ClientTransaction"/>, and the collection's contents is then
+  /// derived from the items in the <see cref="ClientTransaction"/>.
+  /// </para>
+  /// <para>
+  /// Because the collection's contents is actually derived from the items in the <see cref="ClientTransaction"/>, keep the following in mind:
+  /// <list type="bullet">
+  /// <item>When an item in the local <see cref="ClientTransaction"/> does not hold a foreign key to the object owning the collection, the item is 
+  /// not included in the collection - even if the data source returns that item.</item>
+  /// <item>When an item in the local <see cref="ClientTransaction"/> does hold a foreign key to the object owning the collection, the item is 
+  /// included - even if the data source does not return that item.</item>
+  /// </list>
+  /// </para>
+  /// <para>
+  /// Due to lazy loading, a user of re-store cannot assume that a <see cref="DomainObjectCollection"/>'s contents matches exactly the respective set 
+  /// of objects in the data source at any time, unless a database transaction or some similar concept is used to ensure that different read 
+  /// operations on the data source always work in the scope of the same database state.
+  /// </para>
+  /// <para>
+  /// If a calculation is made on the contents of a related object collection and it is important that the content does not change until the 
+  /// calculated value is committed, then:
+  /// <list type="bullet">
+  ///   <item>the object owning the collection should be included in the commit set, and</item>
+  ///   <item>the domain model should be programmed in such a way that all changes to the collection always cause that object to be included in the 
+  ///   respective commit set as well.</item>
+  /// </list>
+  /// This can be achieved by calling the <see cref="DomainObject.MarkAsChanged"/> method in the respective places. That way, a 
+  /// <see cref="ConcurrencyViolationException"/> will be raised on <see cref="ClientTransaction.Commit"/> if the collection changes while the value 
+  /// is being calculated.
+  /// </para>
+  /// <para>
+  ///  When, after a bidirectional related objects collection is loaded, an object is loaded into the <see cref="ClientTransaction"/> that also holds 
+  ///  a foreign key to the object owning the collection, a conflict arises. Consider the following example (Order - OrderItems):
+  ///  <list type="number">
+  ///  <item>
+  ///    Order1.OrderItems is resolved and causes OrderItem1 and OrderItem2 to be loaded into the ClientTransaction, both holding foreign keys 
+  ///    back to Order1. Order1.OrderItems is determined to be the collection [OrderItem1, OrderItem2].
+  ///  </item>
+  ///  <item>
+  ///    Object OrderItem3 is loaded (eg., by ID or via a search query), and it also contains a foreign key back to Order1.
+  ///  </item>
+  ///  </list>
+  ///  This is a conflict because the query in step 1 was supposed to return all OrderItems that hold a foreign key back to Order1, but now an 
+  ///  additional item has been found. This is a general problem with lazy loading of objects, and it can occur when the underlying data source 
+  ///  changes between step 1 and step 2. It can only be technically prevented by using a database transaction that spans both steps 1 and 2.
+  ///  </para>
+  ///  <para> 
+  ///  The behavior in this scenario is as follows: when an object with a foreign key that is part of an 1:n relationship is loaded into the 
+  ///  <see cref="ClientTransaction"/>, the item is automatically added to the respective collection. When that collection has already been 
+  ///  "resolved" before, the item will be added at the end of the collection without considering the 
+  ///  <see cref="BidirectionalRelationAttribute.SortExpression"/> or raising an <see cref="Adding"/>/<see cref="Added"/> event (or calling the 
+  ///  <see cref="OnAdding"/>/<see cref="OnAdded"/> methods) or any relation change events.
+  ///  </para>
+  ///  <para>
+  ///  The reason for not considering the <see cref="BidirectionalRelationAttribute.SortExpression"/> is that the collection might have changed in 
+  ///  the meantime, and the original sort order might no longer be valid. Considering the <see cref="BidirectionalRelationAttribute.SortExpression"/>
+  ///  would not reliably lead to a state equivalent to that in the underlying data source, although it might give the impression that it would. In 
+  ///  addition, transparently inserting objects into collections at arbitrary positions would automatically invalidate any stored (selection) 
+  ///  indexes and similar.
+  ///  </para>
+  ///  <para>
+  ///  The reason for not raising the <see cref="Adding"/>/<see cref="Added"/> events is that the semantics of these events (as with the relation 
+  ///  change events) is that the collection has been changed, ie., the original state and the current state differ. This is not the case in this 
+  ///  scenario; the collection has not changed, the loaded object is part of the original state of the collection.
+  ///  </para>
+  ///  <para>
+  ///  When using collection-valued relations, keep in mind that the <see cref="DomainObjectCollection"/> might change when objects that could 
+  ///  potentially be collection items are loaded (by query, ID, or a relation property lookup). Specifically, keep this in mind when iterating over 
+  ///  a collection via foreach, and avoid performing unconstrained load operations from within such loops. Iteration using an index into the 
+  ///  collection (eg, via for loops) should be able to handle the new items gracefully.
+  ///  </para>
+  ///  <para>
+  ///  Subclasses of <see cref="DomainObjectCollection"/> that keep state additional to that managed by re-store might need to take additional 
+  ///  considerations. For example, "indexed collections", where the items keep a property storing their position in the owning collection, now have 
+  ///  to deal with loaded objects being registered at the end of the collection without the <see cref="Added"/> event being called. Collections are 
+  ///  often implemented in such a way that they recalculate the items' indexes whenever an item is added or removed and when the item owning 
+  ///  the collection is committed. The latter might cause such implementations to trigger an <see cref="ConcurrencyViolationException"/> because 
+  ///  reindexing will cause the additional item's index to be overwritten with a new value.
+  ///  </para>
+  ///  <para> 
+  ///  To avoid this exception, reindexing on commit should be handled with care. If it cannot be avoided, the algorithm might need to perform 
+  ///  additional checks to determine whether a reindexing operation is actually necessary.
+  /// </para>
+  /// <para>
+  /// If a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, consider the following about ordering:
+  /// <list type="bullet">
+  ///   <item>
+  ///     When loading the collection from the database (via loading an object in a root transaction), the order of items is defined
+  ///     by the sort order of the relation (see <see cref="BidirectionalRelationAttribute.SortExpression"/>). If there is no sort
+  ///     order, the order of items is undefined.
+  ///   </item>
+  ///   <item>
+  ///     When committing a root transaction, the order of items in the collection is ignored; the next time the object is loaded
+  ///     in another root transaction, the sort order is again defined by the sort order (or undefined). Specifically, if only the
+  ///     order of items changed in a 1:n relation, the respective objects will not be written to the database at all, as they will not
+  ///     be considered to have changed.
+  ///   </item>
+  ///   <item>
+  ///     When loading the collection from a parent transaction via loading an object in a subtransaction, the order of items is the same
+  ///     as in the parent transaction.
+  ///   </item>
+  ///   <item>
+  ///     When committing a subtransaction, the order of items in the collection is propagated to the parent transaction. After the commit,
+  ///     the parent transaction's collection will have the items in the same order as the committed subtransaction.
   ///   </item>
   /// </list>
   /// </para>

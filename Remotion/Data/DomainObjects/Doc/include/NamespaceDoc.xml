@@ -16,9 +16,9 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <namespaces>
-  <namespace name="Remotion.Data.DomainObjects.CodeGenerator">
+  <namespace name="Remotion.Data.DomainObjects.Infrastructure">
     <para>
-      The <B>Remotion.Data.DomainObjects.CodeGenerator</B> namespace contains classes for generating code and sql scripts for the DomainObjects framework.
+      The <B>Remotion.Data.DomainObjects.Infrastructure</B> namespace contains classes implementing the DomainObjects framework.
     </para>
     <para>
       Types or interfaces in this namespace are not intended to be used directly from an application.

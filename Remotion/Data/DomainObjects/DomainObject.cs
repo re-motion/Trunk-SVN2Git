@@ -571,6 +571,8 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     /// <exception cref="ObjectNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
     /// found in the data source.</exception>
+    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
+    /// detected.</exception>
     public void EnsureDataAvailable ()
     {
       DefaultTransactionContext.EnsureDataAvailable ();
