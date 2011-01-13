@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -27,15 +28,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     public string GetTableName (ClassDefinition classDefinition)
     {
-      //var classDefinitionStorageEntityDefinitionAsTableDefiniton = classDefinition.StorageEntityDefinition as TableDefinition;
-      //if (classDefinitionStorageEntityDefinitionAsTableDefiniton == null)
-      //{
-      //  //TODO 3607: throw exception !?
-      //  return null;
-      //}
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      //return classDefinitionStorageEntityDefinitionAsTableDefiniton.TableName;
-      return classDefinition.GetEntityName();
+      var tableAttribute = AttributeUtility.GetCustomAttribute<DBTableAttribute> (classDefinition.ClassType, false);
+      if (tableAttribute == null)
+        return null;
+
+      return string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
     }
 
     public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition)

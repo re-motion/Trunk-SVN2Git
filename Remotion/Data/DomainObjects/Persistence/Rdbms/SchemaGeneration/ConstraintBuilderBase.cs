@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
@@ -25,37 +24,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class ConstraintBuilderBase
   {
-    // types
+    private readonly StringBuilder _createConstraintStringBuilder;
+    private readonly List<string> _entityNamesForDropConstraintScript;
+    private readonly ISqlDialect _sqlDialect;
 
-    // static members and constants
-
-    // member fields
-
-    private StringBuilder _createConstraintStringBuilder;
-    private List<string> _entityNamesForDropConstraintScript;
-    private Hashtable _constraintNamesUsed;
-
-    // construction and disposing
-
-    public ConstraintBuilderBase ()
+    protected ConstraintBuilderBase (ISqlDialect sqlDialect)
     {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      _sqlDialect = sqlDialect;
       _createConstraintStringBuilder = new StringBuilder();
-      _constraintNamesUsed = new Hashtable();
       _entityNamesForDropConstraintScript = new List<string>();
     }
 
-    // methods and properties
-
     public abstract void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
-    public abstract void AddToCreateConstraintScript (ClassDefinition classDefinition, StringBuilder createConstraintStringBuilder);
-
-    public abstract string GetConstraint (
-        ClassDefinition classDefinition,
-        IRelationEndPointDefinition relationEndPoint,
-        PropertyDefinition propertyDefinition,
-        ClassDefinition oppositeClassDefinition);
-
-    protected abstract string ConstraintSeparator { get; }
+    public abstract void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder);
 
     public string GetAddConstraintScript ()
     {
@@ -87,90 +70,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
       if (tableDefinition!=null)
       {
-        AddToCreateConstraintScript (classDefinition);
+        AddToCreateConstraintScript (tableDefinition);
         _entityNamesForDropConstraintScript.Add (tableDefinition.TableName);
       }
     }
 
-    private void AddToCreateConstraintScript (ClassDefinition classDefinition)
+    protected string GetForeignKeyConstraintStatement (TableDefinition tableDefinition)
+    {
+      var visitor = new ForeignKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialect);
+
+      foreach (var constraint in tableDefinition.Constraints)
+        constraint.Accept (visitor);
+
+      return visitor.GetConstraintStatement ();
+    }
+
+    private void AddToCreateConstraintScript (TableDefinition tableDefinition)
     {
       if (_createConstraintStringBuilder.Length != 0)
         _createConstraintStringBuilder.Append ("\r\n");
       int length = _createConstraintStringBuilder.Length;
 
-      AddToCreateConstraintScript (classDefinition, _createConstraintStringBuilder);
+      AddToCreateConstraintScript (tableDefinition, _createConstraintStringBuilder);
 
       if (_createConstraintStringBuilder.Length == length && length > 1)
         _createConstraintStringBuilder.Remove (length - 2, 2);
     }
-
-    protected List<IRelationEndPointDefinition> GetAllRelationEndPoints (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      List<IRelationEndPointDefinition> allRelationEndPointDefinitions = new List<IRelationEndPointDefinition>();
-      if (classDefinition.BaseClass != null)
-        allRelationEndPointDefinitions.AddRange (classDefinition.BaseClass.GetRelationEndPointDefinitions());
-
-      FillAllRelationEndPointDefinitionsWithParticularAndDerivedClass (classDefinition, allRelationEndPointDefinitions);
-
-      return allRelationEndPointDefinitions;
-    }
-
-    protected List<string> GetConstraints (ClassDefinition tableRootClassDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("tableRootClassDefinition", tableRootClassDefinition);
-
-      List<string> constraints = new List<string>();
-      foreach (IRelationEndPointDefinition relationEndPoint in GetAllRelationEndPoints (tableRootClassDefinition))
-      {
-        string constraint = GetConstraint (tableRootClassDefinition, relationEndPoint);
-        if (constraint != null)
-          constraints.Add (constraint);
-      }
-
-      return constraints;
-    }
-
-    private string GetConstraint (ClassDefinition tableRootClassDefinition, IRelationEndPointDefinition relationEndPoint)
-    {
-      if (relationEndPoint.IsAnonymous)
-        return null;
-
-      ClassDefinition oppositeClassDefinition = relationEndPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (relationEndPoint.PropertyName);
-
-      if (!HasConstraint (relationEndPoint, oppositeClassDefinition))
-        return null;
-
-      PropertyDefinition propertyDefinition = relationEndPoint.ClassDefinition.GetMandatoryPropertyDefinition (relationEndPoint.PropertyName);
-      if (propertyDefinition.StorageClass != StorageClass.Persistent)
-        return null;
-
-      return GetConstraint (tableRootClassDefinition, relationEndPoint, propertyDefinition, oppositeClassDefinition);
-    }
-
-    private void FillAllRelationEndPointDefinitionsWithParticularAndDerivedClass (
-        ClassDefinition classDefinition, List<IRelationEndPointDefinition> allRelationEndPointDefinitions)
-    {
-      allRelationEndPointDefinitions.AddRange (classDefinition.MyRelationEndPointDefinitions);
-
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-        FillAllRelationEndPointDefinitionsWithParticularAndDerivedClass (derivedClass, allRelationEndPointDefinitions);
-    }
-
-    private bool HasConstraint (IRelationEndPointDefinition relationEndPoint, ClassDefinition oppositeClassDefinition)
-    {
-      if (relationEndPoint.IsVirtual)
-        return false;
-
-      if (oppositeClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-          != relationEndPoint.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
-        return false;
-
-      if (oppositeClassDefinition.GetEntityName() == null)
-        return false;
-
-      return true;
-    }
+    
   }
 }

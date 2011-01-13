@@ -84,7 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .Return ("FakeConstraintName");
       _storageNameCalculatorMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
-          .Return ("FakeTableName");
+          .Return ("FakeTableName")
+          .Repeat.Twice();
       _storageNameCalculatorMock.Replay();
 
       _storageProviderDefinitionFinderStub
@@ -113,11 +114,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CreateForeignKeyConstraints_NoEntityName_NoForeignKeyConstrainedIsCreated ()
+    {
+      var orderClassDefinition = Configuration.ClassDefinitions["Order"];
+      
+      _storageNameCalculatorMock
+          .Expect (mock => mock.GetTableName (Arg<ClassDefinition>.Is.Anything))
+          .Return (null)
+          .Repeat.Any();
+      _storageNameCalculatorMock.Replay ();
+
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything))
+          .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+
+      var result = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray ();
+
+      Assert.That (result.Length, Is.EqualTo (0));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The non virtual constraint column definition has to be an ID column definition.")]
     public void CreateForeignKeyConstraints_NonVirtualColumnDefinitionIsNoIDColumnDefinition_ThrowsException ()
     {
-      var classDefinition = Configuration.ClassDefinitions["Order"];
+      var orderClassDefinition = Configuration.ClassDefinitions["Order"];
+      var officialClassDefinition = Configuration.ClassDefinitions["Official"];
+
+      _storageNameCalculatorMock
+          .Expect (mock => mock.GetTableName (officialClassDefinition))
+          .Return ("FakeTableName");
+      _storageNameCalculatorMock.Replay ();
 
       _columnDefintionResolverMock
           .Expect (
@@ -133,16 +160,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _storageProviderDefinitionFinderStub
           .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything))
-          .Return (classDefinition.StorageEntityDefinition.StorageProviderDefinition);
+          .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
 
       _columnDefintionResolverMock
           .Expect (
               mock =>
-              mock.GetColumnDefinition (classDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]))
+              mock.GetColumnDefinition (orderClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]))
           .Return (_fakeColumnDefintion);
       _columnDefintionResolverMock.Replay();
 
-      _factory.CreateForeignKeyConstraints (classDefinition).ToArray();
+      _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray();
     }
   }
 }

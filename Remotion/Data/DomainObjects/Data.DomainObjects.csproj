@@ -294,6 +294,7 @@
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilderBase.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilder.cs" />

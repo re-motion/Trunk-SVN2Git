@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameCalculator.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
-            _storageNameCalculator.GetTableName (oppositeClassDefinition), // TODO Review 3626: Use FindTableName
+            FindTableName(oppositeClassDefinition),
             referencingColumns,
             referencedColumns);
         foreignKeyConstraintDefinitions.Add (foreignKeyConstraintDefinition);
@@ -104,8 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (GetStorageProviderDefinition (oppositeClassDefinition).Name != GetStorageProviderDefinition (endPoint.ClassDefinition).Name)
         return false;
 
-      // if (FindTableName (oppositeClassDefinition) == null) // TODO Review 3626, test with mock
-      if (oppositeClassDefinition.GetEntityName() == null)
+      if (FindTableName (oppositeClassDefinition) == null)
         return false;
 
       return true;

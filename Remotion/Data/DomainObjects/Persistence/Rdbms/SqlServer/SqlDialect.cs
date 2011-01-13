@@ -29,6 +29,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     {
     }
 
+    public virtual string StatementDelimiter
+    {
+      get { return ";"; }
+    }
+
+    public virtual string ConstraintDelimiter
+    {
+      get { return ","; }
+    }
+
     public virtual string GetParameterName (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
@@ -45,10 +55,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 
       return "[" + identifier + "]";
     }
-
-    public virtual string StatementDelimiter
-    {
-      get { return ";"; }
-    }
+    
   }
 }

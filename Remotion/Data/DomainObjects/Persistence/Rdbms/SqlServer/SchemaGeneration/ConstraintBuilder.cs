@@ -16,7 +16,7 @@
 // 
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class ConstraintBuilder : ConstraintBuilderBase
   {
-    public ConstraintBuilder ()
+    public ConstraintBuilder () : base (SqlDialect.Instance)
     {
     }
 
@@ -45,58 +45,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           string.Join ("', '", entityNamesForDropConstraintScript.ToArray()));
     }
 
-    public override void AddToCreateConstraintScript (ClassDefinition classDefinition, StringBuilder createConstraintStringBuilder)
+    public override void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("createConstraintStringBuilder", createConstraintStringBuilder);
 
-      string constraints = ConcatenateConstraints (GetConstraints (classDefinition));
-      if (constraints.Length != 0)
+      var constraintStatement = GetForeignKeyConstraintStatement (tableDefinition);
+      if (!string.IsNullOrEmpty(constraintStatement))
       {
         createConstraintStringBuilder.AppendFormat (
-            "ALTER TABLE [{0}].[{1}] ADD\r\n{2}\r\n",
+            "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
             FileBuilder.DefaultSchema,
-            classDefinition.StorageEntityDefinition.LegacyEntityName,
-            constraints);
+            tableDefinition.TableName,
+            constraintStatement);
       }
     }
-
-    private string ConcatenateConstraints (List<string> constraints)
-    {
-      StringBuilder constraintBuilder = new StringBuilder();
-      foreach (string constraint in constraints)
-      {
-        if (constraintBuilder.Length != 0)
-          constraintBuilder.Append (ConstraintSeparator);
-
-        constraintBuilder.Append (constraint);
-      }
-
-      return constraintBuilder.ToString();
-    }
-
-    public override string GetConstraint (
-        ClassDefinition classDefinition, 
-        IRelationEndPointDefinition relationEndPoint, 
-        PropertyDefinition propertyDefinition, 
-        ClassDefinition oppositeClassDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("relationEndPoint", relationEndPoint);
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      ArgumentUtility.CheckNotNull ("oppositeClassDefinition", oppositeClassDefinition);
-
-      return string.Format (
-          "  CONSTRAINT [FK_{0}] FOREIGN KEY ([{1}]) REFERENCES [{2}].[{3}] ([ID])",
-          classDefinition.GetEntityName () + "_" + propertyDefinition.StoragePropertyDefinition.Name,
-          propertyDefinition.StoragePropertyDefinition.Name,
-          FileBuilder.DefaultSchema,
-          oppositeClassDefinition.GetEntityName());
-    }
-
-    protected override string ConstraintSeparator
-    {
-      get { return ",\r\n"; }
-    }
+    
   }
 }
