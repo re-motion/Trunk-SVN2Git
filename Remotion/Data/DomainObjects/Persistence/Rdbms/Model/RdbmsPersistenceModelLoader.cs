@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -78,16 +79,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      EnsureAllStoragePropertiesCreated (classDefinition);
-      EnsureAllStorageEntitiesCreated (classDefinition);
+      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+      EnsureAllStoragePropertiesCreated (allClassDefinitions);
+      EnsureAllStorageEntitiesCreated (allClassDefinitions);
     }
 
-    private void EnsureAllStorageEntitiesCreated (ClassDefinition classDefinition)
+    private void EnsureAllStorageEntitiesCreated (IEnumerable<ClassDefinition> classDefinitions)
     {
-      EnsureStorageEntitiesCreated (classDefinition);
-
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-        EnsureAllStorageEntitiesCreated (derivedClass);
+      foreach (var classDefinition in classDefinitions)
+        EnsureStorageEntitiesCreated (classDefinition);
     }
 
     private void EnsureStorageEntitiesCreated (ClassDefinition classDefinition)
@@ -97,8 +97,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         var storageEntity = CreateStorageEntityDefinition (classDefinition);
         classDefinition.SetStorageEntity (storageEntity);
       }
+      // TODO Review 3629: Add this check and throw an InvalidOperationException indicating that StorageEntityDefinitions set by the caller must implement IEntityDefinition; adapt test
+      //else if (!(classDefinition.StorageEntityDefinition is IEntityDefinition))
+      //{
+      //}
 
       Assertion.IsNotNull (classDefinition.StorageEntityDefinition);
+    }
+
+    private void EnsureAllStoragePropertiesCreated (IEnumerable<ClassDefinition> classDefinitions)
+    {
+      foreach (var classDefinition in classDefinitions)
+        EnsureStoragePropertiesCreated (classDefinition);
+    }
+
+    private void EnsureStoragePropertiesCreated (ClassDefinition classDefinition)
+    {
+      foreach (var propertyDefinition in classDefinition.MyPropertyDefinitions.Where (pd => pd.StorageClass == StorageClass.Persistent))
+      {
+        if (propertyDefinition.StoragePropertyDefinition == null)
+        {
+          var storagePropertyDefinition = (IStoragePropertyDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+          propertyDefinition.SetStorageProperty (storagePropertyDefinition);
+        }
+        // TODO Review 3629: Add check similar to above + test
+
+        Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition);
+      }
     }
 
     private IStorageEntityDefinition CreateStorageEntityDefinition (ClassDefinition classDefinition)
@@ -115,37 +140,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return CreateFilterViewDefinition (classDefinition);
 
       return CreateUnionViewDefinition (classDefinition);
-    }
-
-    private void EnsureAllStoragePropertiesCreated (ClassDefinition classDefinition)
-    {
-      var allClassDefinitions = classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
-      
-      foreach (var cd in allClassDefinitions)
-        EnsureStoragePropertiesCreated (cd);
-    }
-
-    private void EnsureStoragePropertiesCreated (ClassDefinition classDefinition)
-    {
-      foreach (var propertyDefinition in classDefinition.MyPropertyDefinitions.Where(pd=>pd.StorageClass==StorageClass.Persistent))
-      {
-        if (propertyDefinition.StoragePropertyDefinition == null)
-        {
-          var storagePropertyDefinition = CreateStoragePropertyDefinition (propertyDefinition);
-          propertyDefinition.SetStorageProperty (storagePropertyDefinition);
-        }
-
-        Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition);
-      }
-    }
-
-    private IStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
-    {
-      Assertion.IsTrue (propertyDefinition.StorageClass == StorageClass.Persistent);
-
-      return _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)
