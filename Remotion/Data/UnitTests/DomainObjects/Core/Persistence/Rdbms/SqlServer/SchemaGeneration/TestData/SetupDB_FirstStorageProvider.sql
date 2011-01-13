@@ -26,6 +26,15 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithR
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[CustomerView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AbstractClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[AbstractClassView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DerivedAbstractClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[DerivedAbstractClassView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DerivedDerivedConcreteClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[DerivedDerivedConcreteClassView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ConcreteClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[ConcreteClassView]
 
@@ -62,7 +71,7 @@ DECLARE @statement nvarchar (4000)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'Order', 'OrderItem', 'SiblingOfTableWithRelations')
+    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'AbstractClass', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'Order', 'OrderItem', 'SiblingOfTableWithRelations')
     ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
@@ -85,6 +94,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'TableWith
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Customer]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AbstractClass' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[AbstractClass]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ConcreteClass' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[ConcreteClass]
@@ -213,6 +225,17 @@ CREATE TABLE [dbo].[Customer]
   [PrimaryOfficialID] varchar (255) NULL,
   [LicenseCode] nvarchar (max) NULL,
   CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])
+)
+
+CREATE TABLE [dbo].[AbstractClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  [PropertyInAbstractClass] nvarchar (max) NULL,
+  [PropertyInAbstractDerivedClass] nvarchar (max) NULL,
+  [PropertyInDerivedConcreteClass] nvarchar (max) NULL,
+  CONSTRAINT [PK_AbstractClass] PRIMARY KEY CLUSTERED ([ID])
 )
 
 CREATE TABLE [dbo].[ConcreteClass]
@@ -373,6 +396,29 @@ CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNu
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]
     FROM [dbo].[Customer]
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[AbstractClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
+    FROM [dbo].[AbstractClass]
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[DerivedAbstractClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
+    FROM [dbo].[AbstractClass]
+    WHERE [ClassID] IN ('DerivedAbstractClass', 'DerivedDerivedConcreteClass')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[DerivedDerivedConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
+    FROM [dbo].[AbstractClass]
+    WHERE [ClassID] IN ('DerivedDerivedConcreteClass')
   WITH CHECK OPTION
 GO
 

@@ -656,7 +656,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\FilterViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestBase.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\AbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ClassWithRelationsBase.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\DerivedAbstractClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\DerivedDerivedConcreteClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\SiblingOfClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitorTest.cs" />
