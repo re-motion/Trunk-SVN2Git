@@ -30,11 +30,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class ColumnDefinitionResolver : IColumnDefinitionResolver
   {
-    public virtual IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
+    public IEnumerable<IColumnDefinition> GetColumnDefinitionsForHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allClassesInHierarchy = GetAllClassesForHierarchy (classDefinition);
+      var allClassesInHierarchy = classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Reverse ()
+          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
 
       var equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
           (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1,
@@ -51,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return columnDefinitions;
     }
 
-    public virtual IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
+    public IColumnDefinition GetColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
@@ -75,14 +78,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       return columnDefinition;
-    }
-
-    private IEnumerable<ClassDefinition> GetAllClassesForHierarchy (ClassDefinition classDefinition)
-    {
-      return classDefinition
-          .CreateSequence (cd => cd.BaseClass)
-          .Reverse ()
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
     }
   }
 }

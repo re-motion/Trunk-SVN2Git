@@ -23,8 +23,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class TableBuilder : TableBuilderBase
   {
-
-
     public TableBuilder () : base (SqlDialect.Instance)
     {
     }

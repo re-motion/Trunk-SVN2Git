@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnDefinitionsForHierarchy_InheritanceRoot ()
+    public void GetColumnDefinitionsForHierarchy_GetsColumnsFromDerivedClasses_SortedFromBaseToDerived ()
     {
       var columns = _resolver.GetColumnDefinitionsForHierarchy (_baseBaseClassDefinition).ToArray();
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumnDefinitionsForHierarchy_DerivedClass ()
+    public void GetColumnDefinitionsForHierarchy_AlsoGetsColumnsFromBaseClasses_SortedFromBaseToDerived ()
     {
       var columns = _resolver.GetColumnDefinitionsForHierarchy (_derivedClassDefinition1).ToArray ();
 
