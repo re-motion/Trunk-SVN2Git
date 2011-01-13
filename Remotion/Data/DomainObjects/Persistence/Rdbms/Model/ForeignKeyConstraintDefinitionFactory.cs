@@ -18,7 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
@@ -53,38 +55,42 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition)
     {
       var foreignKeyConstraintDefinitions = new List<ForeignKeyConstraintDefinition>();
-      var allRelationEndPointDefinitions = classDefinition.GetRelationEndPointDefinitions().Concat (
-          classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>().SelectMany (cd => cd.MyRelationEndPointDefinitions));
+
+      var allClassDefinitions = classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition>());
+      var allRelationEndPointDefinitions = allClassDefinitions.SelectMany (cd => cd.MyRelationEndPointDefinitions);
 
       foreach (var endPoint in allRelationEndPointDefinitions)
       {
-        if (endPoint.IsAnonymous) //TODO 3626: can be removed because ReleationEndPointDefinitionCollection cannot hold endpoints without property namens !?
+        endPoint.GetOppositeClassDefinition ();
+        var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
+
+        if (endPoint.IsVirtual)
           continue;
 
-        var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
         if (!HasConstraint (endPoint, oppositeClassDefinition))
           continue;
 
-        var propertyDefinition = endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName);
-        if (propertyDefinition.StorageClass != StorageClass.Persistent) //TODO 3626: test case !?
+        var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
+        if (propertyDefinition.StorageClass != StorageClass.Persistent) // TODO Review 3626: test case with StorageClass.Transaction
           continue;
 
-        var virtualConstraintColumnDefinitons = _columnDefinitionFactory.CreateIDColumnDefinition();
+        var oppositeIDColumnDefiniton = _columnDefinitionFactory.CreateIDColumnDefinition();
 
-        var nonVirtualConstraintColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
-        var nonVirtualConstraintColumnDefinitionAsIDColumnDefinition = nonVirtualConstraintColumnDefinition as IDColumnDefinition;
-        if (nonVirtualConstraintColumnDefinitionAsIDColumnDefinition == null)
+        var endPointColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
+        var endPointIDColumnDefinition = endPointColumnDefinition as IDColumnDefinition;
+        if (endPointIDColumnDefinition == null)
           throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
 
         var referencingColumns =
-            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { virtualConstraintColumnDefinitons.ObjectIDColumn });
+            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { oppositeIDColumnDefiniton.ObjectIDColumn });
         var referencedColumns =
-            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (
-                new[] { nonVirtualConstraintColumnDefinitionAsIDColumnDefinition.ObjectIDColumn });
+            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { endPointIDColumnDefinition.ObjectIDColumn });
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
-            _storageNameCalculator.GetForeignKeyConstraintName (classDefinition, nonVirtualConstraintColumnDefinition),
-            _storageNameCalculator.GetTableName (oppositeClassDefinition),
+            _storageNameCalculator.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
+            _storageNameCalculator.GetTableName (oppositeClassDefinition), // TODO Review 3626: Use FindTableName
             referencingColumns,
             referencedColumns);
         foreignKeyConstraintDefinitions.Add (foreignKeyConstraintDefinition);
@@ -95,19 +101,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private bool HasConstraint (IRelationEndPointDefinition endPoint, ClassDefinition oppositeClassDefinition)
     {
-      if (endPoint.IsVirtual)
+      if (GetStorageProviderDefinition (oppositeClassDefinition).Name != GetStorageProviderDefinition (endPoint.ClassDefinition).Name)
         return false;
 
-      if (_storageProviderDefinitionFinder.GetStorageProviderDefinition(oppositeClassDefinition).Name
-          != _storageProviderDefinitionFinder.GetStorageProviderDefinition (endPoint.ClassDefinition).Name)
-        return false;
-
-      //TODO 3626: change to !(StorageEntityDefinition is TableDefinition) !?
-      //TODO 3626: test case !?
+      // if (FindTableName (oppositeClassDefinition) == null) // TODO Review 3626, test with mock
       if (oppositeClassDefinition.GetEntityName() == null)
         return false;
 
       return true;
+    }
+
+    private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)
+    {
+      return _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClassDefinition);
+    }
+
+    private string FindTableName (ClassDefinition classDefinition)
+    {
+      return classDefinition
+          .CreateSequence (cd => cd.BaseClass)
+          .Select (cd => _storageNameCalculator.GetTableName (cd))
+          .FirstOrDefault (name => name != null);
     }
   }
 }
