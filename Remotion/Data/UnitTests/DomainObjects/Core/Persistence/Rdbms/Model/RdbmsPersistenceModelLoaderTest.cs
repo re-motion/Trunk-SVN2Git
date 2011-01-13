@@ -293,12 +293,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException))]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+      "The storage entity definition of class 'Partner' does not implement interface 'IEntityDefinition'.")]
     public void ApplyPersistenceModelToHierarchy_Throws_WhenExistingEntityDefinitionDoesNotImplementIEntityDefinition ()
     {
       var invalidStorageEntityDefinition = MockRepository.GenerateStub<IStorageEntityDefinition>();
       _derivedClassDefinition2.SetStorageEntity (invalidStorageEntityDefinition);
       _derivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
+
+      _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+      "The property definition 'DerivedDerivedProperty' of class 'Supplier' does not implement interface 'IColumnDefinition'.")]
+    public void ApplyPersistenceModelToHierarchy_Throws_WhenExistingPropertyDefinitionDoesNotImplementIColumnDefinition ()
+    {
+      _derivedClassDefinition2.SetStorageEntity (_fakeEntityDefinitionDerived2);
+      _derivedDerivedPropertyDefinition.SetStorageProperty (new FakeStoragePropertyDefinition("Fake"));
 
       _rdbmsPersistenceModelLoader.ApplyPersistenceModelToHierarchy (_derivedDerivedClassDefinition);
     }

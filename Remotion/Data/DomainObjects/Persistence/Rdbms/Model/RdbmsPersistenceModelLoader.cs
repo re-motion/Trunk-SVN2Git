@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+      var allClassDefinitions = new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>());
       EnsureAllStoragePropertiesCreated (allClassDefinitions);
       EnsureAllStorageEntitiesCreated (allClassDefinitions);
     }
@@ -97,10 +97,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         var storageEntity = CreateStorageEntityDefinition (classDefinition);
         classDefinition.SetStorageEntity (storageEntity);
       }
-      // TODO Review 3629: Add this check and throw an InvalidOperationException indicating that StorageEntityDefinitions set by the caller must implement IEntityDefinition; adapt test
-      //else if (!(classDefinition.StorageEntityDefinition is IEntityDefinition))
-      //{
-      //}
+      else if (!(classDefinition.StorageEntityDefinition is IEntityDefinition))
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The storage entity definition of class '{0}' does not implement interface '{1}'.",
+                classDefinition.ID,
+                typeof (IEntityDefinition).Name));
+      }
 
       Assertion.IsNotNull (classDefinition.StorageEntityDefinition);
     }
@@ -117,11 +121,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       {
         if (propertyDefinition.StoragePropertyDefinition == null)
         {
-          var storagePropertyDefinition = (IStoragePropertyDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
+          var storagePropertyDefinition = _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
           propertyDefinition.SetStorageProperty (storagePropertyDefinition);
         }
-        // TODO Review 3629: Add check similar to above + test
-
+        else if(!(propertyDefinition.StoragePropertyDefinition is IColumnDefinition))
+        {
+          throw new InvalidOperationException (
+            string.Format (
+                "The property definition '{0}' of class '{1}' does not implement interface '{2}'.",
+                propertyDefinition.PropertyName,
+                classDefinition.ID,
+                typeof (IColumnDefinition).Name));
+        }
+        
         Assertion.IsNotNull (propertyDefinition.StoragePropertyDefinition);
       }
     }
@@ -160,7 +172,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           where !(entityDefinition.IsNull)
           select entityDefinition;
 
-      if (!derivedStorageEntityDefinitions.Any ())
+      if (!derivedStorageEntityDefinitions.Any())
         return new NullEntityDefinition (_storageProviderDefinition);
 
       return _entityDefinitionFactory.CreateUnionViewDefinition (classDefinition, derivedStorageEntityDefinitions);
@@ -172,6 +184,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return (IEntityDefinition) classDefinition.StorageEntityDefinition;
     }
-    
   }
 }
