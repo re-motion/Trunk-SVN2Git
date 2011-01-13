@@ -324,7 +324,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       IEnumerable<DomainObject> initialContentsOrNull)
     {
       var sortExpression = ((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression ();
-      var sortExpressionBasedComparer = sortExpression == null 
+      // Only root transactions use the sort expression (if any)
+      var sortExpressionBasedComparer = sortExpression == null || clientTransaction.ParentTransaction != null
           ? null 
           : SortedPropertyComparer.CreateCompoundComparer (sortExpression.SortedProperties, clientTransaction.DataManager);
       return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);

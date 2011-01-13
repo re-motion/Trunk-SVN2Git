@@ -16,14 +16,17 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -578,7 +581,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void SubTransactionHasRelatedObjectCollectionEquivalentToParent ()
+    public void SubTransactionHasRelatedObjectCollectionEqualToParent ()
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
       ObjectList<OrderItem> loadedItems = loadedOrder.OrderItems;
@@ -622,6 +625,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Assert.AreSame (newItem3, newOrder.OrderItems[0]);
         Assert.AreEqual ("FooBar, the energy bar with extra Foo", newOrder.OrderItems[0].Product);
         Assert.AreSame (newOrder, newItem3.Order);
+      }
+    }
+
+    [Test]
+    public void SortExpressionNotExecuted_WhenLoadingCollectionFromParent ()
+    {
+      var customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+      var orders = customer1.Orders.Reverse().ToArray ();
+      customer1.Orders.Clear ();
+      customer1.Orders.AddRange (orders);
+
+      Assert.That (customer1.Orders, Is.EqualTo (orders));
+      
+      var sortExpression = ((VirtualRelationEndPointDefinition) customer1.Orders.AssociatedEndPointID.Definition).GetSortExpression ();
+      Assert.That (sortExpression, Is.Not.Null);
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.That (customer1.Orders, Is.EqualTo (orders), "This would not be equal if the sort expression was executed.");
+        Assert.That (customer1.Properties[typeof (Customer).FullName + ".Orders"].HasChanged, Is.False);
       }
     }
 
