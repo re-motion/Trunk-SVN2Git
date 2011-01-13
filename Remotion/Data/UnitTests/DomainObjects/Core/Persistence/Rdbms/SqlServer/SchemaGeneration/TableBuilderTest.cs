@@ -62,6 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private StorageProviderDefinitionFinder _providerDefinitionFinder;
     private EntityDefinitionFactory _entityDefinitionFactory;
     private ColumnDefinitionResolver _columnDefinitionResolver;
+    private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
+    private StorageNameCalculator _storageNameCalculator;
 
     public override void SetUp ()
     {
@@ -71,8 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _providerDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator (_providerDefinitionFinder), _providerDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
+      _storageNameCalculator = new StorageNameCalculator();
+      _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
+          _storageNameCalculator, _columnDefinitionResolver, _columnDefinitionFactory, _providerDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
-          _columnDefinitionFactory, _columnDefinitionResolver, SchemaGenerationFirstStorageProviderDefinition);
+          _columnDefinitionFactory, _foreignKeyConstraintDefinitionFactory, _columnDefinitionResolver, SchemaGenerationFirstStorageProviderDefinition);
     }
 
     //TODO: Move to TableBuilderBaseTest

@@ -27,14 +27,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     public string GetTableName (ClassDefinition classDefinition)
     {
-      var classDefinitionStorageEntityDefinitionAsTableDefiniton = classDefinition.StorageEntityDefinition as TableDefinition;
-      if (classDefinitionStorageEntityDefinitionAsTableDefiniton == null)
-      {
-        //TODO 3607: throw exception !?
-        return null;
-      }
+      //var classDefinitionStorageEntityDefinitionAsTableDefiniton = classDefinition.StorageEntityDefinition as TableDefinition;
+      //if (classDefinitionStorageEntityDefinitionAsTableDefiniton == null)
+      //{
+      //  //TODO 3607: throw exception !?
+      //  return null;
+      //}
 
-      return classDefinitionStorageEntityDefinitionAsTableDefiniton.TableName;
+      //return classDefinitionStorageEntityDefinitionAsTableDefiniton.TableName;
+      return classDefinition.GetEntityName();
     }
 
     public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition)

@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private EntityDefinitionFactory _factory;
     private IColumnDefinitionFactory _columnDefinitionFactoryMock;
     private IColumnDefinitionResolver _columnDefinitionResolverMock;
+    private IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactoryMock;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private ReflectionBasedClassDefinition _baseBaseClassDefinition;
     private ReflectionBasedClassDefinition _baseClassDefinition;
@@ -48,7 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IDColumnDefinition _fakeObjectIDColumnDefinition;
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     private SimpleColumnDefinition _fakeIDColumnDefinition;
-    
+    private ForeignKeyConstraintDefinition _fakeForeignKeyConstraint;
+
     [SetUp]
     public void SetUp ()
     {
@@ -56,7 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
       _columnDefinitionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
       _columnDefinitionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();
-      _factory = new EntityDefinitionFactory (_columnDefinitionFactoryMock, _columnDefinitionResolverMock, _storageProviderDefinition);
+      _foreignKeyConstraintDefinitionFactoryMock = MockRepository.GenerateStrictMock<IForeignKeyConstraintDefinitionFactory>();
+      _factory = new EntityDefinitionFactory (
+          _columnDefinitionFactoryMock, _foreignKeyConstraintDefinitionFactoryMock, _columnDefinitionResolverMock, _storageProviderDefinition);
 
       _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Customer), null);
       _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
@@ -82,11 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
       _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedDerivedClassDefinition }, true, true));
       _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-      
+
       _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
       _fakeObjectIDColumnDefinition = new IDColumnDefinition (_fakeIDColumnDefinition, _fakeColumnDefinition1);
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
+
+      _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
+          "FakeForeignKeyConstraint", "Test", new[] { _fakeIDColumnDefinition }, new[] { _fakeColumnDefinition1 });
     }
 
     [Test]
@@ -97,12 +104,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .Return (new[] { _fakeColumnDefinition1 });
       _columnDefinitionResolverMock.Replay();
 
+      _foreignKeyConstraintDefinitionFactoryMock
+          .Expect (mock => mock.CreateForeignKeyConstraints (_tableClassDefinition1))
+          .Return (new[] { _fakeForeignKeyConstraint });
+      _foreignKeyConstraintDefinitionFactoryMock.Replay();
+
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
 
       var result = _factory.CreateTableDefinition (_tableClassDefinition1);
 
       _columnDefinitionResolverMock.VerifyAllExpectations();
+      _foreignKeyConstraintDefinitionFactoryMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       AssertTableDefinition (
           result,
@@ -110,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "Order",
           "OrderView",
           new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
-          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }) });
+          new ITableConstraintDefinition[] { new PrimaryKeyConstraintDefinition ("PK_Order", true, new[] { _fakeIDColumnDefinition }), _fakeForeignKeyConstraint });
     }
 
     [Test]
@@ -132,7 +145,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (classDefinition))
           .Return (new[] { _fakeColumnDefinition1 });
-      _columnDefinitionResolverMock.Replay ();
+      _columnDefinitionResolverMock.Replay();
+
+      _foreignKeyConstraintDefinitionFactoryMock
+          .Expect (mock => mock.CreateForeignKeyConstraints (classDefinition))
+          .Return (new[] { _fakeForeignKeyConstraint });
+      _foreignKeyConstraintDefinitionFactoryMock.Replay ();
 
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
@@ -143,8 +161,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
+      _foreignKeyConstraintDefinitionFactoryMock.VerifyAllExpectations();
     }
-    
+
     [Test]
     public void CreateFilterViewDefinition_DerivedClassWithoutDerivations ()
     {
@@ -154,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_derivedClassDefinition1))
           .Return (new[] { _fakeColumnDefinition1 });
-      _columnDefinitionResolverMock.Replay ();
+      _columnDefinitionResolverMock.Replay();
 
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
@@ -184,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_derivedClassDefinition2))
           .Return (new[] { _fakeColumnDefinition1 });
-      _columnDefinitionResolverMock.Replay ();
+      _columnDefinitionResolverMock.Replay();
 
       MockSpecialColumns();
       _columnDefinitionFactoryMock.Replay();
@@ -216,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_baseBaseClassDefinition))
           .Return (new[] { _fakeColumnDefinition1 });
-      _columnDefinitionResolverMock.Replay ();
+      _columnDefinitionResolverMock.Replay();
 
       MockSpecialColumns();
 
@@ -236,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           });
     }
-    
+
     private void AssertTableDefinition (
         IEntityDefinition entityDefinition,
         string storageProviderID,
@@ -253,22 +272,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       var tableConstraints = ((TableDefinition) entityDefinition).Constraints;
       Assert.That (tableConstraints.Count, Is.EqualTo (tableConstraintDefinitions.Length));
-      
-      for (var i = 0; i<tableConstraintDefinitions.Length; i++)
+
+      for (var i = 0; i < tableConstraintDefinitions.Length; i++)
       {
         Assert.That (tableConstraintDefinitions[i].ConstraintName, Is.EqualTo (tableConstraints[i].ConstraintName));
         var tableConstraintDefinitioAsPrimaryKeyConstraint = tableConstraintDefinitions[i] as PrimaryKeyConstraintDefinition;
-        if (tableConstraintDefinitioAsPrimaryKeyConstraint!=null)
+        if (tableConstraintDefinitioAsPrimaryKeyConstraint != null)
         {
           Assert.That (tableConstraints[i], Is.TypeOf (typeof (PrimaryKeyConstraintDefinition)));
           Assert.That (
-              ((PrimaryKeyConstraintDefinition) tableConstraints[i]).IsClustered, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.IsClustered));
+              ((PrimaryKeyConstraintDefinition) tableConstraints[i]).IsClustered,
+              Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.IsClustered));
           Assert.That (
               ((PrimaryKeyConstraintDefinition) tableConstraints[i]).Columns, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.Columns));
         }
 
         //TODO: Check for ForeignKey Constraints
-        
+
         //TODO: Throw NotSupportedException on unsupported constraints
       }
     }

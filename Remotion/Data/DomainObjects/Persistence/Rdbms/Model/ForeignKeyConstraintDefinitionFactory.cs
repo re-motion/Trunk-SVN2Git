@@ -31,19 +31,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
     private readonly IStorageNameCalculator _storageNameCalculator;
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
+    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public ForeignKeyConstraintDefinitionFactory (
         IStorageNameCalculator storageNameCalculator,
         IColumnDefinitionResolver columnDefinitionResolver,
-        IColumnDefinitionFactory columnDefinitionFactory)
+        IColumnDefinitionFactory columnDefinitionFactory,
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       _storageNameCalculator = storageNameCalculator;
       _columnDefinitionResolver = columnDefinitionResolver;
       _columnDefinitionFactory = columnDefinitionFactory;
+      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
     public IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition)
@@ -54,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       foreach (var endPoint in allRelationEndPointDefinitions)
       {
-        if (endPoint.IsAnonymous)
+        if (endPoint.IsAnonymous) //TODO 3626: can be removed because ReleationEndPointDefinitionCollection cannot hold endpoints without property namens !?
           continue;
 
         var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
@@ -62,18 +66,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           continue;
 
         var propertyDefinition = endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName);
-        if (propertyDefinition.StorageClass != StorageClass.Persistent)
+        if (propertyDefinition.StorageClass != StorageClass.Persistent) //TODO 3626: test case !?
           continue;
 
         var virtualConstraintColumnDefinitons = _columnDefinitionFactory.CreateIDColumnDefinition();
 
-        //TODO 3626: change to as case and throw exception if it's null!
-        var nonVirtualConstraintColumnDefinition = (IDColumnDefinition) _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
+        var nonVirtualConstraintColumnDefinition = _columnDefinitionResolver.GetColumnDefinition (propertyDefinition);
+        var nonVirtualConstraintColumnDefinitionAsIDColumnDefinition = nonVirtualConstraintColumnDefinition as IDColumnDefinition;
+        if (nonVirtualConstraintColumnDefinitionAsIDColumnDefinition == null)
+          throw new InvalidOperationException ("The non virtual constraint column definition has to be an ID column definition.");
 
         var referencingColumns =
             SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { virtualConstraintColumnDefinitons.ObjectIDColumn });
         var referencedColumns =
-            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { nonVirtualConstraintColumnDefinition.ObjectIDColumn });
+            SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (
+                new[] { nonVirtualConstraintColumnDefinitionAsIDColumnDefinition.ObjectIDColumn });
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameCalculator.GetForeignKeyConstraintName (classDefinition, nonVirtualConstraintColumnDefinition),
@@ -91,11 +98,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (endPoint.IsVirtual)
         return false;
 
-      if (oppositeClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-          != endPoint.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
+      if (_storageProviderDefinitionFinder.GetStorageProviderDefinition(oppositeClassDefinition).Name
+          != _storageProviderDefinitionFinder.GetStorageProviderDefinition (endPoint.ClassDefinition).Name)
         return false;
 
       //TODO 3626: change to !(StorageEntityDefinition is TableDefinition) !?
+      //TODO 3626: test case !?
       if (oppositeClassDefinition.GetEntityName() == null)
         return false;
 

@@ -45,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      _classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       Assert.That (_classDefinition.StorageEntityDefinition, Is.Null);
 
       _storageProviderDefinitionStub.Stub (stub => stub.GetStorageProviderDefinition (_classDefinition)).Return (

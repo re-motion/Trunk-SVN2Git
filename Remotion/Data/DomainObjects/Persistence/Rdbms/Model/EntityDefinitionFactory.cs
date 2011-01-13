@@ -31,17 +31,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
+    private readonly IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
 
     public EntityDefinitionFactory (
         IColumnDefinitionFactory columnDefinitionFactory,
+        IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IColumnDefinitionResolver columnDefinitionResolver,
         StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _columnDefinitionFactory = columnDefinitionFactory;
+      _foreignKeyConstraintDefinitionFactory = foreignKeyConstraintDefinitionFactory;
       _columnDefinitionResolver = columnDefinitionResolver;
       _storageProviderDefinition = storageProviderDefinition;
     }
@@ -58,12 +62,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           true,
           SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
 
+      var foreignKeyConstraints =
+          _foreignKeyConstraintDefinitionFactory.CreateForeignKeyConstraints (classDefinition).Cast<ITableConstraintDefinition>();
+
       return new TableDefinition (
           _storageProviderDefinition,
           tableName,
           GetViewName (classDefinition),
           columns,
-          new[] { clusteredPrimaryKeyConstraint });
+          new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints));
     }
 
     public virtual IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity)
@@ -128,6 +135,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
     }
-    
   }
 }
