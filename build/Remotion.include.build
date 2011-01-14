@@ -699,7 +699,7 @@
   <target name="relinq-zip" depends="relinq-zipfilename">
     <delete file="${relinq-zipfile.name}" />
 	
-	<if test="${file::get-length(release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}">
+	<if test="${file::get-length(relinq-release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}">
 		<zip zipfile="${relinq-zipfile.name}">
 		  <fileset basedir="${build.basedir}">
 			<include name="**/Remotion.Data.Linq.*" />
@@ -717,7 +717,7 @@
 
   <target name="relinq-sourcezip" depends="relinq-zipfilename">
     <delete file="${relinq-sourcezipfile.name}"/>
-    <if test="${file::get-length(release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}">
+    <if test="${file::get-length(relinq-release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}">
 		  <zip zipfile="${relinq-sourcezipfile.name}">
 		    <fileset basedir="${solution.basedir}">
 			  <include name="Remotion-Linq.sln" />
