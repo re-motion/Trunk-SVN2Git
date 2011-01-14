@@ -63,7 +63,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       foreach (var endPoint in allRelationEndPointDefinitions)
       {
-        endPoint.GetOppositeClassDefinition ();
         var oppositeClassDefinition = endPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (endPoint.PropertyName);
 
         if (endPoint.IsVirtual)
@@ -73,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           continue;
 
         var propertyDefinition = ((RelationEndPointDefinition) endPoint).PropertyDefinition;
-        if (propertyDefinition.StorageClass != StorageClass.Persistent) // TODO Review 3626: test case with StorageClass.Transaction
+        if (propertyDefinition.StorageClass != StorageClass.Persistent)
           continue;
 
         var oppositeIDColumnDefiniton = _columnDefinitionFactory.CreateIDColumnDefinition();

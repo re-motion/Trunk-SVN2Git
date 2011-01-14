@@ -114,6 +114,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void CreateForeignKeyConstraints_StorageClassTransactionPropertiesAreIgnored ()
+    {
+      var computerClassDefinition = Configuration.ClassDefinitions["Computer"];
+      var employeeClassDefinition = Configuration.ClassDefinitions["Employee"];
+
+      _columnDefintionFactoryMock
+          .Expect (mock => mock.CreateIDColumnDefinition ())
+          .Return (_fakeIdColumnDefinition).Repeat.Any();
+      _columnDefintionFactoryMock.Replay ();
+
+      _columnDefintionResolverMock
+          .Expect (
+              mock =>
+              mock.GetColumnDefinition (computerClassDefinition.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"]))
+          .Return (_fakeForeignColumnDefinition);
+      _columnDefintionResolverMock.Replay ();
+
+      _storageNameCalculatorMock
+          .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeForeignColumnDefinition))
+          .Return ("FakeConstraintName");
+      _storageNameCalculatorMock
+          .Expect (mock => mock.GetTableName (employeeClassDefinition))
+          .Return ("FakeTableName")
+          .Repeat.Times (3);
+      _storageNameCalculatorMock.Replay ();
+
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (computerClassDefinition))
+          .Return (computerClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+      _storageProviderDefinitionFinderStub
+          .Stub (stub => stub.GetStorageProviderDefinition (employeeClassDefinition))
+          .Return (employeeClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
+
+      var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (computerClassDefinition).ToArray ();
+
+      _columnDefintionFactoryMock.VerifyAllExpectations ();
+      _columnDefintionResolverMock.VerifyAllExpectations ();
+      _storageNameCalculatorMock.VerifyAllExpectations ();
+      Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1)); //EmployeeTransactionProperty relation property is filtered
+    }
+
+    [Test]
     public void CreateForeignKeyConstraints_NoEntityName_NoForeignKeyConstrainedIsCreated ()
     {
       var orderClassDefinition = Configuration.ClassDefinitions["Order"];
