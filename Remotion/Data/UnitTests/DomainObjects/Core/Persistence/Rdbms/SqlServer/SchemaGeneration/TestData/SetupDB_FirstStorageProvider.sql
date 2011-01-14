@@ -53,17 +53,26 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'Developmen
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EmployeeView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[EmployeeView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FirstClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[FirstClassView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[OrderView]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderItemView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[OrderItemView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SecondClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SecondClassView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SecondDerivedClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[SecondDerivedClassView]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SiblingOfClassWithRelationsView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[SiblingOfClassWithRelationsView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ThirdClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ThirdClassView]
 GO
 
 -- Drop foreign keys of all tables that will be created below
@@ -71,7 +80,7 @@ DECLARE @statement nvarchar (4000)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'AbstractClass', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'Order', 'OrderItem', 'SiblingOfTableWithRelations')
+    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'AbstractClass', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'FirstClass', 'Order', 'OrderItem', 'SecondClass', 'SiblingOfTableWithRelations', 'ThirdClass')
     ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
@@ -107,14 +116,23 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Developme
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Employee' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Employee]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'FirstClass' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[FirstClass]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Order]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'OrderItem' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[OrderItem]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SecondClass' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[SecondClass]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SiblingOfTableWithRelations' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[SiblingOfTableWithRelations]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ThirdClass' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[ThirdClass]
 GO
 
 -- Create all tables
@@ -280,6 +298,16 @@ CREATE TABLE [dbo].[Employee]
   CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED ([ID])
 )
 
+CREATE TABLE [dbo].[FirstClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  [SecondClassID] uniqueidentifier NULL,
+  [ThirdClassID] uniqueidentifier NULL,
+  CONSTRAINT [PK_FirstClass] PRIMARY KEY CLUSTERED ([ID])
+)
+
 CREATE TABLE [dbo].[Order]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -304,6 +332,14 @@ CREATE TABLE [dbo].[OrderItem]
   CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])
 )
 
+CREATE TABLE [dbo].[SecondClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  CONSTRAINT [PK_SecondClass] PRIMARY KEY CLUSTERED ([ID])
+)
+
 CREATE TABLE [dbo].[SiblingOfTableWithRelations]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -311,6 +347,14 @@ CREATE TABLE [dbo].[SiblingOfTableWithRelations]
   [Timestamp] rowversion NOT NULL,
   [IntProperty] int NOT NULL,
   CONSTRAINT [PK_SiblingOfTableWithRelations] PRIMARY KEY CLUSTERED ([ID])
+)
+
+CREATE TABLE [dbo].[ThirdClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  CONSTRAINT [PK_ThirdClass] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
 
@@ -330,6 +374,10 @@ ALTER TABLE [dbo].[DevelopmentPartner] ADD
 
 ALTER TABLE [dbo].[Employee] ADD
   CONSTRAINT [FK_Employee_SupervisorID] FOREIGN KEY ([SupervisorID]) REFERENCES [dbo].[Employee] ([ID])
+
+ALTER TABLE [dbo].[FirstClass] ADD
+  CONSTRAINT [FK_FirstClass_SecondClassID] FOREIGN KEY ([SecondClassID]) REFERENCES [dbo].[SecondClass] ([ID]),
+  CONSTRAINT [FK_FirstClass_ThirdClassID] FOREIGN KEY ([ThirdClassID]) REFERENCES [dbo].[ThirdClass] ([ID])
 
 ALTER TABLE [dbo].[Order] ADD
   CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])
@@ -466,6 +514,13 @@ CREATE VIEW [dbo].[EmployeeView] ([ID], [ClassID], [Timestamp], [Name], [Supervi
   WITH CHECK OPTION
 GO
 
+CREATE VIEW [dbo].[FirstClassView] ([ID], [ClassID], [Timestamp], [SecondClassID], [ThirdClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [SecondClassID], [ThirdClassID]
+    FROM [dbo].[FirstClass]
+  WITH CHECK OPTION
+GO
+
 CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]
@@ -477,6 +532,13 @@ CREATE VIEW [dbo].[OrderItemView] ([ID], [ClassID], [Timestamp], [Position], [Pr
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Position], [Product], [OrderID]
     FROM [dbo].[OrderItem]
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SecondClassView] ([ID], [ClassID], [Timestamp])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp]
+    FROM [dbo].[SecondClass]
   WITH CHECK OPTION
 GO
 
@@ -492,5 +554,12 @@ CREATE VIEW [dbo].[SiblingOfClassWithRelationsView] ([ID], [ClassID], [Timestamp
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [IntProperty]
     FROM [dbo].[SiblingOfTableWithRelations]
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ThirdClassView] ([ID], [ClassID], [Timestamp])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp]
+    FROM [dbo].[ThirdClass]
   WITH CHECK OPTION
 GO
