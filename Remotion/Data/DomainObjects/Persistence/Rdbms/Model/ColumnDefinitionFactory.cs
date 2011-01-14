@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Linq;
-using System.Reflection;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -32,29 +30,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
+    private readonly IStorageNameCalculator _storageNameCalculator;
 
-    public ColumnDefinitionFactory (StorageTypeCalculator storageTypeCalculator, IStorageProviderDefinitionFinder providerDefinitionFinder)
+    public ColumnDefinitionFactory (
+        StorageTypeCalculator storageTypeCalculator,
+        IStorageNameCalculator storageNameCalculator,
+        IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
       _storageTypeCalculator = storageTypeCalculator;
+      _storageNameCalculator = storageNameCalculator;
       _providerDefinitionFinder = providerDefinitionFinder;
     }
 
     public virtual IColumnDefinition CreateColumnDefinition (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-      
+
       var storageType = _storageTypeCalculator.GetStorageType (propertyDefinition);
       if (storageType == null)
         return new UnsupportedStorageTypeColumnDefinition();
 
       var columnDefinition = new SimpleColumnDefinition (
-          GetColumnName (propertyDefinition.PropertyInfo),
+          _storageNameCalculator.GetColumnName (propertyDefinition),
           propertyDefinition.PropertyType,
           storageType,
-          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition), 
+          propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
           false);
 
       var relationEndPointDefinition = propertyDefinition.ClassDefinition.GetRelationEndPointDefinition (propertyDefinition.PropertyName);
@@ -66,15 +70,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public virtual IDColumnDefinition CreateIDColumnDefinition ()
     {
-      var objectIDColumn = new SimpleColumnDefinition ("ID", typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
-      var classIDColumnDefinition = new SimpleColumnDefinition ("ClassID", typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
+      var objectIDColumn = new SimpleColumnDefinition (
+          _storageNameCalculator.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
+      var classIDColumnDefinition = new SimpleColumnDefinition (
+          _storageNameCalculator.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
 
       return new IDColumnDefinition (objectIDColumn, classIDColumnDefinition);
     }
 
     public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()
     {
-      return new SimpleColumnDefinition ("Timestamp", typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
+      return new SimpleColumnDefinition (
+          _storageNameCalculator.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
     protected virtual IColumnDefinition CreateRelationColumnDefinition (
@@ -83,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IRelationEndPointDefinition relationEndPointDefinition,
         SimpleColumnDefinition foreignKeyColumnDefinition)
     {
-      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
       var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
       var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
 
@@ -91,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
       {
         var classIdColumnDefinition = new SimpleColumnDefinition (
-            RdbmsProvider.GetClassIDColumnName (GetColumnName (propertyDefinition.PropertyInfo)),
+            _storageNameCalculator.GetRelationClassIDColumnName (propertyDefinition),
             typeof (string),
             _storageTypeCalculator.SqlDataTypeClassID,
             true,
@@ -100,22 +107,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return new IDColumnDefinition (foreignKeyColumnDefinition, classIdColumnDefinition);
       }
       else
-      {
         return new IDColumnDefinition (foreignKeyColumnDefinition, null);
-      }
-    }
-
-    protected virtual string GetColumnName (PropertyInfo propertyInfo)
-    {
-      var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyInfo, true);
-
-      if (attribute != null)
-        return attribute.Identifier;
-
-      if (ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
-        return propertyInfo.Name + "ID";
-
-      return propertyInfo.Name;
     }
 
     protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)

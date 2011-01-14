@@ -15,14 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 
@@ -217,45 +213,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  DROP TABLE [dbo].[Order]\r\n";
 
       Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropTableScript());
-    }
-
-    private PropertyDefinition CreatePropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition,
-        string propertyName,
-        string columnName,
-        Type propertyType,
-        PropertyInfo propertyInfo,
-        bool? isNullable,
-        int? maxLength,
-        StorageClass storageClass)
-    {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
-          classDefinition,
-          propertyInfo,
-          propertyName,
-          propertyType,
-          isNullable,
-          maxLength,
-          storageClass);
-      propertyDefinition.SetStorageProperty (
-          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true, false));
-      return propertyDefinition;
-    }
-
-    private void ApplyPersistenceModel (ClassDefinition classDefinition)
-    {
-      var providerDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      var columnDefinitionFactory = new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), providerDefinitionFinder);
-      var columnDefinitionResolver = new ColumnDefinitionResolver ();
-      var storageNameCalculator = new StorageNameCalculator ();
-      var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, providerDefinitionFinder);
-      var entityDefinitionFactory = new EntityDefinitionFactory (columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, SchemaGenerationFirstStorageProviderDefinition);
-
-      var persistenceModelLoader = new RdbmsPersistenceModelLoader (
-          entityDefinitionFactory,
-          columnDefinitionFactory,
-          SchemaGenerationFirstStorageProviderDefinition);
-      persistenceModelLoader.ApplyPersistenceModelToHierarchy (classDefinition);
     }
 
   }

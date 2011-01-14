@@ -25,8 +25,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IStorageNameCalculator
   {
+    string IDColumnName { get; }
+    string ClassIDColumnName { get; }
+    string TimestampColumnName { get; }
+
     string GetTableName (ClassDefinition classDefinition);
+    string GetViewName (ClassDefinition classDefinition);
+    string GetColumnName (PropertyDefinition propertyDefinition);
+    string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition);
+    string GetPrimaryKeyName (ClassDefinition classDefinition);
     string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition);
-    //TODO 3607: add other methods 
   }
 }

@@ -81,13 +81,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
-      var columnDefinitionFactory = CreateColumnDefinitionFactory (storageProviderDefinitionFinder);
+      var storageNameCalculator = CreateStorageNameCalculator ();
+      var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
-      var storageNameCalculator = CreateStorageNameCalculator();
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
           storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver);
+          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameCalculator);
 
       return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, StorageProviderDefinition);
     }
@@ -100,10 +100,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
         IColumnDefinitionFactory columnDefinitionFactory,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
-        IColumnDefinitionResolver columnDefinitionResolver)
+        IColumnDefinitionResolver columnDefinitionResolver,
+        IStorageNameCalculator storageNameCalculator)
     {
       return new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, _storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, storageNameCalculator, _storageProviderDefinition);
     }
 
     protected virtual IColumnDefinitionResolver CreateColumnDefinitionResolver ()
@@ -116,9 +117,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new StorageNameCalculator();
     }
 
-    protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (IStorageProviderDefinitionFinder providerDefinitionFinder)
+    protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (
+        IStorageNameCalculator storageNameCalculator, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
-      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), providerDefinitionFinder);
+      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), storageNameCalculator, providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
@@ -127,7 +129,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
         IColumnDefinitionFactory columnDefinitionFactory,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      return new ForeignKeyConstraintDefinitionFactory (storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+      return new ForeignKeyConstraintDefinitionFactory (
+          storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }
   }
 }

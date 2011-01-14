@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Utilities;
@@ -26,6 +27,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class StorageNameCalculator : IStorageNameCalculator
   {
+    public string IDColumnName
+    {
+      get { return "ID"; }
+    }
+
+    public string ClassIDColumnName
+    {
+      get { return "ClassID"; }
+    }
+
+    public string TimestampColumnName
+    {
+      get { return "Timestamp"; }
+    }
+
     public string GetTableName (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -37,8 +53,49 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
     }
 
+    public string GetViewName (ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      return classDefinition.ID + "View";
+    }
+
+    public string GetColumnName (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyDefinition.PropertyInfo, true);
+
+      if (attribute != null)
+        return attribute.Identifier;
+
+      if (ReflectionUtility.IsDomainObject (propertyDefinition.PropertyInfo.PropertyType))
+        return propertyDefinition.PropertyInfo.Name + "ID";
+
+      return propertyDefinition.PropertyInfo.Name;
+    }
+
+    public string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+
+      return RdbmsProvider.GetClassIDColumnName (GetColumnName (propertyDefinition));
+    }
+
+    public string GetPrimaryKeyName (ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      var tableName = GetTableName (classDefinition);
+
+      return string.Format ("PK_{0}", tableName);
+    }
+
     public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition)
     {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("storagePropertyDefinition", storagePropertyDefinition);
+      
       var tableName = GetTableName (classDefinition);
       var propertyName = storagePropertyDefinition.Name;
 
