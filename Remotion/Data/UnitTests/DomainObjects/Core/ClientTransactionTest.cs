@@ -721,9 +721,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       fakePersistenceStrategy.Stub (stub => stub.ParentTransaction).Return (_transaction);
       var fakeSubTransaction = ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (fakePersistenceStrategy);
 
-      Func<ClientTransaction, ClientTransaction> factoryMock = tx =>
+      Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> factoryMock = (tx, invalidDomainObjectManager) =>
       {
         Assert.That (tx, Is.SameAs (_transaction));
+        Assert.That (invalidDomainObjectManager, Is.SameAs (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction)));
         return fakeSubTransaction;
       };
 
@@ -737,7 +738,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var mockRepository = listenerMock.GetMockRepository();
-      var componentFactoryPartialMock = mockRepository.PartialMock<SubClientTransactionComponentFactory> (_transaction);
+      var componentFactoryPartialMock = mockRepository.PartialMock<SubClientTransactionComponentFactory> (
+          _transaction, 
+          ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction));
       var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
       
       var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
@@ -768,7 +771,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       mockRepository.ReplayAll ();
 
-      _transaction.CreateSubTransaction (tx => ClientTransactionObjectMother.Create<ClientTransaction> (componentFactoryPartialMock));
+      _transaction.CreateSubTransaction ((tx, invalidDomainObjectManager) => ClientTransactionObjectMother.Create<ClientTransaction> (componentFactoryPartialMock));
       mockRepository.VerifyAll ();
     }
 
@@ -777,7 +780,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var eventReceiverMock = MockRepository.GenerateStrictMock<ClientTransactionMockEventReceiver> (_transaction);
-      Func<ClientTransaction, ClientTransaction> factoryMock = tx =>
+      Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> factoryMock = (tx, invalidDomainObjectManager) =>
       {
         Assert.Fail ("Must not be called.");
         return null;
@@ -811,7 +814,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void CreateSubTransaction_ExceptionInFactory ()
     {
       var exception = new InvalidOperationException ("Canceled");
-      Func<ClientTransaction, ClientTransaction> factoryMock = tx =>
+      Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> factoryMock = (tx, invalidDomainObjectManager) =>
       {
         throw (exception);
       };
@@ -836,7 +839,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       try
       {
-        _transaction.CreateSubTransaction (tx => ClientTransaction.CreateRootTransaction());
+        _transaction.CreateSubTransaction ((tx, invalidDomainObjectManager) => ClientTransaction.CreateRootTransaction());
       }
       catch (InvalidOperationException)
       {

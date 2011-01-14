@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class SubClientTransactionComponentFactoryTest : StandardMappingTest
   {
     private ClientTransactionMock _parentTransaction;
+    private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
     private SubClientTransactionComponentFactory _factory;
 
     public override void SetUp ()
@@ -39,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _parentTransaction = new ClientTransactionMock ();
-      _factory = new SubClientTransactionComponentFactory (_parentTransaction);
+      _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      _factory = new SubClientTransactionComponentFactory (_parentTransaction, _parentInvalidDomainObjectManagerStub);
     }
 
     [Test]

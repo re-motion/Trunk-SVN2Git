@@ -693,9 +693,9 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    return CreateSubTransaction (parentTx =>
+    return CreateSubTransaction ((parentTx, invalidDomainObjectManager) =>
     {
-      var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (ParamList.Create (parentTx));
+      var componentFactory = ObjectFactory.Create<SubClientTransactionComponentFactory> (ParamList.Create (parentTx, invalidDomainObjectManager));
       return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
     });
   }
@@ -715,7 +715,7 @@ public class ClientTransaction
   /// scope created by <see cref="EnterDiscardingScope"/> is left.
   /// </para>
   /// </remarks>
-  public virtual ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory)
+  public virtual ClientTransaction CreateSubTransaction (Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> subTransactionFactory)
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
@@ -726,7 +726,7 @@ public class ClientTransaction
     ClientTransaction subTransaction;
     try
     {
-      subTransaction = subTransactionFactory (this);
+      subTransaction = subTransactionFactory (this, _invalidDomainObjectManager);
       if (subTransaction.ParentTransaction != this)
         throw new InvalidOperationException ("The given component factory did not create a sub-transaction for this transaction.");
     }
@@ -1245,7 +1245,7 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the <see cref="DataManager"/> of the <b>ClientTransaction</b>.
+  /// Gets the <see cref="IDataManager"/> of this <see cref="ClientTransaction"/>.
   /// </summary>
   protected internal IDataManager DataManager
   {

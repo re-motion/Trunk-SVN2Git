@@ -34,11 +34,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class SubClientTransactionComponentFactory : IClientTransactionComponentFactory
   {
     private readonly ClientTransaction _parentTransaction;
+    private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
 
-    public SubClientTransactionComponentFactory (ClientTransaction parentTransaction)
+    public SubClientTransactionComponentFactory (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
+      ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
+
       _parentTransaction = parentTransaction;
+      _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
     }
 
     public virtual Dictionary<Enum, object> CreateApplicationData ()
