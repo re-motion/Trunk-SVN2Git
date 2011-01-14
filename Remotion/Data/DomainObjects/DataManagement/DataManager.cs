@@ -20,7 +20,6 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -37,12 +36,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private DataContainerMap _dataContainerMap;
     private RelationEndPointMap _relationEndPointMap;
+    private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private DomainObjectStateCache _domainObjectStateCache;
-    private Dictionary<ObjectID, DomainObject> _invalidObjects;
 
     private object[] _deserializedData; // only used for deserialization
 
-    public DataManager (ClientTransaction clientTransaction, ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
+    public DataManager (
+        ClientTransaction clientTransaction, 
+        ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy, 
+        IInvalidDomainObjectManager invalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
@@ -51,8 +53,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
       _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
+      _invalidDomainObjectManager = invalidDomainObjectManager;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
-      _invalidObjects = new Dictionary<ObjectID, DomainObject>();
     }
 
     public ClientTransaction ClientTransaction
@@ -60,14 +62,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _clientTransaction; }
     }
 
-    public int InvalidObjectCount
-    {
-      get { return _invalidObjects.Count; }
-    }
-
     public IEnumerable<ObjectID> InvalidObjectIDs
     {
-      get { return _invalidObjects.Keys; }
+      get { return _invalidDomainObjectManager.InvalidObjectIDs; }
     }
 
     public DomainObjectStateCache DomainObjectStateCache
@@ -88,18 +85,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public bool IsInvalid (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      return _invalidObjects.ContainsKey (id);
+      return _invalidDomainObjectManager.IsInvalid (id);
     }
 
     public DomainObject GetInvalidObjectReference (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      DomainObject invalidDomainObject;
-      if (!_invalidObjects.TryGetValue (id, out invalidDomainObject))
-        throw new ArgumentException (String.Format ("The object '{0}' has not been marked invalid.", id), "id");
-      else
-        return invalidDomainObject;
+      return _invalidDomainObjectManager.GetInvalidObjectReference (id);
     }
 
     public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
@@ -265,14 +258,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      if (IsInvalid (domainObject.ID))
-      {
-        if (GetInvalidObjectReference (domainObject.ID) != domainObject)
-          throw new InvalidOperationException ("Cannot mark the given object invalid, another object with the same ID has already been marked.");
-
-        return;
-      }
-
       if (DataContainerMap[domainObject.ID] != null)
       {
         var message = String.Format (
@@ -281,15 +266,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException (message);
       }
 
-      _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
-      _invalidObjects.Add (domainObject.ID, domainObject);
+      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
+        _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
     }
 
+    // TODO 3639: Rename to MarkNotInvalid
     public void ClearInvalidFlag (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      _invalidObjects.Remove (objectID);
+      _invalidDomainObjectManager.MarkNotInvalid (objectID);
     }
 
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
@@ -376,16 +362,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
       _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
-      _invalidObjects = new Dictionary<ObjectID, DomainObject>();
-
-      var invalidIDs = doInfo.GetArray<ObjectID>();
-      var invalidObjects = doInfo.GetArray<DomainObject>();
-
-      if (invalidIDs.Length != invalidObjects.Length)
-        throw new SerializationException ("Invalid serialization data: invalid ID and object counts do not match.");
-
-      for (int i = 0; i < invalidIDs.Length; ++i)
-        _invalidObjects.Add (invalidIDs[i], invalidObjects[i]);
+      _invalidDomainObjectManager = doInfo.GetValue<InvalidDomainObjectManager> ();
 
       _deserializedData = null;
       doInfo.SignalDeserializationFinished();
@@ -398,15 +375,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       doInfo.AddValue (_dataContainerMap);
       doInfo.AddHandle (_relationEndPointMap);
       doInfo.AddValue (_domainObjectStateCache);
-
-      var invalidIDs = new ObjectID[_invalidObjects.Count];
-      _invalidObjects.Keys.CopyTo (invalidIDs, 0);
-      doInfo.AddArray (invalidIDs);
-
-      var invalidObjects = new DomainObject[_invalidObjects.Count];
-      _invalidObjects.Values.CopyTo (invalidObjects, 0);
-      doInfo.AddArray (invalidObjects);
-
+      doInfo.AddValue (_invalidDomainObjectManager);
+      
       info.AddValue ("doInfo.GetData", doInfo.GetData());
     }
 

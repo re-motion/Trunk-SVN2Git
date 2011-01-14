@@ -446,18 +446,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void IsDiscarded ()
+    public void IsInvalid ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
-      Assert.That (_dataManager.InvalidObjectCount, Is.EqualTo (0));
 
       _dataManager.Rollback ();
 
       Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
-      Assert.That (_dataManager.InvalidObjectCount, Is.EqualTo (1));
     }
 
     [Test]
@@ -591,8 +589,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "Cannot mark the given object invalid, another object with the same ID has already been marked.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot mark the given object invalid, another object with the same ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has already "
+        + "been marked.")]
     public void MarkObjectInvalid_Twice_DifferentObject ()
     {
       var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);

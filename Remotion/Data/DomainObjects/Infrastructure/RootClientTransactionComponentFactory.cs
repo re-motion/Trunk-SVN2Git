@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -45,13 +46,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
       var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ();
       return factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction));
-    }
-
-    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction)
-    {
-      return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy ());
     }
 
     public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
@@ -61,6 +59,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      
       var eagerFetcher = new EagerFetcher (dataManager);
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
@@ -68,6 +71,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
     {
       return new DictionaryBasedEnlistedDomainObjectManager ();
+    }
+
+    public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
+    {
+      return new InvalidDomainObjectManager ();
+    }
+
+    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+
+      return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy (), invalidDomainObjectManager);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

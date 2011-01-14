@@ -58,21 +58,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           .Concat (factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction)));
     }
 
-    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      var dataManager = new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy ());
-
-      var parentDataManager = _parentTransaction.DataManager;
-      var invalidObjects = parentDataManager.InvalidObjectIDs.Select (id => parentDataManager.GetInvalidObjectReference (id));
-      var deletedObjects = parentDataManager.GetLoadedData ().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
-
-      foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
-        dataManager.MarkObjectInvalid (objectToBeMarkedInvalid);
-
-      return dataManager;
-    }
-
     public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
       return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction));
@@ -92,6 +77,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       return new DelegatingEnlistedDomainObjectManager (_parentTransaction);
     }
+
+    public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
+    {
+      var invalidDomainObjectManager = new InvalidDomainObjectManager ();
+
+      var parentDataManager = _parentTransaction.DataManager;
+      var invalidObjects = parentDataManager.InvalidObjectIDs.Select (id => parentDataManager.GetInvalidObjectReference (id));
+      var deletedObjects = parentDataManager.GetLoadedData ().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
+
+      foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
+        invalidDomainObjectManager.MarkInvalid (objectToBeMarkedInvalid);
+
+      return invalidDomainObjectManager;
+    }
+
+    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy (), invalidDomainObjectManager);
+    }
+
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()
     {

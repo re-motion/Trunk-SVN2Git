@@ -114,16 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void DataManagerTest ()
-    {
-      DataManager dataManager = new DataManager (ClientTransactionScope.CurrentTransaction, new RootCollectionEndPointChangeDetectionStrategy ());
-
-      DataManager deserializedDataManager = (DataManager) SerializeAndDeserialize (dataManager);
-
-      Assert.IsNotNull (deserializedDataManager);
-    }
-
-    [Test]
     public void QueryManagerTest ()
     {
       var queryManager = ClientTransactionScope.CurrentTransaction.QueryManager;

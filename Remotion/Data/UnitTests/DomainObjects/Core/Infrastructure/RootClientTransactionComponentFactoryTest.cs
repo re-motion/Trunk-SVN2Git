@@ -17,21 +17,41 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
   public class RootClientTransactionComponentFactoryTest
   {
+    private RootClientTransactionComponentFactory _factory;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _factory = new RootClientTransactionComponentFactory ();
+    }
+
+    [Test]
+    public void CreateInvalidDomainObjectManager ()
+    {
+      var manager = _factory.CreateInvalidDomainObjectManager ();
+      Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+      Assert.That (((InvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
+    }
+
     [Test]
     public void CreateDataManager_CollectionEndPointChangeDetectionStrategy ()
     {
-      var factory = new RootClientTransactionComponentFactory ();
-      var dataManager = factory.CreateDataManager (new ClientTransactionMock());
+      var invalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var dataManager = _factory.CreateDataManager (new ClientTransactionMock(), invalidDomainObjectManagerStub);
       
       Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
           Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
+      Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
     }
 
   }

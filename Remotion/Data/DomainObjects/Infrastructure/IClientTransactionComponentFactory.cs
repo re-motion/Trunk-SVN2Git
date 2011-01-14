@@ -29,14 +29,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     Dictionary<Enum, object> CreateApplicationData ();
     ClientTransactionExtensionCollection CreateExtensions ();
     IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction);
-    IDataManager CreateDataManager (ClientTransaction clientTransaction);
     IPersistenceStrategy CreatePersistenceStrategy (Guid id);
     IObjectLoader CreateObjectLoader (
         ClientTransaction clientTransaction, 
         IDataManager dataManager, 
         IPersistenceStrategy persistenceStrategy, 
         IClientTransactionListener eventSink);
+    
     IEnlistedDomainObjectManager CreateEnlistedObjectManager ();
+    IInvalidDomainObjectManager CreateInvalidDomainObjectManager ();
+
+    IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager);
     
     // This member is likely to be removed in the future
     // TODO 2968: Remove this member

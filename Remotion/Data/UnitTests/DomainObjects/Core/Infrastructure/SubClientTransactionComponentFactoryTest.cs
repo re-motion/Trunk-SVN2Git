@@ -19,9 +19,12 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -38,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentTransaction = new ClientTransactionMock ();
       _factory = new SubClientTransactionComponentFactory (_parentTransaction);
     }
+
     [Test]
     public void CreateListeners_IncludesSubTransactionListener ()
     {
@@ -48,18 +52,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateDataManager_CollectionEndPointChangeDetectionStrategy ()
+    public void CreateEnlistedObjectManager ()
     {
-      var dataManager = _factory.CreateDataManager (new ClientTransactionMock ());
-      Assert.That (
-          dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
-          Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
+      var manager = _factory.CreateEnlistedObjectManager ();
+      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
+      Assert.That (((DelegatingEnlistedDomainObjectManager) manager).TargetTransaction, Is.SameAs (_parentTransaction));
     }
 
     [Test]
-    public void CreateDataManager_ObjectsInvalidOrDeletedInParentTransaction_AreAutomaticallyMarkedInvalid ()
+    public void CreateInvalidDomainObjectManager ()
     {
-      var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject());
+      var manager = _factory.CreateInvalidDomainObjectManager ();
+      Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+    }
+
+    [Test]
+    public void CreateInvalidDomainObjectManager_AutomaticallyMarksInvalid_ObjectsInvalidOrDeletedInParentTransaction ()
+    {
+      var objectInvalidInParent = _parentTransaction.Execute (() => Order.NewObject ());
       var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
       var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
 
@@ -70,19 +80,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (objectDeletedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Deleted));
       Assert.That (objectLoadedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Unchanged));
 
-      var dataManager = _factory.CreateDataManager (new ClientTransactionMock ());
+      var invalidOjectManager = _factory.CreateInvalidDomainObjectManager();
 
-      Assert.That (dataManager.IsInvalid (objectInvalidInParent.ID), Is.True);
-      Assert.That (dataManager.IsInvalid (objectDeletedInParent.ID), Is.True);
-      Assert.That (dataManager.IsInvalid (objectLoadedInParent.ID), Is.False);
+      Assert.That (invalidOjectManager.IsInvalid (objectInvalidInParent.ID), Is.True);
+      Assert.That (invalidOjectManager.IsInvalid (objectDeletedInParent.ID), Is.True);
+      Assert.That (invalidOjectManager.IsInvalid (objectLoadedInParent.ID), Is.False);
     }
 
     [Test]
-    public void CreateEnlistedObjectManager ()
+    public void CreateDataManager ()
     {
-      var manager = _factory.CreateEnlistedObjectManager ();
-      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
-      Assert.That (((DelegatingEnlistedDomainObjectManager) manager).TargetTransaction, Is.SameAs (_parentTransaction));
+      var invalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var dataManager = _factory.CreateDataManager (new ClientTransactionMock (), invalidDomainObjectManagerStub);
+
+      Assert.That (
+          dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
+          Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
+      Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
     }
   }
 }

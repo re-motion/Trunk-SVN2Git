@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy());
+      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy(), new InvalidDomainObjectManager());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.That (dataManager2, Is.Not.Null);
       Assert.That (dataManager, Is.Not.SameAs (dataManager2));
@@ -54,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (dataManager.DomainObjectStateCache, Is.Not.Null);
       Assert.That (dataManager.DataContainerMap.Count, Is.Not.EqualTo (0));
       Assert.That (dataManager.RelationEndPointMap.Count, Is.Not.EqualTo (0));
-      Assert.That (dataManager.InvalidObjectCount, Is.EqualTo (1));
       Assert.That (dataManager.IsInvalid (discardedContainer.ID), Is.True);
       Assert.That (dataManager.GetInvalidObjectReference (discardedContainer.ID), Is.SameAs (invalidOrder));
 
@@ -64,12 +64,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
       Assert.That (deserializedData.Item2.DataContainerMap.Count, Is.Not.EqualTo (0));
       Assert.That (deserializedData.Item2.RelationEndPointMap.Count, Is.Not.EqualTo (0));
-      Assert.That (deserializedData.Item2.InvalidObjectCount, Is.EqualTo (1));
       Assert.That (deserializedData.Item2.IsInvalid (discardedContainer.ID), Is.True);
       Assert.That (deserializedData.Item2.GetInvalidObjectReference (discardedContainer.ID), Is.Not.Null);
 
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_invalidDomainObjectManager"), Is.Not.Null);
     }
 
     public void DumpSerializedDataManager ()

@@ -705,6 +705,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (enlistedObjectManager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
       Assert.That (((DelegatingEnlistedDomainObjectManager) enlistedObjectManager).TargetTransaction, Is.SameAs (_transaction));
 
+      var invalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (subTransaction);
+      Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction);
       Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
     }

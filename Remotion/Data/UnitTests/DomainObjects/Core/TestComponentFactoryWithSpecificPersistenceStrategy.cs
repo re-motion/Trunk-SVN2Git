@@ -38,11 +38,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return _actualFactory.CreateApplicationData();
     }
 
-    public IDataManager CreateDataManager (ClientTransaction clientTransaction)
-    {
-      return _actualFactory.CreateDataManager (clientTransaction);
-    }
-
     public IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
       return _persistenceStrategy;
@@ -51,6 +46,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public IEnlistedDomainObjectManager CreateEnlistedObjectManager ()
     {
       return _actualFactory.CreateEnlistedObjectManager();
+    }
+
+    public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
+    {
+      return _actualFactory.CreateInvalidDomainObjectManager ();
+    }
+
+    public IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)
+    {
+      return _actualFactory.CreateDataManager (clientTransaction, invalidDomainObjectManager);
     }
 
     public Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

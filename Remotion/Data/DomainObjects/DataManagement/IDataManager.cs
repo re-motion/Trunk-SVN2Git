@@ -27,7 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IDataManager
   {
-    int InvalidObjectCount { get; }
     IEnumerable<ObjectID> InvalidObjectIDs { get; }
     IDataContainerMapReadOnlyView DataContainerMap { get; }
     IRelationEndPointMapReadOnlyView RelationEndPointMap { get; }

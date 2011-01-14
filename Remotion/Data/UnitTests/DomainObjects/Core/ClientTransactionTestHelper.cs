@@ -38,6 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (IEnlistedDomainObjectManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_enlistedObjectManager");
     }
 
+    public static IInvalidDomainObjectManager GetInvalidDomainObjectManager (ClientTransaction clientTransaction)
+    {
+      return (IInvalidDomainObjectManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_invalidDomainObjectManager");
+    }
+
     public static IPersistenceStrategy GetPersistenceStrategy (ClientTransaction clientTransaction)
     {
       return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");

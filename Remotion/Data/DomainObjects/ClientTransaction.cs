@@ -141,10 +141,12 @@ public class ClientTransaction
   private readonly ClientTransactionExtensionCollection _extensions;
 
   private readonly CompoundClientTransactionListener _eventSink;
+
+  private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
+  private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IObjectLoader _objectLoader;
-  private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
   private bool _isDiscarded;
 
@@ -171,10 +173,11 @@ public class ClientTransaction
     foreach (var listener in componentFactory.CreateListeners (this))
       _eventSink.AddListener (listener);
 
-    _dataManager = componentFactory.CreateDataManager (this);
+    _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
+    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager ();
+    _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
     _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _eventSink);
-    _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
 
     TransactionEventSink.TransactionInitializing (this);
   }
