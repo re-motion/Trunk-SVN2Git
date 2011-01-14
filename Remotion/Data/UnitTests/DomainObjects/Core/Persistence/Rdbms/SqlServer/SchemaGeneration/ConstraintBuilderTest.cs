@@ -15,16 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -205,82 +198,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "exec sp_executesql @statement\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropConstraintScript());
-    }
-
-    // TODO Review 3267: Add to SchemaGeneration testdomain as integration test (FileBuilderTest)
-    [Test]
-    [Ignore("TODO 3627: Add to SchemaGeneration testdomain as integration test!?")]
-    public void AddConstraintWithRelationInDerivedClass ()
-    {
-      var storageProviderDefinition = new RdbmsProviderDefinition ("DefaultStorageProvider", typeof (SqlStorageObjectFactory), "dummy");
-      var baseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), SchemaGenerationFirstStorageProviderDefinition);
-      baseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
-      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          typeof (Customer), SchemaGenerationFirstStorageProviderDefinition, baseClass);
-      derivedClass.SetPropertyDefinitions (
-          new PropertyDefinitionCollection (
-              new[] { CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent) },
-              true));
-
-      ReflectionBasedClassDefinition otherClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          typeof (DevelopmentPartner), SchemaGenerationFirstStorageProviderDefinition);
-      var endPointDefinition1 = new RelationEndPointDefinition (derivedClass, "OtherClass", false);
-      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (
-          otherClass, "DerivedClass", false, CardinalityType.Many, typeof (DomainObjectCollection), "sort", typeof (Employee).GetProperty ("Name"));
-      new RelationDefinition ("OtherClassToDerivedClass", endPointDefinition1, endPointDefinition2);
-
-      baseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
-      derivedClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition1 }, true));
-      otherClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition2 }, true));
-
-      baseClass.SetStorageEntity (
-          new TableDefinition (
-              storageProviderDefinition, "BaseClassEntity", "BaseClassEntityView", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]));
-      derivedClass.SetStorageEntity (
-          new TableDefinition (
-              storageProviderDefinition,
-              "DerivedClassEntity",
-              "DerivedClassEntityView",
-              new SimpleColumnDefinition[0],
-              new ITableConstraintDefinition[0]));
-      otherClass.SetStorageEntity (
-          new TableDefinition (
-              storageProviderDefinition, "OtherClassEntity", "OtherClassEntityView", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]));
-
-      baseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));
-      derivedClass.SetDerivedClasses (new ClassDefinitionCollection ());
-      otherClass.SetDerivedClasses (new ClassDefinitionCollection ());
-
-      _constraintBuilder.AddConstraint (baseClass);
-
-      string expectedScript =
-          "ALTER TABLE [dbo].[BaseClassEntity] ADD\r\n"
-          + "  CONSTRAINT [FK_BaseClassEntity_OtherClassID] FOREIGN KEY ([OtherClassID]) REFERENCES [dbo].[OtherClassEntity] ([ID])\r\n";
-
-      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript ());
-    }
-
-    private PropertyDefinition CreatePropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition,
-        string propertyName,
-        string columnName,
-        Type propertyType,
-        bool? isNullable,
-        int? maxLength,
-        StorageClass storageClass)
-    {
-      PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
-          classDefinition,
-          dummyPropertyInfo,
-          propertyName,
-          propertyType,
-          isNullable,
-          maxLength,
-          storageClass);
-      propertyDefinition.SetStorageProperty (
-          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true, false));
-      return propertyDefinition;
     }
   }
 }
