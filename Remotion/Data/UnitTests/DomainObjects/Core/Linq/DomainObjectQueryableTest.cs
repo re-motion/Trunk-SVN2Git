@@ -61,6 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _sqlGenerationStage = new DefaultSqlGenerationStage();
       _context = new SqlPreparationContext (new SqlStatementBuilder());
 
+      // TODO 3674: Add code to create DomainObjectQueryExecutor here
+
       _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _nodeTypeRegistry);
     }
 

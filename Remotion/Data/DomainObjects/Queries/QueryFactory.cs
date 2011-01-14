@@ -18,6 +18,8 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
@@ -71,14 +73,19 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var generator = new UniqueIdentifierGenerator();
-      var resolver = new MappingResolver(new StorageSpecificExpressionResolver());
+      // TODO Review 3607: Get StorageNameCalculator as follows:
+      //var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      //var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      //var storageNameCalculator = providerDefinition.Factory.CreateStorageNameCalculator ();
 
-      return new DomainObjectQueryable<T> (
-          ObjectFactory.Create<DefaultSqlPreparationStage> (
-              ParamList.Create (s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value, generator)),
-          ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
-          ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty),
-          s_methodCallExpressionNodeTypeRegistry.Value);
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver());
+
+      var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
+          ParamList.Create (s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value, generator));
+      var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
+      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
+
+      return CreateLinqQuery<T> (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, s_methodCallExpressionNodeTypeRegistry.Value);
     }
 
     /// <summary>

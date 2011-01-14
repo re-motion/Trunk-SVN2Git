@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -36,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly ClassDefinition _classDefinition;
     private readonly PropertyDefinition _propertyDefinition;
     private readonly ClassDefinition _relatedClassDefinition;
+    private readonly IStorageNameCalculator _storageNameCalculator;
 
     public OppositeClassDefinitionRetriever (RdbmsProvider provider, ClassDefinition classDefinition, PropertyDefinition propertyDefinition)
     {
@@ -47,26 +49,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _classDefinition = classDefinition;
       _propertyDefinition = propertyDefinition;
       _relatedClassDefinition = _classDefinition.GetMandatoryOppositeClassDefinition (_propertyDefinition.PropertyName);
+      _storageNameCalculator = new StorageNameCalculator(); // TODO: Inject via ctor
     }
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy
-          &&
-          _classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-          == _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name)
-        return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal);
+      var classIDColumnName = _storageNameCalculator.GetRelationClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name);
+      var sourceStorageProviderDefinition = _classDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      var relatedStorageProviderDefinition = _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition.Name == relatedStorageProviderDefinition.Name)
+        return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal, classIDColumnName);
       else
       {
-        CheckNoOppositeClassID (dataReader);
+        CheckNoOppositeClassID (dataReader, classIDColumnName);
         return _relatedClassDefinition;
       }
     }
 
-    private ClassDefinition GetOppositeClassDefinitionInInheritanceHierarchy (IDataReader dataReader, int objectIDColumnOrdinal)
+    private ClassDefinition GetOppositeClassDefinitionInInheritanceHierarchy (IDataReader dataReader, int objectIDColumnOrdinal, string classIDColumnName)
     {
-      int classIDColumnOrdinal = TryGetClassIDColumnOrdinal (dataReader);
-      CheckConsistentIDs (dataReader, objectIDColumnOrdinal, classIDColumnOrdinal);
+      int classIDColumnOrdinal = TryGetClassIDColumnOrdinal (dataReader, classIDColumnName);
+      CheckConsistentIDs (dataReader, objectIDColumnOrdinal, classIDColumnName, classIDColumnOrdinal);
 
       if (dataReader.IsDBNull (classIDColumnOrdinal))
         return _relatedClassDefinition;
@@ -74,10 +77,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataReader.GetString (classIDColumnOrdinal));
     }
 
-    private int TryGetClassIDColumnOrdinal (IDataReader dataReader)
+    private int TryGetClassIDColumnOrdinal (IDataReader dataReader, string classIDColumnName)
     {
       int classIDColumnOrdinal;
-      bool hasClassIDColumn = TryGetClassIDColumnOrdinal (dataReader, out classIDColumnOrdinal);
+      bool hasClassIDColumn = TryGetClassIDColumnOrdinal (dataReader, classIDColumnName, out classIDColumnOrdinal);
 
       if (!hasClassIDColumn)
       {
@@ -85,20 +88,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             "Incorrect database format encountered."
             + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name),
+            classIDColumnName,
             _relatedClassDefinition.ID);
       }
 
       return classIDColumnOrdinal;
     }
 
-    private void CheckConsistentIDs (IDataReader dataReader, int objectIDColumnOrdinal, int classIDColumnOrdinal)
+    private void CheckConsistentIDs (IDataReader dataReader, int objectIDColumnOrdinal, string classIDColumnName, int classIDColumnOrdinal)
     {
       if (dataReader.IsDBNull (objectIDColumnOrdinal) && !dataReader.IsDBNull (classIDColumnOrdinal))
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain a value.",
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name),
+            classIDColumnName,
             _classDefinition.GetEntityName());
       }
 
@@ -106,12 +109,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain null.",
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name),
+            classIDColumnName,
             _classDefinition.GetEntityName());
       }
     }
 
-    private void CheckNoOppositeClassID (IDataReader dataReader)
+    private void CheckNoOppositeClassID (IDataReader dataReader, string classIDColumnName)
     {
       // Note: We cannot ask an IDataReader if a specific column exists without an exception thrown by IDataReader.
       // Because throwing and catching exceptions is a very time consuming operation the result is cached per entity
@@ -123,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
               delegate
               {
                 int classIDColumnOrdinal;
-                return TryGetClassIDColumnOrdinal (dataReader, out classIDColumnOrdinal);
+                return TryGetClassIDColumnOrdinal (dataReader, classIDColumnName, out classIDColumnOrdinal);
               });
 
       if (hasClassIDColumn)
@@ -132,17 +135,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
             "Incorrect database format encountered."
             + " Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
             _classDefinition.GetEntityName(),
-            RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name),
+            classIDColumnName,
             _relatedClassDefinition.ID);
       }
     }
 
-    private bool TryGetClassIDColumnOrdinal (IDataReader dataReader, out int classIDColumnOrdinal)
+    private bool TryGetClassIDColumnOrdinal (IDataReader dataReader, string classIDColumnName, out int classIDColumnOrdinal)
     {
       //Note: Despite the IDataReaders documentation, some implementations of IDataReader.GetOrdinal return -1 instead of throwing an IndexOutOfRangeException
       try
       {
-        classIDColumnOrdinal = dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name));
+        classIDColumnOrdinal = dataReader.GetOrdinal (classIDColumnName);
         if (classIDColumnOrdinal == -1)
           return false;
         else

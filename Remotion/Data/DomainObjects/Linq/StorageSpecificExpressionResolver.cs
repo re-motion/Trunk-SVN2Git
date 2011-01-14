@@ -56,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      // TODO Review 3607: Use IStorageNameCalculator instead, inject via ctor
       return originatingEntity.GetColumn (typeof (ObjectID), "ID", true);
     }
 
@@ -92,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       return endPoint.IsVirtual
-                 ? "ID"
+                 ? "ID" // TODO Review 3607: Get IDColumnName from IStorageNameCalculator
                  : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StoragePropertyDefinition.Name;
     }
   }

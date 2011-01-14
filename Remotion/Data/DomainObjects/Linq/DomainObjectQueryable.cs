@@ -74,6 +74,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="nodeTypeRegistry">Registry that maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
     /// to the respective <see cref="IExpressionNode"/> types.</param>
     /// </remarks>
+    // TODO 3674: Change ctor to take instance of DomainObjectQueryExecutor instead; remove unnecessary parameters, inline CreateProvider method
     public DomainObjectQueryable (
         ISqlPreparationStage sqlPreparationStage,
         IMappingResolutionStage mappingResolutionStage,

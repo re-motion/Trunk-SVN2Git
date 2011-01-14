@@ -140,12 +140,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IStorageEntityDefinition CreateStorageEntityDefinition (ClassDefinition classDefinition)
     {
+      // TODO Review 3607: Use name calculator => GetTableName != null
       var tableAttribute = AttributeUtility.GetCustomAttribute<DBTableAttribute> (classDefinition.ClassType, false);
       if (tableAttribute != null)
         return _entityDefinitionFactory.CreateTableDefinition (classDefinition);
 
       var hasBaseClassWithDBTableAttribute = classDefinition
           .CreateSequence (cd => cd.BaseClass)
+        // TODO Review 3607: Use name calculator => GetTableName != null
           .Where (cd => AttributeUtility.IsDefined<DBTableAttribute> (cd.ClassType, false))
           .Any();
       if (hasBaseClassWithDBTableAttribute)

@@ -112,6 +112,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ColumnDefinitionResolver();
     }
 
+    // TODO Review 3607: Rename to CreateStorageNameResolver
+    // TODO Review 3607: Pull up to interface IRdbmsStorageObjectFactory
     protected virtual IStorageNameCalculator CreateStorageNameCalculator ()
     {
       return new StorageNameCalculator();

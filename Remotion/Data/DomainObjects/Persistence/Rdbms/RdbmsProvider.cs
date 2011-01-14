@@ -33,13 +33,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     // static members and constants
 
 
-    public static string GetClassIDColumnName (string columnName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-
-      return columnName + "ClassID";
-    }
-
     // member fields
 
     private readonly DataContainerLoader _dataContainerLoader;

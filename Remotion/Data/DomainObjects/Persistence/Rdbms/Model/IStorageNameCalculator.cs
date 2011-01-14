@@ -21,8 +21,12 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IStorageNameCalculator"/> defines the API for all storage name calculators that provide methods to obtain names for RDBMS items.
+  /// <see cref="IStorageNameCalculator"/> defines the API for classes providing names for RDBMS items. There is a default implementation
+  /// called <see cref="StorageNameCalculator"/> that retrieves the item names via reflection and custom attributes. Storage providers with
+  /// specific naming constraints (eg., length limits, forbidden characters, etc.) can decorate (or reimplement) this interface to fulfill those
+  /// constraints.
   /// </summary>
+  // TODO Review 3607: IStorageNameProvider
   public interface IStorageNameCalculator
   {
     string IDColumnName { get; }
@@ -33,7 +37,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     string GetViewName (ClassDefinition classDefinition);
     string GetColumnName (PropertyDefinition propertyDefinition);
     string GetRelationClassIDColumnName (PropertyDefinition propertyDefinition);
+    
+    // TODO Review 3607: Rename to GetPrimaryKeyConstraintName
     string GetPrimaryKeyName (ClassDefinition classDefinition);
     string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition);
+    string GetRelationClassIDColumnName (string columnName);
   }
 }

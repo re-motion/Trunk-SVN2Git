@@ -23,8 +23,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="StorageNameCalculator"/> provides methods to obtain names for RDBMS items (tables, columns, ...) in a provider specific object.
+  /// The <see cref="StorageNameCalculator"/> provides methods to obtain names for RDBMS items (tables, columns, ...) using default names for
+  /// system items ("ID", "ClassID", "Timestamp") and custom attributes (<see cref="DBTableAttribute"/>, <see cref="DBColumnAttribute"/>) for 
+  /// user-defined names.
   /// </summary>
+  // TODO Review 3607: Rename to ReflectionBasedStorageNameProvider
   public class StorageNameCalculator : IStorageNameCalculator
   {
     public string IDColumnName
@@ -50,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (tableAttribute == null)
         return null;
 
-      return string.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
+      return String.IsNullOrEmpty (tableAttribute.Name) ? classDefinition.ID : tableAttribute.Name;
     }
 
     public string GetViewName (ClassDefinition classDefinition)
@@ -64,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyDefinition.PropertyInfo, true);
+      var attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (propertyDefinition.PropertyInfo, false);
 
       if (attribute != null)
         return attribute.Identifier;
@@ -79,7 +82,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return RdbmsProvider.GetClassIDColumnName (GetColumnName (propertyDefinition));
+      return GetRelationClassIDColumnName (GetColumnName (propertyDefinition));
+    }
+
+    // TODO Review 3607: Add test
+    public string GetRelationClassIDColumnName (string columnName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+
+      return columnName + "ClassID";
     }
 
     public string GetPrimaryKeyName (ClassDefinition classDefinition)
@@ -88,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var tableName = GetTableName (classDefinition);
 
-      return string.Format ("PK_{0}", tableName);
+      return String.Format ("PK_{0}", tableName);
     }
 
     public string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition)
@@ -99,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var tableName = GetTableName (classDefinition);
       var propertyName = storagePropertyDefinition.Name;
 
-      return string.Format ("FK_{0}_{1}", tableName, propertyName);
+      return String.Format ("FK_{0}_{1}", tableName, propertyName);
     }
   }
 }

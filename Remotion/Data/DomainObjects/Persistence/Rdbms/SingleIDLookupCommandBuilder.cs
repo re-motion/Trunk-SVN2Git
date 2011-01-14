@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       // Note: This behaviour is not desired in case of GUID primary keys, because two same foreign key GUIDs pointing 
       //       to different classIDs must be an error! In this case PersistenceManager.CheckClassIDForVirtualEndPoint raises an exception. 
       //if (_whereClauseValueIsRelatedID && _expectedValue.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_expectedValue))
-      //  whereClauseBuilder.Add (RdbmsProvider.GetClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
+      //  whereClauseBuilder.Add (RdbmsProvider.GetRelationClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
 
       command.CommandText = string.Format (
           "SELECT {0} FROM {1} WHERE {2}{3}{4}",
