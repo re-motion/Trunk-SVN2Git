@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -50,21 +52,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinition", foreignKeyConstraintDefinition);
 
-      var referencedColumnsVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
-      foreach (var columnDefinition in foreignKeyConstraintDefinition.ReferencedColumns)
-        columnDefinition.Accept (referencedColumnsVisitor);
-
-      var referencingColumnsVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
-      foreach (var columnDefinition in foreignKeyConstraintDefinition.ReferencingColumns)
-        columnDefinition.Accept (referencingColumnsVisitor);
-
-      var constraint = string.Format (" CONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}.{3} ({4})",
-        _sqlDialect.DelimitIdentifier(foreignKeyConstraintDefinition.ConstraintName),
-        referencedColumnsVisitor.GetNameList(),
-        _sqlDialect.DelimitIdentifier(FileBuilder.DefaultSchema),
-        _sqlDialect.DelimitIdentifier(foreignKeyConstraintDefinition.ReferencedTableName),
-        referencingColumnsVisitor.GetNameList()
-        );
+      // TODO Review 3627: Rename Referenced <-> Referencing in all classes using ForeignKeyConstraintDefinition
+      string constraint = GetConstraintDeclaration (foreignKeyConstraintDefinition);
 
       if (_constraints.Length > 0)
       {
@@ -73,6 +62,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         _constraints.Append (" ");
       }
       _constraints.Append (constraint);
+    }
+
+    private string GetConstraintDeclaration (ForeignKeyConstraintDefinition foreignKeyConstraintDefinition)
+    {
+      string referencedColumnNameList = GetColumnNameList (foreignKeyConstraintDefinition.ReferencedColumns);
+      string referencingColumnNameList = GetColumnNameList (foreignKeyConstraintDefinition.ReferencingColumns);
+
+      return string.Format (
+          " CONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}.{3} ({4})",
+          _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ConstraintName),
+          referencedColumnNameList,
+          _sqlDialect.DelimitIdentifier (FileBuilder.DefaultSchema),
+          _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ReferencedTableName),
+          referencingColumnNameList);
+    }
+
+    private string GetColumnNameList (IEnumerable<SimpleColumnDefinition> columnDefinitions)
+    {
+      var referencedColumnsVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
+      foreach (var columnDefinition in columnDefinitions)
+        columnDefinition.Accept (referencedColumnsVisitor);
+      return referencedColumnsVisitor.GetNameList ();
     }
 
     public string GetConstraintStatement ()

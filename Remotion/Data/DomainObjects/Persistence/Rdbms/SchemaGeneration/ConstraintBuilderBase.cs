@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _entityNamesForDropConstraintScript = new List<string>();
     }
 
-    public abstract void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
     public abstract void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder);
+    public abstract void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
 
     public string GetAddConstraintScript ()
     {

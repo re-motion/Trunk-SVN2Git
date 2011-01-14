@@ -28,6 +28,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
     }
 
+    public override void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("createConstraintStringBuilder", createConstraintStringBuilder);
+
+      var constraintStatement = GetForeignKeyConstraintStatement (tableDefinition);
+      if (!string.IsNullOrEmpty (constraintStatement))
+      {
+        createConstraintStringBuilder.AppendFormat (
+            "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
+            FileBuilder.DefaultSchema,
+            tableDefinition.TableName,
+            constraintStatement);
+      }
+    }
+
     public override void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("entityNamesForDropConstraintScript", entityNamesForDropConstraintScript);
@@ -44,22 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           FileBuilder.DefaultSchema,
           string.Join ("', '", entityNamesForDropConstraintScript.ToArray()));
     }
-
-    public override void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-      ArgumentUtility.CheckNotNull ("createConstraintStringBuilder", createConstraintStringBuilder);
-
-      var constraintStatement = GetForeignKeyConstraintStatement (tableDefinition);
-      if (!string.IsNullOrEmpty(constraintStatement))
-      {
-        createConstraintStringBuilder.AppendFormat (
-            "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
-            FileBuilder.DefaultSchema,
-            tableDefinition.TableName,
-            constraintStatement);
-      }
-    }
-    
+  
   }
 }

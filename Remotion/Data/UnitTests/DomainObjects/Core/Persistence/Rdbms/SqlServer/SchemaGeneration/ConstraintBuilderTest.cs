@@ -207,6 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropConstraintScript());
     }
 
+    // TODO Review 3267: Add to SchemaGeneration testdomain as integration test (FileBuilderTest)
     [Test]
     [Ignore("TODO 3627: Add to SchemaGeneration testdomain as integration test!?")]
     public void AddConstraintWithRelationInDerivedClass ()

@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _visitor = new ForeignKeyDeclarationTableConstraintDefinitionVisitor(_sqlDialectStub);
+      _visitor = new ForeignKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialectStub);
 
       _referencingColumn1 = new SimpleColumnDefinition ("ID1", typeof (int), "integer", false, false);
       _referencingColumn2 = new SimpleColumnDefinition ("ID2", typeof (int), "integer", false, false);
