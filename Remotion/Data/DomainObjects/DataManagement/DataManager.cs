@@ -62,11 +62,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _clientTransaction; }
     }
 
-    public IEnumerable<ObjectID> InvalidObjectIDs
-    {
-      get { return _invalidDomainObjectManager.InvalidObjectIDs; }
-    }
-
     public DomainObjectStateCache DomainObjectStateCache
     {
       get { return _domainObjectStateCache; }

@@ -27,7 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IDataManager
   {
-    IEnumerable<ObjectID> InvalidObjectIDs { get; }
     IDataContainerMapReadOnlyView DataContainerMap { get; }
     IRelationEndPointMapReadOnlyView RelationEndPointMap { get; }
     DomainObjectStateCache DomainObjectStateCache { get; }
