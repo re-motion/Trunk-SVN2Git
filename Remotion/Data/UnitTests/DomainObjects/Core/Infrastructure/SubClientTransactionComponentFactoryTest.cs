@@ -64,6 +64,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateInvalidDomainObjectManager ()
     {
+      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new ObjectID[0]);
+
       var manager = _factory.CreateInvalidDomainObjectManager ();
       Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
     }
@@ -75,12 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectDeletedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order2, false);
       var objectLoadedInParent = _parentTransaction.GetObject (DomainObjectIDs.Order3, false);
 
-      _parentTransaction.Delete (objectInvalidInParent);
+      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new[] { objectInvalidInParent.ID });
+      _parentInvalidDomainObjectManagerStub.Stub (stub => stub.GetInvalidObjectReference (objectInvalidInParent.ID)).Return (objectInvalidInParent);
+      
       _parentTransaction.Delete (objectDeletedInParent);
-
-      Assert.That (objectInvalidInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Invalid));
-      Assert.That (objectDeletedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Deleted));
-      Assert.That (objectLoadedInParent.TransactionContext[_parentTransaction].State, Is.EqualTo (StateType.Unchanged));
 
       var invalidOjectManager = _factory.CreateInvalidDomainObjectManager();
 
