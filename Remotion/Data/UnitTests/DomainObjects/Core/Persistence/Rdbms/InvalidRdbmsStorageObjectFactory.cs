@@ -19,10 +19,12 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
+  [ConcreteImplementation(typeof(InvalidRdbmsStorageObjectFactory))]
   internal class InvalidRdbmsStorageObjectFactory : IStorageObjectFactory
   {
     public InvalidRdbmsStorageObjectFactory ()
