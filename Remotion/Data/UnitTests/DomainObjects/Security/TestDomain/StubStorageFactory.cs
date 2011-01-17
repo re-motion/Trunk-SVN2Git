@@ -30,20 +30,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageFactory : IRdbmsStorageObjectFactory
   {
-    private readonly RdbmsProviderDefinition _storageProviderDefinition;
-
-    public StubStorageFactory (RdbmsProviderDefinition storageProviderDefinition)
+    public StubStorageFactory ()
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      _storageProviderDefinition = storageProviderDefinition;
     }
 
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
+    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new StubStorageProvider (_storageProviderDefinition, persistenceListener);
+      return new StubStorageProvider (storageProviderDefinition, persistenceListener);
     }
 
     public TypeConversionProvider CreateTypeConversionProvider ()
@@ -56,23 +52,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IPersistenceModelLoader CreatePersistenceModelLoader (
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
     {
-      var storageNameCalculator = new StorageNameCalculator ();
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var storageNameCalculator = new StorageNameCalculator();
       var columnDefinitionFactory = new ColumnDefinitionFactory (
           new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitonResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
           storageNameCalculator, columnDefinitonResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameCalculator, _storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameCalculator, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, _storageProviderDefinition);
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition);
     }
 
-    public FileBuilderBase CreateSchemaFileBuilder ()
+    public FileBuilderBase CreateSchemaFileBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
-      return new FileBuilder (_storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      return new FileBuilder (storageProviderDefinition);
     }
   }
 }

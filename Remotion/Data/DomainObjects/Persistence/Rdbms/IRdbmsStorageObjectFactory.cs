@@ -23,6 +23,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public interface IRdbmsStorageObjectFactory : IStorageObjectFactory
   {
-    FileBuilderBase CreateSchemaFileBuilder ();
+    FileBuilderBase CreateSchemaFileBuilder (RdbmsProviderDefinition storageProviderDefinition);
   }
 }

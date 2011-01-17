@@ -15,14 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 
 namespace Remotion.SecurityManager.Persistence
 {
   public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    public SecurityManagerSqlStorageObjectFactory (RdbmsProviderDefinition rdbmsProviderDefinition) : base (rdbmsProviderDefinition, typeof(SecurityManagerSqlProvider))
+    public SecurityManagerSqlStorageObjectFactory () : base (typeof(SecurityManagerSqlProvider))
     {
     }
   }

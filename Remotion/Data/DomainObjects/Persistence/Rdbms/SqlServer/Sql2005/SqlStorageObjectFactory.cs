@@ -33,20 +33,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   /// </summary>
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
-    private readonly RdbmsProviderDefinition _storageProviderDefinition;
     private readonly Type _storageProviderType;
 
-    public SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition)
-        : this (storageProviderDefinition, typeof (SqlProvider))
+    public SqlStorageObjectFactory ()
+        : this (typeof (SqlProvider))
     {
     }
 
-    protected SqlStorageObjectFactory (RdbmsProviderDefinition storageProviderDefinition, Type storageProviderType)
+    protected SqlStorageObjectFactory (Type storageProviderType)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
 
-      _storageProviderDefinition = storageProviderDefinition;
       _storageProviderType = storageProviderType;
     }
 
@@ -55,16 +52,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       get { return _storageProviderType; }
     }
 
-    protected RdbmsProviderDefinition StorageProviderDefinition
-    {
-      get { return _storageProviderDefinition; }
-    }
-
-    public virtual StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
+    public virtual StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
 
-      return (StorageProvider) ObjectFactory.Create (StorageProviderType, ParamList.Create (StorageProviderDefinition, persistenceListener));
+      return (StorageProvider) ObjectFactory.Create (StorageProviderType, ParamList.Create (rdbmsProviderDefinition, persistenceListener));
     }
 
     public virtual TypeConversionProvider CreateTypeConversionProvider ()
@@ -77,34 +70,45 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new TypeProvider();
     }
 
-    public virtual IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public virtual IPersistenceModelLoader CreatePersistenceModelLoader (
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = CreateStorageNameCalculator ();
+      var storageNameCalculator = CreateStorageNameCalculator();
       var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
           storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameCalculator);
+          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameCalculator, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, StorageProviderDefinition);
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition);
     }
 
-    public virtual FileBuilderBase CreateSchemaFileBuilder ()
+    public virtual FileBuilderBase CreateSchemaFileBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
-      return new FileBuilder (_storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      return new FileBuilder (storageProviderDefinition);
     }
 
     protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
         IColumnDefinitionFactory columnDefinitionFactory,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IColumnDefinitionResolver columnDefinitionResolver,
-        IStorageNameCalculator storageNameCalculator)
+        IStorageNameCalculator storageNameCalculator,
+        StorageProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      
       return new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, storageNameCalculator, _storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, storageNameCalculator, storageProviderDefinition);
     }
 
     protected virtual IColumnDefinitionResolver CreateColumnDefinitionResolver ()
@@ -122,6 +126,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (
         IStorageNameCalculator storageNameCalculator, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
+      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
+
       return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), storageNameCalculator, providerDefinitionFinder);
     }
 
@@ -131,6 +138,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
         IColumnDefinitionFactory columnDefinitionFactory,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
+      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
+      ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+      
       return new ForeignKeyConstraintDefinitionFactory (
           storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }

@@ -18,21 +18,18 @@ using System;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   internal class InvalidRdbmsStorageObjectFactory : IStorageObjectFactory
   {
-    public InvalidRdbmsStorageObjectFactory (RdbmsProviderDefinition definition)
+    public InvalidRdbmsStorageObjectFactory ()
     {
-      Dev.Null = definition;
     }
 
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
+    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
@@ -47,7 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IPersistenceModelLoader CreatePersistenceModelLoader (
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,9 +27,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
-using Remotion.Reflection;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -48,10 +47,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses())
       {
         DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Factory.CreatePersistenceModelLoader (
-                storageProviderDefinitionFinder).ApplyPersistenceModelToHierarchy(classDefinition);
+            storageProviderDefinitionFinder, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition).
+            ApplyPersistenceModelToHierarchy (classDefinition);
       }
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
+      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
       classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions);
       Assert.That (actualClassDefinitions.Contains (typeof (TestDomainBase)), Is.False);
@@ -62,12 +62,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var property1 = typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
       var property2 = typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
           .Return (new[] { typeof (Base), typeof (Shadower) });
 
       var mappingReflector = new MappingReflector (typeDiscoveryServiceStub);
-      var classDefinition1 = mappingReflector.GetClassDefinitions ().Single (cd => cd.ClassType == typeof (Shadower));
+      var classDefinition1 = mappingReflector.GetClassDefinitions().Single (cd => cd.ClassType == typeof (Shadower));
       var classDefinition2 = classDefinition1.BaseClass;
 
       var propertyDefinition1 =
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void RelationsAboveInheritanceRoot ()
     {
-      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (Arg<Type>.Is.Anything, Arg<bool>.Is.Anything))
           .Return (
               new[]
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       public int Name
       {
-        get { return Properties[typeof (Base), "Name"].GetValue<int> (); }
+        get { return Properties[typeof (Base), "Name"].GetValue<int>(); }
       }
     }
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       [DBColumn ("NewName")]
       public new int Name
       {
-        get { return Properties[typeof (Shadower), "Name"].GetValue<int> (); }
+        get { return Properties[typeof (Shadower), "Name"].GetValue<int>(); }
       }
     }
   }

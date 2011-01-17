@@ -27,20 +27,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class UnitTestStorageObjectFactoryStub : IStorageObjectFactory
   {
-    private readonly UnitTestStorageProviderStubDefinition _storageProviderStubDefinition;
-
-    public UnitTestStorageObjectFactoryStub (UnitTestStorageProviderStubDefinition storageProviderStubDefinition)
+    public UnitTestStorageObjectFactoryStub ()
     {
-      ArgumentUtility.CheckNotNull ("storageProviderStubDefinition", storageProviderStubDefinition);
-
-      _storageProviderStubDefinition = storageProviderStubDefinition;
     }
 
-    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener)
+    public StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new UnitTestStorageProviderStub (_storageProviderStubDefinition, persistenceListener);
+      var providerDefiniton = ArgumentUtility.CheckNotNullAndType<UnitTestStorageProviderStubDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
+
+      return new UnitTestStorageProviderStub (providerDefiniton, persistenceListener);
     }
 
     public TypeConversionProvider CreateTypeConversionProvider ()
@@ -53,9 +52,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return new TypeProvider();
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IPersistenceModelLoader CreatePersistenceModelLoader (
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
     {
-      var storageNameCalculator = new StorageNameCalculator ();
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var storageNameCalculator = new StorageNameCalculator();
       var columnDefinitionFactory = new ColumnDefinitionFactory (
           new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();
@@ -66,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           foreignKeyConstraintDefinitionFactory,
           columnDefinitionResolver,
           storageNameCalculator,
-          _storageProviderStubDefinition);
+          storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, _storageProviderStubDefinition);
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition);
     }
   }
 }

@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -27,10 +28,12 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// </summary>
   public interface IStorageObjectFactory
   {
-    StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener);
-    
+    StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition);
+
     TypeConversionProvider CreateTypeConversionProvider ();
     TypeProvider CreateTypeProvider ();
-    IPersistenceModelLoader CreatePersistenceModelLoader (IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
+
+    IPersistenceModelLoader CreatePersistenceModelLoader (
+        IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition);
   }
 }

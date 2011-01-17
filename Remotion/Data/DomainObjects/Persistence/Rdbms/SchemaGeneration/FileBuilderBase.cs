@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
-      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder();
+      var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder(rdbmsProviderDefinition);
 
       var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
       File.WriteAllText (fileName, script);

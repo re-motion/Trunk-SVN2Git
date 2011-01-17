@@ -93,9 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 
     private IStorageObjectFactory CreateStorageObjectFactory (Type factoryType)
     {
-      // When creating the storage object factory, use CreateDynamic to create a ParamList from the dynamic type of this StorageProviderDefinition. 
-      // That way, concrete factories such as SqlStorageObjectFactory can have ctors taking concrete definitions such as RdbmsProviderDefinition.
-      return (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.CreateDynamic (this));
+      return (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.Empty);
     }
   }
 }
