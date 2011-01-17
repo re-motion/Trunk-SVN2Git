@@ -22,8 +22,8 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class DataManagerTest : ClientTransactionBaseTest
   {
+    private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private DataManager _dataManager;
 
     public override void SetUp ()
@@ -45,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp ();
 
       _dataManager = (DataManager) ClientTransactionMock.DataManager;
+      _invalidDomainObjectManager = (IInvalidDomainObjectManager) PrivateInvoke.GetNonPublicField (_dataManager, "_invalidDomainObjectManager");
     }
 
     [Test]
@@ -549,73 +551,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkObjectInvalid ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-
-      _dataManager.MarkObjectInvalid (domainObject);
-
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
-      Assert.That (_dataManager.GetInvalidObjectReference (domainObject.ID), Is.SameAs (domainObject));
-    }
-
-    [Test]
-    public void MarkObjectInvalid_RaisesNotification ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
-
-      _dataManager.MarkObjectInvalid (domainObject);
-
-      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, domainObject.ID));
-    }
-
-    [Test]
-    public void MarkObjectInvalid_Twice ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      _dataManager.MarkObjectInvalid (domainObject);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
-
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
-
-      _dataManager.MarkObjectInvalid (domainObject);
-
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
-      Assert.That (_dataManager.GetInvalidObjectReference (domainObject.ID), Is.SameAs (domainObject));
-      listener.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectInvalid (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot mark the given object invalid, another object with the same ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has already "
-        + "been marked.")]
-    public void MarkObjectInvalid_Twice_DifferentObject ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      _dataManager.MarkObjectInvalid (domainObject);
-
-      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (domainObject.ID);
-      _dataManager.MarkObjectInvalid (domainObject2);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot mark object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' as invalid; there is a DataContainer registered for that object. "
-        + "Discard the DataContainer instead.")]
-    public void MarkObjecInvalidDiscarded_DataContainerExists ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      var dataContainer = DataContainer.CreateNew (domainObject.ID);
-      dataContainer.SetDomainObject (domainObject);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      _dataManager.MarkObjectInvalid (domainObject);
-    }
-
-    [Test]
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
@@ -982,7 +917,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainerWithoutLoading_Invalid ()
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _dataManager.MarkObjectInvalid (domainObject);
+      _invalidDomainObjectManager.MarkInvalid (domainObject);
 
       _dataManager.GetDataContainerWithoutLoading (domainObject.ID);
     }
@@ -1025,7 +960,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainerWithLazyLoad_Invalid ()
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _dataManager.MarkObjectInvalid (domainObject);
+      _invalidDomainObjectManager.MarkInvalid (domainObject);
 
       _dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
     }

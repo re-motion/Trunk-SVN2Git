@@ -247,21 +247,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       dataContainer.Discard();
 
       var domainObject = dataContainer.DomainObject;
-      MarkObjectInvalid (domainObject);
-    }
-
-    public void MarkObjectInvalid (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      if (DataContainerMap[domainObject.ID] != null)
-      {
-        var message = String.Format (
-            "Cannot mark object '{0}' as invalid; there is a DataContainer registered for that object. Discard the DataContainer instead.",
-            domainObject.ID);
-        throw new InvalidOperationException (message);
-      }
-
       if (_invalidDomainObjectManager.MarkInvalid (domainObject))
         _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
     }

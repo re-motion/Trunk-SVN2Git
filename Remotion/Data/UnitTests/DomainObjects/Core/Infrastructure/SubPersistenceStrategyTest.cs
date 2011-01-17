@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PersistData_NewDataContainer_ClearsDiscardFlagInParent ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> ();
-      _parentTransaction.DataManager.MarkObjectInvalid (instance);
+      _parentInvalidDomainObjectManager.MarkInvalid (instance);
       Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.True);
 
       var dataContainer = DataContainer.CreateNew (instance.ID);
