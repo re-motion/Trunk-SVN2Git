@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
@@ -31,13 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ColumnDefinitionResolverTest
   {
     private ColumnDefinitionResolver _resolver;
-    private ReflectionBasedClassDefinition _baseBaseClassDefinition;
-    private ReflectionBasedClassDefinition _baseClassDefinition;
-    private ReflectionBasedClassDefinition _tableClassDefinition1;
-    private ReflectionBasedClassDefinition _tableClassDefinition2;
-    private ReflectionBasedClassDefinition _derivedClassDefinition1;
-    private ReflectionBasedClassDefinition _derivedClassDefinition2;
-    private ReflectionBasedClassDefinition _derivedDerivedClassDefinition;
     private SimpleColumnDefinition _fakeColumnDefinition1;
     private SimpleColumnDefinition _fakeColumnDefinition2;
     private SimpleColumnDefinition _fakeColumnDefinition3;
@@ -45,54 +37,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _fakeColumnDefinition5;
     private SimpleColumnDefinition _fakeColumnDefinition6;
     private SimpleColumnDefinition _fakeColumnDefinition7;
-    private ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
-    private ReflectionBasedPropertyDefinition _basePropertyDefinition;
-    private ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
-    private ReflectionBasedPropertyDefinition _tablePropertyDefinition2;
-    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition1;
-    private ReflectionBasedPropertyDefinition _derivedPropertyDefinition2;
-    private ReflectionBasedPropertyDefinition _derivedDerivedPropertyDefinition;
+    private RdbmsPersistenceModelLoaderTestHelper _testModel;
 
     [SetUp]
     public void SetUp ()
     {
       _resolver = new ColumnDefinitionResolver();
-
-      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Customer), null);
-      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeof (Folder), _baseBaseClassDefinition);
-      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), _baseClassDefinition);
-      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeof (Company), _baseClassDefinition);
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeof (Distributor), _tableClassDefinition2);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeof (Partner), _tableClassDefinition2);
-      _derivedDerivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
-          typeof (Supplier), _derivedClassDefinition2);
-
-      _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
-          _baseBaseClassDefinition, "BaseBaseProperty", typeof (Customer).GetProperty ("CustomerSince"));
-      _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (Folder).GetProperty ("FileSystemItems"));
-      _tablePropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _tableClassDefinition1, "TableProperty1", typeof (Order).GetProperty ("OrderNumber"));
-      _tablePropertyDefinition2 = CreateAndAddPropertyDefinition (_tableClassDefinition2, "TableProperty2", typeof (Company).GetProperty ("Name"));
-      _derivedPropertyDefinition1 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition1, "DerivedProperty1", typeof (Distributor).GetProperty ("NumberOfShops"));
-      _derivedPropertyDefinition2 = CreateAndAddPropertyDefinition (
-          _derivedClassDefinition2, "DerivedProperty2", typeof (Partner).GetProperty ("ContactPerson"));
-      _derivedDerivedPropertyDefinition = CreateAndAddPropertyDefinition (
-          _derivedDerivedClassDefinition, "DerivedDerivedProperty", typeof (Supplier).GetProperty ("SupplierQuality"));
-
-      _baseBaseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _baseClassDefinition }, true, true));
-      _baseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _tableClassDefinition1, _tableClassDefinition2 }, true, true));
-      _tableClassDefinition2.SetDerivedClasses (
-          new ClassDefinitionCollection (new[] { _derivedClassDefinition1, _derivedClassDefinition2 }, true, true));
-      _derivedClassDefinition2.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedClassDefinition }, true, true));
-      _tableClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
-      _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
-      _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
-
+      _testModel = new RdbmsPersistenceModelLoaderTestHelper ();
+      
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
       _fakeColumnDefinition2 = new SimpleColumnDefinition ("Test2", typeof (int), "int", false, false);
       _fakeColumnDefinition3 = new SimpleColumnDefinition ("Test3", typeof (string), "varchar", true, false);
@@ -101,19 +53,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeColumnDefinition6 = new SimpleColumnDefinition ("Test6", typeof (int), "int", false, false);
       _fakeColumnDefinition7 = new SimpleColumnDefinition ("Test7", typeof (string), "varchar", true, false);
       
-      _baseBasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition1);
-      _basePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);
-      _tablePropertyDefinition1.SetStorageProperty (_fakeColumnDefinition3);
-      _tablePropertyDefinition2.SetStorageProperty (_fakeColumnDefinition4);
-      _derivedPropertyDefinition1.SetStorageProperty (_fakeColumnDefinition5);
-      _derivedPropertyDefinition2.SetStorageProperty (_fakeColumnDefinition6);
-      _derivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
+      _testModel.BaseBasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition1);
+      _testModel.BasePropertyDefinition.SetStorageProperty (_fakeColumnDefinition2);
+      _testModel.TablePropertyDefinition1.SetStorageProperty (_fakeColumnDefinition3);
+      _testModel.TablePropertyDefinition2.SetStorageProperty (_fakeColumnDefinition4);
+      _testModel.DerivedPropertyDefinition1.SetStorageProperty (_fakeColumnDefinition5);
+      _testModel.DerivedPropertyDefinition2.SetStorageProperty (_fakeColumnDefinition6);
+      _testModel.DerivedDerivedPropertyDefinition.SetStorageProperty (_fakeColumnDefinition7);
     }
 
     [Test]
     public void GetColumnDefinitionsForHierarchy_GetsColumnsFromDerivedClasses_SortedFromBaseToDerived ()
     {
-      var columns = _resolver.GetColumnDefinitionsForHierarchy (_baseBaseClassDefinition).ToArray();
+      var columns = _resolver.GetColumnDefinitionsForHierarchy (_testModel.BaseBaseClassDefinition).ToArray();
 
       Assert.That (
           columns,
@@ -128,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumnDefinitionsForHierarchy_AlsoGetsColumnsFromBaseClasses_SortedFromBaseToDerived ()
     {
-      var columns = _resolver.GetColumnDefinitionsForHierarchy (_derivedClassDefinition1).ToArray ();
+      var columns = _resolver.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition1).ToArray ();
 
       Assert.That (columns, Is.EqualTo (new[] { _fakeColumnDefinition1, _fakeColumnDefinition2,  _fakeColumnDefinition4, _fakeColumnDefinition5 }));
     }
@@ -185,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumnDefinition ()
     {
-      var result = _resolver.GetColumnDefinition (_baseBasePropertyDefinition);
+      var result = _resolver.GetColumnDefinition (_testModel.BaseBasePropertyDefinition);
 
       Assert.That (result, Is.SameAs (_fakeColumnDefinition1));
     }
@@ -219,31 +171,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Cannot have non-RDBMS storage properties in an RDBMS mapping.\r\n"
-        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer'\r\n"
-        + "Property: 'CustomerSince'")]
+        + "Declaring type: 'Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.RdbmsPersistenceModelLoaderTestDomain.BaseBaseClass'\r\n"
+        + "Property: 'BaseBaseProperty'")]
     public void GetColumnDefinition_StoragePropertyDefinitionIsNoColumnDefinition ()
     {
       var fakeResult = new FakeStoragePropertyDefinition ("Invalid");
-      _baseBasePropertyDefinition.SetStorageProperty (fakeResult);
+      _testModel.BaseBasePropertyDefinition.SetStorageProperty (fakeResult);
 
-      _resolver.GetColumnDefinition (_baseBasePropertyDefinition);
-    }
-
-    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
-    {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          classDefinition,
-          propertyName,
-          typeof (string),
-          null,
-          null,
-          StorageClass.Persistent,
-          propertyInfo,
-          null);
-
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-      return propertyDefinition;
+      _resolver.GetColumnDefinition (_testModel.BaseBasePropertyDefinition);
     }
   }
 }

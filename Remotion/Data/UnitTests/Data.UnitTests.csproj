@@ -292,6 +292,15 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullEntityDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\IDColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\PrimaryKeyConstraintDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\BaseBaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\BaseClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Derived1Class.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Derived2Class.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\DerivedDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\DerivedDerivedDerivedClass.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Table1Class.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Table2Class.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
