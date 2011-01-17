@@ -265,14 +265,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
     }
 
-    // TODO 3639: Rename to MarkNotInvalid
-    public void ClearInvalidFlag (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      _invalidDomainObjectManager.MarkNotInvalid (objectID);
-    }
-
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

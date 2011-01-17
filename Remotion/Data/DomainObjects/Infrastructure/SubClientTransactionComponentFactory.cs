@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual IPersistenceStrategy CreatePersistenceStrategy (Guid id)
     {
-      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction));
+      return ObjectFactory.Create<SubPersistenceStrategy> (true, ParamList.Create (_parentTransaction, _parentInvalidDomainObjectManager));
     }
 
     public virtual IObjectLoader CreateObjectLoader (

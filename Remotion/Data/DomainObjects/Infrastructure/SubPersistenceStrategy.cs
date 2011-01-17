@@ -34,10 +34,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class SubPersistenceStrategy : IPersistenceStrategy
   {
     private readonly ClientTransaction _parentTransaction;
+    private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
 
-    public SubPersistenceStrategy (ClientTransaction parentTransaction)
+    public SubPersistenceStrategy (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
+      ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
 
       if (!parentTransaction.IsReadOnly)
       {
@@ -48,6 +50,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
 
       _parentTransaction = parentTransaction;
+      _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
     }
 
     public ClientTransaction ParentTransaction
@@ -227,8 +230,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void PersistNewDataContainer (DataContainer dataContainer)
     {
-      Assertion.IsTrue (_parentTransaction.DataManager.IsInvalid (dataContainer.ID));
-      _parentTransaction.DataManager.ClearInvalidFlag (dataContainer.ID);
+      Assertion.IsTrue (_parentInvalidDomainObjectManager.IsInvalid (dataContainer.ID));
+      _parentInvalidDomainObjectManager.MarkNotInvalid (dataContainer.ID);
 
       Assertion.IsNull (GetParentDataContainerWithoutLoading (dataContainer.ID), "a new data container cannot be known to the parent");
       Assertion.IsFalse (dataContainer.IsDiscarded);
@@ -281,8 +284,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
     {
-      Assertion.IsFalse (_parentTransaction.DataManager.IsInvalid (id), "this method is not called in situations where the ID could be invalid");
-      return _parentTransaction.DataManager.DataContainerMap[id];
+      Assertion.IsFalse (_parentInvalidDomainObjectManager.IsInvalid (id), "this method is not called in situations where the ID could be invalid");
+      return _parentTransaction.DataManager.GetDataContainerWithoutLoading (id);
     }
 
     private void PersistRelationEndPoints (IEnumerable<RelationEndPoint> endPoints)

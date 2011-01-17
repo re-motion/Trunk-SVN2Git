@@ -34,7 +34,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     bool IsInvalid (ObjectID id);
     DomainObject GetInvalidObjectReference (ObjectID id);
     void MarkObjectInvalid (DomainObject domainObject);
-    void ClearInvalidFlag (ObjectID objectID);
 
     void Discard (DataContainer dataContainer);
 

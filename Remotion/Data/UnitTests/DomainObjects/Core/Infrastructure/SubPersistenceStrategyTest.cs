@@ -28,6 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class SubPersistenceStrategyTest : ClientTransactionBaseTest
   {
     private ClientTransactionMock _parentTransaction;
+    private IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
     private SubPersistenceStrategy _persistenceStrategy;
 
     public override void SetUp ()
@@ -37,7 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentTransaction = new ClientTransactionMock ();
       _parentTransaction.IsReadOnly = true;
 
-      _persistenceStrategy = new SubPersistenceStrategy (_parentTransaction);
+      _parentInvalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (_parentTransaction);
+      _persistenceStrategy = new SubPersistenceStrategy (_parentTransaction, _parentInvalidDomainObjectManager);
     }
 
     [Test]
@@ -48,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Initialization_ThrowsWhenParentTransactionWriteable ()
     {
       var writeableParentTransaction = new ClientTransactionMock();
-      new SubPersistenceStrategy (writeableParentTransaction);
+      new SubPersistenceStrategy (writeableParentTransaction, _parentInvalidDomainObjectManager);
     }
 
     [Test]

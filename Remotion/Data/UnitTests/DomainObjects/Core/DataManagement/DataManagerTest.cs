@@ -616,31 +616,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ClearInvalidFlag ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-
-      _dataManager.MarkObjectInvalid (domainObject);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.True);
-
-      _dataManager.ClearInvalidFlag (domainObject.ID);
-
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-    }
-
-    [Test]
-    public void ClearInvalidFlag_Ignores_NonInvalidObject ()
-    {
-      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-
-      _dataManager.ClearInvalidFlag (domainObject.ID);
-
-      Assert.That (_dataManager.IsInvalid (domainObject.ID), Is.False);
-    }
-
-    [Test]
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
