@@ -889,33 +889,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithLazyLoad_Loaded ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+      var objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
+      var dataManager = new DataManager (
+          ClientTransactionMock,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          new RootInvalidDomainObjectManager(),
+          objectLoaderMock);
 
-      var result = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+      var dataContainer = DataContainer.CreateNew (domainObject.ID);
+      dataContainer.SetDomainObject (domainObject);
 
+      objectLoaderMock.Replay ();
+
+      dataManager.RegisterDataContainer (dataContainer);
+
+      var result = dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+
+      objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
     }
 
     [Test]
     public void GetDataContainerWithLazyLoad_NotLoaded ()
     {
+      var objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
+      var dataManager = new DataManager (
+          ClientTransactionMock,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          new RootInvalidDomainObjectManager(),
+          objectLoaderMock);
+
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
       dataContainer.SetDomainObject (domainObject);
       
-      var transactionMock = ClientTransactionObjectMother.CreateStrictMock ();
-      var dataManager = ClientTransactionTestHelper.GetDataManager (transactionMock);
-
-      transactionMock
-          .Expect (mock => ClientTransactionTestHelper.CallLoadObject (mock, domainObject.ID))
+      objectLoaderMock
+          .Expect (mock => mock.LoadObject (domainObject.ID))
           .WhenCalled (mi => dataManager.RegisterDataContainer (dataContainer))
           .Return (domainObject);
-      transactionMock.Replay ();
+      objectLoaderMock.Replay ();
 
       var result = dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
 
-      transactionMock.VerifyAllExpectations ();
+      objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
     }
 

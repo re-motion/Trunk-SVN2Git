@@ -1,5 +1,6 @@
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -36,9 +37,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return Create<T> (componentFactory);
     }
 
+    public static T CreateTransactionWithObjectLoader<T> (
+        Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> factory) where T : ClientTransaction
+    {
+      var componentFactory = new TestComponentFactoryWithSpecificObjectLoader (factory);
+      return Create<T> (componentFactory);
+    }
+
     public static T Create<T> (IClientTransactionComponentFactory componentFactory) where T : ClientTransaction
     {
       return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);
     }
+
   }
 }

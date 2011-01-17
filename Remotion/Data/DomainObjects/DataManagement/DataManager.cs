@@ -38,6 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private DataContainerMap _dataContainerMap;
     private RelationEndPointMap _relationEndPointMap;
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
+    private IObjectLoader _objectLoader;
     private DomainObjectStateCache _domainObjectStateCache;
 
     private object[] _deserializedData; // only used for deserialization
@@ -45,16 +46,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DataManager (
         ClientTransaction clientTransaction, 
         ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy, 
-        IInvalidDomainObjectManager invalidDomainObjectManager)
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
       _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
       _invalidDomainObjectManager = invalidDomainObjectManager;
+      _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
     }
 
@@ -242,9 +247,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      ClientTransaction.EnsureDataAvailable (objectID);
-
       var dataContainer = GetDataContainerWithoutLoading (objectID);
+      if (dataContainer == null)
+        _objectLoader.LoadObject (objectID);
+
+      dataContainer = GetDataContainerWithoutLoading (objectID);
       Assertion.IsNotNull (dataContainer);
       return dataContainer;
     }
@@ -323,6 +330,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
       _invalidDomainObjectManager = doInfo.GetValue<IInvalidDomainObjectManager> ();
+      _objectLoader = doInfo.GetValue<IObjectLoader> ();
 
       _deserializedData = null;
       doInfo.SignalDeserializationFinished();
@@ -336,6 +344,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       doInfo.AddHandle (_relationEndPointMap);
       doInfo.AddValue (_domainObjectStateCache);
       doInfo.AddValue (_invalidDomainObjectManager);
+      doInfo.AddValue (_objectLoader);
       
       info.AddValue ("doInfo.GetData", doInfo.GetData());
     }

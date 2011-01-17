@@ -15,22 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  internal class TestComponentFactoryWithSpecificPersistenceStrategy : RootClientTransactionComponentFactory
+  internal class TestComponentFactoryWithSpecificObjectLoader : RootClientTransactionComponentFactory
   {
-    private readonly IPersistenceStrategy _persistenceStrategy;
+    private readonly Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> _factory;
 
-    public TestComponentFactoryWithSpecificPersistenceStrategy (IPersistenceStrategy persistenceStrategy)
+    public TestComponentFactoryWithSpecificObjectLoader (Func<ClientTransaction, IPersistenceStrategy, IClientTransactionListener, IObjectLoader> factory)
     {
-      _persistenceStrategy = persistenceStrategy;
+      _factory = factory;
     }
 
-    public override IPersistenceStrategy CreatePersistenceStrategy (Guid id)
+    public override IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
-      return _persistenceStrategy;
+      return _factory (clientTransaction, persistenceStrategy, eventSink);
     }
   }
 }

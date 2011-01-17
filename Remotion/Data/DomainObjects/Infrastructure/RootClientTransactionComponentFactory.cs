@@ -58,14 +58,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (id));
     }
 
-    public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IDataManager dataManager, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       
-      var eagerFetcher = new EagerFetcher (dataManager);
+      var eagerFetcher = new EagerFetcher ();
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 
@@ -79,12 +78,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new RootInvalidDomainObjectManager ();
     }
 
-    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)
+    public virtual IDataManager CreateDataManager (
+        ClientTransaction clientTransaction, 
+        IInvalidDomainObjectManager invalidDomainObjectManager, 
+        IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
-      return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy (), invalidDomainObjectManager);
+      return new DataManager (clientTransaction, new RootCollectionEndPointChangeDetectionStrategy (), invalidDomainObjectManager, objectLoader);
     }
 
     public virtual Func<ClientTransaction, ClientTransaction> CreateCloneFactory ()

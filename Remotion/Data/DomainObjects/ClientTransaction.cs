@@ -176,9 +176,9 @@ public class ClientTransaction
 
     _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager ();
-    _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
-    _objectLoader = _componentFactory.CreateObjectLoader (this, _dataManager, _persistenceStrategy, _eventSink);
+    _objectLoader = _componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
+    _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
 
     TransactionEventSink.TransactionInitializing (this);
   }
@@ -566,10 +566,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-    if (DataManager.GetDataContainerWithoutLoading (objectID) == null)
-      LoadObject (objectID);
-
-    Assertion.IsTrue (DataManager.DataContainerMap[objectID] != null);
+    _dataManager.GetDataContainerWithLazyLoad (objectID);
   }
 
   /// <summary>
@@ -1087,24 +1084,10 @@ public class ClientTransaction
     fullCommand.NotifyAndPerform ();
   }
 
-  /// <summary>
-  /// Loads an object from the data source.
-  /// </summary>
-  /// <remarks>
-  /// This method raises the <see cref="Loaded"/> event.
-  /// </remarks>
-  /// <param name="id">An <see cref="ObjectID"/> object indicating which <see cref="DomainObject"/> to load. Must not be <see langword="null"/>.</param>
-  /// <returns>The <see cref="DomainObject"/> object that was loaded.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the data source.
-  /// </exception>
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
   protected virtual DomainObject LoadObject (ObjectID id)
   {
-    ArgumentUtility.CheckNotNull ("id", id);
-    return _objectLoader.LoadObject (id);
+    throw new NotImplementedException ();
   }
 
   /// <summary>

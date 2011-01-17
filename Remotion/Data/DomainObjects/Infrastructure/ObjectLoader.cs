@@ -51,7 +51,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _persistenceStrategy = persistenceStrategy;
       _clientTransaction = clientTransaction;
       _eventSink = eventSink;
-      
       _fetcher = fetcher;
     }
 
@@ -125,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this);
+          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, ClientTransaction.DataManager);
       }
 
       return resultArray;

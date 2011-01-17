@@ -207,6 +207,7 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TestableObservableCollectionDataDecorator.cs" />
@@ -725,6 +726,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlStorageObjectFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Transaction\CountingObjectLoaderDecorator.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationConfiguration.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />

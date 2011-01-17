@@ -47,11 +47,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateDataManager_CollectionEndPointChangeDetectionStrategy ()
     {
       var invalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var dataManager = _factory.CreateDataManager (new ClientTransactionMock(), invalidDomainObjectManagerStub);
+      var objectLoaderStub = MockRepository.GenerateStub<IObjectLoader> ();
+      var dataManager = _factory.CreateDataManager (new ClientTransactionMock(), invalidDomainObjectManagerStub, objectLoaderStub);
       
       Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
           Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
       Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
+      Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_objectLoader"), Is.SameAs (objectLoaderStub));
     }
 
   }

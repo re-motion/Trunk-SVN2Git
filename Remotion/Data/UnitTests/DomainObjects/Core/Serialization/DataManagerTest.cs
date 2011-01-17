@@ -24,7 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -36,7 +36,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy(), new RootInvalidDomainObjectManager());
+      var dataManager = new DataManager (
+          ClientTransactionMock,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          new RootInvalidDomainObjectManager(),
+          new SerializableFakeObjectLoader());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.That (dataManager2, Is.Not.Null);
       Assert.That (dataManager, Is.Not.SameAs (dataManager2));
@@ -63,6 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_invalidDomainObjectManager"), Is.Not.Null);
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_objectLoader"), Is.Not.Null);
     }
 
     public void DumpSerializedDataManager ()
@@ -109,5 +114,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       foreach (var entry in typeList)
         Console.WriteLine ("{0}: {1}", entry.Key != typeof (void) ? entry.Key.ToString() : "<null>", entry.Value);
     }
+
+    [Serializable]
+    class SerializableFakeObjectLoader : IObjectLoader
+    {
+      public DomainObject LoadObject (ObjectID id)
+      {
+        throw new NotImplementedException ();
+      }
+
+      public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+      {
+        throw new NotImplementedException ();
+      }
+
+      public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+      {
+        throw new NotImplementedException ();
+      }
+
+      public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
+      {
+        throw new NotImplementedException ();
+      }
+
+      public T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject
+      {
+        throw new NotImplementedException ();
+      }
+
+      public ClientTransaction ClientTransaction
+      {
+        get { throw new NotImplementedException (); }
+      }
+    }
+
   }
 }

@@ -666,7 +666,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               Arg<DomainObject[]>.Matches (list => list.Single ().ID == _order1DataContainer.ID),
               Arg.Is (endPointDefinition),
               Arg.Is (fetchQueryStub),
-              Arg.Is (_objectLoader)));
+              Arg.Is (_objectLoader),
+              Arg.Is (_clientTransaction.DataManager)));
 
       _mockRepository.ReplayAll ();
 
@@ -697,7 +698,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Arg<DomainObject[]>.Is.Anything,
           Arg<IRelationEndPointDefinition>.Is.Anything,
           Arg<IQuery>.Is.Anything,
-          Arg<IObjectLoader>.Is.Anything));
+          Arg<IObjectLoader>.Is.Anything,
+          Arg.Is (_clientTransaction.DataManager)));
     }
 
     [Test]

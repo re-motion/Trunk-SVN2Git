@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
 using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -33,15 +32,12 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetcher));
 
-    private readonly IDataManager _dataManager;
-
-    public EagerFetcher (IDataManager dataManager)
-    {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      _dataManager = dataManager;
-    }
-
-    public void PerformEagerFetching (DomainObject[] originalObjects, IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery, IObjectLoader fetchQueryResultLoader)
+    public void PerformEagerFetching (
+        DomainObject[] originalObjects, 
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        IQuery fetchQuery, 
+        IObjectLoader fetchQueryResultLoader,
+        IDataManager dataManager)
     {
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').",
@@ -61,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Queries
       CheckFetchedObjects (relationEndPointDefinition, fetchedObjects);
 
       if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
-        MarkCollectionEndPointsComplete (relationEndPointDefinition, originalObjects);
+        MarkCollectionEndPointsComplete (relationEndPointDefinition, originalObjects, dataManager);
     }
 
     private void CheckOriginalObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originalObjects)
@@ -96,14 +92,17 @@ namespace Remotion.Data.DomainObjects.Queries
       }
     }
 
-    private void MarkCollectionEndPointsComplete (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originalObjects)
+    private void MarkCollectionEndPointsComplete (
+        IRelationEndPointDefinition relationEndPointDefinition,
+        IEnumerable<DomainObject> originalObjects,
+        IDataManager dataManager)
     {
       foreach (var originalObject in originalObjects)
       {
         if (originalObject != null)
         {
           var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
-          _dataManager.MarkCollectionEndPointComplete (relationEndPointID);
+          dataManager.MarkCollectionEndPointComplete (relationEndPointID);
         }
       }
     }

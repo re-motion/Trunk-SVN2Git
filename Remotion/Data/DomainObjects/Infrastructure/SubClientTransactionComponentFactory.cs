@@ -70,11 +70,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual IObjectLoader CreateObjectLoader (
         ClientTransaction clientTransaction,
-        IDataManager dataManager,
         IPersistenceStrategy persistenceStrategy,
         IClientTransactionListener eventSink)
     {
-      var eagerFetcher = new EagerFetcher (dataManager);
+      var eagerFetcher = new EagerFetcher ();
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 
@@ -85,11 +84,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
     {
-      var invalidObjects = 
+      var invalidObjects =
           _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
 
       var parentDataManager = _parentTransaction.DataManager;
-      var deletedObjects = parentDataManager.GetLoadedData ().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
+      var deletedObjects = parentDataManager.GetLoadedData().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
 
       var invalidDomainObjectManager = new SubInvalidDomainObjectManager (_parentInvalidDomainObjectManager);
       foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
@@ -98,10 +97,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return invalidDomainObjectManager;
     }
 
-    public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)
+    public virtual IDataManager CreateDataManager (
+        ClientTransaction clientTransaction,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy (), invalidDomainObjectManager);
+      return new DataManager (clientTransaction, new SubCollectionEndPointChangeDetectionStrategy(), invalidDomainObjectManager, objectLoader);
     }
 
 

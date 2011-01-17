@@ -34,41 +34,22 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // member fields
 
-    private int _numberOfCallsToLoadDataContainer;
-    private int _numberOfCallsToLoadRelatedObject;
     private IQueryManager _queryManager;
 
     // construction and disposing
 
-    public ClientTransactionMock () : base (new RootClientTransactionComponentFactory())
+    public ClientTransactionMock () : this (new RootClientTransactionComponentFactory())
     {
-      Initialize ();
-      _queryManager = base.QueryManager;
     }
 
-    // methods and properties
-
-    private void Initialize ()
+    protected ClientTransactionMock (IClientTransactionComponentFactory componentFactory) : base (componentFactory)
     {
-      _numberOfCallsToLoadDataContainer = 0;
-      _numberOfCallsToLoadRelatedObject = 0;
+      _queryManager = base.QueryManager;
     }
 
     public IClientTransactionListener TransactionEventSink
     {
       get { return (IClientTransactionListener) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "TransactionEventSink"); }
-    }
-
-    protected override DomainObject LoadObject (ObjectID id)
-    {
-      _numberOfCallsToLoadDataContainer++;
-      return base.LoadObject (id);
-    }
-
-    protected override DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
-    {
-      _numberOfCallsToLoadRelatedObject++;
-      return base.LoadRelatedObject (relationEndPointID);
     }
 
     public new DomainObject GetObject (ObjectID id, bool includeDeleted)
@@ -89,16 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new DomainObjectCollection GetRelatedObjects (RelationEndPointID relationEndPointID)
     {
       return base.GetRelatedObjects (relationEndPointID);
-    }
-
-    public int NumberOfCallsToLoadDataContainer
-    {
-      get { return _numberOfCallsToLoadDataContainer; }
-    }
-
-    public int NumberOfCallsToLoadRelatedObject
-    {
-      get { return _numberOfCallsToLoadRelatedObject; }
     }
 
     public IEnumerable<DomainObject> GetEnlistedObjects<T>()
