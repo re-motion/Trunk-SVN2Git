@@ -266,7 +266,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      if (IsInvalid (id))
+      if (_invalidDomainObjectManager.IsInvalid (id))
         throw new ObjectInvalidException (id);
 
       return DataContainerMap[id];

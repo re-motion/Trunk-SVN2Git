@@ -32,9 +32,6 @@ using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [TestFixture]
   public class DataManagerTest : ClientTransactionBaseTest
   {
