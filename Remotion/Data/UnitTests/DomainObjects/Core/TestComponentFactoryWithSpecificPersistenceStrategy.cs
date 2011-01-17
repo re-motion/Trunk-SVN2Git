@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
@@ -349,7 +350,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
       _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
-      _invalidDomainObjectManager = doInfo.GetValue<InvalidDomainObjectManager> ();
+      _invalidDomainObjectManager = doInfo.GetValue<IInvalidDomainObjectManager> ();
 
       _deserializedData = null;
       doInfo.SignalDeserializationFinished();

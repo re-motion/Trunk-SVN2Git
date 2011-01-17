@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -84,11 +85,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
     {
+      var invalidObjects = 
+          _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
+
       var parentDataManager = _parentTransaction.DataManager;
-      var invalidObjects = _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
       var deletedObjects = parentDataManager.GetLoadedData ().Where (tuple => tuple.Item2.State == StateType.Deleted).Select (tuple => tuple.Item1);
 
-      var invalidDomainObjectManager = new InvalidDomainObjectManager ();
+      var invalidDomainObjectManager = new SubInvalidDomainObjectManager (_parentInvalidDomainObjectManager);
       foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
         invalidDomainObjectManager.MarkInvalid (objectToBeMarkedInvalid);
 

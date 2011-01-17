@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -75,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public IInvalidDomainObjectManager CreateInvalidDomainObjectManager ()
     {
-      return new InvalidDomainObjectManager ();
+      return new RootInvalidDomainObjectManager ();
     }
 
     public virtual IDataManager CreateDataManager (ClientTransaction clientTransaction, IInvalidDomainObjectManager invalidDomainObjectManager)

@@ -174,9 +174,11 @@
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
-    <Compile Include="DataManagement\IInvalidDomainObjectManager.cs" />
-    <Compile Include="DataManagement\InvalidDomainObjectManager.cs" />
+    <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
+    <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />
+    <Compile Include="Infrastructure\InvalidObjects\InvalidDomainObjectManagerBase.cs" />
     <Compile Include="DataManagement\LoadConflictException.cs" />
+    <Compile Include="Infrastructure\InvalidObjects\RootInvalidDomainObjectManager.cs" />
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />

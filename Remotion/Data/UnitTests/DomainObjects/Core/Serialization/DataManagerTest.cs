@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy(), new InvalidDomainObjectManager());
+      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy(), new RootInvalidDomainObjectManager());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.That (dataManager2, Is.Not.Null);
       Assert.That (dataManager, Is.Not.SameAs (dataManager2));

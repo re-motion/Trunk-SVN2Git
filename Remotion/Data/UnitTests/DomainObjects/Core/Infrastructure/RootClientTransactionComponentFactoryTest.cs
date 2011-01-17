@@ -17,8 +17,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -39,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateInvalidDomainObjectManager ()
     {
       var manager = _factory.CreateInvalidDomainObjectManager ();
-      Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
-      Assert.That (((InvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
+      Assert.That (manager, Is.TypeOf (typeof (RootInvalidDomainObjectManager)));
+      Assert.That (((RootInvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
     }
 
     [Test]

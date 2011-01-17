@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {

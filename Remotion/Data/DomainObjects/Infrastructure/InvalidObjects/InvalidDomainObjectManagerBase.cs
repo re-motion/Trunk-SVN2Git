@@ -18,13 +18,13 @@ using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
 {
   /// <summary>
   /// Keeps a collection of <see cref="DomainObject"/> references that were marked as invalid in a given <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class InvalidDomainObjectManager : IInvalidDomainObjectManager
+  public abstract class InvalidDomainObjectManagerBase : IInvalidDomainObjectManager
   {
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
@@ -80,5 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       return _invalidObjects.Remove (objectID);
     }
+
+    public abstract void MarkInvalidThroughHierarchy (DomainObject domainObject);
   }
 }

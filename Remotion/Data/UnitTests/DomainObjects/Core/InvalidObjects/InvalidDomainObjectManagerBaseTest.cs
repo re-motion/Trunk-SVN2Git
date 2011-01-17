@@ -17,21 +17,20 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.InvalidObjects
 {
   [TestFixture]
-  public class InvalidDomainObjectManagerTest : StandardMappingTest
+  public class InvalidDomainObjectManagerBaseTest : StandardMappingTest
   {
-    private InvalidDomainObjectManager _manager;
+    private TestableInvalidDomainObjectManager _manager;
     private Order _order1;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _manager = new InvalidDomainObjectManager ();
+      _manager = new TestableInvalidDomainObjectManager ();
       _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
     }
 

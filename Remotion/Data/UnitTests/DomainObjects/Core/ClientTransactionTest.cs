@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -706,7 +707,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (((DelegatingEnlistedDomainObjectManager) enlistedObjectManager).TargetTransaction, Is.SameAs (_transaction));
 
       var invalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (subTransaction);
-      Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+      Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
+      Assert.That (((SubInvalidDomainObjectManager) invalidDomainObjectManager).ParentTransactionManager, 
+          Is.SameAs (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction)));
 
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction);
       Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
