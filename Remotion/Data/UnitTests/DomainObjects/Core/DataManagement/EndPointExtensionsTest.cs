@@ -73,6 +73,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetDomainObject_Invalid ()
+    {
+      var invalidObject = Order.NewObject ();
+      invalidObject.Delete ();
+
+      Assert.That (invalidObject.State, Is.EqualTo (StateType.Invalid));
+
+      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      endPointStub.Stub (stub => stub.ObjectID).Return (invalidObject.ID);
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
+
+      var domainObject = endPointStub.GetDomainObject ();
+
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (domainObject, Is.SameAs (invalidObject));
+    }
+
+    [Test]
     public void GetDomainObjectReference ()
     {
       var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
@@ -95,6 +113,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var domainObject = endPointStub.GetDomainObjectReference ();
 
       Assert.That (domainObject, Is.Null);
+    }
+
+    [Test]
+    public void GetDomainObjectReference_Invalid ()
+    {
+      var invalidObject = Order.NewObject ();
+      invalidObject.Delete ();
+
+      Assert.That (invalidObject.State, Is.EqualTo (StateType.Invalid));
+
+      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      endPointStub.Stub (stub => stub.ObjectID).Return (invalidObject.ID);
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
+
+      var domainObject = endPointStub.GetDomainObjectReference ();
+
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (domainObject, Is.SameAs (invalidObject));
     }
 
     [Test]

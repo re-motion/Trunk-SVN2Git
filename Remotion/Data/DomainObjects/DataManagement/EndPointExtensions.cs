@@ -29,20 +29,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (endPoint.ObjectID == null)
+      var objectID = endPoint.ObjectID;
+      if (objectID == null)
         return null;
 
-      return endPoint.ClientTransaction.GetObject (endPoint.ObjectID, true);
+      if (endPoint.ClientTransaction.IsInvalid (objectID))
+        return endPoint.ClientTransaction.GetInvalidObjectReference (objectID);
+
+      return endPoint.ClientTransaction.GetObject (objectID, true);
     }
 
     public static DomainObject GetDomainObjectReference (this IEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (endPoint.ObjectID == null)
+      var objectID = endPoint.ObjectID;
+      if (objectID == null)
         return null;
 
-      return endPoint.ClientTransaction.GetObjectReference (endPoint.ObjectID);
+      if (endPoint.ClientTransaction.IsInvalid (objectID))
+        return endPoint.ClientTransaction.GetInvalidObjectReference (objectID);
+
+      return endPoint.ClientTransaction.GetObjectReference (objectID);
     }
 
     public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject oppositeObject) where T : IEndPoint
