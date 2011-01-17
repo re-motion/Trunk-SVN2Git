@@ -292,6 +292,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\NullEntityDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\IDColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\PrimaryKeyConstraintDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\BaseBaseClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\BaseClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Derived1Class.cs" />

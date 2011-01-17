@@ -84,6 +84,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedDerivedClassDefinition }, true, true));
       _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
+      _baseBaseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      _baseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _tableClassDefinition1.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _tableClassDefinition2.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _derivedClassDefinition1.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _derivedClassDefinition2.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _derivedDerivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      _derivedDerivedDerivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
+      
       _baseBasePropertyDefinition = CreateAndAddPropertyDefinition (
           _baseBaseClassDefinition, "BaseBaseProperty", typeof (BaseBaseClass).GetProperty ("BaseBaseProperty"));
       _basePropertyDefinition = CreateAndAddPropertyDefinition (_baseClassDefinition, "BaseProperty", typeof (BaseClass).GetProperty ("BaseProperty"));
