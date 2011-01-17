@@ -32,12 +32,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class RdbmsProviderDefinitionTest : StandardMappingTest
   {
     private StorageProviderDefinition _definition;
+    private SqlStorageObjectFactory _sqlStorageObjectFactory;
 
     public override void SetUp()
     {
       base.SetUp();
 
-      _definition = new RdbmsProviderDefinition ("StorageProviderID", typeof(SqlStorageObjectFactory), "ConnectionString");
+      _sqlStorageObjectFactory = new SqlStorageObjectFactory();
+      _definition = new RdbmsProviderDefinition ("StorageProviderID", _sqlStorageObjectFactory, "ConnectionString");
 
       FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper();
       configurationWrapper.SetUpConnectionString ("SqlProvider", "ConnectionString", null);
@@ -47,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Initialize_FromArguments()
     {
-      RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
+      RdbmsProviderDefinition provider = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
 
       Assert.AreEqual ("Provider", provider.Name);
       Assert.That (provider.Factory, Is.TypeOf (typeof (SqlStorageObjectFactory)));

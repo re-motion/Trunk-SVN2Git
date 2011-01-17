@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof (SecurityManagerSqlStorageObjectFactory), "ConnectionString");
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", new SecurityManagerSqlStorageObjectFactory(), "ConnectionString");
       _securityManagerSqlStorageObjectFactory = new SecurityManagerSqlStorageObjectFactory ();
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
     }

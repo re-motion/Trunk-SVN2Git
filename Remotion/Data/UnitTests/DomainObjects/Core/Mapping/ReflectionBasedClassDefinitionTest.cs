@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       _domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (DomainBase), false);
@@ -573,7 +573,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order",
           "OrderTable",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
           typeof (Order),
           false);
       classDefinition.GetPropertyDefinitions();

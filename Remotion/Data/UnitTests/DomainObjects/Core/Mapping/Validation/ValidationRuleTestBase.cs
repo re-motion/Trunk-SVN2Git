@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 
     protected StorageProviderDefinition StorageProviderDefinition
     {
-      get { return new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)); }
+      get { return new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"); }
     }
   }
 }

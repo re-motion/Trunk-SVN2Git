@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", typeof(SqlStorageObjectFactory), "ConnectionString");
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain",new SqlStorageObjectFactory(), "ConnectionString");
       _sqlProviderFactory = new SqlStorageObjectFactory ();
       _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener> ();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);

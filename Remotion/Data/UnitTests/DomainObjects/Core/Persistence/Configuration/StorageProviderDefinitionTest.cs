@@ -27,10 +27,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
   [TestFixture]
   public class StorageProviderDefinitionTest
   {
+    private SqlStorageObjectFactory _sqlStorageObjectFactory;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _sqlStorageObjectFactory = new SqlStorageObjectFactory();
+    }
+
     [Test]
     public void Initialize()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
 
       Assert.That (providerDefinition.Name, Is.EqualTo ("Provider"));
       Assert.That (providerDefinition.Factory, Is.TypeOf(typeof (SqlStorageObjectFactory)));
@@ -40,14 +48,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     public void GetTypeConversionProvider ()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
       Assert.That (providerDefinition.Factory.CreateTypeConversionProvider(), Is.InstanceOfType (typeof (TypeConversionProvider)));
     }
 
     [Test]
     public void GetTypeProvider ()
     {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof(SqlStorageObjectFactory), "ConnectionString");
+      var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
       Assert.That (providerDefinition.Factory.CreateTypeProvider(), Is.InstanceOfType (typeof (TypeProvider)));
     }
 

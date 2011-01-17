@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       try
       {
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageFactory), "NonExistingRdbms"));
+        providers.Add (new RdbmsProviderDefinition ("StorageProvider", new StubStorageFactory(), "NonExistingRdbms"));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["StorageProvider"]);
         DomainObjectsConfiguration.SetCurrent (
             new FakeDomainObjectsConfiguration (

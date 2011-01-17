@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (_classDefinition.StorageEntityDefinition, Is.Null);
 
       _storageProviderDefinitionStub.Stub (stub => stub.GetStorageProviderDefinition (_classDefinition)).Return (
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)));
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"));
 
       _persistenceModelLoader.ApplyPersistenceModelToHierarchy (_classDefinition);
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePersistenceMappingValidator ()
     {
       _storageProviderDefinitionStub.Stub (stub => stub.GetStorageProviderDefinition (_classDefinition)).Return (
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)));
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"));
 
       var result = _persistenceModelLoader.CreatePersistenceMappingValidator (_classDefinition);
 

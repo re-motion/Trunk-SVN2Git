@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public static void Initialize ()
     {
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-      providers.Add (new RdbmsProviderDefinition ("PerformanceTestDomain", typeof (SqlStorageObjectFactory), ConnectionString));
+      providers.Add (new RdbmsProviderDefinition ("PerformanceTestDomain", new SqlStorageObjectFactory(), ConnectionString));
       StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["PerformanceTestDomain"]);
 
       DomainObjectsConfiguration.SetCurrent (

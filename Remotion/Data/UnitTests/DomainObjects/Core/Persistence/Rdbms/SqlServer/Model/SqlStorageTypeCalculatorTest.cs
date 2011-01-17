@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _typeCalculator = new SqlStorageTypeCalculator (_storageProviderDefinitionFinder);
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(typeof(Order));
       _orderItemClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       _orderClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));

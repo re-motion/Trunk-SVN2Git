@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Fake",
           "Fake",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
           typeof (Company),
           false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());

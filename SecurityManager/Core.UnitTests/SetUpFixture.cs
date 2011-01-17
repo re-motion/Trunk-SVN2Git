@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests
         ServiceLocator.SetLocatorProvider (() => null);
 
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlStorageObjectFactory), c_testDomainConnectionString));
+        providers.Add (new RdbmsProviderDefinition ("SecurityManager", new SecurityManagerSqlStorageObjectFactory(), c_testDomainConnectionString));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
         storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 

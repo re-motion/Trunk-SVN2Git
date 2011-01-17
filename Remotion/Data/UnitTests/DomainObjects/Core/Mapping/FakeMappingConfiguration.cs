@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _classDefinitions = CreateClassDefinitions();
       _relationDefinitions = CreateRelationDefinitions();
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       foreach (ClassDefinition classDefinition in _classDefinitions)
         classDefinition.SetReadOnly();

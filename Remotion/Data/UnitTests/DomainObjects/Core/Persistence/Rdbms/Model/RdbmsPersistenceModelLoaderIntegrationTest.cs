@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderID = "DefaultStorageProvider";
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 

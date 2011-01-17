@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void SetUp ()
     {
       _storageProviderID = "DefaultStorageProvider";
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID, typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
       _fakeEntityDefinitionBaseBase = MockRepository.GenerateStub<IEntityDefinition>();

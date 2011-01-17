@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [SetUp]
     public void SetUp ()
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       _classWithoutStorageGroupType = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Test", "Test", storageProviderDefinition, typeof (Customer), false, null, null, new PersistentMixinFinder (typeof (Customer)));
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
           new PersistentMixinFinder (typeof (Customer)));
       _storageConfigurationWithoutDefaultProvider = new StorageConfiguration (
           new ProviderCollection<StorageProviderDefinition> (),
-          new UnitTestStorageProviderStubDefinition ("Test", typeof (UnitTestStorageObjectFactoryStub)));
+          new UnitTestStorageProviderStubDefinition ("Test"));
       var storageProviderDefinitionHelper =
           (StorageProviderDefinitionHelper) PrivateInvoke.GetNonPublicField (_storageConfigurationWithoutDefaultProvider, "_defaultStorageProviderDefinitionHelper");
       storageProviderDefinitionHelper.Provider = null;
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       var providerID = "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute, Remotion.Data.UnitTests";
       var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>
                                                 {
-                                                    new UnitTestStorageProviderStubDefinition (providerID, typeof (UnitTestStorageObjectFactoryStub))
+                                                    new UnitTestStorageProviderStubDefinition (providerID)
                                                 };
       var storageConfiguration = new StorageConfiguration (
           storageProviderDefinitionCollection,

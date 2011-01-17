@@ -63,19 +63,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public SchemaGenerationConfiguration ()
     {
+      var sqlStorageObjectFactory = new SqlStorageObjectFactory();
       var storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>
                                                 {
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationFirstStorageProviderID,
-                                                        typeof (SqlStorageObjectFactory),
+                                                        sqlStorageObjectFactory,
                                                         DatabaseTest.TestDomainConnectionString),
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationSecondStorageProviderID,
-                                                        typeof (SqlStorageObjectFactory),
+                                                        sqlStorageObjectFactory,
                                                         DatabaseTest.TestDomainConnectionString),
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationInternalStorageProviderID,
-                                                        typeof (SqlStorageObjectFactory),
+                                                        sqlStorageObjectFactory,
                                                         DatabaseTest.TestDomainConnectionString)
                                                 };
 

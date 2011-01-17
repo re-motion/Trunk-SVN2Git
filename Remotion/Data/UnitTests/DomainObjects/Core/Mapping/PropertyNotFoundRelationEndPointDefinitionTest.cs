@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassDerivedFromSimpleDomainObject));
       _propertyNotFoundEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_classDefinition, "TestProperty");
     }

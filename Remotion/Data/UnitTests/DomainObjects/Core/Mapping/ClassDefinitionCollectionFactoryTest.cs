@@ -203,13 +203,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassID",
           "Entity1",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
           type1,
           false);
       var classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassID",
           "Entity2",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub)),
+          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
           type2,
           false);
 

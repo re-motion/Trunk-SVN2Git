@@ -29,28 +29,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static ProviderCollection<StorageProviderDefinition> Create ()
     {
       ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
+      var sqlStorageObjectFactory = new SqlStorageObjectFactory();
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
               DatabaseTest.c_testDomainProviderID,
-              typeof (SqlStorageObjectFactory),
+              sqlStorageObjectFactory,
               DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
               DatabaseTest.DefaultStorageProviderID,
-              typeof (SqlStorageObjectFactory),
+              sqlStorageObjectFactory,
               DatabaseTest.TestDomainConnectionString));
 
       storageProviderDefinitionCollection.Add (
           new UnitTestStorageProviderStubDefinition (
-              DatabaseTest.c_unitTestStorageProviderStubID,
-              typeof (UnitTestStorageObjectFactoryStub)));
+              DatabaseTest.c_unitTestStorageProviderStubID));
 
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (
               TableInheritanceMappingTest.TableInheritanceTestDomainProviderID,
-              typeof (SqlStorageObjectFactory),
+              sqlStorageObjectFactory,
               DatabaseTest.TestDomainConnectionString));
 
       return storageProviderDefinitionCollection;

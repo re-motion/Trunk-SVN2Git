@@ -54,12 +54,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _typeProvider = _factory.CreateTypeProvider();
     }
 
-    protected StorageProviderDefinition (string name, Type factoryType)
+    protected StorageProviderDefinition (string name, IStorageObjectFactory factory)
         : base (name, new NameValueCollection())
     {
-      ArgumentUtility.CheckNotNull ("factoryType", factoryType);
+      ArgumentUtility.CheckNotNull ("factory", factory);
 
-      _factory = CreateStorageObjectFactory (factoryType);
+      _factory = factory;
       _typeConversionProvider = _factory.CreateTypeConversionProvider ();
       _typeProvider = _factory.CreateTypeProvider ();
     }

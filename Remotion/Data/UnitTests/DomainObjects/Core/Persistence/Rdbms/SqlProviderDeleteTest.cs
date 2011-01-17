@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       RdbmsProviderDefinition definition = new RdbmsProviderDefinition (
-          c_testDomainProviderID, typeof (SqlStorageObjectFactory), TestDomainConnectionString);
+          c_testDomainProviderID, new SqlStorageObjectFactory(), TestDomainConnectionString);
 
       _provider = new SqlProvider (definition, NullPersistenceListener.Instance);
     }

@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [SetUp]
     public void SetUp ()
     {
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _referencingColumn = new SimpleColumnDefinition ("COL1", typeof (string), "varchar", false, false);
       _referencedColumn = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", false, false);
 

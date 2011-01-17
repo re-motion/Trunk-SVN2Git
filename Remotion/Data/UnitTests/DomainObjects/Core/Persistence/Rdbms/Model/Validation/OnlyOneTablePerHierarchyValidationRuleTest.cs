@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void SetUp ()
     {
       _validationRule = new OnlyOneTablePerHierarchyValidationRule();
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = new TableDefinition (
           storageProviderDefinition, "TableName", null, new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (

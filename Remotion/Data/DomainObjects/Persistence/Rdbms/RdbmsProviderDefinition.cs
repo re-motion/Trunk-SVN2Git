@@ -26,13 +26,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class RdbmsProviderDefinition: StorageProviderDefinition
   {
     private readonly string _connectionString;
-    
-    public RdbmsProviderDefinition (string name, Type factoryType, string connectionString)
-        : base (name, factoryType)
+
+    public RdbmsProviderDefinition (string name, IStorageObjectFactory factory, string connectionString)
+        : base (name, factory)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
-      ArgumentUtility.CheckTypeIsAssignableFrom ("factoryType", factoryType, typeof (IRdbmsStorageObjectFactory));
-
+      ArgumentUtility.CheckNotNullAndType<IRdbmsStorageObjectFactory> ("factory", factory);
+      
       _connectionString = connectionString;
     }
 

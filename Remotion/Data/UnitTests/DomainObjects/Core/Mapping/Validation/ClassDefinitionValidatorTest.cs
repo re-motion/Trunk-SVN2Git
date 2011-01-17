@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [SetUp]
     public void SetUp ()
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider", typeof (UnitTestStorageObjectFactoryStub));
+      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       var type = typeof (DerivedValidationDomainObjectClass);
       _classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
       _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);

@@ -22,8 +22,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class UnitTestStorageProviderStubDefinition : StorageProviderDefinition
   {
-    public UnitTestStorageProviderStubDefinition (string storageProviderID, Type storageFactoryType)
-        : base (storageProviderID, storageFactoryType)
+    public UnitTestStorageProviderStubDefinition (string storageProviderID)
+        : base (storageProviderID, new UnitTestStorageObjectFactoryStub())
     {
     }
 

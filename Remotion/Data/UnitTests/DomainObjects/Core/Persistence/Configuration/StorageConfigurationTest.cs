@@ -31,11 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
   public class StorageConfigurationTest
   {
     private StorageConfiguration _configuration;
+    private SqlStorageObjectFactory _sqlStorageObjectFactory;
 
     [SetUp]
     public void SetUp ()
     {
       _configuration = new StorageConfiguration();
+      _sqlStorageObjectFactory = new SqlStorageObjectFactory();
 
       FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper();
       configurationWrapper.SetUpConnectionString ("Rdbms", "ConnectionString", null);
@@ -52,11 +54,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void Initialize_WithProviderCollectionAndProvider ()
     {
       StorageProviderDefinition providerDefinition1 = new RdbmsProviderDefinition (
-          "ProviderDefinition1", typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition1", _sqlStorageObjectFactory, "ConnectionString");
       StorageProviderDefinition providerDefinition2 = new RdbmsProviderDefinition (
-          "ProviderDefinition2", typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition2", _sqlStorageObjectFactory, "ConnectionString");
       StorageProviderDefinition providerDefinition3 = new RdbmsProviderDefinition (
-          "ProviderDefinition3", typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition3", _sqlStorageObjectFactory, "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
       providers.Add (providerDefinition1);
       providers.Add (providerDefinition2);
@@ -74,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void Initialize_WithProviderCollectionAndProvider_Expect ()
     {
       StorageProviderDefinition providerDefinition = new RdbmsProviderDefinition (
-          "ProviderDefinition", typeof (SqlStorageObjectFactory), "ConnectionString");
+          "ProviderDefinition", _sqlStorageObjectFactory, "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
 
       StorageConfiguration configuration = new StorageConfiguration (providers, providerDefinition);
