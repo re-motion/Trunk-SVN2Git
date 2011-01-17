@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
@@ -22,7 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  public abstract class ConstraintBuilderBase
+  public abstract class ConstraintBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createConstraintStringBuilder;
     private readonly List<string> _entityNamesForDropConstraintScript;
@@ -68,11 +69,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
-      if (tableDefinition!=null)
-      {
-        AddToCreateConstraintScript (tableDefinition);
-        _entityNamesForDropConstraintScript.Add (tableDefinition.TableName);
-      }
+      if (tableDefinition != null)
+        tableDefinition.Accept (this);
     }
 
     protected string GetForeignKeyConstraintStatement (TableDefinition tableDefinition)
@@ -96,6 +94,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       if (_createConstraintStringBuilder.Length == length && length > 1)
         _createConstraintStringBuilder.Remove (length - 2, 2);
     }
-    
+
+    void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      
+      AddToCreateConstraintScript (tableDefinition);
+      _entityNamesForDropConstraintScript.Add (tableDefinition.TableName);
+    }
+
+    void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+
+      //Nothing to do here
+    }
+
+    void IEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+
+      //Nothing to do here
+    }
+
+    void IEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
+
+      //Nothing to do here
+    }
   }
 }

@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  public abstract class TableBuilderBase
+  public abstract class TableBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createTableStringBuilder;
     private readonly StringBuilder _dropTableStringBuilder;
@@ -64,10 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
       if (tableDefinition != null)
-      {
-        AddToCreateTableScript (tableDefinition);
-        AddToDropTableScript (tableDefinition);
-      }
+        tableDefinition.Accept (this);
     }
 
     private void AddToCreateTableScript (TableDefinition tableDefinition)
@@ -108,5 +105,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return visitor.GetConstraintStatement();
     }
 
+    void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+
+      AddToCreateTableScript (tableDefinition);
+      AddToDropTableScript (tableDefinition);
+    }
+
+    void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+
+      //Nothing to do here
+    }
+
+    void IEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+
+      //Nothing to do here
+    }
+
+    void IEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
+
+      //Nothing to do here
+    }
   }
 }
