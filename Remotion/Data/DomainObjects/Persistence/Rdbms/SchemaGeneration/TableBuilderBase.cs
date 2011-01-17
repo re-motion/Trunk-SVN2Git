@@ -62,9 +62,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var tableDefinition = classDefinition.StorageEntityDefinition as TableDefinition;
-      if (tableDefinition != null)
-        tableDefinition.Accept (this);
+      var entityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
+      if (entityDefinition != null)
+        entityDefinition.Accept (this);
     }
 
     private void AddToCreateTableScript (TableDefinition tableDefinition)
