@@ -16,9 +16,11 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
+using Remotion.Implementation;
 
 namespace Remotion.SecurityManager.Persistence
 {
+  [ConcreteImplementation (typeof (SecurityManagerSqlStorageObjectFactory))]
   public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
     public SecurityManagerSqlStorageObjectFactory () : base (typeof(SecurityManagerSqlProvider))

@@ -17,8 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using Remotion.Configuration;
-using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -49,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 
       var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
       var factoryType = TypeUtility.GetType (factoryTypeName, true);
-      _factory = CreateStorageObjectFactory (factoryType);
+      _factory = (IStorageObjectFactory) SafeServiceLocator.Current.GetInstance (factoryType);
       _typeConversionProvider = _factory.CreateTypeConversionProvider();
       _typeProvider = _factory.CreateTypeProvider();
     }
@@ -89,11 +88,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public TypeProvider TypeProvider
     {
       get { return _typeProvider; }
-    }
-
-    private IStorageObjectFactory CreateStorageObjectFactory (Type factoryType)
-    {
-      return (IStorageObjectFactory) ObjectFactory.Create (factoryType, ParamList.Empty);
     }
   }
 }
