@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Discard (dataContainer);
 
       Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, dataContainer.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (ClientTransactionMock, dataContainer.ID));
     }
 
     [Test]

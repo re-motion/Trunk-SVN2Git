@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void DataManagerMarkingObjectInvalid (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
     {
     }
 

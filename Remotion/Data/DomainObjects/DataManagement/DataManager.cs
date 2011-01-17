@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var domainObject = dataContainer.DomainObject;
       if (_invalidDomainObjectManager.MarkInvalid (domainObject))
-        _transactionEventSink.DataManagerMarkingObjectInvalid (_clientTransaction, domainObject.ID);
+        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
     }
 
     public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)

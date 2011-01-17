@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         _strictListenerMock.Expect (mock => mock.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Invalid));
-        _strictListenerMock.Expect (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, order.ID));
+        _strictListenerMock.Expect (mock => mock.DataManagerDiscardingObject (ClientTransactionMock, order.ID));
         _strictListenerMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, order));
       }
 

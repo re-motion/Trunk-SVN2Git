@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         "VirtualRelationEndPointStateUpdated",
         "RelationReading", 
         "RelationRead", 
-        "DataManagerMarkingObjectInvalid", 
+        "DataManagerDiscardingObject", 
         "DataContainerStateUpdated", 
         "VirtualRelationEndPointStateUpdated",
         "FilterQueryResult"};

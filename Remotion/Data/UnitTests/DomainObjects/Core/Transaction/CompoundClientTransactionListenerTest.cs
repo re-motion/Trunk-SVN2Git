@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (listener => listener.RelationEndPointMapUnregistering (ClientTransactionMock, endPoint.ID));
       CheckNotification (listener => listener.RelationEndPointUnloading (ClientTransactionMock, endPoint));
 
-      CheckNotification (listener => listener.DataManagerMarkingObjectInvalid (ClientTransactionMock, order.ID));
+      CheckNotification (listener => listener.DataManagerDiscardingObject (ClientTransactionMock, order.ID));
 
       CheckNotification (listener => listener.DataContainerMapRegistering (ClientTransactionMock, order.InternalDataContainer));
       CheckNotification (listener => listener.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));

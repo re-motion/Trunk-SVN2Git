@@ -480,16 +480,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void DataManagerMarkingObjectInvalid ()
+    public void DataManagerDiscardingObject ()
     {
-      _listener.DataManagerMarkingObjectInvalid (_clientTransaction, _domainObject.ID);
+      _listener.DataManagerDiscardingObject (_clientTransaction, _domainObject.ID);
       var loggingEvents = GetLoggingEvents();
 
       Assert.That (
           loggingEvents.Last().RenderedMessage,
           Is.EqualTo (
               string.Format (
-                  "{0} DataManagerMarkingObjectInvalid: {1}",
+                  "{0} DataManagerDiscardingObject: {1}",
                   _clientTransaction.ID,
                   _domainObject.ID)));
     }
