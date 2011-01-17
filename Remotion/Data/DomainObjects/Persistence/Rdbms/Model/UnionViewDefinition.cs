@@ -28,53 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class UnionViewDefinition : IEntityDefinition
   {
-    private class ColumnDefinitionFinder : IColumnDefinitionVisitor
-    {
-      private readonly HashSet<IColumnDefinition> _availableColumns;
-
-      private IColumnDefinition _foundColumn;
-
-      public ColumnDefinitionFinder (IEnumerable<IColumnDefinition> availableColumns)
-      {
-        _availableColumns = new HashSet<IColumnDefinition> (availableColumns);
-      }
-
-      public IColumnDefinition FindColumn (IColumnDefinition columnDefinition)
-      {
-        _foundColumn = null;
-        if(columnDefinition!=null)
-          columnDefinition.Accept (this);
-        return _foundColumn;
-      }
-
-      void IColumnDefinitionVisitor.VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition)
-      {
-        if (_availableColumns.Contains (simpleColumnDefinition))
-          _foundColumn = simpleColumnDefinition;
-        else
-          _foundColumn = new NullColumnDefinition ();
-      }
-
-      void IColumnDefinitionVisitor.VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
-      {
-        if (_availableColumns.Contains (idColumnDefinition))
-        {
-          _foundColumn = idColumnDefinition;
-        }
-        else
-        {
-          var objectIDColumn = FindColumn (idColumnDefinition.ObjectIDColumn);
-          var classIDColumn = FindColumn (idColumnDefinition.ClassIDColumn);
-          _foundColumn = new IDColumnDefinition (objectIDColumn, classIDColumn);
-        }
-      }
-
-      public void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
-      {
-        _foundColumn = new NullColumnDefinition ();
-      }
-    }
-
     private readonly string _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
