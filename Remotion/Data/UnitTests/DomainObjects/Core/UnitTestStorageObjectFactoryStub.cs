@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = new StorageNameCalculator();
+      var storageNameCalculator = new ReflectionBasedStorageNameProvider();
       var columnDefinitionFactory = new ColumnDefinitionFactory (
           new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitionResolver = new ColumnDefinitionResolver();

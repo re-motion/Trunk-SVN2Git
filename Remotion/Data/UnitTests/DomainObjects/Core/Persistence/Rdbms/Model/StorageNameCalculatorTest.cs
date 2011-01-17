@@ -31,38 +31,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class StorageNameCalculatorTest
   {
-    private StorageNameCalculator _calculator;
+    private ReflectionBasedStorageNameProvider _provider;
     private ReflectionBasedClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _calculator = new StorageNameCalculator();
+      _provider = new ReflectionBasedStorageNameProvider();
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Company), null);
     }
 
     [Test]
     public void IDColumnName ()
     {
-      Assert.That (_calculator.IDColumnName, Is.EqualTo ("ID"));
+      Assert.That (_provider.IDColumnName, Is.EqualTo ("ID"));
     }
 
     [Test]
     public void ClassIDColumnName ()
     {
-      Assert.That (_calculator.ClassIDColumnName, Is.EqualTo ("ClassID"));
+      Assert.That (_provider.ClassIDColumnName, Is.EqualTo ("ClassID"));
     }
 
     [Test]
     public void TimestampColumnName ()
     {
-      Assert.That (_calculator.TimestampColumnName, Is.EqualTo ("Timestamp"));
+      Assert.That (_provider.TimestampColumnName, Is.EqualTo ("Timestamp"));
     }
 
     [Test]
     public void GetTableName_ClassHasDBTableAttributeWithoutName_ReturnsClassIDName ()
     {
-      var result = _calculator.GetTableName (_classDefinition);
+      var result = _provider.GetTableName (_classDefinition);
 
       Assert.That (result, Is.EqualTo ("Company"));
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
           typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
 
-      var result = _calculator.GetTableName (classDefinition);
+      var result = _provider.GetTableName (classDefinition);
 
       Assert.That (result, Is.EqualTo ("ClassHavingStorageSpecificIdentifierAttributeTable"));
     }
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Folder), null);
 
-      var result = _calculator.GetTableName (classDefinition);
+      var result = _provider.GetTableName (classDefinition);
 
       Assert.That (result, Is.Null);
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetViewName ()
     {
-      var result = _calculator.GetViewName (_classDefinition);
+      var result = _provider.GetViewName (_classDefinition);
 
       Assert.That (result, Is.EqualTo ("CompanyView"));
     }
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
 
-      var result = _calculator.GetColumnName (propertyDefinition);
+      var result = _provider.GetColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("Boolean"));
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
 
-      var result = _calculator.GetColumnName (propertyDefinition);
+      var result = _provider.GetColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("NumberOfShops"));
     }
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
 
-      var result = _calculator.GetColumnName (propertyDefinition);
+      var result = _provider.GetColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderID"));
     }
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
 
-      var result = _calculator.GetRelationClassIDColumnName (propertyDefinition);
+      var result = _provider.GetRelationClassIDColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderIDClassID"));
     }
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetPrimaryKeyName ()
     {
-      var result = _calculator.GetPrimaryKeyName(_classDefinition);
+      var result = _provider.GetPrimaryKeyConstraintName(_classDefinition);
 
       Assert.That (result, Is.EqualTo ("PK_Company"));
     }
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var storagePropertyDefinitionStub = MockRepository.GenerateStub<IStoragePropertyDefinition>();
       storagePropertyDefinitionStub.Stub (stub => stub.Name).Return ("FakeStorageName");
 
-      var result = _calculator.GetForeignKeyConstraintName (_classDefinition, storagePropertyDefinitionStub);
+      var result = _provider.GetForeignKeyConstraintName (_classDefinition, storagePropertyDefinitionStub);
 
       Assert.That (result, Is.EqualTo ("FK_Company_FakeStorageName"));
     }

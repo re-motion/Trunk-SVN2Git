@@ -23,12 +23,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="StorageNameCalculator"/> provides methods to obtain names for RDBMS items (tables, columns, ...) using default names for
+  /// The <see cref="ReflectionBasedStorageNameProvider"/> provides methods to obtain names for RDBMS items (tables, columns, ...) using default names for
   /// system items ("ID", "ClassID", "Timestamp") and custom attributes (<see cref="DBTableAttribute"/>, <see cref="DBColumnAttribute"/>) for 
   /// user-defined names.
   /// </summary>
-  // TODO Review 3607: Rename to ReflectionBasedStorageNameProvider
-  public class StorageNameCalculator : IStorageNameCalculator
+  public class ReflectionBasedStorageNameProvider : IStorageNameProvider
   {
     public string IDColumnName
     {
@@ -93,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return columnName + "ClassID";
     }
 
-    public string GetPrimaryKeyName (ClassDefinition classDefinition)
+    public string GetPrimaryKeyConstraintName (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 

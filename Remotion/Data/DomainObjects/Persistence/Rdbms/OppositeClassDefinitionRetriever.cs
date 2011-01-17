@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly ClassDefinition _classDefinition;
     private readonly PropertyDefinition _propertyDefinition;
     private readonly ClassDefinition _relatedClassDefinition;
-    private readonly IStorageNameCalculator _storageNameCalculator;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     public OppositeClassDefinitionRetriever (RdbmsProvider provider, ClassDefinition classDefinition, PropertyDefinition propertyDefinition)
     {
@@ -49,12 +49,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _classDefinition = classDefinition;
       _propertyDefinition = propertyDefinition;
       _relatedClassDefinition = _classDefinition.GetMandatoryOppositeClassDefinition (_propertyDefinition.PropertyName);
-      _storageNameCalculator = new StorageNameCalculator(); // TODO: Inject via ctor
+      _storageNameProvider = new ReflectionBasedStorageNameProvider(); // TODO: Inject via ctor
     }
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      var classIDColumnName = _storageNameCalculator.GetRelationClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name);
+      var classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name);
       var sourceStorageProviderDefinition = _classDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var relatedStorageProviderDefinition = _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition.Name == relatedStorageProviderDefinition.Name)

@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private ReflectionBasedClassDefinition _classWithDbTableAttribute;
     private ReflectionBasedClassDefinition _classBelowDbTableAttribute;
     private ReflectionBasedClassDefinition _classBelowBelowDbTableAttribute;
-    private IStorageNameCalculator _storageNameCalculatorStub;
+    private IStorageNameProvider _storageNameProviderStub;
 
     [SetUp]
     public override void SetUp ()
@@ -55,11 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeClassID).Return ("varchar(100)");
       _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeObjectID).Return ("guid");
       _storageTypeCalculatorStub.Stub (stub => stub.SqlDataTypeTimestamp).Return ("rowversion");
-      _storageNameCalculatorStub = MockRepository.GenerateStub<IStorageNameCalculator>();
-      _storageNameCalculatorStub.Stub (stub => stub.IDColumnName).Return ("ID");
-      _storageNameCalculatorStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
-      _storageNameCalculatorStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
-      _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub, _storageNameCalculatorStub, _storageProviderDefinitionFinder);
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
+      _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
+      _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub, _storageNameProviderStub, _storageProviderDefinitionFinder);
       _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
       _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
@@ -330,8 +330,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private void StubStorageCalculators (PropertyDefinition propertyDefinition)
     {
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return ("storage type");
-      _storageNameCalculatorStub.Stub (stub => stub.GetColumnName (propertyDefinition)).Return ("FakeColumnName");
-      _storageNameCalculatorStub.Stub (stub => stub.GetRelationClassIDColumnName (propertyDefinition)).Return ("FakeRelationClassID");
+      _storageNameProviderStub.Stub (stub => stub.GetColumnName (propertyDefinition)).Return ("FakeColumnName");
+      _storageNameProviderStub.Stub (stub => stub.GetRelationClassIDColumnName (propertyDefinition)).Return ("FakeRelationClassID");
     }
   }
 }

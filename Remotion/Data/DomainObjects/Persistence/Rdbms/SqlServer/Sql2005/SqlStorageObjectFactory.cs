@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = CreateStorageNameCalculator();
+      var storageNameCalculator = CreateStorageNameProvider();
       var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
@@ -96,21 +96,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new FileBuilder (storageProviderDefinition);
     }
 
+    public virtual IStorageNameProvider CreateStorageNameProvider ()
+    {
+      return new ReflectionBasedStorageNameProvider ();
+    }
+
     protected virtual IEntityDefinitionFactory CreateEntityDefinitionFactory (
         IColumnDefinitionFactory columnDefinitionFactory,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IColumnDefinitionResolver columnDefinitionResolver,
-        IStorageNameCalculator storageNameCalculator,
+        IStorageNameProvider storageNameProvider,
         StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       
       return new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, storageNameCalculator, storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitionResolver, storageNameProvider, storageProviderDefinition);
     }
 
     protected virtual IColumnDefinitionResolver CreateColumnDefinitionResolver ()
@@ -118,35 +123,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ColumnDefinitionResolver();
     }
 
-    // TODO Review 3607: Rename to CreateStorageNameResolver
-    // TODO Review 3607: Pull up to interface IRdbmsStorageObjectFactory
-    protected virtual IStorageNameCalculator CreateStorageNameCalculator ()
-    {
-      return new StorageNameCalculator();
-    }
-
     protected virtual IColumnDefinitionFactory CreateColumnDefinitionFactory (
-        IStorageNameCalculator storageNameCalculator, IStorageProviderDefinitionFinder providerDefinitionFinder)
+        IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
-      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), storageNameCalculator, providerDefinitionFinder);
+      return new ColumnDefinitionFactory (new SqlStorageTypeCalculator (providerDefinitionFinder), storageNameProvider, providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
-        IStorageNameCalculator storageNameCalculator,
+        IStorageNameProvider storageNameProvider,
         IColumnDefinitionResolver columnDefinitionResolver,
         IColumnDefinitionFactory columnDefinitionFactory,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       
       return new ForeignKeyConstraintDefinitionFactory (
-          storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }
   }
 }

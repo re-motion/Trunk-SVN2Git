@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     // member fields
 
     private readonly DataContainer _dataContainer;
-    private readonly IStorageNameCalculator _storageNameCalculator;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     // construction and disposing
 
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw CreateArgumentException ("dataContainer", "State of provided DataContainer must not be 'Unchanged'.");
 
       _dataContainer = dataContainer;
-      _storageNameCalculator = new StorageNameCalculator(); // TODO: Inject via ctor
+      _storageNameProvider = new ReflectionBasedStorageNameProvider(); // TODO: Inject via ctor
     }
 
     // methods and properties
@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
-        string classIDColumnName = _storageNameCalculator.GetRelationClassIDColumnName (propertyValue.Definition.StoragePropertyDefinition.Name);
+        string classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition.StoragePropertyDefinition.Name);
         AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
 
         string classID = null;

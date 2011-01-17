@@ -103,6 +103,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    public void CreateStorageNameResolver ()
+    {
+      var result = _sqlProviderFactory.CreateStorageNameProvider();
+
+      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedStorageNameProvider)));
+    }
+
+    [Test]
     public void CreateSchemaFileBuilder ()
     {
       var result = _sqlProviderFactory.CreateSchemaFileBuilder(_rdbmsProviderDefinition);

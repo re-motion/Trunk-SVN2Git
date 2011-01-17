@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _fakeTimestampColumnDefinition;
     private IColumnDefinitionFactory _columnDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
-    private StorageNameCalculator _storageNameCalculator;
+    private ReflectionBasedStorageNameProvider _storageNameProvider;
     private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
     private ColumnDefinitionResolver _columnDefinitionResolver;
     private EntityDefinitionFactory _entityDefinitionFactory;
@@ -57,17 +57,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _storageNameCalculator = new StorageNameCalculator();
+      _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _columnDefinitionFactory = new ColumnDefinitionFactory (
-          new SqlStorageTypeCalculator (_storageProviderDefinitionFinder), _storageNameCalculator, _storageProviderDefinitionFinder);
+          new SqlStorageTypeCalculator (_storageProviderDefinitionFinder), _storageNameProvider, _storageProviderDefinitionFinder);
       _columnDefinitionResolver = new ColumnDefinitionResolver();
       _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameCalculator, _columnDefinitionResolver, _columnDefinitionFactory, _storageProviderDefinitionFinder);
+          _storageNameProvider, _columnDefinitionResolver, _columnDefinitionFactory, _storageProviderDefinitionFinder);
       _entityDefinitionFactory = new EntityDefinitionFactory (
           _columnDefinitionFactory,
           _foreignKeyConstraintDefinitionFactory,
           _columnDefinitionResolver,
-          _storageNameCalculator,
+          _storageNameProvider,
           _storageProviderDefinition);
       _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (_entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition);
 

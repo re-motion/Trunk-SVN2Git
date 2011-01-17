@@ -30,19 +30,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly StorageTypeCalculator _storageTypeCalculator;
     private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
-    private readonly IStorageNameCalculator _storageNameCalculator;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     public ColumnDefinitionFactory (
         StorageTypeCalculator storageTypeCalculator,
-        IStorageNameCalculator storageNameCalculator,
+        IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageTypeCalculator", storageTypeCalculator);
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
 
       _storageTypeCalculator = storageTypeCalculator;
-      _storageNameCalculator = storageNameCalculator;
+      _storageNameProvider = storageNameProvider;
       _providerDefinitionFinder = providerDefinitionFinder;
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         return new UnsupportedStorageTypeColumnDefinition();
 
       var columnDefinition = new SimpleColumnDefinition (
-          _storageNameCalculator.GetColumnName (propertyDefinition),
+          _storageNameProvider.GetColumnName (propertyDefinition),
           propertyDefinition.PropertyType,
           storageType,
           propertyDefinition.IsNullable || MustBeNullable (propertyDefinition),
@@ -71,9 +71,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public virtual IDColumnDefinition CreateIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition (
-          _storageNameCalculator.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
+          _storageNameProvider.IDColumnName, typeof (ObjectID), _storageTypeCalculator.SqlDataTypeObjectID, false, true);
       var classIDColumnDefinition = new SimpleColumnDefinition (
-          _storageNameCalculator.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
+          _storageNameProvider.ClassIDColumnName, typeof (string), _storageTypeCalculator.SqlDataTypeClassID, false, false);
 
       return new IDColumnDefinition (objectIDColumn, classIDColumnDefinition);
     }
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public virtual SimpleColumnDefinition CreateTimestampColumnDefinition ()
     {
       return new SimpleColumnDefinition (
-          _storageNameCalculator.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
+          _storageNameProvider.TimestampColumnName, typeof (object), _storageTypeCalculator.SqlDataTypeTimestamp, false, false);
     }
 
     protected virtual IColumnDefinition CreateRelationColumnDefinition (
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)
       {
         var classIdColumnDefinition = new SimpleColumnDefinition (
-            _storageNameCalculator.GetRelationClassIDColumnName (propertyDefinition),
+            _storageNameProvider.GetRelationClassIDColumnName (propertyDefinition),
             typeof (string),
             _storageTypeCalculator.SqlDataTypeClassID,
             true,

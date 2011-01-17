@@ -31,22 +31,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ForeignKeyConstraintDefinitionFactory : IForeignKeyConstraintDefinitionFactory
   {
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
-    private readonly IStorageNameCalculator _storageNameCalculator;
+    private readonly IStorageNameProvider _storageNameProvider;
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
     public ForeignKeyConstraintDefinitionFactory (
-        IStorageNameCalculator storageNameCalculator,
+        IStorageNameProvider storageNameProvider,
         IColumnDefinitionResolver columnDefinitionResolver,
         IColumnDefinitionFactory columnDefinitionFactory,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
-      _storageNameCalculator = storageNameCalculator;
+      _storageNameProvider = storageNameProvider;
       _columnDefinitionResolver = columnDefinitionResolver;
       _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (new[] { endPointIDColumnDefinition.ObjectIDColumn });
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
-            _storageNameCalculator.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
+            _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
             FindTableName(oppositeClassDefinition),
             referencingColumns,
             referencedColumns);
@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       return classDefinition
           .CreateSequence (cd => cd.BaseClass)
-          .Select (cd => _storageNameCalculator.GetTableName (cd))
+          .Select (cd => _storageNameProvider.GetTableName (cd))
           .FirstOrDefault (name => name != null);
     }
   }

@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = new StorageNameCalculator();
+      var storageNameCalculator = new ReflectionBasedStorageNameProvider();
       var columnDefinitionFactory = new ColumnDefinitionFactory (
           new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameCalculator, storageProviderDefinitionFinder);
       var columnDefinitonResolver = new ColumnDefinitionResolver();
@@ -75,6 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       return new FileBuilder (storageProviderDefinition);
+    }
+
+    public IStorageNameProvider CreateStorageNameProvider ()
+    {
+      return new ReflectionBasedStorageNameProvider();
     }
   }
 }

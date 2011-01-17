@@ -32,25 +32,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IColumnDefinitionResolver _columnDefinitionResolver;
     private readonly IForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
-    private readonly IStorageNameCalculator _storageNameCalculator;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     public EntityDefinitionFactory (
         IColumnDefinitionFactory columnDefinitionFactory,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
         IColumnDefinitionResolver columnDefinitionResolver,
-        IStorageNameCalculator storageNameCalculator,
+        IStorageNameProvider storageNameProvider,
         StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionResolver", columnDefinitionResolver);
-      ArgumentUtility.CheckNotNull ("storageNameCalculator", storageNameCalculator);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       _columnDefinitionFactory = columnDefinitionFactory;
       _foreignKeyConstraintDefinitionFactory = foreignKeyConstraintDefinitionFactory;
       _columnDefinitionResolver = columnDefinitionResolver;
-      _storageNameCalculator = storageNameCalculator;
+      _storageNameProvider = storageNameProvider;
       _storageProviderDefinition = storageProviderDefinition;
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var tableName = _storageNameCalculator.GetTableName(classDefinition);
+      var tableName = _storageNameProvider.GetTableName(classDefinition);
       // TODO Review 3607: Change message not to refer to attibute ("has no table name defined").
       if (string.IsNullOrEmpty(tableName))
         throw new MappingException (string.Format ("Class '{0}' has no '{1}' defined.", classDefinition.ID, typeof (DBTableAttribute).Name));
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var columns = GetColumnsDefinitionForEntity (classDefinition);
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
-          _storageNameCalculator.GetPrimaryKeyName(classDefinition),
+          _storageNameProvider.GetPrimaryKeyConstraintName(classDefinition),
           true,
           SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new TableDefinition (
           _storageProviderDefinition,
           tableName,
-          _storageNameCalculator.GetViewName (classDefinition),
+          _storageNameProvider.GetViewName (classDefinition),
           columns,
           new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints));
     }
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       return new FilterViewDefinition (
           _storageProviderDefinition,
-          _storageNameCalculator.GetViewName (classDefinition),
+          _storageNameProvider.GetViewName (classDefinition),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
           columns);
@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       var columns = GetColumnsDefinitionForEntity (classDefinition);
 
-      return new UnionViewDefinition (_storageProviderDefinition, _storageNameCalculator.GetViewName (classDefinition), unionedEntities, columns);
+      return new UnionViewDefinition (_storageProviderDefinition, _storageNameProvider.GetViewName (classDefinition), unionedEntities, columns);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)

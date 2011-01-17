@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   [TestFixture]
   public class ForeignKeyConstraintDefinitionFactoryTest : StandardMappingTest
   {
-    private IStorageNameCalculator _storageNameCalculatorMock;
+    private IStorageNameProvider _storageNameProviderMock;
     private IColumnDefinitionResolver _columnDefintionResolverMock;
     private IColumnDefinitionFactory _columnDefintionFactoryMock;
     private ForeignKeyConstraintDefinitionFactory _factory;
@@ -52,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _fakeColumnDefintion = new SimpleColumnDefinition ("FakeColumn", typeof (string), "varchar", true, false);
 
-      _storageNameCalculatorMock = MockRepository.GenerateStrictMock<IStorageNameCalculator>();
+      _storageNameProviderMock = MockRepository.GenerateStrictMock<IStorageNameProvider>();
       _columnDefintionResolverMock = MockRepository.GenerateStrictMock<IColumnDefinitionResolver>();
       _columnDefintionFactoryMock = MockRepository.GenerateStrictMock<IColumnDefinitionFactory>();
       _storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();
       _factory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameCalculatorMock, _columnDefintionResolverMock, _columnDefintionFactoryMock, _storageProviderDefinitionFinderStub);
+          _storageNameProviderMock, _columnDefintionResolverMock, _columnDefintionFactoryMock, _storageProviderDefinitionFinderStub);
     }
 
     [Test]
@@ -79,14 +79,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .Return (_fakeForeignColumnDefinition);
       _columnDefintionResolverMock.Replay();
 
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetForeignKeyConstraintName (orderClassDefinition, _fakeForeignColumnDefinition))
           .Return ("FakeConstraintName");
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetTableName (customerClassDefintion))
           .Return ("FakeTableName")
           .Repeat.Twice();
-      _storageNameCalculatorMock.Replay();
+      _storageNameProviderMock.Replay();
 
       _storageProviderDefinitionFinderStub
           .Stub (stub => stub.GetStorageProviderDefinition (orderClassDefinition))
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _columnDefintionFactoryMock.VerifyAllExpectations();
       _columnDefintionResolverMock.VerifyAllExpectations();
-      _storageNameCalculatorMock.VerifyAllExpectations();
+      _storageNameProviderMock.VerifyAllExpectations();
 
       //OrderItem and OrderTicket endpoints are virtual and Official endpoint has different storage provider
       Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1));
@@ -131,14 +131,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           .Return (_fakeForeignColumnDefinition);
       _columnDefintionResolverMock.Replay ();
 
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetForeignKeyConstraintName (computerClassDefinition, _fakeForeignColumnDefinition))
           .Return ("FakeConstraintName");
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetTableName (employeeClassDefinition))
           .Return ("FakeTableName")
           .Repeat.Times (3);
-      _storageNameCalculatorMock.Replay ();
+      _storageNameProviderMock.Replay ();
 
       _storageProviderDefinitionFinderStub
           .Stub (stub => stub.GetStorageProviderDefinition (computerClassDefinition))
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _columnDefintionFactoryMock.VerifyAllExpectations ();
       _columnDefintionResolverMock.VerifyAllExpectations ();
-      _storageNameCalculatorMock.VerifyAllExpectations ();
+      _storageNameProviderMock.VerifyAllExpectations ();
       Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1)); //EmployeeTransactionProperty relation property is filtered
     }
 
@@ -160,11 +160,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var orderClassDefinition = Configuration.ClassDefinitions["Order"];
       
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetTableName (Arg<ClassDefinition>.Is.Anything))
           .Return (null)
           .Repeat.Any();
-      _storageNameCalculatorMock.Replay ();
+      _storageNameProviderMock.Replay ();
 
       _storageProviderDefinitionFinderStub
           .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything))
@@ -183,10 +183,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var orderClassDefinition = Configuration.ClassDefinitions["Order"];
       var officialClassDefinition = Configuration.ClassDefinitions["Official"];
 
-      _storageNameCalculatorMock
+      _storageNameProviderMock
           .Expect (mock => mock.GetTableName (officialClassDefinition))
           .Return ("FakeTableName");
-      _storageNameCalculatorMock.Replay ();
+      _storageNameProviderMock.Replay ();
 
       _columnDefintionResolverMock
           .Expect (

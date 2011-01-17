@@ -73,10 +73,10 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var generator = new UniqueIdentifierGenerator();
-      // TODO Review 3607: Get StorageNameCalculator as follows:
+      // TODO Review 3607: Get storageNameProvider as follows:
       //var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
       //var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
-      //var storageNameCalculator = providerDefinition.Factory.CreateStorageNameCalculator ();
+      //var storageNameProvider = providerDefinition.Factory.CreateStorageNameProvider ();
 
       var resolver = new MappingResolver (new StorageSpecificExpressionResolver());
 
