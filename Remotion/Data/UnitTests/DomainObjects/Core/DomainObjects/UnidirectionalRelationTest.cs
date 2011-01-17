@@ -190,8 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
-        ExpectedMessage = "Object 'Client|.*|System.Guid' could not be found.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = @"Object 'Client\|.*\|System.Guid' is invalid in this transaction.", MatchType = MessageMatch.Regex)]
     public void IndirectAccessToDeletedNewThrows ()
     {
       _location.Client = Client.NewObject ();

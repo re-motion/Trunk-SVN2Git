@@ -796,8 +796,9 @@ public class ClientTransaction
   /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-  /// <exception cref="DataManagement.ObjectDeletedException"><paramref name="includeDeleted"/> is false and the DomainObject with <paramref name="id"/> has been deleted.</exception>
-  /// <exception cref="ObjectNotFoundException">The object could not be found in the database (or it is invalid in this transaction).</exception>
+  /// <exception cref="ObjectDeletedException"><paramref name="includeDeleted"/> is false and the DomainObject with <paramref name="id"/> has been deleted.</exception>
+  /// <exception cref="ObjectNotFoundException">The object could not be found in the database.</exception>
+  /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
@@ -810,7 +811,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("id", id);
 
     if (IsInvalid (id))
-      throw new ObjectNotFoundException (id);
+      throw new ObjectInvalidException (id);
 
     var objectReference = GetObjectReference (id);
     EnsureDataAvailable (id);

@@ -73,6 +73,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="objectID"/> are <see langword="null"/>.</exception>
     /// <exception cref="ObjectNotFoundException">The object could not be found in the data source.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
     /// <exception cref="Persistence.StorageProviderException">
     /// The Mapping does not contain a class definition for the given <paramref name="objectID"/>.<br/> -or- <br/>
     /// An error occurred while reading a <see cref="PropertyValue"/>.<br/> -or- <br/>

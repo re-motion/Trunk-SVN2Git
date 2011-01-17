@@ -615,7 +615,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void CommitDeletedObject ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);

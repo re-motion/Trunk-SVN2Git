@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             ClientTransactionTestHelper.CallGetObject (_transaction, invalidObject.ID, false));
         Assert.Fail ("Expected ObjectNotFoundException.");
       }
-      catch (ObjectNotFoundException)
+      catch (ObjectInvalidException)
       {
         // ok
       }

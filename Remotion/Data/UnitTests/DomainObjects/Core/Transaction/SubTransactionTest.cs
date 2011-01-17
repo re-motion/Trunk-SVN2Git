@@ -23,7 +23,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -32,8 +31,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -382,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void IndirectAccess_ToDeletedObject_InSubTransactionThrows ()
     {
       Client client = Client.GetObject (DomainObjectIDs.Client1);
@@ -398,7 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void NewUnidirectionalDelete_InRootTransaction_CausesThrowOnAccess ()
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
@@ -409,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectInvalidException))]
     public void IndirectAccess_ToDeletedNewObject_InSubTransactionThrows ()
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);

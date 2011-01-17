@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -128,8 +129,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
-        ExpectedMessage = "Object 'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' could not be found.")]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = "Object 'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' is invalid in this transaction.")]
     public void RootToSubDeletedThrowsWhenReloadingTheObject ()
     {
       Order obj = GetDeleted ();
@@ -159,8 +160,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
-        ExpectedMessage = "Object 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid' could not be found.")]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = "Object 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid' is invalid in this transaction.")]
     public void RootToSubUnidirectionalWithDeletedThrowsWhenAccessingTheObject ()
     {
       Location obj = GetUnidirectionalWithDeleted ();
@@ -184,8 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
-        ExpectedMessage = "Object 'Client|.*|System.Guid' could not be found.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ObjectInvalidException),
+        ExpectedMessage = @"Object 'Client\|.*\|System.Guid' is invalid in this transaction.", MatchType = MessageMatch.Regex)]
     public void RootToSubUnidirectionalWithDeletedNewThrowsWhenAccessingTheObject ()
     {
       Location obj = GetUnidirectionalWithDeletedNew ();

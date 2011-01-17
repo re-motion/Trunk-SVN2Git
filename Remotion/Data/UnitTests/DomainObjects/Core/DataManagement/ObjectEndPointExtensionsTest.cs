@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeObject_Invalid ()
+    public void GetOppositeObject_Invalid_IncludeDeleted ()
     {
       var oppositeObject = Order.NewObject ();
       _endPoint.OppositeObjectID = oppositeObject.ID;
@@ -92,8 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
-    public void GetOppositeObject_Invalid_NoDeleted ()
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetOppositeObject_Invalid_ExcludeDeleted ()
     {
       var oppositeObject = Order.NewObject ();
       _endPoint.OppositeObjectID = oppositeObject.ID;
