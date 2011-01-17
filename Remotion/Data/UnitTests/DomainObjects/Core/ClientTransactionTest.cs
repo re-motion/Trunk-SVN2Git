@@ -187,6 +187,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetInvalidObjectReference ()
+    {
+      var invalidObject = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
+      _transaction.Execute (invalidObject.Delete);
+
+      Assert.That (invalidObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Invalid));
+
+      var invalidObjectReference = ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, invalidObject.ID);
+
+      Assert.That (invalidObjectReference, Is.SameAs (invalidObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has "
+        + "not been marked invalid.\r\nParameter name: id")]
+    public void GetInvalidObjectReference_ThrowsWhenNotInvalid ()
+    {
+      ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void IsInvalid ()
+    {
+      var domainObject = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
+      Assert.That (_transaction.IsInvalid (domainObject.ID), Is.False);
+
+      _transaction.Execute (domainObject.Delete);
+
+      Assert.That (_transaction.IsInvalid (domainObject.ID), Is.True);
+    }
+
+    [Test]
     public void EnsureDataAvailable_AlreadyLoaded ()
     {
       var domainObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));

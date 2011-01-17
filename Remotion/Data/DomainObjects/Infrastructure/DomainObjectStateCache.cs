@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private StateType CalculateState (ObjectID objectID)
     {
-      if (_clientTransaction.DataManager.IsInvalid (objectID))
+      if (_clientTransaction.IsInvalid (objectID))
         return StateType.Invalid;
 
       var dataContainer = _clientTransaction.DataManager.DataContainerMap[objectID];

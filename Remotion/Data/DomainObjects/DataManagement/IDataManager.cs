@@ -31,9 +31,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IRelationEndPointMapReadOnlyView RelationEndPointMap { get; }
     DomainObjectStateCache DomainObjectStateCache { get; }
 
-    bool IsInvalid (ObjectID id);
-    DomainObject GetInvalidObjectReference (ObjectID id);
-
     void Discard (DataContainer dataContainer);
 
     IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ();

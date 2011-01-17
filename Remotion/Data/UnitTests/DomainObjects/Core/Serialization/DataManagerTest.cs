@@ -49,15 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
-      Order invalidOrder = Order.NewObject();
-      DataContainer discardedContainer = invalidOrder.InternalDataContainer;
-      invalidOrder.Delete();
-
       Assert.That (dataManager.DomainObjectStateCache, Is.Not.Null);
       Assert.That (dataManager.DataContainerMap.Count, Is.Not.EqualTo (0));
       Assert.That (dataManager.RelationEndPointMap.Count, Is.Not.EqualTo (0));
-      Assert.That (dataManager.IsInvalid (discardedContainer.ID), Is.True);
-      Assert.That (dataManager.GetInvalidObjectReference (discardedContainer.ID), Is.SameAs (invalidOrder));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
@@ -65,8 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
       Assert.That (deserializedData.Item2.DataContainerMap.Count, Is.Not.EqualTo (0));
       Assert.That (deserializedData.Item2.RelationEndPointMap.Count, Is.Not.EqualTo (0));
-      Assert.That (deserializedData.Item2.IsInvalid (discardedContainer.ID), Is.True);
-      Assert.That (deserializedData.Item2.GetInvalidObjectReference (discardedContainer.ID), Is.Not.Null);
 
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);

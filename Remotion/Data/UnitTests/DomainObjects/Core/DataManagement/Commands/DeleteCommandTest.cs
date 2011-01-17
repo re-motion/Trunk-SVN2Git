@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       deleteNewOrderCommand.Perform ();
 
-      Assert.That (_transaction.DataManager.IsInvalid (newOrder.ID), Is.True);
+      Assert.That (_transaction.IsInvalid (newOrder.ID), Is.True);
     }
 
     [Test]

@@ -809,7 +809,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    if (DataManager.IsInvalid (id))
+    if (IsInvalid (id))
       throw new ObjectNotFoundException (id);
 
     var objectReference = GetObjectReference (id);
@@ -844,7 +844,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-    if (DataManager.IsInvalid (objectID))
+    if (IsInvalid (objectID))
       throw new ObjectInvalidException (objectID);
 
     var enlistedObject = GetEnlistedDomainObject (objectID);
@@ -859,7 +859,33 @@ public class ClientTransaction
       return creator.CreateObjectReference (objectID, this);
     }
   }
-  
+
+  /// <summary>
+  /// Gets a reference to a <see cref="DomainObject"/> that is currently in <see cref="StateType.Invalid"/> state. If the object is not actually
+  /// invalid (check with <see cref="IsInvalid"/>), an exception is throws.
+  /// </summary>
+  /// <param name="objectID">The object ID to get the <see cref="DomainObject"/> reference for.</param>
+  /// <returns>An object with the given <see cref="ObjectID"/> in <see cref="StateType.Invalid"/> state.</returns>
+  /// <exception cref="InvalidOperationException">The object is not currently in <see cref="StateType.Invalid"/> state.</exception>
+  protected internal virtual DomainObject GetInvalidObjectReference (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+    return _invalidDomainObjectManager.GetInvalidObjectReference (objectID);
+  }
+
+  /// <summary>
+  /// Determines whether the specified <see cref="ObjectID"/> has been marked invalid in the scope of this <see cref="ClientTransaction"/>.
+  /// </summary>
+  /// <param name="objectID">The <see cref="ObjectID"/> to check.</param>
+  /// <returns>
+  /// 	<see langword="true"/> if the specified <paramref name="objectID"/> is invalid; otherwise, <see langword="false"/>.
+  /// </returns>
+  public bool IsInvalid (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+    return _invalidDomainObjectManager.IsInvalid (objectID);
+  }
+
   protected internal virtual DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
   {
     ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);

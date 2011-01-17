@@ -32,8 +32,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (oppositeObjectID == null)
         return null;
-      else if (includeDeleted && clientTransaction.DataManager.IsInvalid (oppositeObjectID))
-        return clientTransaction.DataManager.GetInvalidObjectReference (oppositeObjectID);
+      else if (includeDeleted && clientTransaction.IsInvalid (oppositeObjectID))
+        return clientTransaction.GetInvalidObjectReference (oppositeObjectID);
       else
         return clientTransaction.GetObject (oppositeObjectID, includeDeleted);
     }

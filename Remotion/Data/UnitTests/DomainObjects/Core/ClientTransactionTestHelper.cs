@@ -79,6 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObjectReference", objectID);
     }
 
+    public static DomainObject CallGetInvalidObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetInvalidObjectReference", objectID);
+    }
+
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
     {
       PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "AddListener", listener);

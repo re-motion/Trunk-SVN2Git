@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> ();
       _parentInvalidDomainObjectManager.MarkInvalid (instance);
-      Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.True);
+      Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.True);
 
       var dataContainer = DataContainer.CreateNew (instance.ID);
       dataContainer.SetDomainObject (instance);
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPoints = new RelationEndPoint[0];
       _persistenceStrategy.PersistData (dataContainers, endPoints);
 
-      Assert.That (_parentTransaction.DataManager.IsInvalid (instance.ID), Is.False);
+      Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.False);
     }
   }
 }

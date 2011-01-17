@@ -445,39 +445,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void IsInvalid ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-
-      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.False);
-
-      _dataManager.Rollback ();
-
-      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
-    }
-
-    [Test]
-    public void GetInvalidObjectReference ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
-      _dataManager.Discard (dataContainer);
-
-      var invalidObjectReference = _dataManager.GetInvalidObjectReference (dataContainer.ID);
-
-      Assert.That (invalidObjectReference, Is.SameAs (dataContainer.DomainObject));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has "
-        + "not been marked invalid.\r\nParameter name: id")]
-    public void GetInvalidObjectReference_ThrowsWhenNotInvalid ()
-    {
-      _dataManager.GetInvalidObjectReference (DomainObjectIDs.Order1);
-    }
-
-    [Test]
     public void Discard_RemovesEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
@@ -526,7 +493,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Discard (dataContainer);
 
-      Assert.That (_dataManager.IsInvalid (dataContainer.ID), Is.True);
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
       listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectInvalid (ClientTransactionMock, dataContainer.ID));
     }
 
@@ -635,11 +602,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       dataContainer.Delete ();
 
-      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
 
       _dataManager.Commit ();
 
-      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (DomainObjectIDs.Order1), Is.True);
     }
 
     [Test]
@@ -721,11 +688,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
 
       _dataManager.Rollback ();
 
-      Assert.That (_dataManager.IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (_dataManager.ClientTransaction.IsInvalid (DomainObjectIDs.Order1), Is.True);
     }
 
     [Test]

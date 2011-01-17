@@ -78,19 +78,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _relationEndPointMap; }
     }
 
-    public bool IsInvalid (ObjectID id)
-    {
-      ArgumentUtility.CheckNotNull ("id", id);
-      return _invalidDomainObjectManager.IsInvalid (id);
-    }
-
-    public DomainObject GetInvalidObjectReference (ObjectID id)
-    {
-      ArgumentUtility.CheckNotNull ("id", id);
-
-      return _invalidDomainObjectManager.GetInvalidObjectReference (id);
-    }
-
     public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
     {
       return DataContainerMap.Select (dc => Tuple.Create (dc.DomainObject, dc));

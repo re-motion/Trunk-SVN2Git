@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.IsInvalid (DomainObject.ID); 
+        return ClientTransaction.IsInvalid (DomainObject.ID); 
       }
     }
 
