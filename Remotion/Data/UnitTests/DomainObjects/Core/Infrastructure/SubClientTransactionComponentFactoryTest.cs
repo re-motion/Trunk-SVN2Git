@@ -51,6 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var listener = listeners.OfType<SubClientTransactionListener> ().SingleOrDefault ();
       Assert.That (listener, Is.Not.Null);
+      Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
     }
 
     [Test]

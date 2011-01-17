@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _ancestor2 = _ancestor1.CreateSubTransaction();
       _subTransaction = _ancestor2.CreateSubTransaction ();
 
-      _listener = new SubClientTransactionListener ();
+      _listener = new SubClientTransactionListener (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_ancestor2));
     }
 
     [Test]

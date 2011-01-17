@@ -16,7 +16,10 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -26,17 +29,30 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class SubClientTransactionListener : ClientTransactionListenerBase
   {
+    private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
+
+    public SubClientTransactionListener (IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    {
+      ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
+
+      _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
+    }
+
+    public IInvalidDomainObjectManager ParentInvalidDomainObjectManager
+    {
+      get { return _parentInvalidDomainObjectManager; }
+    }
+
     public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       ArgumentUtility.CheckNotNull ("container", container);
 
       if (container.State == StateType.New)
       {
-        for (var ancestor = clientTransaction.ParentTransaction; ancestor != null; ancestor = ancestor.ParentTransaction)
-        {
-          Assertion.IsNull (ancestor.DataManager.DataContainerMap[container.DomainObject.ID]);
-          ancestor.DataManager.MarkObjectInvalid (container.DomainObject);
-        }
+        Assertion.IsTrue (
+            clientTransaction.ParentTransaction.CreateSequence (tx => tx.ParentTransaction)
+                .All (ancestor => ancestor.DataManager.DataContainerMap[container.DomainObject.ID] == null));
+        _parentInvalidDomainObjectManager.MarkInvalidThroughHierarchy (container.DomainObject);
       }
     }
   }

@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction clientTransaction)
     {
       var factories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory>();
-      return new[] { new SubClientTransactionListener() }
+      return new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) }
           .Concat (factories.Select (factory => factory.CreateClientTransactionListener (clientTransaction)));
     }
 
