@@ -407,6 +407,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void LoadRelatedObjects_WorksWithDeletedObjects ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      _persistenceStrategyMock
+          .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
+          .Return (new DataContainerCollection (new[] { _order1DataContainer }, true));
+
+      _persistenceStrategyMock.Replay ();
+      
+      var alreadyRegisteredDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      ClientTransactionTestHelper.RegisterDataContainer (_clientTransaction, alreadyRegisteredDataContainer);
+
+      _clientTransaction.Delete (alreadyRegisteredDataContainer.DomainObject);
+
+      Assert.That (alreadyRegisteredDataContainer.DomainObject.TransactionContext[_clientTransaction].State, Is.EqualTo (StateType.Deleted));
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+
+      Assert.That (result, Is.EquivalentTo (new[] { alreadyRegisteredDataContainer.DomainObject }));
+    }
+
+    [Test]
     public void LoadRelatedObjects_Events ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -714,6 +737,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _objectLoader.LoadObject (DomainObjectIDs.Order1);
 
       Assert.That (loadTransaction, Is.SameAs (_clientTransaction));
+    }
+
+    [Test]
+    public void DomainObjectLoadedEvent_Transaction ()
+    {
+      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_order1DataContainer);
+      _mockRepository.ReplayAll ();
+
+      var result = (Order) _objectLoader.LoadObject (DomainObjectIDs.Order1);
+
+      Assert.That (result.OnLoadedTx, Is.SameAs (_clientTransaction));
     }
 
     private void CheckLoadedObject (DomainObject loadedObject, DataContainer dataContainer)

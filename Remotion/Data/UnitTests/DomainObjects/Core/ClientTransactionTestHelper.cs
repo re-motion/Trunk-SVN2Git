@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -47,16 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static IPersistenceStrategy GetPersistenceStrategy (ClientTransaction clientTransaction)
     {
       return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
-    }
-
-    public static DomainObject[] CallLoadObjects (ClientTransaction clientTransaction, IList<ObjectID> objectIds, bool throwOnNotFound)
-    {
-      return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadObjects", objectIds, throwOnNotFound);
-    }
-
-    public static DomainObject[] CallLoadRelatedObjects (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-      return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedObjects", endPointID);
     }
 
     public static DomainObject CallNewObject (ClientTransaction clientTransaction, Type domainObjectType, ParamList constructorParameters)

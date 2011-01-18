@@ -593,7 +593,7 @@ public class ClientTransaction
                         where DataManager.GetDataContainerWithoutLoading (objectID) == null
                         select objectID;
 
-    LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound);
+    _objectLoader.LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound);
   }
 
   /// <summary>
@@ -1090,31 +1090,10 @@ public class ClientTransaction
     throw new NotImplementedException ();
   }
 
-  /// <summary>
-  /// Loads several objects from the data source in a bulk load operation.
-  /// </summary>
-  /// <remarks>
-  /// This method raises the <see cref="Loaded"/> event.
-  /// </remarks>
-  /// <param name="idsToBeLoaded">An <see cref="ObjectID"/> object indicating which <see cref="DomainObject"/> instances to load. Must not be 
-  /// <see langword="null"/>.</param>
-  /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="BulkLoadException"/> if a data container 
-  /// cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, <see langword="null"/> is inserted in the result array for the 
-  /// invalid ID.
-  /// </param>
-  /// <returns>The <see cref="DomainObject"/> instances that were loaded.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="idsToBeLoaded"/> is <see langword="null"/>.</exception>
-  /// <exception cref="BulkLoadException">There was an error trying to load the object identified by one of the given 
-  /// <paramref name="idsToBeLoaded"/>.</exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for one of the given <paramref name="idsToBeLoaded"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the data source.
-  /// </exception>
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
   protected virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
   {
-    ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
-    return _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
+    throw new NotImplementedException ();
   }
 
   /// <summary>
