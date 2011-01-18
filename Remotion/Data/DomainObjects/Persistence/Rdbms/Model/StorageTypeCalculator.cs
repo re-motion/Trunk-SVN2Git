@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
         var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
         var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass);
-        if (leftStorageProviderDefinition.Name == rightStorageProviderDefinition.Name)
+        if (leftStorageProviderDefinition == rightStorageProviderDefinition)
           return SqlDataTypeObjectID;
         else
           return SqlDataTypeSerializedObjectID;

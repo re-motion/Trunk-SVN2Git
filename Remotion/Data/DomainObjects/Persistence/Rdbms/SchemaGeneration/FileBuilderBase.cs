@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var classes = new ClassDefinitionCollection (false);
       foreach (ClassDefinition currentClass in classDefinitions)
       {
-        if (currentClass.StorageEntityDefinition.StorageProviderDefinition.Name == rdbmsProviderDefinition.Name)
+        if (currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition)
           classes.Add (currentClass);
       }
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       foreach (ClassDefinition classDefinition in classDefinitions)
       {
-        if (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name != _rdbmsProviderDefinition.Name)
+        if (classDefinition.StorageEntityDefinition.StorageProviderDefinition != _rdbmsProviderDefinition)
         {
           throw new ArgumentException (
               string.Format (

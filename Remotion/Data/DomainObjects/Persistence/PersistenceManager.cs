@@ -77,14 +77,14 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (dataContainers.Count == 0)
         return;
 
-      string storageProviderID = dataContainers[0].ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name;
+      var firstStorageProvider = dataContainers[0].ClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       foreach (DataContainer dataContainer in dataContainers)
       {
-        if (dataContainer.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name != storageProviderID)
+        if (dataContainer.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition != firstStorageProvider)
           throw CreatePersistenceException ("Save does not support multiple storage providers.");
       }
 
-      StorageProvider provider = _storageProviderManager.GetMandatory (storageProviderID);
+      var provider = _storageProviderManager.GetMandatory (firstStorageProvider.Name);
 
       provider.BeginTransaction ();
 

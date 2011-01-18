@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name);
       var sourceStorageProviderDefinition = _classDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var relatedStorageProviderDefinition = _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
-      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition.Name == relatedStorageProviderDefinition.Name)
+      if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition == relatedStorageProviderDefinition)
         return GetOppositeClassDefinitionInInheritanceHierarchy (dataReader, objectIDColumnOrdinal, classIDColumnName);
       else
       {
