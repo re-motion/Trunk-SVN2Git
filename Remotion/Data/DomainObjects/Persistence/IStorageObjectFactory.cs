@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -28,11 +31,15 @@ namespace Remotion.Data.DomainObjects.Persistence
   public interface IStorageObjectFactory
   {
     StorageProvider CreateStorageProvider (IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition);
-
     TypeConversionProvider CreateTypeConversionProvider ();
     TypeProvider CreateTypeProvider ();
 
     IPersistenceModelLoader CreatePersistenceModelLoader (
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition);
+
+    IQueryExecutor CreateLinqQueryExecutor (
+        ClassDefinition startingClassDefinition,
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry);
   }
 }

@@ -25,11 +25,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Mixins;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -43,11 +39,13 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     // Use DoubleCheckedLockingContainers to ensure that the registries are created as lazily as possible in order to allow users to register
     // customizers via IoC
-    private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry = 
+    private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry =
         new DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> (CreateNodeTypeRegistry);
-    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerProvider> s_methodCallTransformerProvider = 
+
+    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerProvider> s_methodCallTransformerProvider =
         new DoubleCheckedLockingContainer<IMethodCallTransformerProvider> (CreateMethodCallTransformerProvider);
-    private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry = 
+
+    private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry =
         new DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> (CreateResultOperatorHandlerRegistry);
 
     /// <summary>
@@ -72,20 +70,15 @@ namespace Remotion.Data.DomainObjects.Queries
     public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
         where T: DomainObject
     {
-      var generator = new UniqueIdentifierGenerator();
+      var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      var executor = providerDefinition.Factory.CreateLinqQueryExecutor (
+          startingClassDefinition, s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value);
+
       // TODO Review 3607: Get storageNameProvider as follows:
-      //var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      //var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       //var storageNameProvider = providerDefinition.Factory.CreateStorageNameProvider ();
 
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver());
-
-      var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
-          ParamList.Create (s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value, generator));
-      var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
-      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
-
-      return CreateLinqQuery<T> (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, s_methodCallExpressionNodeTypeRegistry.Value);
+      return CreateLinqQuery<T> (executor, s_methodCallExpressionNodeTypeRegistry.Value);
     }
 
     /// <summary>
@@ -93,23 +86,17 @@ namespace Remotion.Data.DomainObjects.Queries
     /// with user defined SQL generation.
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-    /// <param name="preparationStage">An implementation of <see cref="ISqlPreparationStage"/> to be used when generating SQL for the query.</param>
-    /// <param name="resolutionStage">An implementation of <see cref="IMappingResolutionStage"/> to be used when generating SQL for the query.</param>
-    /// <param name="generationStage">An implementation of <see cref="ISqlGenerationStage"/> to be used when generating SQL for the query.</param>
+    /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the query.</param>
     /// <param name="nodeTypeRegistry">An <see cref="MethodCallExpressionNodeTypeRegistry"/> instance to be used when generating SQL for the query.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
     public static DomainObjectQueryable<T> CreateLinqQuery<T> (
-        ISqlPreparationStage preparationStage,
-        IMappingResolutionStage resolutionStage,
-        ISqlGenerationStage generationStage,
+        IQueryExecutor executor,
         MethodCallExpressionNodeTypeRegistry nodeTypeRegistry) where T: DomainObject
     {
-      ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
-      ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
-      ArgumentUtility.CheckNotNull ("generationStage", generationStage);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);
 
-      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage, nodeTypeRegistry);
+      return new DomainObjectQueryable<T> (executor, nodeTypeRegistry);
     }
 
     /// <summary>
@@ -260,7 +247,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static MethodCallExpressionNodeTypeRegistry CreateNodeTypeRegistry ()
     {
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
 
       nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 
@@ -269,8 +256,8 @@ namespace Remotion.Data.DomainObjects.Queries
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
-      var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes ());
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
+      var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
       foreach (var customNodeType in customNodeTypes)
         nodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
@@ -279,11 +266,11 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()
     {
-      var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault ();
-      var attributeBaseProvider = new AttributeBasedMethodCallTransformerProvider ();
-      var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault ();
+      var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault();
+      var attributeBaseProvider = new AttributeBasedMethodCallTransformerProvider();
+      var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault();
 
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customTransformers = customizers.SelectMany (c => c.GetCustomMethodCallTransformers());
       foreach (var customNodeType in customTransformers)
         methodInfoBasedRegistry.Register (customNodeType.Item1, customNodeType.Item2);
@@ -293,12 +280,12 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
     {
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
 
-      var handler = new FetchResultOperatorHandler ();
+      var handler = new FetchResultOperatorHandler();
       resultOperatorHandlerRegistry.Register (handler.SupportedResultOperatorType, handler);
 
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer> ();
+      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customHandlers = customizers.SelectMany (c => c.GetCustomResultOperatorHandlers());
       foreach (var customNodeType in customHandlers)
         resultOperatorHandlerRegistry.Register (customNodeType.Item1, customNodeType.Item2);

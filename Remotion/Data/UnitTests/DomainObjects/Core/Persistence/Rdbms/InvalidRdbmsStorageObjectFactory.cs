@@ -15,10 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Implementation;
 using Remotion.Utilities;
 
@@ -48,6 +51,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder, StorageProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IQueryExecutor CreateLinqQueryExecutor (ClassDefinition startingClassDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       throw new NotImplementedException();
     }

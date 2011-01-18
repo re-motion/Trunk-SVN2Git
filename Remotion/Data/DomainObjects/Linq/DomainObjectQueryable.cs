@@ -18,41 +18,15 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.Utilities;
-using Remotion.Mixins;
-using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
   public class DomainObjectQueryable<T> : QueryableBase<T>
   {
-    private static IQueryProvider CreateProvider (
-        ISqlPreparationStage sqlPreparationStage,
-        IMappingResolutionStage mappingResolutionStage,
-        ISqlGenerationStage sqlGenerationStage,
-        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
-    {
-      ArgumentUtility.CheckNotNull ("sqlPreparationStage", sqlPreparationStage);
-      ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
-      ArgumentUtility.CheckNotNull ("sqlGenerationStage", sqlGenerationStage);
-      ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);
-
-      var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
-      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (constructorParameters);
-
-      return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
     /// </summary>
@@ -65,22 +39,14 @@ namespace Remotion.Data.DomainObjects.Linq
     /// The <see cref="QueryFactory"/> class wraps this constructor and provides some additional support, so it should usually be preferred to a
     /// direct constructor call.
     /// </para>
-    /// <param name="sqlPreparationStage">An implementation of <see cref="ISqlPreparationStage"/> which provides entry points for all transformations 
-    /// that occur during the SQL preparation phase.</param>
-    /// <param name="mappingResolutionStage">An implementation of <see cref="IMappingResolutionStage"/> which provides entry points for all 
-    /// transformations that occur during the mapping resolution phase</param>
-    /// <param name="sqlGenerationStage">An implementation of <see cref="ISqlGenerationStage"/> which provides entry points for all sql text 
-    /// generation that occur during the SQL generation process.</param>
+    /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the queries.</param>
     /// <param name="nodeTypeRegistry">Registry that maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
     /// to the respective <see cref="IExpressionNode"/> types.</param>
     /// </remarks>
-    // TODO 3674: Change ctor to take instance of DomainObjectQueryExecutor instead; remove unnecessary parameters, inline CreateProvider method
     public DomainObjectQueryable (
-        ISqlPreparationStage sqlPreparationStage,
-        IMappingResolutionStage mappingResolutionStage,
-        ISqlGenerationStage sqlGenerationStage,
+        IQueryExecutor executor,
         MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
-        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, nodeTypeRegistry))
+      : base (new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry))
     {
     }
 

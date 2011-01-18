@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -25,7 +27,11 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
+using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -43,16 +49,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain",new SqlStorageObjectFactory(), "ConnectionString");
-      _sqlProviderFactory = new SqlStorageObjectFactory ();
-      _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener> ();
+      _rdbmsProviderDefinition = new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString");
+      _sqlProviderFactory = new SqlStorageObjectFactory();
+      _persistenceListenerStub = MockRepository.GenerateStub<IPersistenceListener>();
       _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
     }
 
     [Test]
     public void StorageProviderType ()
     {
-      Assert.That (_sqlProviderFactory.StorageProviderType, Is.SameAs(typeof (SqlProvider)));
+      Assert.That (_sqlProviderFactory.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
     }
 
     [Test]
@@ -68,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateStorageProviderWithMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (SqlProvider)).Clear ().AddMixins (typeof (SqlProviderTestMixin)).EnterScope ())
+      using (MixinConfiguration.BuildFromActive().ForClass (typeof (SqlProvider)).Clear().AddMixins (typeof (SqlProviderTestMixin)).EnterScope())
       {
         var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
 
@@ -95,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetPersistenceModelLoader ()
     {
-      var result = _sqlProviderFactory.CreatePersistenceModelLoader(_storageProviderDefinitionFinder, _rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreatePersistenceModelLoader (_storageProviderDefinitionFinder, _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
       Assert.That (((RdbmsPersistenceModelLoader) result).ColumnDefinitionFactory, Is.TypeOf (typeof (ColumnDefinitionFactory)));
@@ -113,10 +119,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var result = _sqlProviderFactory.CreateSchemaFileBuilder(_rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreateSchemaFileBuilder (_rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (FileBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
+    }
+
+    [Test]
+    public void CreateLinqQueryExecutor ()
+    {
+      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
+
+      var result = _sqlProviderFactory.CreateLinqQueryExecutor (
+          classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault());
+
+      Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
+    }
+
+    [Test]
+    public void CreateLinqQueryExecutor_CanBeMixed ()
+    {
+      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
+
+      using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
+      {
+        var executor = _sqlProviderFactory.CreateLinqQueryExecutor (
+            classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault());
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor), Is.Not.Null);
+      }
     }
   }
 }

@@ -20,9 +20,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Queries;
@@ -47,11 +47,11 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private readonly ClassDefinition _startingClassDefinition;
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
     private readonly IMappingResolutionContext _mappingResolutionContext;
+    private readonly ClassDefinition _startingClassDefinition;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -61,16 +61,18 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage)
+    public DomainObjectQueryExecutor (
+        ClassDefinition startingClassDefinition,
+        ISqlPreparationStage preparationStage,
+        IMappingResolutionStage resolutionStage,
+        ISqlGenerationStage generationStage)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
 
-
       _startingClassDefinition = startingClassDefinition;
-
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
@@ -78,13 +80,11 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Gets the starting class definition, i.e., the <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started with.
-    /// This determines the <see cref="StorageProvider"/> used for the query.
+    /// Gets the <see cref="Persistence.Configuration.StorageProviderDefinition"/> that is used for the query.
     /// </summary>
-    /// <value>The starting <see cref="ClassDefinition"/>.</value>
-    public ClassDefinition StartingClassDefinition
+    public StorageProviderDefinition StorageProviderDefinition
     {
-      get { return _startingClassDefinition; }
+      get { return _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition; }
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var fetchQueryModelBuilders = RemoveTrailingFetchRequests(queryModel);
+      var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
@@ -135,10 +135,8 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var providerDefinition = _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
-
       // Natively supported types can be executed as scalar queries
-      if (providerDefinition.TypeProvider.IsTypeSupported (typeof (T)))
+      if (StorageProviderDefinition.TypeProvider.IsTypeSupported (typeof (T)))
         return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);
@@ -188,7 +186,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
 
-      return CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, StartingClassDefinition, null);
+      return CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, _startingClassDefinition, null);
     }
 
     /// <summary>
@@ -219,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
       var command = CreateSqlCommand (queryModel, queryType == QueryType.Collection); // check result for DomainObjects unless it's a scalar query
-      
+
       var statement = command.CommandText;
       if (!string.IsNullOrEmpty (sortExpression))
       {
@@ -229,7 +227,8 @@ namespace Remotion.Data.DomainObjects.Linq
         statement = statement + " ORDER BY " + sortExpression;
       }
 
-      var query = CreateQuery (id, classDefinitionOfResult.StorageEntityDefinition.StorageProviderDefinition.Name, statement, command.Parameters, queryType);
+      var query = CreateQuery (
+          id, StorageProviderDefinition.Name, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
     }
@@ -342,7 +341,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message);
       }
 
-      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter(propertyInfo));
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo));
       try
       {
         return classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
@@ -384,7 +383,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (expression is SqlGroupingSelectExpression)
         message += " GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping operation.";
-      
+
       throw new NotSupportedException (message);
     }
 
@@ -413,7 +412,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private static ICollection<FetchQueryModelBuilder> RemoveTrailingFetchRequests (QueryModel queryModel)
     {
-      var result = new List<FetchQueryModelBuilder> ();
+      var result = new List<FetchQueryModelBuilder>();
       for (int i = queryModel.ResultOperators.Count - 1; i >= 0 && queryModel.ResultOperators[i] is FetchRequestBase; --i)
       {
         result.Add (new FetchQueryModelBuilder (queryModel.ResultOperators[i] as FetchRequestBase, queryModel, i));

@@ -26,6 +26,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
@@ -200,8 +201,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
       var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
       var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+      var executor = new DomainObjectQueryExecutor (
+          MappingConfiguration.Current.ClassDefinitions[typeof(Order)], preparationStageMock, resolutionStageMock, generationStageMock);
 
-      var queryable = QueryFactory.CreateLinqQuery<Order> (preparationStageMock, resolutionStageMock, generationStageMock, nodeTypeRegistry);
+      var queryable = QueryFactory.CreateLinqQuery<Order> (executor, nodeTypeRegistry);
       Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
 
       var sqlStatementBuilder = new SqlStatementBuilder();
