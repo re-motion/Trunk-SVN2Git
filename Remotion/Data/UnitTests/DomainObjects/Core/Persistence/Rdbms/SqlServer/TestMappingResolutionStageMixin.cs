@@ -14,29 +14,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
-  public class TestSqlGenerationStageMixin
+  public class TestMappingResolutionStageMixin
   {
     [OverrideTarget]
-    public virtual void GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
+    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
     {
-      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
-      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo (typeof (int)));
-      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).TableAlias, Is.EqualTo ("c"));
-      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
+      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));
 
-      commandBuilder.Append ("Value added by generation mixin");
-      commandBuilder.SetInMemoryProjectionBody (Expression.Constant (null));
+      var builder = new SqlStatementBuilder
+                    {
+                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
+                        SelectProjection =
+                            new SqlEntityDefinitionExpression (
+                                typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false))
+                    };
+      return builder.GetSqlStatement();
     }
   }
 }

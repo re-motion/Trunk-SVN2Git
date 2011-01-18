@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
@@ -26,27 +25,20 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
@@ -178,69 +170,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CreateLinqQuery_WithMixedStages ()
-    {
-      using (MixinConfiguration.BuildNew()
-          .ForClass<DefaultSqlPreparationStage>().AddMixin<TestSqlPreparationStageMixin>()
-          .ForClass<DefaultMappingResolutionStage>().AddMixin<TestMappingResolutionStageMixin>()
-          .ForClass<DefaultSqlGenerationStage>().AddMixin<TestSqlGenerationStageMixin>()
-          .EnterScope())
-      {
-        var queryable = from o in QueryFactory.CreateLinqQuery<Order>()
-                        select o;
-        IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
-
-        Assert.That (query.Statement, Is.EqualTo ("Value added by generation mixin"));
-      }
-    }
-
-    [Test]
-    public void CreateLinqQuery_WithStages ()
-    {
-      var preparationStageMock = MockRepository.GenerateMock<ISqlPreparationStage>();
-      var resolutionStageMock = MockRepository.GenerateMock<IMappingResolutionStage>();
-      var generationStageMock = MockRepository.GenerateMock<ISqlGenerationStage>();
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
-      var executor = new DomainObjectQueryExecutor (
-          MappingConfiguration.Current.ClassDefinitions[typeof(Order)], preparationStageMock, resolutionStageMock, generationStageMock);
-
-      var queryable = QueryFactory.CreateLinqQuery<Order> (executor, nodeTypeRegistry);
-      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
-
-      var sqlStatementBuilder = new SqlStatementBuilder();
-      sqlStatementBuilder.DataInfo = new StreamedScalarValueInfo (typeof (string));
-      sqlStatementBuilder.SelectProjection = new SqlEntityDefinitionExpression (
-          typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false));
-      var sqlStatement = sqlStatementBuilder.GetSqlStatement();
-
-      preparationStageMock
-          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
-          .Return (sqlStatement);
-      resolutionStageMock
-          .Expect (mock => mock.ResolveSqlStatement (Arg<SqlStatement>.Matches (s => s == sqlStatement), Arg<IMappingResolutionContext>.Is.Anything))
-          .Return (sqlStatement);
-      generationStageMock
-          .Expect (
-              mock => mock.GenerateTextForOuterSqlStatement (
-                  Arg<SqlCommandBuilder>.Is.Anything,
-                  Arg<SqlStatement>.Is.Anything))
-          .WhenCalled (mi =>
-          {
-            var commandBuilder = ((SqlCommandBuilder) mi.Arguments[0]);
-            commandBuilder.Append ("test");
-            commandBuilder.SetInMemoryProjectionBody (Expression.Constant ("test"));
-          });
-
-      preparationStageMock.Replay();
-
-      IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
-
-      Assert.That (query.Statement, Is.EqualTo ("test"));
-
-      preparationStageMock.VerifyAllExpectations();
-    }
-
-    [Test]
     public void CreateQuery_FromLinqQuery_WithEagerFetching ()
     {
       var queryable = (from o in QueryFactory.CreateLinqQuery<Order>()
@@ -274,6 +203,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var queryable = new TestQueryable<int> (MockRepository.GenerateMock<IQueryExecutor>()).AsQueryable();
       QueryFactory.CreateQuery ("<dynamic query>", queryable);
+    }
+
+    [Test]
+    public void CreateLinqQuery_WithExecutor ()
+    {
+      var executorMock = MockRepository.GenerateStrictMock<IQueryExecutor> ();
+      var nodeTypeRegistry = new MethodCallExpressionNodeTypeRegistry();
+
+      var result = QueryFactory.CreateLinqQuery<Order> (executorMock, nodeTypeRegistry);
+
+      Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
+      Assert.That (((DefaultQueryProvider) result.Provider).Executor, Is.SameAs (executorMock));
+      Assert.That (((DefaultQueryProvider) result.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
+    }
+
+    [Test]
+    public void CreateLinqQuery_WithoutExecutor ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Order> ();
+
+      Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
+      Assert.That (((DefaultQueryProvider) result.Provider).Executor, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
+      
+      var queryExecutor = (DomainObjectQueryExecutor) ((DefaultQueryProvider) result.Provider).Executor;
+      Assert.That (queryExecutor.StorageProviderDefinition, Is.SameAs (TestDomainStorageProviderDefinition));
+
+      var expectedMethodCallTransformerProvider = ((DoubleCheckedLockingContainer<IMethodCallTransformerProvider>) PrivateInvoke.GetNonPublicStaticField (
+          typeof (QueryFactory), 
+          "s_methodCallTransformerProvider")).Value;
+      Assert.That (((DefaultSqlPreparationStage) queryExecutor.PreparationStage).MethodCallTransformerProvider, 
+          Is.SameAs (expectedMethodCallTransformerProvider));
+
+      var expectedResultOperatorHandlerRegistry = ((DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry>) PrivateInvoke.GetNonPublicStaticField (
+          typeof (QueryFactory),
+          "s_resultOperatorHandlerRegistry")).Value;
+      Assert.That (((DefaultSqlPreparationStage) queryExecutor.PreparationStage).ResultOperatorHandlerRegistry,
+          Is.SameAs (expectedResultOperatorHandlerRegistry));
+
+      var expectedNodeTypeRegistry = ((DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry>) PrivateInvoke.GetNonPublicStaticField (
+          typeof (QueryFactory),
+          "s_methodCallExpressionNodeTypeRegistry")).Value;
+      Assert.That (((DefaultQueryProvider) result.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (expectedNodeTypeRegistry));
     }
 
     [Test]

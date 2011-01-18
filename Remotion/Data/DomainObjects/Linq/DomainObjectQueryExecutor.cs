@@ -88,6 +88,30 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
+    /// Gets the <see cref="ISqlPreparationStage"/> used for generating SQL.
+    /// </summary>
+    public ISqlPreparationStage PreparationStage
+    {
+      get { return _preparationStage; }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IMappingResolutionStage"/> used for generating SQL.
+    /// </summary>
+    public IMappingResolutionStage ResolutionStage
+    {
+      get { return _resolutionStage; }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="GenerationStage"/> used for generating SQL.
+    /// </summary>
+    public ISqlGenerationStage GenerationStage
+    {
+      get { return _generationStage; }
+    }
+
+    /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
     /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a scalar query.
     /// </summary>

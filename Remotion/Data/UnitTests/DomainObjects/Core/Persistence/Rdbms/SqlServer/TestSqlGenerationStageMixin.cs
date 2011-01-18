@@ -17,30 +17,25 @@
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Clauses.StreamedData;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
-  public class TestMappingResolutionStageMixin
+  public class TestSqlGenerationStageMixin
   {
     [OverrideTarget]
-    public virtual SqlStatement ResolveSqlStatement (SqlStatement sqlStatement, IMappingResolutionContext context)
+    public virtual void GenerateTextForOuterSqlStatement (ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
-      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));
+      Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (SqlEntityDefinitionExpression)));
+      Assert.That (sqlStatement.SelectProjection.Type, Is.EqualTo (typeof (int)));
+      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).TableAlias, Is.EqualTo ("c"));
+      Assert.That (((SqlEntityDefinitionExpression) sqlStatement.SelectProjection).Name, Is.EqualTo ("CookTable"));
 
-      var builder = new SqlStatementBuilder
-                    {
-                        DataInfo = new StreamedScalarValueInfo (typeof (string)),
-                        SelectProjection =
-                            new SqlEntityDefinitionExpression (
-                                typeof (int), "c", "CookTable", new SqlColumnDefinitionExpression (typeof (int), "c", "ID", false))
-                    };
-      return builder.GetSqlStatement();
+      commandBuilder.Append ("Value added by generation mixin");
+      commandBuilder.SetInMemoryProjectionBody (Expression.Constant (null));
     }
   }
 }

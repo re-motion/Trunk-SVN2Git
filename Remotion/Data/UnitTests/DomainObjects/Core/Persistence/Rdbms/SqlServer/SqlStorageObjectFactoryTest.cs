@@ -27,6 +27,8 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -150,5 +152,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor), Is.Not.Null);
       }
     }
+
+    [Test]
+    public void CreateLinqQueryExecutor_WithMixedStages ()
+    {
+      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider> ();
+
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<DefaultSqlPreparationStage> ().AddMixin<TestSqlPreparationStageMixin> ()
+          .ForClass<DefaultMappingResolutionStage> ().AddMixin<TestMappingResolutionStageMixin> ()
+          .ForClass<DefaultSqlGenerationStage> ().AddMixin<TestSqlGenerationStageMixin> ()
+          .EnterScope ())
+      {
+        var executor = (DomainObjectQueryExecutor) _sqlProviderFactory.CreateLinqQueryExecutor (
+            classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault ());
+
+        Assert.That (Mixin.Get<TestSqlPreparationStageMixin> (executor.PreparationStage), Is.Not.Null);
+        Assert.That (Mixin.Get<TestMappingResolutionStageMixin> (executor.ResolutionStage), Is.Not.Null);
+        Assert.That (Mixin.Get<TestSqlGenerationStageMixin> (executor.GenerationStage), Is.Not.Null);
+      }
+    }
+
   }
 }

@@ -73,7 +73,9 @@ namespace Remotion.Data.DomainObjects.Queries
       var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
       var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var executor = providerDefinition.Factory.CreateLinqQueryExecutor (
-          startingClassDefinition, s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value);
+          startingClassDefinition, 
+          s_methodCallTransformerProvider.Value, 
+          s_resultOperatorHandlerRegistry.Value);
 
       // TODO Review 3607: Get storageNameProvider as follows:
       //var storageNameProvider = providerDefinition.Factory.CreateStorageNameProvider ();
@@ -89,9 +91,8 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the query.</param>
     /// <param name="nodeTypeRegistry">An <see cref="MethodCallExpressionNodeTypeRegistry"/> instance to be used when generating SQL for the query.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (
-        IQueryExecutor executor,
-        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry) where T: DomainObject
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry) 
+        where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);

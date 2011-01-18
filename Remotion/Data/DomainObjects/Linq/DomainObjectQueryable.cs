@@ -43,9 +43,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="nodeTypeRegistry">Registry that maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
     /// to the respective <see cref="IExpressionNode"/> types.</param>
     /// </remarks>
-    public DomainObjectQueryable (
-        IQueryExecutor executor,
-        MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
+    public DomainObjectQueryable (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
       : base (new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry))
     {
     }
