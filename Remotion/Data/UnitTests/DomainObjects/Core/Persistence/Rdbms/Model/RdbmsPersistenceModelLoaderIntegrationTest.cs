@@ -69,7 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _columnDefinitionResolver,
           _storageNameProvider,
           _storageProviderDefinition);
-      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (_entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition);
+      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
+          _entityDefinitionFactory, _columnDefinitionFactory, _storageProviderDefinition, _storageNameProvider);
 
       _fakeBaseBaseColumnDefinition = new SimpleColumnDefinition ("BaseBaseProperty", typeof (string), "nvarchar (max)", true, false);
       _fakeBaseColumnDefinition = new SimpleColumnDefinition ("BaseProperty", typeof (string), "nvarchar (max)", true, false);
@@ -142,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               _fakeTableColumnDefinition1
           },
           new PrimaryKeyConstraintDefinition ("PK_Table1Class", true, new[] { (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
-       );
+          );
     }
 
     [Test]
@@ -162,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               _fakeDerivedColumnDefinition1, _fakeDerivedColumnDefinition2, _fakeDerivedDerivedColumnDefinition
           },
           new PrimaryKeyConstraintDefinition ("PK_Table2Class", true, new[] { (SimpleColumnDefinition) _fakeIDColumnDefinition.ObjectIDColumn })
-        );
+          );
     }
 
     [Test]
@@ -232,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo (tableName));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).ViewName, Is.EqualTo (viewName));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).Constraints[0], Is.TypeOf(typeof(PrimaryKeyConstraintDefinition)));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).Constraints[0], Is.TypeOf (typeof (PrimaryKeyConstraintDefinition)));
       var primaryKey = (PrimaryKeyConstraintDefinition) ((TableDefinition) classDefinition.StorageEntityDefinition).Constraints[0];
       Assert.That (primaryKey.ConstraintName, Is.EqualTo (primaryKeyConstraintDefinition.ConstraintName));
       Assert.That (primaryKey.Columns, Is.EqualTo (primaryKeyConstraintDefinition.Columns));

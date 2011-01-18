@@ -196,6 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
 
       var resultNotNullable =
            (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);
@@ -222,6 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       StubStorageCalculators (propertyDefinitionNotNullable);
       StubStorageCalculators (propertyDefinitionNullable);
+      _storageNameProviderStub.Stub (stub => stub.GetTableName (_classWithDbTableAttribute)).Return (_classWithDbTableAttribute.ID);
 
       var resultNotNullable =
            (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinitionNotNullable);

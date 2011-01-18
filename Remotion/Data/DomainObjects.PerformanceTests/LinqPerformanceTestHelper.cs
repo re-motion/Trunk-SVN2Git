@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.Linq;
@@ -31,16 +32,16 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class LinqPerformanceTestHelper<T>
   {
-    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
-    private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault ();
-    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+    private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();
+    private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
 
     private readonly Func<IQueryable<T>> _queryGenerator;
 
     public LinqPerformanceTestHelper (Func<IQueryable<T>> queryGenerator)
     {
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
-      
+
       _queryGenerator = queryGenerator;
     }
 
@@ -54,11 +55,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModelAndSQL ()
     {
-      var generator = new UniqueIdentifierGenerator ();
+      var generator = new UniqueIdentifierGenerator();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
-      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver()), generator);
-      var sqlGenerationStage = new DefaultSqlGenerationStage ();
-      var mappingResolutionContext = new MappingResolutionContext ();
+      var mappingResolutionStage =
+          new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider)), generator);
+      var sqlGenerationStage = new DefaultSqlGenerationStage();
+      var mappingResolutionContext = new MappingResolutionContext();
 
       var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry);
       var queryParser = new QueryParser (expressionTreeParser);
@@ -77,13 +80,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModelAndSQLAndIQuery ()
     {
-      var query = _queryGenerator ();
+      var query = _queryGenerator();
       return QueryFactory.CreateQuery ("perftest", query) != null;
     }
 
     public bool GenerateAndExecuteQueryDBOnly ()
     {
-      var query = _queryGenerator ();
+      var query = _queryGenerator();
       var restoreQuery = QueryFactory.CreateQuery ("perftest", query);
 
       using (var manager = new StorageProviderManager (NullPersistenceListener.Instance))
@@ -94,7 +97,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateAndExecuteQuery ()
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var query = _queryGenerator();
         var recordCount = query.ToList().Count;

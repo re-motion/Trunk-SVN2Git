@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -33,12 +34,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private ReflectionBasedClassDefinition _classDefinition;
+    private IStorageNameProvider _storageNameProvider;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
-      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver();
+      _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProvider.Stub (stub => stub.IDColumnName).Return ("ID");
+      _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver(_storageNameProvider);
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
     }
 

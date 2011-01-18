@@ -84,7 +84,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return GetRelationClassIDColumnName (GetColumnName (propertyDefinition));
     }
 
-    // TODO Review 3607: Add test
     public string GetRelationClassIDColumnName (string columnName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);

@@ -29,6 +29,15 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class StorageSpecificExpressionResolver : IStorageSpecificExpressionResolver
   {
+    private readonly IStorageNameProvider _storageNameProvider;
+
+    public StorageSpecificExpressionResolver (IStorageNameProvider storageNameProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
+      _storageNameProvider = storageNameProvider;
+    }
+
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -56,8 +65,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      // TODO Review 3607: Use IStorageNameProvider instead, inject via ctor
-      return originatingEntity.GetColumn (typeof (ObjectID), "ID", true);
+      return originatingEntity.GetColumn (typeof (ObjectID), _storageNameProvider.IDColumnName, true);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
@@ -93,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       return endPoint.IsVirtual
-                 ? "ID" // TODO Review 3607: Get IDColumnName from IStorageNameProvider
+                 ? _storageNameProvider.IDColumnName
                  : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StoragePropertyDefinition.Name;
     }
   }

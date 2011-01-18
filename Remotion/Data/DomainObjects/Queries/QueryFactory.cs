@@ -76,10 +76,7 @@ namespace Remotion.Data.DomainObjects.Queries
           startingClassDefinition, 
           s_methodCallTransformerProvider.Value, 
           s_resultOperatorHandlerRegistry.Value);
-
-      // TODO Review 3607: Get storageNameProvider as follows:
-      //var storageNameProvider = providerDefinition.Factory.CreateStorageNameProvider ();
-
+      
       return CreateLinqQuery<T> (executor, s_methodCallExpressionNodeTypeRegistry.Value);
     }
 

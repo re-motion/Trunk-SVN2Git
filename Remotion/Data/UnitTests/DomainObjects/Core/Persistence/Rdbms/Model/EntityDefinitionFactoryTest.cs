@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Rhino.Mocks;
@@ -108,6 +109,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
           new ITableConstraintDefinition[]
           { new PrimaryKeyConstraintDefinition ("FakePrimaryKeyName", true, new[] { _fakeIDColumnDefinition }), _fakeForeignKeyConstraint });
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Table1Class' has no table name defined.")]
+    public void CreateTableDefinition_ClassHasNoDBTableAttributeDefined ()
+    {
+      _storageNameProviderMock
+          .Expect (mock => mock.GetTableName (_testModel.TableClassDefinition1))
+          .Return (null);
+      _storageNameProviderMock.Replay();
+
+      _factory.CreateTableDefinition (_testModel.TableClassDefinition1);
     }
 
     [Test]

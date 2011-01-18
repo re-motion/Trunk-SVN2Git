@@ -29,7 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class StorageNameCalculatorTest
+  public class ReflectionBasedStorageNameProviderTest
   {
     private ReflectionBasedStorageNameProvider _provider;
     private ReflectionBasedClassDefinition _classDefinition;
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetRelationClassIDColumnName ()
+    public void GetRelationClassIDColumnName_PropertyDefinitionParameter ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
@@ -142,6 +142,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _provider.GetRelationClassIDColumnName (propertyDefinition);
 
       Assert.That (result, Is.EqualTo ("ParentFolderIDClassID"));
+    }
+
+    [Test]
+    public void GetRelationClassIDColumnName_ColumnNameParameter ()
+    {
+      var result = _provider.GetRelationClassIDColumnName ("ColumnName");
+
+      Assert.That (result, Is.EqualTo ("ColumnNameClassID"));
     }
 
     [Test]

@@ -114,8 +114,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       // CreateSequence can deal with null source objects
       var baseClasses = propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
-      // TODO Review 3607: Use _storageTypeCalculator.GetTableName != null instead of IsDefined
-      return baseClasses.Any (cd => AttributeUtility.IsDefined (cd.ClassType, typeof (DBTableAttribute), false));
+      return baseClasses.Any (cd => _storageNameProvider.GetTableName(cd)!=null);
     }
   }
 }

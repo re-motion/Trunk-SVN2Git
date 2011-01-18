@@ -59,9 +59,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var tableName = _storageNameProvider.GetTableName(classDefinition);
-      // TODO Review 3607: Change message not to refer to attibute ("has no table name defined").
       if (string.IsNullOrEmpty(tableName))
-        throw new MappingException (string.Format ("Class '{0}' has no '{1}' defined.", classDefinition.ID, typeof (DBTableAttribute).Name));
+        throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
       var columns = GetColumnsDefinitionForEntity (classDefinition);
 

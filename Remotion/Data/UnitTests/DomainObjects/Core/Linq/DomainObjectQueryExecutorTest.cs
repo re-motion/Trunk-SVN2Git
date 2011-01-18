@@ -23,6 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
@@ -45,24 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private ClassDefinition _orderClassDefinition;
     private ClassDefinition _customerClassDefinition;
-
     private DefaultSqlPreparationStage _preparationStage;
     private DefaultMappingResolutionStage _resolutionStage;
     private DefaultSqlGenerationStage _generationStage;
-
     private QueryModel _order1QueryModel;
-
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
-
+    
     public override void SetUp ()
     {
       base.SetUp();
 
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
-
-      var resolver = new MappingResolver(new StorageSpecificExpressionResolver());
+      var resolver = new MappingResolver(new StorageSpecificExpressionResolver(new ReflectionBasedStorageNameProvider()));
       var generator = new UniqueIdentifierGenerator();
       _preparationStage = new DefaultSqlPreparationStage (
           CompoundMethodCallTransformerProvider.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);

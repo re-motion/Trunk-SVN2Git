@@ -35,19 +35,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly IColumnDefinitionFactory _columnDefinitionFactory;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IEntityDefinitionFactory _entityDefinitionFactory;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     public RdbmsPersistenceModelLoader (
         IEntityDefinitionFactory entityDefinitionFactory,
         IColumnDefinitionFactory columnDefinitionFactory,
-        StorageProviderDefinition storageProviderDefinition)
+        StorageProviderDefinition storageProviderDefinition,
+        IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("entityDefinitionFactory", entityDefinitionFactory);
       ArgumentUtility.CheckNotNull ("columnDefinitionFactory", columnDefinitionFactory);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _entityDefinitionFactory = entityDefinitionFactory;
       _columnDefinitionFactory = columnDefinitionFactory;
       _storageProviderDefinition = storageProviderDefinition;
+      _storageNameProvider = storageNameProvider;
     }
 
     public string StorageProviderID
@@ -63,6 +67,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public IColumnDefinitionFactory ColumnDefinitionFactory
     {
       get { return _columnDefinitionFactory; }
+    }
+
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
+    }
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
     }
 
     public IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition)
@@ -140,20 +154,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private IStorageEntityDefinition CreateStorageEntityDefinition (ClassDefinition classDefinition)
     {
-      // TODO Review 3607: Use name calculator => GetTableName != null
-      var tableAttribute = AttributeUtility.GetCustomAttribute<DBTableAttribute> (classDefinition.ClassType, false);
-      if (tableAttribute != null)
+      if(_storageNameProvider.GetTableName(classDefinition)!=null)
         return _entityDefinitionFactory.CreateTableDefinition (classDefinition);
 
       var hasBaseClassWithDBTableAttribute = classDefinition
           .CreateSequence (cd => cd.BaseClass)
-        // TODO Review 3607: Use name calculator => GetTableName != null
-          .Where (cd => AttributeUtility.IsDefined<DBTableAttribute> (cd.ClassType, false))
+          .Where (cd =>_storageNameProvider.GetTableName(cd)!=null)
           .Any();
-      if (hasBaseClassWithDBTableAttribute)
-        return CreateFilterViewDefinition (classDefinition);
-
-      return CreateUnionViewDefinition (classDefinition);
+      return hasBaseClassWithDBTableAttribute ? CreateFilterViewDefinition (classDefinition) : CreateUnionViewDefinition (classDefinition);
     }
 
     private IStorageEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition)

@@ -86,15 +86,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = CreateStorageNameProvider();
-      var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameCalculator, storageProviderDefinitionFinder);
+      var storageNameProvider = CreateStorageNameProvider();
+      var columnDefinitionFactory = CreateColumnDefinitionFactory (storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitionResolver = CreateColumnDefinitionResolver();
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
-          storageNameCalculator, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameCalculator, storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefintiionFactory, columnDefinitionResolver, storageNameProvider, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition);
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider);
     }
 
     public virtual IQueryExecutor CreateLinqQueryExecutor (
@@ -107,7 +107,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
       var generator = new UniqueIdentifierGenerator();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver());
+      var storageNameProvider = CreateStorageNameProvider ();
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver(storageNameProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

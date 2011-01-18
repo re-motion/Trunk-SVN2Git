@@ -66,26 +66,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameCalculator = new ReflectionBasedStorageNameProvider();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var columnDefinitionFactory = new ColumnDefinitionFactory (
-          new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameCalculator, storageProviderDefinitionFinder);
+          new SqlStorageTypeCalculator (storageProviderDefinitionFinder), storageNameProvider, storageProviderDefinitionFinder);
       var columnDefinitonResolver = new ColumnDefinitionResolver();
       var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameCalculator, columnDefinitonResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
+          storageNameProvider, columnDefinitonResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
       var entityDefinitionFactory = new EntityDefinitionFactory (
-          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameCalculator, storageProviderDefinition);
+          columnDefinitionFactory, foreignKeyConstraintDefinitionFactory, columnDefinitonResolver, storageNameProvider, storageProviderDefinition);
 
-      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition);
+      return new RdbmsPersistenceModelLoader (entityDefinitionFactory, columnDefinitionFactory, storageProviderDefinition, storageNameProvider);
     }
 
-    public IQueryExecutor CreateLinqQueryExecutor (ClassDefinition startingClassDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public IQueryExecutor CreateLinqQueryExecutor (
+        ClassDefinition startingClassDefinition,
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var generator = new UniqueIdentifierGenerator ();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver ());
+      var generator = new UniqueIdentifierGenerator();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
