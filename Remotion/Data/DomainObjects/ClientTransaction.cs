@@ -1096,33 +1096,10 @@ public class ClientTransaction
     throw new NotImplementedException ();
   }
 
-  /// <summary>
-  /// Loads the related <see cref="DomainObject"/> of a given <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <remarks>
-  /// This method raises the <see cref="Loaded"/> event.
-  /// </remarks>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
-  /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>The related <see cref="DomainObject"/>.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
-  /// <see cref="DataManagement.ObjectEndPoint"/></exception>
-  /// <exception cref="DataManagement.ObjectDeletedException">The related <see cref="DomainObject"/> has been deleted.</exception>
-  /// <exception cref="Persistence.PersistenceException">
-  ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
-  ///   The relation refers to non-existing object.<br /> -or- <br />
-  ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/>.
-  /// </exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the data source.
-  /// </exception>
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
   protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
   {
-    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-    return _objectLoader.LoadRelatedObject (relationEndPointID);
+    throw new NotImplementedException ();
   }
 
   /// <summary>

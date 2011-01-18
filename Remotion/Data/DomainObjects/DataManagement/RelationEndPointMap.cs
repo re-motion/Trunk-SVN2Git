@@ -38,19 +38,25 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
+    private readonly IObjectLoader _objectLoader;
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly RelationEndPointCollection _relationEndPoints;
 
     // construction and disposing
 
-    public RelationEndPointMap (ClientTransaction clientTransaction, ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
+    public RelationEndPointMap (
+        ClientTransaction clientTransaction,
+        ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
+        IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
       _clientTransaction = clientTransaction;
       _collectionEndPointChangeDetectionStrategy = collectionEndPointChangeDetectionStrategy;
+      _objectLoader = objectLoader;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new RelationEndPointCollection (_clientTransaction);
@@ -320,7 +326,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         // loading the related object will automatically register the related's real end points via RegisterEndPointsForExistingDataContainer, 
         // which also registers the opposite virtual end point; see assertion below
-        var relatedObject = _clientTransaction.LoadRelatedObject (endPointID);
+        var relatedObject = _objectLoader.LoadRelatedObject (endPointID);
         if (relatedObject == null)
           RegisterVirtualObjectEndPoint (endPointID, null);
 
@@ -560,7 +566,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // Note: RelationEndPointMap should never be serialized on its own; always start from the DataManager.
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
-        : this (info.GetValueForHandle<ClientTransaction>(), info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>())
+        : this (info.GetValueForHandle<ClientTransaction>(), info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>(), info.GetValueForHandle<IObjectLoader>())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
@@ -576,6 +582,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_clientTransaction);
       info.AddHandle (_collectionEndPointChangeDetectionStrategy);
+      info.AddHandle (_objectLoader);
       var endPointArray = new RelationEndPoint[Count];
       _relationEndPoints.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);

@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
-      _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
+      _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy, objectLoader);
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
@@ -330,7 +330,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
       _invalidDomainObjectManager = doInfo.GetValue<IInvalidDomainObjectManager> ();
-      _objectLoader = doInfo.GetValue<IObjectLoader> ();
+      _objectLoader = doInfo.GetValueForHandle<IObjectLoader>();
 
       _deserializedData = null;
       doInfo.SignalDeserializationFinished();
@@ -344,7 +344,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       doInfo.AddHandle (_relationEndPointMap);
       doInfo.AddValue (_domainObjectStateCache);
       doInfo.AddValue (_invalidDomainObjectManager);
-      doInfo.AddValue (_objectLoader);
+      doInfo.AddHandle (_objectLoader);
       
       info.AddValue ("doInfo.GetData", doInfo.GetData());
     }
