@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (OrderTicket), "Int32TransactionProperty",
               null,
               typeof (int),
-              null,
+              false,
               null,
               StorageClass.Transaction));
       orderTicket.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
@@ -977,25 +977,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty",
               "UnidirectionalRelationPropertyID",
-              typeof (ObjectID)));
+              typeof (ObjectID), 
+              true));
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "RelationProperty",
               "RelationPropertyID",
-              typeof (ObjectID)));
+              typeof (ObjectID), 
+              true));
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide",
               "CollectionPropertyNSideID",
-              typeof (ObjectID)));
+              typeof (ObjectID), 
+              true));
       properties.Add (
           ReflectionBasedPropertyDefinitionFactory.Create (
               targetClassForPersistentMixin,
               typeof (BaseForMixinAddingPersistentProperties), "PrivateBaseRelationProperty",
               "PrivateBaseRelationPropertyID",
-              typeof (ObjectID)));
+              typeof (ObjectID),
+              true));
       targetClassForPersistentMixin.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return targetClassForPersistentMixin;
@@ -1047,7 +1051,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (Computer), "Int32TransactionProperty",
               null,
               typeof (int),
-              null,
+              false,
               null,
               StorageClass.Transaction));
       properties.Add (
@@ -1056,7 +1060,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (Computer), "DateTimeTransactionProperty",
               null,
               typeof (DateTime),
-              null,
+              false,
               null,
               StorageClass.Transaction));
       properties.Add (

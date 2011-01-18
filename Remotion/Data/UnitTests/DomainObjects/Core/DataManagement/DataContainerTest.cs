@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       PropertyDefinition reportsToDefinition =
           ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ReflectionBasedClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo");
+              (ReflectionBasedClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 

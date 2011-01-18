@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           propertyName,
           propertyType,
-          null,
+          IsNullable (propertyType),
           null,
           StorageClass.Persistent,
           classDefinition.ClassType.GetProperty (propertyName),
@@ -64,7 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedPropertyDefinition Create (
         ReflectionBasedClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, null, null, StorageClass.Persistent);
+      return Create (
+          classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition Create (
@@ -86,7 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type propertyType,
         int maxLength)
     {
-      return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, null, maxLength, StorageClass.Persistent);
+      return Create (
+          classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), maxLength, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition Create (
@@ -107,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string propertyName,
         string columnName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass)
     {
@@ -145,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type declaringClassType,
         string propertyName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
@@ -175,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           propertyInfo.Name,
           propertyInfo.PropertyType,
-          null,
+          IsNullable (propertyInfo.PropertyType),
           null,
           storageClass,
           propertyInfo,
@@ -195,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           propertyInfo.Name,
           propertyInfo.PropertyType,
-          null,
+          IsNullable (propertyInfo.PropertyType),
           null,
           storageClass,
           propertyInfo,
@@ -206,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ReflectionBasedClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
-        bool? isNullable
+        bool isNullable
         )
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -233,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition,
           propertyInfo.Name,
           propertyInfo.PropertyType,
-          null,
+          IsNullable (propertyInfo.PropertyType),
           null,
           storageClass,
           propertyInfo,
@@ -244,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ReflectionBasedClassDefinition classDefinition,
         string propertyName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
@@ -266,15 +269,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
         ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)
     {
+      var fakePropertyInfo = GetFakePropertyInfo();
       return Create (
-          classDefinition, propertyName, typeof (string), null, null, storageClass, GetFakePropertyInfo(), GetFakeStorageProperty (columnName));
+          classDefinition,
+          propertyName,
+          typeof (string),
+          IsNullable (fakePropertyInfo.PropertyType),
+          null,
+          storageClass,
+          fakePropertyInfo,
+          GetFakeStorageProperty (columnName));
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
         ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, StorageClass storageClass)
     {
+      var fakePropertyInfo = GetFakePropertyInfo();
       return Create (
-          classDefinition, propertyName, propertyType, null, null, storageClass, GetFakePropertyInfo(), GetFakeStorageProperty (columnName));
+          classDefinition,
+          propertyName,
+          propertyType,
+          IsNullable (fakePropertyInfo.PropertyType),
+          null,
+          storageClass,
+          fakePropertyInfo,
+          GetFakeStorageProperty (columnName));
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
@@ -282,7 +301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string propertyName,
         string columnName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         StorageClass storageClass)
     {
       return Create (
@@ -294,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         string propertyName,
         string columnName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass)
     {
@@ -305,15 +324,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
         ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName)
     {
+      var fakePropertyInfo = GetFakePropertyInfo();
       return Create (
           classDefinition,
           propertyName,
           typeof (string),
-          null,
+          IsNullable(fakePropertyInfo.PropertyType),
           null,
           StorageClass.Persistent,
-          GetFakePropertyInfo(),
+          fakePropertyInfo,
           GetFakeStorageProperty (columnName));
+    }
+
+    private static bool IsNullable (Type propertyType)
+    {
+      if (propertyType.IsValueType)
+        return Nullable.GetUnderlyingType (propertyType) != null;
+
+      if (typeof (DomainObject).IsAssignableFrom (propertyType))
+        return true;
+
+      return false;
     }
   }
 }

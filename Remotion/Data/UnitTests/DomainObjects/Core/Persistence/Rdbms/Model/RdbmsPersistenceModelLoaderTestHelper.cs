@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           classDefinition,
           propertyName,
           typeof (string),
-          null,
+          true,
           null,
           StorageClass.Persistent,
           propertyInfo,

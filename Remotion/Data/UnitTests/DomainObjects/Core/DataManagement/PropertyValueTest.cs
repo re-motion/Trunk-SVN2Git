@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _orderClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
-      _orderNumberPropertyDefinition = CreatePropertyDefinition ("OrderNumber", typeof (int), null);
+      _orderNumberPropertyDefinition = CreatePropertyDefinition ("OrderNumber", typeof (int), false);
     }
 
     [Test]
@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         MatchType = MessageMatch.Regex)]
     public void PropertyValue_WithReferenceType_NotAllowed ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), null);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), true);
       new PropertyValue (propertyDefinition, null);
     }
 
     [Test]
     public void PropertyValue_WithValueType_Allowed ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (DateTime), null);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (DateTime), false);
       var propertyValue = new PropertyValue (propertyDefinition, DateTime.Now);
       Assert.That (propertyValue.Definition.PropertyType, Is.EqualTo (typeof (DateTime)));
     }
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValue_WithString_Allowed ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (string), null);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (string), true);
       var propertyValue = new PropertyValue (propertyDefinition, null);
       Assert.That (propertyValue.Definition.PropertyType, Is.EqualTo (typeof (string)));
     }
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValue_WithType_Allowed ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (Type), null);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (Type), true);
       var propertyValue = new PropertyValue (propertyDefinition, null);
       Assert.That (propertyValue.Definition.PropertyType, Is.EqualTo (typeof (Type)));
     }
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void IsRelationProperty_True ()
     {
-      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (ObjectID), null);
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (ObjectID), true);
       var propertyValue1 = new PropertyValue (propertyDefinition, null);
       Assert.IsTrue (propertyValue1.IsRelationProperty);
     }
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheck ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MaxLengthCheckInConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheckInConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
       new PropertyValue (definition, 123);
     }
 
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void TypeCheck ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (string), null, 10, StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (string), true, 10, StorageClass.Persistent);
       var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
@@ -672,7 +672,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Ignore ("TODO 954: Fix this bug! https://dev.rubicon-it.com/jira/browse/COMMONS-954")]
     public void BinaryDataBug ()
     {
-      PropertyDefinition definition = CreatePropertyDefinition ("testProperty2", typeof (byte[]), null);
+      PropertyDefinition definition = CreatePropertyDefinition ("testProperty2", typeof (byte[]), true);
       var propertyValue = new PropertyValue (definition, new byte[] { 1, 2, 3 });
 
       ((byte[]) propertyValue.Value)[0] = 7;
@@ -696,7 +696,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void DefaultPropertyValueWithEnumNotDefiningZero ()
     {
-      PropertyDefinition definition = CreatePropertyDefinition ("testProperty", typeof (EnumNotDefiningZero), null);
+      PropertyDefinition definition = CreatePropertyDefinition ("testProperty", typeof (EnumNotDefiningZero), false);
       var propertyValue = new PropertyValue (definition);
       Assert.That (propertyValue.Value, Is.EqualTo (definition.DefaultValue));
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (definition.DefaultValue));
@@ -736,12 +736,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private PropertyValue CreateIntPropertyValue (string name, int intValue)
     {
-      return CreatePropertyValue (name, typeof (int), null, intValue);
+      return CreatePropertyValue (name, typeof (int), false, intValue);
     }
 
     private PropertyValue CreateNullableIntPropertyValue (string name, int? intValue)
     {
-      return CreatePropertyValue (name, typeof (int?), null, intValue);
+      return CreatePropertyValue (name, typeof (int?), true, intValue);
     }
 
     private PropertyValue CreateStringPropertyValue (string name, string stringValue)
@@ -752,16 +752,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private PropertyDefinition CreateIntPropertyDefinition (string name)
     {
-      return CreatePropertyDefinition (name, typeof (int), null);
+      return CreatePropertyDefinition (name, typeof (int), false);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (string name, Type propertyType, bool? isNullable)
+    private PropertyDefinition CreatePropertyDefinition (string name, Type propertyType, bool isNullable)
     {
       return ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
           _orderClassDefinition, name, name, propertyType, isNullable, StorageClass.Persistent);
     }
 
-    private PropertyValue CreatePropertyValue (string name, Type propertyType, bool? isNullable, object value)
+    private PropertyValue CreatePropertyValue (string name, Type propertyType, bool isNullable, object value)
     {
       return new PropertyValue (CreatePropertyDefinition (name, propertyType, isNullable), value);
     }

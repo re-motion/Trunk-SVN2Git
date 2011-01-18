@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int), null, null, StorageClass.Persistent);
+          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int), false, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
       Assert.AreEqual (0, actual.DefaultValue);
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int?), null, null, StorageClass.Persistent);
+          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int?), true, null, StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
       Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
       Assert.IsNull (actual.DefaultValue);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "OrderNumber",
           "ColumnName",
           typeof (ClassWithAllDataTypes.EnumType),
-          null,
+          false,
           null,
           StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "OrderNumber",
           "ColumnName",
           typeof (ClassWithAllDataTypes.EnumType?),
-          null,
+          true,
           null,
           StorageClass.Persistent);
       Assert.AreSame (_classDefinition, actual.ClassDefinition);
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void InitializeWithExtensibleEnum ()
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "PropertyName", "ColumnName", typeof (Color), StorageClass.Persistent);
+          _classDefinition, "PropertyName", "ColumnName", typeof (Color), true, StorageClass.Persistent);
       Assert.IsNull (actual.DefaultValue);
       Assert.IsTrue (actual.IsNullable);
     }
@@ -269,11 +269,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "IsNullable parameter can only be supplied for reference types but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"
+        "Properties cannot be nullable when they have a non-nullable value type.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"
         )]
-    public void CheckValueTypeCtors ()
+    public void CheckValueTypeCtors_ValueType_And_NoUnderlyingType_IsNullableIsTrue ()
     {
-      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), false);
+      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), true);
+    }
+
+    [Test]
+    public void CheckValueTypeCtors_ValueType_And_NoUnderlyingType_IsNullableIsFalse ()
+    {
+      var result = ReflectionBasedPropertyDefinitionFactory.Create (
+          _classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), false);
+
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -281,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
-      var columnDefinition = new SimpleColumnDefinition ("Test", typeof(string), "varchar", true, false);
+      var columnDefinition = new SimpleColumnDefinition ("Test", typeof (string), "varchar", true, false);
 
       propertyDefinition.SetStorageProperty (columnDefinition);
 

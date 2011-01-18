@@ -17,20 +17,21 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   [Serializable]
-  public class ReflectionBasedPropertyDefinition: PropertyDefinition
+  public class ReflectionBasedPropertyDefinition : PropertyDefinition
   {
     // no members are serialized here
     [NonSerialized]
     private readonly PropertyInfo _propertyInfo;
+
     [NonSerialized]
     private readonly Type _propertyType;
+
     [NonSerialized]
     private readonly bool _isNullable;
 
@@ -39,18 +40,17 @@ namespace Remotion.Data.DomainObjects.Mapping
         PropertyInfo propertyInfo,
         string propertyName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass)
         : base (classDefinition, propertyName, maxLength, storageClass)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
-      if (propertyType.IsValueType && isNullable.HasValue)
-      {
-        throw CreateArgumentException (
-            propertyName, "IsNullable parameter can only be supplied for reference types but the property is of type '{0}'.", propertyType);
-      }
+
+      if (propertyType.IsValueType && Nullable.GetUnderlyingType (propertyType) == null && isNullable)
+        throw CreateArgumentException (propertyName, "Properties cannot be nullable when they have a non-nullable value type.");
+
       //TODO: change byte[] to all arrays. Will have repurcussions in several places -> Search for byte[]
       if (propertyType != typeof (string) && propertyType != typeof (byte[]) && maxLength.HasValue)
       {
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (propertyType.IsValueType)
         _isNullable = Nullable.GetUnderlyingType (propertyType) != null;
       else
-        _isNullable = isNullable ?? true;
+        _isNullable = isNullable;
     }
 
     public override PropertyInfo PropertyInfo
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
 
         if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
-          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos ().First ().Value;
+          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos().First().Value;
 
         return Activator.CreateInstance (_propertyType, new object[0]);
       }

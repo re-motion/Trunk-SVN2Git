@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveJoin_LeftSideIsReal_RightSideIsVirtual ()
     {
       var propertyDefinition = CreatePropertyDefinition (
-          _classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
+          _classDefinition, "Customer", "Customer", typeof (ObjectID), true, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveJoin_LeftSideIsVirtual_RightSideIsReal ()
     {
       var propertyDefinition = CreatePropertyDefinition (
-          _classDefinition, "Customer", "Customer", typeof (ObjectID), null, null, StorageClass.Persistent);
+          _classDefinition, "Customer", "Customer", typeof (ObjectID), true, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         string propertyName,
         string columnName,
         Type propertyType,
-        bool? isNullable,
+        bool isNullable,
         int? maxLength,
         StorageClass storageClass)
     {
@@ -199,8 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           isNullable,
           maxLength,
           storageClass);
-      propertyDefinition.SetStorageProperty (
-          new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable.HasValue ? isNullable.Value : true, false));
+      propertyDefinition.SetStorageProperty (new SimpleColumnDefinition (columnName, propertyType, "dummyStorageType", isNullable, false));
       return propertyDefinition;
     }
   }
