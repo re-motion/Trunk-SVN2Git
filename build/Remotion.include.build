@@ -721,7 +721,9 @@
 		  <zip zipfile="${relinq-sourcezipfile.name}">
 		    <fileset basedir="${solution.basedir}">
 			  <include name="Remotion-Linq.sln" />
-			  <include name="prereq/Assemblies/**" />
+			  <include name="prereq/Assemblies/Rhino.Mocks*" />
+        <include name="prereq/Assemblies/nunit*" />
+        <include name="prereq/Assemblies/ThirdPartyDependencies.txt" />
 			  <include name="Remotion/Data/Linq/**" />
 			  <include name="Remotion/Data/Linq.SqlBackend/*" />
 			  <include name="Remotion/Data/Linq.UnitTests/**" />
