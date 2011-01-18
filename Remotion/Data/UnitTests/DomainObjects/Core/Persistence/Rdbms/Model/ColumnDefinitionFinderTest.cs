@@ -93,5 +93,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((IDColumnDefinition) result).ClassIDColumn, Is.Not.SameAs (_notAvailableColumn));
       Assert.That (((IDColumnDefinition) result).ClassIDColumn, Is.TypeOf (typeof (NullColumnDefinition)));
     }
+
+    [Test]
+    public void VisitNullColumnDefinition ()
+    {
+      var result = _finder.FindColumn (new NullColumnDefinition());
+
+      Assert.That (result, Is.TypeOf (typeof (NullColumnDefinition)));
+    }
   }
 }
