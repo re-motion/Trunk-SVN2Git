@@ -49,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     void IColumnDefinitionVisitor.VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition)
     {
+      // TODO Review 3628: Add test
       _foundColumn = new NullColumnDefinition ();
     }
   }
