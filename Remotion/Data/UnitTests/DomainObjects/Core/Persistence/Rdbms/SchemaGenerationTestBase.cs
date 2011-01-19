@@ -19,28 +19,37 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Development.UnitTesting.Data.SqlClient;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  public class SchemaGenerationTestBase
+  public class SchemaGenerationTestBase : DatabaseTest
   {
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp ()
+    public SchemaGenerationTestBase ()
+        : base (new DatabaseAgent (SchemaGenerationConnectionString1), "Dummy.sql")
     {
       
     }
 
-    [SetUp]
-    public virtual void SetUp ()
+    [TestFixtureSetUp]
+    public override void TestFixtureSetUp ()
     {
+      base.TestFixtureSetUp();
+    }
+
+    [SetUp]
+    public override void SetUp ()
+    {
+      base.SetUp();
+
       DomainObjectsConfiguration.SetCurrent (SchemaGenerationConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (SchemaGenerationConfiguration.Instance.GetMappingConfiguration());
     }
 
     [TearDown]
-    public virtual void TearDown ()
+    public override void TearDown ()
     {
-      
+      base.TearDown();
     }
 
     protected MappingConfiguration MappingConfiguration

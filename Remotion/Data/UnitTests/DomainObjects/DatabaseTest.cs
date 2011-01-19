@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Utilities;
 
@@ -28,11 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public const string DatabaseName = "TestDomain";
     public const string TestDomainConnectionString = "Integrated Security=SSPI;Initial Catalog=TestDomain;Data Source=localhost; Max Pool Size=1;";
     public const string MasterConnectionString = "Integrated Security=SSPI;Initial Catalog=master;Data Source=localhost; Max Pool Size=1;";
-
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
-
+    public const string SchemaGenerationConnectionString1 =
+        "Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain1;Data Source=localhost; Max Pool Size=1;";
+    public const string SchemaGenerationConnectionString2 =
+        "Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain2;Data Source=localhost; Max Pool Size=1;";
     public const string SchemaGenerationFirstStorageProviderID = "SchemaGenerationFirstStorageProvider";
     public const string SchemaGenerationSecondStorageProviderID = "SchemaGenerationSecondStorageProvider";
     public const string SchemaGenerationInternalStorageProviderID = "SchemaGenerationInternalStorageProvider";

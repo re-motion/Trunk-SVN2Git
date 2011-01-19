@@ -27,10 +27,17 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
   /// <summary>Use the <see cref="DatabaseAgent"/> for setting up the database during unit testing.</summary>
   public class DatabaseAgent
   {
-    private readonly string _connectionString;
+    private string _connectionString;
     private string _fileName = null;
 
     public DatabaseAgent (string connectionString)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
+
+      _connectionString = connectionString;
+    }
+
+    public void SetConnectionString (string connectionString)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
 

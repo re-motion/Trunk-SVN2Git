@@ -1,4 +1,4 @@
-USE TestDomain
+USE SchemaGenerationTestDomain1
 GO
 
 -- Drop all views that will be created below

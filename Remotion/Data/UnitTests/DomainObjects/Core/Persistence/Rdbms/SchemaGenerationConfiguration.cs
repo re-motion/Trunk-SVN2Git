@@ -69,20 +69,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationFirstStorageProviderID,
                                                         sqlStorageObjectFactory,
-                                                        DatabaseTest.TestDomainConnectionString),
+                                                        DatabaseTest.SchemaGenerationConnectionString1),
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationSecondStorageProviderID,
                                                         sqlStorageObjectFactory,
-                                                        DatabaseTest.TestDomainConnectionString),
+                                                        DatabaseTest.SchemaGenerationConnectionString2),
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationInternalStorageProviderID,
                                                         sqlStorageObjectFactory,
-                                                        DatabaseTest.TestDomainConnectionString)
+                                                        DatabaseTest.SchemaGenerationConnectionString1)
                                                 };
 
       _storageConfiguration = new StorageConfiguration (
-          storageProviderDefinitionCollection, 
-          null);
+          storageProviderDefinitionCollection,
+          storageProviderDefinitionCollection[DatabaseTest.SchemaGenerationFirstStorageProviderID]);
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (
               new FirstStorageGroupAttribute (),

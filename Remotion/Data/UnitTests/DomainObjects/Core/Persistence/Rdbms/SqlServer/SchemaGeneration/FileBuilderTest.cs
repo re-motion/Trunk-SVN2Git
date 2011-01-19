@@ -23,21 +23,18 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  //TODO: Run the generated SQL File against a database in the UnitTests and integrate this into the build
-  //      Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
+  //TODO: Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
   [TestFixture]
   public class FileBuilderTest : SchemaGenerationTestBase
   {
-    private RdbmsProviderDefinition _firstStorageProviderDefinition;
-    private RdbmsProviderDefinition _secondStorageProviderDefinition;
-    private FileBuilder _fileBuilder;
+    private FileBuilder _fileBuilderForFirstStorageProvider;
+    private FileBuilder _fileBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScript;
     private string _secondStorageProviderSetupDBScript;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
@@ -54,10 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _firstStorageProviderDefinition = SchemaGenerationFirstStorageProviderDefinition;
-      _secondStorageProviderDefinition = SchemaGenerationSecondStorageProviderDefinition;
-
-      _fileBuilder = new FileBuilder (_firstStorageProviderDefinition);
+      _fileBuilderForFirstStorageProvider = new FileBuilder (SchemaGenerationFirstStorageProviderDefinition);
+      _fileBuilderForSecondStorageProvider = new FileBuilder (SchemaGenerationSecondStorageProviderDefinition);
       _firstStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProvider.sql");
       _firstStorageProviderSetupDBScriptWithoutTables = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
       _secondStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_SecondStorageProvider.sql");
@@ -83,17 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDatabaseName ()
     {
-      Assert.AreEqual ("TestDomain", _fileBuilder.GetDatabaseName());
-    }
-
-    [Test]
-    public void GetScriptForSecondStorageProvider ()
-    {
-      FileBuilder sqlFileBuilder = new FileBuilder (_secondStorageProviderDefinition);
-
-      Assert.AreEqual (
-          _secondStorageProviderSetupDBScript,
-          sqlFileBuilder.GetScript (FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _secondStorageProviderDefinition)));
+      Assert.AreEqual ("SchemaGenerationTestDomain1", _fileBuilderForFirstStorageProvider.GetDatabaseName());
+      Assert.AreEqual ("SchemaGenerationTestDomain2", _fileBuilderForSecondStorageProvider.GetDatabaseName ());
     }
 
     [Test]
@@ -101,7 +87,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       Assert.AreEqual (
           _firstStorageProviderSetupDBScript,
-          _fileBuilder.GetScript (FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, _firstStorageProviderDefinition)));
+          _fileBuilderForFirstStorageProvider.GetScript (
+              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, SchemaGenerationFirstStorageProviderDefinition)));
+    }
+
+    [Test]
+    public void GetScriptForSecondStorageProvider ()
+    {
+      Assert.AreEqual (
+          _secondStorageProviderSetupDBScript,
+          _fileBuilderForSecondStorageProvider.GetScript (
+              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, SchemaGenerationSecondStorageProviderDefinition)));
     }
 
     [Test]
@@ -112,9 +108,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       Assert.AreEqual (
           _firstStorageProviderSetupDBScript,
-          _fileBuilder.GetScript (
+          _fileBuilderForFirstStorageProvider.GetScript (
               FileBuilder.GetClassesInStorageProvider (
-                  new ClassDefinitionCollection (new[]{ MappingConfiguration.ClassDefinitions["Official"]}, true, true), _secondStorageProviderDefinition)));
+                  new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true),
+                  SchemaGenerationSecondStorageProviderDefinition)));
     }
 
     [Test]

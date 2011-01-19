@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
+using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Development.UnitTesting.Data.SqlClient;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -30,12 +33,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         // This does not set the current configuration properties, SchemaGenerationTestBase.TestFixtureSetUp does this
         SchemaGenerationConfiguration.Initialize ();
+
+        var createDBScript = GetEmbeddedStringResource ("SqlServer.SchemaGeneration.TestData.SchemaGeneration_CreateDB.sql");
+
+        var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
+        masterAgent.ExecuteBatchString (createDBScript, false);
       }
       catch (Exception ex)
       {
         Console.WriteLine ("SetUpFixture failed: " + ex);
         Console.WriteLine ();
         throw;
+      }
+    }
+
+    private string GetEmbeddedStringResource (string name)
+    {
+      Assembly assembly = GetType ().Assembly;
+      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (SetUpFixture), name)))
+      {
+        return reader.ReadToEnd ();
       }
     }
   }
