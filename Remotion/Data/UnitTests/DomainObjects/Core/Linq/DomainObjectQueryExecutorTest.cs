@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var mockQuery = QueryFactory.CreateScalarQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
           new QueryParameterCollection());
 
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var mockQuery = QueryFactory.CreateScalarQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
           new QueryParameterCollection ());
 
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var mockQuery = QueryFactory.CreateCollectionQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "SELECT [o].* FROM [Order] [o] WHERE [o].[OrderNo] = 1",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
@@ -364,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var mockQuery = QueryFactory.CreateCollectionQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "SELECT [o].* FROM [Order] [o] WHERE [o].[OrderNo] = 1",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
@@ -411,12 +411,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       var commandParameters = new[] { new CommandParameter ("x", "y") };
 
-      var query = _orderExecutor.CreateQuery ("<dynamic query>", classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name, "x", commandParameters, QueryType.Scalar);
+      var query = _orderExecutor.CreateQuery ("<dynamic query>", classDefinition.StorageEntityDefinition.StorageProviderDefinition, "x", commandParameters, QueryType.Scalar);
       Assert.That (query.Statement, Is.EqualTo ("x"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("x"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo ("y"));
-      Assert.That (query.StorageProviderID, Is.EqualTo (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(classDefinition.StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Scalar));
     }
@@ -427,12 +427,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       var commandParameters = new[] { new CommandParameter ("x", "y") };
 
-      var query = _orderExecutor.CreateQuery ("<dynamic query>", classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name, "x", commandParameters, QueryType.Collection);
+      var query = _orderExecutor.CreateQuery ("<dynamic query>", classDefinition.StorageEntityDefinition.StorageProviderDefinition, "x", commandParameters, QueryType.Collection);
       Assert.That (query.Statement, Is.EqualTo ("x"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("x"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo ("y"));
-      Assert.That (query.StorageProviderID, Is.EqualTo (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name));
+      Assert.That (query.StorageProviderDefinition, Is.EqualTo (classDefinition.StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
     }
@@ -450,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
       Assert.That (
-          query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          query.StorageProviderDefinition, Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Scalar));
     }
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
       Assert.That (
-          query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          query.StorageProviderDefinition, Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
     }
@@ -502,8 +502,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo (1));
       Assert.That (
-          fetchQuery.Value.StorageProviderID,
-          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          fetchQuery.Value.StorageProviderDefinition,
+          Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (fetchQuery.Value.QueryType, Is.EqualTo (QueryType.Collection));
     }
 
@@ -575,8 +575,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (
-          fetchQuery.Value.StorageProviderID,
-          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          fetchQuery.Value.StorageProviderDefinition,
+          Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition));
     }
 
     [Test]
@@ -611,8 +611,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (
-          fetchQuery1.Value.StorageProviderID,
-          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          fetchQuery1.Value.StorageProviderDefinition,
+          Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageEntityDefinition.StorageProviderDefinition));
       Assert.That (fetchQuery1.Value.EagerFetchQueries.Count, Is.EqualTo (1));
 
       var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single();
@@ -629,8 +629,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (
-          fetchQuery2.Value.StorageProviderID,
-          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition.Name));
+          fetchQuery2.Value.StorageProviderDefinition,
+          Is.SameAs(MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageEntityDefinition.StorageProviderDefinition));
     }
 
     [Test]

@@ -251,8 +251,7 @@ namespace Remotion.Data.DomainObjects.Linq
         statement = statement + " ORDER BY " + sortExpression;
       }
 
-      var query = CreateQuery (
-          id, StorageProviderDefinition.Name, statement, command.Parameters, queryType);
+      var query = CreateQuery (id, StorageProviderDefinition, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
     }
@@ -304,16 +303,16 @@ namespace Remotion.Data.DomainObjects.Linq
     /// Creates a <see cref="IQuery"/> object.
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
-    /// <param name="storageProviderID">The ID of the <see cref="StorageProvider"/> to be used for the query.</param>
+    /// <param name="storageProviderDefinition">The <see cref="Persistence.Configuration.StorageProviderDefinition"/> to be used for the query.</param>
     /// <param name="statement">The sql statement of the query.</param>
     /// <param name="commandParameters">The parameters of the sql statement.</param>
     /// <param name="queryType">The type of query to create.</param>
     /// <returns>A <see cref="IQuery"/> object.</returns>
     public virtual IQuery CreateQuery (
-        string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
+        string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
 
@@ -322,9 +321,9 @@ namespace Remotion.Data.DomainObjects.Linq
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
       if (queryType == QueryType.Scalar)
-        return QueryFactory.CreateScalarQuery (id, storageProviderID, statement, queryParameters);
+        return QueryFactory.CreateScalarQuery (id, storageProviderDefinition, statement, queryParameters);
       else
-        return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
+        return QueryFactory.CreateCollectionQuery (id, storageProviderDefinition, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
     private void CreateEagerFetchQueries (IQuery query, ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)

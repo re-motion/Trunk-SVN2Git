@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (RdbmsProviderException))]
     public void InvalidScalarQuery ()
     {
-      QueryDefinition definition = new QueryDefinition ("InvalidQuery", c_testDomainProviderID, "This is not T-SQL", QueryType.Scalar);
+      QueryDefinition definition = new QueryDefinition ("InvalidQuery", TestDomainStorageProviderDefinition, "This is not T-SQL", QueryType.Scalar);
 
       Provider.ExecuteScalarQuery (QueryFactory.CreateQuery (definition));
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       QueryDefinition definition = new QueryDefinition (
           "QueryWithDifferentStorageProviderID",
-          "DifferentStorageProviderID",
+          UnitTestStorageProviderDefinition,
           "select 42",
           QueryType.Scalar);
 

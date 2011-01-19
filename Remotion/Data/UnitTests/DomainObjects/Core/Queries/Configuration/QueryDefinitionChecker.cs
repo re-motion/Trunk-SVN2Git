@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     private void CheckQuery (QueryDefinition expectedQuery, QueryDefinition actualQuery)
     {
       Assert.AreEqual (
-          expectedQuery.StorageProviderID,
-          actualQuery.StorageProviderID,
+          expectedQuery.StorageProviderDefinition,
+          actualQuery.StorageProviderDefinition,
           "ProviderID of query definition {0} does not match.",
           expectedQuery.ID);
 

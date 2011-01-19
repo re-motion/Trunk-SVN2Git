@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         {
           _connection = CreateConnection();
           if (string.IsNullOrEmpty (_connection.ConnectionString))
-            _connection.ConnectionString = Definition.ConnectionString;
+            _connection.ConnectionString = StorageProviderDefinition.ConnectionString;
 
           _connection.Open();
         }
@@ -425,12 +425,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public new RdbmsProviderDefinition Definition
+    public new RdbmsProviderDefinition StorageProviderDefinition
     {
       get
       {
         // CheckDisposed is not necessary here, because StorageProvider.Definition already checks this.
-        return (RdbmsProviderDefinition) base.Definition;
+        return (RdbmsProviderDefinition) base.StorageProviderDefinition;
       }
     }
 
@@ -495,26 +495,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private void CheckStorageProviderID (ObjectID id, string argumentName)
     {
-      if (id.StorageProviderID != ID)
+      if (id.StorageProviderDefinition != StorageProviderDefinition)
       {
         throw CreateArgumentException (
             argumentName,
             "The StorageProviderID '{0}' of the provided ObjectID '{1}' does not match with this StorageProvider's ID '{2}'.",
-            id.StorageProviderID,
+            id.StorageProviderDefinition.Name,
             id,
-            ID);
+            StorageProviderDefinition.Name);
       }
     }
 
     private void CheckClassDefinition (ClassDefinition classDefinition, string argumentName)
     {
-      if (classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name != ID)
+      if (classDefinition.StorageEntityDefinition.StorageProviderDefinition != StorageProviderDefinition)
       {
         throw CreateArgumentException (
             argumentName,
             "The StorageProviderID '{0}' of the provided ClassDefinition does not match with this StorageProvider's ID '{1}'.",
             classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-            ID);
+            StorageProviderDefinition.Name);
       }
     }
 

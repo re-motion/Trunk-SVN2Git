@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (classWithAllDataTypes.ID.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value), "ID.Value");
       Assert.That (classWithAllDataTypes.ID.ClassID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.ClassID), "ID.ClassID");
-      Assert.That (classWithAllDataTypes.ID.StorageProviderID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.StorageProviderID), "ID.StorageProviderID");
+      Assert.That (classWithAllDataTypes.ID.StorageProviderDefinition, Is.SameAs(DomainObjectIDs.ClassWithAllDataTypes1.StorageProviderDefinition), "ID.StorageProviderDefinition");
 
       Assert.That (classWithAllDataTypes.BooleanProperty, Is.EqualTo (false), "BooleanProperty");
       Assert.That (classWithAllDataTypes.ByteProperty, Is.EqualTo (85), "ByteProperty");

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     public interface IBaseCallRequirements
     {
-      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType);
+      IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType);
       IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType);
 
       IQuery CreateQuery (
@@ -50,10 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public bool CreateSqlCommandCalled;
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
+    public IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       CreateQueryCalled = true;
-      return Base.CreateQuery (id, storageProviderID, statement, commandParameters, queryType);
+      return Base.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
     }
 
     [OverrideTarget]

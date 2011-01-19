@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
 
-      if (id.StorageProviderID == storageProviderID)
+      if (id.StorageProviderDefinition.Name == storageProviderID)
         return id.Value;
       else
         return id.ToString();

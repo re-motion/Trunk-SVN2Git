@@ -806,7 +806,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       return QueryFactory.CreateCollectionQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "TEST",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));

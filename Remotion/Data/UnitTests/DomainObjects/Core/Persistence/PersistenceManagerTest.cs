@@ -72,12 +72,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadDataContainers ()
     {
-      Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderID, DomainObjectIDs.Official1, "Different storage providers");
+      Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderDefinition.Name, DomainObjectIDs.Official1, "Different storage providers");
       UnitTestStorageProviderStub officialStorageProvider =
-          (UnitTestStorageProviderStub) _persistenceManager.StorageProviderManager.GetMandatory (DomainObjectIDs.Official1.StorageProviderID);
+          (UnitTestStorageProviderStub) _persistenceManager.StorageProviderManager.GetMandatory (DomainObjectIDs.Official1.StorageProviderDefinition.Name);
 
       MockRepository mockRepository = new MockRepository();
-      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.Definition, NullPersistenceListener.Instance);
+      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.StorageProviderDefinition, NullPersistenceListener.Instance);
 
       DataContainer officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       DataContainer officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);
@@ -329,7 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           orderContainer, new RelationEndPointID (orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"));
 
       Assert.IsNotNull (officialContainer);
-      Assert.AreEqual ("UnitTestStorageProviderStub", officialContainer.ID.StorageProviderID, "StorageProviderID");
+      Assert.AreEqual ("UnitTestStorageProviderStub", officialContainer.ID.StorageProviderDefinition.Name, "StorageProviderID");
       Assert.AreEqual ("Official", officialContainer.ID.ClassID, "ClassID");
       Assert.AreEqual (1, officialContainer.ID.Value, "Value");
     }

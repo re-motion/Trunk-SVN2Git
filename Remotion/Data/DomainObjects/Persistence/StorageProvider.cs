@@ -40,16 +40,16 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// </remarks>
   public abstract class StorageProvider : IDisposable
   {
-    private StorageProviderDefinition _definition;
+    private StorageProviderDefinition _storageProviderDefinition;
     private bool _disposed;
     private readonly IPersistenceListener _persistenceListener;
 
-    protected StorageProvider (StorageProviderDefinition definition, IPersistenceListener persistenceListener)
+    protected StorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceListener persistenceListener)
     {
-      ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
-      _definition = definition;
+      _storageProviderDefinition = storageProviderDefinition;
       _persistenceListener = persistenceListener;
     }
 
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     protected virtual void Dispose (bool disposing)
     {
       if (disposing)
-        _definition = null;
+        _storageProviderDefinition = null;
 
       _disposed = true;
     }
@@ -90,12 +90,12 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract DataContainer[] ExecuteCollectionQuery (IQuery query);
     public abstract object ExecuteScalarQuery (IQuery query);
 
-    public string ID
+    public StorageProviderDefinition StorageProviderDefinition
     {
       get
       {
-        CheckDisposed();
-        return _definition.Name;
+        CheckDisposed ();
+        return _storageProviderDefinition;
       }
     }
 
@@ -104,27 +104,18 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("query", query);
 
-      if (query.StorageProviderID != ID)
+      if (query.StorageProviderDefinition != StorageProviderDefinition)
       {
         throw CreateArgumentException (
             "query",
             "The StorageProviderID '{0}' of the provided query '{1}' does not match with this StorageProvider's ID '{2}'.",
-            query.StorageProviderID,
+            query.StorageProviderDefinition.Name,
             query.ID,
-            ID);
+            StorageProviderDefinition.Name);
       }
 
       if (query.QueryType != expectedQueryType)
         throw CreateArgumentException (argumentName, "Expected query type is '{0}', but was '{1}'.", expectedQueryType, query.QueryType);
-    }
-
-    public StorageProviderDefinition Definition
-    {
-      get
-      {
-        CheckDisposed();
-        return _definition;
-      }
     }
 
     protected object GetFieldValue (DataContainer dataContainer, string propertyName, ValueAccess valueAccess)
@@ -143,7 +134,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     public TypeConversionProvider TypeConversionProvider
     {
-      get { return _definition.TypeConversionProvider; }
+      get { return _storageProviderDefinition.TypeConversionProvider; }
     }
 
     public IPersistenceListener PersistenceListener

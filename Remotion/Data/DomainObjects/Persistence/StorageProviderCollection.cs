@@ -67,7 +67,7 @@ public class StorageProviderCollection : CommonCollection, IDisposable
   {
     ArgumentUtility.CheckNotNull ("provider", provider);
 
-    return BaseContains (provider.ID, provider);
+    return BaseContains (provider.StorageProviderDefinition.Name, provider);
   }
 
   public bool Contains (string storageProviderID)
@@ -94,7 +94,7 @@ public class StorageProviderCollection : CommonCollection, IDisposable
   {
     ArgumentUtility.CheckNotNull ("value", value);
     
-    return BaseAdd (value.ID, value);
+    return BaseAdd (value.StorageProviderDefinition.Name, value);
   }
 
   #endregion

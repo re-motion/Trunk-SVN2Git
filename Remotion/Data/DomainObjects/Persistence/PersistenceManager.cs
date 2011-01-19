@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("id", id);
 
-      StorageProvider provider = _storageProviderManager.GetMandatory (id.StorageProviderID);
+      StorageProvider provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
       DataContainer dataContainer = provider.LoadDataContainer (id);
 
       Exception exception = CheckLoadedDataContainer(id, dataContainer, true);
@@ -191,7 +191,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     {
       MultiDictionary<string, ObjectID> result = new MultiDictionary<string, ObjectID>();
       foreach (ObjectID id in ids)
-        result[id.StorageProviderID].Add (id);
+        result[id.StorageProviderDefinition.Name].Add (id);
       return result;
     }
 
@@ -286,7 +286,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (oppositeID == null)
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
-      StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderID);
+      StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (oppositeID.StorageProviderDefinition.Name);
       DataContainer oppositeDataContainer = oppositeProvider.LoadDataContainer (oppositeID);
       if (oppositeDataContainer != null)
       {

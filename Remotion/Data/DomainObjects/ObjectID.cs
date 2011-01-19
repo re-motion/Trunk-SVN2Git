@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -214,11 +215,11 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the ID of the <see cref="Persistence.StorageProvider"/> which stores the object.
+    /// Gets the <see cref="Persistence.Configuration.StorageProviderDefinition"/> of the <see cref="Persistence.StorageProvider"/> which stores the object.
     /// </summary>
-    public string StorageProviderID
+    public StorageProviderDefinition StorageProviderDefinition
     {
-      get { return ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name; }
+      get { return ClassDefinition.StorageEntityDefinition.StorageProviderDefinition; }
     }
 
     /// <summary>

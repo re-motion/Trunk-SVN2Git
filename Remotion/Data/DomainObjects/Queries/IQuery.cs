@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -37,9 +38,9 @@ namespace Remotion.Data.DomainObjects.Queries
     string Statement { get; }
 
     /// <summary>
-    /// Gets the unique ID of the <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> responsible for executing the query.
+    /// Gets the <see cref="Persistence.Configuration.StorageProviderDefinition"/> of the associated <see cref="Configuration.QueryDefinition"/>.
     /// </summary>
-    string StorageProviderID { get; }
+    StorageProviderDefinition StorageProviderDefinition { get; }
 
     /// <summary>
     /// Gets the type of the collection if the query returns a collection of <see cref="Remotion.Data.DomainObjects.DomainObject"/>s.

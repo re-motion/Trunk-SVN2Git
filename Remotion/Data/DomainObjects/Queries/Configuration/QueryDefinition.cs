@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries.Configuration
@@ -39,15 +39,17 @@ public class QueryDefinition : ISerializable, IObjectReference
 
   // member fields
 
-  private string _id;
-  private string _storageProviderID;
-  private string _statement;
-  private QueryType _queryType;
-  private Type _collectionType;
+  private readonly string _id;
+
+  private readonly string _statement;
+  private readonly QueryType _queryType;
+  private readonly Type _collectionType;
+  private readonly StorageProviderDefinition _storageProviderDefinition;
   
   // Note: _ispartOfQueryConfiguration is used only during the deserialization process. 
   // It is set only in the deserialization constructor and is used in IObjectReference.GetRealObject.
-  private bool _ispartOfQueryConfiguration;
+  private readonly bool _ispartOfQueryConfiguration;
+
 
   // construction and disposing
 
@@ -55,22 +57,21 @@ public class QueryDefinition : ISerializable, IObjectReference
   /// Initializes a new instance of the <b>QueryDefinition</b> class.
   /// </summary>
   /// <param name="queryID">The <paramref name="queryID"/> to be associated with this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
-  /// <param name="storageProviderID">The ID of the <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> responsible for executing instances of this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
-  /// <param name="statement">The <paramref name="statement"/> of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <paramref name="storageProviderID"/> must understand the syntax of the <paramref name="statement"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="storageProviderDefinition">The <see cref="StorageProviderDefinition"/> used for executing instances of this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
+  /// <param name="statement">The <paramref name="statement"/> of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <paramref name="storageProviderDefinition"/> must understand the syntax of the <paramref name="statement"/>. Must not be <see langword="null"/>.</param>
   /// <param name="queryType">One of the <see cref="QueryType"/> enumeration constants.</param>
   /// <exception cref="System.ArgumentNullException">
   ///   <paramref name="queryID"/> is <see langword="null"/>.<br /> -or- <br />
-  ///   <paramref name="storageProviderID"/> is <see langword="null"/>.<br /> -or- <br />
+  ///   <paramref name="storageProviderDefinition"/> is <see langword="null"/>.<br /> -or- <br />
   ///   <paramref name="statement"/> is <see langword="null"/>.
   /// </exception>
   /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
   ///   <paramref name="queryID"/> is an empty string.<br /> -or- <br />
-  ///   <paramref name="storageProviderID"/> is an empty string.<br /> -or- <br />
   ///   <paramref name="statement"/> is an empty string.
   /// </exception>
   /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="queryType"/> is not a valid enum value.</exception>
-  public QueryDefinition (string queryID, string storageProviderID, string statement, QueryType queryType)
-      : this (queryID, storageProviderID, statement, queryType, null)
+  public QueryDefinition (string queryID, StorageProviderDefinition storageProviderDefinition, string statement, QueryType queryType)
+    : this (queryID, storageProviderDefinition, statement, queryType, null)
   {
   }
 
@@ -78,30 +79,29 @@ public class QueryDefinition : ISerializable, IObjectReference
   /// Initializes a new instance of the <b>QueryDefinition</b> class.
   /// </summary>
   /// <param name="queryID">The <paramref name="queryID"/> to be associated with this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
-  /// <param name="storageProviderID">The ID of the <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> responsible for executing instances of this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
-  /// <param name="statement">The <paramref name="statement"/> of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <paramref name="storageProviderID"/> must understand the syntax of the <paramref name="statement"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="storageProviderDefinition">The <see cref="StorageProviderDefinition"/> used for executing instances of this <b>QueryDefinition</b>. Must not be <see langword="null"/>.</param>
+  /// <param name="statement">The <paramref name="statement"/> of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <paramref name="storageProviderDefinition"/> must understand the syntax of the <paramref name="statement"/>. Must not be <see langword="null"/>.</param>
   /// <param name="queryType">One of the <see cref="QueryType"/> enumeration constants.</param>
   /// <param name="collectionType">If <paramref name="queryType"/> specifies a collection to be returned, <paramref name="collectionType"/> specifies the type of the collection. If <paramref name="queryType"/> is <see langword="null"/>, <see cref="DomainObjectCollection"/> is used.</param>
   /// <exception cref="System.ArgumentNullException">
   ///   <paramref name="queryID"/> is <see langword="null"/>.<br /> -or- <br />
-  ///   <paramref name="storageProviderID"/> is <see langword="null"/>.<br /> -or- <br />
+  ///   <paramref name="storageProviderDefinition"/> is <see langword="null"/>.<br /> -or- <br />
   ///   <paramref name="statement"/> is <see langword="null"/>.
   /// </exception>
   /// <exception cref="Remotion.Utilities.ArgumentEmptyException">
   ///   <paramref name="queryID"/> is an empty string.<br /> -or- <br />
-  ///   <paramref name="storageProviderID"/> is an empty string.<br /> -or- <br />
   ///   <paramref name="statement"/> is an empty string.
   /// </exception>
   /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="queryType"/> is not a valid enum value.</exception>
   public QueryDefinition (
       string queryID, 
-      string storageProviderID,
+      StorageProviderDefinition storageProviderDefinition,
       string statement, 
       QueryType queryType, 
       Type collectionType)
   {
     ArgumentUtility.CheckNotNullOrEmpty ("queryID", queryID);
-    ArgumentUtility.CheckNotNullOrEmpty ("storageProviderID", storageProviderID);
+    ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
     ArgumentUtility.CheckNotNullOrEmpty ("statement", statement);
     ArgumentUtility.CheckValidEnumValue ("queryType", queryType);
 
@@ -120,7 +120,7 @@ public class QueryDefinition : ISerializable, IObjectReference
     }
 
     _id = queryID;
-    _storageProviderID = storageProviderID;
+    _storageProviderDefinition = storageProviderDefinition;
     _statement = statement;
     _queryType = queryType;
     _collectionType = collectionType;
@@ -138,7 +138,8 @@ public class QueryDefinition : ISerializable, IObjectReference
 
     if (!_ispartOfQueryConfiguration)
     {
-      _storageProviderID = info.GetString ("StorageProviderID");
+       var storageProviderID = info.GetString ("StorageProviderID");
+       _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID); //TODO RM-3530: Check!
       _statement = info.GetString ("Statement");
       _queryType = (QueryType) info.GetValue ("QueryType", typeof (QueryType));
       _collectionType = (Type) info.GetValue ("CollectionType", typeof (Type));
@@ -156,15 +157,15 @@ public class QueryDefinition : ISerializable, IObjectReference
   }
 
   /// <summary>
-  /// Gets the ID of the <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> responsible for executing instances of this <b>QueryDefinition</b>.
+  /// Gets the <see cref="Persistence.Configuration.StorageProviderDefinition"/> used for executing instances of this <b>QueryDefinition</b>.
   /// </summary>
-  public string StorageProviderID
+  public StorageProviderDefinition StorageProviderDefinition
   {
-    get { return _storageProviderID; }
+    get { return _storageProviderDefinition; }
   }
 
   /// <summary>
-  /// Gets the statement-text of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <see cref="StorageProviderID"/> must understand the syntax of the <b>Statement</b>.
+  /// Gets the statement-text of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <see cref="StorageProviderDefinition"/> must understand the syntax of the <b>Statement</b>.
   /// </summary>
   public string Statement
   {
@@ -218,7 +219,7 @@ public class QueryDefinition : ISerializable, IObjectReference
 
     if (!isPartOfQueryConfiguration)
     {
-      info.AddValue ("StorageProviderID", _storageProviderID);
+      info.AddValue ("StorageProviderID", StorageProviderDefinition.Name); //TODO RM-3530: Check!
       info.AddValue ("Statement", _statement);
       info.AddValue ("QueryType", _queryType);
       info.AddValue ("CollectionType", _collectionType);

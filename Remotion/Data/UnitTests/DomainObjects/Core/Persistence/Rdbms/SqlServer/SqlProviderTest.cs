@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetTypeConversionServices ()
     {
-      Assert.AreSame (ProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);
+      Assert.AreSame (TestDomainStorageProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       ValueConverter valueConverter = Provider.CreateValueConverter ();
       Assert.IsNotNull (valueConverter);
-      Assert.AreSame (ProviderDefinition.TypeConversionProvider, valueConverter.TypeConversionProvider);
+      Assert.AreSame (TestDomainStorageProviderDefinition.TypeConversionProvider, valueConverter.TypeConversionProvider);
     }
   }
 }

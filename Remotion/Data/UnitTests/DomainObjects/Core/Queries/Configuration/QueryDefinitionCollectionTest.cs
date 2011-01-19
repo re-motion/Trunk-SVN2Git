@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 
       _definition = new QueryDefinition (
           "OrderQuery",
-          "TestDomain",
+          TestDomainStorageProviderDefinition,
           "select Order.* from Order inner join Customer where Customer.ID = @customerID order by OrderNo asc;",
           QueryType.Collection,
           typeof (OrderCollection));
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       _collection.Add (_definition);
 
       QueryDefinition copy = new QueryDefinition (
-          _definition.ID, _definition.StorageProviderID, _definition.Statement, _definition.QueryType, _definition.CollectionType);
+          _definition.ID, _definition.StorageProviderDefinition, _definition.Statement, _definition.QueryType, _definition.CollectionType);
 
       Assert.IsFalse (_collection.Contains (copy));
     }
@@ -95,11 +95,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [Test]
     public void Merge ()
     {
-      QueryDefinition query1 = new QueryDefinition ("id1", "bla", "bla", QueryType.Collection);
-      QueryDefinition query2 = new QueryDefinition ("id2", "bla", "bla", QueryType.Collection);
-      QueryDefinition query3 = new QueryDefinition ("id3", "bla", "bla", QueryType.Collection);
-      QueryDefinition query4 = new QueryDefinition ("id4", "bla", "bla", QueryType.Collection);
-      QueryDefinition query5 = new QueryDefinition ("id5", "bla", "bla", QueryType.Collection);
+      QueryDefinition query1 = new QueryDefinition ("id1", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
+      QueryDefinition query2 = new QueryDefinition ("id2", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
+      QueryDefinition query3 = new QueryDefinition ("id3", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
+      QueryDefinition query4 = new QueryDefinition ("id4", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
+      QueryDefinition query5 = new QueryDefinition ("id5", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
 
       QueryDefinitionCollection source = new QueryDefinitionCollection ();
       source.Add (query1);
@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [ExpectedException (typeof (DuplicateQueryDefinitionException), ExpectedMessage = "The query with ID 'id1' has a duplicate.")]
     public void Merge_ThrowsOnDuplicates ()
     {
-      QueryDefinition query1 = new QueryDefinition ("id1", "bla", "bla", QueryType.Collection);
-      QueryDefinition query2 = new QueryDefinition ("id1", "bla", "bla", QueryType.Collection);
+      QueryDefinition query1 = new QueryDefinition ("id1", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
+      QueryDefinition query2 = new QueryDefinition ("id1", TestDomainStorageProviderDefinition, "bla", QueryType.Collection);
 
       QueryDefinitionCollection source = new QueryDefinitionCollection ();
       source.Add (query1);

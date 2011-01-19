@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       _collection.Add (_provider);
 
-      StorageProvider copy = new SqlProvider ((RdbmsProviderDefinition) _provider.Definition, NullPersistenceListener.Instance);
+      StorageProvider copy = new SqlProvider ((RdbmsProviderDefinition) _provider.StorageProviderDefinition, NullPersistenceListener.Instance);
       Assert.IsFalse (_collection.Contains (copy));
     }
   }

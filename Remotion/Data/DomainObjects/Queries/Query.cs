@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
@@ -75,6 +76,14 @@ namespace Remotion.Data.DomainObjects.Queries
     }
 
     /// <summary>
+    /// Gets the <see cref="Persistence.Configuration.StorageProviderDefinition"/> of the associated <see cref="Configuration.QueryDefinition"/>.
+    /// </summary>
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _definition.StorageProviderDefinition; }
+    }
+
+    /// <summary>
     /// Gets the <see cref="Configuration.QueryDefinition.CollectionType"/> of the associated <see cref="Configuration.QueryDefinition"/>.
     /// </summary>
     public Type CollectionType
@@ -96,14 +105,6 @@ namespace Remotion.Data.DomainObjects.Queries
     public string Statement
     {
       get { return _definition.Statement; }
-    }
-
-    /// <summary>
-    /// Gets the <see cref="Configuration.QueryDefinition.StorageProviderID"/> of the associated <see cref="Configuration.QueryDefinition"/>.
-    /// </summary>
-    public string StorageProviderID
-    {
-      get { return _definition.StorageProviderID; }
     }
 
     /// <summary>

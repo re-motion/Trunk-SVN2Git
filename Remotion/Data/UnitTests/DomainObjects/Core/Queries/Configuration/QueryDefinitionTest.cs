@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [Test]
     public void InitializeCollectionType ()
     {
-      QueryDefinition definition = new QueryDefinition ("QueryID", "StorageProviderID", "Statement", QueryType.Collection);
+      QueryDefinition definition = new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
 
       Assert.AreEqual (typeof (DomainObjectCollection), definition.CollectionType);
     }
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     public void InitializeScalarQueryWithCollectionType ()
     {
       QueryDefinition definition = 
-          new QueryDefinition ("QueryID", "StorageProviderID", "Statement", QueryType.Scalar, typeof (DomainObjectCollection));
+          new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Scalar, typeof (DomainObjectCollection));
     }
 
     [Test]
@@ -47,14 +47,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
         + "Parameter name: collectionType")]
     public void InitializeInvalidCollectionType ()
     {
-      QueryDefinition definition = new QueryDefinition ("QueryID", "StorageProviderID", "Statement", QueryType.Collection, this.GetType ());
+      QueryDefinition definition = new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection, this.GetType ());
     }
 
     [Test]
     public void InitializeWithDomainObjectCollectionType ()
     {
       QueryDefinition definition = 
-          new QueryDefinition ("QueryID", "StorageProviderID", "Statement", QueryType.Collection, typeof (DomainObjectCollection));
+          new QueryDefinition ("QueryID", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection, typeof (DomainObjectCollection));
 
       Assert.AreEqual (typeof (DomainObjectCollection), definition.CollectionType);
     }

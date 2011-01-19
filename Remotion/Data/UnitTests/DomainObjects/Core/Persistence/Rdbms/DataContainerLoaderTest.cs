@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var query = QueryFactory.CreateCollectionQuery (
           "test",
-          Provider.ID,
+          Provider.StorageProviderDefinition,
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var query = QueryFactory.CreateCollectionQuery (
           "test",
-          Provider.ID,
+          Provider.StorageProviderDefinition,
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
@@ -458,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Provider.Disconnect();
 
-      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition, NullPersistenceListener.Instance))
+      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (TestDomainStorageProviderDefinition, NullPersistenceListener.Instance))
       {
         var loader = new DataContainerLoader (providerMock);
 

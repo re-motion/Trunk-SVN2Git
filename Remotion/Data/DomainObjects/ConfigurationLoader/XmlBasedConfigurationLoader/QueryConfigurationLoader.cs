@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
     {
       try
       {
-        base.Initialize (
+        Initialize (
             configurationFile,
             SchemaLoader.Queries,
             true,
@@ -88,11 +88,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       QueryType queryType = (QueryType) Enum.Parse (typeof (QueryType), queryTypeAsString, true);
 
       XmlNode node = queryNode.SelectSingleNode (FormatXPath ("{0}:storageGroupType"), NamespaceManager);
-      string storageProviderID;
+      StorageProviderDefinition storageProviderDefinition;
       if (node != null)
-        storageProviderID = GetStorageProviderID (node.InnerText);
+        storageProviderDefinition = GetStorageProviderID (node.InnerText);
       else
-        storageProviderID = GetStorageProviderID (null);
+        storageProviderDefinition = GetStorageProviderID (null);
 
       string statement = queryNode.SelectSingleNode (FormatXPath ("{0}:statement"), NamespaceManager).InnerText;
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       if (queryType == QueryType.Scalar && collectionType != null)
         throw CreateQueryConfigurationException ("A scalar query '{0}' must not specify a collectionType.", queryID);
 
-      return new QueryDefinition (queryID, storageProviderID, statement, queryType, collectionType);
+      return new QueryDefinition (queryID, storageProviderDefinition, statement, queryType, collectionType);
     }
 
     private string FormatXPath (string xPath)
@@ -112,7 +112,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
     //TODO: COMMONS-842
     //TODO: Move type resolving to storagegrouplist and unify with ClassReflector
     //TODO: Test for DefaultStorageProvider
-    private string GetStorageProviderID (string storageGroupName)
+    //TODO RM-3530: Use StorageProviderDefinitionFinder instead !?
+    private StorageProviderDefinition GetStorageProviderID (string storageGroupName)
     {
       var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (storageGroupName == null)
@@ -120,7 +121,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
         //TODO COMMONS-783: Test exception
         if (defaultStorageProviderDefinition == null)
           throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
-        return defaultStorageProviderDefinition.Name;
+        return defaultStorageProviderDefinition;
       }
 
       Type storageGroupType = TypeUtility.GetType (storageGroupName, true);
@@ -131,9 +132,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
         //TODO COMMONS-783: Test exception
         if (defaultStorageProviderDefinition == null)
           throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
-        return defaultStorageProviderDefinition.Name;
+        return defaultStorageProviderDefinition;
       }
-      return storageGroup.StorageProviderName;
+      return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
     }
 
     private QueryConfigurationException CreateQueryConfigurationException (string message, params object[] args)

@@ -17,23 +17,19 @@
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   public class SqlProviderBaseTest : ClientTransactionBaseTest
   {
-    private RdbmsProviderDefinition _providerDefinition;
     private SqlProvider _provider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _providerDefinition = new RdbmsProviderDefinition (c_testDomainProviderID, new SqlStorageObjectFactory(), TestDomainConnectionString);
-
-      _provider = new SqlProvider (_providerDefinition, NullPersistenceListener.Instance);
+      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
@@ -41,12 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _provider.Dispose();
       base.TearDown();
     }
-
-    protected RdbmsProviderDefinition ProviderDefinition
-    {
-      get { return _providerDefinition; }
-    }
-
+    
     protected SqlProvider Provider
     {
       get { return _provider; }

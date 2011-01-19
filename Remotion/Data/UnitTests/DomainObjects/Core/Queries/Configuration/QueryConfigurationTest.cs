@@ -349,8 +349,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (
-          queries["QueryFromDefaultStorageProvider"].StorageProviderID,
-          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+          queries["QueryFromDefaultStorageProvider"].StorageProviderDefinition,
+          Is.SameAs(DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition));
     }
 
     [Test]
@@ -360,11 +360,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (
-          queries["QueryFromCustomStorageGroup"].StorageProviderID,
-          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions["TestDomain"].Name));
+          queries["QueryFromCustomStorageGroup"].StorageProviderDefinition,
+          Is.SameAs(DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions["TestDomain"]));
       Assert.That (
-         queries["QueryFromCustomStorageGroup"].StorageProviderID,
-         Is.Not.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+         queries["QueryFromCustomStorageGroup"].StorageProviderDefinition,
+         Is.Not.SameAs(DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition));
     }
 
     [Test]
@@ -374,8 +374,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (
-          queries["QueryFromUndefinedStorageGroup"].StorageProviderID,
-          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+          queries["QueryFromUndefinedStorageGroup"].StorageProviderDefinition,
+          Is.SameAs(DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition));
     }
   }
 }

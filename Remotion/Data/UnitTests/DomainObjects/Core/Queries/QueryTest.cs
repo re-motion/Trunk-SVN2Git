@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
-using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
@@ -41,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.AreEqual (definition.CollectionType, query.CollectionType);
       Assert.AreEqual (definition.QueryType, query.QueryType);
       Assert.AreEqual (definition.Statement, query.Statement);
-      Assert.AreEqual (definition.StorageProviderID, query.StorageProviderID);
+      Assert.AreEqual (definition.StorageProviderDefinition, query.StorageProviderDefinition);
       Assert.AreSame (parameters, query.Parameters);
     }
 

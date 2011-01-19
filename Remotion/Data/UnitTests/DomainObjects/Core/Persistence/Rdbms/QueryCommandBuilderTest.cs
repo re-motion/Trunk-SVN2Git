@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      var queryDefinition = new QueryDefinition ("TheQuery", "StorageProvider", "Statement", QueryType.Collection);
+      var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
       new QueryCommandBuilder (Provider, QueryFactory.CreateQuery (queryDefinition));
     }
   }

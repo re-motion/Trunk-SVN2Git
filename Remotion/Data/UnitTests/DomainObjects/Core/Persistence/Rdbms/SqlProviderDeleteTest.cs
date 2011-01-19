@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -42,10 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
-      RdbmsProviderDefinition definition = new RdbmsProviderDefinition (
-          c_testDomainProviderID, new SqlStorageObjectFactory(), TestDomainConnectionString);
-
-      _provider = new SqlProvider (definition, NullPersistenceListener.Instance);
+      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()

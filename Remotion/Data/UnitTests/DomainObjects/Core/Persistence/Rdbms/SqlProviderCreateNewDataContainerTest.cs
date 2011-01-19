@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.IsNotNull (newContainer, "New DataContainer is null.");
       Assert.IsNotNull (newContainer.ID, "ObjectID of new DataContainer.");
       Assert.AreEqual (orderClass.ID, newContainer.ID.ClassID, "ClassID of ObjectID.");
-      Assert.AreEqual (c_testDomainProviderID, newContainer.ID.StorageProviderID, "StorageProviderID of ObjectID.");
+      Assert.AreEqual (c_testDomainProviderID, newContainer.ID.StorageProviderDefinition.Name, "StorageProviderID of ObjectID.");
       Assert.AreEqual (typeof (Guid), newContainer.ID.Value.GetType (), "Type of ID value of ObjectID.");
       Assert.IsNull (newContainer.Timestamp, "Timestamp of new DataContainer.");
       Assert.AreEqual (StateType.New, newContainer.State, "State of new DataContainer.");

@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       ValueConverter valueConverter = Provider.CreateValueConverter ();
       if (parameterValue != null && parameterValue.GetType() == typeof (ObjectID))
-        commandParameter.Value = valueConverter.GetDBValue ((ObjectID) parameterValue, Provider.ID);
+        commandParameter.Value = valueConverter.GetDBValue ((ObjectID) parameterValue, Provider.StorageProviderDefinition.Name);
       else
         commandParameter.Value = valueConverter.GetDBValue (parameterValue);
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      return id.StorageProviderID == _provider.ID;
+      return id.StorageProviderDefinition == _provider.StorageProviderDefinition;
     }
 
     protected string GetOrderClause (SortExpressionDefinition sortExpression)

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void QueryDefinition ()
     {
-      QueryDefinition queryDefinition = new QueryDefinition ("queryID", "TestDomain", "statement", QueryType.Collection, typeof (DomainObjectCollection));
+      QueryDefinition queryDefinition = new QueryDefinition ("queryID", TestDomainStorageProviderDefinition, "statement", QueryType.Collection, typeof (DomainObjectCollection));
 
       QueryDefinition deserializedQueryDefinition = (QueryDefinition) SerializeAndDeserialize (queryDefinition);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [ExpectedException (typeof (QueryConfigurationException), ExpectedMessage = "QueryDefinition 'UnknownQuery' does not exist.")]
     public void UnknownQueryDefinitionInQueryConfiguration ()
     {
-      QueryDefinition unknownQueryDefinition = new QueryDefinition ("UnknownQuery", "TestDomain", "select 42", QueryType.Scalar);
+      QueryDefinition unknownQueryDefinition = new QueryDefinition ("UnknownQuery", TestDomainStorageProviderDefinition, "select 42", QueryType.Scalar);
       DomainObjectsConfiguration.Current.Query.QueryDefinitions.Add (unknownQueryDefinition);
 
       using (MemoryStream stream = new MemoryStream ())
@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (expected.ID, actual.ID);
       Assert.AreEqual (expected.QueryType, actual.QueryType);
       Assert.AreEqual (expected.Statement, actual.Statement);
-      Assert.AreEqual (expected.StorageProviderID, actual.StorageProviderID);
+      Assert.AreEqual (expected.StorageProviderDefinition, actual.StorageProviderDefinition);
       Assert.AreEqual (expected.CollectionType, actual.CollectionType);
     }
 

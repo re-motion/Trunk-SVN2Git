@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStri
       string idString = "Official|Arthur Dent|System.String";
       ObjectID id = ObjectIDStringSerializer.Instance.Parse (idString);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("UnitTestStorageProviderStub"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("UnitTestStorageProviderStub"));
       Assert.That (id.ClassID, Is.EqualTo ("Official"));
       Assert.That (id.Value.GetType(), Is.EqualTo (typeof (string)));
       Assert.That (id.Value, Is.EqualTo ("Arthur Dent"));
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStri
       string idString = "Official|42|System.Int32";
       ObjectID id = ObjectIDStringSerializer.Instance.Parse (idString);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("UnitTestStorageProviderStub"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("UnitTestStorageProviderStub"));
       Assert.That (id.ClassID, Is.EqualTo ("Official"));
       Assert.That (id.Value.GetType(), Is.EqualTo (typeof (int)));
       Assert.That (id.Value, Is.EqualTo (42));
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStri
       string idString = "Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid";
       ObjectID id = ObjectIDStringSerializer.Instance.Parse (idString);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("TestDomain"));
       Assert.That (id.ClassID, Is.EqualTo ("Order"));
       Assert.That (id.Value.GetType(), Is.EqualTo (typeof (Guid)));
       Assert.That (id.Value, Is.EqualTo (new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}")));
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectIDStri
       bool result = ObjectIDStringSerializer.Instance.TryParse (idString, out id);
 
       Assert.That (result, Is.True);
-      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("TestDomain"));
       Assert.That (id.ClassID, Is.EqualTo ("Order"));
       Assert.That (id.Value.GetType(), Is.EqualTo (typeof (Guid)));
       Assert.That (id.Value, Is.EqualTo (new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}")));

@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void CreateQuery_FromDefinition ()
     {
-      var definition = new QueryDefinition ("Test", "x", "y", QueryType.Collection, typeof (OrderCollection));
+      var definition = new QueryDefinition ("Test", TestDomainStorageProviderDefinition, "y", QueryType.Collection, typeof (OrderCollection));
 
       IQuery query = QueryFactory.CreateQuery (definition);
       Assert.That (query.CollectionType, Is.EqualTo (definition.CollectionType));
@@ -71,13 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Parameters, Is.Empty);
       Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
       Assert.That (query.Statement, Is.EqualTo (definition.Statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(definition.StorageProviderDefinition));
     }
 
     [Test]
     public void CreateQuery_FromDefinition_WithParameterCollection ()
     {
-      var definition = new QueryDefinition ("Test", "x", "y", QueryType.Collection, typeof (OrderCollection));
+      var definition = new QueryDefinition ("Test", TestDomainStorageProviderDefinition, "y", QueryType.Collection, typeof (OrderCollection));
       var parameterCollection = new QueryParameterCollection();
 
       IQuery query = QueryFactory.CreateQuery (definition, parameterCollection);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Parameters, Is.SameAs (parameterCollection));
       Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
       Assert.That (query.Statement, Is.EqualTo (definition.Statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(definition.StorageProviderDefinition));
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Parameters, Is.Empty);
       Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
       Assert.That (query.Statement, Is.EqualTo (definition.Statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(definition.StorageProviderDefinition));
     }
 
     [Test]
@@ -115,42 +115,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Parameters, Is.SameAs (parameterCollection));
       Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
       Assert.That (query.Statement, Is.EqualTo (definition.Statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.EqualTo (definition.StorageProviderDefinition));
     }
 
     [Test]
     public void CreateScalarQuery ()
     {
       var id = "id";
-      var storageProviderID = "spID";
       var statement = "stmt";
       var parameterCollection = new QueryParameterCollection();
 
-      IQuery query = QueryFactory.CreateScalarQuery (id, storageProviderID, statement, parameterCollection);
+      IQuery query = QueryFactory.CreateScalarQuery (id, TestDomainStorageProviderDefinition, statement, parameterCollection);
       Assert.That (query.CollectionType, Is.Null);
       Assert.That (query.ID, Is.EqualTo (id));
       Assert.That (query.Parameters, Is.SameAs (parameterCollection));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Scalar));
       Assert.That (query.Statement, Is.EqualTo (statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (storageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(TestDomainStorageProviderDefinition));
     }
 
     [Test]
     public void CreateCollectionQuery ()
     {
       var id = "id";
-      var storageProviderID = "spID";
       var statement = "stmt";
       var parameterCollection = new QueryParameterCollection();
       var collectionType = typeof (OrderCollection);
 
-      IQuery query = QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, parameterCollection, collectionType);
+      IQuery query = QueryFactory.CreateCollectionQuery (id, TestDomainStorageProviderDefinition, statement, parameterCollection, collectionType);
       Assert.That (query.ID, Is.EqualTo (id));
       Assert.That (query.CollectionType, Is.SameAs (collectionType));
       Assert.That (query.Parameters, Is.SameAs (parameterCollection));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
       Assert.That (query.Statement, Is.EqualTo (statement));
-      Assert.That (query.StorageProviderID, Is.EqualTo (storageProviderID));
+      Assert.That (query.StorageProviderDefinition, Is.SameAs(TestDomainStorageProviderDefinition));
     }
 
     [Test]

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new QueryDefinition (
           "OrderQueryWithCustomCollectionType",
-          "TestDomain",
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID],
           "select [Order].* from [Order] inner join [Company] where [Company].[ID] = @customerID order by [OrderNo] asc;",
           QueryType.Collection,
           typeof (OrderCollection));
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new QueryDefinition (
           "OrderQueryWithObjectListOfOrder",
-          "TestDomain",
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID],
           "select [Order].* from [Order] inner join [Company] where [Company].[ID] = @customerID order by [OrderNo] asc;",
           QueryType.Collection,
           typeof (ObjectList<Order>));
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new QueryDefinition (
           "CustomerTypeQuery",
-          "TestDomain",
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID],
           "select [Company].* from [Company] where [CustomerType] = @customerType order by [Name] asc;",
           QueryType.Collection,
           typeof (DomainObjectCollection));
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       return new QueryDefinition (
           "OrderSumQuery",
-          "TestDomain",
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_testDomainProviderID],
           "select sum(quantity) from [Order] where [CustomerID] = @customerID;",
           QueryType.Scalar);
     }
@@ -74,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public static QueryResult<T> CreateTestQueryResult<T> (T[] collection) where T: DomainObject
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (T)];
-      var storageProviderID = classDefinition != null
-                                  ? classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name
-                                  : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
-      var query = QueryFactory.CreateCollectionQuery ("test", storageProviderID, "TEST", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      var storageProviderDefinition = classDefinition != null
+                                  ? classDefinition.StorageEntityDefinition.StorageProviderDefinition
+                                  : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      var query = QueryFactory.CreateCollectionQuery ("test", storageProviderDefinition, "TEST", new QueryParameterCollection (), typeof (DomainObjectCollection));
       return CreateTestQueryResult (query, collection);
     }
 

@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
 
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Computer].* FROM [Computer] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
           + "ORDER BY [Computer].[ID] asc",
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithNullValues ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
           + "ORDER BY [Computer].[ID] asc",
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithDuplicates ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
       queryManager.GetCollection (query);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var ordersQuery = QueryFactory.CreateCollectionQuery (
           "test",
-          DomainObjectIDs.Order1.StorageProviderID,
+          DomainObjectIDs.Order1.StorageProviderDefinition,
           "SELECT * FROM [Order] WHERE OrderNo IN (1, 3)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var orderItemsFetchQuery = QueryFactory.CreateCollectionQuery (
           "test fetch",
-          DomainObjectIDs.OrderItem1.StorageProviderID,
+          DomainObjectIDs.OrderItem1.StorageProviderDefinition,
           "SELECT oi.* FROM [Order] o LEFT OUTER JOIN OrderItem oi ON o.ID = oi.OrderID WHERE o.OrderNo IN (1, 3)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void QueryWithExtensibleEnums ()
     {
       IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
 
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
-          order1.ID.StorageProviderID,
+          order1.ID.StorageProviderDefinition,
           "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
@@ -301,7 +301,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
-          order1.ID.StorageProviderID,
+          order1.ID.StorageProviderDefinition,
           "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));

@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
     /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Collection"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
-    /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
+    /// The <see cref="IQuery.StorageProviderDefinition"/> of <paramref name="query"/> could not be found.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
     /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
@@ -188,7 +188,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Scalar"/>.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
-    /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
+    /// The <see cref="IQuery.StorageProviderDefinition"/> of <paramref name="query"/> could not be found.
     /// </exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
     /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.

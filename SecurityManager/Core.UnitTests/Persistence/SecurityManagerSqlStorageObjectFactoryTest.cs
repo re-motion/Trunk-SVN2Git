@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       Assert.That (result, Is.TypeOf (typeof (SecurityManagerSqlProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
-      Assert.That (result.Definition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
 
     [Test]

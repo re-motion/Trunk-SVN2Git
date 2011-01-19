@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
       string idString = "Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid";
       ObjectID id = ObjectID.Parse (idString);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("TestDomain"));
       Assert.That (id.ClassID, Is.EqualTo ("Order"));
       Assert.That (id.Value.GetType (), Is.EqualTo (typeof (Guid)));
       Assert.That (id.Value, Is.EqualTo (new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}")));
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
       var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
       var id = new ObjectID ("Order", value);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("TestDomain"));
       Assert.That (id.ClassID, Is.EqualTo ("Order"));
       Assert.That (id.Value, Is.EqualTo (value));
     }
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
       var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
       var id = new ObjectID (typeof (Order), value);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo ("TestDomain"));
       Assert.That (id.ClassID, Is.EqualTo ("Order"));
       Assert.That (id.Value, Is.EqualTo (value));
     }
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
 
       var id = new ObjectID (orderDefinition, value);
 
-      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name));
+      Assert.That (id.StorageProviderDefinition.Name, Is.EqualTo (orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name));
       Assert.That (id.ClassID, Is.EqualTo (orderDefinition.ID));
       Assert.That (id.Value, Is.EqualTo (value));
     }

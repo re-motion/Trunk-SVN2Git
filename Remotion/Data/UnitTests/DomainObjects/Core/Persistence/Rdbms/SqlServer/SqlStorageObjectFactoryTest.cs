@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (SqlProvider)));
       Assert.That (result.PersistenceListener, Is.SameAs (_persistenceListenerStub));
-      Assert.That (result.Definition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (result.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
 
     [Test]

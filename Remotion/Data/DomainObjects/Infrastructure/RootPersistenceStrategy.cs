@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (var storageProviderManager = CreateStorageProviderManager())
       {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
         return provider.ExecuteCollectionQuery (query);
       }
     }
@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (var storageProviderManager = CreateStorageProviderManager())
       {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
         return provider.ExecuteScalarQuery (query);
       }
     }

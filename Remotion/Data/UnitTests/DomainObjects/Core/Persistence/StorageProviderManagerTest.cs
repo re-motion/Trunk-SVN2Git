@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       Assert.IsNotNull (provider);
       Assert.AreEqual (typeof (SqlProvider), provider.GetType ());
-      Assert.AreEqual (c_testDomainProviderID, provider.ID);
+      Assert.AreEqual (c_testDomainProviderID, provider.StorageProviderDefinition.Name);
     }
 
     [Test]
