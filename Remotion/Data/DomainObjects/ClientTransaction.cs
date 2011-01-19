@@ -1084,30 +1084,6 @@ public class ClientTransaction
     fullCommand.NotifyAndPerform ();
   }
 
-  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
-  protected virtual DomainObject LoadObject (ObjectID id)
-  {
-    throw new NotImplementedException ();
-  }
-
-  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
-  protected virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
-  {
-    throw new NotImplementedException ();
-  }
-
-  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
-  protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
-  {
-    throw new NotImplementedException ();
-  }
-
-  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
-  protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
-  {
-    throw new NotImplementedException ();
-  }
-
   /// <summary>
   /// Raises the <see cref="Loaded"/> event.
   /// </summary>
@@ -1381,6 +1357,30 @@ public class ClientTransaction
   protected internal DataContainer GetDataContainer (DomainObject domainObject)
   {
     throw new NotImplementedException();
+  }
+
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
+  protected virtual DomainObject LoadObject (ObjectID id)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
+  protected virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
+  protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
+  protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
+  {
+    throw new NotImplementedException ();
   }
 }
 }
