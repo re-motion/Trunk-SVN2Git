@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.Mapping;
+using System;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// </summary>
   public interface IStorageProviderDefinitionFinder
   {
-    StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition);
+    StorageProviderDefinition GetStorageProviderDefinition (Type storageGroupTypeOrNull, string errorMessageContext);
   }
 }

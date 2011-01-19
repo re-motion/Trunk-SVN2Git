@@ -91,8 +91,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         SimpleColumnDefinition foreignKeyColumnDefinition)
     {
       var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition();
-      var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (oppositeEndPointDefinition.ClassDefinition);
-      var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
+      ClassDefinition classDefinition = oppositeEndPointDefinition.ClassDefinition;
+      var oppositeClassDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
+      ClassDefinition classDefinition1 = propertyDefinition.ClassDefinition;
+      var classDefinitionStorageProvider = providerDefinitionFinder.GetStorageProviderDefinition (classDefinition1.StorageGroupType, null);
 
       if (oppositeEndPointDefinition.ClassDefinition.IsPartOfInheritanceHierarchy
           && classDefinitionStorageProvider.Name == oppositeClassDefinitionStorageProvider.Name)

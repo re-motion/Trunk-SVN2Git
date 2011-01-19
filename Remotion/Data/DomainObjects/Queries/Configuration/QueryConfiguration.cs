@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using Remotion.Configuration;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -64,15 +66,17 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
 
     private QueryDefinitionCollection LoadAllQueryDefinitions ()
     {
+      var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+
       if (QueryFiles.Count == 0)
-        return new QueryConfigurationLoader (GetDefaultQueryFilePath()).GetQueryDefinitions ();
+        return new QueryConfigurationLoader (GetDefaultQueryFilePath(), storageProviderDefinitionFinder).GetQueryDefinitions ();
       else
       {
         QueryDefinitionCollection result = new QueryDefinitionCollection ();
 
         for (int i = 0; i < QueryFiles.Count; i++)
         {
-          QueryConfigurationLoader loader = new QueryConfigurationLoader (QueryFiles[i].RootedFileName);
+          QueryConfigurationLoader loader = new QueryConfigurationLoader (QueryFiles[i].RootedFileName, storageProviderDefinitionFinder);
             QueryDefinitionCollection queryDefinitions = loader.GetQueryDefinitions ();
           try
           {

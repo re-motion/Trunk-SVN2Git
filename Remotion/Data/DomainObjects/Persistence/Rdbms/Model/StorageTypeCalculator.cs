@@ -54,8 +54,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         var oppositeClass = propertyDefinition.ClassDefinition.GetOppositeClassDefinition (propertyDefinition.PropertyName);
         Assertion.IsNotNull (oppositeClass, "When a property has type ObjectID, there must be an opposite class definition.");
 
-        var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (propertyDefinition.ClassDefinition);
-        var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass);
+        ClassDefinition classDefinition = propertyDefinition.ClassDefinition;
+        var leftStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (classDefinition.StorageGroupType, null);
+        var rightStorageProviderDefinition = _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClass.StorageGroupType, null);
         if (leftStorageProviderDefinition == rightStorageProviderDefinition)
           return SqlDataTypeObjectID;
         else

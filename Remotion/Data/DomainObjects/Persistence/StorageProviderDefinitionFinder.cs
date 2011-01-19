@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
@@ -35,26 +36,24 @@ namespace Remotion.Data.DomainObjects.Persistence
       _storageConfiguration = storageConfiguration;
     }
 
-    public StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition classDefinition)
+    public StorageProviderDefinition GetStorageProviderDefinition (Type storageGroupTypeOrNull, string errorMessageContext)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      if (storageGroupTypeOrNull == null)
+        return GetDefaultStorageProviderDefinition (errorMessageContext);
 
-      if (classDefinition.StorageGroupType == null)
-        return GetDefaultStorageProviderDefinition();
-
-      string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (classDefinition.StorageGroupType);
+      string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupTypeOrNull);
       var storageGroup = _storageConfiguration.StorageGroups[storageGroupName];
       if (storageGroup == null)
-        return GetDefaultStorageProviderDefinition();
+        return GetDefaultStorageProviderDefinition(errorMessageContext);
 
       return _storageConfiguration.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
     }
 
-    private StorageProviderDefinition GetDefaultStorageProviderDefinition ()
+    private StorageProviderDefinition GetDefaultStorageProviderDefinition (string errorMessageContext)
     {
       var defaultStorageProviderDefinition = _storageConfiguration.DefaultStorageProviderDefinition;
       if (defaultStorageProviderDefinition == null)
-        throw _storageConfiguration.CreateMissingDefaultProviderException (null);
+        throw _storageConfiguration.CreateMissingDefaultProviderException (errorMessageContext);
 
       return defaultStorageProviderDefinition;
     }

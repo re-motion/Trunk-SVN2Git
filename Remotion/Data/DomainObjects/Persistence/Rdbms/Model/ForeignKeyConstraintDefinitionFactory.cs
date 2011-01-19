@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private StorageProviderDefinition GetStorageProviderDefinition (ClassDefinition oppositeClassDefinition)
     {
-      return _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClassDefinition);
+      return _storageProviderDefinitionFinder.GetStorageProviderDefinition (oppositeClassDefinition.StorageGroupType, null);
     }
 
     private string FindTableName (ClassDefinition classDefinition)

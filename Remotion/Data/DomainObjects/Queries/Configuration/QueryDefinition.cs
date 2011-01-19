@@ -139,7 +139,8 @@ public class QueryDefinition : ISerializable, IObjectReference
     if (!_ispartOfQueryConfiguration)
     {
        var storageProviderID = info.GetString ("StorageProviderID");
-       _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID); //TODO RM-3530: Check!
+       _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
+
       _statement = info.GetString ("Statement");
       _queryType = (QueryType) info.GetValue ("QueryType", typeof (QueryType));
       _collectionType = (Type) info.GetValue ("CollectionType", typeof (Type));
@@ -219,7 +220,7 @@ public class QueryDefinition : ISerializable, IObjectReference
 
     if (!isPartOfQueryConfiguration)
     {
-      info.AddValue ("StorageProviderID", StorageProviderDefinition.Name); //TODO RM-3530: Check!
+      info.AddValue ("StorageProviderID", StorageProviderDefinition.Name);
       info.AddValue ("Statement", _statement);
       info.AddValue ("QueryType", _queryType);
       info.AddValue ("CollectionType", _collectionType);

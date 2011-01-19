@@ -19,6 +19,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Schemas;
@@ -28,6 +29,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
 {
   public class QueryConfigurationLoader : BaseFileLoader
   {
+    private readonly StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     // types
 
     // static members and constants
@@ -37,7 +39,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
     // construction and disposing
 
     //TODO: resolve parameter
-    public QueryConfigurationLoader (string configurationFile)
+    public QueryConfigurationLoader (string configurationFile, StorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       try
       {
@@ -62,6 +64,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
         throw CreateQueryConfigurationException (
             e, "Error while reading query configuration: {0} File: '{1}'.", e.Message, Path.GetFullPath (configurationFile));
       }
+      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
     }
 
     // methods and properties
@@ -90,9 +93,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       XmlNode node = queryNode.SelectSingleNode (FormatXPath ("{0}:storageGroupType"), NamespaceManager);
       StorageProviderDefinition storageProviderDefinition;
       if (node != null)
-        storageProviderDefinition = GetStorageProviderID (node.InnerText);
+        storageProviderDefinition = GetStorageProviderDefinition (node.InnerText);
       else
-        storageProviderDefinition = GetStorageProviderID (null);
+        storageProviderDefinition = GetStorageProviderDefinition (null);
 
       string statement = queryNode.SelectSingleNode (FormatXPath ("{0}:statement"), NamespaceManager).InnerText;
 
@@ -109,32 +112,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       return NamespaceManager.FormatXPath (xPath, PrefixNamespace.QueryConfigurationNamespace.Uri);
     }
 
-    //TODO: COMMONS-842
-    //TODO: Move type resolving to storagegrouplist and unify with ClassReflector
-    //TODO: Test for DefaultStorageProvider
-    //TODO RM-3530: Use StorageProviderDefinitionFinder instead !?
-    private StorageProviderDefinition GetStorageProviderID (string storageGroupName)
+    private StorageProviderDefinition GetStorageProviderDefinition (string storageGroupName)
     {
-      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      if (storageGroupName == null)
-      {
-        //TODO COMMONS-783: Test exception
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
-        return defaultStorageProviderDefinition;
-      }
-
-      Type storageGroupType = TypeUtility.GetType (storageGroupName, true);
-      string canonicalStorageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupType);
-      StorageGroupElement storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[canonicalStorageGroupName];
-      if (storageGroup == null)
-      {
-        //TODO COMMONS-783: Test exception
-        if (defaultStorageProviderDefinition == null)
-          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
-        return defaultStorageProviderDefinition;
-      }
-      return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageGroup.StorageProviderName);
+      Type storageGroupType = storageGroupName == null ? null : TypeUtility.GetType (storageGroupName, true);
+      return _storageProviderDefinitionFinder.GetStorageProviderDefinition (storageGroupType, "File: " + ConfigurationFile);
     }
 
     private QueryConfigurationException CreateQueryConfigurationException (string message, params object[] args)

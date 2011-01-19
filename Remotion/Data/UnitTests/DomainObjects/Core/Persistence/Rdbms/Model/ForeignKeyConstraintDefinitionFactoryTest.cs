@@ -89,13 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageNameProviderMock.Replay();
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (orderClassDefinition))
+          .Stub (stub => stub.GetStorageProviderDefinition (orderClassDefinition.StorageGroupType, null))
           .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (customerClassDefintion))
+          .Stub (stub => stub.GetStorageProviderDefinition (customerClassDefintion.StorageGroupType, null))
           .Return (customerClassDefintion.StorageEntityDefinition.StorageProviderDefinition);
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (officialClassDefinition))
+          .Stub (stub => stub.GetStorageProviderDefinition (officialClassDefinition.StorageGroupType, null))
           .Return (officialClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
 
       var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray();
@@ -141,10 +141,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageNameProviderMock.Replay ();
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (computerClassDefinition))
+          .Stub (stub => stub.GetStorageProviderDefinition (computerClassDefinition.StorageGroupType, null))
           .Return (computerClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (employeeClassDefinition))
+          .Stub (stub => stub.GetStorageProviderDefinition (employeeClassDefinition.StorageGroupType, null))
           .Return (employeeClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
 
       var foreignKeyConstraintDefinitions = _factory.CreateForeignKeyConstraints (computerClassDefinition).ToArray ();
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageNameProviderMock.Replay ();
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything))
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
           .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
 
       var result = _factory.CreateForeignKeyConstraints (orderClassDefinition).ToArray ();
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefintionFactoryMock.Replay();
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (Arg<ClassDefinition>.Is.Anything))
+          .Stub (stub => stub.GetStorageProviderDefinition (Arg<Type>.Is.Anything, Arg<string>.Is.Anything))
           .Return (orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition);
 
       _columnDefintionResolverMock

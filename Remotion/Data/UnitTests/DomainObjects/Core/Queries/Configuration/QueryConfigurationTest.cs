@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -33,10 +34,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
   [TestFixture]
   public class QueryConfigurationTest : StandardMappingTest
   {
+    private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+    }
+
     [Test]
     public void Loading ()
     {
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection actualQueries = loader.GetQueryDefinitions ();
       QueryDefinitionCollection expectedQueries = CreateExpectedQueryDefinitions ();
 
@@ -49,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
         ExpectedMessage = "A scalar query 'OrderSumQuery' must not specify a collectionType.")]
     public void ScalarQueryWithCollectionType ()
     {
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\ScalarQueryWithCollectionType.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\ScalarQueryWithCollectionType.xml", _storageProviderDefinitionFinder);
       loader.GetQueryDefinitions ();
     }
 
@@ -59,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
       string configurationFile = "DomainObjects\\Core\\QueriesWithInvalidNamespace.xml";
       try
       {
-        QueryConfigurationLoader loader = new QueryConfigurationLoader (configurationFile);
+        QueryConfigurationLoader loader = new QueryConfigurationLoader (configurationFile, _storageProviderDefinitionFinder);
 
         Assert.Fail ("QueryConfigurationException was expected");
       }
@@ -106,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
 
       Assert.That (configuration.GetDefaultQueryFilePath (), Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "queries.xml")));
 
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (configuration.GetDefaultQueryFilePath ());
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (configuration.GetDefaultQueryFilePath (), _storageProviderDefinitionFinder);
       QueryDefinitionChecker checker = new QueryDefinitionChecker ();
       checker.Check (loader.GetQueryDefinitions (), configuration.QueryDefinitions);
     }
@@ -256,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryConfiguration configuration = new QueryConfiguration ("DomainObjects\\Core\\QueriesForLoaderTest.xml");
 
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection expectedQueries = loader.GetQueryDefinitions ();
 
       QueryDefinitionChecker checker = new QueryDefinitionChecker ();
@@ -268,8 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     {
       QueryConfiguration configuration = new QueryConfiguration ("DomainObjects\\Core\\QueriesForLoaderTest.xml", "DomainObjects\\Core\\QueriesForLoaderTest2.xml");
 
-      QueryConfigurationLoader loader1 = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml");
-      QueryConfigurationLoader loader2 = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest2.xml");
+      QueryConfigurationLoader loader1 = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest.xml", _storageProviderDefinitionFinder);
+      QueryConfigurationLoader loader2 = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForLoaderTest2.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection expectedQueries = loader1.GetQueryDefinitions ();
       expectedQueries.Merge (loader2.GetQueryDefinitions());
 
@@ -345,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [Test]
     public void Load_ProviderFromDefaultStorageProvider ()
     {
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (
@@ -356,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [Test]
     public void Load_ProviderFromCustomStorageGroup ()
     {
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (
@@ -370,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.Configuration
     [Test]
     public void Load_ProviderFromUndefinedStorageGroup ()
     {
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml", _storageProviderDefinitionFinder);
       QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
 
       Assert.That (

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -77,14 +78,13 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (dataContainers.Count == 0)
         return;
 
-      var firstStorageProvider = dataContainers[0].ClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
-      foreach (DataContainer dataContainer in dataContainers)
+      var providerDefinition = dataContainers[0].ClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      if (dataContainers.Any (dataContainer => dataContainer.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition != providerDefinition))
       {
-        if (dataContainer.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition != firstStorageProvider)
-          throw CreatePersistenceException ("Save does not support multiple storage providers.");
+        throw CreatePersistenceException ("Save does not support multiple storage providers.");
       }
 
-      var provider = _storageProviderManager.GetMandatory (firstStorageProvider.Name);
+      var provider = _storageProviderManager.GetMandatory (providerDefinition.Name);
 
       provider.BeginTransaction ();
 
