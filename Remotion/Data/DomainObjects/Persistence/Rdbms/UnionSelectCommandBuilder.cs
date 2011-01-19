@@ -19,6 +19,7 @@ using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -31,16 +32,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
   public static UnionSelectCommandBuilder CreateForRelatedIDLookup (
       RdbmsProvider provider, 
+      IStorageNameProvider storageNameProvider,
       ClassDefinition classDefinition, 
       PropertyDefinition propertyDefinition,
       ObjectID relatedID)
   {
     ArgumentUtility.CheckNotNull ("provider", provider);
+    ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
     ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
     ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
     ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-    return new UnionSelectCommandBuilder (provider, classDefinition, propertyDefinition, relatedID);
+    return new UnionSelectCommandBuilder (provider, storageNameProvider, classDefinition, propertyDefinition, relatedID);
   }
 
     // member fields
@@ -53,9 +56,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private UnionSelectCommandBuilder (      
         RdbmsProvider provider, 
+        IStorageNameProvider storageNameProvider,
         ClassDefinition classDefinition, 
         PropertyDefinition propertyDefinition,
-        ObjectID relatedID) : base (provider)
+        ObjectID relatedID) : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
@@ -91,8 +95,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           commandTextStringBuilder.Append ("\nUNION ALL ");
 
         commandTextStringBuilder.AppendFormat (selectTemplate, 
-                  Provider.DelimitIdentifier ("ID"),
-                  Provider.DelimitIdentifier ("ClassID"),
+                  Provider.DelimitIdentifier (StorageNameProvider.IDColumnName),
+                  Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
                   columnsFromSortExpression, 
                   Provider.DelimitIdentifier (entityName),
                   whereClauseBuilder);

@@ -47,7 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new StubStorageProvider (storageProviderDefinition, persistenceListener);
+      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+
+      return new StubStorageProvider (storageProviderDefinition, storageNameProvider, persistenceListener);
     }
 
     public TypeConversionProvider CreateTypeConversionProvider ()

@@ -17,13 +17,14 @@
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   public class StubCommandBuilder : CommandBuilder
   {
     public StubCommandBuilder (RdbmsProvider provider)
-        : base(provider)
+        : base(provider, new ReflectionBasedStorageNameProvider())
     {
     }
 

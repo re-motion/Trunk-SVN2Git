@@ -20,6 +20,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -43,13 +45,23 @@ namespace Remotion.Data.DomainObjects.Persistence
     private StorageProviderDefinition _storageProviderDefinition;
     private bool _disposed;
     private readonly IPersistenceListener _persistenceListener;
+    private readonly IStorageNameProvider _storageNameProvider;
+    private readonly ISqlDialect _sqlDialect;
 
-    protected StorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceListener persistenceListener)
+    protected StorageProvider (
+        StorageProviderDefinition storageProviderDefinition,
+        IStorageNameProvider storageNameProvider,
+        ISqlDialect sqlDialect,
+        IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
       _storageProviderDefinition = storageProviderDefinition;
+      _storageNameProvider = storageNameProvider;
+      _sqlDialect = sqlDialect;
       _persistenceListener = persistenceListener;
     }
 
@@ -64,6 +76,16 @@ namespace Remotion.Data.DomainObjects.Persistence
       GC.SuppressFinalize (this);
     }
 
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
+    }
+
+    public ISqlDialect SqlDialect
+    {
+      get { return _sqlDialect; }
+    }
+
     protected virtual void Dispose (bool disposing)
     {
       if (disposing)
@@ -73,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     }
 
     public abstract DataContainer LoadDataContainer (ObjectID id);
-    
+
     public abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids);
 
     public abstract DataContainerCollection LoadDataContainersByRelatedID (
@@ -94,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     {
       get
       {
-        CheckDisposed ();
+        CheckDisposed();
         return _storageProviderDefinition;
       }
     }

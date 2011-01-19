@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -34,12 +35,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public SingleIDLookupCommandBuilder (
         RdbmsProvider provider, 
+        IStorageNameProvider storageNameProvider,
         string selectColumns, 
         string entityName, 
         string checkedColumnName, 
         ObjectID expectedValue, 
         SortExpressionDefinition orderExpression)
-      : base (provider)
+      : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

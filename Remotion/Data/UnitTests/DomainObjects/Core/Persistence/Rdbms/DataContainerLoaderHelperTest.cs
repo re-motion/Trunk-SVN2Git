@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public override void SetUp ()
     {
       base.SetUp ();
-      _loaderHelper = new DataContainerLoaderHelper ();
+      _loaderHelper = new DataContainerLoaderHelper (StorageNameProvider);
     }
 
     [Test]

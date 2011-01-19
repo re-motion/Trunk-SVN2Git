@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -36,18 +37,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     // member fields
 
     private readonly DataContainerLoader _dataContainerLoader;
-    private readonly ISqlDialect _dialect;
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-    
+
     // construction and disposing
 
-    protected RdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
-        : base (definition, persistenceListener)
+    protected RdbmsProvider (
+        RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceListener persistenceListener)
+        : base (definition, storageNameProvider, sqlDialect, persistenceListener)
     {
       _dataContainerLoader = new DataContainerLoader (this);
-      _dialect = dialect;
     }
 
     protected override void Dispose (bool disposing)
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
     public virtual string StatementDelimiter
     {
-      get { return _dialect.StatementDelimiter; }
+      get { return SqlDialect.StatementDelimiter; }
     }
 
     /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
@@ -86,19 +86,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNullOrEmpty ("identifier", identifier);
 
-      return _dialect.DelimitIdentifier (identifier);
+      return SqlDialect.DelimitIdentifier (identifier);
     }
 
     public virtual string GetParameterName (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      return _dialect.GetParameterName (name);
+      return SqlDialect.GetParameterName (name);
     }
 
     public SortExpressionSqlGenerator GetSortExpressionSqlGenerator ()
     {
-      return new SortExpressionSqlGenerator (_dialect);
+      return new SortExpressionSqlGenerator (SqlDialect);
     }
 
     public virtual void Connect ()
@@ -211,7 +211,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryCommandBuilder (this, query);
+      var commandBuilder = new QueryCommandBuilder (this, StorageNameProvider, query);
       return LoadDataContainers (commandBuilder, true);
     }
 
@@ -224,7 +224,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       Connect();
 
-      var commandBuilder = new QueryCommandBuilder (this, query);
+      var commandBuilder = new QueryCommandBuilder (this, StorageNameProvider, query);
       using (IDbCommand command = commandBuilder.Create())
       {
         try
@@ -290,16 +290,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.New))
-        Save (new InsertCommandBuilder (this, dataContainer), dataContainer.ID);
+        Save (new InsertCommandBuilder (this, StorageNameProvider, dataContainer), dataContainer.ID);
 
       foreach (DataContainer dataContainer in dataContainers)
       {
         if (dataContainer.State != StateType.Unchanged)
-          Save (new UpdateCommandBuilder (this, dataContainer), dataContainer.ID);
+          Save (new UpdateCommandBuilder (this, StorageNameProvider, dataContainer), dataContainer.ID);
       }
 
       foreach (DataContainer dataContainer in dataContainers.GetByState (StateType.Deleted))
-        Save (new DeleteCommandBuilder (this, dataContainer), dataContainer.ID);
+        Save (new DeleteCommandBuilder (this, StorageNameProvider, dataContainer), dataContainer.ID);
     }
 
     public override void SetTimestamp (DataContainerCollection dataContainers)
@@ -379,7 +379,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       string columnName = DelimitIdentifier ("Timestamp");
       string entityName = dataContainer.ClassDefinition.GetEntityName();
-      var commandBuilder = new SingleIDLookupCommandBuilder (this, columnName, entityName, "ID", dataContainer.ID, null);
+      var commandBuilder = new SingleIDLookupCommandBuilder (this, StorageNameProvider, columnName, entityName, "ID", dataContainer.ID, null);
 
       using (IDbCommand command = commandBuilder.Create())
       {
@@ -523,7 +523,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       return new ValueConverter (this, TypeConversionProvider);
     }
-
-
-    }
+  }
 }

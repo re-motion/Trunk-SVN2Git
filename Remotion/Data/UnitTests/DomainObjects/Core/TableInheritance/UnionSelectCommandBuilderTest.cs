@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -33,16 +34,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
   public class UnionSelectCommandBuilderTest : SqlProviderBaseTest
   {
     private UnionSelectCommandBuilder _builder;
-
+    
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      ClassDefinition domainBaseClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
-
+      var domainBaseClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
       _builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
-          Provider, domainBaseClass, domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);
-      
+          Provider,
+          StorageNameProvider,
+          domainBaseClass,
+          domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
+          DomainObjectIDs.Client);
     }
 
     [Test]
@@ -55,34 +58,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void Create ()
     {
       // Note: This test builds its own relations without a sort expression.
-      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "TableInheritance_Person", StorageProviderDefinition, typeof (Person), false, domainBaseClass);
-      ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrganizationalUnit", "TableInheritance_OrganizationalUnit", StorageProviderDefinition, typeof (OrganizationalUnit), false, domainBaseClass);
+      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Person", "TableInheritance_Person", StorageProviderDefinition, typeof (Person), false, domainBaseClass);
+      ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "OrganizationalUnit", "TableInheritance_OrganizationalUnit", StorageProviderDefinition, typeof (OrganizationalUnit), false, domainBaseClass);
       domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass, organizationalUnitClass }, true, true));
 
-      ReflectionBasedClassDefinition clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
-      var clientClassPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create(domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
+      ReflectionBasedClassDefinition clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
+      var clientClassPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
       domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { clientClassPropertyDefinition }, true));
 
-      RelationEndPointDefinition domainBaseEndPointDefinition = new RelationEndPointDefinition (domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", false);
+      RelationEndPointDefinition domainBaseEndPointDefinition = new RelationEndPointDefinition (
+          domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", false);
 
-      VirtualRelationEndPointDefinition clientEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
+      VirtualRelationEndPointDefinition clientEndPointDefinition =
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
-      RelationDefinition clientToDomainBaseDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
-      domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection(new[]{ domainBaseEndPointDefinition}, true));
+      new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
+      domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { domainBaseEndPointDefinition }, true));
       clientClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { clientEndPointDefinition }, true));
 
-      domainBaseClass.SetReadOnly ();
-      personClass.SetReadOnly ();
-      organizationalUnitClass.SetReadOnly ();
-      clientClass.SetReadOnly ();
+      domainBaseClass.SetReadOnly();
+      personClass.SetReadOnly();
+      organizationalUnitClass.SetReadOnly();
+      clientClass.SetReadOnly();
 
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
-          Provider, domainBaseClass, domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);
+          Provider,
+          StorageNameProvider,
+          domainBaseClass,
+          domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
+          DomainObjectIDs.Client);
 
-      using (IDbCommand command = builder.Create ())
+      using (IDbCommand command = builder.Create())
       {
-        string expectedCommandText = 
+        string expectedCommandText =
             "SELECT [ID], [ClassID] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
             + "UNION ALL SELECT [ID], [ClassID] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID;";
 
@@ -97,11 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void CreateWithSortExpression ()
     {
-      using (IDbCommand command = _builder.Create ())
+      using (IDbCommand command = _builder.Create())
       {
         string expectedCommandText =
             "SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_Person] WHERE [ClientID] = @ClientID\n"
-            + "UNION ALL SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID ORDER BY [CreatedAt] ASC;";
+            +
+            "UNION ALL SELECT [ID], [ClassID], [CreatedAt] FROM [TableInheritance_OrganizationalUnit] WHERE [ClientID] = @ClientID ORDER BY [CreatedAt] ASC;";
 
         Assert.IsNotNull (command);
         Assert.AreEqual (expectedCommandText, command.CommandText);
@@ -114,7 +130,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void WhereClauseBuilder_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
+      using (
+          MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope(
+              ))
       {
         using (IDbCommand command = _builder.Create())
         {

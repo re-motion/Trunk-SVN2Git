@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 
@@ -33,12 +34,12 @@ namespace Remotion.SecurityManager.Persistence
 
     // member fields
 
-    private RevisionStorageProviderExtension _revisionExtension;
+    private readonly RevisionStorageProviderExtension _revisionExtension;
 
     // construction and disposing
 
-    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener) 
-      : base (definition, persistenceListener)
+    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener) 
+      : base (definition, storageNameProvider, persistenceListener)
     {
       _revisionExtension = new RevisionStorageProviderExtension ();
     }

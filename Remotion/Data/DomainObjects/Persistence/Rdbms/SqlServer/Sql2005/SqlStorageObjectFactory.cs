@@ -66,8 +66,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
           "storageProviderDefinition", storageProviderDefinition);
+      var storageNameProvider = CreateStorageNameProvider();
 
-      return (StorageProvider) ObjectFactory.Create (StorageProviderType, ParamList.Create (rdbmsProviderDefinition, persistenceListener));
+      return
+          (StorageProvider)
+          ObjectFactory.Create (StorageProviderType, ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener));
     }
 
     public virtual TypeConversionProvider CreateTypeConversionProvider ()
@@ -107,8 +110,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
       var generator = new UniqueIdentifierGenerator();
-      var storageNameProvider = CreateStorageNameProvider ();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver(storageNameProvider));
+      var storageNameProvider = CreateStorageNameProvider();
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

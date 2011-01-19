@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
@@ -29,20 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageProvider : StorageProvider
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-    public StubStorageProvider (StorageProviderDefinition definition, IPersistenceListener persistenceListener)
-      : base (definition, persistenceListener)
+    public StubStorageProvider (StorageProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
+      : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceListener)
     {
     }
-
-    // methods and properties
 
     public override DataContainer LoadDataContainer (ObjectID id)
     {

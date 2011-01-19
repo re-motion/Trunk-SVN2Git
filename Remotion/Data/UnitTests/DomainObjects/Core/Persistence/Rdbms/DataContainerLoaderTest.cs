@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
@@ -161,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                             DomainObjectIDs.Company1, DomainObjectIDs.Company2, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem2
                                         };
 
-      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
+      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>(StorageNameProvider);
 
       var loader = new DataContainerLoader (loaderHelperMock, Provider);
 
@@ -169,21 +170,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (
-            Mocks_Is.Same (Provider),
-            Mocks_Is.Equal ("Order"),
-            Mocks_List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }))
+                Mocks_Is.Same (Provider),
+                Mocks_Is.Equal ("Order"),
+                Mocks_List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (
-            Mocks_Is.Same (Provider),
-            Mocks_Is.Equal ("OrderItem"),
-            Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
+                Mocks_Is.Same (Provider),
+                Mocks_Is.Equal ("OrderItem"),
+                Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (
-            Mocks_Is.Same (Provider),
-            Mocks_Is.Equal ("Company"),
-            Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
+                Mocks_Is.Same (Provider),
+                Mocks_Is.Equal ("Company"),
+                Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       }
 
@@ -236,11 +237,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       var builder = new MultiIDLookupCommandBuilder (
-          Provider, 
-          "*", 
-          "OrderItem", 
-          "ID", 
-          "uniqueidentifier", 
+          Provider,
+          StorageNameProvider,
+          "*",
+          "OrderItem",
+          "ID",
+          "uniqueidentifier",
           new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
@@ -267,6 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
             var builder = new MultiIDLookupCommandBuilder (
                 loader.Provider,
+                StorageNameProvider,
                 "*",
                 "Order",
                 "ID",
@@ -285,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryCommandBuilder (Provider, query);
+      var builder = new QueryCommandBuilder (Provider, StorageNameProvider, query);
 
       var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
 
@@ -303,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
           new QueryParameterCollection(),
           typeof (DomainObjectCollection));
-      var builder = new QueryCommandBuilder (Provider, query);
+      var builder = new QueryCommandBuilder (Provider, StorageNameProvider, query);
 
       _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }
@@ -360,8 +363,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var relatedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       var relationPropertyName = ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order");
       var relationPropertyDefinition = classDefinition.GetPropertyDefinition (relationPropertyName);
-
-      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
+      
+      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>(StorageNameProvider);
 
       Expect.Call (
           loaderHelperMock.GetCommandBuilderForRelatedIDLookup (
@@ -399,6 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
+          StorageNameProvider,
           NullPersistenceListener.Instance))
       {
         provider.Connect();
@@ -407,7 +411,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Assert.IsNull (classDefinition.GetEntityName());
 
         var loader = new DataContainerLoader (provider);
-        var domainObjectIDs = new DomainObjectIDs(Configuration);
+        var domainObjectIDs = new DomainObjectIDs (Configuration);
         DataContainerCollection dataContainers = loader.LoadDataContainersByRelatedID (
             classDefinition,
             ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),
@@ -428,6 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
+          StorageNameProvider,
           NullPersistenceListener.Instance))
       {
         provider.Connect();
@@ -435,7 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
         Assert.IsNull (classDefinition.GetEntityName());
 
-        IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
+        IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>(StorageNameProvider);
 
         Expect.Call (loaderHelperMock.GetConcreteTableInheritanceRelationLoader (null, null, null, null)).IgnoreArguments()
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
@@ -444,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
         var loader = new DataContainerLoader (loaderHelperMock, provider);
 
-        var domainObjectIDs = new DomainObjectIDs(Configuration);
+        var domainObjectIDs = new DomainObjectIDs (Configuration);
         loader.LoadDataContainersByRelatedID (
             classDefinition,
             ReflectionMappingHelper.GetPropertyName (typeof (DomainBase), "Client"),
@@ -457,8 +462,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private void CreateLoaderAndExpectProviderCall (Action<DataContainerLoader> action, Action<RdbmsProvider> expectationSetup)
     {
       Provider.Disconnect();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
-      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (TestDomainStorageProviderDefinition, NullPersistenceListener.Instance))
+      using (
+          RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (
+              TestDomainStorageProviderDefinition, storageNameProvider, NullPersistenceListener.Instance))
       {
         var loader = new DataContainerLoader (providerMock);
 
@@ -489,4 +497,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       return sortedContainers;
     }
   }
-} // expect
+}
+
+// expect

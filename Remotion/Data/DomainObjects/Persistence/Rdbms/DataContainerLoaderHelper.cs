@@ -16,12 +16,22 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class DataContainerLoaderHelper : IDataContainerLoaderHelper
   {
+    private readonly IStorageNameProvider _storageNameProvider;
+
+    public DataContainerLoaderHelper (IStorageNameProvider storageNameProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
+      _storageNameProvider = storageNameProvider;
+    }
+
     public virtual ICommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
@@ -29,9 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       if (objectIDs.Length == 1)
-        return new SingleIDLookupCommandBuilder (provider, "*", entityName, "ID", objectIDs[0], null);
+        return new SingleIDLookupCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, objectIDs[0], null);
       else
-        return new MultiIDLookupCommandBuilder (provider, "*", entityName, "ID", provider.GetIDColumnTypeName(), objectIDs);
+        return new MultiIDLookupCommandBuilder (provider, _storageNameProvider, "*", entityName, _storageNameProvider.IDColumnName, provider.GetIDColumnTypeName(), objectIDs);
     }
 
     public virtual ICommandBuilder GetCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
@@ -46,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       return new SingleIDLookupCommandBuilder (
           provider,
+          _storageNameProvider,
           "*",
           entityName,
           relationProperty.StoragePropertyDefinition.Name,
@@ -61,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-      return new ConcreteTableInheritanceRelationLoader (provider, classDefinition, propertyDefinition, relatedID);
+      return new ConcreteTableInheritanceRelationLoader (provider, _storageNameProvider, classDefinition, propertyDefinition, relatedID);
     }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -31,17 +32,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     // member fields
 
     private readonly RdbmsProvider _provider;
+    private readonly IStorageNameProvider _storageNameProvider;
 
     // construction and disposing
 
-    protected CommandBuilder (RdbmsProvider provider)
+    protected CommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       if (!provider.IsConnected)
         throw new ArgumentException ("Provider must be connected first.", "provider");
 
       _provider = provider;
+      _storageNameProvider = storageNameProvider;
     }
 
     // abstract methods and properties
@@ -53,6 +57,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public RdbmsProvider Provider
     {
       get { return _provider; }
+    }
+
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
     }
 
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, PropertyValue propertyValue)

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ConstructorChecksForConnectedProvider ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+      new UpdateCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect ();
-      new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+      new UpdateCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (WhereClauseBuilder)).Clear ().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope ())
       {
-        CommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+        CommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
         using (IDbCommand command = commandBuilder.Create ())
         {
           Assert.IsTrue (command.CommandText.Contains ("Mixed!"));
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
       Provider.Connect ();
-      var commandBuilder = new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Employee = Employee.NewObject ();
       Provider.Connect ();
-      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       
       Provider.Connect ();
       
-      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Provider.Connect ();
 
-      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Int32TransactionProperty = 12; // change non-persistent property
       Provider.Connect ();
-      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command, Is.Null);
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       computer.MarkAsChanged ();
       Provider.Connect ();
       
-      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command, Is.Not.Null);
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       orderTicket.FileName = "new.txt";
       orderTicket.Int32TransactionProperty = 5;
       Provider.Connect ();
-      var commandBuilder = new UpdateCommandBuilder (Provider, orderTicket.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, StorageNameProvider, orderTicket.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

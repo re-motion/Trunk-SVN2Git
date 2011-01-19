@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -33,8 +34,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public DeleteCommandBuilder (RdbmsProvider provider, DataContainer dataContainer)
-        : base (provider)
+    public DeleteCommandBuilder (RdbmsProvider provider,  IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+        : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -51,10 +52,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IDbCommand command = Provider.CreateDbCommand();
 
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
-      whereClauseBuilder.Add ("ID", _dataContainer.ID.Value);
+      whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);
 
       if (MustAddTimestampToWhereClause())
-        whereClauseBuilder.Add ("Timestamp", _dataContainer.Timestamp);
+        whereClauseBuilder.Add (StorageNameProvider.TimestampColumnName, _dataContainer.Timestamp);
 
       command.CommandText = string.Format (
           "DELETE FROM {0} WHERE {1}{2}",

@@ -26,19 +26,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class UpdateCommandBuilder : CommandBuilder
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly DataContainer _dataContainer;
-    private readonly IStorageNameProvider _storageNameProvider;
-
-    // construction and disposing
-
-    public UpdateCommandBuilder (RdbmsProvider provider, DataContainer dataContainer)
-        : base (provider)
+    
+    public UpdateCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+        : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -46,10 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw CreateArgumentException ("dataContainer", "State of provided DataContainer must not be 'Unchanged'.");
 
       _dataContainer = dataContainer;
-      _storageNameProvider = new ReflectionBasedStorageNameProvider(); // TODO: Inject via ctor
     }
-
-    // methods and properties
 
     public override IDbCommand Create ()
     {
@@ -69,10 +57,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
 
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
-      whereClauseBuilder.Add ("ID", _dataContainer.ID.Value);
+      whereClauseBuilder.Add (StorageNameProvider.IDColumnName, _dataContainer.ID.Value);
 
       if (_dataContainer.State != StateType.New)
-        whereClauseBuilder.Add ("Timestamp", _dataContainer.Timestamp);
+        whereClauseBuilder.Add (StorageNameProvider.TimestampColumnName, _dataContainer.Timestamp);
 
       if (updateSetBuilder.Length == 0)
       {
@@ -80,8 +68,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         // This occurs whenever the Timestamp should be incremented even though no property was changed. Used, e.g., via DomainObject.MarkAsChanged.
         updateSetBuilder.AppendFormat (
             "{0} = {1}",
-            Provider.DelimitIdentifier ("ClassID"),
-            Provider.DelimitIdentifier ("ClassID"));
+            Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName),
+            Provider.DelimitIdentifier (StorageNameProvider.ClassIDColumnName));
       }
 
       command.CommandText = string.Format (
@@ -147,7 +135,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
-        string classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition.StoragePropertyDefinition.Name);
+        string classIDColumnName = StorageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition.StoragePropertyDefinition.Name);
         AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
 
         string classID = null;

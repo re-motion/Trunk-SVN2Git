@@ -16,22 +16,23 @@
 // 
 using System;
 using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   public class TestRdbmsProvider : RdbmsProvider
   {
-    public TestRdbmsProvider (RdbmsProviderDefinition definition, ISqlDialect dialect, IPersistenceListener persistenceListener)
-      : base (definition, dialect, persistenceListener)
+    public TestRdbmsProvider (
+        RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect dialect, IPersistenceListener persistenceListener)
+        : base (definition, storageNameProvider, dialect, persistenceListener)
     {
     }
 
     protected override TracingDbConnection CreateConnection ()
     {
-      return new TracingDbConnection (new SqlConnection (), PersistenceListener);
+      return new TracingDbConnection (new SqlConnection(), PersistenceListener);
     }
   }
 }

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -30,6 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class SqlProviderDeleteTest : ClientTransactionBaseTest
   {
     private SqlProvider _provider;
+    private ReflectionBasedStorageNameProvider _storageNameProvider;
 
     public override void TestFixtureSetUp ()
     {
@@ -41,7 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp();
 
-      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, NullPersistenceListener.Instance);
+      _storageNameProvider = new ReflectionBasedStorageNameProvider();
+      _provider = new SqlProvider (
+          (RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()

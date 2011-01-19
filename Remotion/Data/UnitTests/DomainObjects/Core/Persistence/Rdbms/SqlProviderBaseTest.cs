@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 
@@ -24,12 +25,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class SqlProviderBaseTest : ClientTransactionBaseTest
   {
     private SqlProvider _provider;
+    private ReflectionBasedStorageNameProvider _storageNameProvider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, NullPersistenceListener.Instance);
+      _storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      _provider = new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, _storageNameProvider, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
@@ -41,6 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     protected SqlProvider Provider
     {
       get { return _provider; }
+    }
+
+    protected ReflectionBasedStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
     }
   }
 }

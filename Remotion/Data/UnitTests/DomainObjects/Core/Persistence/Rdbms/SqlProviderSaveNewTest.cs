@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -233,7 +232,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ExistingObjectRelatesToNew ()
     {
-      ClassDefinition employeeClass = MappingConfiguration.Current.ClassDefinitions[typeof (Employee)];
       Employee newSupervisor = Employee.NewObject ();
       Employee existingSubordinate = Employee.GetObject (DomainObjectIDs.Employee1);
 
@@ -388,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private SqlProvider CreateSqlProvider ()
     {
-      return new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, NullPersistenceListener.Instance);
+      return new SqlProvider ((RdbmsProviderDefinition) TestDomainStorageProviderDefinition, StorageNameProvider, NullPersistenceListener.Instance);
     }
   }
 }

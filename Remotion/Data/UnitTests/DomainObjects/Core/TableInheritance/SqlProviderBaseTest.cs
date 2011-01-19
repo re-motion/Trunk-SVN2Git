@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 
@@ -30,6 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     private StorageProviderManager _storageProviderManager;
     private SqlProvider _provider;
     private StorageProviderDefinition _storageProviderDefinition;
+    private ReflectionBasedStorageNameProvider _storageNameProvider;
 
     public override void SetUp ()
     {
@@ -37,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
       _storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      _storageNameProvider = new ReflectionBasedStorageNameProvider();
       _provider = (SqlProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
       _provider.Connect ();
     }
@@ -55,6 +58,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     protected StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
+    }
+
+    protected ReflectionBasedStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
     }
 
     protected SqlProvider Provider

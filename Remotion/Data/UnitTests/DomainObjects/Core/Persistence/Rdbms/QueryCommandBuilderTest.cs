@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ConstructorChecksForConnectedProvider ()
     {
       var queryDefinition = new QueryDefinition ("TheQuery", TestDomainStorageProviderDefinition, "Statement", QueryType.Collection);
-      new QueryCommandBuilder (Provider, QueryFactory.CreateQuery (queryDefinition));
+      new QueryCommandBuilder (Provider, StorageNameProvider, QueryFactory.CreateQuery (queryDefinition));
     }
   }
 }

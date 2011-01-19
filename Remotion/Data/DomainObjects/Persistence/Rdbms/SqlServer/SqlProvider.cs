@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Data.SqlClient;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
@@ -30,8 +31,8 @@ public class SqlProvider : RdbmsProvider
 
   // construction and disposing
 
-  public SqlProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener)
-    : base (definition, SqlDialect.Instance, persistenceListener)
+  public SqlProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
+    : base (definition, storageNameProvider, SqlServer.SqlDialect.Instance, persistenceListener)
   {
   }
 

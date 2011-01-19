@@ -19,6 +19,7 @@ using System.Data;
 using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -35,8 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public InsertCommandBuilder (RdbmsProvider provider, DataContainer dataContainer)
-        : base (provider)
+    public InsertCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, DataContainer dataContainer)
+        : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -55,8 +56,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var columnBuilder = new StringBuilder();
       var valueBuilder = new StringBuilder();
 
-      string idColumn = "ID";
-      string classIDColumn = "ClassID";
+      string idColumn = StorageNameProvider.IDColumnName;
+      string classIDColumn = StorageNameProvider.ClassIDColumnName;
 
       AppendColumn (columnBuilder, valueBuilder, idColumn, idColumn);
       AppendColumn (columnBuilder, valueBuilder, classIDColumn, classIDColumn);

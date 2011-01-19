@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       var builder = new MultiIDLookupCommandBuilder (
           Provider, 
+          StorageNameProvider,
           "*", 
           "Order", 
           "ID", 
@@ -56,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       new MultiIDLookupCommandBuilder (
           Provider,
+          StorageNameProvider,
           "*",
           "Order",
           "ID",
@@ -71,6 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         var builder = new MultiIDLookupCommandBuilder (
           Provider,
+          StorageNameProvider,
           "*",
           "Order",
           "ID",

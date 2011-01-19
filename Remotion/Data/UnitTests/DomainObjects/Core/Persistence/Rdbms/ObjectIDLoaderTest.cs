@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   public class ObjectIDLoaderTest : SqlProviderBaseTest
   {
     private ObjectIDLoader _loader;
-
+    
     public override void SetUp ()
     {
       base.SetUp ();
@@ -57,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"));
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
-          Provider, classDefinition, propertyDefinition, DomainObjectIDs.Order1);
+          Provider, StorageNameProvider, classDefinition, propertyDefinition, DomainObjectIDs.Order1);
       List<ObjectID> objectIDs = _loader.LoadObjectIDsFromCommandBuilder (builder);
-      Assert.That (objectIDs, Is.EquivalentTo (new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
+      Assert.That (objectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
     }
   }
 }

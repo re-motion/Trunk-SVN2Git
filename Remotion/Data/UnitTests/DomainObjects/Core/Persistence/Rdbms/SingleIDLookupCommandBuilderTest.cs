@@ -32,7 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Provider.Connect ();
       var builder = new SingleIDLookupCommandBuilder (
-          Provider, 
+          Provider,
+          StorageNameProvider,
           "*", 
           "Order", 
           "CustomerID", 
@@ -53,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       var builder = new SingleIDLookupCommandBuilder (
           Provider,
+          StorageNameProvider,
           "*",
           "Order",
           "CustomerID",
@@ -73,6 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       new SingleIDLookupCommandBuilder (
           Provider,
+          StorageNameProvider,
           "*",
           "Order",
           "CustomerID",
@@ -88,6 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         var builder = new SingleIDLookupCommandBuilder (
             Provider,
+            StorageNameProvider,
             "*",
             "Order",
             "CustomerID",

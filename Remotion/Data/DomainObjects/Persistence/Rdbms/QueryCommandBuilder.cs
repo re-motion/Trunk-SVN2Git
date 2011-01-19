@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -33,8 +34,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    public QueryCommandBuilder (RdbmsProvider provider, IQuery query)
-        : base (provider)
+    public QueryCommandBuilder (RdbmsProvider provider, IStorageNameProvider storageNameProvider, IQuery query)
+        : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 

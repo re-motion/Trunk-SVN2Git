@@ -32,12 +32,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _domainBaseClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
 
       _loader = new ConcreteTableInheritanceRelationLoader (
-          Provider, _domainBaseClass, _domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), DomainObjectIDs.Client);
+          Provider,
+          StorageNameProvider,
+          _domainBaseClass,
+          _domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
+          DomainObjectIDs.Client);
     }
 
     [Test]
@@ -49,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadDataContainers ()
     {
-      DataContainerCollection dataContainers = _loader.LoadDataContainers ();
+      DataContainerCollection dataContainers = _loader.LoadDataContainers();
 
       Assert.IsNotNull (dataContainers);
       Assert.AreEqual (4, dataContainers.Count);
@@ -62,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadOrderedDataContainers ()
     {
-      DataContainerCollection dataContainers = _loader.LoadDataContainers ();
+      DataContainerCollection dataContainers = _loader.LoadDataContainers();
 
       Assert.IsNotNull (dataContainers);
       Assert.AreEqual (4, dataContainers.Count);
@@ -73,14 +77,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Invalid ClassID 'InvalidClassID' for ID '1b5ba13a-f6ad-4390-87bb-d85a1c098d1c' encountered.")]
+    [ExpectedException (typeof (RdbmsProviderException),
+        ExpectedMessage = "Invalid ClassID 'InvalidClassID' for ID '1b5ba13a-f6ad-4390-87bb-d85a1c098d1c' encountered.")]
     public void LoadDataContainerWithInvalidClassID ()
     {
       ConcreteTableInheritanceRelationLoader loader = new ConcreteTableInheritanceRelationLoader (
-          Provider, _domainBaseClass, _domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"), 
+          Provider,
+          StorageNameProvider,
+          _domainBaseClass,
+          _domainBaseClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"),
           new ObjectID (typeof (Client), new Guid ("{58535280-84EC-41d9-9F8F-BCAC64BB3709}")));
 
-      loader.LoadDataContainers ();
+      loader.LoadDataContainers();
     }
 
     [Test]
@@ -90,14 +98,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           typeof (AbstractClassWithoutDerivations));
 
       ConcreteTableInheritanceRelationLoader loader = new ConcreteTableInheritanceRelationLoader (
-          Provider, abstractClassWithoutDerivationsClass,
-          abstractClassWithoutDerivationsClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.AbstractClassWithoutDerivations.DomainBase"), 
+          Provider,
+          StorageNameProvider,
+          abstractClassWithoutDerivationsClass,
+          abstractClassWithoutDerivationsClass.GetMandatoryPropertyDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.AbstractClassWithoutDerivations.DomainBase"),
           DomainObjectIDs.Person);
 
-      DataContainerCollection loadedDataContainers = loader.LoadDataContainers ();
+      DataContainerCollection loadedDataContainers = loader.LoadDataContainers();
       Assert.IsNotNull (loadedDataContainers);
       Assert.IsEmpty (loadedDataContainers);
     }
-
   }
 }

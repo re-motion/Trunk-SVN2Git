@@ -20,6 +20,7 @@ using System.Data;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly IDataContainerLoaderHelper _loaderHelper;
 
     public DataContainerLoader (RdbmsProvider provider)
-        : this (new DataContainerLoaderHelper(), provider)
+        : this (new DataContainerLoaderHelper(provider.StorageNameProvider), provider)
     {
     }
 

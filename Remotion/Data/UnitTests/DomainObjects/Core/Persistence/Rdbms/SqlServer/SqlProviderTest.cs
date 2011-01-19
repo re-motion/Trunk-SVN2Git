@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Dialect ()
     {
-      var dialect = PrivateInvoke.GetNonPublicField (Provider, typeof (RdbmsProvider), "_dialect");
+      var dialect = PrivateInvoke.GetNonPublicField (Provider, typeof (RdbmsProvider), "_sqlDialect");
       Assert.That (dialect, Is.SameAs (SqlDialect.Instance));
     }
 

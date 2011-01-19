@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -33,12 +34,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public MultiIDLookupCommandBuilder (
         RdbmsProvider provider,
+        IStorageNameProvider storageNameProvider,
         string selectColumns, 
         string entityName,
         string checkedColumnName,
         string checkedColumnTypeName,
         ObjectID[] ids)
-      : base (provider)
+      : base (provider, storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);

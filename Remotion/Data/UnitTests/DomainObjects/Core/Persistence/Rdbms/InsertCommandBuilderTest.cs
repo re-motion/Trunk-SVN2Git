@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ConstructorChecksForConnectedProvider ()
     {
       Order order = Order.NewObject ();
-			new InsertCommandBuilder (Provider, order.InternalDataContainer);
+			new InsertCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
       Provider.Connect ();
-			new InsertCommandBuilder (Provider, order.InternalDataContainer);
+			new InsertCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       order.OrderNumber = 212;
       order.DeliveryDate = new DateTime(2008, 7, 1);
 
-      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, order.InternalDataContainer);
+      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, StorageNameProvider, order.InternalDataContainer);
       using (IDbCommand command = builder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       computer.Employee = Employee.NewObject();
       computer.SerialNumber = "123";
 
-      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, computer.InternalDataContainer);
+      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, StorageNameProvider, computer.InternalDataContainer);
       using (IDbCommand command = builder.Create())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       orderTicket.Order = Order.NewObject ();
       orderTicket.Int32TransactionProperty = 7;
 
-      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, orderTicket.InternalDataContainer);
+      InsertCommandBuilder builder = new InsertCommandBuilder (Provider, StorageNameProvider, orderTicket.InternalDataContainer);
       using (IDbCommand command = builder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

@@ -19,6 +19,7 @@ using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
@@ -33,13 +34,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private TestRdbmsProvider _provider;
     private RdbmsProviderDefinition _definition;
     private ISqlDialect _dialectStub;
+    private IStorageNameProvider _storageNameProviderStub;
 
     public override void SetUp ()
     {
       base.SetUp();
       _definition = new RdbmsProviderDefinition (c_testDomainProviderID, new SqlStorageObjectFactory(), TestDomainConnectionString);
       _dialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _provider = new TestRdbmsProvider (_definition, _dialectStub, NullPersistenceListener.Instance);
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
+      _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
+      _provider = new TestRdbmsProvider (_definition, _storageNameProviderStub, _dialectStub, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
@@ -74,7 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
       connectionStub.Replay();
 
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));
@@ -109,7 +117,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       connectionStub.Stub (stub => stub.State).Return (ConnectionState.Open);
       connectionStub.Replay();
 
-      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (_definition, SqlDialect.Instance, NullPersistenceListener.Instance);
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+      var providerPartialMock = MockRepository.GeneratePartialMock<RdbmsProvider> (
+          _definition, storageNameProvider, SqlDialect.Instance, NullPersistenceListener.Instance);
       providerPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, typeof (RdbmsProvider), "CreateConnection"))
           .Return (new TracingDbConnection (connectionStub, NullPersistenceListener.Instance));

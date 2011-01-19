@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -31,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   // Used by the Official class definition.
   public class UnitTestStorageProviderStub : StorageProvider
   {
-    class MockStorageProviderScope : IDisposable
+    private class MockStorageProviderScope : IDisposable
     {
       private readonly StorageProvider _previous;
       private bool _disposed = false;
@@ -53,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private static int s_nextID = 0;
 
-    private static readonly SafeContextSingleton<StorageProvider> _innerMockStorageProvider = 
+    private static readonly SafeContextSingleton<StorageProvider> _innerMockStorageProvider =
         new SafeContextSingleton<StorageProvider> (typeof (UnitTestStorageProviderStub) + "._innerMockStorageProvider", () => null);
 
     public static IDisposable EnterMockStorageProviderScope (StorageProvider mock)
@@ -73,13 +74,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static StorageProvider CreateStorageProviderMockForOfficial ()
     {
-      var storageProviderID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageEntityDefinition.StorageProviderDefinition.Name;
+      var storageProviderID =
+          MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageEntityDefinition.StorageProviderDefinition.Name;
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, Data.DomainObjects.Tracing.NullPersistenceListener.Instance);
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
+      return MockRepository.GenerateMock<StorageProvider> (
+          storageProviderDefinition,
+          storageNameProvider,
+          Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
+          NullPersistenceListener.Instance);
     }
 
-    public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition, IPersistenceListener persistenceListener)
-        : base (definition, persistenceListener)
+    public UnitTestStorageProviderStub (
+        UnitTestStorageProviderStubDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceListener persistenceListener)
+        : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceListener)
     {
     }
 
@@ -94,13 +102,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         return InnerProvider.LoadDataContainer (id);
       else
       {
-        DataContainer container = DataContainer.CreateForExisting (id, null, delegate (PropertyDefinition propertyDefinition)
-        {
-          if (propertyDefinition.PropertyName.EndsWith (".Name"))
-            return "Max Sachbearbeiter";
-          else
-            return propertyDefinition.DefaultValue;
-        });
+        DataContainer container = DataContainer.CreateForExisting (
+            id,
+            null,
+            delegate (PropertyDefinition propertyDefinition)
+            {
+              if (propertyDefinition.PropertyName.EndsWith (".Name"))
+                return "Max Sachbearbeiter";
+              else
+                return propertyDefinition.DefaultValue;
+            });
 
         int idAsInt = (int) id.Value;
         if (s_nextID <= idAsInt)
