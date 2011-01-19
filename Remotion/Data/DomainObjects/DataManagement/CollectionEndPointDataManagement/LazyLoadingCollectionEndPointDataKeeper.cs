@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
-    
+
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
     private bool _isDataAvailable;
     
@@ -101,16 +101,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       return _collectionData.HasChanged (changeDetectionStrategy);
-    }
-
-    public void EnsureDataAvailable ()
-    {
-      if (!IsDataAvailable)
-      {
-        _clientTransaction.LoadRelatedObjects (_endPointID);
-
-        MarkDataAvailable ();
-      }
     }
 
     public void MarkDataAvailable ()

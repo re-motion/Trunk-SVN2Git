@@ -32,19 +32,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointID endPointID,
         IEnumerable<DomainObject> initialContents)
     {
-      return CreateCollectionEndPoint (endPointID, new RootCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, initialContents);
+      return CreateCollectionEndPoint (
+          endPointID,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+          ClientTransaction.Current,
+          initialContents);
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint (
-        RelationEndPointID endPointID, 
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy, 
-        ClientTransaction transaction, 
+        RelationEndPointID endPointID,
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
+        IRelationEndPointLazyLoader lazyLoader,
+        ClientTransaction transaction,
         IEnumerable<DomainObject> initialContents)
     {
       var newCollectionEndPoint = new CollectionEndPoint (
           transaction,
           endPointID,
           changeDetectionStrategy,
+          lazyLoader,
           initialContents);
       return newCollectionEndPoint;
     }

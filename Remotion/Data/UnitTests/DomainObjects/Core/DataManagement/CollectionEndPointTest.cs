@@ -39,7 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class CollectionEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _customerEndPointID;
+    
+    private IRelationEndPointLazyLoader _lazyLoaderMock;
     private CollectionEndPoint _customerEndPoint;
+
     private Order _order1; // Customer1
     private Order _orderWithoutOrderItem; // Customer1
     private Order _order2; // Customer3
@@ -53,7 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      _lazyLoaderMock = MockRepository.GenerateMock<IRelationEndPointLazyLoader> ();
+     
+      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          _customerEndPointID,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          _lazyLoaderMock,
+          ClientTransaction.Current,
+          new[] { _order1, _orderWithoutOrderItem });
     }
 
     [Test]
@@ -125,6 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
           _customerEndPointID, 
           new SubCollectionEndPointChangeDetectionStrategy(), 
+          ClientTransactionMock.DataManager, 
           ClientTransactionMock.CreateSubTransaction(), 
           null);
       
@@ -163,7 +174,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
       strategyMock.Replay ();
 
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          _customerEndPointID, 
+          strategyMock, 
+          ClientTransactionMock.DataManager, 
+          ClientTransactionMock, 
+          new[] { _order1 });
 
       var result = endPoint.HasChanged;
 
@@ -175,7 +191,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasChanged_UsesStrategy_IfRequired ()
     {
       var strategyMock = new MockRepository ().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          _customerEndPointID,
+          strategyMock,
+          ClientTransactionMock.DataManager,
+          ClientTransactionMock,
+          new[] { _order1 });
 
       strategyMock
           .Expect (mock => mock.HasDataChanged (
@@ -196,7 +217,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasChanged_TrueWithoutStrategy_WhenReferenceChanged ()
     {
       var strategyMock = MockRepository.GenerateMock<ICollectionEndPointChangeDetectionStrategy> ();
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          _customerEndPointID,
+          strategyMock,
+          ClientTransactionMock.DataManager,
+          ClientTransactionMock,
+          new[] { _order1 });
 
       endPoint.SetOppositeCollectionAndNotify (new OrderCollection { _order1 });
 
@@ -215,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var result = _customerEndPoint.HasChanged;
       
       Assert.That (result, Is.EqualTo (false));
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData(_customerEndPoint);
     }
 
     [Test]
@@ -235,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Touch ();
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
     
     [Test]
@@ -316,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var result = _customerEndPoint.HasBeenTouched;
 
       Assert.That (result, Is.EqualTo (false));
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -335,9 +361,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _customerEndPoint.Unload ();
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      PrepareLoading (_customerEndPoint);
 
       Dev.Null = _customerEndPoint.OriginalOppositeDomainObjectsContents;
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -375,16 +403,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Unload ();
     }
 
-    [Test]
-    public void EnsureDataAvailable ()
+ [Test]
+    public void EnsureDataAvailable_Loaded ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      endPoint.Unload ();
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      _lazyLoaderMock.Replay ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
 
-      endPoint.EnsureDataAvailable ();
+      _customerEndPoint.EnsureDataAvailable ();
 
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (Arg<CollectionEndPoint>.Is.Anything));
+    }
+
+    [Test]
+    public void EnsureDataAvailable_Unloaded ()
+    {
+      _lazyLoaderMock
+          .Expect (mock => mock.LoadLazyCollectionEndPoint (_customerEndPoint))
+          .WhenCalled (mi =>
+          {
+            // Simulate what's usually done by DataManager when an end-point is loaded
+            _customerEndPoint.RegisterOriginalObject (_order2);
+            _customerEndPoint.MarkDataAvailable ();
+          });
+      _lazyLoaderMock.Replay ();
+
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.EnsureDataAvailable ();
+
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      _lazyLoaderMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -476,9 +528,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateDeleteCommand_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
+
       _customerEndPoint.CreateDeleteCommand ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -495,18 +549,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetOppositeCollectionAndNotify_LoadsData ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      endPoint.Unload ();
-      var originalCollection = endPoint.OppositeDomainObjects;
+      var originalCollection = _customerEndPoint.OppositeDomainObjects;
+      _customerEndPoint.Unload ();
       
       Assert.That (originalCollection.IsDataAvailable, Is.False);
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
 
+      PrepareLoading (_customerEndPoint);
+      
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
+      _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
-      endPoint.SetOppositeCollectionAndNotify (newOpposites);
-
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
       Assert.That (originalCollection.IsDataAvailable, Is.True);
     }
 
@@ -594,8 +648,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
 
       _customerEndPoint.Commit();
-      
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      AssertDidNotLoadData (_customerEndPoint);
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
     }
 
@@ -665,7 +719,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.Rollback ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -684,14 +738,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValueFrom_LoadsData_ForBothCollections ()
     {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var sourceID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer2, "Orders");
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          sourceID,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          _lazyLoaderMock,
+          ClientTransaction.Current,
+          new[] { _order2 });
+
       source.Unload ();
       _customerEndPoint.Unload ();
 
+      PrepareLoading (source);
+      PrepareLoading (_customerEndPoint);
+
       _customerEndPoint.SetValueFrom (source);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
-      Assert.That (source.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
+      AssertDidLoadData (source);
     }
 
     [Test]
@@ -773,7 +837,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Unload ();
       _customerEndPoint.RegisterOriginalObject (_order2);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -792,7 +856,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Unload ();
       _customerEndPoint.UnregisterOriginalObject (_order1.ID);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -811,10 +875,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateRemoveCommand_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateRemoveCommand (_order1);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -834,10 +899,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateInsertCommand_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateInsertCommand (_order1, 12);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -857,10 +923,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateAddCommand_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateAddCommand (_order1);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -880,10 +947,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateReplaceCommand_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateReplaceCommand (0, _order1);
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -913,7 +981,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Unload ();
       _customerEndPoint.CreateDelegatingCollectionData ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -927,7 +995,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var result = _customerEndPoint.OppositeDomainObjects;
 
       Assert.That (result, Is.SameAs (oppositeCollection));
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -951,7 +1019,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -1027,7 +1095,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var result = _customerEndPoint.OriginalCollectionReference;
 
       Assert.That (result, Is.SameAs (originalReference));
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      AssertDidNotLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -1050,10 +1118,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOppositeRelationEndPoints_LoadsData ()
     {
       _customerEndPoint.Unload ();
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     [Test]
@@ -1087,15 +1156,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _customerEndPoint.Unload ();
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CheckMandatory ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      AssertDidLoadData (_customerEndPoint);
     }
 
     private LazyLoadingCollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
       return (LazyLoadingCollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
+    }
+
+    private void AssertDidNotLoadData (CollectionEndPoint collectionEndPoint)
+    {
+      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+    }
+
+    private void AssertDidLoadData (CollectionEndPoint collectionEndPoint)
+    {
+      _lazyLoaderMock.AssertWasCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+    }
+
+    private void PrepareLoading (CollectionEndPoint source)
+    {
+      _lazyLoaderMock.Stub (stub => stub.LoadLazyCollectionEndPoint (source)).WhenCalled (mi => source.MarkDataAvailable ());
     }
   }
 }

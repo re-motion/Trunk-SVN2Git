@@ -30,7 +30,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   [Serializable]
-  public class DataManager : ISerializable, IDeserializationCallback, IDataManager
+  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionEventSink;
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
-      _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy, objectLoader);
+      _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy, objectLoader, this);
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
@@ -264,6 +264,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectInvalidException (id);
 
       return DataContainerMap[id];
+    }
+
+    public void LoadLazyCollectionEndPoint (CollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      if (collectionEndPoint != _relationEndPointMap[collectionEndPoint.ID])
+        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
+
+      if (collectionEndPoint.IsDataAvailable)
+        throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
+      
+      _objectLoader.LoadRelatedObjects (collectionEndPoint.ID);
+      _relationEndPointMap.MarkCollectionEndPointComplete (collectionEndPoint.ID);
+
     }
 
     private RelationEndPoint EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)

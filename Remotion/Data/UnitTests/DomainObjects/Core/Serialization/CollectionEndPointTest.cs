@@ -204,16 +204,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var originalRootTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
           endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, new DomainObject[0]);
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+          ClientTransaction.Current,
+          new DomainObject[0]);
       var originalSubTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          endPointID, 
-          new SubCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, new DomainObject[0]);
+          endPointID,
+          new SubCollectionEndPointChangeDetectionStrategy(),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+          ClientTransaction.Current,
+          new DomainObject[0]);
 
       var deserializedRootTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalRootTxEndPoint);
       var deserializedSubTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalSubTxEndPoint);
 
       Assert.That (deserializedRootTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
       Assert.That (deserializedSubTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
+    }
+
+    [Test]
+    public void Serialization_LazyLoader ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          endPointID,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current), 
+          ClientTransaction.Current, 
+          new DomainObject[0]);
+
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
+
+      Assert.That (
+          PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_lazyLoader"),
+          Is.Not.Null);
     }
   }
 }

@@ -18,7 +18,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void UnregisterOriginalObject (ObjectID objectID);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
-    void EnsureDataAvailable ();
     void MarkDataAvailable ();
     void Unload ();
     void CommitOriginalContents ();

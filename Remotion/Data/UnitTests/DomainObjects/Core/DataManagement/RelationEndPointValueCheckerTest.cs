@@ -130,6 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return RelationEndPointObjectMother.CreateCollectionEndPoint (
           id, 
           new RootCollectionEndPointChangeDetectionStrategy(), 
+          ClientTransactionTestHelper.GetDataManager (transaction), 
           transaction, 
           new DomainObject[0]);
     }

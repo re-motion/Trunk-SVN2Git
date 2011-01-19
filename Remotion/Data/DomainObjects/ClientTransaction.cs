@@ -1102,23 +1102,10 @@ public class ClientTransaction
     throw new NotImplementedException ();
   }
 
-  /// <summary>
-  /// Loads all related <see cref="DomainObject"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
-  /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>
-  /// A <see cref="DomainObjectCollection"/> containing all related <see cref="DomainObject"/>s.
-  /// </returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Persistence.PersistenceException">
-  /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
-  /// The StorageProvider for the related objects could not be initialized.
-  /// </exception>
+  [Obsolete ("This method has been obsoleted. To intercept the loading of objects, replace the IObjectLoader of the transaction when its created.", true)]
   protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
   {
-    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-    return _objectLoader.LoadRelatedObjects (relationEndPointID);
+    throw new NotImplementedException ();
   }
 
   /// <summary>

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -39,6 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
     private readonly IObjectLoader _objectLoader;
+    private readonly IRelationEndPointLazyLoader _lazyLoader;
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly RelationEndPointCollection _relationEndPoints;
@@ -48,15 +48,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public RelationEndPointMap (
         ClientTransaction clientTransaction,
         ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
-        IObjectLoader objectLoader)
+        IObjectLoader objectLoader,
+        IRelationEndPointLazyLoader lazyLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       _clientTransaction = clientTransaction;
       _collectionEndPointChangeDetectionStrategy = collectionEndPointChangeDetectionStrategy;
       _objectLoader = objectLoader;
+      _lazyLoader = lazyLoader;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new RelationEndPointCollection (_clientTransaction);
@@ -206,7 +209,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.Many, "RegisterCollectionEndPoint", "endPointID");
 
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContentsOrNull);
+      var collectionEndPoint = new CollectionEndPoint (
+          _clientTransaction, 
+          endPointID, 
+          _collectionEndPointChangeDetectionStrategy,
+          _lazyLoader,
+          initialContentsOrNull);
       Add (collectionEndPoint);
 
       return collectionEndPoint;
@@ -566,7 +574,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // Note: RelationEndPointMap should never be serialized on its own; always start from the DataManager.
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
-        : this (info.GetValueForHandle<ClientTransaction>(), info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>(), info.GetValueForHandle<IObjectLoader>())
+        : this (
+            info.GetValueForHandle<ClientTransaction>(),
+            info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>(),
+            info.GetValueForHandle<IObjectLoader>(),
+            info.GetValueForHandle<IRelationEndPointLazyLoader>())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
@@ -583,6 +595,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_clientTransaction);
       info.AddHandle (_collectionEndPointChangeDetectionStrategy);
       info.AddHandle (_objectLoader);
+      info.AddHandle (_lazyLoader);
       var endPointArray = new RelationEndPoint[Count];
       _relationEndPoints.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);

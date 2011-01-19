@@ -37,13 +37,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private DataManager _dataManager;
+    private DataManager _dataManagerWitLoaderMock;
+    private IObjectLoader _objectLoaderMock;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _dataManager = (DataManager) ClientTransactionMock.DataManager;
+      _dataManager = ClientTransactionMock.DataManager;
       _invalidDomainObjectManager = (IInvalidDomainObjectManager) PrivateInvoke.GetNonPublicField (_dataManager, "_invalidDomainObjectManager");
+
+      _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
+      _dataManagerWitLoaderMock = new DataManager (
+          ClientTransactionMock,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          new RootInvalidDomainObjectManager (),
+          _objectLoaderMock);
     }
 
     [Test]
@@ -889,50 +898,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithLazyLoad_Loaded ()
     {
-      var objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      var dataManager = new DataManager (
-          ClientTransactionMock,
-          new RootCollectionEndPointChangeDetectionStrategy(),
-          new RootInvalidDomainObjectManager(),
-          objectLoaderMock);
-
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
       dataContainer.SetDomainObject (domainObject);
 
-      objectLoaderMock.Replay ();
+      _objectLoaderMock.Replay ();
 
-      dataManager.RegisterDataContainer (dataContainer);
+      _dataManagerWitLoaderMock.RegisterDataContainer (dataContainer);
 
-      var result = dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+      var result = _dataManagerWitLoaderMock.GetDataContainerWithLazyLoad (domainObject.ID);
 
-      objectLoaderMock.VerifyAllExpectations ();
+      _objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
     }
 
     [Test]
     public void GetDataContainerWithLazyLoad_NotLoaded ()
     {
-      var objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      var dataManager = new DataManager (
-          ClientTransactionMock,
-          new RootCollectionEndPointChangeDetectionStrategy(),
-          new RootInvalidDomainObjectManager(),
-          objectLoaderMock);
-
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
       dataContainer.SetDomainObject (domainObject);
-      
-      objectLoaderMock
+
+      _objectLoaderMock
           .Expect (mock => mock.LoadObject (domainObject.ID))
-          .WhenCalled (mi => dataManager.RegisterDataContainer (dataContainer))
+          .WhenCalled (mi => _dataManagerWitLoaderMock.RegisterDataContainer (dataContainer))
           .Return (domainObject);
-      objectLoaderMock.Replay ();
+      _objectLoaderMock.Replay ();
 
-      var result = dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+      var result = _dataManagerWitLoaderMock.GetDataContainerWithLazyLoad (domainObject.ID);
 
-      objectLoaderMock.VerifyAllExpectations ();
+      _objectLoaderMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (dataContainer));
     }
 
@@ -944,6 +939,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _invalidDomainObjectManager.MarkInvalid (domainObject);
 
       _dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+    }
+
+    [Test]
+    public void LoadLazyCollectionEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var domainObject = DomainObjectMother.CreateFakeObject<OrderItem> ();
+      ClientTransactionMock.EnlistDomainObject (domainObject);
+
+      var dataContainer = DataContainer.CreateNew (domainObject.ID);
+      dataContainer.PropertyValues[typeof (OrderItem).FullName + ".Order"].Value = endPointID.ObjectID;
+      dataContainer.SetDomainObject (domainObject);
+
+      var endPoint = ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, null);
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+
+      _objectLoaderMock
+          .Expect (mock => mock.LoadRelatedObjects (endPointID))
+          .WhenCalled (mi => _dataManagerWitLoaderMock.RegisterDataContainer (dataContainer))
+          .Return (new[] { domainObject });
+      _objectLoaderMock.Replay ();
+
+      _dataManagerWitLoaderMock.LoadLazyCollectionEndPoint (endPoint);
+
+      _objectLoaderMock.VerifyAllExpectations();
+
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { domainObject }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The given end-point is not managed by this DataManager.\r\nParameter name: collectionEndPoint")]
+    public void LoadLazyCollectionEndPoint_NotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
+      
+      _dataManager.LoadLazyCollectionEndPoint (endPoint);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The given end-point cannot be loaded, its data is already complete.")]
+    public void LoadLazyCollectionEndPoint_AlreadyLoaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var endPoint = ((RelationEndPointMap) _dataManager.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      Assert.That (endPoint.IsDataAvailable, Is.True);
+
+      _dataManager. LoadLazyCollectionEndPoint (endPoint);
     }
 
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)

@@ -179,69 +179,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void EnsureDataAvailable_Loaded ()
-    {
-      _objectLoaderMock.Replay ();
-      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.True);
-
-      _loadedDataKeeper.EnsureDataAvailable ();
-
-      Assert.That (_loadedDataKeeper.IsDataAvailable, Is.True);
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Unloaded ()
-    {
-      _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObjects (_endPointID))
-          .Return (new[] { _domainObject2, _domainObject3 })
-          .WhenCalled (mi => 
-          {
-            // Simulate what's usually done by RelationEndPointMap when new related objects are registered
-            _unloadedDataKeeper.RegisterOriginalObject (_domainObject2);
-            _unloadedDataKeeper.RegisterOriginalObject (_domainObject3);
-          });
-      _objectLoaderMock.Replay ();
-      
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.False);
-
-      _unloadedDataKeeper.EnsureDataAvailable ();
-
-      Assert.That (_unloadedDataKeeper.IsDataAvailable, Is.True);
-      Assert.That (_unloadedDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
-      Assert.That (_unloadedDataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
-      _objectLoaderMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Unloaded_WithSortComparer ()
-    {
-      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionWithObjectLoaderMock, _endPointID, _comparer123, null);
-
-      _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObjects (_endPointID))
-          .Return (new[] { _domainObject3, _domainObject1, _domainObject2 })
-          .WhenCalled (mi =>
-          {
-            // Simulate what's usually done by RelationEndPointMap when new related objects are registered
-            dataKeeper.RegisterOriginalObject (_domainObject3);
-            dataKeeper.RegisterOriginalObject (_domainObject1);
-            dataKeeper.RegisterOriginalObject (_domainObject2);
-          });
-      _objectLoaderMock.Replay ();
-
-      Assert.That (dataKeeper.IsDataAvailable, Is.False);
-
-      dataKeeper.EnsureDataAvailable ();
-
-      Assert.That (dataKeeper.IsDataAvailable, Is.True);
-      Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
-      Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
-      _objectLoaderMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void MarkDataAvailable_Loaded ()
     {
       _objectLoaderMock.Replay ();

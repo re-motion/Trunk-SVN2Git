@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
+    private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
@@ -42,11 +43,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy, 
+        IRelationEndPointLazyLoader lazyLoader,
         IEnumerable<DomainObject> initialContentsOrNull)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       // TODO 3401: Inject DataKeeper from the outside
       _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull);
@@ -59,6 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
+      _lazyLoader = lazyLoader;
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -131,7 +135,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void EnsureDataAvailable ()
     {
-      _dataKeeper.EnsureDataAvailable ();
+      if (!IsDataAvailable)
+      {
+        _lazyLoader.LoadLazyCollectionEndPoint (this);
+        Assertion.IsTrue (IsDataAvailable);
+      }
     }
 
     public void MarkDataAvailable ()
@@ -343,6 +351,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -352,6 +361,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddBoolValue (_hasBeenTouched);
       info.AddValue (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
+      info.AddHandle (_lazyLoader);
     }
 
     private void FixupAssociatedEndPoint (DomainObjectCollection collection)

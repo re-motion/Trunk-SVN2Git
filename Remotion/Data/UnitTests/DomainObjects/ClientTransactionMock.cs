@@ -78,9 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return GetEnlistedDomainObjects().OfType<T>().Cast<DomainObject>();
     }
 
-    public new IDataManager DataManager
+    public new DataManager DataManager
     {
-      get { return base.DataManager; }
+      get { return (DataManager) base.DataManager; }
     }
 
     public new bool IsReadOnly

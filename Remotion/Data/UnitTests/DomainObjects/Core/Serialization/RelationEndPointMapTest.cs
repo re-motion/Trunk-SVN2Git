@@ -69,6 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_objectLoader"),
           Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_lazyLoader"),
+          Is.SameAs (ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction)));
       
       Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.Not.Null);
       Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
