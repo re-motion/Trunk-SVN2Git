@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private bool IsNullable()
     {
       if (PropertyInfo.PropertyType.IsValueType)
-        return Nullable.GetUnderlyingType(PropertyInfo.PropertyType)!=null;
+        return Nullable.GetUnderlyingType (PropertyInfo.PropertyType) != null;
 
       if (ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType))
         return true;

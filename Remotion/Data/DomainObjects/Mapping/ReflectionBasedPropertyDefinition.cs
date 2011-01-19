@@ -60,6 +60,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _propertyInfo = propertyInfo;
       _propertyType = propertyType;
+      
+      // TODO Review 3605: Remove this check - simply use isNullable
       if (propertyType.IsValueType)
         _isNullable = Nullable.GetUnderlyingType (propertyType) != null;
       else

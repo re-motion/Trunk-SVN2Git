@@ -17,16 +17,14 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class PropertyDefinitionTest : MappingReflectionTestBase
+  public class PropertyDefinitionTest : StandardMappingTest
   {
     private ReflectionBasedClassDefinition _classDefinition;
 
@@ -35,261 +33,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-    }
-
-    [Test]
-    public void InitializeWithValueType ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int), false, null, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.AreEqual (0, actual.DefaultValue);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (int), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithNullableValueType ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (int?), true, null, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (int?), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithObjectID ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (ObjectID), true, null, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (ObjectID), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsTrue (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithEnum ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition,
-          _classDefinition.ClassType,
-          "OrderNumber",
-          "ColumnName",
-          typeof (ClassWithAllDataTypes.EnumType),
-          false,
-          null,
-          StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StoragePropertyDefinition.Name);
-      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, actual.DefaultValue);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (ClassWithAllDataTypes.EnumType), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithNullableEnum ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition,
-          _classDefinition.ClassType,
-          "OrderNumber",
-          "ColumnName",
-          typeof (ClassWithAllDataTypes.EnumType?),
-          true,
-          null,
-          StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (ClassWithAllDataTypes.EnumType?), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithEnumNotDefiningZero ()
-    {
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "PropertyName", "ColumnName", typeof (EnumNotDefiningZero), StorageClass.Persistent);
-      Assert.AreEqual (EnumNotDefiningZero.First, actual.DefaultValue);
-    }
-
-    [Test]
-    public void InitializeWithExtensibleEnum ()
-    {
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "PropertyName", "ColumnName", typeof (Color), true, StorageClass.Persistent);
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-    }
-
-    [Test]
-    public void InitializeWithExtensibleEnum_NotNullable ()
-    {
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "PropertyName", "ColumnName", typeof (Color), false, StorageClass.Persistent);
-      Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
-      Assert.IsFalse (actual.IsNullable);
-    }
-
-    [Test]
-    public void InitializeWithNullableStringAndMaxLength ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.AreEqual (100, actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (string), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithNotNullableStringWithoutMaxLength ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.AreEqual (string.Empty, actual.DefaultValue);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (string), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithNullableArrayAndMaxLength ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (byte[]), true, 100, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", actual.StoragePropertyDefinition.Name);
-      Assert.IsNull (actual.DefaultValue);
-      Assert.IsTrue (actual.IsNullable);
-      Assert.AreEqual (100, actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (byte[]), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
-    }
-
-    [Test]
-    public void InitializeWithNotNullableArrayWithoutMaxLength ()
-    {
-      var propertyName = _classDefinition.ClassType.FullName + ".OrderNumber";
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (byte[]), false, null, StorageClass.Persistent);
-      Assert.AreSame (_classDefinition, actual.ClassDefinition);
-      Assert.AreEqual ("ColumnName", StorageModelTestHelper.GetColumnName (actual));
-      Assert.AreEqual (new byte[0], actual.DefaultValue);
-      Assert.IsFalse (actual.IsNullable);
-      Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (propertyName, actual.PropertyName);
-      Assert.AreEqual (typeof (byte[]), actual.PropertyType);
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
-      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
-      Assert.IsFalse (actual.IsObjectID);
-      Assert.That (actual.PropertyInfo, Is.EqualTo (typeof (Order).GetProperty ("OrderNumber")));
+          "Order", "OrderTable", TestDomainStorageProviderDefinition, typeof (Order), false);
     }
 
     [Test]
     public void GetToString ()
     {
-      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _classDefinition, "ThePropertyName", "TheColumnName", StorageClass.None);
+      PropertyDefinition propertyDefinition = new TestablePropertyDefinition (_classDefinition, "ThePropertyName", null, StorageClass.None);
 
-      Assert.That (actual.ToString(), Is.EqualTo (typeof (ReflectionBasedPropertyDefinition).FullName + ": ThePropertyName"));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"
-        )]
-    public void IntPropertyWithMaxLength ()
-    {
-      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), 10);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Properties cannot be nullable when they have a non-nullable value type.\r\n  Property: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"
-        )]
-    public void CheckValueTypeCtors_ValueType_And_NoUnderlyingType_IsNullableIsTrue ()
-    {
-      ReflectionBasedPropertyDefinitionFactory.Create (_classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), true);
-    }
-
-    [Test]
-    public void CheckValueTypeCtors_ValueType_And_NoUnderlyingType_IsNullableIsFalse ()
-    {
-      var result = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "test", typeof (int), false);
-
-      Assert.That (result, Is.Not.Null);
+      Assert.That (propertyDefinition.ToString (), Is.EqualTo (typeof (TestablePropertyDefinition).FullName + ": ThePropertyName"));
     }
 
     [Test]
     public void SetStorageProperty ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
-          _classDefinition, _classDefinition.ClassType, "OrderNumber", "ColumnName", typeof (string), false, null, StorageClass.Persistent);
+      PropertyDefinition propertyDefinition = new TestablePropertyDefinition (_classDefinition, "ThePropertyName", null, StorageClass.Persistent);
       var columnDefinition = new SimpleColumnDefinition ("Test", typeof (string), "varchar", true, false);
 
       propertyDefinition.SetStorageProperty (columnDefinition);
