@@ -36,10 +36,26 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Resources
     }
 
     [Test]
+    public void GetResourceStream_WithType ()
+    {
+      var resourceStream = ResourceUtility.GetResourceStream (GetType (), "TestEmbeddedResource.txt");
+
+      Assert.That (resourceStream.Length, Is.EqualTo (11));
+    }
+
+    [Test]
     public void GetResource ()
     {
       var resourceBytes = ResourceUtility.GetResource (Assembly.GetExecutingAssembly (),
           "Remotion.Development.UnitTests.Core.UnitTesting.Resources.TestEmbeddedResource.txt");
+
+      Assert.That (resourceBytes.Length, Is.EqualTo (11));
+    }
+
+    [Test]
+    public void GetResource_WithType ()
+    {
+      var resourceBytes = ResourceUtility.GetResource (GetType(), "TestEmbeddedResource.txt");
 
       Assert.That (resourceBytes.Length, Is.EqualTo (11));
     }
@@ -51,6 +67,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Resources
           "Remotion.Development.UnitTests.Core.UnitTesting.Resources.TestEmbeddedResource.txt");
 
       Assert.That (resourceContent, Is.EqualTo("Testcontent"));
+    }
+
+    [Test]
+    public void GetResourceString_WithType ()
+    {
+      var resourceContent = ResourceUtility.GetResourceString (GetType (), "TestEmbeddedResource.txt");
+
+      Assert.That (resourceContent, Is.EqualTo ("Testcontent"));
     }
   }
 }

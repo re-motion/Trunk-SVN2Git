@@ -15,64 +15,42 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Utilities;
-using Assertion=Remotion.Utilities.Assertion;
+using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Resources
 {
   public static class ResourceManager
-  {    
-    public static byte[] GetResource (string resourceID)
-    {
-      using (Stream resourceStream = GetResourceStream (resourceID))
-      {
-        byte[] buffer = new byte[resourceStream.Length];
-        resourceStream.Read (buffer, 0, buffer.Length);
-        return buffer;
-      }
-    }
-
-    public static Stream GetResourceStream (string resourceID)
-    {
-      Type resourceManagerType = typeof (ResourceManager);
-      Stream stream = resourceManagerType.Assembly.GetManifestResourceStream (resourceManagerType, resourceID);
-      Assertion.IsNotNull (stream, "Resource '{0}.{1}' was not found", resourceManagerType.Namespace, resourceID);
-
-      return stream;
-    }
-
+  {
     public static byte[] GetDomainObjectsConfigurationWithFakeMappingLoader ()
     {
-      return GetResource ("DomainObjectsConfigurationWithFakeMappingLoader.xml");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "DomainObjectsConfigurationWithFakeMappingLoader.xml");
     }
 
     public static byte[] GetDomainObjectsConfigurationWithCustomSectionGroupName ()
     {
-      return GetResource ("DomainObjectsConfigurationWithCustomSectionGroupName.xml");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "DomainObjectsConfigurationWithCustomSectionGroupName.xml");
     }
 
     public static byte[] GetDomainObjectsConfigurationWithMinimumSettings ()
     {
-      return GetResource ("DomainObjectsConfigurationWithMinimumSettings.xml");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "DomainObjectsConfigurationWithMinimumSettings.xml");
     }
 
     public static byte[] GetImage1()
     {
-      return GetResource ("Image1.png");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "Image1.png");
     }
 
     public static byte[] GetImage2()
     {
-      return GetResource ("Image2.png");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "Image2.png");
     }
 
     public static byte[] GetImageLarger1MB()
     {
-      return GetResource ("ImageLarger1MB.bmp");
+      return ResourceUtility.GetResource (typeof (ResourceManager), "ImageLarger1MB.bmp");
     }
 
     public static void IsEqualToImage1 (byte[] actual)

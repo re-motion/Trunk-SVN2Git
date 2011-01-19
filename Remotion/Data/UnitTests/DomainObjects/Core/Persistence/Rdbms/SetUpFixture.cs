@@ -33,26 +33,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         // This does not set the current configuration properties, SchemaGenerationTestBase.TestFixtureSetUp does this
         SchemaGenerationConfiguration.Initialize ();
-
-        var createDBScript = GetEmbeddedStringResource ("SqlServer.SchemaGeneration.TestData.SchemaGeneration_CreateDB.sql");
-
-        var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
-        masterAgent.ExecuteBatchString (createDBScript, false);
       }
       catch (Exception ex)
       {
         Console.WriteLine ("SetUpFixture failed: " + ex);
         Console.WriteLine ();
         throw;
-      }
-    }
-
-    private string GetEmbeddedStringResource (string name)
-    {
-      Assembly assembly = GetType ().Assembly;
-      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (SetUpFixture), name)))
-      {
-        return reader.ReadToEnd ();
       }
     }
   }

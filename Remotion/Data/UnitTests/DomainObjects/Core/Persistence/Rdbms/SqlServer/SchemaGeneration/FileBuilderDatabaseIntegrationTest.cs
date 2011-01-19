@@ -17,15 +17,28 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Development.UnitTesting.Data.SqlClient;
+using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class FileBuilderIntegrationTest : SchemaGenerationTestBase
+  public class FileBuilderDatabaseIntegrationTest : SchemaGenerationTestBase
   {
     public override void SetUp ()
     {
       base.SetUp();
+    }
+
+    public override void TestFixtureSetUp ()
+    {
+      base.TestFixtureSetUp ();
+
+      var createDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SchemaGeneration_CreateDB.sql");
+
+      var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
+      masterAgent.ExecuteBatchString (createDBScript, false);
+
     }
 
     [Test]
