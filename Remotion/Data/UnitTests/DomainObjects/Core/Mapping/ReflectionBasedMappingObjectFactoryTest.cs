@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetUp ()
     {
       _mappingNameResolver = new ReflectionBasedNameResolver();
-      _factory = new ReflectionBasedMappingObjectFactory(_mappingNameResolver);
+      _factory = new ReflectionBasedMappingObjectFactory (_mappingNameResolver);
     }
 
     [Test]
@@ -65,6 +65,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.Count, Is.EqualTo (2));
       Assert.That (result.Contains (typeof (Order)), Is.True);
       Assert.That (result.Contains (typeof (Company)), Is.True);
+    }
+
+    [Test]
+    public void CreatePropertyDefinitionCollection ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var propertyInfo1 = typeof (Order).GetProperty ("OrderNumber");
+      var propertyInfo2 = typeof (Order).GetProperty ("DeliveryDate");
+
+      var result = _factory.CreatePropertyDefinitionCollection (classDefinition, new[] { propertyInfo1, propertyInfo2 });
+
+      Assert.That (result.Count, Is.EqualTo (2));
+      Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
+      Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
     }
   }
 }

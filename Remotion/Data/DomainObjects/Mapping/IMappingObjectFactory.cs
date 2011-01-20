@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,5 +27,8 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     ClassDefinition CreateClassDefinition (Type type, ReflectionBasedClassDefinition baseClass);
     ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types);
+
+    PropertyDefinitionCollection CreatePropertyDefinitionCollection (
+        ReflectionBasedClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos);
   }
 }

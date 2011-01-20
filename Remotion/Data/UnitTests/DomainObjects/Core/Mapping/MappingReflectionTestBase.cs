@@ -25,6 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class MappingReflectionTestBase
   {
+    private ReflectionBasedMappingObjectFactory _mappingObjectFactory;
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
     public const string TestDomainProviderID = "TestDomain";
     public const string c_testDomainProviderID = "TestDomain";
@@ -36,6 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
+
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (Configuration.NameResolver);
     }
 
     [TearDown]
@@ -70,6 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     protected StorageProviderDefinition UnitTestDomainStorageProviderDefinition
     {
       get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
+    }
+
+    protected ReflectionBasedMappingObjectFactory MappingObjectFactory
+    {
+      get { return _mappingObjectFactory; }
     }
   }
 }

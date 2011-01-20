@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForBaseClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithDifferentPropertiesClassDefinition ();
 
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForDerivedClass ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithDifferentPropertiesClassDefinition ();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
    [Test]
     public void GetMetadata_ForMixedClass ()
     {
-      var classReflector = new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD) }));
     }
@@ -75,10 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForDerivedMixedClass ()
     {
-      var classReflectorForBaseClass = new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
+      var classReflectorForBaseClass = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition baseClass = classReflectorForBaseClass.GetMetadata (null);
 
-      var classReflector = new ClassReflector (typeof (TargetClassB), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithOneSideRelationProperties ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition ();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection ());
 
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassHavingClassIDAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), MappingObjectFactory, Configuration.NameResolver);
 
       ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
 
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClosedGenericClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClosedGenericClass), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver);
 
       Assert.IsNotNull (classReflector.GetMetadata (null));
     }
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithoutStorageGroupAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), MappingObjectFactory, Configuration.NameResolver);
 
       var actual = classReflector.GetMetadata (null);
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_ForClassWithStorageGroupAttribute ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (DerivedClassWithStorageGroupAttribute), MappingObjectFactory, Configuration.NameResolver);
 
       var actual = classReflector.GetMetadata (null);
 
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForBaseClass ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
 
       var actual = classReflector.GetMetadata (null);
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMetadata_PersistentMixinFinder_ForDerivedClass ()
     {
-      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
       var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition ();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);

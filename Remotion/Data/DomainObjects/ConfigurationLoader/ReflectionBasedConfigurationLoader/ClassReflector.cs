@@ -29,40 +29,36 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="ClassReflector"/>'s constructor signature. </remarks>
   public class ClassReflector
   {
-    public static ClassReflector CreateClassReflector (Type type, IMappingNameResolver nameResolver)
+    public static ClassReflector CreateClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
-      return new ClassReflector (type, nameResolver);
+      return new ClassReflector (type, mappingObjectFactory, nameResolver);
     }
 
-    public ClassReflector (Type type, IMappingNameResolver nameResolver)
+    public ClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
+      ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       Type = type;
+      MappingObjectFactory = mappingObjectFactory;
       NameResolver = nameResolver;
     }
 
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
+    public IMappingObjectFactory MappingObjectFactory { get; private set; }
 
     public ReflectionBasedClassDefinition GetMetadata (ReflectionBasedClassDefinition baseClassDefinition)
     {
       var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
-      
       var classDefinition = new ReflectionBasedClassDefinition (
           GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
 
-      CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
+      var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
+      classDefinition.SetPropertyDefinitions (properties);
 
       return classDefinition;
-    }
-
-    private void CreatePropertyDefinitions (ReflectionBasedClassDefinition classDefinition, IEnumerable<MemberInfo> propertyInfos)
-    {
-      var propertyDefinitionsForClass = from PropertyInfo propertyInfo in propertyInfos
-                                        select (PropertyDefinition) new PropertyReflector (classDefinition, propertyInfo, NameResolver).GetMetadata();
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (propertyDefinitionsForClass, true));
     }
 
     private string GetID ()

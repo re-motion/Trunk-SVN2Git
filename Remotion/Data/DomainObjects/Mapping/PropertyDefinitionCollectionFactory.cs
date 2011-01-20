@@ -16,50 +16,40 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  /// <summary>
-  /// The <see cref="ReflectionBasedMappingObjectFactory"/> is used to create new mapping objects.
-  /// </summary>
-  public class ReflectionBasedMappingObjectFactory : IMappingObjectFactory
+  public class PropertyDefinitionCollectionFactory
   {
     private readonly IMappingNameResolver _mappingNameResolver;
 
-    public ReflectionBasedMappingObjectFactory (IMappingNameResolver mappingNameResolver)
+    public PropertyDefinitionCollectionFactory (IMappingNameResolver mappingNameResolver)
     {
       ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
 
       _mappingNameResolver = mappingNameResolver;
     }
 
-    public ClassDefinition CreateClassDefinition (Type type, ReflectionBasedClassDefinition baseClass)
+    public IMappingNameResolver MappingNameResolver
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      var classReflector = new ClassReflector (type, this, _mappingNameResolver);
-      return classReflector.GetMetadata (baseClass);
+      get { return _mappingNameResolver; }
     }
 
-    public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
-    {
-      ArgumentUtility.CheckNotNull ("types", types);
-
-      var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (this);
-      return classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
-    }
-
-    public PropertyDefinitionCollection CreatePropertyDefinitionCollection (
+    public PropertyDefinitionCollection CreatePropertyDefinitions (
         ReflectionBasedClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);
 
-      var factory = new PropertyDefinitionCollectionFactory (_mappingNameResolver);
-      return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
+      var propertyDefinitionsForClass = from PropertyInfo propertyInfo in propertyInfos
+                                        select
+                                            (PropertyDefinition)
+                                            new PropertyReflector (classDefinition, propertyInfo, MappingNameResolver).GetMetadata();
+      return new PropertyDefinitionCollection (propertyDefinitionsForClass, true);
     }
   }
 }
