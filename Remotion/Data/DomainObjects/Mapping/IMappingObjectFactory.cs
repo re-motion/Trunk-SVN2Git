@@ -30,5 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     PropertyDefinitionCollection CreatePropertyDefinitionCollection (
         ReflectionBasedClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos);
+
+    IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo);
   }
 }

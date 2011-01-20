@@ -80,5 +80,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
       Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
     }
+
+    [Test]
+    public void CreateRelationEndPointDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var propertyInfo = typeof (Order).GetProperty ("OrderItems");
+
+      var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
+
+      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
+      Assert.That (((ReflectionBasedVirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs(propertyInfo));
+
+    }
   }
 }

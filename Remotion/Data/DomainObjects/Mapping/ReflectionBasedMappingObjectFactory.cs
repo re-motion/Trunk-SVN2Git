@@ -61,5 +61,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       var factory = new PropertyDefinitionCollectionFactory (_mappingNameResolver);
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
     }
+
+    public IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, _mappingNameResolver);
+      return relationEndPointReflector.GetMetadata();
+    }
   }
 }
