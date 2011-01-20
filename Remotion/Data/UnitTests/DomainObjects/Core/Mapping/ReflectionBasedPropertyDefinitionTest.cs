@@ -92,7 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [IgnoreAttribute ("TODO Review 3605")]
     public void Initialize_WithNullableValueType_IsNullableFalse ()
     {
       var actual = new ReflectionBasedPropertyDefinition (
