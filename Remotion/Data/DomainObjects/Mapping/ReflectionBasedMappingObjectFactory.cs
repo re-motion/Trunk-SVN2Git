@@ -44,6 +44,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classReflector.GetMetadata (baseClass);
     }
 
+    public IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, _mappingNameResolver);
+      return relationEndPointReflector.GetMetadata ();
+    }
+
     public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
@@ -62,13 +71,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
     }
 
-    public IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ReflectionBasedClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, _mappingNameResolver);
-      return relationEndPointReflector.GetMetadata();
+      var factory = new RelationEndPointDefinitionCollectionFactory (this, _mappingNameResolver);
+      return factory.CreateRelationEndPointDefinitionCollection (classDefinition);
     }
   }
 }
