@@ -34,6 +34,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -296,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderNumber"),
-          null);
+          new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
       var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),
@@ -306,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           null,
           StorageClass.Persistent,
           typeof (Order).GetProperty ("DeliveryDate"),
-          null);
+          new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
 
@@ -325,10 +326,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (4));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
-          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("OrderNo"));
+          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn1"));
       Assert.That (classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition, Is.Not.Null);
       Assert.That (
-          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("DeliveryDate"));
+          ((SimpleColumnDefinition) classDefinition.MyPropertyDefinitions["DeliveryDate"].StoragePropertyDefinition).Name, Is.EqualTo ("FakeColumn2"));
     }
 
     [Test]
@@ -357,8 +358,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
-      propertyDefinition.SetStorageProperty (null);
-
+      PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
+      
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
