@@ -478,7 +478,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_ValidNullEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = DayOfWeek.Monday;
@@ -493,7 +493,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidNullEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (DayOfWeek?), true, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
@@ -504,7 +504,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void EnumCheck_InvalidNonNullEnum_Null ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-          _orderClassDefinition, "test", "test", typeof (DayOfWeek), StorageClass.Persistent);
+          _orderClassDefinition, "test", "test", typeof (DayOfWeek), false, null, StorageClass.Persistent);
 
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = null;
