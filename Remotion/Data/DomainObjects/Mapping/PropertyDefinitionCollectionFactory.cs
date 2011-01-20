@@ -23,6 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// The <see cref="PropertyDefinitionCollectionFactory"/> is used to get a <see cref="PropertyDefinitionCollection"/> for a set of 
+  /// <see cref="PropertyInfo"/>s.
+  /// </summary>
   public class PropertyDefinitionCollectionFactory
   {
     private readonly IMappingNameResolver _mappingNameResolver;

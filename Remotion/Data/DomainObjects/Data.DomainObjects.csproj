@@ -184,6 +184,7 @@
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\PropertyDefinitionCollectionFactory.cs" />
+    <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionFactory.cs" />
