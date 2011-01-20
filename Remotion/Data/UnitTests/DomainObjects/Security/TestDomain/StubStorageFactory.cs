@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider));
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

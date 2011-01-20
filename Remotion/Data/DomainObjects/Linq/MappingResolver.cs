@@ -18,6 +18,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -35,12 +36,15 @@ namespace Remotion.Data.DomainObjects.Linq
   public class MappingResolver : IMappingResolver
   {
     private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
+    private readonly IStorageNameProvider _storageNameProvider;
 
-    public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver)
+    public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver, IStorageNameProvider storageNameProvider)
     {
       ArgumentUtility.CheckNotNull ("storageSpecificExpressionResolver", storageSpecificExpressionResolver);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
 
       _storageSpecificExpressionResolver = storageSpecificExpressionResolver;
+      _storageNameProvider = storageNameProvider;
     }
 
     public IResolvedTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
@@ -118,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
+      if (property.Name == _storageNameProvider.IDColumnName && property.DeclaringType == typeof (DomainObject))
         return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
 
       var propertyInfoAdapter = new PropertyInfoAdapter (property);
@@ -142,8 +146,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
-        return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
+      if (memberInfo == typeof (ObjectID).GetProperty (_storageNameProvider.ClassIDColumnName))
+        return sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, _storageNameProvider.ClassIDColumnName, false);
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));

@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -44,12 +45,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private ResolvedSimpleTableInfo _fakeSimpleTableInfo;
     private SqlColumnDefinitionExpression _fakeColumnDefinitionExpression;
     private ResolvedJoinInfo _fakeJoinInfo;
+    private IStorageNameProvider _storageNameProviderStub;
 
     [SetUp]
     public void SetUp ()
     {
       _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver>();
-      _resolver = new MappingResolver (_storageSpecificExpressionResolverStub);
+      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
+      _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
+      _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
+      _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
+      _resolver = new MappingResolver (_storageSpecificExpressionResolverStub, _storageNameProviderStub);
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"), JoinSemantics.Inner);
       _fakeSimpleTableInfo = new ResolvedSimpleTableInfo (typeof (Order), "OrderTable", "o");
