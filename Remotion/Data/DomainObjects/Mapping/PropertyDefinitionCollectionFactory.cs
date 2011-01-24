@@ -49,10 +49,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);
 
-      var propertyDefinitionsForClass = from PropertyInfo propertyInfo in propertyInfos
-                                        select
-                                            (PropertyDefinition)
-                                            new PropertyReflector (classDefinition, propertyInfo, MappingNameResolver).GetMetadata();
+      // TODO Review 3555: Add IMappingObjectFactory.CreatePropertyDefinition (ClassDefinition, PropertyInfo), use here
+      var propertyDefinitionsForClass = 
+          from PropertyInfo propertyInfo in propertyInfos
+          select (PropertyDefinition) new PropertyReflector (classDefinition, propertyInfo, MappingNameResolver).GetMetadata();
       return new PropertyDefinitionCollection (propertyDefinitionsForClass, true);
     }
   }

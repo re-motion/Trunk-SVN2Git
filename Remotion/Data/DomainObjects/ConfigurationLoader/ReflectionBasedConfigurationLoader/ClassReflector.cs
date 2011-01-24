@@ -45,6 +45,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       NameResolver = nameResolver;
     }
 
+    // TODO Review 3555: Change to private fields
     public Type Type { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
     public IMappingObjectFactory MappingObjectFactory { get; private set; }
