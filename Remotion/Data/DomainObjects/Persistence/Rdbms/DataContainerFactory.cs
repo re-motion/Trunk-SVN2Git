@@ -78,6 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ObjectID id = valueConverter.GetID (_dataReader);
       if (id != null)
       {
+        // TODO Review 3675: Add ValueConverter.GetTimestamp, use name provider there
         object timestamp = _dataReader.GetValue (valueConverter.GetMandatoryOrdinal (_dataReader, "Timestamp"));
 
         DataContainer dataContainer = DataContainer.CreateForExisting (

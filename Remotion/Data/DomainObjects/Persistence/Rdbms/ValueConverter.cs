@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   {
     private readonly RdbmsProvider _provider;
 
+    // TODO Review 3675: Inject name provider here
     public ValueConverter (RdbmsProvider provider, TypeConversionProvider typeConversionProvider)
         : base (typeConversionProvider)
     {
@@ -103,6 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
+      // TODO Review 3675: Use name provider
       object idValue = GetValue (dataReader, "ID");
       if (idValue == DBNull.Value)
         return null;
@@ -136,6 +138,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (classDefinition.IsAbstract)
       {
+        // TODO Review 3675: Use name provider
         throw _provider.CreateRdbmsProviderException (
             "Invalid database value encountered. Column 'ClassID' of row with ID '{0}' refers to abstract class '{1}'.",
             idValue,
@@ -147,6 +150,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private string GetClassID (IDataReader dataReader)
     {
+      // TODO Review 3675: Use name provider here
       int classIDColumnOrdinal = GetMandatoryOrdinal (dataReader, "ClassID");
       if (dataReader.IsDBNull (classIDColumnOrdinal))
         throw _provider.CreateRdbmsProviderException ("Invalid database value encountered. Column 'ClassID' must not contain null.");
