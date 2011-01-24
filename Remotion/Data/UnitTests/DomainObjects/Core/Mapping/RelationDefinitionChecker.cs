@@ -76,13 +76,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
         Assert.IsNotNull (
             actualEndPointDefinition,
-            "End point definition was not found (relation definition: '{0}', class: '{1}', property name: '{2}'.",
+            "End point definition was not found (relation definition: '{0}', class: '{1}', property name: '{2}').",
             expectedRelationDefinition.ID,
             expectedEndPointDefinition.ClassDefinition.ID,
             expectedEndPointDefinition.PropertyName);
 
         var endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
-        endPointDefinitionChecker.Check (expectedEndPointDefinition, actualEndPointDefinition);
+        endPointDefinitionChecker.Check (expectedEndPointDefinition, actualEndPointDefinition, true);
+        
+        Assert.AreSame (
+            actualRelationDefinition, 
+            actualEndPointDefinition.RelationDefinition,
+            "End point definition does not reference the correct relation definition (relation definition: '{0}', class: '{1}', property name: '{2}').",
+            actualRelationDefinition.ID,
+            actualEndPointDefinition.ClassDefinition.ID,
+            actualEndPointDefinition.PropertyName);
       }
     }
   }

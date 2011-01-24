@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -38,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
 
       _relationDefinitionChecker = new RelationDefinitionChecker();
       _relationDefinitions = new RelationDefinitionCollection();
-      _closedGenericClassWithManySideRelationPropertiesClassDefinition = CreateClosedGenericClassWithManySideRelationPropertiesClassDefinition ();
-      _closedGenericClassWithOneSideRelationPropertiesClassDefinition = CreateClosedGenericClassWithOneSideRelationPropertiesClassDefinition ();
-      _classDefinitions = new ClassDefinitionCollection ();
+      _closedGenericClassWithManySideRelationPropertiesClassDefinition = CreateClosedGenericClassWithManySideRelationPropertiesClassDefinition();
+      _closedGenericClassWithOneSideRelationPropertiesClassDefinition = CreateClosedGenericClassWithOneSideRelationPropertiesClassDefinition();
+      _classDefinitions = new ClassDefinitionCollection();
       _classDefinitions.Add (_closedGenericClassWithManySideRelationPropertiesClassDefinition);
       _classDefinitions.Add (_closedGenericClassWithOneSideRelationPropertiesClassDefinition);
     }
@@ -48,12 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
     [Test]
     public void GetRelationDefinitions_ForManySide ()
     {
-      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
-      expectedDefinitions.Add (CreateBaseUnidirectionalRelationDefinition ());
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition ());
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition ());
+      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection();
+      expectedDefinitions.Add (CreateBaseUnidirectionalRelationDefinition());
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition());
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition());
 
-      var classReflector = new ClassReflectorForRelations (typeof (ClosedGenericClassWithRealRelationEndPoints), Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (
+          typeof (ClosedGenericClassWithRealRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
 
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -63,11 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
     [Test]
     public void GetRelationDefinitions_ForOneSide ()
     {
-      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition ());
-      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition ());
+      RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection();
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition());
+      expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition());
 
-      var classReflector = new ClassReflectorForRelations (typeof (ClosedGenericClassWithVirtualRelationEndPoints), Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (
+          typeof (ClosedGenericClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
 
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -77,69 +80,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
 
     private ClassDefinition CreateClosedGenericClassWithOneSideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithVirtualRelationEndPoints",
-          "ClosedGenericClassWithVirtualRelationEndPoints",
-          TestDomainStorageProviderDefinition,
-          typeof (ClosedGenericClassWithVirtualRelationEndPoints),
-          false);
+      ReflectionBasedClassDefinition classDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              "ClosedGenericClassWithVirtualRelationEndPoints",
+              "ClosedGenericClassWithVirtualRelationEndPoints",
+              TestDomainStorageProviderDefinition,
+              typeof (ClosedGenericClassWithVirtualRelationEndPoints),
+              false);
+
+      classDefinition.SetPropertyDefinitions (
+          MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition)));
+      classDefinition.SetRelationEndPointDefinitions (MappingObjectFactory.CreateRelationEndPointDefinitionCollection (classDefinition));
 
       return classDefinition;
     }
 
     private ClassDefinition CreateClosedGenericClassWithManySideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
-          "ClosedGenericClassWithManySideRelationProperties",
-          TestDomainStorageProviderDefinition,
-          typeof (ClosedGenericClassWithRealRelationEndPoints),
-          false);
+      ReflectionBasedClassDefinition classDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+              "ClosedGenericClassWithManySideRelationProperties",
+              "ClosedGenericClassWithManySideRelationProperties",
+              TestDomainStorageProviderDefinition,
+              typeof (ClosedGenericClassWithRealRelationEndPoints),
+              false);
 
-      CreatePropertyDefinitionsForClosedGenericClassWithManySideRelationProperties (classDefinition);
+      classDefinition.SetPropertyDefinitions (
+          MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition)));
+      classDefinition.SetRelationEndPointDefinitions (MappingObjectFactory.CreateRelationEndPointDefinitionCollection (classDefinition));
 
       return classDefinition;
     }
 
-    private void CreatePropertyDefinitionsForClosedGenericClassWithManySideRelationProperties (ReflectionBasedClassDefinition classDefinition)
-    {
-      var properties = new List<PropertyDefinition>();
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseUnidirectional", "BaseUnidirectionalID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToOne", "BaseBidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create(classDefinition, typeof (GenericClassWithRealRelationEndPointsNotInMapping<>), "BaseBidirectionalOneToMany", "BaseBidirectionalOneToManyID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
-    }
-
     private RelationDefinition CreateBaseUnidirectionalRelationDefinition ()
     {
-      return new RelationDefinition (
+      return CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" +
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseUnidirectional",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseUnidirectional",
+          CreateRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseUnidirectional",
               false),
-          CreateAnonymousRelationEndPointDefinition ());
+          CreateAnonymousRelationEndPointDefinition());
     }
 
     private RelationDefinition CreateBaseBidirectionalOneToOneRelationDefinition ()
     {
-      return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" 
-          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne->"
-          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne", 
+      return CreateExpectedRelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:"
+          +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne->"
+          +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
+          CreateRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
               false),
-          CreateVirtualRelationEndPointDefinitionForManySide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne", 
+          CreateVirtualRelationEndPointDefinitionForManySide (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToOne",
               false));
     }
 
     private RelationDefinition CreateBaseBidirectionalOneToManyRelationDefinition ()
     {
-      return new RelationDefinition (
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:" 
-          +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany->"
-          + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
-          CreateRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
+      return CreateExpectedRelationDefinition (
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClosedGenericClassWithRealRelationEndPoints:"
+          +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany->"
+          +
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
+          CreateRelationEndPointDefinition (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithRealRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
               false),
-          CreateVirtualRelationEndPointDefinitionForOneSide ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
-              false, "BaseUnidirectional"));
+          CreateVirtualRelationEndPointDefinitionForOneSide (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.GenericClassWithVirtualRelationEndPointsNotInMapping`1.BaseBidirectionalOneToMany",
+              false,
+              "BaseUnidirectional"));
+    }
+
+    private RelationDefinition CreateExpectedRelationDefinition (string id, IRelationEndPointDefinition endPointDefinition1, IRelationEndPointDefinition endPointDefinition2)
+    {
+      var relationDefinition = new RelationDefinition (id, endPointDefinition1, endPointDefinition2);
+      endPointDefinition1.SetRelationDefinition (relationDefinition);
+      endPointDefinition2.SetRelationDefinition (relationDefinition);
+      return relationDefinition;
     }
 
     private RelationEndPointDefinition CreateRelationEndPointDefinition (string propertyName, bool isMandatory)
@@ -149,17 +171,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
 
     private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinitionForManySide (string propertyName, bool isMandatory)
     {
-      return ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(_closedGenericClassWithOneSideRelationPropertiesClassDefinition, propertyName, isMandatory, CardinalityType.One, typeof (ClosedGenericClassWithRealRelationEndPoints));
+      return
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              _closedGenericClassWithOneSideRelationPropertiesClassDefinition,
+              propertyName,
+              isMandatory,
+              CardinalityType.One,
+              typeof (ClosedGenericClassWithRealRelationEndPoints));
     }
 
-    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinitionForOneSide (string propertyName, bool isMandatory, string sortExpression)
+    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinitionForOneSide (
+        string propertyName, bool isMandatory, string sortExpression)
     {
-      return ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(_closedGenericClassWithOneSideRelationPropertiesClassDefinition, propertyName, isMandatory, CardinalityType.Many, typeof (ObjectList<ClosedGenericClassWithRealRelationEndPoints>), sortExpression);
+      return
+          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+              _closedGenericClassWithOneSideRelationPropertiesClassDefinition,
+              propertyName,
+              isMandatory,
+              CardinalityType.Many,
+              typeof (ObjectList<ClosedGenericClassWithRealRelationEndPoints>),
+              sortExpression);
     }
 
     private AnonymousRelationEndPointDefinition CreateAnonymousRelationEndPointDefinition ()
     {
       return new AnonymousRelationEndPointDefinition (_closedGenericClassWithOneSideRelationPropertiesClassDefinition);
+    }
+
+    private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
+    {
+      PropertyFinder propertyFinder = new PropertyFinder (
+          classDefinition.ClassType,
+          classDefinition,
+          classDefinition.BaseClass == null,
+          true,
+          new ReflectionBasedNameResolver (),
+          classDefinition.PersistentMixinFinder);
+      return propertyFinder.FindPropertyInfos ();
     }
   }
 }

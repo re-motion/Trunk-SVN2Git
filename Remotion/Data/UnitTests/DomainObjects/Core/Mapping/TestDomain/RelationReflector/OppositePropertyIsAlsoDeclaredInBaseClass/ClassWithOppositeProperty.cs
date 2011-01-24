@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.OppositePropertyIsAlsoDeclaredInBaseClass
 {
-  public class ClassWithOppositeProperty
+  public class ClassWithOppositeProperty : DomainObject
   {
     [DBBidirectionalRelation ("OppositeProperty")]
     public OppositeClass OppositeProperty { get; set; }

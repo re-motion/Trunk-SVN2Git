@@ -71,12 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void RelationDefinitionNotNull ()
+    public void SetRelationDefinition ()
     {
       RelationEndPointDefinition oppositeEndPoint = new RelationEndPointDefinition (
           MappingConfiguration.Current.ClassDefinitions[typeof (Location)], "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", true);
-
       RelationDefinition relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", _definition, oppositeEndPoint);
+
+      _definition.SetRelationDefinition (relationDefinition);
 
       Assert.IsNotNull (_definition.RelationDefinition);
     }

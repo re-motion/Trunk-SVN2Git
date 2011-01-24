@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var endPoint1 = new AnonymousRelationEndPointDefinition (_baseClassDefinition1);
       var endPoint2 = new AnonymousRelationEndPointDefinition (_baseClassDefinition2);
 
-      var relationDefinition = new RelationDefinition ("Test", endPoint1, endPoint2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (BaseRelationEndPointPropertyClass1).GetProperty ("RelationProperty2"));
       var endPoint2 = new AnonymousRelationEndPointDefinition (_baseClassDefinition2);
 
-      var relationDefinition = new RelationDefinition ("Test", endPoint1, endPoint2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (BaseRelationEndPointPropertyClass2).GetProperty ("RelationProperty1"));
       
-      var relationDefinition = new RelationDefinition ("Test", endPoint1, endPoint2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (DerivedRelationEndPointPropertyClass2).GetProperty ("RelationProperty3"));
 
-      var relationDefinition = new RelationDefinition ("Test", endPoint1, endPoint2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (DerivedRelationEndPointPropertyClass2).GetProperty ("RelationProperty4"));
 
-      var relationDefinition = new RelationDefinition ("Test", endPoint1, endPoint2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPoint1, endPoint2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 

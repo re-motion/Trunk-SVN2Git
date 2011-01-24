@@ -56,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // construction and disposing
 
+    // TODO Review 3558: Remove classDefinition and propertyName parameters, add PropertyDefinition parameter instead
     public RelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

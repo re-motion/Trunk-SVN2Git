@@ -51,6 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      companyClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var result = _factory.CreateClassDefinition (typeof (Customer), companyClass);
 
       Assert.That (result, Is.Not.Null);

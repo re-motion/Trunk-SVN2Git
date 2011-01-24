@@ -15,9 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -28,61 +25,45 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class ClassReflectorForRelations
   {
-    public static ClassReflectorForRelations CreateClassReflector (Type type, IMappingNameResolver nameResolver)
+    public static ClassReflectorForRelations CreateClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
-      return new ClassReflectorForRelations (type, nameResolver);
+      return new ClassReflectorForRelations (type, mappingObjectFactory, nameResolver);
     }
 
-    public ClassReflectorForRelations (Type type, IMappingNameResolver nameResolver)
+    public ClassReflectorForRelations (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
+      ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       Type = type;
       NameResolver = nameResolver;
+      MappingObjectFactory = mappingObjectFactory;
     }
 
     public Type Type { get; private set; }
+    public IMappingObjectFactory MappingObjectFactory { get; private set; }
     public IMappingNameResolver NameResolver { get; private set; }
-
+    
     public void GetRelationDefinitions (ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
-      ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
+      var classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
-      var relationDefinitionsForClass = new RelationDefinitionCollection();
-      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition))
+      foreach (var endPoint in classDefinition.MyRelationEndPointDefinitions)
       {
-        RelationReflector relationReflector = new RelationReflector (
-            classDefinition, propertyInfo, NameResolver, new ReflectionBasedRelationEndPointDefinitionFactory());
-        RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions);
+        var relationReflector = new RelationReflector (classDefinition, endPoint.PropertyInfo, NameResolver);
+        var relationDefinition = relationReflector.GetMetadata (classDefinitions);
         if (!relationDefinitions.Contains (relationDefinition.ID))
+        {
+          relationDefinition.EndPointDefinitions[0].SetRelationDefinition (relationDefinition);
+          relationDefinition.EndPointDefinitions[1].SetRelationDefinition (relationDefinition);
+
           relationDefinitions.Add (relationDefinition);
-        else
-          relationDefinition = relationDefinitions[relationDefinition.ID];
-
-        if (!relationDefinitionsForClass.Contains (relationDefinition))
-          relationDefinitionsForClass.Add (relationDefinition);
+        }
       }
-      
-      var endPointDefinitions = from relationDefinition in relationDefinitionsForClass.Cast<RelationDefinition> ()
-                                 from endPointDefinition in relationDefinition.EndPointDefinitions
-                                 where endPointDefinition.ClassDefinition == classDefinition && !endPointDefinition.IsAnonymous
-                                 select endPointDefinition;
-      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection(endPointDefinitions, true));
-    }
-
-    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
-    {
-      var relationPropertyFinder = new RelationPropertyFinder (
-          classDefinition.ClassType,
-          classDefinition.BaseClass == null,
-          true,
-          NameResolver,
-          classDefinition.PersistentMixinFinder);
-      return relationPropertyFinder.FindPropertyInfos();
     }
   }
 }

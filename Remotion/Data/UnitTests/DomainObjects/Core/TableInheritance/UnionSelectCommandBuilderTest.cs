@@ -79,7 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
               clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
-      new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
+      var clientToDomainBaseRelationDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);
+      clientEndPointDefinition.SetRelationDefinition (clientToDomainBaseRelationDefinition);
+      domainBaseEndPointDefinition.SetRelationDefinition (clientToDomainBaseRelationDefinition);
+
       domainBaseClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { domainBaseEndPointDefinition }, true));
       clientClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { clientEndPointDefinition }, true));
 

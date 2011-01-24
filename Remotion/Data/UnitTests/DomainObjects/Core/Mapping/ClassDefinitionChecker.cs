@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
         var endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
-        endPointDefinitionChecker.Check (expectedDefinition.MyRelationEndPointDefinitions, actualDefinition.MyRelationEndPointDefinitions);
+        endPointDefinitionChecker.Check (expectedDefinition.MyRelationEndPointDefinitions, actualDefinition.MyRelationEndPointDefinitions, true);
       }
     }
 

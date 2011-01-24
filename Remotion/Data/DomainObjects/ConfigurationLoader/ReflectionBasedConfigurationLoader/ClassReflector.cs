@@ -57,6 +57,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
       classDefinition.SetPropertyDefinitions (properties);
+      var endPoints = MappingObjectFactory.CreateRelationEndPointDefinitionCollection (classDefinition);
+      classDefinition.SetRelationEndPointDefinitions (endPoints);
 
       return classDefinition;
     }

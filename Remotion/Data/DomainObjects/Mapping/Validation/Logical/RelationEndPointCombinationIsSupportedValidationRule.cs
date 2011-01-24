@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 {
@@ -28,6 +29,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
     }
 
     public abstract MappingValidationResult Validate (RelationDefinition relationDefinition);
-  
+
+    protected bool IsInvalidEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
+      return endPointDefinition is PropertyNotFoundRelationEndPointDefinition; // TODO 3684: Check for Invalid...Definition instead
+    }
   }
 }

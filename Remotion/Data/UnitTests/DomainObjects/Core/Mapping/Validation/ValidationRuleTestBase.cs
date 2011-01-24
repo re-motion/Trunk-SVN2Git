@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 
@@ -50,6 +51,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     protected StorageProviderDefinition StorageProviderDefinition
     {
       get { return new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"); }
+    }
+
+    protected RelationDefinition CreateRelationDefinitionAndSetBackReferences (string id, IRelationEndPointDefinition endPointDefinition1, IRelationEndPointDefinition endPointDefinition2)
+    {
+      var relationDefinition = new RelationDefinition (id, endPointDefinition1, endPointDefinition2);
+      endPointDefinition1.SetRelationDefinition (relationDefinition);
+      endPointDefinition2.SetRelationDefinition (relationDefinition);
+      return relationDefinition;
     }
   }
 }

@@ -310,7 +310,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestDomain\Table2Class.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\RdbmsPersistenceModelLoaderTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\DomainObjectIDs.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeStoragePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Mapping\FakeMappingConfiguration.cs" />

@@ -32,13 +32,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public class MappingReflector : IMappingLoader
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflector));
-    private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver ();
+    private readonly IMappingNameResolver _nameResolver;
+    private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly ITypeDiscoveryService _typeDiscoveryService;
 
     // This ctor is required when the MappingReflector is instantiated as a configuration element from a config file.
-    public MappingReflector ()
+    public MappingReflector () : this(ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService())
     {
-      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
+      
     }
 
     public MappingReflector (ITypeDiscoveryService typeDiscoveryService)
@@ -46,6 +47,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
 
       _typeDiscoveryService = typeDiscoveryService;
+      _nameResolver = new ReflectionBasedNameResolver ();
+      _mappingObjectFactory = new ReflectionBasedMappingObjectFactory (_nameResolver);
     }
 
     public ITypeDiscoveryService TypeDiscoveryService
@@ -60,7 +63,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
         var types = GetDomainObjectTypesSorted ();
-        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (new ReflectionBasedMappingObjectFactory (NameResolver));
+        // TODO Review 3558: MappingObjectFactory.CreateClassDefinitionCollection (types)
+        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (MappingObjectFactory);
         var classDefinitions = classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
 
         return classDefinitions
@@ -98,7 +102,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
     {
       return from classDefinition in classDefinitions.Cast<ClassDefinition> ()
-             select ClassReflectorForRelations.CreateClassReflector (classDefinition.ClassType, NameResolver);
+             select ClassReflectorForRelations.CreateClassReflector (classDefinition.ClassType, MappingObjectFactory, NameResolver);
     }
 
     private Type[] GetDomainObjectTypesSorted ()
@@ -114,6 +118,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IMappingNameResolver NameResolver
     {
       get { return _nameResolver; }
+    }
+
+    public IMappingObjectFactory MappingObjectFactory
+    {
+      get { return _mappingObjectFactory; }
     }
 
     public IClassDefinitionValidator CreateClassDefinitionValidator ()

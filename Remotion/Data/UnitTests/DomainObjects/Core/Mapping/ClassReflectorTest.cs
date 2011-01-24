@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -24,6 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -31,44 +34,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class ClassReflectorTest : MappingReflectionTestBase
   {
     private ClassDefinitionChecker _classDefinitionChecker;
-    
+    private RelationEndPointDefinitionChecker _endPointDefinitionChecker;
+
     public override void SetUp ()
     {
       base.SetUp();
 
       _classDefinitionChecker = new ClassDefinitionChecker();
+      _endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
     }
 
     [Test]
     public void GetMetadata_ForBaseClass ()
     {
       var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateClassWithDifferentPropertiesClassDefinition ();
+      var expected = CreateClassWithDifferentPropertiesClassDefinition ();
 
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
+      var actual = classReflector.GetMetadata (null);
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
+      _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
 
     [Test]
     public void GetMetadata_ForDerivedClass ()
     {
       var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateDerivedClassWithDifferentPropertiesClassDefinition ();
+      var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition ();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (baseClassDefinition);
+      var actual = classReflector.GetMetadata (baseClassDefinition);
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
+      _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
 
-   [Test]
+    [Test]
     public void GetMetadata_ForMixedClass ()
     {
       var classReflector = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
+      var actual = classReflector.GetMetadata (null);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD) }));
     }
 
@@ -76,24 +83,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_ForDerivedMixedClass ()
     {
       var classReflectorForBaseClass = new ClassReflector (typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition baseClass = classReflectorForBaseClass.GetMetadata (null);
+      var baseClass = classReflectorForBaseClass.GetMetadata (null);
 
       var classReflector = new ClassReflector (typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (baseClass);
+      var actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
     }
 
     [Test]
-    public void GetMetadata_ForClassWithOneSideRelationProperties ()
+    public void GetMetadata_ForClassWithVirtualRelationEndPoints ()
     {
       var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
-      ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition ();
+      var expected = CreateClassWithVirtualRelationEndPointsClassDefinition ();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (expected);
 
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
+      var actual = classReflector.GetMetadata (null);
 
       Assert.IsNotNull (actual);
       _classDefinitionChecker.Check (expected, actual);
+      _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
 
     [Test]
@@ -101,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), MappingObjectFactory, Configuration.NameResolver);
 
-      ReflectionBasedClassDefinition actual = classReflector.GetMetadata (null);
+      var actual = classReflector.GetMetadata (null);
 
       Assert.IsNotNull (actual);
       Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
@@ -166,7 +175,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (ClassWithDifferentProperties),
           false);
       
-      CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
+      CreatePropertyDefinitionsForClassWithDifferentProperties (classDefinition);
+      CreateEndPointDefinitionsForClassWithDifferentProperties (classDefinition);
 
       return classDefinition;
     }
@@ -179,12 +189,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (DerivedClassWithDifferentProperties),
           false,
           CreateClassWithDifferentPropertiesClassDefinition());
-     CreatePropertyDefinitionsForDerivedClassWithMixedProperties (classDefinition);
-
+     CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
+     CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
+      
       return classDefinition;
     }
 
-    private ReflectionBasedClassDefinition CreateClassWithOneSideRelationPropertiesClassDefinition ()
+    private ReflectionBasedClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
@@ -195,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    private void CreatePropertyDefinitionsForClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreatePropertyDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
       var properties = new List<PropertyDefinition> ();
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseString", "BaseString", typeof (string), true, null, StorageClass.Persistent));
@@ -208,7 +219,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
-    private void CreatePropertyDefinitionsForDerivedClassWithMixedProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreateEndPointDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    {
+      var endPoints = new List<IRelationEndPointDefinition> ();
+      endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne", false));
+      endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne", false));
+      endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", false));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
+    }
+
+    private void CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
       var properties = new List<PropertyDefinition> ();
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithDifferentProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
@@ -216,6 +236,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithDifferentProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
-    
+
+    private void CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (ReflectionBasedClassDefinition classDefinition)
+    {
+      var endPoints = new List<IRelationEndPointDefinition> ();
+      
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NoAttribute", false, CardinalityType.Many, null));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NotNullable", true, CardinalityType.Many, null));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne", false, CardinalityType.One, null));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToOne", false, CardinalityType.One, null));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToOne", false, CardinalityType.One, null));
+      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
+    }
+
+    private void CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    {
+      var endPoints = new List<IRelationEndPointDefinition> ();
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
+    }
+
+    private RelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName, bool isMandatory)
+    {
+      var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
+
+      return new RelationEndPointDefinition (
+          classDefinition,
+          MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)),
+          isMandatory);
+    }
+
+    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName, bool isMandatory, CardinalityType cardinality, string sortExpressionText)
+    {
+      var propertyInfo = GetPropertyInfo(declaringType, shortPropertyName);
+
+      return new ReflectionBasedVirtualRelationEndPointDefinition (
+          classDefinition,
+          MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)),
+          isMandatory,
+          cardinality,
+          propertyInfo.PropertyType,
+          sortExpressionText,
+          propertyInfo);
+    }
+
+    private PropertyInfo GetPropertyInfo (Type declaringType, string shortPropertyName)
+    {
+      var propertyInfo = declaringType.GetProperty (
+          shortPropertyName,
+          BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+      Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
+      return propertyInfo;
+    }
   }
 }

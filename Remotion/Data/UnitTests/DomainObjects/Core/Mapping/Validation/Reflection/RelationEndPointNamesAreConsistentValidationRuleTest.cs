@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (RelationEndPointPropertyClass2).GetProperty ("RelationProperty2"));
 
-      var relationDefinition = new RelationDefinition ("Test", endPointDefinition1, endPointDefinition2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPointDefinition1, endPointDefinition2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
       AssertMappingValidationResult (validationResult, true, null);
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (RelationEndPointPropertyClass2).GetProperty ("RelationPopertyWithoutBidirectionalRelationAttribute"));
 
-      var relationDefinition = new RelationDefinition ("Test", endPointDefinition1, endPointDefinition2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPointDefinition1, endPointDefinition2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           null,
           typeof (RelationEndPointPropertyClass2).GetProperty ("RelationPopertyWithNonMatchingPropertyName"));
 
-      var relationDefinition = new RelationDefinition ("Test", endPointDefinition1, endPointDefinition2);
+      var relationDefinition = CreateRelationDefinitionAndSetBackReferences ("Test", endPointDefinition1, endPointDefinition2);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 

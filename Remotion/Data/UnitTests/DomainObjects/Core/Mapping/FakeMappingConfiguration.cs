@@ -1210,7 +1210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           orderClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer", true);
 
-      RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
+      RelationDefinition relation = CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders", endPoint1, endPoint2);
 
@@ -1228,7 +1228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           orderTicketClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order", true);
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket"
           + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order->"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket", endPoint1, endPoint2);
@@ -1251,7 +1251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           orderItemClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order", true);
 
-      RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
+      RelationDefinition relation = CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems", endPoint1, endPoint2);
 
@@ -1275,7 +1275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           orderClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official", true);
 
-      RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
+      RelationDefinition relation = CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Official.Orders", endPoint1, endPoint2);
 
@@ -1295,7 +1295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           ceoClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo.Company", true);
 
-      RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo"
+      RelationDefinition relation = CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo"
         + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Ceo.Company->"
         +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo", endPoint1, endPoint2);
 
@@ -1318,7 +1318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (Partner));
       
       RelationDefinition relation =
-          new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner"
+          CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner"
             + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner.ContactPerson->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Person.AssociatedPartnerCompany", endPoint1, endPoint2);
 
@@ -1333,7 +1333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 =
           new RelationEndPointDefinition (clientClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient", false);
       RelationDefinition relation =
-          new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client"
+          CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client"
             +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client.ParentClient", endPoint1, endPoint2);
 
       return relation;
@@ -1349,7 +1349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           locationClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", true);
 
-      RelationDefinition relation = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location"
+      RelationDefinition relation = CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location"
         +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", endPoint1, endPoint2);
 
       return relation;
@@ -1371,7 +1371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               typeof (ObjectList<FileSystemItem>));
 
       RelationDefinition relation =
-          new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem"
+          CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem"
             + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems", endPoint1, endPoint2);
 
@@ -1398,7 +1398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn"
               + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumn.Distributor->"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Distributor.ClassWithoutRelatedClassIDColumn", endPoint1, endPoint2);
@@ -1426,7 +1426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation:"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithoutRelatedClassIDColumnAndDerivation.Company->"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.ClassWithoutRelatedClassIDColumnAndDerivation", endPoint1, endPoint2);
@@ -1448,7 +1448,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithOptionalOneToOneRelationAndOppositeDerivedClass"
               +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.Company",
               endPoint1,
@@ -1473,7 +1473,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classWithValidRelations, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations.ClassWithGuidKeyOptional", false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations"
               + ":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations.ClassWithGuidKeyOptional->"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsOptional",
@@ -1499,7 +1499,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classWithValidRelations, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations.ClassWithGuidKeyNonOptional", true);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations:"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithValidRelations.ClassWithGuidKeyNonOptional->"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithValidRelationsNonOptional",
@@ -1525,7 +1525,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classWithInvalidRelation, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithInvalidRelation.ClassWithGuidKey", false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithInvalidRelation:"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithInvalidRelation.ClassWithGuidKey->"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithInvalidRelation",
@@ -1553,7 +1553,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
 
       RelationDefinition relation =
-          new RelationDefinition (
+          CreateExpectedRelationDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithRelatedClassIDColumnAndNoInheritance:"
               +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithRelatedClassIDColumnAndNoInheritance.ClassWithGuidKey->"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithGuidKey.ClassWithRelatedClassIDColumnAndNoInheritance",
@@ -1581,7 +1581,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           companyClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.IndustrialSector", false);
 
       RelationDefinition relation =
-          new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company"
+          CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company"
             +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.IndustrialSector->"
             + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.IndustrialSector.Companies", 
             endPoint1, endPoint2);
@@ -1605,7 +1605,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           employeeClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Supervisor", false);
 
       RelationDefinition relation =
-          new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee:"
+          CreateExpectedRelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee:"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Supervisor->"
             +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Subordinates", endPoint1, endPoint2);
 
@@ -1625,7 +1625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       RelationEndPointDefinition endPoint2 = new RelationEndPointDefinition (
           computerClass, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer.Employee", false);
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Computer.Employee->"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Employee.Computer", endPoint1, endPoint2);
@@ -1646,7 +1646,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       AnonymousRelationEndPointDefinition endPoint2 = new AnonymousRelationEndPointDefinition (relatedClass);
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.TargetClassForPersistentMixin:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.UnidirectionalRelationProperty", 
           endPoint1, 
@@ -1673,7 +1673,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CardinalityType.One,
           typeof (TargetClassForPersistentMixin));
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.TargetClassForPersistentMixin:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.RelationProperty->"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty1",
@@ -1701,7 +1701,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty2",
           false);
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin"
           +":Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty2->"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.VirtualRelationProperty",
@@ -1729,7 +1729,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty3",
           false);
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin:"
           +"Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty3->"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.CollectionProperty1Side",
@@ -1757,7 +1757,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           CardinalityType.Many,
           typeof (ObjectList<TargetClassForPersistentMixin>));
 
-      RelationDefinition relation = new RelationDefinition (
+      RelationDefinition relation = CreateExpectedRelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.TargetClassForPersistentMixin:"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.MixinAddingPersistentProperties.CollectionPropertyNSide->"
           + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping.RelationTargetForPersistentMixin.RelationProperty4",
@@ -1765,6 +1765,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           endPoint2);
 
       return relation;
+    }
+
+    private RelationDefinition CreateExpectedRelationDefinition (string id, IRelationEndPointDefinition endPointDefinition1, IRelationEndPointDefinition endPointDefinition2)
+    {
+      var relationDefinition = new RelationDefinition (id, endPointDefinition1, endPointDefinition2);
+      endPointDefinition1.SetRelationDefinition (relationDefinition);
+      endPointDefinition2.SetRelationDefinition (relationDefinition);
+      return relationDefinition;
     }
 
     #endregion

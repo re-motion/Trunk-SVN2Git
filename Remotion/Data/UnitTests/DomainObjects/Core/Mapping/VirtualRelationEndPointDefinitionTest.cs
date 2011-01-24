@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeEndPoint = new RelationEndPointDefinition (orderItemClassDefinition, "Order", false);
       var relationDefinition = new RelationDefinition ("test", endPoint, oppositeEndPoint);
       orderItemClassDefinition.SetReadOnly ();
-      Assert.That (endPoint.RelationDefinition, Is.SameAs (relationDefinition));
+      endPoint.SetRelationDefinition (relationDefinition);
       return endPoint;
     }
   }

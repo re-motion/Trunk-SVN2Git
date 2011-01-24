@@ -55,19 +55,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("endPointDefinition1", endPointDefinition1);
       ArgumentUtility.CheckNotNull ("endPointDefinition2", endPointDefinition2);
 
-      _id = id; // Note: Set ID before passing this instance to other end point definitions.
-
-      try
-      {
-        endPointDefinition1.SetRelationDefinition (this);
-        endPointDefinition2.SetRelationDefinition (this);
-      }
-      catch (Exception)
-      {
-        endPointDefinition1.SetRelationDefinition (null);
-        endPointDefinition2.SetRelationDefinition (null);
-        throw;
-      }
+      _id = id;
 
       _endPointDefinitions[0] = endPointDefinition1;
       _endPointDefinitions[1] = endPointDefinition2;

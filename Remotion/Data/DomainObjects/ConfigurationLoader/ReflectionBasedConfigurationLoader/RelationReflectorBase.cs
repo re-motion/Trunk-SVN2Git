@@ -39,39 +39,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ClassDefinition = classDefinition;
       BidirectionalRelationAttribute =
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
-      DeclaringMixin = ClassDefinition.GetPersistentMixin (PropertyInfo.DeclaringType);
-      DeclaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (PropertyInfo, ClassDefinition);
-
-      CheckClassDefinitionType();
     }
 
     public ReflectionBasedClassDefinition ClassDefinition { get; private set; }
     public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
-    public Type DeclaringMixin { get; private set; }
-
-    /// <summary>
-    /// Gives the type of DomainObject that originally declared the property.
-    /// There are four cases:
-    /// - If the <see cref="ClassDefinition"/>'s type itself declares the property, this returns the 
-    ///   <see cref="ClassDefinition"/>'s type.
-    /// - If a base class of the <see cref="ClassDefinition"/>'s type declares the property, this returns the base class. This can only 
-    ///   happen if the <see cref="ClassDefinition"/> is the inheritance root and the base class is above the inheritance root. (The 
-    ///   <see cref="ClassReflectorForRelations"/> will only create <see cref="RelationReflectorBase"/> objects for properties declared above the
-    ///   <see cref="ClassDefinition"/>'s type if the <see cref="ClassDefinition"/> is an inheritance root.)
-    /// - If a mixin applied to the <see cref="ClassDefinition"/>'s type declares the property, this returns the <see cref="ClassDefinition"/>'s type.
-    /// - If a mixin applied to a base class of the <see cref="ClassDefinition"/>'s type declares the property, this returns the base class. Again,
-    ///   this can only happen if the <see cref="ClassDefinition"/> is an inheritance root.
-    /// </summary>
-    public Type DeclaringDomainObjectTypeForProperty { get; private set; }
 
     protected bool IsBidirectionalRelation
     {
       get { return BidirectionalRelationAttribute != null; }
-    }
-
-    public bool IsMixedProperty
-    {
-      get { return DeclaringMixin != null; }
     }
 
     protected PropertyInfo GetOppositePropertyInfo ()
@@ -86,19 +61,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           new PersistentMixinFinder (type, true));
       
       return propertyFinder.FindPropertyInfos().LastOrDefault();
-    }
-
-    private void CheckClassDefinitionType ()
-    {
-      if (!PropertyInfo.DeclaringType.IsAssignableFrom (ClassDefinition.ClassType) && !IsMixedProperty)
-      {
-        string message = string.Format (
-            "The classDefinition's class type '{0}' is not assignable to the property's declaring type.\r\nDeclaring type: {1}, property: {2}",
-            ClassDefinition.ClassType,
-            PropertyInfo.DeclaringType,
-            PropertyInfo.Name);
-        throw new ArgumentTypeException (message, null, ClassDefinition.ClassType, PropertyInfo.DeclaringType);
-      }
     }
   }
 }

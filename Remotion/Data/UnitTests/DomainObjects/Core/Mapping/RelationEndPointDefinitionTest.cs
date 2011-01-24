@@ -45,6 +45,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "Relation definition error: Property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Name' of class 'Company' is of type "
+        + "'System.String', but non-virtual properties must be of type 'Remotion.Data.DomainObjects.ObjectID'.")]
+    public void Initialization_PropertyOfWrongType ()
+    {
+      ClassDefinition companyDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+
+      new RelationEndPointDefinition (companyDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Name", false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException),
+        ExpectedMessage = "Relation definition error for end point: Class 'Company' has no property 'UndefinedProperty'.")]
+    public void Initialization_UndefinedProperty ()
+    {
+      ClassDefinition companyDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+
+      new RelationEndPointDefinition (companyDefinition, "UndefinedProperty", false);
+    }
+
+    [Test]
     public void InitializeWithResolvedPropertyType ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
