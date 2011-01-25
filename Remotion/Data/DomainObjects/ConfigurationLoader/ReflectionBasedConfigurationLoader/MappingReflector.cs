@@ -63,10 +63,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
         var types = GetDomainObjectTypesSorted ();
-        // TODO Review 3558: MappingObjectFactory.CreateClassDefinitionCollection (types)
-        var classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (MappingObjectFactory);
-        var classDefinitions = classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
-
+        var classDefinitions = MappingObjectFactory.CreateClassDefinitionCollection (types);
+        
         return classDefinitions
             .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))
             .Cast<ClassDefinition> ();
