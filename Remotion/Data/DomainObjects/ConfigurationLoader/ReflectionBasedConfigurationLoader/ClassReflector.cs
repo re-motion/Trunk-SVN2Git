@@ -29,6 +29,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="ClassReflector"/>'s constructor signature. </remarks>
   public class ClassReflector
   {
+    private readonly Type _type;
+    private readonly IMappingObjectFactory _mappingObjectFactory;
+    private readonly IMappingNameResolver _nameResolver;
+
     public static ClassReflector CreateClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
       return new ClassReflector (type, mappingObjectFactory, nameResolver);
@@ -40,15 +44,25 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
-      Type = type;
-      MappingObjectFactory = mappingObjectFactory;
-      NameResolver = nameResolver;
+      _type = type;
+      _mappingObjectFactory = mappingObjectFactory;
+      _nameResolver = nameResolver;
     }
 
-    // TODO Review 3555: Change to private fields
-    public Type Type { get; private set; }
-    public IMappingNameResolver NameResolver { get; private set; }
-    public IMappingObjectFactory MappingObjectFactory { get; private set; }
+    public Type Type
+    {
+      get { return _type; }
+    }
+
+    public IMappingObjectFactory MappingObjectFactory
+    {
+      get { return _mappingObjectFactory; }
+    }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
+    }
 
     public ReflectionBasedClassDefinition GetMetadata (ReflectionBasedClassDefinition baseClassDefinition)
     {

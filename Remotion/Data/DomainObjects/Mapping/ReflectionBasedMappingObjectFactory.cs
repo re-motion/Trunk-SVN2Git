@@ -44,6 +44,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classReflector.GetMetadata (baseClass);
     }
 
+    public PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      return new PropertyReflector (classDefinition, propertyInfo, _mappingNameResolver).GetMetadata ();
+    }
+    
     public IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -67,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);
 
-      var factory = new PropertyDefinitionCollectionFactory (_mappingNameResolver);
+      var factory = new PropertyDefinitionCollectionFactory (this);
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
     }
 

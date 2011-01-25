@@ -29,18 +29,13 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class PropertyDefinitionCollectionFactory
   {
-    private readonly IMappingNameResolver _mappingNameResolver;
+    private readonly IMappingObjectFactory _mappingObjectFactory;
 
-    public PropertyDefinitionCollectionFactory (IMappingNameResolver mappingNameResolver)
+    public PropertyDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory)
     {
-      ArgumentUtility.CheckNotNull ("mappingNameResolver", mappingNameResolver);
-
-      _mappingNameResolver = mappingNameResolver;
-    }
-
-    public IMappingNameResolver MappingNameResolver
-    {
-      get { return _mappingNameResolver; }
+      ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
+      
+      _mappingObjectFactory = mappingObjectFactory;
     }
 
     public PropertyDefinitionCollection CreatePropertyDefinitions (
@@ -49,10 +44,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);
 
-      // TODO Review 3555: Add IMappingObjectFactory.CreatePropertyDefinition (ClassDefinition, PropertyInfo), use here
       var propertyDefinitionsForClass = 
           from PropertyInfo propertyInfo in propertyInfos
-          select (PropertyDefinition) new PropertyReflector (classDefinition, propertyInfo, MappingNameResolver).GetMetadata();
+          select _mappingObjectFactory.CreatePropertyDefinition(classDefinition, propertyInfo);
       return new PropertyDefinitionCollection (propertyDefinitionsForClass, true);
     }
   }

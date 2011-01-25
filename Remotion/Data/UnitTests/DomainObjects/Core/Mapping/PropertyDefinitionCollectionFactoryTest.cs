@@ -28,13 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class PropertyDefinitionCollectionFactoryTest
   {
     private PropertyDefinitionCollectionFactory _factory;
-    private IMappingNameResolver _mappingNameResolverMock;
+    private IMappingObjectFactory _mappingObjectFactoryMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver>();
-      _factory = new PropertyDefinitionCollectionFactory(_mappingNameResolverMock);
+      _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
+      _factory = new PropertyDefinitionCollectionFactory(_mappingObjectFactoryMock);
     }
 
     [Test]
@@ -43,21 +43,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo1 = typeof (Order).GetProperty ("OrderNumber");
       var propertyInfo2 = typeof (Order).GetProperty ("DeliveryDate");
-
-      _mappingNameResolverMock
-          .Expect (mock => mock.GetPropertyName (Arg<PropertyInfoAdapter>.Matches (pi => pi.PropertyInfo == propertyInfo1)))
-          .Return ("FakeName1");
-      _mappingNameResolverMock
-          .Expect (mock => mock.GetPropertyName (Arg<PropertyInfoAdapter>.Matches (pi => pi.PropertyInfo == propertyInfo2)))
-          .Return ("FakeName2");
-      _mappingNameResolverMock.Replay();
+      var fakePropertyDefinition1 = new TestablePropertyDefinition (classDefinition, propertyInfo1, null, StorageClass.Persistent);
+      var fakePropertyDefinition2 = new TestablePropertyDefinition (classDefinition, propertyInfo2, null, StorageClass.Persistent);
+      
+      _mappingObjectFactoryMock
+          .Expect (mock => mock.CreatePropertyDefinition (classDefinition, propertyInfo1))
+          .Return (fakePropertyDefinition1);
+      _mappingObjectFactoryMock
+          .Expect (mock => mock.CreatePropertyDefinition (classDefinition, propertyInfo2))
+          .Return (fakePropertyDefinition2);
+      _mappingObjectFactoryMock.Replay();
 
       var result = _factory.CreatePropertyDefinitions (classDefinition, new[] { propertyInfo1, propertyInfo2 });
 
-      _mappingNameResolverMock.VerifyAllExpectations();
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
-      Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
+      Assert.That (result[0], Is.SameAs (fakePropertyDefinition1));
+      Assert.That (result[1], Is.SameAs (fakePropertyDefinition2));
     }
   }
 }

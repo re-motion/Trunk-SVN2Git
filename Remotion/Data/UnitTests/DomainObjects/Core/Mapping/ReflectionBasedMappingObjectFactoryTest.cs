@@ -60,6 +60,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void CreatePropertyDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var propertyInfo = typeof (Order).GetProperty ("OrderItems");
+
+      var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.PropertyInfo, Is.SameAs (propertyInfo));
+    }
+
+    [Test]
     public void CreateRelationEndPointDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
