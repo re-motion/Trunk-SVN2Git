@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
       var mappingResolutionStage =
-          new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider)), generator);
+          new DefaultMappingResolutionStage (new MappingResolver (new StorageSpecificExpressionResolver (storageNameProvider), storageNameProvider), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
 
