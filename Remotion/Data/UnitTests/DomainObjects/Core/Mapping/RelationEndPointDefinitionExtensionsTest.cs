@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "class 'Order' and property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer'.")]
     public void GetMandatoryOppositeEndPointDefinition_Failure ()
     {
-      var fakeEndPointDefinition = new RelationEndPointDefinition (
-          DomainObjectIDs.Order1.ClassDefinition, typeof (Order).FullName + ".Customer", true);
+      var propertyDefinition = DomainObjectIDs.Order1.ClassDefinition[typeof (Order).FullName + ".Customer"];
+      var fakeEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
       fakeEndPointDefinition.SetRelationDefinition (
           DomainObjectIDs.Order1.ClassDefinition.MyRelationEndPointDefinitions[typeof (Order).FullName + ".OrderItems"].RelationDefinition);
 

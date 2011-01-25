@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _classDefinition, "Property4", "Property4", typeof (ObjectID), true, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (
           new PropertyDefinitionCollection (new[] { _propertyDefinition1, _propertyDefinition2, _propertyDefinition3, _propertyDefinition4 }, true));
-      _endPoint1 = new RelationEndPointDefinition (_classDefinition, "Property1", false);
-      _endPoint2 = new RelationEndPointDefinition (_classDefinition, "Property2", false);
+      _endPoint1 = new RelationEndPointDefinition (_propertyDefinition1, false);
+      _endPoint2 = new RelationEndPointDefinition (_propertyDefinition2, false);
       _collection = new RelationEndPointDefinitionCollection();
     }
 
@@ -98,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           derivedClassDefinition, "Property2", "Property2", typeof(ObjectID),true,null,StorageClass.Persistent);
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
 
-      var endPoint1 = new RelationEndPointDefinition (baseClassDefinition, "Property1", false);
-      var endPoint2 = new RelationEndPointDefinition (derivedClassDefinition, "Property2", false);
+      var endPoint1 = new RelationEndPointDefinition (basedPropertyDefinition, false);
+      var endPoint2 = new RelationEndPointDefinition (derivedPropertyDefinition, false);
 
       baseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint1 }, true));
       derivedClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint2 }, true));

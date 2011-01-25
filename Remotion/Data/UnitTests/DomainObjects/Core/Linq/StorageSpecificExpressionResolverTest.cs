@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           _classDefinition, "Customer", "Customer", typeof (ObjectID), true, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      var leftEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
+      var leftEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
       var rightEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       var leftEndPointDefinition = new AnonymousRelationEndPointDefinition (_classDefinition);
-      var rightEndPointDefinition = new RelationEndPointDefinition (_classDefinition, "Customer", false);
+      var rightEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));

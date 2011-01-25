@@ -531,7 +531,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var orderTicketEndPointdefinition =
           new RelationEndPointDefinition (
-              orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order", true);
+              orderTicketDefinition["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"], true);
 
       new RelationDefinition ("RelationIDNotInMapping", orderEndPointDefinition, orderTicketEndPointdefinition);
 

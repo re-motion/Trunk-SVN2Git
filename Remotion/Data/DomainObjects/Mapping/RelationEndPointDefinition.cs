@@ -29,10 +29,6 @@ namespace Remotion.Data.DomainObjects.Mapping
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
   public class RelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
   {
-    // types
-
-    // static members and constants
-
     // serialized member fields
     // Note: RelationEndPointDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
     // will be serialized; these are used to retrieve the "real" object at deserialization time.
@@ -54,36 +50,26 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly bool _isMandatory;
 
-    // construction and disposing
-
-    // TODO Review 3558: Remove classDefinition and propertyName parameters, add PropertyDefinition parameter instead
-    public RelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory)
+    public RelationEndPointDefinition (PropertyDefinition propertyDefinition, bool isMandatory)
     {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      PropertyDefinition propertyDefinition = classDefinition[propertyName];
-      if (propertyDefinition == null)
-        throw CreateMappingException ("Relation definition error for end point: Class '{0}' has no property '{1}'.", classDefinition.ID, propertyName);
-
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      
       if (!propertyDefinition.IsObjectID)
       {
         throw CreateMappingException (
             "Relation definition error: Property '{0}' of class '{1}' is of type '{2}', but non-virtual properties must be of type '{3}'.",
             propertyDefinition.PropertyName,
-            classDefinition.ID,
+            propertyDefinition.ClassDefinition.ID,
             propertyDefinition.PropertyType,
             typeof (ObjectID));
       }
 
-      _classDefinition = classDefinition;
+      _classDefinition = propertyDefinition.ClassDefinition;
       _serializedClassDefinitionID = _classDefinition.ID;
       _isMandatory = isMandatory;
       _propertyDefinition = propertyDefinition;
       _serializedPropertyName = _propertyDefinition.PropertyName;
     }
-
-    // methods and properties
 
     public bool CorrespondsTo (string classID, string propertyName)
     {

@@ -58,25 +58,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void Create ()
     {
       // Note: This test builds its own relations without a sort expression.
-      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
-          "DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
+      var personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Person", "TableInheritance_Person", StorageProviderDefinition, typeof (Person), false, domainBaseClass);
-      ReflectionBasedClassDefinition organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrganizationalUnit", "TableInheritance_OrganizationalUnit", StorageProviderDefinition, typeof (OrganizationalUnit), false, domainBaseClass);
       domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass, organizationalUnitClass }, true, true));
 
-      ReflectionBasedClassDefinition clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
       var clientClassPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
       domainBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { clientClassPropertyDefinition }, true));
+      var propertyDefinition = domainBaseClass["Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client"];
 
-      RelationEndPointDefinition domainBaseEndPointDefinition = new RelationEndPointDefinition (
-          domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", false);
+      var domainBaseEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
-      VirtualRelationEndPointDefinition clientEndPointDefinition =
-          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var clientEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
               clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
       var clientToDomainBaseRelationDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);

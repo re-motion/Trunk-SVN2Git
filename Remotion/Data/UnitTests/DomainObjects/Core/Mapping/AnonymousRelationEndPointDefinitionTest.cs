@@ -73,9 +73,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetRelationDefinition ()
     {
-      RelationEndPointDefinition oppositeEndPoint = new RelationEndPointDefinition (
-          MappingConfiguration.Current.ClassDefinitions[typeof (Location)], "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", true);
-      RelationDefinition relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", _definition, oppositeEndPoint);
+      var propertyDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Location)]
+        ["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"];
+      var oppositeEndPoint = new RelationEndPointDefinition (propertyDefinition, true);
+      var relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", _definition, oppositeEndPoint);
 
       _definition.SetRelationDefinition (relationDefinition);
 

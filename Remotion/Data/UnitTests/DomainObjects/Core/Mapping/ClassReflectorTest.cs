@@ -25,7 +25,9 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
+using
+    Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
+        StorageGroupAttributeIsOnlyDefinedOncePerInheritanceHierarchyValidationRule;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -41,14 +43,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _classDefinitionChecker = new ClassDefinitionChecker();
-      _endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
+      _endPointDefinitionChecker = new RelationEndPointDefinitionChecker();
     }
 
     [Test]
     public void GetMetadata_ForBaseClass ()
     {
       var classReflector = new ClassReflector (typeof (ClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
-      var expected = CreateClassWithDifferentPropertiesClassDefinition ();
+      var expected = CreateClassWithDifferentPropertiesClassDefinition();
 
       var actual = classReflector.GetMetadata (null);
 
@@ -61,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_ForDerivedClass ()
     {
       var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
-      var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition ();
+      var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
       var actual = classReflector.GetMetadata (baseClassDefinition);
@@ -94,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_ForClassWithVirtualRelationEndPoints ()
     {
       var classReflector = new ClassReflector (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
-      var expected = CreateClassWithVirtualRelationEndPointsClassDefinition ();
-      expected.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      var expected = CreateClassWithVirtualRelationEndPointsClassDefinition();
+      expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
       CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (expected);
 
       var actual = classReflector.GetMetadata (null);
@@ -160,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMetadata_PersistentMixinFinder_ForDerivedClass ()
     {
       var classReflector = new ClassReflector (typeof (DerivedClassWithDifferentProperties), MappingObjectFactory, Configuration.NameResolver);
-      var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition ();
+      var baseClassDefinition = ClassDefinitionFactory.CreateFinishedOrderDefinition();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
@@ -169,12 +171,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ReflectionBasedClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithDifferentProperties",
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassWithDifferentProperties",
           "ClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithDifferentProperties),
           false);
-      
+
       CreatePropertyDefinitionsForClassWithDifferentProperties (classDefinition);
       CreateEndPointDefinitionsForClassWithDifferentProperties (classDefinition);
 
@@ -183,21 +186,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ReflectionBasedClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithDifferentProperties",
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DerivedClassWithDifferentProperties",
           "DerivedClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
           typeof (DerivedClassWithDifferentProperties),
           false,
           CreateClassWithDifferentPropertiesClassDefinition());
-     CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
-     CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
-      
+      CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
+      CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (classDefinition);
+
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithVirtualRelationEndPoints",
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
           UnitTestDomainStorageProviderDefinition,
           typeof (ClassWithVirtualRelationEndPoints),
@@ -208,71 +213,188 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private void CreatePropertyDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      var properties = new List<PropertyDefinition> ();
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseString", "BaseString", typeof (string), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne", "BaseUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", "BasePrivateUnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", typeof (int), false, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentProperties), "PrivateString", "PrivateString", typeof (string), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne", "UnidirectionalOneToOneID", typeof (ObjectID), true, null, StorageClass.Persistent));
+      var properties = new List<PropertyDefinition>();
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (ClassWithDifferentPropertiesNotInMapping),
+              "BaseString",
+              "BaseString",
+              typeof (string),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (ClassWithDifferentPropertiesNotInMapping),
+              "BaseUnidirectionalOneToOne",
+              "BaseUnidirectionalOneToOneID",
+              typeof (ObjectID),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (ClassWithDifferentPropertiesNotInMapping),
+              "BasePrivateUnidirectionalOneToOne",
+              "BasePrivateUnidirectionalOneToOneID",
+              typeof (ObjectID),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", typeof (int), false, null, StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition, typeof (ClassWithDifferentProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (ClassWithDifferentProperties),
+              "PrivateString",
+              "PrivateString",
+              typeof (string),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (ClassWithDifferentProperties),
+              "UnidirectionalOneToOne",
+              "UnidirectionalOneToOneID",
+              typeof (ObjectID),
+              true,
+              null,
+              StorageClass.Persistent));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     private void CreateEndPointDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      var endPoints = new List<IRelationEndPointDefinition> ();
+      var endPoints = new List<IRelationEndPointDefinition>();
       endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne", false));
-      endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne", false));
-      endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", false));
+      endPoints.Add (
+          CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BaseUnidirectionalOneToOne", false));
+      endPoints.Add (
+          CreateRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithDifferentPropertiesNotInMapping), "BasePrivateUnidirectionalOneToOne", false));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
     }
 
     private void CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      var properties = new List<PropertyDefinition> ();
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithDifferentProperties), "String", "NewString", typeof (string), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithDifferentProperties), "PrivateString", "DerivedPrivateString", typeof (string), true, null, StorageClass.Persistent));
-      properties.Add (ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, typeof (DerivedClassWithDifferentProperties), "OtherString", "OtherString", typeof (string), true, null, StorageClass.Persistent));
+      var properties = new List<PropertyDefinition>();
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (DerivedClassWithDifferentProperties),
+              "String",
+              "NewString",
+              typeof (string),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (DerivedClassWithDifferentProperties),
+              "PrivateString",
+              "DerivedPrivateString",
+              typeof (string),
+              true,
+              null,
+              StorageClass.Persistent));
+      properties.Add (
+          ReflectionBasedPropertyDefinitionFactory.Create (
+              classDefinition,
+              typeof (DerivedClassWithDifferentProperties),
+              "OtherString",
+              "OtherString",
+              typeof (string),
+              true,
+              null,
+              StorageClass.Persistent));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
     private void CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (ReflectionBasedClassDefinition classDefinition)
     {
-      var endPoints = new List<IRelationEndPointDefinition> ();
-      
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NoAttribute", false, CardinalityType.Many, null));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NotNullable", true, CardinalityType.Many, null));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne", false, CardinalityType.One, null));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+      var endPoints = new List<IRelationEndPointDefinition>();
 
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToOne", false, CardinalityType.One, null));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToOne", false, CardinalityType.One, null));
-      endPoints.Add (CreateVirtualRelationEndPointDefinition (classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BasePrivateBidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NoAttribute", false, CardinalityType.Many, null));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithVirtualRelationEndPoints), "NotNullable", true, CardinalityType.Many, null));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToOne", false, CardinalityType.One, null));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithVirtualRelationEndPoints), "BidirectionalOneToMany", false, CardinalityType.Many, "NoAttribute"));
+
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition, typeof (ClassWithOneSideRelationPropertiesNotInMapping), "BaseBidirectionalOneToOne", false, CardinalityType.One, null));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition,
+              typeof (ClassWithOneSideRelationPropertiesNotInMapping),
+              "BaseBidirectionalOneToMany",
+              false,
+              CardinalityType.Many,
+              "NoAttribute"));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition,
+              typeof (ClassWithOneSideRelationPropertiesNotInMapping),
+              "BasePrivateBidirectionalOneToOne",
+              false,
+              CardinalityType.One,
+              null));
+      endPoints.Add (
+          CreateVirtualRelationEndPointDefinition (
+              classDefinition,
+              typeof (ClassWithOneSideRelationPropertiesNotInMapping),
+              "BasePrivateBidirectionalOneToMany",
+              false,
+              CardinalityType.Many,
+              "NoAttribute"));
 
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
     }
 
     private void CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
     {
-      var endPoints = new List<IRelationEndPointDefinition> ();
+      var endPoints = new List<IRelationEndPointDefinition>();
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
     }
 
-    private RelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName, bool isMandatory)
+    private RelationEndPointDefinition CreateRelationEndPointDefinition (
+        ClassDefinition classDefinition, Type declaringType, string shortPropertyName, bool isMandatory)
     {
       var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
 
-      return new RelationEndPointDefinition (
-          classDefinition,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)),
-          isMandatory);
+      return
+          new RelationEndPointDefinition (
+              classDefinition[MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo))],
+              isMandatory);
     }
 
-    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName, bool isMandatory, CardinalityType cardinality, string sortExpressionText)
+    private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
+        ClassDefinition classDefinition,
+        Type declaringType,
+        string shortPropertyName,
+        bool isMandatory,
+        CardinalityType cardinality,
+        string sortExpressionText)
     {
-      var propertyInfo = GetPropertyInfo(declaringType, shortPropertyName);
+      var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
 
       return new ReflectionBasedVirtualRelationEndPointDefinition (
           classDefinition,

@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
 
     private RelationEndPointDefinition CreateRelationEndPointDefinition (string propertyName, bool isMandatory)
     {
-      return new RelationEndPointDefinition (_closedGenericClassWithManySideRelationPropertiesClassDefinition, propertyName, isMandatory);
+      return new RelationEndPointDefinition (_closedGenericClassWithManySideRelationPropertiesClassDefinition[propertyName], isMandatory);
     }
 
     private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinitionForManySide (string propertyName, bool isMandatory)

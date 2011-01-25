@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
 
     private RelationEndPointDefinition CreateRelationEndPointDefinition (string propertyName, bool isMandatory)
     {
-      return new RelationEndPointDefinition (_classWithRealRelationEndPointsClassDefinition, propertyName, isMandatory);
+      return new RelationEndPointDefinition (_classWithRealRelationEndPointsClassDefinition[propertyName], isMandatory);
     }
 
     private VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinitionForManySide (string propertyName, bool isMandatory)

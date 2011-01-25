@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -105,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
               classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
-      var endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
+      var endPointdefinition = new RelationEndPointDefinition (propertyDefinition, true);
 
       SerializeAndDeserialize (endPointdefinition);
     }
@@ -128,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
               orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
-      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
+      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketPropertyDefinition, true);
 
       new RelationDefinition ("OrderToOrderTicket", orderEndPointDefinition, orderTicketEndPointdefinition);
 
@@ -183,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
               orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
-      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketDefinition, "Order", true);
+      var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketPropertyDefinition, true);
 
       new RelationDefinition ("OrderToOrderTicket", orderEndPointDefinition, orderTicketEndPointdefinition);
 
@@ -236,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       locationDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { locationPropertyDefinition }, true));
 
       var clientEndPointDefinition = new AnonymousRelationEndPointDefinition (clientDefinition);
-      var locationEndPointDefinition = new RelationEndPointDefinition (locationDefinition, "Client", true);
+      var locationEndPointDefinition = new RelationEndPointDefinition (locationPropertyDefinition, true);
 
       new RelationDefinition (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", clientEndPointDefinition, locationEndPointDefinition);
