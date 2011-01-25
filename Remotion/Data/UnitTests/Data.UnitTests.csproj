@@ -648,7 +648,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointNamesAreConsistentValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\RelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRuleTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\RelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\RdbmsRelationEndPointCombinationIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\StorageClassIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\VirtualRelationEndPointCardinalityMatchesPropertyTypeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\VirtualRelationEndPointPropertyTypeIsSupportedValidationRuleTest.cs" />

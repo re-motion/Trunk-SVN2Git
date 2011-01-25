@@ -32,7 +32,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       var endPointDefinition1 = relationDefinition.EndPointDefinitions[0];
       var endPointDefinition2 = relationDefinition.EndPointDefinitions[1];
 
-      // TODO Review 3558: Add unit tests
       if (IsInvalidEndPointDefinition (endPointDefinition1) || IsInvalidEndPointDefinition (endPointDefinition2))
         return MappingValidationResult.CreateValidResult();
 

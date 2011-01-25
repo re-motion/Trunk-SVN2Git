@@ -44,6 +44,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
+    public void InvalidEndPointDefiniton_LeftEndPoint ()
+    {
+      var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
+      var invalidRelationEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_orderClass, "Invalid");
+      var relationDefinition = new RelationDefinition ("Test", invalidRelationEndPointDefinition, anonymousEndPointDefinition);
+
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (mappingValidationResult, true, null);
+    }
+
+    [Test]
+    public void InvalidEndPointDefiniton_RightEndPoint ()
+    {
+      var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
+      var invalidRelationEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_orderClass, "Invalid");
+      var relationDefinition = new RelationDefinition ("Test", anonymousEndPointDefinition, invalidRelationEndPointDefinition);
+
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (mappingValidationResult, true, null);
+    }
+
+    [Test]
     public void ValidRelationDefinition ()
     {
       var mappingValidationResult = _validationRule.Validate (_customerToOrder);
