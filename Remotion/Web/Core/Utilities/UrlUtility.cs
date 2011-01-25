@@ -216,7 +216,7 @@ namespace Remotion.Web.Utilities
       string[] encodedArgs = new string[args.Length];
       Encoding encoding = GetResponseEncoding();
       for (int i = 0; i < args.Length; ++i)
-        encodedArgs[i] = HttpUtility.UrlEncode (args.ToString(), encoding);
+        encodedArgs[i] = HttpUtility.UrlEncode (args[i].ToString(), encoding);
 
       return string.Format (format, encodedArgs);
     }
