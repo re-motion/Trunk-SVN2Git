@@ -58,10 +58,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       //BindableObjectWithSecurityTest();
       //BindableObjectWithoutSecurityTest();
 
-      // LinqTest();
+      LinqTest();
       // InstantiationTest ();
       
-      RelationQuerySyncSpike ();
+      // RelationQuerySyncSpike ();
 
       //ClassDefinitionTest();
 
