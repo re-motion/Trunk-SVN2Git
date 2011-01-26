@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
     private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-    private readonly ExpressionTransformerRegistry _expressionTransformerRegistry = ExpressionTransformerRegistry.CreateDefault();
+    private readonly IExpressionTreeProcessingStep[] _processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps();
 
     private readonly Func<IQueryable<T>> _queryGenerator;
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModel ()
     {
-      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _expressionTransformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _processingSteps);
       var queryParser = new QueryParser (expressionTreeParser);
       var queryable = _queryGenerator();
       return queryParser.GetParsedQuery (queryable.Expression) != null;
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
 
-      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _expressionTransformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _processingSteps);
       var queryParser = new QueryParser (expressionTreeParser);
       var queryable = _queryGenerator();
       var queryModel = queryParser.GetParsedQuery (queryable.Expression);
