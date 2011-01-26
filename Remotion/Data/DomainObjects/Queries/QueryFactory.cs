@@ -81,6 +81,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return CreateLinqQuery<T> (executor, s_methodCallExpressionNodeTypeRegistry.Value);
     }
 
+    // TODO 3693: Inject IQueryParser here
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query 
     /// with user defined SQL generation.
