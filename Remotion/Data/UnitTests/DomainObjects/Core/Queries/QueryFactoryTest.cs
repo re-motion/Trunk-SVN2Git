@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
       Assert.That (((DefaultQueryProvider) result.Provider).Executor, Is.SameAs (executorMock));
-      Assert.That (((DefaultQueryProvider) result.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
+      Assert.That (((DefaultQueryProvider) result.Provider).QueryParser.ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
     }
 
     [Test]
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var expectedNodeTypeRegistry = ((DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry>) PrivateInvoke.GetNonPublicStaticField (
           typeof (QueryFactory),
           "s_methodCallExpressionNodeTypeRegistry")).Value;
-      Assert.That (((DefaultQueryProvider) result.Provider).ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (expectedNodeTypeRegistry));
+      Assert.That (((DefaultQueryProvider) result.Provider).QueryParser.ExpressionTreeParser.NodeTypeRegistry, Is.SameAs (expectedNodeTypeRegistry));
     }
 
     [Test]
