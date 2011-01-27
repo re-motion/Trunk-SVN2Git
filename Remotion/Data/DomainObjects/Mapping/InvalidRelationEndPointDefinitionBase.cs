@@ -6,8 +6,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   public class InvalidRelationEndPointDefinitionBase : IRelationEndPointDefinition
   {
-    private ClassDefinition _classDefinition;
-    private string _propertyName;
+    private readonly ClassDefinition _classDefinition;
+    private readonly string _propertyName;
     private RelationDefinition _relationDefinition;
 
     public InvalidRelationEndPointDefinitionBase (ClassDefinition classDefinition, string propertyName)

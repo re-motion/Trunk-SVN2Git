@@ -23,27 +23,26 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class PropertyNotFoundRelationEndPointDefinitionTest
+  public class InvalidRelationEndPointDefinitionBaseTest
   {
-    private PropertyNotFoundRelationEndPointDefinition _propertyNotFoundEndPointDefinition;
+    private InvalidRelationEndPointDefinitionBase _invalidEndPointDefinition;
     private ReflectionBasedClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassDerivedFromSimpleDomainObject));
-      _propertyNotFoundEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_classDefinition, "TestProperty");
+      _invalidEndPointDefinition = new InvalidRelationEndPointDefinitionBase (_classDefinition, "TestProperty");
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_propertyNotFoundEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
-      Assert.That (_propertyNotFoundEndPointDefinition.PropertyName, Is.EqualTo ("TestProperty"));
-      Assert.That (_propertyNotFoundEndPointDefinition.IsVirtual, Is.False);
-      Assert.That (_propertyNotFoundEndPointDefinition.IsAnonymous, Is.False);
-      Assert.That (_propertyNotFoundEndPointDefinition.IsPropertyInfoResolved, Is.False);
+      Assert.That (_invalidEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+      Assert.That (_invalidEndPointDefinition.PropertyName, Is.EqualTo ("TestProperty"));
+      Assert.That (_invalidEndPointDefinition.IsVirtual, Is.False);
+      Assert.That (_invalidEndPointDefinition.IsAnonymous, Is.False);
+      Assert.That (_invalidEndPointDefinition.IsPropertyInfoResolved, Is.False);
     }
 
     [Test]
@@ -52,9 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var endPoint = new AnonymousRelationEndPointDefinition (_classDefinition);
       var relationDefinition = new RelationDefinition ("Test", endPoint, endPoint);
 
-      _propertyNotFoundEndPointDefinition.SetRelationDefinition (relationDefinition);
+      _invalidEndPointDefinition.SetRelationDefinition (relationDefinition);
 
-      Assert.That (_propertyNotFoundEndPointDefinition.RelationDefinition, Is.SameAs (relationDefinition));
+      Assert.That (_invalidEndPointDefinition.RelationDefinition, Is.SameAs (relationDefinition));
     }
 
   }

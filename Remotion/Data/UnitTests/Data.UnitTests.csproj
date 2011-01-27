@@ -353,7 +353,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\PropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\RelationPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\StubPropertyFinderBase.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\PropertyNotFoundRelationEndPointDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\InvalidRelationEndPointDefinitionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\BaseTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\BinaryProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\Common.cs" />
