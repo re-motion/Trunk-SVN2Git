@@ -40,8 +40,8 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     // Use DoubleCheckedLockingContainers to ensure that the registries are created as lazily as possible in order to allow users to register
     // customizers via IoC
-    private static readonly DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> s_methodCallExpressionNodeTypeRegistry =
-        new DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry> (CreateNodeTypeRegistry);
+    private static readonly DoubleCheckedLockingContainer<IQueryParser> s_queryParser =
+        new DoubleCheckedLockingContainer<IQueryParser> (CreateQueryParser);
 
     private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerProvider> s_methodCallTransformerProvider =
         new DoubleCheckedLockingContainer<IMethodCallTransformerProvider> (CreateMethodCallTransformerProvider);
@@ -77,26 +77,27 @@ namespace Remotion.Data.DomainObjects.Queries
           startingClassDefinition, 
           s_methodCallTransformerProvider.Value, 
           s_resultOperatorHandlerRegistry.Value);
-      
-      return CreateLinqQuery<T> (executor, s_methodCallExpressionNodeTypeRegistry.Value);
+
+      return CreateLinqQuery<T> (executor, s_queryParser.Value);
     }
 
-    // TODO 3693: Inject IQueryParser here
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query 
-    /// with user defined SQL generation.
+    /// with user defined query analysis or SQL generation.
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-    /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the query.</param>
-    /// <param name="nodeTypeRegistry">An <see cref="MethodCallExpressionNodeTypeRegistry"/> instance to be used when generating SQL for the query.</param>
+    /// <param name="executor">The <see cref="IQueryExecutor"/> that is used for the query. Specify an instance of 
+    /// <see cref="DomainObjectQueryExecutor"/> for default behavior.</param>
+    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of <see cref="QueryParser"/>
+    /// for default behavior.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry) 
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryExecutor executor, IQueryParser queryParser) 
         where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("nodeTypeRegistry", nodeTypeRegistry);
+      ArgumentUtility.CheckNotNull ("queryParser", queryParser);
 
-      return new DomainObjectQueryable<T> (executor, nodeTypeRegistry);
+      return new DomainObjectQueryable<T> (executor, queryParser);
     }
 
     /// <summary>
@@ -245,23 +246,23 @@ namespace Remotion.Data.DomainObjects.Queries
       return new Query (definition, queryParameterCollection);
     }
 
-    private static MethodCallExpressionNodeTypeRegistry CreateNodeTypeRegistry ()
+    private static IQueryParser CreateQueryParser ()
     {
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+      var queryParser = QueryParser.CreateDefault();
 
-      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+      queryParser.NodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
+      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
+      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
+      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
       foreach (var customNodeType in customNodeTypes)
-        nodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+        queryParser.NodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      return nodeTypeRegistry;
+      return queryParser;
     }
 
     private static IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()

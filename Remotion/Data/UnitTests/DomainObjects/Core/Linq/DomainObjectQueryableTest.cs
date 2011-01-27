@@ -30,8 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   [TestFixture]
   public class DomainObjectQueryableTest : ClientTransactionBaseTest
   {
-    private DomainObjectQueryable<Order> _queryableWithOrder;
-    private MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry;
     private IQueryExecutor _executorStub;
 
     [SetUp]
@@ -39,19 +37,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       base.SetUp();
 
-      _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
       _executorStub = MockRepository.GenerateStub<IQueryExecutor>();
-
-      _queryableWithOrder = new DomainObjectQueryable<Order> (_executorStub, _nodeTypeRegistry);
     }
 
     [Test]
     public void Provider_AutoInitialized ()
     {
-      Assert.That (_queryableWithOrder.Provider, Is.Not.Null);
-      Assert.That (_queryableWithOrder.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
-      Assert.That (((DefaultQueryProvider) _queryableWithOrder.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
-      Assert.That (((DefaultQueryProvider) _queryableWithOrder.Provider).Executor, Is.SameAs (_executorStub));
+      var queryParserStub = MockRepository.GenerateStub<IQueryParser>();
+      var queryableWithOrder = new DomainObjectQueryable<Order> (_executorStub, queryParserStub);
+
+      Assert.That (queryableWithOrder.Provider, Is.Not.Null);
+      Assert.That (queryableWithOrder.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
+      Assert.That (((DefaultQueryProvider) queryableWithOrder.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
+      Assert.That (queryableWithOrder.Provider.Executor, Is.SameAs (_executorStub));
+      Assert.That (queryableWithOrder.Provider.QueryParser, Is.SameAs (queryParserStub));
     }
     
     [Test]

@@ -204,16 +204,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CreateLinqQuery_WithExecutor ()
+    public void CreateLinqQuery_Customized ()
     {
-      var executorMock = MockRepository.GenerateStrictMock<IQueryExecutor> ();
-      var nodeTypeRegistry = new MethodCallExpressionNodeTypeRegistry();
+      var executorStub = MockRepository.GenerateStub<IQueryExecutor> ();
+      var queryParserStub = MockRepository.GenerateStub<IQueryParser>();
 
-      var result = QueryFactory.CreateLinqQuery<Order> (executorMock, nodeTypeRegistry);
+      var result = QueryFactory.CreateLinqQuery<Order> (executorStub, queryParserStub);
 
       Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
-      Assert.That (((DefaultQueryProvider) result.Provider).Executor, Is.SameAs (executorMock));
-      Assert.That (((DefaultQueryProvider) result.Provider).QueryParser.NodeTypeRegistry, Is.SameAs (nodeTypeRegistry));
+      Assert.That (result.Provider.Executor, Is.SameAs (executorStub));
+      Assert.That (result.Provider.QueryParser, Is.SameAs (queryParserStub));
     }
 
     [Test]
@@ -222,9 +222,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var result = QueryFactory.CreateLinqQuery<Order> ();
 
       Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
-      Assert.That (((DefaultQueryProvider) result.Provider).Executor, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
+      Assert.That (result.Provider.Executor, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
       
-      var queryExecutor = (DomainObjectQueryExecutor) ((DefaultQueryProvider) result.Provider).Executor;
+      var queryExecutor = (DomainObjectQueryExecutor) result.Provider.Executor;
       Assert.That (queryExecutor.StorageProviderDefinition, Is.SameAs (TestDomainStorageProviderDefinition));
 
       var expectedMethodCallTransformerProvider = ((DoubleCheckedLockingContainer<IMethodCallTransformerProvider>) PrivateInvoke.GetNonPublicStaticField (
@@ -239,48 +239,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (((DefaultSqlPreparationStage) queryExecutor.PreparationStage).ResultOperatorHandlerRegistry,
           Is.SameAs (expectedResultOperatorHandlerRegistry));
 
-      var expectedNodeTypeRegistry = ((DoubleCheckedLockingContainer<MethodCallExpressionNodeTypeRegistry>) PrivateInvoke.GetNonPublicStaticField (
+      var expectedQueryParser = ((DoubleCheckedLockingContainer<IQueryParser>) PrivateInvoke.GetNonPublicStaticField (
           typeof (QueryFactory),
-          "s_methodCallExpressionNodeTypeRegistry")).Value;
-      Assert.That (((DefaultQueryProvider) result.Provider).QueryParser.NodeTypeRegistry, Is.SameAs (expectedNodeTypeRegistry));
+          "s_queryParser")).Value;
+      Assert.That (result.Provider.QueryParser, Is.SameAs (expectedQueryParser));
     }
 
     [Test]
-    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersDefaultNodes ()
+    public void CreateQueryParser_RegistersDefaultNodesAndSteps ()
     {
       var selectMethod = SelectExpressionNode.SupportedMethods[0];
-      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      var queryParser = CallCreateQueryParser ();
 
-      Assert.That (nodeTypeRegistry.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps().Length));
     }
 
     [Test]
-    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersContainsObject ()
+    public void CreateQueryParser_RegistersContainsObject ()
     {
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
-      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
-      
-      Assert.That (nodeTypeRegistry.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
+      var queryParser = CallCreateQueryParser ();
+
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
     }
 
     [Test]
-    public void CreateMethodCallExpressionNodeTypeRegistry_RegistersFetchObject ()
+    public void CreateQueryParser_RegistersFetchObject ()
     {
       var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
       var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
       var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
       var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
 
-      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      var queryParser = CallCreateQueryParser ();
 
-      Assert.That (nodeTypeRegistry.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
-      Assert.That (nodeTypeRegistry.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
-      Assert.That (nodeTypeRegistry.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
-      Assert.That (nodeTypeRegistry.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
     }
 
     [Test]
-    public void CreateMethodCallExpressionNodeTypeRegistry_UsesCustomizers ()
+    public void CreateQueryParser_UsesCustomizers ()
     {
       var customMethod1 = typeof (object).GetMethod ("ToString");
       var customMethod2 = typeof (object).GetMethod ("GetHashCode");
@@ -294,19 +295,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       PrepareServiceLocatorWithParserCustomizers (customizer1, customizer2);
 
-      var nodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      var queryParser = CallCreateQueryParser ();
 
-      Assert.That (nodeTypeRegistry.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
-      Assert.That (nodeTypeRegistry.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
     }
 
     [Test]
-    public void CreateMethodCallExpressionNodeTypeRegistry_CustomizersCanOverrideDefaults ()
+    public void CreateQueryParser_CustomizersCanOverrideDefaults ()
     {
       var exstingMethod = SelectExpressionNode.SupportedMethods[0];
-      var defaultNodeTypeRegistry = CallCreateNodeTypeRegistry ();
+      var defaultQueryParser = CallCreateQueryParser ();
 
-      Assert.That (defaultNodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (defaultQueryParser.NodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (SelectExpressionNode)));
 
       var customizer = CreateCustomizerStub (
           stub => stub.GetCustomNodeTypes (),
@@ -314,9 +315,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       PrepareServiceLocatorWithParserCustomizers (customizer);
 
-      var nodeTypeRegistryWithOverrides = CallCreateNodeTypeRegistry ();
+      var queryParserWithOverrides = CallCreateQueryParser ();
 
-      Assert.That (nodeTypeRegistryWithOverrides.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
+      Assert.That (queryParserWithOverrides.NodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
     }
 
     [Test]
@@ -438,9 +439,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (registryWithOverrides.GetItem (existingType), Is.SameAs (customTransformer));
     }
 
-    private MethodCallExpressionNodeTypeRegistry CallCreateNodeTypeRegistry ()
+    private IQueryParser CallCreateQueryParser ()
     {
-      return (MethodCallExpressionNodeTypeRegistry) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateNodeTypeRegistry");
+      return (IQueryParser) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateQueryParser");
     }
 
     private CompoundMethodCallTransformerProvider CallCreateMethodCallTransformerProvider ()

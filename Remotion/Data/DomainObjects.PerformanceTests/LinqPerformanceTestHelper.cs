@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
@@ -33,10 +32,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class LinqPerformanceTestHelper<T>
   {
-    private readonly MethodCallExpressionNodeTypeRegistry _nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+    private readonly IQueryParser _queryParser = QueryParser.CreateDefault();
     private readonly CompoundMethodCallTransformerProvider _methodCallTransformerProvider = CompoundMethodCallTransformerProvider.CreateDefault();
     private readonly ResultOperatorHandlerRegistry _resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-    private readonly IExpressionTreeProcessingStep[] _processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps();
 
     private readonly Func<IQueryable<T>> _queryGenerator;
 
@@ -49,10 +47,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public bool GenerateQueryModel ()
     {
-      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _processingSteps);
-      var queryParser = new QueryParser (expressionTreeParser);
       var queryable = _queryGenerator();
-      return queryParser.GetParsedQuery (queryable.Expression) != null;
+      return _queryParser.GetParsedQuery (queryable.Expression) != null;
     }
 
     public bool GenerateQueryModelAndSQL ()
@@ -65,10 +61,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
 
-      var expressionTreeParser = new ExpressionTreeParser (_nodeTypeRegistry, _processingSteps);
-      var queryParser = new QueryParser (expressionTreeParser);
       var queryable = _queryGenerator();
-      var queryModel = queryParser.GetParsedQuery (queryable.Expression);
+      var queryModel = _queryParser.GetParsedQuery (queryable.Expression);
 
       var sqlStatement = sqlPreparationStage.PrepareSqlStatement (queryModel, null);
       var resolvedSqlStatement = mappingResolutionStage.ResolveSqlStatement (sqlStatement, mappingResolutionContext);

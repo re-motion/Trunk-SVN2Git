@@ -813,7 +813,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private static QueryModel ParseQuery (Expression queryExpression)
     {
-      var parser = new QueryParser();
+      var parser = QueryParser.CreateDefault();
       return parser.GetParsedQuery (queryExpression);
     }
   }

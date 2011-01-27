@@ -40,11 +40,11 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the queries.</param>
-    /// <param name="nodeTypeRegistry">Registry that maps the <see cref="MethodInfo"/> objects used in <see cref="MethodCallExpression"/> objects 
-    /// to the respective <see cref="IExpressionNode"/> types.</param>
+    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of <see cref="QueryParser"/>
+    /// for default behavior.</param>
     /// </remarks>
-    public DomainObjectQueryable (IQueryExecutor executor, MethodCallExpressionNodeTypeRegistry nodeTypeRegistry)
-      : base (new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry))
+    public DomainObjectQueryable (IQueryExecutor executor, IQueryParser queryParser)
+      : base (new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, queryParser))
     {
     }
 
@@ -68,7 +68,12 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public DomainObjectQueryExecutor GetExecutor ()
     {
-      return (DomainObjectQueryExecutor) ((QueryProviderBase) Provider).Executor;
+      return (DomainObjectQueryExecutor) Provider.Executor;
+    }
+
+    public new QueryProviderBase Provider
+    {
+      get { return (QueryProviderBase) base.Provider; }
     }
   }
 }
