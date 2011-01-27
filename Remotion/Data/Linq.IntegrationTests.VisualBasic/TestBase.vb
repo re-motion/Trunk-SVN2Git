@@ -43,7 +43,7 @@ Public Class TestBase
   Protected Overrides ReadOnly Property SavedResourceFileNameGenerator As System.Func(Of System.Reflection.MethodBase, String)
     Get
       Return Function(method As MethodBase) _
-               "LinqSamples101.Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
+               Mid(method.DeclaringType.Namespace, GetType(TestBase).Namespace.Length + 2) & ".Resources." & method.DeclaringType.Name & "." & method.Name + ".result"
     End Get
   End Property
 
