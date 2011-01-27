@@ -181,6 +181,7 @@
     <Compile Include="LinqCastMethodAttribute.cs" />
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
+    <Compile Include="Mapping\InvalidRelationEndPointDefinitionBase.cs" />
     <Compile Include="Mapping\PropertyDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFinder.cs" />

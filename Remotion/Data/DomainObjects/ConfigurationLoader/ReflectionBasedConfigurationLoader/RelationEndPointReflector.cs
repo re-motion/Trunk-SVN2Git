@@ -57,7 +57,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       var propertyName = GetPropertyName();
 
-      // TODO 3684: Extract InvalidRelationEndPointDefinitionBase class from PropertyNotFoundRelationEndPointDefinition; the base class should contain all the logic
       // TODO 3684: Add a new derived class called TypeNotObjectIDRelationEndPointDefinition
       // TODO 3684: Add a unit test showing that the RelationEndPointReflector returns a TypeNotObjectIDRelationEndPointDefinition when the property type for a non-virtual end-point is not ObjectID
       // TODO 3684: Rename CheckForPropertyNotFoundRelationEndPointsValidationRule to CheckForInvalidRelationEndPointsValidationRule
