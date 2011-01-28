@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_invalidEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
       Assert.That (_invalidEndPointDefinition.PropertyName, Is.EqualTo ("TestProperty"));
-      Assert.That (_invalidEndPointDefinition.PropertyType, Is.TypeOf(typeof(string)));
+      Assert.That (_invalidEndPointDefinition.PropertyType, Is.SameAs(typeof(string)));
       Assert.That (_invalidEndPointDefinition.IsVirtual, Is.False);
       Assert.That (_invalidEndPointDefinition.IsAnonymous, Is.False);
       Assert.That (_invalidEndPointDefinition.IsPropertyInfoResolved, Is.False);
