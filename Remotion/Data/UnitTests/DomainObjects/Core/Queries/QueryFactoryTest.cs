@@ -31,6 +31,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -252,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var queryParser = CallCreateQueryParser ();
 
       Assert.That (queryParser.NodeTypeRegistry.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
-      Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps().Length));
+      Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps(ExpressionTransformerRegistry.CreateDefault()).Length));
     }
 
     [Test]
