@@ -17,11 +17,9 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Parsing.Structure;
-using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -40,11 +38,11 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the queries.</param>
-    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of <see cref="QueryParser"/>
-    /// for default behavior.</param>
+    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of 
+    /// <see cref="QueryParser"/> for default behavior. See also <see cref="QueryParser.CreateDefault"/>.</param>
     /// </remarks>
     public DomainObjectQueryable (IQueryExecutor executor, IQueryParser queryParser)
-      : base (new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, queryParser))
+      : base (executor, queryParser)
     {
     }
 
