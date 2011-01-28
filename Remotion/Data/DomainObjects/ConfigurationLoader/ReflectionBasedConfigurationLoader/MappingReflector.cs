@@ -154,7 +154,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           new RelationEndPointPropertyTypeIsSupportedValidationRule (),
           new RelationEndPointNamesAreConsistentValidationRule (),
           new RelationEndPointTypesAreConsistentValidationRule (),
-          new CheckForPropertyNotFoundRelationEndPointsValidationRule (),
+          new CheckForInvalidRelationEndPointsValidationRule (),
           new CheckForTypeNotFoundClassDefinitionValidationRule ());
     }
 

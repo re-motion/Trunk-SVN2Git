@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (validator.ValidationRules[5], Is.TypeOf (typeof (RelationEndPointPropertyTypeIsSupportedValidationRule)));
       Assert.That (validator.ValidationRules[6], Is.TypeOf (typeof (RelationEndPointNamesAreConsistentValidationRule)));
       Assert.That (validator.ValidationRules[7], Is.TypeOf (typeof (RelationEndPointTypesAreConsistentValidationRule)));
-      Assert.That (validator.ValidationRules[8], Is.TypeOf (typeof (CheckForPropertyNotFoundRelationEndPointsValidationRule)));
+      Assert.That (validator.ValidationRules[8], Is.TypeOf (typeof (CheckForInvalidRelationEndPointsValidationRule)));
       Assert.That (validator.ValidationRules[9], Is.TypeOf (typeof (CheckForTypeNotFoundClassDefinitionValidationRule)));
     }
 

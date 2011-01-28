@@ -210,7 +210,7 @@
     <Compile Include="Mapping\Validation\IPropertyDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\IRelationDefinitionValidator.cs" />
     <Compile Include="Mapping\Validation\ISortExpressionValidator.cs" />
-    <Compile Include="Mapping\Validation\Logical\CheckForPropertyNotFoundRelationEndPointsValidationRule.cs" />
+    <Compile Include="Mapping\Validation\Logical\CheckForInvalidRelationEndPointsValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\CheckForTypeNotFoundClassDefinitionValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRule.cs" />
     <Compile Include="Mapping\Validation\Logical\RdbmsRelationEndPointCombinationIsSupportedValidationRule.cs" />

@@ -21,6 +21,10 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Reflection;
+using Rhino.Mocks;
+using Rhino.Mocks.Constraints;
+using Is = NUnit.Framework.SyntaxHelpers.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointReflectorTests
 {
@@ -104,7 +108,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.IsNull (relationEndPointDefinition.RelationDefinition);
     }
 
+    [Test]
+    public void GetMetadata_PropertyTypeIsNoObjectID ()
+    {
+      var propertyInfo = typeof (ClassWithRealRelationEndPoints).GetProperty ("Unidirectional");
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition, "Unidirectional", typeof (ClassWithRealRelationEndPoints));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
+      var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver> ();
+      mappingNameResolverMock
+          .Expect (mock => mock.GetPropertyName (Arg<PropertyInfoAdapter>.Matches (pia => pia.PropertyInfo == propertyInfo)))
+          .Return ("Unidirectional");
+      mappingNameResolverMock.Replay ();
+
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          classDefinition, propertyInfo, mappingNameResolverMock);
+
+      var result = relationEndPointReflector.GetMetadata ();
+
+      mappingNameResolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (TypeNotObjectIDRelationEndPointDefinition)));
+    }
+    
     [Test]
     public void IsVirtualEndRelationEndpoint_Unidirectional ()
     {

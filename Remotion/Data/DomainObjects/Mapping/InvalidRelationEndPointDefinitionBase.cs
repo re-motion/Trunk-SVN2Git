@@ -8,15 +8,17 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     private readonly ClassDefinition _classDefinition;
     private readonly string _propertyName;
+    private readonly Type _propertyType;
     private RelationDefinition _relationDefinition;
 
-    public InvalidRelationEndPointDefinitionBase (ClassDefinition classDefinition, string propertyName)
+    public InvalidRelationEndPointDefinitionBase (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
 
       _classDefinition = classDefinition;
       _propertyName = propertyName;
+      _propertyType = propertyType;
     }
 
     public ClassDefinition ClassDefinition
@@ -36,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public Type PropertyType
     {
-      get { throw new NotImplementedException(); }
+      get { return _propertyType; }
     }
 
     public bool IsPropertyTypeResolved

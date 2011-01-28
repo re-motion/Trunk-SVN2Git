@@ -24,8 +24,8 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class TypeNotObjectIDRelationEndPointDefinition : InvalidRelationEndPointDefinitionBase
   {
-    public TypeNotObjectIDRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName)
-        : base(classDefinition, propertyName)
+    public TypeNotObjectIDRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, Type propertyType)
+        : base(classDefinition, propertyName, propertyType)
     {
     }
   }

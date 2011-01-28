@@ -636,7 +636,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\NotSupportedRelationsIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\IntegrationTests\ValidationIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionValidatorTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForPropertyNotFoundRelationEndPointsValidationRuleTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForInvalidRelationEndPointsValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\CheckForTypeNotFoundClassDefinitionValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />

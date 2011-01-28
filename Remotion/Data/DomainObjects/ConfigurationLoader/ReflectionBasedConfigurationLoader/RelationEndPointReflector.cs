@@ -57,12 +57,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       var propertyName = GetPropertyName();
 
-      // TODO 3684: Add a unit test showing that the RelationEndPointReflector returns a TypeNotObjectIDRelationEndPointDefinition when the property type for a non-virtual end-point is not ObjectID
-      // TODO 3684: Rename CheckForPropertyNotFoundRelationEndPointsValidationRule to CheckForInvalidRelationEndPointsValidationRule
-      // TODO 3684: Change the CheckForInvalidRelationEndPointsValidationRule to also handle the TypeNotObjectIDRelationEndPointDefinition. When one is found, give an error ("Relation property '{0}' on class '{1}' is of type '{2}', but non-virtual relation properties must be of type '{3}'.). Add a unit test.
       PropertyDefinition propertyDefinition = classDefinition[propertyName];
       if (!propertyDefinition.IsObjectID)
-        return new PropertyNotFoundRelationEndPointDefinition (classDefinition, propertyName);
+        return new TypeNotObjectIDRelationEndPointDefinition (classDefinition, propertyName, propertyDefinition.PropertyType);
       else
         return new RelationEndPointDefinition (propertyDefinition, !IsNullable());
     }

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetUp ()
     {
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassDerivedFromSimpleDomainObject));
-      _invalidEndPointDefinition = new InvalidRelationEndPointDefinitionBase (_classDefinition, "TestProperty");
+      _invalidEndPointDefinition = new InvalidRelationEndPointDefinitionBase (_classDefinition, "TestProperty", typeof(string));
     }
 
     [Test]
@@ -40,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_invalidEndPointDefinition.ClassDefinition, Is.SameAs (_classDefinition));
       Assert.That (_invalidEndPointDefinition.PropertyName, Is.EqualTo ("TestProperty"));
+      Assert.That (_invalidEndPointDefinition.PropertyType, Is.TypeOf(typeof(string)));
       Assert.That (_invalidEndPointDefinition.IsVirtual, Is.False);
       Assert.That (_invalidEndPointDefinition.IsAnonymous, Is.False);
       Assert.That (_invalidEndPointDefinition.IsPropertyInfoResolved, Is.False);

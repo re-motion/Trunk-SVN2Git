@@ -18,26 +18,25 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
   [TestFixture]
-  public class CheckForPropertyNotFoundRelationEndPointsValidationRuleTest : ValidationRuleTestBase
+  public class CheckForInvalidRelationEndPointsValidationRuleTest : ValidationRuleTestBase
   {
-    private CheckForPropertyNotFoundRelationEndPointsValidationRule _validationRule;
+    private CheckForInvalidRelationEndPointsValidationRule _validationRule;
     private ReflectionBasedClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new CheckForPropertyNotFoundRelationEndPointsValidationRule();
+      _validationRule = new CheckForInvalidRelationEndPointsValidationRule();
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
     }
 
     [Test]
-    public void RelationDefinitionWithoutPropertyNotFoundRelationEndPointDefinition ()
+    public void RelationDefinitionWithValidRelationEndPointDefinition ()
     {
       var endPoint = new AnonymousRelationEndPointDefinition (_classDefinition);
       var relationDefinition = new RelationDefinition ("Test", endPoint, endPoint);
@@ -56,6 +55,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage = "Property 'TestProperty' on class 'DerivedValidationDomainObjectClass' could not be found.\r\n\r\n"
+        +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
+      AssertMappingValidationResult (validationResult, false, expectedMessage);
+    }
+
+    [Test]
+    public void RelationDefinitionWithTypeNotObjectIDRelationEndPointDefinition ()
+    {
+      var endPoint = new TypeNotObjectIDRelationEndPointDefinition (_classDefinition, "TestProperty", typeof (string));
+      var relationDefinition = new RelationDefinition ("Test", endPoint, endPoint);
+
+      var validationResult = _validationRule.Validate (relationDefinition);
+
+      var expectedMessage = "Relation property 'TestProperty' on class 'DerivedValidationDomainObjectClass' is of type 'String', but non-virtual "
+        +"relation properties must be of type 'ObjectID'.\r\n\r\n"
         +"Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }

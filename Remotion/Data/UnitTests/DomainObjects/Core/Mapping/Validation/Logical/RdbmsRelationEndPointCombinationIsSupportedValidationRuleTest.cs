@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
-    public void InvalidEndPointDefiniton_LeftEndPoint ()
+    public void PropertyNotFoundRelationEndPointDefinition_LeftEndPoint ()
     {
       var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
       var invalidRelationEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_orderClass, "Invalid");
@@ -56,10 +56,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     }
 
     [Test]
-    public void InvalidEndPointDefiniton_RightEndPoint ()
+    public void PropertyNotFoundRelationEndPointDefinition_RightEndPoint ()
     {
       var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
       var invalidRelationEndPointDefinition = new PropertyNotFoundRelationEndPointDefinition (_orderClass, "Invalid");
+      var relationDefinition = new RelationDefinition ("Test", anonymousEndPointDefinition, invalidRelationEndPointDefinition);
+
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (mappingValidationResult, true, null);
+    }
+
+    [Test]
+    public void TypeNotObjectIDRelationEndPointDefinition_LeftEndPoint ()
+    {
+      var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
+      var invalidRelationEndPointDefinition = new TypeNotObjectIDRelationEndPointDefinition (_orderClass, "Invalid", typeof(string));
+      var relationDefinition = new RelationDefinition ("Test", invalidRelationEndPointDefinition, anonymousEndPointDefinition);
+
+      var mappingValidationResult = _validationRule.Validate (relationDefinition);
+
+      AssertMappingValidationResult (mappingValidationResult, true, null);
+    }
+
+    [Test]
+    public void TypeNotObjectIDRelationEndPointDefinition_RightEndPoint ()
+    {
+      var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
+      var invalidRelationEndPointDefinition = new TypeNotObjectIDRelationEndPointDefinition (_orderClass, "Invalid", typeof(string));
       var relationDefinition = new RelationDefinition ("Test", anonymousEndPointDefinition, invalidRelationEndPointDefinition);
 
       var mappingValidationResult = _validationRule.Validate (relationDefinition);
