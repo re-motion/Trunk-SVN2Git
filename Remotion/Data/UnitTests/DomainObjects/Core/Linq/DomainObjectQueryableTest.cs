@@ -30,22 +30,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   [TestFixture]
   public class DomainObjectQueryableTest : ClientTransactionBaseTest
   {
-    private IQueryExecutor _executorStub;
     private IQueryParser _queryParserStub;
+    private IQueryExecutor _executorStub;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
 
-      _executorStub = MockRepository.GenerateStub<IQueryExecutor>();
       _queryParserStub = MockRepository.GenerateStub<IQueryParser> ();
+      _executorStub = MockRepository.GenerateStub<IQueryExecutor> ();
     }
 
     [Test]
     public void Provider_AutoInitialized ()
     {
-      var queryableWithOrder = new DomainObjectQueryable<Order> (_executorStub, _queryParserStub);
+      var queryableWithOrder = new DomainObjectQueryable<Order> (_queryParserStub, _executorStub);
 
       Assert.That (queryableWithOrder.Provider, Is.Not.Null);
       Assert.That (queryableWithOrder.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
@@ -59,8 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var expectedProvider = new DefaultQueryProvider (
           typeof (DomainObjectQueryable<>),
-          _executorStub,
-          _queryParserStub);
+          _queryParserStub, _executorStub);
 
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       

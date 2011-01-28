@@ -21,24 +21,28 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using ReflectionUtility=Remotion.Data.Linq.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class ContainsObjectExpressionNodeTest 
+  public class ContainsObjectExpressionNodeTest : StandardMappingTest
   {
     private ContainsObjectExpressionNode _node;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp ();
+
       SourceNode = new MainSourceExpressionNode ("x", Expression.Constant (new[] { 1, 2, 3 }));
       ClauseGenerationContext = new ClauseGenerationContext (
           MethodCallExpressionNodeTypeRegistry.CreateDefault ());
@@ -90,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private MethodCallExpressionParseInfo CreateFakeParseInfo ()
     {
-      var query = ExpressionHelper.CreateStudentQueryable ();
+      var query = QueryFactory.CreateLinqQuery<Order>();
       var methodInfo = ReflectionUtility.GetMethod (() => query.Count ());
       var methodCallExpression = Expression.Call (methodInfo, query.Expression);
       return new MethodCallExpressionParseInfo ("x", SourceNode, methodCallExpression);

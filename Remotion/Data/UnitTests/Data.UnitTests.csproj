@@ -844,7 +844,6 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestDomain\TestQueryable.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetcherTest.cs" />

@@ -37,7 +37,6 @@ using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
-using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -193,24 +192,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
-                          +
-                          "it is of type 'TestQueryable`1', with a query provider of type 'DefaultQueryProvider'. Be sure to use QueryFactory.CreateLinqQuery to "
-                          + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
-    public void CreateQuery_FromLinqQuery_InvalidQueryExecutor ()
-    {
-      var queryable = new TestQueryable<int> (MockRepository.GenerateMock<IQueryExecutor>()).AsQueryable();
-      QueryFactory.CreateQuery ("<dynamic query>", queryable);
-    }
-
-    [Test]
     public void CreateLinqQuery_Customized ()
     {
       var executorStub = MockRepository.GenerateStub<IQueryExecutor> ();
       var queryParserStub = MockRepository.GenerateStub<IQueryParser>();
 
-      var result = QueryFactory.CreateLinqQuery<Order> (executorStub, queryParserStub);
+      var result = QueryFactory.CreateLinqQuery<Order> (queryParserStub, executorStub);
 
       Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryable<Order>)));
       Assert.That (result.Provider.Executor, Is.SameAs (executorStub));
@@ -440,9 +427,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (registryWithOverrides.GetItem (existingType), Is.SameAs (customTransformer));
     }
 
-    private IQueryParser CallCreateQueryParser ()
+    private QueryParser CallCreateQueryParser ()
     {
-      return (IQueryParser) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateQueryParser");
+      return (QueryParser) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (QueryFactory), "CreateQueryParser");
     }
 
     private CompoundMethodCallTransformerProvider CallCreateMethodCallTransformerProvider ()

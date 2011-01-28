@@ -20,32 +20,34 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
 using System.Collections.Generic;
-using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class EagerFetchingExtensionMethodsTest
+  public class EagerFetchingExtensionMethodsTest : StandardMappingTest
   {
     [Test]
     public void FetchOne ()
     {
-      var source = ExpressionHelper.CreateStudentQueryable ();
-      Expression<Func<Student, bool>> relatedObjectSelector = s => s.HasDog;
+      var source = QueryFactory.CreateLinqQuery<Order> ();
+      Expression<Func<Order, Customer>> relatedObjectSelector = o => o.Customer;
       
       var expression = (MethodCallExpression) source.FetchOne (relatedObjectSelector).Expression;
       
       Assert.That (expression.Arguments.Count, Is.EqualTo (2));
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
-      Assert.That (expression.Method, 
-                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne").MakeGenericMethod (typeof (Student), typeof (bool))));
+      Assert.That (expression.Method,
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne").MakeGenericMethod (typeof (Order), typeof (Customer))));
     }
 
     [Test]
     public void FetchMany ()
     {
-      var source = ExpressionHelper.CreateStudentQueryable ();
-      Expression<Func<Student, IEnumerable<Student>>> relatedObjectSelector = s => s.Friends;
+      var source = QueryFactory.CreateLinqQuery<Order>();
+      Expression<Func<Order, IEnumerable<OrderItem>>> relatedObjectSelector = o => o.OrderItems;
 
       var expression = (MethodCallExpression) source.FetchMany (relatedObjectSelector).Expression;
 
@@ -53,14 +55,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany").MakeGenericMethod (typeof (Student), typeof (Student))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany").MakeGenericMethod (typeof (Order), typeof (OrderItem))));
     }
 
     [Test]
     public void ThenFetchOne ()
     {
-      var source = ExpressionHelper.CreateStudentDetailQueryable().FetchOne (sd => sd.Student);
-      Expression<Func<Student, bool>> relatedObjectSelector = s => s.HasDog;
+      var source = QueryFactory.CreateLinqQuery<OrderTicket> ().FetchOne (ot => ot.Order);
+      Expression<Func<Order, Customer>> relatedObjectSelector = o => o.Customer;
 
       var expression = (MethodCallExpression) source.ThenFetchOne (relatedObjectSelector).Expression;
 
@@ -68,14 +70,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (bool))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne").MakeGenericMethod (typeof (OrderTicket), typeof (Order), typeof (Customer))));
     }
 
     [Test]
     public void ThenFetchMany ()
     {
-      var source = ExpressionHelper.CreateStudentDetailQueryable ().FetchOne (sd => sd.Student);
-      Expression<Func<Student, IEnumerable<Student>>> relatedObjectSelector = s => s.Friends;
+      var source = QueryFactory.CreateLinqQuery<OrderTicket> ().FetchOne (ot => ot.Order);
+      Expression<Func<Order, IEnumerable<OrderItem>>> relatedObjectSelector = o => o.OrderItems;
 
       var expression = (MethodCallExpression) source.ThenFetchMany (relatedObjectSelector).Expression;
 
@@ -83,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (Student))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany").MakeGenericMethod (typeof (OrderTicket), typeof (Order), typeof (OrderItem))));
     }
   }
 }

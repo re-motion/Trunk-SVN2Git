@@ -15,48 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq;
-using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   public static class ExpressionHelper
   {
-    private static readonly IQueryExecutor s_executor = CreateExecutor();
-
-    public static IQueryable<Student> CreateStudentQueryable ()
-    {
-      return CreateStudentQueryable (s_executor);
-    }
-
-    public static IQueryable<Student> CreateStudentQueryable (IQueryExecutor executor)
-    {
-      return new TestQueryable<Student> (executor);
-    }
-
-    public static IQueryable<Student_Detail> CreateStudentDetailQueryable ()
-    {
-      return CreateStudentDetailQueryable (s_executor);
-    }
-
-    public static IQueryable<Student_Detail> CreateStudentDetailQueryable (IQueryExecutor executor)
-    {
-      return new TestQueryable<Student_Detail> (executor);
-    }
-
     public static Expression MakeExpression<TRet> (Expression<Func<TRet>> expression)
     {
       return expression.Body;
-    }
-
-    public static IQueryExecutor CreateExecutor ()
-    {
-      var repository = new MockRepository ();
-      var executor = repository.StrictMock<IQueryExecutor> ();
-      return executor;
     }
   }
 }

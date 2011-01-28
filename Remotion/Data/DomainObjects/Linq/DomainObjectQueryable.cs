@@ -28,6 +28,9 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
     /// </summary>
+    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of 
+    /// <see cref="QueryParser"/> for default behavior. See also <see cref="QueryParser.CreateDefault"/>.</param>
+    /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the queries.</param>
     /// <remarks>
     /// <para>
     /// This constructor marks the default entry point into a LINQ query for <see cref="DomainObject"/> instances. It is normally used to define
@@ -37,17 +40,14 @@ namespace Remotion.Data.DomainObjects.Linq
     /// The <see cref="QueryFactory"/> class wraps this constructor and provides some additional support, so it should usually be preferred to a
     /// direct constructor call.
     /// </para>
-    /// <param name="executor">The <see cref="DomainObjectQueryExecutor"/> that is used for the queries.</param>
-    /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of 
-    /// <see cref="QueryParser"/> for default behavior. See also <see cref="QueryParser.CreateDefault"/>.</param>
     /// </remarks>
-    public DomainObjectQueryable (IQueryExecutor executor, IQueryParser queryParser)
-      : base (executor, queryParser)
+    public DomainObjectQueryable (IQueryParser queryParser, IQueryExecutor executor)
+      : base (queryParser, executor)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
+    /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class. This is an infrastructure constructor.
     /// </summary>
     /// <param name="provider">The provider to be used for querying.</param>
     /// <param name="expression">The expression encapsulated by this <see cref="DomainObjectQueryable{T}"/> instance.</param>

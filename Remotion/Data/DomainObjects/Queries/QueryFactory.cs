@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Queries
           s_methodCallTransformerProvider.Value, 
           s_resultOperatorHandlerRegistry.Value);
 
-      return CreateLinqQuery<T> (executor, s_queryParser.Value);
+      return CreateLinqQuery<T> (s_queryParser.Value, executor);
     }
 
     /// <summary>
@@ -86,18 +86,18 @@ namespace Remotion.Data.DomainObjects.Queries
     /// with user defined query analysis or SQL generation.
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-    /// <param name="executor">The <see cref="IQueryExecutor"/> that is used for the query. Specify an instance of 
-    /// <see cref="DomainObjectQueryExecutor"/> for default behavior.</param>
     /// <param name="queryParser">The <see cref="IQueryParser"/> used to parse queries. Specify an instance of <see cref="QueryParser"/>
-    /// for default behavior.</param>
+    ///   for default behavior. See <see cref="QueryParser.CreateDefault"/></param>
+    /// <param name="executor">The <see cref="IQueryExecutor"/> that is used for the query. Specify an instance of 
+    ///   <see cref="DomainObjectQueryExecutor"/> for default behavior.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryExecutor executor, IQueryParser queryParser) 
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryParser queryParser, IQueryExecutor executor) 
         where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("queryParser", queryParser);
 
-      return new DomainObjectQueryable<T> (executor, queryParser);
+      return new DomainObjectQueryable<T> (queryParser, executor);
     }
 
     /// <summary>
