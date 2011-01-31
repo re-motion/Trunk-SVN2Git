@@ -29,20 +29,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public abstract class RdbmsProvider : StorageProvider
   {
-    // types
-
-    // static members and constants
-
-
-    // member fields
-
     private readonly DataContainerLoader _dataContainerLoader;
 
     private TracingDbConnection _connection;
     private TracingDbTransaction _transaction;
-
-    // construction and disposing
-
+    
     protected RdbmsProvider (
         RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceListener persistenceListener)
         : base (definition, storageNameProvider, sqlDialect, persistenceListener)
@@ -69,11 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    // abstract methods and properties
-
     protected abstract TracingDbConnection CreateConnection ();
-
-    // methods and properties
 
     /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
     public virtual string StatementDelimiter
@@ -522,7 +509,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     /// <summary> Gets a value converter that converts database types to .NET types according to the providers type mapping rules. </summary>
     public virtual ValueConverter CreateValueConverter ()
     {
-      return new ValueConverter (this, TypeConversionProvider);
+      return new ValueConverter (this, StorageNameProvider, TypeConversionProvider);
     }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
@@ -26,13 +27,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class ValueConverter : ValueConverterBase
   {
     private readonly RdbmsProvider _provider;
+    private readonly IStorageNameProvider _storageNameProvider;
 
-    // TODO Review 3675: Inject name provider here
-    public ValueConverter (RdbmsProvider provider, TypeConversionProvider typeConversionProvider)
+    public ValueConverter (RdbmsProvider provider, IStorageNameProvider storageNameProvider, TypeConversionProvider typeConversionProvider)
         : base (typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
       _provider = provider;
+      _storageNameProvider = storageNameProvider;
     }
 
     public virtual object GetDBValue (object value)
@@ -104,8 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
 
-      // TODO Review 3675: Use name provider
-      object idValue = GetValue (dataReader, "ID");
+      object idValue = GetValue (dataReader, _storageNameProvider.IDColumnName);
       if (idValue == DBNull.Value)
         return null;
 
@@ -138,9 +141,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (classDefinition.IsAbstract)
       {
-        // TODO Review 3675: Use name provider
         throw _provider.CreateRdbmsProviderException (
-            "Invalid database value encountered. Column 'ClassID' of row with ID '{0}' refers to abstract class '{1}'.",
+            "Invalid database value encountered. Column '{0}' of row with ID '{1}' refers to abstract class '{2}'.",
+            _storageNameProvider.ClassIDColumnName,
             idValue,
             classDefinition.ID);
       }
@@ -150,8 +153,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private string GetClassID (IDataReader dataReader)
     {
-      // TODO Review 3675: Use name provider here
-      int classIDColumnOrdinal = GetMandatoryOrdinal (dataReader, "ClassID");
+      int classIDColumnOrdinal = GetMandatoryOrdinal (dataReader, _storageNameProvider.ClassIDColumnName);
       if (dataReader.IsDBNull (classIDColumnOrdinal))
         throw _provider.CreateRdbmsProviderException ("Invalid database value encountered. Column 'ClassID' must not contain null.");
 

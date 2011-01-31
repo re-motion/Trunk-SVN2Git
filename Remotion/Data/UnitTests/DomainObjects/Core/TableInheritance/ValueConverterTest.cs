@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Utilities;
 
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       base.SetUp ();
 
       Provider.Connect ();
-      _converter = new ValueConverter (Provider, TypeConversionProvider.Create ());
+      _converter = new ValueConverter (Provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
     }
 
     [Test]

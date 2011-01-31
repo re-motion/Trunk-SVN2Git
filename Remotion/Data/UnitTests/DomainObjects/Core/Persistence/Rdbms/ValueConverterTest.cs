@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _connection = provider.Connection;
 
       _ceoDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Ceo");
-      _converter = new ValueConverter (provider, TypeConversionProvider.Create ());
+      _converter = new ValueConverter (provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
     }
 
     public override void TearDown ()
