@@ -60,8 +60,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM)", linqHelper.GenerateQueryModel);
       PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM+SQL)", linqHelper.GenerateQueryModelAndSQL);
       PerformanceTestHelper.TimeAndOutput (10000, "Simple query with large (2000) result set (QM+SQL+IQ)", linqHelper.GenerateQueryModelAndSQLAndIQuery);
-      PerformanceTestHelper.TimeAndOutput (1000, "Simple query with large (2000) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
-      PerformanceTestHelper.TimeAndOutput (500, "Simple query with large (2000) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
+      PerformanceTestHelper.TimeAndOutput (100, "Simple query with large (2000) result set (QM+SQL+IQ+Execute)", linqHelper.GenerateAndExecuteQueryDBOnly);
+      PerformanceTestHelper.TimeAndOutput (100, "Simple query with large (2000) result set (QM+SQL+IQ+Execute+re-store)", linqHelper.GenerateAndExecuteQuery);
     }
 
     [Test]
