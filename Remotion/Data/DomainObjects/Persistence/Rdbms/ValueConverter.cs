@@ -116,6 +116,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return GetObjectID (classDefinition, idValue);
     }
 
+    public object GetTimestamp (IDataReader dataReader)
+    {
+      ArgumentUtility.CheckNotNull ("dataReader", dataReader);
+
+      object timestamp = GetValue (dataReader, _storageNameProvider.TimestampColumnName);
+      if (timestamp == DBNull.Value)
+        return null;
+
+      return timestamp;
+    }
+
     public override ObjectID GetObjectID (ClassDefinition classDefinition, object dataValue)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -79,6 +80,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
             Assert.AreEqual (expectedMessage, ex.Message);
           }
+        }
+      }
+    }
+
+    [Test]
+    public void GetTimestamp ()
+    {
+      var timestamp = "0x000000000001F77A";
+      using (IDbCommand command = Provider.Connection.CreateCommand ())
+      {
+        command.CommandText = string.Format ("SELECT '{0}' as Timestamp", timestamp);
+        using (IDataReader reader = command.ExecuteReader())
+        {
+          Assert.IsTrue (reader.Read());
+          var result = _converter.GetTimestamp (reader);
+          Assert.That (result, Is.EqualTo (timestamp));
+        }
+      }
+    }
+
+    [Test]
+    public void GetTimestamp_DBNullCOlumn ()
+    {
+      using (IDbCommand command = Provider.Connection.CreateCommand ())
+      {
+        command.CommandText = "SELECT null as Timestamp";
+        using (IDataReader reader = command.ExecuteReader ())
+        {
+          Assert.IsTrue (reader.Read ());
+          var result = _converter.GetTimestamp (reader);
+          Assert.That (result, Is.Null);
         }
       }
     }

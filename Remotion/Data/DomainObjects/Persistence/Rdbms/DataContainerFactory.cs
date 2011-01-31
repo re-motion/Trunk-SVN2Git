@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -78,8 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ObjectID id = valueConverter.GetID (_dataReader);
       if (id != null)
       {
-        // TODO Review 3675: Add ValueConverter.GetTimestamp, use name provider there
-        object timestamp = _dataReader.GetValue (valueConverter.GetMandatoryOrdinal (_dataReader, "Timestamp"));
+        object timestamp = valueConverter.GetTimestamp (_dataReader);
 
         DataContainer dataContainer = DataContainer.CreateForExisting (
             id,
