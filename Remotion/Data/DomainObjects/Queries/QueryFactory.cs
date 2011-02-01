@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.ServiceLocation;
@@ -248,19 +249,23 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static IQueryParser CreateQueryParser ()
     {
-      var queryParser = QueryParser.CreateDefault();
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
+      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
+      var queryParser = new QueryParser (expressionTreeParser);
 
-      queryParser.NodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 
-      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
-      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      queryParser.NodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
+      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
       foreach (var customNodeType in customNodeTypes)
-        queryParser.NodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+        nodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
       return queryParser;
     }

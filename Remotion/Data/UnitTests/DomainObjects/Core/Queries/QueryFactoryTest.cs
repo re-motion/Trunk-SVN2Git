@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var selectMethod = SelectExpressionNode.SupportedMethods[0];
       var queryParser = CallCreateQueryParser ();
 
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
       Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps(ExpressionTransformerRegistry.CreateDefault()).Length));
     }
 
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
       var queryParser = CallCreateQueryParser ();
 
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
     }
 
     [Test]
@@ -262,10 +262,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var queryParser = CallCreateQueryParser ();
 
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (fetchOneMethod), Is.SameAs (typeof (FetchOneExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (fetchManyMethod), Is.SameAs (typeof (FetchManyExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (thenFetchOneMethod), Is.SameAs (typeof (ThenFetchOneExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (thenFetchManyMethod), Is.SameAs (typeof (ThenFetchManyExpressionNode)));
     }
 
     [Test]
@@ -285,8 +285,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var queryParser = CallCreateQueryParser ();
 
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
-      Assert.That (queryParser.NodeTypeRegistry.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod1), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (customMethod2), Is.SameAs (typeof (WhereExpressionNode)));
     }
 
     [Test]
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var exstingMethod = SelectExpressionNode.SupportedMethods[0];
       var defaultQueryParser = CallCreateQueryParser ();
 
-      Assert.That (defaultQueryParser.NodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (SelectExpressionNode)));
+      Assert.That (defaultQueryParser.NodeTypeProvider.GetNodeType (exstingMethod), Is.SameAs (typeof (SelectExpressionNode)));
 
       var customizer = CreateCustomizerStub (
           stub => stub.GetCustomNodeTypes (),
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var queryParserWithOverrides = CallCreateQueryParser ();
 
-      Assert.That (queryParserWithOverrides.NodeTypeRegistry.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
+      Assert.That (queryParserWithOverrides.NodeTypeProvider.GetNodeType (exstingMethod), Is.SameAs (typeof (WhereExpressionNode)));
     }
 
     [Test]
