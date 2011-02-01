@@ -249,23 +249,27 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static IQueryParser CreateQueryParser ()
     {
-      var nodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault();
-      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
-      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
-      var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
-      var queryParser = new QueryParser (expressionTreeParser);
+      var customNodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
 
-      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+      customNodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
+      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
+      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
+      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
       foreach (var customNodeType in customNodeTypes)
-        nodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+        customNodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
+
+      var nodeTypeProvider = CompoundNodeTypeProvider.CreateDefault ();
+      nodeTypeProvider.InnerProviders.Insert (0, customNodeTypeRegistry);
+
+      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
+      var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processingSteps);
+      var queryParser = new QueryParser (expressionTreeParser);
 
       return queryParser;
     }
