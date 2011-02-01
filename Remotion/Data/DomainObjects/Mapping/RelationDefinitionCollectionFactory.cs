@@ -15,44 +15,46 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
+namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
-  /// The <see cref="ClassReflectorForRelations"/> is used to build the <see cref="RelationDefinition"/> objects for a type.
+  /// The <see cref="RelationDefinitionCollectionFactory"/> is used to get a <see cref="RelationDefinitionCollection"/> for a set of 
+  /// <see cref="ClassDefinition"/>s.
+  /// sets base classes and derived classes correctly.
   /// </summary>
-  public class ClassReflectorForRelations
+  public class RelationDefinitionCollectionFactory
   {
-    public static ClassReflectorForRelations CreateClassReflector (Type type, IMappingNameResolver nameResolver)
+    private readonly IMappingObjectFactory _mappingObjectFactory;
+
+    public RelationDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory)
     {
-      return new ClassReflectorForRelations (type, nameResolver);
+      ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
+
+      _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public ClassReflectorForRelations (Type type, IMappingNameResolver nameResolver)
+    public RelationDefinitionCollection CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
-      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      Type = type;
-      NameResolver = nameResolver;
+      var relationDefinitions = new RelationDefinitionCollection();
+      foreach (ReflectionBasedClassDefinition classDefinition in classDefinitions)
+        GetRelationDefinitions (classDefinitions, classDefinition, relationDefinitions);
+      
+      return relationDefinitions;
     }
 
-    public Type Type { get; private set; }
-    public IMappingNameResolver NameResolver { get; private set; }
-    
-    public void GetRelationDefinitions (ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
+    private void GetRelationDefinitions (
+        ClassDefinitionCollection classDefinitions, ReflectionBasedClassDefinition classDefinition, RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
-      var classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
-
       foreach (var endPoint in classDefinition.MyRelationEndPointDefinitions)
       {
-        var relationReflector = new RelationReflector (classDefinition, endPoint.PropertyInfo, NameResolver);
-        var relationDefinition = relationReflector.GetMetadata (classDefinitions);
+        var relationDefinition = _mappingObjectFactory.CreateRelationDefinition (classDefinitions, classDefinition, endPoint.PropertyInfo);
         if (!relationDefinitions.Contains (relationDefinition.ID))
         {
           relationDefinition.EndPointDefinitions[0].SetRelationDefinition (relationDefinition);

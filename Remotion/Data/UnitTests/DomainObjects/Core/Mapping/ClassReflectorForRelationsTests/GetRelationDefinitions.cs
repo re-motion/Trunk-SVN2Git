@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
     [Test]
     public void GetRelationDefinitions_ForManySide ()
     {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), Configuration.NameResolver);
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
       RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
     [Test]
     public void GetRelationDefinitions_ForOneSide ()
     {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
 
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -95,11 +95,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
     public void GetRelationDefinitions_ForBothSides ()
     {
       //get relation definitions for the many side
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), Configuration.NameResolver);
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
       //get relation definitions for the one side
-      classReflector = new ClassReflectorForRelations (typeof (ClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      classReflector = new ClassReflectorForRelations (typeof (ClassWithVirtualRelationEndPoints), Configuration.NameResolver);
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
       RelationDefinitionCollection expectedDefinitions = new RelationDefinitionCollection ();
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingClassDefinition ()
     {
-      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+      var classReflector = new ClassReflectorForRelations (typeof (ClassWithRealRelationEndPoints), Configuration.NameResolver);
       classReflector.GetRelationDefinitions (new ClassDefinitionCollection(), _relationDefinitions);
     }
 

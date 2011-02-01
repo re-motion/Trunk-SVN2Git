@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
       expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition());
 
       var classReflector = new ClassReflectorForRelations (
-          typeof (ClosedGenericClassWithRealRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+          typeof (ClosedGenericClassWithRealRelationEndPoints), Configuration.NameResolver);
 
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassReflectorForRe
       expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition());
 
       var classReflector = new ClassReflectorForRelations (
-          typeof (ClosedGenericClassWithVirtualRelationEndPoints), MappingObjectFactory, Configuration.NameResolver);
+          typeof (ClosedGenericClassWithVirtualRelationEndPoints), Configuration.NameResolver);
 
       classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 

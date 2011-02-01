@@ -27,11 +27,14 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     ClassDefinition CreateClassDefinition (Type type, ReflectionBasedClassDefinition baseClass);
     PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo);
+    RelationDefinition CreateRelationDefinition (
+        ClassDefinitionCollection classDefinitions, ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo);
     IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo);
 
     ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types);
     PropertyDefinitionCollection CreatePropertyDefinitionCollection (
         ReflectionBasedClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos);
+    RelationDefinitionCollection CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions);
     RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ReflectionBasedClassDefinition classDefinition);
   }
 }

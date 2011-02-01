@@ -24,14 +24,15 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedMappingObjectFactoryTest
+  public class ReflectionBasedMappingObjectFactoryTest : StandardMappingTest
   {
     private ReflectionBasedMappingObjectFactory _factory;
     private ReflectionBasedNameResolver _mappingNameResolver;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _mappingNameResolver = new ReflectionBasedNameResolver();
       _factory = new ReflectionBasedMappingObjectFactory (_mappingNameResolver);
     }
@@ -72,6 +73,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void CreateRelationDefinition ()
+    {
+      var orderClassDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
+      var orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions["OrderItem"];
+
+      var result =
+          _factory.CreateRelationDefinition (
+              new ClassDefinitionCollection (new[] { orderClassDefinition, orderItemClassDefinition }, true, true),
+              (ReflectionBasedClassDefinition) orderItemClassDefinition,
+              orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.EndPointDefinitions[0], 
+        Is.SameAs (orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]));
+      Assert.That (result.EndPointDefinitions[1], 
+        Is.SameAs (orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]));
+    }
+
+    [Test]
     public void CreateRelationEndPointDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
@@ -105,6 +125,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result.Count, Is.EqualTo (2));
       Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
       Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
+    }
+
+    [Test]
+    public void CreateRelationDefinitionCollection ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OrderItem));
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition, typeof (OrderItem), "Order", "OrderID", typeof (ObjectID), true);
+      var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));
+      
+      var result = _factory.CreateRelationDefinitionCollection (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
+
+      Assert.That (result.Count, Is.EqualTo (1));
+      Assert.That (result[0].ID,
+        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
+        +"Mapping.TestDomain.Integration.OrderItem.Order"));
     }
 
     [Test]

@@ -209,6 +209,7 @@
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />

@@ -49,16 +49,27 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      return new PropertyReflector (classDefinition, propertyInfo, _mappingNameResolver).GetMetadata ();
+      return new PropertyReflector (classDefinition, propertyInfo, _mappingNameResolver).GetMetadata();
     }
-    
+
+    public RelationDefinition CreateRelationDefinition (
+        ClassDefinitionCollection classDefinitions, ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      var relationReflector = new RelationReflector (classDefinition, propertyInfo, _mappingNameResolver);
+      return relationReflector.GetMetadata (classDefinitions);
+    }
+
     public IRelationEndPointDefinition CreateRelationEndPointDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, _mappingNameResolver);
-      return relationEndPointReflector.GetMetadata ();
+      return relationEndPointReflector.GetMetadata();
     }
 
     public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
@@ -77,6 +88,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       var factory = new PropertyDefinitionCollectionFactory (this);
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
+    }
+
+    public RelationDefinitionCollection CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      var factory = new RelationDefinitionCollectionFactory (this);
+      return factory.CreateRelationDefinitionCollection (classDefinitions);
     }
 
     public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ReflectionBasedClassDefinition classDefinition)
