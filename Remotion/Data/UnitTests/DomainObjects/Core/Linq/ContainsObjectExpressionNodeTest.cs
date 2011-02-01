@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       SourceNode = new MainSourceExpressionNode ("x", Expression.Constant (new[] { 1, 2, 3 }));
       ClauseGenerationContext = new ClauseGenerationContext (
-          NodeTypeRegistry.CreateDefault ());
+          MethodInfoBasedNodeTypeRegistry.CreateDefault ());
 
       QueryModel = SourceNode.Apply (null, ClauseGenerationContext);
       SourceClause = QueryModel.MainFromClause;

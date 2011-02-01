@@ -249,7 +249,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static IQueryParser CreateQueryParser ()
     {
-      var nodeTypeRegistry = NodeTypeRegistry.CreateDefault();
+      var nodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault();
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
       var processingSteps = ExpressionTreeParser.CreateDefaultProcessingSteps (transformerRegistry);
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeRegistry, processingSteps);
