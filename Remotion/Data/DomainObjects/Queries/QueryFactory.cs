@@ -249,7 +249,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private static IQueryParser CreateQueryParser ()
     {
-      var customNodeTypeRegistry = MethodInfoBasedNodeTypeRegistry.CreateDefault ();
+      var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
 
       customNodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 
