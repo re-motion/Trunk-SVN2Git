@@ -240,8 +240,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var queryParser = CallCreateQueryParser ();
 
       Assert.That (queryParser.NodeTypeProvider, Is.TypeOf (typeof (CompoundNodeTypeProvider)));
-      Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[0], Is.TypeOf (typeof (MethodInfoBasedNodeTypeRegistry)));
-      Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[1], Is.TypeOf (typeof (MethodNameBasedNodeTypeRegistry)));
+      Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[1], Is.TypeOf (typeof (MethodInfoBasedNodeTypeRegistry)));
+      Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[2], Is.TypeOf (typeof (MethodNameBasedNodeTypeRegistry)));
 
       Assert.That (queryParser.NodeTypeProvider.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
       Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps(ExpressionTransformerRegistry.CreateDefault()).Length));
