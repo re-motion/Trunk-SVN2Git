@@ -244,7 +244,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[2], Is.TypeOf (typeof (MethodNameBasedNodeTypeRegistry)));
 
       Assert.That (queryParser.NodeTypeProvider.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
-      Assert.That (queryParser.ProcessingSteps.Count, Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingSteps(ExpressionTransformerRegistry.CreateDefault()).Length));
+      var processingSteps = ((CompoundProcessingStep) queryParser.ProcessingStep).InnerSteps;
+      Assert.That (processingSteps.Count, 
+          Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingStep(ExpressionTransformerRegistry.CreateDefault()).InnerSteps.Count));
     }
 
     [Test]
