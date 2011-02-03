@@ -263,7 +263,7 @@ namespace Remotion.Data.DomainObjects.Queries
       foreach (var customNodeType in customNodeTypes)
         customNodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      var nodeTypeProvider = CompoundNodeTypeProvider.CreateDefault ();
+      var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider ();
       nodeTypeProvider.InnerProviders.Insert (0, customNodeTypeRegistry);
 
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
