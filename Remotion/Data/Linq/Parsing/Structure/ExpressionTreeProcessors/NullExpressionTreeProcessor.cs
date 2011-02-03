@@ -14,27 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessingSteps
+namespace Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessors
 {
   /// <summary>
-  /// Analyzes an <see cref="Expression"/> tree for sub-trees that are evaluatable in-memory, and evaluates those sub-trees.
+  /// Implements the <see cref="IExpressionTreeProcessor"/> interface by doing nothing in the <see cref="Process"/> method. This is an
+  /// implementation of the Null Object Pattern.
   /// </summary>
-  /// <remarks>
-  /// The <see cref="PartialEvaluationStep"/> uses the <see cref="PartialEvaluatingExpressionTreeVisitor"/> for partial evaluation.
-  /// It performs two visiting runs over the <see cref="Expression"/> tree.
-  /// </remarks>
-  public class PartialEvaluationStep : IExpressionTreeProcessingStep
+  public class NullExpressionTreeProcessor : IExpressionTreeProcessor
   {
     public Expression Process (Expression expressionTree)
     {
       ArgumentUtility.CheckNotNull ("expressionTree", expressionTree);
-
-      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expressionTree);
+      return expressionTree;
     }
   }
 }

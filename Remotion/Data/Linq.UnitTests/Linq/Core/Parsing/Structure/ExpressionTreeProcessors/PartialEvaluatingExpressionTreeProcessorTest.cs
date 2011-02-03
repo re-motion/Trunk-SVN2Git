@@ -14,22 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Utilities;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessors;
 
-namespace Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessingSteps
+namespace Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.Structure.ExpressionTreeProcessors
 {
-  /// <summary>
-  /// Implements the <see cref="IExpressionTreeProcessingStep"/> interface by doing nothing in the <see cref="Process"/> method. This is an
-  /// implementation of the Null Object Pattern.
-  /// </summary>
-  public class NullStep : IExpressionTreeProcessingStep
+  [TestFixture]
+  public class PartialEvaluatingExpressionTreeProcessorTest
   {
-    public Expression Process (Expression expressionTree)
+    [Test]
+    public void Process ()
     {
-      ArgumentUtility.CheckNotNull ("expressionTree", expressionTree);
-      return expressionTree;
+      var expression = Expression.Add (Expression.Constant (1), Expression.Constant (1));
+      var processor = new PartialEvaluatingExpressionTreeProcessor();
+
+      var result = processor.Process (expression);
+
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(2));
     }
   }
 }

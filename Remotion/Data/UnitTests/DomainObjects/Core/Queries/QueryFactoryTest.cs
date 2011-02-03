@@ -33,6 +33,7 @@ using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessors;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
@@ -244,9 +245,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (((CompoundNodeTypeProvider) queryParser.NodeTypeProvider).InnerProviders[2], Is.TypeOf (typeof (MethodNameBasedNodeTypeRegistry)));
 
       Assert.That (queryParser.NodeTypeProvider.GetNodeType (selectMethod), Is.SameAs (typeof (SelectExpressionNode)));
-      var processingSteps = ((CompoundProcessingStep) queryParser.ProcessingStep).InnerSteps;
+      var processingSteps = ((CompoundExpressionTreeProcessor) queryParser.Processor).InnerProcessors;
       Assert.That (processingSteps.Count, 
-          Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessingStep(ExpressionTransformerRegistry.CreateDefault()).InnerSteps.Count));
+          Is.EqualTo (ExpressionTreeParser.CreateDefaultProcessor(ExpressionTransformerRegistry.CreateDefault()).InnerProcessors.Count));
     }
 
     [Test]

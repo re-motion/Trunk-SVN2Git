@@ -14,38 +14,37 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.Linq.Parsing.Structure
+namespace Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessors
 {
   /// <summary>
-  /// Implements <see cref="IExpressionTreeProcessingStep"/> by storing a list of inner <see cref="IExpressionTreeProcessingStep"/> instances.
-  /// The <see cref="Process"/> method calls each inner instance in the order defined by the <see cref="InnerSteps"/> property. This is an
+  /// Implements <see cref="IExpressionTreeProcessor"/> by storing a list of inner <see cref="IExpressionTreeProcessor"/> instances.
+  /// The <see cref="Process"/> method calls each inner instance in the order defined by the <see cref="InnerProcessors"/> property. This is an
   /// implementation of the Composite Pattern.
   /// </summary>
-  public class CompoundProcessingStep : IExpressionTreeProcessingStep
+  public class CompoundExpressionTreeProcessor : IExpressionTreeProcessor
   {
-    private readonly List<IExpressionTreeProcessingStep> _innerSteps;
+    private readonly List<IExpressionTreeProcessor> _innerProcessors;
 
-    public CompoundProcessingStep (IEnumerable<IExpressionTreeProcessingStep> innerSteps)
+    public CompoundExpressionTreeProcessor (IEnumerable<IExpressionTreeProcessor> innerProcessors)
     {
-      ArgumentUtility.CheckNotNull ("innerSteps", innerSteps);
-      _innerSteps = new List<IExpressionTreeProcessingStep> (innerSteps);
+      ArgumentUtility.CheckNotNull ("innerProcessors", innerProcessors);
+      _innerProcessors = new List<IExpressionTreeProcessor> (innerProcessors);
     }
 
-    public IList<IExpressionTreeProcessingStep> InnerSteps
+    public IList<IExpressionTreeProcessor> InnerProcessors
     {
-      get { return _innerSteps; }
+      get { return _innerProcessors; }
     }
     
     public Expression Process (Expression expressionTree)
     {
       ArgumentUtility.CheckNotNull ("expressionTree", expressionTree);
-      return _innerSteps.Aggregate (expressionTree, (expr, step) => step.Process (expr));
+      return _innerProcessors.Aggregate (expressionTree, (expr, processor) => processor.Process (expr));
     }
   }
 }

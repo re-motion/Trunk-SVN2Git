@@ -14,27 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessingSteps;
+using Remotion.Data.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.Core.Parsing.Structure.ExpressionTreeProcessingSteps
+namespace Remotion.Data.Linq.Parsing.Structure.ExpressionTreeProcessors
 {
-  [TestFixture]
-  public class PartialEvaluationStepTest
+  /// <summary>
+  /// Analyzes an <see cref="Expression"/> tree for sub-trees that are evaluatable in-memory, and evaluates those sub-trees.
+  /// </summary>
+  /// <remarks>
+  /// The <see cref="PartialEvaluatingExpressionTreeProcessor"/> uses the <see cref="PartialEvaluatingExpressionTreeVisitor"/> for partial evaluation.
+  /// It performs two visiting runs over the <see cref="Expression"/> tree.
+  /// </remarks>
+  public class PartialEvaluatingExpressionTreeProcessor : IExpressionTreeProcessor
   {
-    [Test]
-    public void Process ()
+    public Expression Process (Expression expressionTree)
     {
-      var expression = Expression.Add (Expression.Constant (1), Expression.Constant (1));
-      var step = new PartialEvaluationStep();
+      ArgumentUtility.CheckNotNull ("expressionTree", expressionTree);
 
-      var result = step.Process (expression);
-
-      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
-      Assert.That (((ConstantExpression) result).Value, Is.EqualTo(2));
+      return PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expressionTree);
     }
   }
 }

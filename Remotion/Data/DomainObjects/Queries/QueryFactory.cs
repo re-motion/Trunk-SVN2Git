@@ -267,8 +267,8 @@ namespace Remotion.Data.DomainObjects.Queries
       nodeTypeProvider.InnerProviders.Insert (0, customNodeTypeRegistry);
 
       var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
-      var processingStep = ExpressionTreeParser.CreateDefaultProcessingStep (transformerRegistry);
-      var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processingStep);
+      var processor = ExpressionTreeParser.CreateDefaultProcessor (transformerRegistry);
+      var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processor);
       var queryParser = new QueryParser (expressionTreeParser);
 
       return queryParser;
