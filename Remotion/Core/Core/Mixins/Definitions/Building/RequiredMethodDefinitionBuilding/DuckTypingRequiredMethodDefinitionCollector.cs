@@ -59,8 +59,7 @@ namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
                                           group candidate by offset;
 
       IGrouping<int, MethodDefinition> candidateGroup = ChooseCandidateGroup (candidatesByInheritanceOffset, interfaceMethod, requirement);
-
-      Assertion.DebugAssert (candidateGroup.Count () == 1, "Unless the signature comparer is broken, each group can only hold one match.");
+      // Unless the signature comparer is broken, each group can only hold one match.
       return candidateGroup.Single ();
     }
 
