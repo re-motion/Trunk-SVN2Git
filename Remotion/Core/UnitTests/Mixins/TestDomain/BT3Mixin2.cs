@@ -34,18 +34,18 @@ namespace Remotion.UnitTests.Mixins.TestDomain
       I = i;
     }
 
-    public new IBaseType32 This
+    public new IBaseType32 Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
   }
 
   [Serializable]
   public class BT3Mixin2B : Mixin<IBaseType32>
   {
-    public new IBaseType32 This
+    public new IBaseType32 Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
   }
 }

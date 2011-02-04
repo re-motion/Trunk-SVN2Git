@@ -28,35 +28,35 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [Test]
     public void ThisArgumentFinder_Find ()
     {
-      var thisArgument = MixinGenericArgumentFinder.ThisArgumentFinder.FindGenericArgument (typeof (BT3Mixin4));
+      var thisArgument = MixinGenericArgumentFinder.TargetArgumentFinder.FindGenericArgument (typeof (BT3Mixin4));
       Assert.That (thisArgument, Is.SameAs (typeof (BaseType3)));
     }
 
     [Test]
     public void ThisArgumentFinder_Find_NoMixinBase ()
     {
-      var thisArgument = MixinGenericArgumentFinder.ThisArgumentFinder.FindGenericArgument (typeof (object));
+      var thisArgument = MixinGenericArgumentFinder.TargetArgumentFinder.FindGenericArgument (typeof (object));
       Assert.That (thisArgument, Is.Null);
     }
 
     [Test]
     public void BaseArgumentFinder_Find ()
     {
-      var baseArgument = MixinGenericArgumentFinder.BaseArgumentFinder.FindGenericArgument (typeof (BT3Mixin4));
+      var baseArgument = MixinGenericArgumentFinder.NextArgumentFinder.FindGenericArgument (typeof (BT3Mixin4));
       Assert.That (baseArgument, Is.SameAs (typeof (IBaseType34)));
     }
 
     [Test]
     public void BaseArgumentFinder_Find_NoMixinBase ()
     {
-      var baseArgument = MixinGenericArgumentFinder.BaseArgumentFinder.FindGenericArgument (typeof (object));
+      var baseArgument = MixinGenericArgumentFinder.NextArgumentFinder.FindGenericArgument (typeof (object));
       Assert.That (baseArgument, Is.Null);
     }
 
     [Test]
     public void BaseArgumentFinder_Find_NoBaseArgument ()
     {
-      var baseArgument = MixinGenericArgumentFinder.BaseArgumentFinder.FindGenericArgument (typeof (BT3Mixin2));
+      var baseArgument = MixinGenericArgumentFinder.NextArgumentFinder.FindGenericArgument (typeof (BT3Mixin2));
       Assert.That (baseArgument, Is.Null);
     }
   }

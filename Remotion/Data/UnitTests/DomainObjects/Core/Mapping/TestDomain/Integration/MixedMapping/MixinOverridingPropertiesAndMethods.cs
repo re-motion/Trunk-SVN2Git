@@ -25,14 +25,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     [OverrideTarget]
     public virtual string Property
     {
-      get { return Base.Property + "-MixinGetter"; }
-      set { Base.Property = value + "-MixinSetter"; }
+      get { return Next.Property + "-MixinGetter"; }
+      set { Next.Property = value + "-MixinSetter"; }
     }
 
     [OverrideTarget]
     public virtual string GetSomething ()
     {
-      return Base.GetSomething () + "-MixinMethod";
+      return Next.GetSomething () + "-MixinMethod";
     }
 
     public interface IBaseRequirements

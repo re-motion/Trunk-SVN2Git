@@ -41,54 +41,54 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin1)), Is.Not.Null);
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin1)),
-          Is.EqualTo (typeof (Mixin<IBaseType31, IBaseType31>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
+          Is.EqualTo (typeof (Mixin<IBaseType31, IBaseType31>).GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance)));
 
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin2)), Is.Not.Null);
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin2)),
-          Is.EqualTo (typeof (Mixin<IBaseType32>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
+          Is.EqualTo (typeof (Mixin<IBaseType32>).GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance)));
 
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), Is.Not.Null);
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), 
-          Is.Not.EqualTo (typeof (Mixin<,>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
+          Is.Not.EqualTo (typeof (Mixin<,>).GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance)));
 
       Assert.That (MixinReflector.GetTargetProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)),
-          Is.EqualTo (typeof (Mixin<BaseType3, IBaseType33>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
+          Is.EqualTo (typeof (Mixin<BaseType3, IBaseType33>).GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance)));
     }
 
     [Test]
     public void GetBaseProperty ()
     {
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT1Mixin1)), Is.Null);
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT1Mixin1)), Is.Null);
 
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT3Mixin1)), Is.Not.Null);
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT3Mixin1)), Is.Not.Null);
       Assert.That (
-          MixinReflector.GetBaseProperty (typeof (BT3Mixin1)),
+          MixinReflector.GetNextProperty (typeof (BT3Mixin1)),
           Is.EqualTo (
-              typeof (Mixin<IBaseType31, IBaseType31>).GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance)));
+              typeof (Mixin<IBaseType31, IBaseType31>).GetProperty ("Next", BindingFlags.NonPublic | BindingFlags.Instance)));
 
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT3Mixin2)), Is.Null);
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT3Mixin2)), Is.Null);
 
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), Is.Not.Null);
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), 
-          Is.Not.EqualTo (typeof (Mixin<,>).GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance)));
-      Assert.That (MixinReflector.GetBaseProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)),
-          Is.EqualTo (typeof (Mixin<BaseType3, IBaseType33>).GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance)));
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), Is.Not.Null);
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)), 
+          Is.Not.EqualTo (typeof (Mixin<,>).GetProperty ("Next", BindingFlags.NonPublic | BindingFlags.Instance)));
+      Assert.That (MixinReflector.GetNextProperty (typeof (BT3Mixin3<BaseType3, IBaseType33>)),
+          Is.EqualTo (typeof (Mixin<BaseType3, IBaseType33>).GetProperty ("Next", BindingFlags.NonPublic | BindingFlags.Instance)));
     }
 
     [Test]
-    public void GetMixinBaseCallProxyType ()
+    public void GetMixinNextCallProxyType ()
     {
       var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      Type bcpt = MixinReflector.GetBaseCallProxyType (bt1);
+      Type bcpt = MixinReflector.GetNextCallProxyType (bt1);
       Assert.That (bcpt, Is.Not.Null);
-      Assert.That (bcpt, Is.EqualTo (bt1.GetType ().GetNestedType ("BaseCallProxy")));
+      Assert.That (bcpt, Is.EqualTo (bt1.GetType ().GetNestedType ("NextCallProxy")));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "not a mixin target", MatchType = MessageMatch.Contains)]
-    public void GetMixinBaseCallProxyTypeThrowsIfWrongType1 ()
+    public void GetMixinNextCallProxyTypeThrowsIfWrongType1 ()
     {
-      MixinReflector.GetBaseCallProxyType (new object ());
+      MixinReflector.GetNextCallProxyType (new object ());
     }
 
     [Test]

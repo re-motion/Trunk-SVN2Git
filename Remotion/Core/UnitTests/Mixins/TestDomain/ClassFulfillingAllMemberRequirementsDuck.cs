@@ -19,8 +19,8 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.TestDomain
 {
-  [Uses (typeof (MixinRequiringAllMembersFace))]
-  [Uses (typeof (MixinRequiringAllMembersBase))]
+  [Uses (typeof (MixinRequiringAllMembersTargetCall))]
+  [Uses (typeof (MixinRequiringAllMembersNextCall))]
   public class ClassFulfillingAllMemberRequirementsDuck
   {
     public void Method ()

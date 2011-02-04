@@ -145,9 +145,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
 
     [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new Type[] { typeof (List<int>), typeof (IList<int>) })]
     [IgnoreForMixinConfiguration]
-    public class GenericMixinWithSpecialization<TThis, TBase> : Mixin<TThis, TBase>
-        where TThis : class
-        where TBase : class
+    public class GenericMixinWithSpecialization<TTarget, TNext> : Mixin<TTarget, TNext>
+        where TTarget : class
+        where TNext : class
     {
     }
 
@@ -164,9 +164,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
 
     [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new Type[] { typeof (List<int>) })]
     [IgnoreForMixinConfiguration]
-    public class InvalidGenericMixin<TThis, TBase> : Mixin<TThis, TBase>
-        where TThis : class
-        where TBase : class
+    public class InvalidGenericMixin<TTarget, TNext> : Mixin<TTarget, TNext>
+        where TTarget : class
+        where TNext : class
     {
     }
 

@@ -49,7 +49,7 @@ namespace Remotion.Mixins.Definitions.Building
       attributesBuilder.Apply (classDefinition.Type);
 
       foreach (Type faceInterface in classContext.CompleteInterfaces)
-        classDefinition.RequiredFaceTypes.Add (new RequiredFaceTypeDefinition (classDefinition, faceInterface));
+        classDefinition.RequiredTargetCallTypes.Add (new RequiredTargetCallTypeDefinition (classDefinition, faceInterface));
 
       ApplyMixins (classDefinition, classContext);
       ApplyMethodRequirements (classDefinition);
@@ -86,10 +86,10 @@ namespace Remotion.Mixins.Definitions.Building
     private void ApplyMethodRequirements (TargetClassDefinition classDefinition)
     {
       var methodRequirementBuilder = new RequiredMethodDefinitionBuilder (classDefinition);
-      foreach (RequiredFaceTypeDefinition requirement in classDefinition.RequiredFaceTypes)
+      foreach (RequiredTargetCallTypeDefinition requirement in classDefinition.RequiredTargetCallTypes)
         methodRequirementBuilder.Apply (requirement);
 
-      foreach (RequiredBaseCallTypeDefinition requirement in classDefinition.RequiredBaseCallTypes)
+      foreach (RequiredNextCallTypeDefinition requirement in classDefinition.RequiredNextCallTypes)
         methodRequirementBuilder.Apply (requirement);
     }
 

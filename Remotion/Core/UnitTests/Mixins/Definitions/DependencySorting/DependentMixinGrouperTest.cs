@@ -37,10 +37,10 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     private MixinDefinition _overrideM2;
     private MixinDefinition _overrideM1M2;
 
-    private MixinDefinition _baseCallDependency0;
-    private MixinDefinition _baseCallDependency1;
+    private MixinDefinition _nextCallDependency0;
+    private MixinDefinition _nextCallDependency1;
 
-    private MixinDefinition _baseCallDependency2OverrideM1;
+    private MixinDefinition _nextCallDependency2OverrideM1;
 
     private MixinDefinition _additionalDependency0;
     private MixinDefinition _additionalDependency1;
@@ -57,9 +57,9 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
           .AddMixin (typeof (MixinOverridingM1))
           .AddMixin (typeof (MixinOverridingM2))
           .AddMixin (typeof (MixinOverridingM1M2))
-          .AddMixin (typeof (MixinImplementingBaseCallDependency1))
-          .AddMixin (typeof (MixinWithBaseCallDependency1))
-          .AddMixin (typeof (MixinWithBaseCallDependency2OverridingM1))
+          .AddMixin (typeof (MixinImplementingNextCallDependency1))
+          .AddMixin (typeof (MixinWithNextCallDependency1))
+          .AddMixin (typeof (MixinWithNextCallDependency2OverridingM1))
           .AddMixin (typeof (MixinImplementingAdditionalDependency))
           .AddMixin (typeof (MixinWithAdditionalDependency)).WithDependency (typeof (MixinImplementingAdditionalDependency))
           .BuildClassContext();
@@ -72,9 +72,9 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       _overrideM2 = targetClassDefinition.Mixins[typeof (MixinOverridingM2)];
       _overrideM1M2 = targetClassDefinition.Mixins[typeof (MixinOverridingM1M2)];
 
-      _baseCallDependency0 = targetClassDefinition.Mixins[typeof (MixinImplementingBaseCallDependency1)];
-      _baseCallDependency1 = targetClassDefinition.Mixins[typeof (MixinWithBaseCallDependency1)];
-      _baseCallDependency2OverrideM1 = targetClassDefinition.Mixins[typeof (MixinWithBaseCallDependency2OverridingM1)];
+      _nextCallDependency0 = targetClassDefinition.Mixins[typeof (MixinImplementingNextCallDependency1)];
+      _nextCallDependency1 = targetClassDefinition.Mixins[typeof (MixinWithNextCallDependency1)];
+      _nextCallDependency2OverrideM1 = targetClassDefinition.Mixins[typeof (MixinWithNextCallDependency2OverridingM1)];
       _additionalDependency0 = targetClassDefinition.Mixins[typeof (MixinImplementingAdditionalDependency)];
       _additionalDependency1 = targetClassDefinition.Mixins[typeof (MixinWithAdditionalDependency)];
 
@@ -117,36 +117,36 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     }
 
     [Test]
-    public void BaseCallDependency_NoCut ()
+    public void NextCallDependency_NoCut ()
     {
-      var groups = GetGroups (_baseCallDependency1, _independent1);
+      var groups = GetGroups (_nextCallDependency1, _independent1);
       Assert.AreEqual (2, groups.Length);
-      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _baseCallDependency1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _nextCallDependency1 }));
       Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
     }
 
     [Test]
-    public void BaseCallDependency_Cut ()
+    public void NextCallDependency_Cut ()
     {
-      var groups = GetGroups (_baseCallDependency0, _baseCallDependency1);
+      var groups = GetGroups (_nextCallDependency0, _nextCallDependency1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0].ToArray(), Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1 }));
+      Assert.That (groups[0].ToArray(), Is.EquivalentTo (new object[] { _nextCallDependency0, _nextCallDependency1 }));
     }
 
     [Test]
-    public void BaseCallDependency_TransitiveCut ()
+    public void NextCallDependency_TransitiveCut ()
     {
-      var groups = GetGroups (_baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1);
+      var groups = GetGroups (_nextCallDependency0, _nextCallDependency1, _nextCallDependency2OverrideM1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _nextCallDependency0, _nextCallDependency1, _nextCallDependency2OverrideM1 }));
     }
 
     [Test]
-    public void BaseCallDependency_TransitiveCutAndOverride ()
+    public void NextCallDependency_TransitiveCutAndOverride ()
     {
-      var groups = GetGroups (_overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1);
+      var groups = GetGroups (_overrideM2, _overrideM1M2, _nextCallDependency1, _nextCallDependency2OverrideM1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM2, _overrideM1M2, _nextCallDependency1, _nextCallDependency2OverrideM1 }));
     }
 
     [Test]

@@ -52,9 +52,9 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
       
-      object nativeValue = propertyBase.GetValue ((IBusinessObject) This);
+      object nativeValue = propertyBase.GetValue ((IBusinessObject) Target);
       
-      if (!propertyBase.IsList && propertyBase.IsDefaultValue(((IBusinessObject) This)))
+      if (!propertyBase.IsList && propertyBase.IsDefaultValue(((IBusinessObject) Target)))
         return null;
       else
         return propertyBase.ConvertFromNativePropertyType (nativeValue);
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.BindableObject
       
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 
-      propertyBase.SetValue((IBusinessObject)This, nativeValue);
+      propertyBase.SetValue((IBusinessObject)Target, nativeValue);
     }
 
     /// <summary> 
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.BindableObject
       var stringFormatterService =
           (IBusinessObjectStringFormatterService)
           BusinessObjectClass.BusinessObjectProvider.GetService (typeof (IBusinessObjectStringFormatterService));
-      return stringFormatterService.GetPropertyString ((IBusinessObject) This, property, format);
+      return stringFormatterService.GetPropertyString ((IBusinessObject) Target, property, format);
     }
 
     /// <summary> Gets the <see cref="BindableObjectClass"/> of this business object. </summary>
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.BindableObject
           return DisplayName;
 
         IBusinessObjectProperty displayNameProperty = BusinessObjectClass.GetPropertyDefinition ("DisplayName");
-        if (displayNameProperty.IsAccessible (BusinessObjectClass, (IBusinessObject) This))
+        if (displayNameProperty.IsAccessible (BusinessObjectClass, (IBusinessObject) Target))
           return DisplayName;
 
         return BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();

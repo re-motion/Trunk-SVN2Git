@@ -29,13 +29,13 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string MethodImplementedOnBase ()
     {
-      return "DuckBaseMixin.MethodImplementedOnBase-" + Base.MethodImplementedOnBase ();
+      return "DuckBaseMixin.MethodImplementedOnBase-" + Next.MethodImplementedOnBase ();
     }
 
     [OverrideTarget]
     public string ProtectedMethodImplementedOnBase ()
     {
-      return "DuckBaseMixin.ProtectedMethodImplementedOnBase-" + Base.ProtectedMethodImplementedOnBase ();
+      return "DuckBaseMixin.ProtectedMethodImplementedOnBase-" + Next.ProtectedMethodImplementedOnBase ();
     }
   }
 

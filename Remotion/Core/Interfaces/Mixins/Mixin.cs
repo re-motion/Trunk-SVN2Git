@@ -78,104 +78,103 @@ namespace Remotion.Mixins
   }
 
   /// <summary>
-  /// Base class for mixins that require a reference to their target object (<see cref="Mixin{TThis}.This"/>) and a reference for making base calls
-  /// (<see cref="Base"/>).
+  /// Acts as a base class for mixins that require a reference to their target object (<see cref="Mixin{TTarget}.Target"/>) and a reference for calling 
+  /// the base implementations of overridden methods (<see cref="Next"/>).
   /// </summary>
-  /// <typeparam name="TThis">The minimum type required for calling methods on the target object (<see cref="Mixin{TThis}.This"/>).</typeparam>
-  /// <typeparam name="TBase">The minimum type required for making base calls (<see cref="Base"/>) when overriding a method of the target class.</typeparam>
+  /// <typeparam name="TTarget">The minimum type required for calling methods on the target object (<see cref="Mixin{TTarget}.Target"/>). The
+  /// mixin can only be applied to types that fulfill this type constraint either themselves or via other mixins.
+  /// This type needn't actually be implemented by the target class. See Remarks section for details.
+  /// </typeparam>
+  /// <typeparam name="TNext">The minimum type required for making base calls (<see cref="Next"/>) when overriding a method of the target class. 
+  /// This type needn't actually be implemented by the target class. See Remarks section for details.</typeparam>
   /// <remarks>
   /// <para>
   /// Typically, this base class will be used whenever a mixin overrides a method of a target class and it needs to call the overridden base implementation.
-  /// Derive from the <see cref="Mixin{TThis}"/> class if you only need the target object reference but are not making any base calls, or use any
+  /// Derive from the <see cref="Mixin{TTarget}"/> class if you only need the target object reference but are not making any base calls, or use any
   /// base class if not even the target object reference is required.
   /// </para>
   /// <para>
-  /// <typeparamref name="TThis"/> is called the face type requirement or This-dependency of the mixin, and can be assigned a class or interface (or
-  /// a type parameter with class or interface constraints).
+  /// <typeparamref name="TTarget"/> is called the target-call dependency of the mixin, and can be assigned a class or interface (or a type parameter with 
+  /// class or interface constraints). It defines the type of the <see cref="Mixin{TTarget}.Target"/> property, which is used to access the target
+  /// instance of this mixin as well as members of other mixins applied to the same target instance. The mixin engine will ensure that 
+  /// the target-call dependency is fulfilled either by the target class of the mixin, or by any mixin applied to the target class. 
+  /// Accessing a member via the <see cref="Mixin{TTarget}.Target"/> property will actually access the corresponding member of the implementing target 
+  /// class or mixin.
   /// </para>
   /// <para>
-  /// <typeparamref name="TBase"/> is also called the base call type requirement or Base-dependency of the mixin and can be assigned an interface or
-  /// the type  <see cref="System.Object"/> (or a type parameter with interface or <see cref="System.Object"/> constraints). The Base-dependencies
-  /// of a mixin define the order in which method overrides are executed when multiple mixins override the same target method: when mixin A has a
-  /// Base-dependency on an interface IB, its override will be executed before any mixin implementing the interface IB.
+  /// <typeparamref name="TNext"/> is called the next-call dependency of the mixin and can be assigned an interface or
+  /// the type <see cref="System.Object"/> (or a type parameter with interface or <see cref="System.Object"/> constraints). It defines the type
+  /// of the <see cref="Next"/> property, which is used when a mixin overrides a member of the target class and needs to call the next implementation 
+  /// in the chain of overrides (or the base implementation on the target class, when there is no other mixin in the chain).
+  /// The next-call dependencies of a mixin also define the order in which method overrides are executed when multiple mixins override the same target 
+  /// method: when mixin A has a next-call dependency on an interface IB, its override will be executed before any mixin implementing the interface IB.
   /// </para>
-  /// <para>
-  /// If a subclass of this class is also a generic type (with at most two generic type parameters, each of which is bound to one of this class' generic
-  /// type parameters), it can be configured as a mixin in its open generic type definition form (<c>typeof (C&lt;,&gt;)</c>). In such a case, the mixin
-  /// engine will try to close it at the time of configuration analysis; for this to succeed, the following rules must apply:
-  /// </para>
+  /// <para>If <typeparamref name="TTarget"/> or <typeparamref name="TNext"/> are interfaces, that dependency need not actually be implemented on the 
+  /// target class as an interface is usually implemented. There are two additional possibilities:
   /// <list type="bullet">
   /// <item>
-  /// <para>
-  /// The type parameter bound to <typeparamref name="TThis"/> must have at most one type constraint. The mixin engine will try to assign the target type of the
-  /// mixin to this parameter when analyzing the configuration, if allowed by the constraints. A mixin writer can use this for introducing interfaces
-  /// as follows:
-  /// </para>
-  /// <code>
-  /// class MyMixin&lt;T&gt; : Mixin&lt;T, object&gt;, IEquatable&lt;T&gt;
-  ///     where T : class
-  /// {
-  /// }
-  /// </code>
-  /// <para>
-  /// In this example, the mixin will introduce the <see cref="IEquatable{T}"/> interface for its target class T.
-  /// </para>
-  /// <para>
-  /// If the mixin engine cannot bind the type parameter to the target type (e.g. because the parameter has an incompatible type constaint), it will
-  /// bind it to a type compatible with the parameter's constraint (or <see cref="System.Object"/> if no constraint exists) and the mixin implementer
-  /// should not depend on this type parameter when introducing interfaces. If the constraint (if any) is not satisfied by the interfaces introduced
-  /// via the mixins applied to the target type, the mixin configuration is invalid.
-  /// </para>
+  /// The interface can be implemented on a mixin applied to the same target class.
   /// </item>
   /// <item>
-  /// The type parameter bound to <typeparamref name="TBase"/> must have at most one type constraint. The mixin engine will assign a type compatible with this
-  /// constraint (or <see cref="System.Object"/> if no constraint exists) to the parameter when analyzing the configuration, and the mixin implementer
-  /// should not depend on this type parameter when introducing interfaces. If the constraint (if any) is not satisfied by the interfaces introduced
-  /// via the mixins applied to the target type, the mixin configuration is invalid.
+  /// The members of the interface can be implemented on the target class with the same name and signature as defined by the interface (duck typing).
   /// </item>
   /// </list>
+  /// The latter enables a mixin to define its dependencies even if the target class and any interfaces it implements are unknown.
+  /// </para>
+  /// <para>
+  /// If a concrete mixin derived from this class is a generic type, it can be configured as a mixin in its open generic type definition form 
+  /// (<c>typeof (C&lt;,&gt;)</c>). In such a case, the mixin engine will try to close it at the time of configuration analysis; for this, 
+  /// binding information in the form of the <see cref="BindToTargetTypeAttribute"/>, <see cref="BindToConstraintsAttribute"/>, and 
+  /// <see cref="BindToGenericTargetParameterAttribute"/> is used.
+  /// </para>
   /// </remarks>
   [Serializable]
-  public class Mixin<TThis, TBase> : Mixin<TThis>, IInitializableMixin
-      where TThis: class
-      where TBase: class
+  public class Mixin<TTarget, TNext> : Mixin<TTarget>, IInitializableMixin
+      where TTarget: class
+      where TNext: class
   {
     [NonSerialized]
-    private TBase _base;
+    private TNext _next;
 
     /// <summary>
-    /// Gets an object reference for performing base calls from member overrides.
+    /// Provides a way to call the next or base implementation from member overrides.
     /// </summary>
-    /// <value>The base call object reference.</value>
+    /// <value>The next implementation to be called.</value>
     /// <exception cref="InvalidOperationException">The mixin has not been initialized yet, probably because the property is accessed from the mixin's
     /// constructor.</exception>
     /// <remarks>
     /// <para>
-    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="Base"/>
-    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.
+    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="Next"/>
+    /// property (which is unusual because the <see cref="Next"/> property should only be used from member overrides), override the 
+    /// <see cref="Mixin{TTarget}.OnInitialized"/> method.
     /// </para>
     /// <para>
-    /// This property is only for performing base calls from overridden methods. It should not be used to access arbitrary methods of the mixin's 
-    /// target object, use the <see cref="Mixin{TThis}.This"/> property for instead. If the <see cref="Base"/> property is used other than to perform
-    /// base calls from member overrides and more than one mixin is applied to the target object, unexpected behavior may arise because the 
-    /// <see cref="Base"/> property will represent the target object together with only a subset, but not all of its mixins.
+    /// This property is only for calling the next implementation from overridden methods. It should not be used to access arbitrary methods of the 
+    /// mixin's target object, use the <see cref="Mixin{TTarget}.Target"/> property instead. If the <see cref="Next"/> property is used other than to 
+    /// perform base calls from member overrides and more than one mixin is applied to the target object, unexpected behavior may arise because the 
+    /// <see cref="Next"/> property will represent the target object together with a subset (but not all) of its mixins.
+    /// </para>
+    /// <para>
+    /// When a member is accessed via the <see cref="Next"/> property, the member is actually called on either the next mixin in the override chain
+    /// for the corresponding member, or on the target class if there are no more mixins in the chain. The order in which member overrides are
+    /// chained is defined by mixin ordering, e.g. via the dependencies expressed via the <typeparamref name="TNext"/> parameter.
     /// </para>
     /// </remarks>
-    protected TBase Base
+    protected TNext Next
     {
       [DebuggerStepThrough]
       get
       {
-        if (_base == null)
+        if (_next == null)
           throw new InvalidOperationException ("Mixin has not been initialized yet.");
-        return _base;
+        return _next;
       }
     }
 
-    void IInitializableMixin.Initialize (object @this, object @base, bool deserialization)
+    void IInitializableMixin.Initialize (object target, object next, bool deserialization)
     {
-      _this = (TThis) @this;
-      _base = (TBase) @base;
+      _target = (TTarget) target;
+      _next = (TNext) next;
       if (deserialization)
         OnDeserialized ();
       else
@@ -184,56 +183,53 @@ namespace Remotion.Mixins
   }
 
   /// <summary>
-  /// Base class for mixins that require a reference to their target object (<see cref="This"/>).
+  /// Acts as a base class for mixins that require a reference to their target object (<see cref="Target"/>).
   /// </summary>
-  /// <typeparam name="TThis">The minimum type required for calling methods on the target object (<see cref="This"/>).</typeparam>
+  /// <typeparam name="TTarget">The minimum type required for calling methods on the target object (<see cref="Mixin{TTarget}.Target"/>). The
+  /// mixin can only be applied to types that fulfill this type constraint either themselves or via other mixins.
+  /// This type needn't actually be implemented by the target class. See Remarks section for details.
+  /// </typeparam>
   /// <remarks>
   /// <para>
   /// Typically, this base class will be used for those mixins which do require a reference to their target object, but which do not overrride
   /// any methods. 
-  /// Derive from the <see cref="Mixin{TThis, TBase}"/> class if you need to override target methods, or use any
+  /// Derive from the <see cref="Mixin{TTarget, TNext}"/> class if you need to override target methods, or use any
   /// base class if not even the target object reference is required.
   /// </para>
   /// <para>
-  /// <typeparamref name="TThis"/> is called the face type requirement or This-dependency of the mixin, and can be assigned a class or interface (or
-  /// a type parameter with class or interface constraints).
+  /// <typeparamref name="TTarget"/> is called the target-call dependency of the mixin, and can be assigned a class or interface (or a type parameter with 
+  /// class or interface constraints). It defines the type of the <see cref="Mixin{TTarget}.Target"/> property, which is used to access the target
+  /// instance of this mixin as well as members of other mixins applied to the same target instance. The mixin engine will ensure that 
+  /// the target-call dependency is fulfilled either by the target class of the mixin, or by any mixin applied to the target class. 
+  /// Accessing a member via the <see cref="Mixin{TTarget}.Target"/> property will actually access the corresponding member of the implementing target 
+  /// class or mixin.
   /// </para>
   /// <para>
-  /// If a subclass of this class is also a generic type (with at most one generic type parameter, which is bound to the <typeparamref name="TThis"/>
-  /// type parameter), it can be configured as a mixin in its open generic type definition form (<c>typeof (C&lt;&gt;)</c>). In such a case, the mixin
-  /// engine will try to close it at the time of configuration analysis; for this to succeed, the following rule must apply:
-  /// </para>
+  /// If <typeparamref name="TTarget"/> is an interface, that dependency need not actually be implemented on the 
+  /// target class as an interface is usually implemented. There are two additional possibilities:
   /// <list type="bullet">
   /// <item>
-  /// <para>
-  /// The type parameter bound to <typeparamref name="TThis"/> must have at most one type constraint. The mixin engine will try to assign the target type of the
-  /// mixin to this parameter when analyzing the configuration, if allowed by the constraints. A mixin writer can use this for introducing interfaces
-  /// as follows:
-  /// </para>
-  /// <code>
-  /// class MyMixin&lt;T&gt; : Mixin&lt;T&gt;, IEquatable&lt;T&gt;
-  ///     where T : class
-  /// {
-  /// }
-  /// </code>
-  /// <para>
-  /// In this example, the mixin will introduce the <see cref="IEquatable{T}"/> interface for its target class T.
-  /// </para>
-  /// <para>
-  /// If the mixin engine cannot bind the type parameter to the target type (e.g. because the parameter has an incompatible type constaint), it will
-  /// bind it to a type compatible with the parameter's constraint (or <see cref="System.Object"/> if no constraint exists), and the mixin implementer
-  /// should not depend on this type parameter when introducing interfaces. If the constraint (if any) is not satisfied by the interfaces introduced
-  /// via the mixins applied to the target type, the mixin configuration is invalid.
-  /// </para>
+  /// The interface can be implemented on a mixin applied to the same target class.
+  /// </item>
+  /// <item>
+  /// The members of the interface can be implemented on the target class with the same name and signature as defined by the interface (duck typing).
   /// </item>
   /// </list>
+  /// The latter enables a mixin to define its dependencies even if the target class and any interfaces it implements are unknown.
+  /// </para>
+  /// <para>
+  /// If a concrete mixin derived from this class is a generic type, it can be configured as a mixin in its open generic type definition form 
+  /// (<c>typeof (C&lt;&gt;)</c>). In such a case, the mixin engine will try to close it at the time of configuration analysis; for this, 
+  /// binding information in the form of the <see cref="BindToTargetTypeAttribute"/>, <see cref="BindToConstraintsAttribute"/>, and 
+  /// <see cref="BindToGenericTargetParameterAttribute"/> is used.
+  /// </para>
   /// </remarks>
   [Serializable]
-  public class Mixin<TThis> : IInitializableMixin
-      where TThis: class
+  public class Mixin<TTarget> : IInitializableMixin
+      where TTarget: class
   {
     [NonSerialized]
-    internal TThis _this;
+    internal TTarget _target;
 
     /// <summary>
     /// Gets a reference to the concrete mixed object.
@@ -242,22 +238,22 @@ namespace Remotion.Mixins
     /// <exception cref="InvalidOperationException">The mixin has not been initialized yet, probably because the property is accessed from the mixin's
     /// constructor.</exception>
     /// <remarks>
-    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="This"/>
-    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.
+    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="Target"/>
+    /// property, override the <see cref="Mixin{TTarget}.OnInitialized"/> method.
     /// <note type="warning">
-    /// Be careful when calling members that this mixin overrides via the <see cref="This"/> property, this can easily throw a
-    /// <see cref="StackOverflowException"/> because the <see cref="This"/> property includes all mixins defined on the target object. Use 
-    /// <see cref="Mixin{TThis,TBase}.Base"/> instead to call the base implementations of overridden members.
+    /// Be careful when calling members that this mixin overrides via the <see cref="Target"/> property, this can easily throw a
+    /// <see cref="StackOverflowException"/> because the <see cref="Target"/> property includes all mixins defined on the target object. Use 
+    /// <see cref="Mixin{TTarget,TNext}.Next"/> instead to call the base implementations of overridden members.
     /// </note>
     /// </remarks>
-    protected TThis This
+    protected TTarget Target
     {
       [DebuggerStepThrough]
       get
       {
-        if (_this == null)
+        if (_target == null)
           throw new InvalidOperationException ("Mixin has not been initialized yet.");
-        return _this;
+        return _target;
       }
     }
 
@@ -277,9 +273,9 @@ namespace Remotion.Mixins
       // nothing
     }
 
-    void IInitializableMixin.Initialize (object @this, object @base, bool deserialization)
+    void IInitializableMixin.Initialize (object target, object next, bool deserialization)
     {
-      _this = (TThis) @this;
+      _target = (TTarget) target;
       if (deserialization)
         OnDeserialized();
       else

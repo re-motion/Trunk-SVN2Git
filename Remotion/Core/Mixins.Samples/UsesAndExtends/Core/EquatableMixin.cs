@@ -38,7 +38,7 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.Core
 
       foreach (FieldInfo field in _targetFields)
       {
-        object thisFieldValue = field.GetValue (This);
+        object thisFieldValue = field.GetValue (Target);
         object otherFieldValue = field.GetValue (other);
         if (!Equals (thisFieldValue, otherFieldValue))
           return false;
@@ -57,7 +57,7 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.Core
     {
       object[] fieldValues = new object[_targetFields.Length];
       for (int i = 0; i < fieldValues.Length; ++i)
-        fieldValues[i] = _targetFields[i].GetValue (This);
+        fieldValues[i] = _targetFields[i].GetValue (Target);
       
       return EqualityUtility.GetRotatedHashCode (fieldValues);
     }

@@ -17,6 +17,7 @@
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins;
+using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.TestDomain;
 
@@ -32,19 +33,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3);
       Assert.IsNotNull (mixin);
 
-      PropertyInfo thisProperty = mixin.GetType ().BaseType.GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance);
-      Assert.IsNotNull (thisProperty);
+      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (mixin.GetType ());
+      Assert.IsNotNull (targetProperty);
 
-      Assert.IsNotNull (thisProperty.GetValue (mixin, null));
-      Assert.AreSame (bt3, thisProperty.GetValue (mixin, null));
-      Assert.AreEqual (typeof (BaseType3), thisProperty.PropertyType);
+      Assert.IsNotNull (targetProperty.GetValue (mixin, null));
+      Assert.AreSame (bt3, targetProperty.GetValue (mixin, null));
+      Assert.AreEqual (typeof (BaseType3), targetProperty.PropertyType);
 
-      PropertyInfo baseProperty = mixin.GetType ().BaseType.GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance);
-      Assert.IsNotNull (baseProperty);
+      PropertyInfo nextProperty = MixinReflector.GetNextProperty (mixin.GetType ());
+      Assert.IsNotNull (nextProperty);
 
-      Assert.IsNotNull (baseProperty.GetValue (mixin, null));
-      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, baseProperty.GetValue (mixin, null).GetType ());
-      Assert.AreEqual (typeof (IBaseType33), baseProperty.PropertyType);
+      Assert.IsNotNull (nextProperty.GetValue (mixin, null));
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, nextProperty.GetValue (mixin, null).GetType ());
+      Assert.AreEqual (typeof (IBaseType33), nextProperty.PropertyType);
     }
 
     [Test]

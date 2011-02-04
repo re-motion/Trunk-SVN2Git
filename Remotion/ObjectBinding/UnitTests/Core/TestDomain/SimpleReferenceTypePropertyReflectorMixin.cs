@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
       if (parameters.UnderlyingType == typeof (SimpleReferenceType))
         return new SimpleReferenceTypeProperty (parameters);
 
-      return Base.GetMetadata (parameters);
+      return Next.GetMetadata (parameters);
     }
   }
 }

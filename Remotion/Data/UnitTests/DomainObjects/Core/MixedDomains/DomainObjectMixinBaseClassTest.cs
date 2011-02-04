@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void This ()
     {
-      Assert.AreSame (_loadedClassWithAllDataTypes, _loadedClassWithAllDataTypesMixin.This);
-      Assert.AreSame (_newClassWithAllDataTypes, _newClassWithAllDataTypesMixin.This);
+      Assert.AreSame (_loadedClassWithAllDataTypes, _loadedClassWithAllDataTypesMixin.Target);
+      Assert.AreSame (_newClassWithAllDataTypes, _newClassWithAllDataTypesMixin.Target);
     }
 
     [Test]

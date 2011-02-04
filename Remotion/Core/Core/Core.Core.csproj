@@ -368,8 +368,8 @@
     <Compile Include="Mixins\CodeGeneration\ConcreteMixedTypeAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilder.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallMethodGenerator.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\NextCallMethodGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\NextCallProxyGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelper.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManager.cs" />
@@ -377,7 +377,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\ExtensionFieldAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\GuidNameProvider.cs" />
-    <Compile Include="Mixins\CodeGeneration\IGeneratedBaseCallProxyType.cs" />
+    <Compile Include="Mixins\CodeGeneration\IGeneratedNextCallProxyType.cs" />
     <Compile Include="Mixins\CodeGeneration\IGeneratedMixinType.cs" />
     <Compile Include="Mixins\CodeGeneration\IMixinTypeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\IModuleManager.cs" />
@@ -409,10 +409,10 @@
     <Compile Include="Mixins\Context\ReadOnlyContextCollection.cs" />
     <Compile Include="Mixins\Definitions\AttributeDefinition.cs" />
     <Compile Include="Mixins\Definitions\AttributeIntroductionDefinition.cs" />
-    <Compile Include="Mixins\Definitions\BaseDependencyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\NextDependencyDefinition.cs" />
     <Compile Include="Mixins\Definitions\Building\AttributeDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
-    <Compile Include="Mixins\Definitions\Building\BaseDependencyDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\NextDependencyDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencyDefinitionBuilderBase.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouper.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\MixinDependencyAnalyzer.cs" />
@@ -425,7 +425,7 @@
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\RequirementsAnalyzer.cs" />
     <Compile Include="Mixins\Definitions\Building\TargetClassDefinitionBuilder.cs" />
-    <Compile Include="Mixins\Definitions\Building\ThisDependencyDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\TargetDependencyDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\ClassDefinitionBase.cs" />
     <Compile Include="Mixins\Definitions\CovariantDefinitionCollectionWrapper.cs" />
     <Compile Include="Mixins\Definitions\DefinitionCollectionBase.cs" />
@@ -447,15 +447,15 @@
     <Compile Include="Mixins\Definitions\MultiDefinitionCollection.cs" />
     <Compile Include="Mixins\Definitions\PropertyDefinition.cs" />
     <Compile Include="Mixins\Definitions\PropertyIntroductionDefinition.cs" />
-    <Compile Include="Mixins\Definitions\RequiredBaseCallTypeDefinition.cs" />
-    <Compile Include="Mixins\Definitions\RequiredFaceTypeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredNextCallTypeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredTargetCallTypeDefinition.cs" />
     <Compile Include="Mixins\Definitions\RequiredMethodDefinition.cs" />
     <Compile Include="Mixins\Definitions\RequiredMixinTypeDefinition.cs" />
     <Compile Include="Mixins\Definitions\RequirementDefinitionBase.cs" />
     <Compile Include="Mixins\Definitions\NonInterfaceIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinition.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinitionFactory.cs" />
-    <Compile Include="Mixins\Definitions\ThisDependencyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\TargetDependencyDefinition.cs" />
     <Compile Include="Mixins\Definitions\UniqueDefinitionCollection.cs" />
     <Compile Include="Mixins\Globalization\MixedMultiLingualResources.cs" />
     <Compile Include="Mixins\Globalization\MixedResourceManagerResolver.cs" />
@@ -497,7 +497,7 @@
     <Compile Include="Mixins\Validation\IValidationRule.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultAttributeIntroductionRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultAttributeRules.cs" />
-    <Compile Include="Mixins\Validation\Rules\DefaultBaseDependencyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultNextDependencyRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultEventIntroductionRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultEventRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultInterfaceIntroductionRules.cs" />
@@ -507,13 +507,13 @@
     <Compile Include="Mixins\Validation\Rules\DefaultMixinRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultPropertyIntroductionRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultPropertyRules.cs" />
-    <Compile Include="Mixins\Validation\Rules\DefaultRequiredBaseCallTypeRules.cs" />
-    <Compile Include="Mixins\Validation\Rules\DefaultRequiredFaceTypeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredNextCallTypeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredTargetCallTypeRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultRequiredMethodRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultRequiredMixinTypeRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedInterfaceIntroductionRules.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultTargetClassRules.cs" />
-    <Compile Include="Mixins\Validation\Rules\DefaultThisDependencyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultTargetDependencyRules.cs" />
     <Compile Include="Mixins\Validation\Rules\IRuleSet.cs" />
     <Compile Include="Mixins\Validation\Rules\RuleSetBase.cs" />
     <Compile Include="Mixins\Validation\ValidatingVisitor.cs" />
@@ -718,7 +718,6 @@
     </None>
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
     <None Include="Mixins\Context\Context.cd" />
-    <None Include="Mixins\Definitions\Definitions.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Content Include="Core.Core.build">

@@ -25,13 +25,13 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string NonVirtualMethod ()
     {
-      return This.NonVirtualMethod () + "Overridden";
+      return Target.NonVirtualMethod () + "Overridden";
     }
 
     [OverrideTarget]
     public string NonVirtualProperty
     {
-      get { return This.NonVirtualProperty + "Overridden"; }
+      get { return Target.NonVirtualProperty + "Overridden"; }
     }
 
     [OverrideTarget]

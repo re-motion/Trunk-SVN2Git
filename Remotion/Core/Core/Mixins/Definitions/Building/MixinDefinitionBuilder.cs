@@ -27,15 +27,15 @@ namespace Remotion.Mixins.Definitions.Building
   public class MixinDefinitionBuilder
   {
     private readonly TargetClassDefinition _targetClass;
-    private readonly RequirementsAnalyzer _faceRequirementsAnalyzer; 
-    private readonly RequirementsAnalyzer _baseRequirementsAnalyzer;
+    private readonly RequirementsAnalyzer _targetRequirementsAnalyzer; 
+    private readonly RequirementsAnalyzer _nextRequirementsAnalyzer;
 
     public MixinDefinitionBuilder (TargetClassDefinition targetClass)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
       _targetClass = targetClass;
-      _faceRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.ThisArgumentFinder);
-      _baseRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.BaseArgumentFinder);
+      _targetRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.TargetArgumentFinder);
+      _nextRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.NextArgumentFinder);
     }
 
     public TargetClassDefinition TargetClass
@@ -123,11 +123,11 @@ namespace Remotion.Mixins.Definitions.Building
     
     private void AnalyzeDependencies (MixinDefinition mixin, IEnumerable<Type> additionalDependencies)
     {
-      var thisDependencyBuilder = new ThisDependencyDefinitionBuilder (mixin);
-      thisDependencyBuilder.Apply (_faceRequirementsAnalyzer.GetRequirements (mixin.Type));
+      var targetCallDependencyBuilder = new TargetCallDependencyDefinitionBuilder (mixin);
+      targetCallDependencyBuilder.Apply (_targetRequirementsAnalyzer.GetRequirements (mixin.Type));
 
-      var baseDependencyBuilder = new BaseDependencyDefinitionBuilder (mixin);
-      baseDependencyBuilder.Apply (_baseRequirementsAnalyzer.GetRequirements (mixin.Type));
+      var nextCallDependencyBuilder = new NextCallDependencyDefinitionBuilder (mixin);
+      nextCallDependencyBuilder.Apply (_nextRequirementsAnalyzer.GetRequirements (mixin.Type));
       
       var mixinDependencyBuilder = new MixinDependencyDefinitionBuilder (mixin);
       mixinDependencyBuilder.Apply (additionalDependencies);

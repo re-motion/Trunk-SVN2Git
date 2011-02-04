@@ -188,12 +188,12 @@ namespace Remotion.UnitTests.Mixins.Validation
       AttributeIntroductionDefinition ai2 = m1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
       AssertVisitedEquivalent (visitedDefinitions, ai2);
 
-      RequiredBaseCallTypeDefinition bc1 = bt3.RequiredBaseCallTypes[typeof (IBaseType34)];
+      RequiredNextCallTypeDefinition bc1 = bt3.RequiredNextCallTypes[typeof (IBaseType34)];
       AssertVisitedEquivalent (visitedDefinitions, bc1);
       RequiredMethodDefinition bcm1 = bc1.Methods[typeof (IBaseType34).GetMethod ("IfcMethod")];
       AssertVisitedEquivalent (visitedDefinitions, bcm1);
 
-      RequiredFaceTypeDefinition ft1 = bt3.RequiredFaceTypes[typeof (IBaseType32)];
+      RequiredTargetCallTypeDefinition ft1 = bt3.RequiredTargetCallTypes[typeof (IBaseType32)];
       AssertVisitedEquivalent (visitedDefinitions, ft1);
       RequiredMethodDefinition fm1 = ft1.Methods[typeof (IBaseType32).GetMethod ("IfcMethod")];
       AssertVisitedEquivalent (visitedDefinitions, fm1);
@@ -203,10 +203,10 @@ namespace Remotion.UnitTests.Mixins.Validation
       RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
       AssertVisitedEquivalent (visitedDefinitions, rmt2);
 
-      ThisDependencyDefinition td1 = bt3m1.ThisDependencies[typeof (IBaseType31)];
+      TargetCallDependencyDefinition td1 = bt3m1.TargetCallDependencies[typeof (IBaseType31)];
       AssertVisitedEquivalent (visitedDefinitions, td1);
 
-      BaseDependencyDefinition bd1 = bt3m1.BaseDependencies[typeof (IBaseType31)];
+      NextCallDependencyDefinition bd1 = bt3m1.NextCallDependencies[typeof (IBaseType31)];
       AssertVisitedEquivalent (visitedDefinitions, bd1);
 
       MixinDependencyDefinition md1 = btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];

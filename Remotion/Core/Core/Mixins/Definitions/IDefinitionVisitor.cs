@@ -30,12 +30,12 @@ namespace Remotion.Mixins.Definitions
     void Visit (MethodDefinition method);
     void Visit (PropertyDefinition property);
     void Visit (EventDefinition eventDefintion);
-    void Visit (RequiredFaceTypeDefinition requiredFaceType);
-    void Visit (RequiredBaseCallTypeDefinition requiredBaseCallType);
+    void Visit (RequiredTargetCallTypeDefinition requiredTargetCallType);
+    void Visit (RequiredNextCallTypeDefinition requiredNextCallType);
     void Visit (RequiredMixinTypeDefinition requiredMixinType);
     void Visit (RequiredMethodDefinition definition);
-    void Visit (ThisDependencyDefinition thisDependency);
-    void Visit (BaseDependencyDefinition baseDependency);
+    void Visit (TargetCallDependencyDefinition targetCallDependency);
+    void Visit (NextCallDependencyDefinition nextCallDependency);
     void Visit (MixinDependencyDefinition mixinDependency);
     void Visit (AttributeDefinition attribute);
     void Visit (AttributeIntroductionDefinition attributeIntroduction);

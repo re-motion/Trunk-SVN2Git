@@ -33,19 +33,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin2), typeof (BT3Mixin2B));
       var mixin = Mixin.Get<BT3Mixin2> (bt3);
-      Assert.AreSame (bt3, mixin.This);
+      Assert.AreSame (bt3, mixin.Target);
 
       var mixin2 = Mixin.Get<BT3Mixin2B> (bt3);
-      Assert.AreSame (bt3, mixin2.This);
+      Assert.AreSame (bt3, mixin2.Target);
 
       BaseType3 bt3A = Serializer.SerializeAndDeserialize (bt3);
       var mixinA = Mixin.Get<BT3Mixin2> (bt3A);
       Assert.AreNotSame (mixin, mixinA);
-      Assert.AreSame (bt3A, mixinA.This);
+      Assert.AreSame (bt3A, mixinA.Target);
 
       var mixin2A = Mixin.Get<BT3Mixin2B> (bt3A);
       Assert.AreNotSame (mixin2, mixin2A);
-      Assert.AreSame (bt3A, mixin2A.This);
+      Assert.AreSame (bt3A, mixin2A.Target);
     }
 
     [Test]
@@ -53,23 +53,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin1), typeof (BT3Mixin1B));
       var mixin = Mixin.Get<BT3Mixin1> (bt3);
-      Assert.IsNotNull (mixin.Base);
-      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin.Base.GetType ());
+      Assert.IsNotNull (mixin.Next);
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin.Next.GetType ());
 
       var mixin2 = Mixin.Get<BT3Mixin1B> (bt3);
-      Assert.IsNotNull (mixin2.Base);
-      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2.Base.GetType ());
+      Assert.IsNotNull (mixin2.Next);
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2.Next.GetType ());
 
       BaseType3 bt3A = Serializer.SerializeAndDeserialize (bt3);
       var mixinA = Mixin.Get<BT3Mixin1> (bt3A);
       Assert.AreNotSame (mixin, mixinA);
-      Assert.IsNotNull (mixinA.Base);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixinA.Base.GetType ());
+      Assert.IsNotNull (mixinA.Next);
+      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixinA.Next.GetType ());
 
       var mixin2A = Mixin.Get<BT3Mixin1B> (bt3A);
       Assert.AreNotSame (mixin2, mixin2A);
-      Assert.IsNotNull (mixin2A.Base);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2A.Base.GetType ());
+      Assert.IsNotNull (mixin2A.Next);
+      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2A.Next.GetType ());
     }
 
     [Test]
@@ -101,15 +101,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
 
       Assert.AreEqual (targetInstance, MixinReflector.GetTargetProperty (mixin.GetType()).GetValue (mixin, null));
-      Assert.AreEqual (MixinReflector.GetBaseCallProxyType(targetInstance),
-          MixinReflector.GetBaseProperty (mixin.GetType ()).GetValue (mixin, null).GetType());
+      Assert.AreEqual (MixinReflector.GetNextCallProxyType(targetInstance),
+          MixinReflector.GetNextProperty (mixin.GetType ()).GetValue (mixin, null).GetType());
 
       ClassOverridingMixinMembers targetInstanceA = Serializer.SerializeAndDeserialize (targetInstance);
       var mixinA = Mixin.Get<MixinWithAbstractMembers> (targetInstanceA);
 
       Assert.AreEqual (targetInstanceA, MixinReflector.GetTargetProperty (mixinA.GetType ()).GetValue (mixinA, null));
-      Assert.AreEqual (MixinReflector.GetBaseCallProxyType (targetInstanceA),
-          MixinReflector.GetBaseProperty (mixinA.GetType ()).GetValue (mixinA, null).GetType ());
+      Assert.AreEqual (MixinReflector.GetNextCallProxyType (targetInstanceA),
+          MixinReflector.GetNextProperty (mixinA.GetType ()).GetValue (mixinA, null).GetType ());
     }
 
     [Test]

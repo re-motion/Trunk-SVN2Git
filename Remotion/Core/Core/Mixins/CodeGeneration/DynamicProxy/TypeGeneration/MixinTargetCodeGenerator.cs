@@ -31,7 +31,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private static readonly MethodInfo s_classContextGetter = s_classContextProperty.GetGetMethod ();
     private static readonly PropertyInfo s_mixinProperty = typeof (IMixinTarget).GetProperty ("Mixins");
     private static readonly MethodInfo s_mixinsGetter = s_mixinProperty.GetGetMethod ();
-    private static readonly PropertyInfo s_firstProperty = typeof (IMixinTarget).GetProperty ("FirstBaseCallProxy");
+    private static readonly PropertyInfo s_firstProperty = typeof (IMixinTarget).GetProperty ("FirstNextCallProxy");
     private static readonly MethodInfo s_firstGetter = s_firstProperty.GetGetMethod ();
 
     private readonly string _targetClassName;
@@ -89,7 +89,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       // initialize this instance in case we're being called before the ctor has finished running
       firstProperty.GetMethod.AddStatement (initializationStatement);
       firstProperty.ImplementWithBackingField (_firstField);
-      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (firstProperty, "Generated proxy", "FirstBaseCallProxy");
+      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (firstProperty, "Generated proxy", "FirstNextCallProxy");
     }
   }
 }

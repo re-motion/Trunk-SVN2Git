@@ -28,24 +28,24 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfRequiredBaseMethodIsExplit ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersBase)).EnterScope ())
+      using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersNextCall)).EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
-            typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersBase));
+            typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersNextCall));
         DefaultValidationLog log = Validator.Validate (definition);
 
         Assert.IsTrue (
-            HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredMethodRules.RequiredBaseCallMethodMustBePublicOrProtected", log));
+            HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredMethodRules.RequiredNextCallMethodMustBePublicOrProtected", log));
       }
     }
 
     [Test]
-    public void SucceedsIfRequiredFaceMethodIsExplit ()
+    public void SucceedsIfRequiredTargetCallMethodIsExplit ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope ())
+      using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersTargetCall)).EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
-            typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersFace));
+            typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersTargetCall));
         DefaultValidationLog log = Validator.Validate (definition);
 
         AssertSuccess (log);

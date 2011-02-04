@@ -127,7 +127,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
       SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
 
-      // Note: This and Base properties are initialized from the target class via InitializeDeserializedMixinTarget
+      // Note: This and Next properties are initialized from the target class via InitializeDeserializedMixinTarget
     }
   }
 }

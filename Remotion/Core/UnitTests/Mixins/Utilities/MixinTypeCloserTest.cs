@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType3));
       Type t = instantiator.GetClosedMixinType (typeof (BT3Mixin6<,>));
-      Assert.That (t, Is.EqualTo (typeof (BT3Mixin6<IBT3Mixin6ThisDependencies, IBT3Mixin6BaseDependencies>)));
+      Assert.That (t, Is.EqualTo (typeof (BT3Mixin6<IBT3Mixin6TargetCallDependencies, IBT3Mixin6NextCallDependencies>)));
     }
 
     [Test]
@@ -132,10 +132,10 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Cannot close the generic mixin type "
-        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TThis,TBase]' applied to class 'Remotion.UnitTests.Mixins.TestDomain.BaseType1' - "
+        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TTarget,TNext]' applied to class 'Remotion.UnitTests.Mixins.TestDomain.BaseType1' - "
         + "the inferred type arguments violate the generic parameter constraints. Specify the arguments manually, modify the parameter binding "
         + "specification, or relax the constraints. GenericArguments[0], 'Remotion.UnitTests.Mixins.TestDomain.BaseType1', on "
-        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TThis,TBase]' violates the constraint of type 'TThis'.")]
+        + "'Remotion.UnitTests.Mixins.TestDomain.BT3Mixin3`2[TTarget,TNext]' violates the constraint of type 'TTarget'.")]
     public void GetClosedMixinType_BindToInvalidTargetType ()
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType1));

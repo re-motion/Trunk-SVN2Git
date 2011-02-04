@@ -44,12 +44,12 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     protected override Type GetTypeForBindableObjectClass ()
     {
-      return This.GetPublicDomainObjectType();
+      return Target.GetPublicDomainObjectType();
     }
 
     public string UniqueIdentifier
     {
-      get { return This.ID.ToString(); }
+      get { return Target.ID.ToString(); }
     }
     
   }

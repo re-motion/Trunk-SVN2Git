@@ -38,7 +38,7 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
     [OverrideTarget]
     public IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
-      IQuery query = Base.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
+      IQuery query = Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
       QueryConstructed (query);
       return query;
     }

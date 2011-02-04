@@ -23,7 +23,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public new string ToString ()
     {
-      return "Overridden: " + Base.ToString();
+      return "Overridden: " + Next.ToString();
     }
   }
 }

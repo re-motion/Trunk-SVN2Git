@@ -31,13 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [OverrideTarget]
     public void Commit ()
     {
-      Base.Rollback (); // okay, this is not really realistic
+      Next.Rollback (); // okay, this is not really realistic
     }
 
     [OverrideTarget]
     public void Rollback ()
     {
-      Base.Commit ();
+      Next.Commit ();
     }
   }
 }

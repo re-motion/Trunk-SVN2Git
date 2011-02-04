@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
   /// <para>
   /// The hook methods defined on
   /// this interface are called by the <see cref="DomainObjects"/> infrastructure at points of time when it is safe to access the domain object's
-  /// ID and properties. Use them instead of <see cref="Mixin{TThis}.OnInitialized"/> to execute mixin initialization code that must access
+  /// ID and properties. Use them instead of <see cref="Mixin{TTarget}.OnInitialized"/> to execute mixin initialization code that must access
   /// the domain object's properties.
   /// </para>
   /// </remarks>

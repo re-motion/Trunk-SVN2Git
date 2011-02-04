@@ -54,14 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       CreateQueryCalled = true;
-      return Base.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
+      return Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
     }
 
     [OverrideTarget]
     public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
     {
       CreateQueryFromModelCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType);
+      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType);
     }
 
     [OverrideTarget]
@@ -74,14 +74,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         string sortExpression)
     {
       CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult, sortExpression);
+      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult, sortExpression);
     }
 
     [OverrideTarget]
     public SqlCommandData CreateSqlCommand (QueryModel queryModel, bool checkResultIsDomainObject)
     {
       CreateSqlCommandCalled = true;
-      return Base.CreateSqlCommand (queryModel, checkResultIsDomainObject);
+      return Next.CreateSqlCommand (queryModel, checkResultIsDomainObject);
     }
   }
 }

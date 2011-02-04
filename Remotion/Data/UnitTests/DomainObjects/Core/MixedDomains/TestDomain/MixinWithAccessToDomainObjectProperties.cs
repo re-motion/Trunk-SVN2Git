@@ -63,9 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     }
 
     [StorageClassNone]
-    public new TDomainObject This
+    public new TDomainObject Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
 
     protected override void OnDomainObjectReferenceInitializing ()

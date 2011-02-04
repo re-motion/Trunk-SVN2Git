@@ -39,7 +39,7 @@ namespace Remotion.Mixins.BridgeImplementations
       ArgumentUtility.CheckNotNull ("type", type);
       return IsGeneratedConcreteMixedType (type)
           || typeof (IGeneratedMixinType).IsAssignableFrom (type)
-              || typeof (IGeneratedBaseCallProxyType).IsAssignableFrom (type);
+              || typeof (IGeneratedNextCallProxyType).IsAssignableFrom (type);
     }
 
     public Type GetConcreteMixedType (Type targetOrConcreteType)

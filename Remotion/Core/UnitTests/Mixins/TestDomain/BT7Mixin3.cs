@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public virtual string One<T> (T t)
     {
-      return "BT7Mixin3.One(" + t + ")-" + Base.BT7Mixin1Specific() + "-" + Base.One(t);
+      return "BT7Mixin3.One(" + t + ")-" + Next.BT7Mixin1Specific() + "-" + Next.One(t);
     }
   }
 }

@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.Mixins
       TypeFactory.InitializeUnconstructedInstance (bt3 as IMixinTarget);
       BT3Mixin1 bt3m1 = Mixin.Get<BT3Mixin1> (bt3);
       Assert.That (bt3m1, Is.Not.Null, "Mixin must have been created");
-      Assert.That (bt3m1.This, Is.SameAs (bt3), "Mixin must have been initialized");
+      Assert.That (bt3m1.Target, Is.SameAs (bt3), "Mixin must have been initialized");
     }
   }
 }

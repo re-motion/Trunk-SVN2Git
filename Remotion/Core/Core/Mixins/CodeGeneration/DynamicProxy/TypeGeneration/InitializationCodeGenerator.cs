@@ -40,25 +40,25 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private readonly Type[] _expectedMixinTypes;
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
-    private readonly ConstructorInfo _baseCallProxyCtor;
+    private readonly ConstructorInfo _NextCallProxyCtor;
 
     public InitializationCodeGenerator (
         Type[] expectedMixinTypes,
         FieldReference extensionsField, 
         FieldReference firstField, 
         FieldReference classContextField,
-        ConstructorInfo baseCallProxyCtor)
+        ConstructorInfo NextCallProxyCtor)
     {
       ArgumentUtility.CheckNotNull ("expectedMixinTypes", expectedMixinTypes);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
       ArgumentUtility.CheckNotNull ("firstField", firstField);
       ArgumentUtility.CheckNotNull ("classContextField", classContextField);
-      ArgumentUtility.CheckNotNull ("baseCallProxyCtor", baseCallProxyCtor);
+      ArgumentUtility.CheckNotNull ("NextCallProxyCtor", NextCallProxyCtor);
 
       _expectedMixinTypes = expectedMixinTypes;
       _extensionsField = extensionsField;
       _firstField = firstField;
-      _baseCallProxyCtor = baseCallProxyCtor;
+      _NextCallProxyCtor = NextCallProxyCtor;
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
       var initializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
 
-      ImplementSettingFirstBaseCallProxy (initializeMethod);
+      ImplementSettingFirstNextCallProxy (initializeMethod);
       ImplementCreatingMixinInstances (initializeMethod, mixinArrayInitializerField);
       ImplementInitializingMixins (initializeMethod, new ConstReference (false).ToExpression ());
 
@@ -98,19 +98,19 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
       var initializeAfterDeserializationMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeAfterDeserializationMethod);
 
-      ImplementSettingFirstBaseCallProxy (initializeAfterDeserializationMethod);
+      ImplementSettingFirstNextCallProxy (initializeAfterDeserializationMethod);
       ImplementSettingMixinInstances (initializeAfterDeserializationMethod, mixinArrayInitializerField);
       ImplementInitializingMixins (initializeAfterDeserializationMethod, new ConstReference (true).ToExpression ());
 
       initializeAfterDeserializationMethod.AddStatement (new ReturnStatement ());
     }
 
-    private void ImplementSettingFirstBaseCallProxy (IMethodEmitter initializeMethod)
+    private void ImplementSettingFirstNextCallProxy (IMethodEmitter initializeMethod)
     {
-      // __first = <NewBaseCallProxy (0)>;
+      // __first = <NewNextCallProxy (0)>;
 
-      NewInstanceExpression newBaseCallProxyExpression = GetNewBaseCallProxyExpression (0);
-      initializeMethod.AddStatement (new AssignStatement (_firstField, newBaseCallProxyExpression));
+      NewInstanceExpression newNextCallProxyExpression = GetNewNextCallProxyExpression (0);
+      initializeMethod.AddStatement (new AssignStatement (_firstField, newNextCallProxyExpression));
     }
 
     private void ImplementCreatingMixinInstances (IMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
@@ -158,24 +158,24 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
           initializeMethod.AddStatement (new AssignStatement (initializableMixinLocal, castMixinExpression));
 
-          // initializableMixin.Initialize (mixinTargetInstance, <NewBaseCallProxy (i + 1)>, deserialization);
+          // initializableMixin.Initialize (mixinTargetInstance, <NewNextCallProxy (i + 1)>, deserialization);
           initializeMethod.AddStatement (
               new ExpressionStatement (
                   new VirtualMethodInvocationExpression (
                       initializableMixinLocal,
                       s_initializeMixinMethod,
                       SelfReference.Self.ToExpression (),
-                      GetNewBaseCallProxyExpression (i + 1),
+                      GetNewNextCallProxyExpression (i + 1),
                       deserialization)));
         }
       }
     }
 
-    private NewInstanceExpression GetNewBaseCallProxyExpression (int depth)
+    private NewInstanceExpression GetNewNextCallProxyExpression (int depth)
     {
-      // new <BaseCallProxy> (this, <depth>)
+      // new <NextCallProxy> (this, <depth>)
       return new NewInstanceExpression (
-          _baseCallProxyCtor,
+          _NextCallProxyCtor,
           SelfReference.Self.ToExpression (),
           new ConstReference (depth).ToExpression ());
     }

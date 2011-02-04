@@ -41,6 +41,6 @@ namespace Remotion.Mixins
     /// </summary>
     /// <value>An object the mixin type uses to call overridden methods. This is an instance of a generated type with no defined public API, so
     /// it is only useful for internal purposes.</value>
-    object FirstBaseCallProxy { get; }
+    object FirstNextCallProxy { get; }
   }
 }

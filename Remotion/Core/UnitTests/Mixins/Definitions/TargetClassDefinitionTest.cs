@@ -42,8 +42,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       var targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1));
       var mixinDefinition = targetClassDefinition.Mixins[0];
-      var requiredFaceTypeDefinition = DefinitionObjectMother.CreateRequiredFaceTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
-      var requiredBaseCallTypeDefinition = DefinitionObjectMother.CreateRequiredBaseCallTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
+      var requiredTargetCallTypeDefinition = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
+      var requiredNextCallTypeDefinition = DefinitionObjectMother.CreateRequiredNextCallTypeDefinition (targetClassDefinition, typeof (IBT1Mixin1));
       var requiredMixinTypeDefinition = DefinitionObjectMother.CreateRequiredMixinTypeDefinition (targetClassDefinition, typeof (BT1Mixin2));
 
       var visitorMock = MockRepository.GenerateMock<IDefinitionVisitor> ();
@@ -51,8 +51,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
       {
         visitorMock.Expect (mock => mock.Visit (targetClassDefinition));
         visitorMock.Expect (mock => mock.Visit (mixinDefinition));
-        visitorMock.Expect (mock => mock.Visit (requiredFaceTypeDefinition));
-        visitorMock.Expect (mock => mock.Visit (requiredBaseCallTypeDefinition));
+        visitorMock.Expect (mock => mock.Visit (requiredTargetCallTypeDefinition));
+        visitorMock.Expect (mock => mock.Visit (requiredNextCallTypeDefinition));
         visitorMock.Expect (mock => mock.Visit (requiredMixinTypeDefinition));
       }
 

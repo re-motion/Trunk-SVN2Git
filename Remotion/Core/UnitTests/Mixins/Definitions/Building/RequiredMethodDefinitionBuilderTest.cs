@@ -63,44 +63,44 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     }
 
     [Test]
-    public void RequiredFaceMethodsInterfaceImplementedOnBase ()
+    public void RequiredTargetCallMethodsInterfaceImplementedOnBase ()
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirements));
-      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersFace)];
+      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
       Assert.IsNotNull (mixin);
 
-      RequiredFaceTypeDefinition requirement = mixin.ThisDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+      RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
       Assert.IsNotNull (requirement);
 
       CheckRequiredMethods(requirement, TargetClassDefinition, "");
     }
 
     [Test]
-    public void RequiredBaseCallMethodsInterfaceImplementedOnBase ()
+    public void RequiredNextCallMethodsInterfaceImplementedOnBase ()
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirements));
-      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersBase)];
+      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
       Assert.IsNotNull (mixin);
 
-      RequiredBaseCallTypeDefinition requirement = mixin.BaseDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+      RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
       Assert.IsNotNull (requirement);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
     }
 
     [Test]
-    public void RequiredFaceMethodsInterfaceImplementedOnMixin ()
+    public void RequiredTargetCallMethodsInterfaceImplementedOnMixin ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassFulfillingNoMemberRequirements)).Clear().AddMixins (typeof (MixinRequiringAllMembersFace), typeof (MixinFulfillingAllMemberRequirements)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassFulfillingNoMemberRequirements)).Clear().AddMixins (typeof (MixinRequiringAllMembersTargetCall), typeof (MixinFulfillingAllMemberRequirements)).EnterScope())
       {
         TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingNoMemberRequirements));
-        MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersFace)];
+        MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
         Assert.IsNotNull (mixin);
 
         MixinDefinition implementingMixin = TargetClassDefinition.Mixins[typeof (MixinFulfillingAllMemberRequirements)];
         Assert.IsNotNull (implementingMixin);
 
-        RequiredFaceTypeDefinition requirement = mixin.ThisDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+        RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
         Assert.IsNotNull (requirement);
 
         CheckRequiredMethods (requirement, implementingMixin, "");
@@ -108,18 +108,18 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     }
 
     [Test]
-    public void RequiredBaseCallMethodsInterfaceImplementedOnMixin ()
+    public void RequiredNextCallMethodsInterfaceImplementedOnMixin ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassFulfillingNoMemberRequirements)).Clear().AddMixins (typeof (MixinRequiringAllMembersBase), typeof (MixinFulfillingAllMemberRequirements)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassFulfillingNoMemberRequirements)).Clear().AddMixins (typeof (MixinRequiringAllMembersNextCall), typeof (MixinFulfillingAllMemberRequirements)).EnterScope())
       {
         TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingNoMemberRequirements));
-        MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersBase)];
+        MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
         Assert.IsNotNull (mixin);
 
         MixinDefinition implementingMixin = TargetClassDefinition.Mixins[typeof (MixinFulfillingAllMemberRequirements)];
         Assert.IsNotNull (implementingMixin);
 
-        RequiredBaseCallTypeDefinition requirement = mixin.BaseDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+        RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
         Assert.IsNotNull (requirement);
 
         CheckRequiredMethods (requirement, implementingMixin, "");
@@ -127,26 +127,26 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     }
 
     [Test]
-    public void RequiredFaceMethodsDuckImplementedOnBase ()
+    public void RequiredTargetCallMethodsDuckImplementedOnBase ()
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck));
-      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersFace)];
+      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersTargetCall)];
       Assert.IsNotNull (mixin);
 
-      RequiredFaceTypeDefinition requirement = mixin.ThisDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+      RequiredTargetCallTypeDefinition requirement = mixin.TargetCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
       Assert.IsNotNull (requirement);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
     }
 
     [Test]
-    public void RequiredBaseCallMethodsDuckImplementedOnBase ()
+    public void RequiredNextCallMethodsDuckImplementedOnBase ()
     {
       TargetClassDefinition TargetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck));
-      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersBase)];
+      MixinDefinition mixin = TargetClassDefinition.Mixins[typeof (MixinRequiringAllMembersNextCall)];
       Assert.IsNotNull (mixin);
 
-      RequiredBaseCallTypeDefinition requirement = mixin.BaseDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
+      RequiredNextCallTypeDefinition requirement = mixin.NextCallDependencies[typeof (IMixinRequiringAllMembersRequirements)].RequiredType;
       Assert.IsNotNull (requirement);
 
       CheckRequiredMethods (requirement, TargetClassDefinition, "");
@@ -199,12 +199,12 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The dependency 'IMixinRequiringAllMembersRequirements' (required by "
-                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersFace' applied to class "
+                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersTargetCall' applied to class "
                                                                            + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.ClassFulfillingPrivately') is not fulfilled - public "
                                                                            + "or protected method 'Void Method()' could not be found on the target class.")]
     public void ThrowsIfRequiredMethodIsPrivate ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingPrivately> ().Clear().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingPrivately> ().Clear().AddMixins (typeof (MixinRequiringAllMembersTargetCall)).EnterScope())
       {
         DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingPrivately));
       }
@@ -212,12 +212,12 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The dependency 'IMixinRequiringAllMembersRequirements' (required by "
-                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersFace' applied to class "
+                                                                           + "mixin(s) 'Remotion.UnitTests.Mixins.TestDomain.MixinRequiringAllMembersTargetCall' applied to class "
                                                                            + "'Remotion.UnitTests.Mixins.Definitions.TestDomain.RequiredMethodDefinitionBuilding.ClassFulfillingInternally') is not fulfilled - public "
                                                                            + "or protected method 'Void Method()' could not be found on the target class.")]
     public void ThrowsIfRequiredMethodIsInternal ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingInternally> ().Clear().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingInternally> ().Clear().AddMixins (typeof (MixinRequiringAllMembersTargetCall)).EnterScope())
       {
         DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingInternally));
       }
@@ -226,10 +226,10 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [Test]
     public void WorksIfRequiredMethodIsProtected ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingProtectedly> ().Clear().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingProtectedly> ().Clear().AddMixins (typeof (MixinRequiringAllMembersTargetCall)).EnterScope())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingProtectedly));
-        RequiredFaceTypeDefinition requirement = definition.RequiredFaceTypes[typeof (IMixinRequiringAllMembersRequirements)];
+        RequiredTargetCallTypeDefinition requirement = definition.RequiredTargetCallTypes[typeof (IMixinRequiringAllMembersRequirements)];
 
         CheckRequiredMethods (requirement, definition, "");
       }
@@ -238,10 +238,10 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [Test]
     public void WorksIfExplicitlyImplemented ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear().AddMixins (typeof (MixinRequiringAllMembersTargetCall)).EnterScope())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassFulfillingAllMemberRequirementsExplicitly));
-        RequiredFaceTypeDefinition requirement = definition.RequiredFaceTypes[typeof (IMixinRequiringAllMembersRequirements)];
+        RequiredTargetCallTypeDefinition requirement = definition.RequiredTargetCallTypes[typeof (IMixinRequiringAllMembersRequirements)];
 
         CheckRequiredMethods (requirement, definition, typeof (IMixinRequiringAllMembersRequirements).FullName + ".");
       }
@@ -251,7 +251,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     public void NoRequiredMethodsWhenFaceRequirementIsClass ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithStaticMethod));
-      RequiredFaceTypeDefinition requirement = targetClass.RequiredFaceTypes[typeof (ClassWithStaticMethod)];
+      RequiredTargetCallTypeDefinition requirement = targetClass.RequiredTargetCallTypes[typeof (ClassWithStaticMethod)];
       Assert.AreEqual (0, requirement.Methods.Count);
     }
   }

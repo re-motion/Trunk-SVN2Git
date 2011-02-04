@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.Validation.ValidationTestDomain
       get { throw new NotImplementedException (); }
     }
 
-    public object FirstBaseCallProxy
+    public object FirstNextCallProxy
     {
       get { throw new NotImplementedException(); }
     }

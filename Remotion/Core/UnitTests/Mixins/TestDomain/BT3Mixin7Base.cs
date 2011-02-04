@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string IfcMethod()
     {
-      return "BT3Mixin7Base.IfcMethod-" + Base.Foo() + "-" + ((IBaseType31)Base).IfcMethod() + "-" + Base.IfcMethod2();
+      return "BT3Mixin7Base.IfcMethod-" + Next.Foo() + "-" + ((IBaseType31)Next).IfcMethod() + "-" + Next.IfcMethod2();
     }
   }
 }

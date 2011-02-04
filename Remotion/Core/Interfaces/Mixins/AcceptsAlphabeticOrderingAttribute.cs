@@ -26,7 +26,7 @@ namespace Remotion.Mixins
   /// <para>
   /// Ordering between mixins is important when two mixins override the same methods on a target object, because without a defined ordering,
   /// it wouldn't be deterministic which of the overrides would be executed first. Usually, orderings between mixins are expressed via dependencies.
-  /// Either implicitly, because the mixin has a base call dependency (second type argument of the <see cref="Mixin{TThis,TBase}"/> base class) to 
+  /// Either implicitly, because the mixin has a base call dependency (second type argument of the <see cref="Mixin{TTarget,TNext}"/> base class) to 
   /// an interface implemented by another mixin, or explicitly via  <see cref="MixinRelationshipAttribute.AdditionalDependencies"/>.
   /// </para>
   /// <para>

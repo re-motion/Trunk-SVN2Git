@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var wrapper = SampleBindableDomainObject.NewObject ();
       var mixin = BindableDomainObjectImplementation.Create (wrapper);
       Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
-      Assert.That (PrivateInvoke.GetNonPublicProperty (mixin, "This"), Is.SameAs (wrapper));
+      Assert.That (PrivateInvoke.GetNonPublicProperty (mixin, "Target"), Is.SameAs (wrapper));
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var mixin = BindableDomainObjectImplementation.Create (wrapper);
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (mixin, wrapper));
       Assert.That (deserializedData.Item1.BusinessObjectClass, Is.Not.Null);
-      Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.Item1, "This"), Is.SameAs (deserializedData.Item2));
+      Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.Item1, "Target"), Is.SameAs (deserializedData.Item2));
     }
 
     [Test]

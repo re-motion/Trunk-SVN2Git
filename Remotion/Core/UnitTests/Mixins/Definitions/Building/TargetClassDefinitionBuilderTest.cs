@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
       var classContext = new ClassContext (typeof (BaseType6), new MixinContext[0], new[] { typeof (ICBT6Mixin1) });
       var targetClassDefinition = _builder.Build (classContext);
 
-      Assert.That (targetClassDefinition.RequiredFaceTypes.Select (f => f.Type).ToArray(), List.Contains (typeof (ICBT6Mixin1)));
+      Assert.That (targetClassDefinition.RequiredTargetCallTypes.Select (f => f.Type).ToArray(), List.Contains (typeof (ICBT6Mixin1)));
     }
 
     [Test]
@@ -191,13 +191,13 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     }
 
     [Test]
-    public void Build_AppliesRequiredFaceTypeMethods ()
+    public void Build_AppliesRequiredTargetCallTypeMethods ()
     {
       var classContext = new ClassContext (typeof (BaseType3), typeof (BT3Mixin1));
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      Assert.That (targetClassDefinition.RequiredFaceTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
+      Assert.That (targetClassDefinition.RequiredTargetCallTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
                    List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
     }
 
@@ -208,7 +208,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      Assert.That (targetClassDefinition.RequiredBaseCallTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
+      Assert.That (targetClassDefinition.RequiredNextCallTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
                    List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
     }
 

@@ -48,10 +48,10 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void IsGeneratedConcreteMixedType_OnBaseCallProxy ()
+    public void IsGeneratedConcreteMixedType_OnNextCallProxy ()
     {
-      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1>(ParamList.Empty));
-      Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (baseCallProxy), Is.False);
+      Type NextCallProxy = MixinReflector.GetNextCallProxyType (ObjectFactory.Create<BaseType1>(ParamList.Empty));
+      Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (NextCallProxy), Is.False);
     }
 
     [Test]
@@ -80,10 +80,10 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void IsGeneratedByMixinEngine_OnBaseCallProxy ()
+    public void IsGeneratedByMixinEngine_OnNextCallProxy ()
     {
-      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1> (ParamList.Empty));
-      Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (baseCallProxy), Is.True);
+      Type NextCallProxy = MixinReflector.GetNextCallProxyType (ObjectFactory.Create<BaseType1> (ParamList.Empty));
+      Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (NextCallProxy), Is.True);
     }
 
     [Test]

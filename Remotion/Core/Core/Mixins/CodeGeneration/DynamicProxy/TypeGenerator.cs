@@ -39,7 +39,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly ICodeGenerationModule _module;
     private readonly TargetClassDefinition _configuration;
     private readonly IClassEmitter _emitter;
-    private readonly BaseCallProxyGenerator _baseCallGenerator;
+    private readonly NextCallProxyGenerator _nextCallGenerator;
 
     private readonly DebuggerDisplayAttributeGenerator _debuggerDisplayAttributeGenerator = new DebuggerDisplayAttributeGenerator();
     private readonly DebuggerBrowsableAttributeGenerator _debuggerBrowsableAttributeGenerator = new DebuggerBrowsableAttributeGenerator ();
@@ -79,7 +79,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var implementedInterfaceFinder = new ImplementedInterfaceFinder (
           _configuration.ImplementedInterfaces, 
           _configuration.ReceivedInterfaces, 
-          _configuration.RequiredFaceTypes, 
+          _configuration.RequiredTargetCallTypes, 
           concreteMixinTypes.Where (t => t != null));
       
       var interfacesToImplement = implementedInterfaceFinder.GetInterfacesToImplement ();
@@ -101,9 +101,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
-      _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, concreteMixinTypes);
+      _nextCallGenerator = new NextCallProxyGenerator (this, _emitter, concreteMixinTypes);
 
-      _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
+      _firstField = _emitter.CreateField ("__first", _nextCallGenerator.TypeBuilder, FieldAttributes.Private);
        _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
 
       var expectedMixinTypes = new Type[Configuration.Mixins.Count];
@@ -115,7 +115,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           _extensionsField, 
           _firstField, 
           _classContextField, 
-          _baseCallGenerator.Ctor);
+          _nextCallGenerator.Ctor);
 
       AddTypeInitializer (expectedMixinTypes);
 
@@ -346,7 +346,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementRequiredDuckMethods ()
     {
-      foreach (RequiredFaceTypeDefinition faceRequirement in Configuration.RequiredFaceTypes)
+      foreach (RequiredTargetCallTypeDefinition faceRequirement in Configuration.RequiredTargetCallTypes)
       {
         if (faceRequirement.Type.IsInterface && !Configuration.ImplementedInterfaces.Contains (faceRequirement.Type)
             && !Configuration.ReceivedInterfaces.ContainsKey (faceRequirement.Type))
@@ -396,7 +396,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private IMethodEmitter ImplementMethodOverride (MethodDefinition method)
     {
-      MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
+      MethodInfo proxyMethod = _nextCallGenerator.GetProxyMethodForOverriddenMethod (method);
       IMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
 
       // initialize this instance in case we're being called before the ctor has finished running

@@ -22,9 +22,9 @@ namespace Remotion.UnitTests.Mixins.Context.Suppression.TestDomain
 {
   [Extends (typeof (ClassWithMixins), MixinTypeArguments = new Type[] { typeof (List<int>), typeof (IList<int>) })]
   [IgnoreForMixinConfiguration]
-  public class GenericMixinWithSpecialization<TThis, TBase> : Mixin<TThis, TBase>
-      where TThis: class
-      where TBase: class
+  public class GenericMixinWithSpecialization<TTarget, TNext> : Mixin<TTarget, TNext>
+      where TTarget: class
+      where TNext: class
   {
   }
 }

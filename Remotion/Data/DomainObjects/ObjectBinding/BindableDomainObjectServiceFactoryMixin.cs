@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
           return new BindableDomainObjectCompoundSearchService();
       }
 
-      return Base.CreateService (provider, serviceType);
+      return Next.CreateService (provider, serviceType);
     }
   }
 }

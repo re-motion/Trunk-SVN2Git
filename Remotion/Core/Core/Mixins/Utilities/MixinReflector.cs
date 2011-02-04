@@ -51,10 +51,10 @@ namespace Remotion.Mixins.Utilities
       if (mixinBaseType == null)
         return null;
       else
-        return mixinBaseType.GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance);
+        return mixinBaseType.GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
-    public static PropertyInfo GetBaseProperty (Type concreteMixinType)
+    public static PropertyInfo GetNextProperty (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
@@ -62,10 +62,10 @@ namespace Remotion.Mixins.Utilities
       if (mixinBaseType == null)
         return null;
       else
-        return mixinBaseType.GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance);
+        return mixinBaseType.GetProperty ("Next", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
-    public static Type GetBaseCallProxyType (object mixinTargetInstance)
+    public static Type GetNextCallProxyType (object mixinTargetInstance)
     {
       ArgumentUtility.CheckNotNull ("mixinTargetInstance", mixinTargetInstance);
       var castTarget = mixinTargetInstance as IMixinTarget;
@@ -75,9 +75,9 @@ namespace Remotion.Mixins.Utilities
         throw new ArgumentException (message, "mixinTargetInstance");
       }
 
-      Assertion.IsNotNull (castTarget.FirstBaseCallProxy);
-      Type baseCallProxyType = castTarget.FirstBaseCallProxy.GetType();
-      return baseCallProxyType;
+      Assertion.IsNotNull (castTarget.FirstNextCallProxy);
+      Type NextCallProxyType = castTarget.FirstNextCallProxy.GetType();
+      return NextCallProxyType;
     }
 
     /// <summary>

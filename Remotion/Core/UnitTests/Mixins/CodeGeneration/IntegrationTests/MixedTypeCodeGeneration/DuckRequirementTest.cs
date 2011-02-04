@@ -29,16 +29,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       ClassFulfillingAllMemberRequirementsDuck cfrd = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsDuck> (ParamList.Empty);
       Assert.IsTrue (cfrd is IMixinRequiringAllMembersRequirements);
-      var mixin = Mixin.Get<MixinRequiringAllMembersFace> (cfrd);
+      var mixin = Mixin.Get<MixinRequiringAllMembersTargetCall> (cfrd);
       Assert.IsNotNull (mixin);
       Assert.AreEqual (42, mixin.PropertyViaThis);
     }
 
     [Test]
-    public void RequiredFaceInterfaceViaDuck ()
+    public void RequiredTargetCallInterfaceViaDuck ()
     {
       ClassFulfillingAllMemberRequirementsExplicitly cfamre = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsExplicitly> (ParamList.Empty);
-      var mixin = Mixin.Get<MixinRequiringAllMembersFace> (cfamre);
+      var mixin = Mixin.Get<MixinRequiringAllMembersTargetCall> (cfamre);
       Assert.IsNotNull (mixin);
       Assert.AreEqual (37, mixin.PropertyViaThis);
     }
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void RequiredBaseInterfaceViaDuck ()
     {
       ClassFulfillingAllMemberRequirements cfamr = ObjectFactory.Create<ClassFulfillingAllMemberRequirements> (ParamList.Empty);
-      var mixin = Mixin.Get<MixinRequiringAllMembersBase> (cfamr);
+      var mixin = Mixin.Get<MixinRequiringAllMembersNextCall> (cfamr);
       Assert.IsNotNull (mixin);
       Assert.AreEqual (11, mixin.PropertyViaBase);
     }
@@ -55,9 +55,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ThisCallToDuckInterface ()
     {
-      BaseTypeWithDuckFaceMixin duckFace = ObjectFactory.Create<BaseTypeWithDuckFaceMixin> (ParamList.Empty);
-      Assert.AreEqual ("DuckFaceMixin.CallMethodsOnThis-DuckFaceMixin.MethodImplementedOnBase-BaseTypeWithDuckFaceMixin.ProtectedMethodImplementedOnBase",
-          Mixin.Get<DuckFaceMixin> (duckFace).CallMethodsOnThis ());
+      BaseTypeWithDuckTargetCallMixin duckTargetCall = ObjectFactory.Create<BaseTypeWithDuckTargetCallMixin> (ParamList.Empty);
+      Assert.AreEqual ("DuckTargetCallMixin.CallMethodsOnThis-DuckTargetCallMixin.MethodImplementedOnBase-BaseTypeWithDuckTargetCallMixin.ProtectedMethodImplementedOnBase",
+          Mixin.Get<DuckTargetCallMixin> (duckTargetCall).CallMethodsOnThis ());
     }
 
   }

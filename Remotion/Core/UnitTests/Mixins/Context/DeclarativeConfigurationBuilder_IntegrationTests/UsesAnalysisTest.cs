@@ -146,14 +146,14 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.AreEqual (1, configuration.GetContext (typeof (DerivedWithMoreSpecificUses)).Mixins.Count);
     }
 
-    public class BaseGenericMixin<TThis, TBase> : Mixin<TThis, TBase>
-        where TThis : class
-        where TBase : class
+    public class BaseGenericMixin<TTarget, TNext> : Mixin<TTarget, TNext>
+        where TTarget : class
+        where TNext : class
     { }
 
-    public class DerivedGenericMixin<TThis, TBase> : BaseGenericMixin<TThis, TBase>
-        where TThis : class
-        where TBase : class
+    public class DerivedGenericMixin<TTarget, TNext> : BaseGenericMixin<TTarget, TNext>
+        where TTarget : class
+        where TNext : class
     {
     }
 

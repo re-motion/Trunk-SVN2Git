@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
     }
 
     [StorageClassNone]
-    public new TDomainObject This
+    public new TDomainObject Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
 
     protected override void OnDomainObjectReferenceInitializing ()

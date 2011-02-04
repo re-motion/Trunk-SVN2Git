@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string GetString ()
     {
-      return "MixinWithAdditionalClassDependency-" + Base.GetString ();
+      return "MixinWithAdditionalClassDependency-" + Next.GetString ();
     }
   }
 }

@@ -57,8 +57,8 @@ namespace Remotion.UnitTests.Mixins
 
       MixinTargetMockUtility.MockMixinTarget (mixin, thisMock, baseMock);
 
-      Assert.AreSame (thisMock, mixin.This);
-      Assert.AreSame (baseMock, mixin.Base);
+      Assert.AreSame (thisMock, mixin.Target);
+      Assert.AreSame (baseMock, mixin.Next);
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.UnitTests.Mixins
       var mixin = new BT3Mixin2 ();
 
       MixinTargetMockUtility.MockMixinTarget (mixin, thisMock);
-      Assert.AreSame (thisMock, mixin.This);
+      Assert.AreSame (thisMock, mixin.Target);
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Remotion.UnitTests.Mixins
     public void UninitializedMixin_This ()
     {
       var mixin = new BT3Mixin1 ();
-      Dev.Null = mixin.This;
+      Dev.Null = mixin.Target;
     }
 
     [Test]
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.Mixins
     public void UninitializedMixin_Base ()
     {
       var mixin = new BT3Mixin1 ();
-      Dev.Null = mixin.Base;
+      Dev.Null = mixin.Next;
     }
 
     [Test]
@@ -109,8 +109,8 @@ namespace Remotion.UnitTests.Mixins
       var baseMock = repository.StrictMock<IBaseType31> ();
 
       BT3Mixin1 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin1, IBaseType31, IBaseType31> (thisMock, baseMock);
-      Assert.AreSame (thisMock, mixin.This);
-      Assert.AreSame (baseMock, mixin.Base);
+      Assert.AreSame (thisMock, mixin.Target);
+      Assert.AreSame (baseMock, mixin.Next);
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins
 
       BT3Mixin2 mixin =
           MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock);
-      Assert.AreSame (thisMock, mixin.This);
+      Assert.AreSame (thisMock, mixin.Target);
     }
 
     [Test]
@@ -133,7 +133,7 @@ namespace Remotion.UnitTests.Mixins
       var thisMock = repository.StrictMock<IBaseType32> ();
 
       BT3Mixin2 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock, 7);
-      Assert.AreSame (thisMock, mixin.This);
+      Assert.AreSame (thisMock, mixin.Target);
       Assert.That (mixin.I, Is.EqualTo (7));
     }
 
@@ -146,8 +146,8 @@ namespace Remotion.UnitTests.Mixins
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, mixin));
 
       MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.Item2, deserializedData.Item1);
-      Assert.That (deserializedData.Item2.This, Is.Not.Null);
-      Assert.That (deserializedData.Item2.This, Is.SameAs (deserializedData.Item1));
+      Assert.That (deserializedData.Item2.Target, Is.Not.Null);
+      Assert.That (deserializedData.Item2.Target, Is.SameAs (deserializedData.Item1));
     }
 
     [Test]
@@ -160,10 +160,10 @@ namespace Remotion.UnitTests.Mixins
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, baseMock, mixin));
 
       MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.Item3, deserializedData.Item1, deserializedData.Item2);
-      Assert.That (deserializedData.Item3.This, Is.Not.Null);
-      Assert.That (deserializedData.Item3.This, Is.SameAs (deserializedData.Item1));
-      Assert.That (deserializedData.Item3.Base, Is.Not.Null);
-      Assert.That (deserializedData.Item3.Base, Is.SameAs (deserializedData.Item2));
+      Assert.That (deserializedData.Item3.Target, Is.Not.Null);
+      Assert.That (deserializedData.Item3.Target, Is.SameAs (deserializedData.Item1));
+      Assert.That (deserializedData.Item3.Next, Is.Not.Null);
+      Assert.That (deserializedData.Item3.Next, Is.SameAs (deserializedData.Item2));
     }
   }
 }

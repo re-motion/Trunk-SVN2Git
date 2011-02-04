@@ -31,19 +31,19 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string ProtectedInheritedMethod ()
     {
-      return "MixinOverridingInheritedMethod.ProtectedInheritedMethod-" + Base.ProtectedInheritedMethod ();
+      return "MixinOverridingInheritedMethod.ProtectedInheritedMethod-" + Next.ProtectedInheritedMethod ();
     }
 
     [OverrideTarget]
     public string ProtectedInternalInheritedMethod ()
     {
-      return "MixinOverridingInheritedMethod.ProtectedInternalInheritedMethod-" + Base.ProtectedInternalInheritedMethod ();
+      return "MixinOverridingInheritedMethod.ProtectedInternalInheritedMethod-" + Next.ProtectedInternalInheritedMethod ();
     }
 
     [OverrideTarget]
     public string PublicInheritedMethod ()
     {
-      return "MixinOverridingInheritedMethod.PublicInheritedMethod-" + Base.PublicInheritedMethod ();
+      return "MixinOverridingInheritedMethod.PublicInheritedMethod-" + Next.PublicInheritedMethod ();
     }
   }
 

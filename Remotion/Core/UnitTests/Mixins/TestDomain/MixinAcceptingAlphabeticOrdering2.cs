@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public new string ToString ()
     {
-      return "MixinAcceptingAlphabeticOrdering2.ToString-" + Base.ToString ();
+      return "MixinAcceptingAlphabeticOrdering2.ToString-" + Next.ToString ();
     }
   }
 }

@@ -73,42 +73,42 @@ namespace Remotion.UnitTests.Mixins
       return mixinDependency;
     }
 
-    public static BaseDependencyDefinition CreateBaseDependencyDefinition (MixinDefinition definition)
+    public static NextCallDependencyDefinition CreateNextCallDependencyDefinition (MixinDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
-      var baseDependency = new BaseDependencyDefinition (new RequiredBaseCallTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
-      PrivateInvoke.InvokeNonPublicMethod (definition.BaseDependencies, "Add", baseDependency);
-      return baseDependency;
+      var nextCallDependency = new NextCallDependencyDefinition (new RequiredNextCallTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
+      PrivateInvoke.InvokeNonPublicMethod (definition.NextCallDependencies, "Add", nextCallDependency);
+      return nextCallDependency;
     }
 
-    public static ThisDependencyDefinition CreateThisDependencyDefinition (MixinDefinition definition)
+    public static TargetCallDependencyDefinition CreateTargetCallDependencyDefinition (MixinDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
-      var thisDependency = new ThisDependencyDefinition (new RequiredFaceTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
-      PrivateInvoke.InvokeNonPublicMethod (definition.ThisDependencies, "Add", thisDependency);
-      return thisDependency;
+      var targetCallDependency = new TargetCallDependencyDefinition (new RequiredTargetCallTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
+      PrivateInvoke.InvokeNonPublicMethod (definition.TargetCallDependencies, "Add", targetCallDependency);
+      return targetCallDependency;
     }
 
-    public static RequiredFaceTypeDefinition CreateRequiredFaceTypeDefinition (TargetClassDefinition definition, Type requiredType)
+    public static RequiredTargetCallTypeDefinition CreateRequiredTargetCallTypeDefinition (TargetClassDefinition definition, Type requiredType)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
       ArgumentUtility.CheckNotNull ("requiredType", requiredType);
 
-      var requiredFaceType = new RequiredFaceTypeDefinition (definition, requiredType);
-      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredFaceTypes, "Add", requiredFaceType);
-      return requiredFaceType;
+      var requiredTargetCallType = new RequiredTargetCallTypeDefinition (definition, requiredType);
+      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredTargetCallTypes, "Add", requiredTargetCallType);
+      return requiredTargetCallType;
     }
 
-    public static RequiredBaseCallTypeDefinition CreateRequiredBaseCallTypeDefinition (TargetClassDefinition definition, Type requiredType)
+    public static RequiredNextCallTypeDefinition CreateRequiredNextCallTypeDefinition (TargetClassDefinition definition, Type requiredType)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
       ArgumentUtility.CheckNotNull ("requiredType", requiredType);
 
-      var requiredBaseCallType = new RequiredBaseCallTypeDefinition (definition, requiredType);
-      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredBaseCallTypes, "Add", requiredBaseCallType);
-      return requiredBaseCallType;
+      var requiredNextCallType = new RequiredNextCallTypeDefinition (definition, requiredType);
+      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredNextCallTypes, "Add", requiredNextCallType);
+      return requiredNextCallType;
     }
 
     public static RequiredMixinTypeDefinition CreateRequiredMixinTypeDefinition (TargetClassDefinition definition, Type requiredType)

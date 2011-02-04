@@ -31,8 +31,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 
     public object IfcMethod ()
     {
-      MyThis = This;
-      MyBase = Base;
+      MyThis = Target;
+      MyBase = Next;
 
       return this;
     }

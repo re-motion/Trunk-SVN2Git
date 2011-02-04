@@ -33,8 +33,8 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     [SetUp]
     public void SetUp ()
     {
-      _thisAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.ThisArgumentFinder);
-      _baseAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.BaseArgumentFinder);
+      _thisAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.TargetArgumentFinder);
+      _baseAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.NextArgumentFinder);
     }
 
     [Test]

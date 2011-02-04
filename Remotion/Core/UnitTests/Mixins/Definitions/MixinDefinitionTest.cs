@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       {
         var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
         var dependencies = definition.GetOrderRelevantDependencies ().ToArray();
-        Assert.That (dependencies, Is.EquivalentTo (new DependencyDefinitionBase[] { definition.BaseDependencies[0], definition.MixinDependencies[0] }));
+        Assert.That (dependencies, Is.EquivalentTo (new DependencyDefinitionBase[] { definition.NextCallDependencies[0], definition.MixinDependencies[0] }));
       }
     }
 
@@ -152,8 +152,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
       var attributeIntroduction = DefinitionObjectMother.CreateAttributeIntroductionDefinition(definition);
       var nonAttributeIntroduction = DefinitionObjectMother.CreateNonAttributeIntroductionDefinition(definition);
       var suppressedAttributeIntroduction = DefinitionObjectMother.CreateSuppressedAttributeIntroductionDefinition(definition);
-      var thisDependency = DefinitionObjectMother.CreateThisDependencyDefinition(definition);
-      var baseDependency = DefinitionObjectMother.CreateBaseDependencyDefinition(definition);
+      var targetCallDependency = DefinitionObjectMother.CreateTargetCallDependencyDefinition(definition);
+      var nextCallDependency = DefinitionObjectMother.CreateNextCallDependencyDefinition(definition);
       var mixinDependency = DefinitionObjectMother.CreateMixinDependencyDefinition(definition);
 
       using (visitorMock.GetMockRepository ().Ordered ())
@@ -164,8 +164,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
         visitorMock.Expect (mock => mock.Visit (attributeIntroduction));
         visitorMock.Expect (mock => mock.Visit (nonAttributeIntroduction));
         visitorMock.Expect (mock => mock.Visit (suppressedAttributeIntroduction));
-        visitorMock.Expect (mock => mock.Visit (thisDependency));
-        visitorMock.Expect (mock => mock.Visit (baseDependency));
+        visitorMock.Expect (mock => mock.Visit (targetCallDependency));
+        visitorMock.Expect (mock => mock.Visit (nextCallDependency));
         visitorMock.Expect (mock => mock.Visit (mixinDependency));
       }
 

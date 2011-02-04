@@ -40,9 +40,9 @@ namespace Remotion.Mixins
   /// public class MyMixin&lt;[BindToGenericTargetParameter] T&gt; { }
   /// </code>
   /// </para>
-  /// <note type="inotes">When a type parameter is reused for the generic parameter of the <see cref="Mixin{TThis,TBase}"/>
-  /// or <see cref="Mixin{TThis}"/> base classes, the type parameter must satisfy several constraints. See <see cref="Mixin{TThis,TBase}"/> and
-  /// <see cref="Mixin{TThis}"/> for more information.</note>
+  /// <note type="inotes">When a type parameter is reused for the generic parameter of the <see cref="Mixin{TTarget,TNext}"/>
+  /// or <see cref="Mixin{TTarget}"/> base classes, the type parameter must satisfy several constraints. See <see cref="Mixin{TTarget,TNext}"/> and
+  /// <see cref="Mixin{TTarget}"/> for more information.</note>
   /// </remarks>
   /// <seealso cref="BindToTargetTypeAttribute"/>
   /// <seealso cref="BindToConstraintsAttribute"/>

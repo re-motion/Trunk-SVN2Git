@@ -31,29 +31,29 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private readonly IEnumerable<ConcreteMixinType> _concreteMixinTypes;
     private readonly IEnumerable<InterfaceIntroductionDefinition> _receivedInterfaces;
     private readonly IEnumerable<Type> _alreadyImplementedInterfaces;
-    private readonly IEnumerable<RequiredFaceTypeDefinition> _requiredFaceTypes;
+    private readonly IEnumerable<RequiredTargetCallTypeDefinition> _requiredTargetCallTypes;
 
     public ImplementedInterfaceFinder (
         IEnumerable<Type> alreadyImplementedInterfaces, 
         IEnumerable<InterfaceIntroductionDefinition> receivedInterfaces, 
-        IEnumerable<RequiredFaceTypeDefinition> requiredFaceTypes, 
+        IEnumerable<RequiredTargetCallTypeDefinition> requiredTargetCallTypes, 
         IEnumerable<ConcreteMixinType> concreteMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("alreadyImplementedInterfaces", alreadyImplementedInterfaces);
       ArgumentUtility.CheckNotNull ("receivedInterfaces", receivedInterfaces);
-      ArgumentUtility.CheckNotNull ("requiredFaceTypes", requiredFaceTypes);
+      ArgumentUtility.CheckNotNull ("requiredTargetCallTypes", requiredTargetCallTypes);
       ArgumentUtility.CheckNotNull ("concreteMixinTypes", concreteMixinTypes);
 
       _alreadyImplementedInterfaces = alreadyImplementedInterfaces;
       _receivedInterfaces = receivedInterfaces;
-      _requiredFaceTypes = requiredFaceTypes;
+      _requiredTargetCallTypes = requiredTargetCallTypes;
       _concreteMixinTypes = concreteMixinTypes;
     }
 
     public Type[] GetInterfacesToImplement ()
     {
       var interfaces = new HashSet<Type> ();
-      interfaces.UnionWith (_requiredFaceTypes
+      interfaces.UnionWith (_requiredTargetCallTypes
                                 .Select (faceTypeDefinition => faceTypeDefinition.Type)
                                 .Where (t => t.IsInterface));
       interfaces.ExceptWith (_alreadyImplementedInterfaces); // remove required interfaces the type already implements

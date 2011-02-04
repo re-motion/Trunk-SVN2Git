@@ -27,10 +27,10 @@ namespace Remotion.Mixins.Definitions
   {
     private readonly UniqueDefinitionCollection<Type, MixinDefinition> _mixins =
         new UniqueDefinitionCollection<Type, MixinDefinition> (m => m.Type);
-    private readonly UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> _requiredFaceTypes =
-        new UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> (t => t.Type);
-    private readonly UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> _requiredBaseCallTypes =
-        new UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> (t => t.Type);
+    private readonly UniqueDefinitionCollection<Type, RequiredTargetCallTypeDefinition> _requiredTargetCallTypes =
+        new UniqueDefinitionCollection<Type, RequiredTargetCallTypeDefinition> (t => t.Type);
+    private readonly UniqueDefinitionCollection<Type, RequiredNextCallTypeDefinition> _requiredNextCallTypes =
+        new UniqueDefinitionCollection<Type, RequiredNextCallTypeDefinition> (t => t.Type);
     private readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> _requiredMixinTypes =
         new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (t => t.Type);
     
@@ -97,14 +97,14 @@ namespace Remotion.Mixins.Definitions
       get { return _requiredMixinTypes; }
     }
 
-    public UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> RequiredBaseCallTypes
+    public UniqueDefinitionCollection<Type, RequiredNextCallTypeDefinition> RequiredNextCallTypes
     {
-      get { return _requiredBaseCallTypes; }
+      get { return _requiredNextCallTypes; }
     }
 
-    public UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> RequiredFaceTypes
+    public UniqueDefinitionCollection<Type, RequiredTargetCallTypeDefinition> RequiredTargetCallTypes
     {
-      get { return _requiredFaceTypes; }
+      get { return _requiredTargetCallTypes; }
     }
 
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
@@ -114,8 +114,8 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
       
       _mixins.Accept (visitor);
-      _requiredFaceTypes.Accept (visitor);
-      _requiredBaseCallTypes.Accept (visitor);
+      _requiredTargetCallTypes.Accept (visitor);
+      _requiredNextCallTypes.Accept (visitor);
       _requiredMixinTypes.Accept (visitor);
     }
 

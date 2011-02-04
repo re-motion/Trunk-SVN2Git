@@ -39,38 +39,38 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     public void InheritedFaceDependencies ()
     {
       TargetClassDefinition bt1 =
-          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinFaceDependingOnInheritedInterface),
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinTargetCallDependingOnInheritedInterface),
                                                              typeof (MixinIntroducingInheritedInterface));
-      Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII1)));
-      Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII2)));
-      Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII3)));
-      Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII4)));
+      Assert.IsTrue (bt1.RequiredTargetCallTypes.ContainsKey (typeof (IMixinIII1)));
+      Assert.IsTrue (bt1.RequiredTargetCallTypes.ContainsKey (typeof (IMixinIII2)));
+      Assert.IsTrue (bt1.RequiredTargetCallTypes.ContainsKey (typeof (IMixinIII3)));
+      Assert.IsTrue (bt1.RequiredTargetCallTypes.ContainsKey (typeof (IMixinIII4)));
 
-      MixinDefinition m1 = bt1.Mixins[typeof (MixinFaceDependingOnInheritedInterface)];
-      Assert.IsTrue (m1.ThisDependencies.ContainsKey (typeof (IMixinIII1)));
-      Assert.IsTrue (m1.ThisDependencies.ContainsKey (typeof (IMixinIII2)));
-      Assert.IsTrue (m1.ThisDependencies.ContainsKey (typeof (IMixinIII3)));
-      Assert.IsTrue (m1.ThisDependencies.ContainsKey (typeof (IMixinIII4)));
+      MixinDefinition m1 = bt1.Mixins[typeof (MixinTargetCallDependingOnInheritedInterface)];
+      Assert.IsTrue (m1.TargetCallDependencies.ContainsKey (typeof (IMixinIII1)));
+      Assert.IsTrue (m1.TargetCallDependencies.ContainsKey (typeof (IMixinIII2)));
+      Assert.IsTrue (m1.TargetCallDependencies.ContainsKey (typeof (IMixinIII3)));
+      Assert.IsTrue (m1.TargetCallDependencies.ContainsKey (typeof (IMixinIII4)));
     }
 
     [Test]
-    public void InheritedBaseDependencies ()
+    public void InheritedNextCallDependencies ()
     {
       TargetClassDefinition bt1 =
           DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (BaseType1),
               typeof (MixinBaseDependingOnInheritedInterface),
               typeof (MixinIntroducingInheritedInterface));
-      Assert.IsTrue (bt1.RequiredBaseCallTypes.ContainsKey (typeof (IMixinIII1)));
-      Assert.IsTrue (bt1.RequiredBaseCallTypes.ContainsKey (typeof (IMixinIII2)));
-      Assert.IsTrue (bt1.RequiredBaseCallTypes.ContainsKey (typeof (IMixinIII3)));
-      Assert.IsTrue (bt1.RequiredBaseCallTypes.ContainsKey (typeof (IMixinIII4)));
+      Assert.IsTrue (bt1.RequiredNextCallTypes.ContainsKey (typeof (IMixinIII1)));
+      Assert.IsTrue (bt1.RequiredNextCallTypes.ContainsKey (typeof (IMixinIII2)));
+      Assert.IsTrue (bt1.RequiredNextCallTypes.ContainsKey (typeof (IMixinIII3)));
+      Assert.IsTrue (bt1.RequiredNextCallTypes.ContainsKey (typeof (IMixinIII4)));
 
       MixinDefinition m1 = bt1.Mixins[typeof (MixinBaseDependingOnInheritedInterface)];
-      Assert.IsTrue (m1.BaseDependencies.ContainsKey (typeof (IMixinIII1)));
-      Assert.IsTrue (m1.BaseDependencies.ContainsKey (typeof (IMixinIII2)));
-      Assert.IsTrue (m1.BaseDependencies.ContainsKey (typeof (IMixinIII3)));
-      Assert.IsTrue (m1.BaseDependencies.ContainsKey (typeof (IMixinIII4)));
+      Assert.IsTrue (m1.NextCallDependencies.ContainsKey (typeof (IMixinIII1)));
+      Assert.IsTrue (m1.NextCallDependencies.ContainsKey (typeof (IMixinIII2)));
+      Assert.IsTrue (m1.NextCallDependencies.ContainsKey (typeof (IMixinIII3)));
+      Assert.IsTrue (m1.NextCallDependencies.ContainsKey (typeof (IMixinIII4)));
     }
 
 

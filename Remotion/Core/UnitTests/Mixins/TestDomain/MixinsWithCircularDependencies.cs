@@ -18,24 +18,24 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.TestDomain
 {
-  public class MixinWithCircularThisDependency1 : Mixin<ICircular2>, ICircular1
+  public class MixinWithCircularTargetCallDependency1 : Mixin<ICircular2>, ICircular1
   {
     public string Circular1 ()
     {
-      return "MixinWithCircularThisDependency1.Circular1-" + This.Circular2 ();
+      return "MixinWithCircularTargetCallDependency1.Circular1-" + Target.Circular2 ();
     }
   }
 
-  public class MixinWithCircularThisDependency2 : Mixin<ICircular1>, ICircular2
+  public class MixinWithCircularTargetCallDependency2 : Mixin<ICircular1>, ICircular2
   {
     public string Circular2 ()
     {
-      return "MixinWithCircularThisDependency2.Circular2";
+      return "MixinWithCircularTargetCallDependency2.Circular2";
     }
 
     public string Circular12 ()
     {
-      return "MixinWithCircularThisDependency2.Circular12-" + This.Circular1();
+      return "MixinWithCircularTargetCallDependency2.Circular12-" + Target.Circular1();
     }
   }
 

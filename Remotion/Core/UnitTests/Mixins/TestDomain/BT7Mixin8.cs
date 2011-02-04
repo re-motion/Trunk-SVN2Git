@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public string Five()
     {
-      return "BT7Mixin8.Five-" + Base.Five();
+      return "BT7Mixin8.Five-" + Next.Five();
     }
   }
 }

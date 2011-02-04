@@ -86,11 +86,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
         OverridableBaseType deserialiedInstance = Serializer.SerializeAndDeserialize (instance);
 
         Assert.That (deserialiedInstance.OverridableMethod (85), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-85"));
-        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).This, Is.SameAs (deserialiedInstance));
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Target, Is.SameAs (deserialiedInstance));
 
-        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base, Is.Not.Null);
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Next, Is.Not.Null);
         Assert.That (
-                      ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base).OverridableMethod (84), Is.EqualTo ("OverridableBaseType.OverridableMethod(84)"));
+                      ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Next).OverridableMethod (84), Is.EqualTo ("OverridableBaseType.OverridableMethod(84)"));
       }
     }
 
@@ -129,11 +129,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       Assert.That (deserializedMixinTarget.Mixins.Length, Is.EqualTo (mixinTarget.Mixins.Length));
       Assert.That (deserializedMixinTarget.Mixins[0].GetType (), Is.EqualTo (mixinTarget.Mixins[0].GetType ()));
 
-      Assert.That (deserializedMixinTarget.FirstBaseCallProxy, Is.Not.Null);
-      Assert.That (deserializedMixinTarget.FirstBaseCallProxy, Is.Not.EqualTo (mixinTarget.FirstBaseCallProxy));
-      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType (), Is.EqualTo (deserializedMixinTarget.GetType ().GetNestedType ("BaseCallProxy")));
-      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType ().GetField ("__depth").GetValue (deserializedMixinTarget.FirstBaseCallProxy), Is.EqualTo (0));
-      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType ().GetField ("__this").GetValue (deserializedMixinTarget.FirstBaseCallProxy), Is.SameAs (deserializedMixinTarget));
+      Assert.That (deserializedMixinTarget.FirstNextCallProxy, Is.Not.Null);
+      Assert.That (deserializedMixinTarget.FirstNextCallProxy, Is.Not.EqualTo (mixinTarget.FirstNextCallProxy));
+      Assert.That (deserializedMixinTarget.FirstNextCallProxy.GetType (), Is.EqualTo (deserializedMixinTarget.GetType ().GetNestedType ("NextCallProxy")));
+      Assert.That (deserializedMixinTarget.FirstNextCallProxy.GetType ().GetField ("__depth").GetValue (deserializedMixinTarget.FirstNextCallProxy), Is.EqualTo (0));
+      Assert.That (deserializedMixinTarget.FirstNextCallProxy.GetType ().GetField ("__this").GetValue (deserializedMixinTarget.FirstNextCallProxy), Is.SameAs (deserializedMixinTarget));
     }
 
     [Test]

@@ -31,10 +31,10 @@ namespace Remotion.Mixins.Definitions
     private readonly UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> _nonInterfaceIntroductions =
         new UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> (i => i.InterfaceType);
 
-    private readonly UniqueDefinitionCollection<Type, ThisDependencyDefinition> _thisDependencies =
-        new UniqueDefinitionCollection<Type, ThisDependencyDefinition> (d => d.RequiredType.Type);
-    private readonly UniqueDefinitionCollection<Type, BaseDependencyDefinition> _baseDependencies =
-        new UniqueDefinitionCollection<Type, BaseDependencyDefinition> (d => d.RequiredType.Type);
+    private readonly UniqueDefinitionCollection<Type, TargetCallDependencyDefinition> _targetCallDependencies =
+        new UniqueDefinitionCollection<Type, TargetCallDependencyDefinition> (d => d.RequiredType.Type);
+    private readonly UniqueDefinitionCollection<Type, NextCallDependencyDefinition> _nextCallDependencies =
+        new UniqueDefinitionCollection<Type, NextCallDependencyDefinition> (d => d.RequiredType.Type);
     private readonly UniqueDefinitionCollection<Type, MixinDependencyDefinition> _mixinDependencies =
         new UniqueDefinitionCollection<Type, MixinDependencyDefinition> (d => d.RequiredType.Type);
 
@@ -98,14 +98,14 @@ namespace Remotion.Mixins.Definitions
 
     public int MixinIndex { get; internal set; }
 
-    public UniqueDefinitionCollection<Type, ThisDependencyDefinition> ThisDependencies
+    public UniqueDefinitionCollection<Type, TargetCallDependencyDefinition> TargetCallDependencies
     {
-      get { return _thisDependencies; }
+      get { return _targetCallDependencies; }
     }
 
-    public UniqueDefinitionCollection<Type, BaseDependencyDefinition> BaseDependencies
+    public UniqueDefinitionCollection<Type, NextCallDependencyDefinition> NextCallDependencies
     {
-      get { return _baseDependencies; }
+      get { return _nextCallDependencies; }
     }
 
     public UniqueDefinitionCollection<Type, MixinDependencyDefinition> MixinDependencies
@@ -145,14 +145,14 @@ namespace Remotion.Mixins.Definitions
       NonAttributeIntroductions.Accept (visitor);
       SuppressedAttributeIntroductions.Accept (visitor);
 
-      _thisDependencies.Accept (visitor);
-      _baseDependencies.Accept (visitor);
+      _targetCallDependencies.Accept (visitor);
+      _nextCallDependencies.Accept (visitor);
       _mixinDependencies.Accept (visitor);
     }
 
     public IEnumerable<DependencyDefinitionBase> GetOrderRelevantDependencies ()
     {
-      foreach (var dependency in _baseDependencies)
+      foreach (var dependency in _nextCallDependencies)
         yield return dependency;
       foreach (var dependency in _mixinDependencies)
         yield return dependency;

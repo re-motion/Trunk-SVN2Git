@@ -122,14 +122,14 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CompleteFaceInterfacesAddedByMixins ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<BaseType3>().Clear().AddMixins (typeof (BT3Mixin7Face), typeof (BT3Mixin4)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<BaseType3>().Clear().AddMixins (typeof (Bt3Mixin7TargetCall), typeof (BT3Mixin4)).EnterScope())
       {
         var complete = (ICBaseType3BT3Mixin4) ObjectFactory.Create<BaseType3> (ParamList.Empty);
 
         Assert.That (((IBaseType33) complete).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
         Assert.That (((IBaseType34) complete).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
         Assert.That (complete.IfcMethod2(), Is.EqualTo ("BaseType3.IfcMethod2"));
-        Assert.That (Mixin.Get<BT3Mixin7Face> (complete).InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
+        Assert.That (Mixin.Get<Bt3Mixin7TargetCall> (complete).InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
       }
     }
 
@@ -255,9 +255,9 @@ namespace Remotion.UnitTests.Mixins
         var bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         var mixin = Mixin.Get<BT3Mixin1> (bt3);
         Assert.That (mixin, Is.Not.Null);
-        Assert.That (mixin.This, Is.SameAs (bt3));
-        Assert.That (mixin.Base, Is.Not.Null);
-        Assert.That (mixin.Base, Is.Not.SameAs (bt3));
+        Assert.That (mixin.Target, Is.SameAs (bt3));
+        Assert.That (mixin.Next, Is.Not.Null);
+        Assert.That (mixin.Next, Is.Not.SameAs (bt3));
       }
     }
 
@@ -269,7 +269,7 @@ namespace Remotion.UnitTests.Mixins
         var bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         var mixin = Mixin.Get<BT3Mixin2> (bt3);
         Assert.That (mixin, Is.Not.Null);
-        Assert.That (mixin.This, Is.SameAs (bt3));
+        Assert.That (mixin.Target, Is.SameAs (bt3));
       }
     }
 

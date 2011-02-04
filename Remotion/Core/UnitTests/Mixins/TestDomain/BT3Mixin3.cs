@@ -21,18 +21,18 @@ namespace Remotion.UnitTests.Mixins.TestDomain
 {
   [Extends (typeof (BaseType3))]
   [Serializable]
-  public class BT3Mixin3<[BindToTargetType] TThis, [BindToConstraints] TBase> : Mixin<TThis, TBase>
-    where TThis : class, IBaseType33
-    where TBase : class, IBaseType33
+  public class BT3Mixin3<[BindToTargetType] TTarget, [BindToConstraints] TNext> : Mixin<TTarget, TNext>
+    where TTarget : class, IBaseType33
+    where TNext : class, IBaseType33
   {
-    public new TThis This
+    public new TTarget Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
 
-    public new TBase Base
+    public new TNext Next
     {
-      get { return base.Base; }
+      get { return base.Next; }
     }
   }
 }

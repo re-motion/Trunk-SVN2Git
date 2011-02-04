@@ -21,8 +21,8 @@ namespace Remotion.Mixins.Utilities
 {
   public class MixinGenericArgumentFinder
   {
-    public static readonly MixinGenericArgumentFinder ThisArgumentFinder = new MixinGenericArgumentFinder (0);
-    public static readonly MixinGenericArgumentFinder BaseArgumentFinder = new MixinGenericArgumentFinder (1);
+    public static readonly MixinGenericArgumentFinder TargetArgumentFinder = new MixinGenericArgumentFinder (0);
+    public static readonly MixinGenericArgumentFinder NextArgumentFinder = new MixinGenericArgumentFinder (1);
 
     private readonly int _genericArgumentIndex;
 

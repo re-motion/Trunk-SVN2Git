@@ -21,11 +21,11 @@ namespace Remotion.UnitTests.Mixins.Validation.ValidationTestDomain
   public interface IEmptyInterface
   { }
 
-  public class MixinWithUnsatisfiedEmptyThisDependency : Mixin<IEmptyInterface>
+  public class MixinWithUnsatisfiedEmptyTargetCallDependency : Mixin<IEmptyInterface>
   {
   }
 
-  public class MixinWithUnsatisfiedEmptyBaseDependency : Mixin<object, IEmptyInterface>
+  public class MixinWithUnsatisfiedEmptyNextCallDependency : Mixin<object, IEmptyInterface>
   {
   }
 
@@ -33,11 +33,11 @@ namespace Remotion.UnitTests.Mixins.Validation.ValidationTestDomain
   {
   }
 
-  public class MixinWithUnsatisfiedEmptyAggregateThisDependency : Mixin<IEmptyAggregateInterface>
+  public class MixinWithUnsatisfiedEmptyAggregateTargetCallDependency : Mixin<IEmptyAggregateInterface>
   {
   }
 
-  public class MixinWithUnsatisfiedEmptyAggregateBaseDependency : Mixin<object, IEmptyAggregateInterface>
+  public class MixinWithUnsatisfiedEmptyAggregateNextCallDependency : Mixin<object, IEmptyAggregateInterface>
   {
   }
 }

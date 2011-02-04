@@ -39,29 +39,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       OnLoadedCalled = true;
       OnLoadedLoadMode = loadMode;
       ++OnLoadedCount;
-      Assert.IsNotNull (This.ID);
-      ++This.Property;
+      Assert.IsNotNull (Target.ID);
+      ++Target.Property;
     }
 
     public void OnDomainObjectCreated ()
     {
       OnCreatedCalled = true;
-      Assert.IsNotNull (This.ID);
-      This.Property += 2;
+      Assert.IsNotNull (Target.ID);
+      Target.Property += 2;
     }
 
     public void OnDomainObjectReferenceInitializing ()
     {
       OnDomainObjectReferenceInitializingCalled = true;
       ++OnDomainObjectReferenceInitializingCount;
-      Assert.IsNotNull (This.ID);
+      Assert.IsNotNull (Target.ID);
       if (InitializationHandler != null)
         InitializationHandler (this, EventArgs.Empty);
     }
 
-    public new HookedTargetClass This 
+    public new HookedTargetClass Target 
     { 
-      get { return base.This; } 
+      get { return base.Target; } 
     }
   }
 }

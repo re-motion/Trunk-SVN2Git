@@ -39,31 +39,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integrat
       OnLoadedCalled = true;
       OnLoadedLoadMode = loadMode;
       ++OnLoadedCount;
-      Assert.IsNotNull (This.ID);
-      ++This.OrderNumber;
-      Assert.IsNotNull (This.OrderItems);
+      Assert.IsNotNull (Target.ID);
+      ++Target.OrderNumber;
+      Assert.IsNotNull (Target.OrderItems);
     }
 
     public void OnDomainObjectCreated ()
     {
       OnCreatedCalled = true;
-      Assert.IsNotNull (This.ID);
-      This.OrderNumber += 2;
-      Assert.IsNotNull (This.OrderItems);
+      Assert.IsNotNull (Target.ID);
+      Target.OrderNumber += 2;
+      Assert.IsNotNull (Target.OrderItems);
     }
 
     public void OnDomainObjectReferenceInitializing ()
     {
       OnDomainObjectReferenceInitializingCalled = true;
       ++OnDomainObjectReferenceInitializingCount;
-      Assert.IsNotNull (This.ID);
+      Assert.IsNotNull (Target.ID);
       if (InitializationHandler != null)
         InitializationHandler (this, EventArgs.Empty);
     }
 
-    public new Order This 
+    public new Order Target 
     { 
-      get { return base.This; } 
+      get { return base.Target; } 
     }
   }
 }

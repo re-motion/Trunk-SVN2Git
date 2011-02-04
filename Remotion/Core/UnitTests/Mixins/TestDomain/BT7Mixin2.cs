@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public virtual string One<T> (T t)
     {
-      return "BT7Mixin2.One(" + t + ")-" + ((IBaseType7) Base).One (t) + "-" + ((IBT7Mixin3) Base).One (t) + "-" + Base.Two() + "-" + This.Two();
+      return "BT7Mixin2.One(" + t + ")-" + ((IBaseType7) Next).One (t) + "-" + ((IBT7Mixin3) Next).One (t) + "-" + Next.Two() + "-" + Target.Two();
     }
 
     [OverrideTarget]
@@ -48,13 +48,13 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public virtual string Three ()
     {
-      return "BT7Mixin2.Three-" + Base.Three ();
+      return "BT7Mixin2.Three-" + Next.Three ();
     }
 
     [OverrideTarget]
     public virtual string Four ()
     {
-      return "BT7Mixin2.Four-" + Base.Four() + "-" + Base.NotOverridden();
+      return "BT7Mixin2.Four-" + Next.Four() + "-" + Next.NotOverridden();
     }
   }
 }

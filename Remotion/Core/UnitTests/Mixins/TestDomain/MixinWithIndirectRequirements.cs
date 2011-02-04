@@ -45,26 +45,26 @@ namespace Remotion.UnitTests.Mixins.TestDomain
   {
   }
 
-  // This dependencies can contain unfulfilled dependencies, e.g. IIndirectRequirement2
-  public interface IIndirectThisAggregator : IIndirectRequirement1, IIndirectRequirement2, IIndirectRequirement3
+  // Target dependencies can contain unfulfilled dependencies, e.g. IIndirectRequirement2
+  public interface IIndirectTargetAggregator : IIndirectRequirement1, IIndirectRequirement2, IIndirectRequirement3
   {
   }
 
-  // Base dependencies cannot contain unfulfilled dependencies, e.g. IIndirectRequirement2
+  // Next dependencies cannot contain unfulfilled dependencies, e.g. IIndirectRequirement2
   public interface IIndirectBaseAggregator : IIndirectRequirement1, IIndirectRequirement3
   {
   }
 
-  public class MixinWithIndirectRequirements : Mixin <IIndirectThisAggregator, IIndirectBaseAggregator>
+  public class MixinWithIndirectRequirements : Mixin <IIndirectTargetAggregator, IIndirectBaseAggregator>
   {
     public string GetStuffViaThis()
     {
-      return This.Method1() + "-" + This.BaseMethod1() + "-" + This.Method3();
+      return Target.Method1() + "-" + Target.BaseMethod1() + "-" + Target.Method3();
     }
 
     public string GetStuffViaBase()
     {
-      return Base.Method1() + "-" + Base.BaseMethod1() + "-" + Base.Method3();
+      return Next.Method1() + "-" + Next.BaseMethod1() + "-" + Next.Method3();
     }
   }
 

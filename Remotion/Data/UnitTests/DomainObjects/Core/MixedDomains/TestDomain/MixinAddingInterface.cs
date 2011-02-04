@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   {
     public string GetGreetings ()
     {
-      return "Hello, my ID is " + This.ID;
+      return "Hello, my ID is " + Target.ID;
     }
   }
 }

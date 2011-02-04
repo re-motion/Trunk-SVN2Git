@@ -172,8 +172,8 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
     public void DuplicateDependenciesDontMatter ()
     {
       TargetClassDefinition mt = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (MixinTargetWithExplicitDependencies));
-      Assert.IsTrue (mt.RequiredBaseCallTypes.ContainsKey (typeof (IMixinBeingDependedUpon)));
-      Assert.IsTrue (mt.Mixins[typeof (MixinWithDependency)].BaseDependencies.ContainsKey (typeof (IMixinBeingDependedUpon)));
+      Assert.IsTrue (mt.RequiredNextCallTypes.ContainsKey (typeof (IMixinBeingDependedUpon)));
+      Assert.IsTrue (mt.Mixins[typeof (MixinWithDependency)].NextCallDependencies.ContainsKey (typeof (IMixinBeingDependedUpon)));
       Assert.IsTrue (mt.Mixins[typeof (MixinWithDependency)].MixinDependencies.ContainsKey (typeof (IMixinBeingDependedUpon)));
 
       // no exceptions occurred while ordering

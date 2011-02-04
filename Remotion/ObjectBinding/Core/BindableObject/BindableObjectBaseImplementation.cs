@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public override string DisplayName
     {
-      get { return ((IBusinessObject) This).DisplayName; }
+      get { return ((IBusinessObject) Target).DisplayName; }
     }
   }
 }

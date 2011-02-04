@@ -25,13 +25,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
   [Uses (typeof (NullMixin))]
   public class TargetClassAccessingFirstCallProxyFromCtor
   {
-    public object FirstBaseCallProxy;
+    public object FirstNextCallProxy;
 
     public TargetClassAccessingFirstCallProxyFromCtor ()
     {
       var mixinTarget = (IMixinTarget) this;
-      FirstBaseCallProxy = mixinTarget.FirstBaseCallProxy;
-      Assert.That (FirstBaseCallProxy, Is.Not.Null);
+      FirstNextCallProxy = mixinTarget.FirstNextCallProxy;
+      Assert.That (FirstNextCallProxy, Is.Not.Null);
     }
   }
 }

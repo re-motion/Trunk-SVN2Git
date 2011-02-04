@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins
       {
         try
         {
-          object t = This;
+          object t = Target;
           Assert.Fail("Expected InvalidOperationException.");
         }
         catch (InvalidOperationException)
@@ -49,8 +49,8 @@ namespace Remotion.UnitTests.Mixins
 
       protected override void OnInitialized ()
       {
-        Assert.IsNotNull (This);
-        ThisValue = This;
+        Assert.IsNotNull (Target);
+        ThisValue = Target;
         base.OnInitialized();
       }
     }
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Mixins
       {
         try
         {
-          object t = This;
+          object t = Target;
           Assert.Fail ("Expected InvalidOperationException.");
         }
         catch (InvalidOperationException)
@@ -95,7 +95,7 @@ namespace Remotion.UnitTests.Mixins
 
         try
         {
-          object t = Base;
+          object t = Next;
           Assert.Fail ("Expected InvalidOperationException.");
         }
         catch (InvalidOperationException)
@@ -113,10 +113,10 @@ namespace Remotion.UnitTests.Mixins
 
       protected override void OnInitialized ()
       {
-        Assert.IsNotNull (This);
-        Assert.IsNotNull (Base);
-        ThisValue = This;
-        BaseValue = Base;
+        Assert.IsNotNull (Target);
+        Assert.IsNotNull (Next);
+        ThisValue = Target;
+        BaseValue = Next;
         base.OnInitialized ();
       }
     }

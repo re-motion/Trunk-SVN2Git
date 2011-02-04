@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building.RequiredMethodDefinitio
           targetClassDefinition, 
           typeof (ClassImplementingInterfaceWithDuckTyping).GetMethod ("Method2"));
 
-      var requirement = DefinitionObjectMother.CreateRequiredFaceTypeDefinition (targetClassDefinition, typeof (IInterface));
+      var requirement = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IInterface));
       var builder = new DuckTypingRequiredMethodDefinitionCollector (targetClassDefinition);
       
       var definitions = builder.CreateRequiredMethodDefinitions (requirement).OrderBy (def => def.FullName).ToArray();
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building.RequiredMethodDefinitio
           targetClassDefinition,
           typeof (ClassImplementingInterfaceWithDuckTypingWithOverloads).GetMethod ("Method2"));
 
-      var requirement = DefinitionObjectMother.CreateRequiredFaceTypeDefinition (targetClassDefinition, typeof (IInterface));
+      var requirement = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IInterface));
       var builder = new DuckTypingRequiredMethodDefinitionCollector (targetClassDefinition);
 
       var definitions = builder.CreateRequiredMethodDefinitions (requirement).OrderBy (def => def.FullName).ToArray ();
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building.RequiredMethodDefinitio
           targetClassDefinition,
           typeof (ClassImplementingInterfaceWithDuckTypingWithBaseWithSameMembers).GetMethod ("Method2"));
 
-      var requirement = DefinitionObjectMother.CreateRequiredFaceTypeDefinition (targetClassDefinition, typeof (IInterface));
+      var requirement = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IInterface));
       var builder = new DuckTypingRequiredMethodDefinitionCollector (targetClassDefinition);
 
       var definitions = builder.CreateRequiredMethodDefinitions (requirement).OrderBy (def => def.FullName).ToArray ();
@@ -116,7 +116,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building.RequiredMethodDefinitio
     {
       var targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
 
-      var requirement = DefinitionObjectMother.CreateRequiredFaceTypeDefinition (targetClassDefinition, typeof (IInterface));
+      var requirement = DefinitionObjectMother.CreateRequiredTargetCallTypeDefinition (targetClassDefinition, typeof (IInterface));
       var builder = new DuckTypingRequiredMethodDefinitionCollector (targetClassDefinition);
 
       builder.CreateRequiredMethodDefinitions (requirement).ToArray ();

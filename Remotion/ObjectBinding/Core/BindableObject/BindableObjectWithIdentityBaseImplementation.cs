@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public override string UniqueIdentifier
     {
-      get { return ((BindableObjectWithIdentityBase) This).UniqueIdentifier; }
+      get { return ((BindableObjectWithIdentityBase) Target).UniqueIdentifier; }
     }
 
     void IDeserializationCallback.OnDeserialization (object sender)
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public override string DisplayName
     {
-      get { return ((IBusinessObject) This).DisplayName; }
+      get { return ((IBusinessObject) Target).DisplayName; }
     }
   }
 }

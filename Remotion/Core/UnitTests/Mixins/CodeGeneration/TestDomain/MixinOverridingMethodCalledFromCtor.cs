@@ -27,8 +27,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
     [OverrideTarget]
     public virtual object VirtualMethod ()
     {
-      MyThis = This;
-      MyBase = Base;
+      MyThis = Target;
+      MyBase = Next;
 
       return this;
     }

@@ -44,17 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     public void Commit ()
     {
-      This.Commit ();
+      Target.Commit ();
     }
 
     public void Rollback ()
     {
-      This.Rollback ();
+      Target.Rollback ();
     }
 
     public ClientTransaction AsClientTransaction
     {
-      get { return This; }
+      get { return Target; }
     }
 
     [OverrideTarget]

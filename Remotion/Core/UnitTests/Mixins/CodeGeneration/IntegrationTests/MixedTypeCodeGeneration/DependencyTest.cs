@@ -25,16 +25,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
   public class DependencyTest : CodeGenerationBaseTest
   {
     [Test]
-    public void CircularThisDependenciesWork ()
+    public void CircularTargetCallDependenciesWork ()
     {
       using (MixinConfiguration.BuildFromActive()
-          .ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2))
+          .ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithCircularTargetCallDependency1), typeof (MixinWithCircularTargetCallDependency2))
           .EnterScope())
       {
         object o = ObjectFactory.Create<NullTarget> (ParamList.Empty);
         var c1 = (ICircular2) o;
-        Assert.AreEqual ("MixinWithCircularThisDependency2.Circular12-MixinWithCircularThisDependency1.Circular1-"
-            + "MixinWithCircularThisDependency2.Circular2", c1.Circular12 ());
+        Assert.AreEqual ("MixinWithCircularTargetCallDependency2.Circular12-MixinWithCircularTargetCallDependency1.Circular1-"
+            + "MixinWithCircularTargetCallDependency2.Circular2", c1.Circular12 ());
       }
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void ThisCallToClassImplementingInternalInterface ()
     {
       ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> (ParamList.Empty);
-      var mixin = Mixin.Get<MixinWithClassFaceImplementingInternalInterface> (ciii);
+      var mixin = Mixin.Get<MixinWithClassTargetCallImplementingInternalInterface> (ciii);
       Assert.AreEqual ("ClassImplementingInternalInterface.Foo", mixin.GetStringViaThis ());
     }
 

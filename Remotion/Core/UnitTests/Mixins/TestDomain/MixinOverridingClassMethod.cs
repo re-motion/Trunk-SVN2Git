@@ -27,8 +27,8 @@ namespace Remotion.UnitTests.Mixins.TestDomain
       string OverridableMethod (int i);
     }
 
-    public new object This { get { return base.This; } }
-    public new object Base { get { return base.Base; } }
+    public new object Target { get { return base.Target; } }
+    public new object Next { get { return base.Next; } }
 
     [OverrideTarget]
     public string OverridableMethod (int i)

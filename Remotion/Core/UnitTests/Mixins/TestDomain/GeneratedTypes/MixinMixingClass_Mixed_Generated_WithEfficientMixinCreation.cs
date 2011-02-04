@@ -18,7 +18,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain.GeneratedTypes
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private object[] __extensions;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private BaseCallProxy __first;
+    private NextCallProxy __first;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private static MixinArrayInitializer __mixinArrayInitializer;
 
@@ -59,17 +59,17 @@ namespace Remotion.UnitTests.Mixins.TestDomain.GeneratedTypes
 
     void IInitializableMixinTarget.Initialize()
     {
-      this.__first = new BaseCallProxy(this, 0);
+      this.__first = new NextCallProxy(this, 0);
       this.__extensions = new[] { new MixinMixingMixin() };
-      ((IInitializableMixin) this.__extensions[0]).Initialize(this, new BaseCallProxy(this, 1), false);
+      ((IInitializableMixin) this.__extensions[0]).Initialize(this, new NextCallProxy(this, 1), false);
     }
 
     void IInitializableMixinTarget.InitializeAfterDeserialization(object[] mixinInstances)
     {
-      this.__first = new BaseCallProxy(this, 0);
+      this.__first = new NextCallProxy(this, 0);
       __mixinArrayInitializer.CheckMixinArray(mixinInstances);
       this.__extensions = mixinInstances;
-      ((IInitializableMixin) this.__extensions[0]).Initialize(this, new BaseCallProxy(this, 1), true);
+      ((IInitializableMixin) this.__extensions[0]).Initialize(this, new NextCallProxy(this, 1), true);
     }
 
     public override string StringMethod(int i)
@@ -91,8 +91,8 @@ namespace Remotion.UnitTests.Mixins.TestDomain.GeneratedTypes
       }
     }
 
-    [DebuggerDisplay("Generated proxy", Name="FirstBaseCallProxy")]
-    object IMixinTarget.FirstBaseCallProxy
+    [DebuggerDisplay("Generated proxy", Name="FirstNextCallProxy")]
+    object IMixinTarget.FirstNextCallProxy
     {
       get
       {
@@ -119,14 +119,14 @@ namespace Remotion.UnitTests.Mixins.TestDomain.GeneratedTypes
 
     // Nested Types
     [Serializable]
-    public sealed class BaseCallProxy : IGeneratedBaseCallProxyType, MixinMixingMixin.IRequirements
+    public sealed class NextCallProxy : IGeneratedNextCallProxyType, MixinMixingMixin.IRequirements
     {
       // Fields
       public int __depth;
       public MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation __this;
 
       // Methods
-      public BaseCallProxy(MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation d_ccefeceebde1, int num1)
+      public NextCallProxy(MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation d_ccefeceebde1, int num1)
       {
         this.__this = d_ccefeceebde1;
         this.__depth = num1;

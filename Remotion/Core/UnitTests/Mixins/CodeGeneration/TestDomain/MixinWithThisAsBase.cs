@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
     [OverrideTarget]
     public string IfcMethod()
     {
-      return "MixinWithThisAsBase.IfcMethod-" + Base.IfcMethod();
+      return "MixinWithThisAsBase.IfcMethod-" + Next.IfcMethod();
     }
   }
 }

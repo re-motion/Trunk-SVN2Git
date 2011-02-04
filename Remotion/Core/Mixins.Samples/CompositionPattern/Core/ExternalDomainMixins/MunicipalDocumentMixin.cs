@@ -25,10 +25,10 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.ExternalDomainMixins
   /// <see cref="IMunicipalSettlement.MunicipalityID"/>) have a dependency on <see cref="IMunicipalSettlement"/>). 
   /// It is not possible to use a mixin in order to override the members added by another mixin.
   /// Therefore, we have two options: mix the <see cref="DocumentMixin"/> or extend <see cref="DocumentMixin"/>.
-  /// Since we need to access the <see cref="DocumentMixin"/>'s <see cref="Remotion.Mixins.Mixin{TThis}.This"/> property, the latter option
+  /// Since we need to access the <see cref="DocumentMixin"/>'s <see cref="Mixin{TTarget}.Target"/> property, the latter option
   /// seems cleaner. Unfortunately, in both situations we cannot access the <see cref="IMunicipalSettlement.MunicipalityID"/> without casting. We
   /// declare an additional dependency on <see cref="IMunicipalSettlement"/>, but the only way to get the 
-  /// <see cref="Remotion.Mixins.Mixin{TThis}.This"/> property to include the <see cref="IMunicipalSettlement.MunicipalityID"/> property would be to
+  /// <see cref="Mixin{TTarget}.Target"/> property to include the <see cref="IMunicipalSettlement.MunicipalityID"/> property would be to
   /// refactor <see cref="DocumentMixin"/> to become a generic mixin. We don't do that to illustrate how to work without a generic mixin.
   /// </summary>
   // [Extends (typeof (Settlement), 
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.ExternalDomainMixins
     public override string Title
     {
       get { return base.Title; }
-      set { base.Title = value + " (for municipality " + ((IMunicipalSettlement) This).MunicipalityID + ")"; }
+      set { base.Title = value + " (for municipality " + ((IMunicipalSettlement) Target).MunicipalityID + ")"; }
     }
   }
 }

@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     public virtual string StringMethod (int i)
     {
-      return "MixinMixingClass-" + Base.StringMethod (i);
+      return "MixinMixingClass-" + Next.StringMethod (i);
     }
   }
 }

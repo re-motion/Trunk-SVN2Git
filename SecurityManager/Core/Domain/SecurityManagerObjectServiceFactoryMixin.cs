@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.Domain
       if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
         return new AccessControlEntryPropertiesSearchService ();
 
-      return Base.CreateService (provider, serviceType);
+      return Next.CreateService (provider, serviceType);
     }
   }
 }

@@ -43,11 +43,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
 
-      var oldProxy = instance.FirstBaseCallProxy;
+      var oldProxy = instance.FirstNextCallProxy;
       instance.Initialize ();
 
-      Assert.That (instance.FirstBaseCallProxy, Is.Not.SameAs (oldProxy));
-      Assert.That (PrivateInvoke.GetPublicField (instance.FirstBaseCallProxy, "__depth"), Is.EqualTo (0));
+      Assert.That (instance.FirstNextCallProxy, Is.Not.SameAs (oldProxy));
+      Assert.That (PrivateInvoke.GetPublicField (instance.FirstNextCallProxy, "__depth"), Is.EqualTo (0));
     }
 
     [Test]
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void Initialize_InitializesMixins_WithBaseCallProxies ()
+    public void Initialize_InitializesMixins_WithNextCallProxies ()
     {
       var instance = (IInitializableMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
       instance.Initialize ();
@@ -94,11 +94,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
 
-      var oldProxy = instance.FirstBaseCallProxy;
+      var oldProxy = instance.FirstNextCallProxy;
       instance.InitializeAfterDeserialization (new object[] { new NullMixin() });
 
-      Assert.That (instance.FirstBaseCallProxy, Is.Not.SameAs (oldProxy));
-      Assert.That (PrivateInvoke.GetPublicField (instance.FirstBaseCallProxy, "__depth"), Is.EqualTo (0));
+      Assert.That (instance.FirstNextCallProxy, Is.Not.SameAs (oldProxy));
+      Assert.That (PrivateInvoke.GetPublicField (instance.FirstNextCallProxy, "__depth"), Is.EqualTo (0));
     }
 
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void InitializeAfterDeserialization_InitializesMixins_WithBaseCallProxies ()
+    public void InitializeAfterDeserialization_InitializesMixins_WithNextCallProxies ()
     {
       var instance = (IInitializableMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
 
@@ -154,8 +154,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
     private object GetDepthValue (object mixin)
     {
-      var baseProperty = MixinReflector.GetBaseProperty (mixin.GetType ());
-      var baseValue = baseProperty.GetValue (mixin, null);
+      var nextProperty = MixinReflector.GetNextProperty (mixin.GetType ());
+      var baseValue = nextProperty.GetValue (mixin, null);
       return PrivateInvoke.GetPublicField (baseValue, "__depth");
     }
   }

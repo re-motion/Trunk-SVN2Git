@@ -36,9 +36,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
       Assert.IsNotNull (bt3);
       Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).This);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Base);
-      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).This);
+      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Target);
+      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
+      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).Target);
     }
 
     [Test]
@@ -61,9 +61,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.AreSame (generatedType, bt3.GetType ().BaseType);
       Assert.IsNotNull (bt3);
       Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).This);
-      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Base);
-      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).This);
+      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Target);
+      Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
+      Assert.AreSame (bt3, Mixin.Get<BT3Mixin1> (bt3).Target);
     }
 
     [Test]
@@ -77,8 +77,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
         var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
         Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
         Assert.AreSame (suppliedMixinInstance, Mixin.Get<BT3Mixin1> (bt3));
-        Assert.AreSame (bt3, suppliedMixinInstance.This);
-        Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Base);
+        Assert.AreSame (bt3, suppliedMixinInstance.Target);
+        Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).Next);
       }
     }
 
@@ -139,7 +139,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       var instance = CreateMixedObject<TargetClassAccessingFirstCallProxyFromCtor> (typeof (NullMixin));
 
-      Assert.That (instance.FirstBaseCallProxy, Is.Not.Null);
+      Assert.That (instance.FirstNextCallProxy, Is.Not.Null);
 
       // other assertions are performed by TargetClassAccessingFirstCallProxyFromCtor
     }

@@ -21,7 +21,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain.Mixins
 {
   /// <summary>
   /// Overrides the <see cref="ToString"/> operation of an arbitrary target object, prepending a serial number to the base output.
-  /// This is not a <see cref="DomainObjectMixin{TThis}"/>: it adds no persistent properties and does not depend on any domain object-specific
+  /// This is not a <see cref="DomainObjectMixin{TTarget}"/>: it adds no persistent properties and does not depend on any domain object-specific
   /// functionality.
   /// </summary>
   public class SerialNumberMixin : Mixin<SerialNumberMixin.ITargetRequirements, SerialNumberMixin.ITargetRequirements>
@@ -36,7 +36,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain.Mixins
     [OverrideTarget]
     public new string ToString ()
     {
-      return _number + ": " + Base.ToString ();
+      return _number + ": " + Next.ToString ();
     }
   }
 }

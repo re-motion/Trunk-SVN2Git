@@ -20,11 +20,11 @@ namespace Remotion.UnitTests.Mixins.Validation.ValidationTestDomain
 {
   interface IInvisible { }
 
-  class MixinWithInvisibleThisDependency : Mixin<IInvisible>
+  class MixinWithInvisibleTargetCallDependency : Mixin<IInvisible>
   {
   }
 
-  class MixinWithInvisibleBaseDependency : Mixin<object, IInvisible>
+  class MixinWithInvisibleNextCallDependency : Mixin<object, IInvisible>
   {
   }
 }

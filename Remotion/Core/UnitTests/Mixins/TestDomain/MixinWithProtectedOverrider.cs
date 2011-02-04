@@ -31,13 +31,13 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     [OverrideTarget]
     protected string VirtualMethod ()
     {
-      return "MixinWithProtectedOverrider.VirtualMethod-" + Base.VirtualMethod ();
+      return "MixinWithProtectedOverrider.VirtualMethod-" + Next.VirtualMethod ();
     }
 
     [OverrideTarget]
     protected string VirtualProperty
     {
-      get { return "MixinWithProtectedOverrider.VirtualProperty-" + Base.VirtualProperty; }
+      get { return "MixinWithProtectedOverrider.VirtualProperty-" + Next.VirtualProperty; }
     }
 
     [OverrideTarget]
@@ -45,13 +45,13 @@ namespace Remotion.UnitTests.Mixins.TestDomain
     {
       add
       {
-        Base.VirtualEvent += value;
-        Base.VirtualEvent += ThisHandler;
+        Next.VirtualEvent += value;
+        Next.VirtualEvent += ThisHandler;
       }
       remove
       {
-        Base.VirtualEvent -= value;
-        Base.VirtualEvent -= ThisHandler;
+        Next.VirtualEvent -= value;
+        Next.VirtualEvent -= ThisHandler;
       }
     }
 

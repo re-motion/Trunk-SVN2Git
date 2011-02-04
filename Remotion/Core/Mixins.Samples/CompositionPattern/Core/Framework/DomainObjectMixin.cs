@@ -23,19 +23,19 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Framework
   /// delegates to the mixin's target <see cref="IDomainObject"/>. This default implementation is useful because domain object mixins will
   /// usually introduce interfaces extending <see cref="IDomainObject"/>. Also provides infrastructure members useful to domain object mixins.
   /// </summary>
-  /// <typeparam name="TThis">The minimum type of the mixin's target class. This must at least implement <see cref="IDomainObject"/>.</typeparam>
+  /// <typeparam name="TTarget">The minimum type of the mixin's target class. This must at least implement <see cref="IDomainObject"/>.</typeparam>
   [NonIntroduced (typeof (IDomainObjectMixin))]
-  public abstract class DomainObjectMixin<TThis> : Mixin<TThis>, IDomainObject, IDomainObjectMixin
-      where TThis : class, IDomainObject
+  public abstract class DomainObjectMixin<TTarget> : Mixin<TTarget>, IDomainObject, IDomainObjectMixin
+      where TTarget : class, IDomainObject
   {
     public Guid TargetID
     {
-      get { return This.ID; }
+      get { return Target.ID; }
     }
 
     public DomainObjectEventSource TargetEvents
     {
-      get { return This.Events; }
+      get { return Target.Events; }
     }
 
     protected virtual void OnTargetReferenceInitializing()

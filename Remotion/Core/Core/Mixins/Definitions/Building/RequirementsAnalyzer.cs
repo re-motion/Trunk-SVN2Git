@@ -24,11 +24,11 @@ namespace Remotion.Mixins.Definitions.Building
 {
   /// <summary>
   /// Finds the requirements imposed by a given <see cref="MixinDefinition"/> on its <see cref="TargetClassDefinition"/> by analyzing the types
-  /// passed as generic arguments of the <see cref="Mixin{TThis}"/> and <see cref="Mixin{TThis,TBase}"/> base classes.
+  /// passed as generic arguments of the <see cref="Mixin{TTarget}"/> and <see cref="Mixin{TTarget,TNext}"/> base classes.
   /// </summary>
   /// <remarks>
   /// A <see cref="MixinDefinition"/> can either pass an ordinary type (<c>Mixin&lt;IRequirements&gt;</c>) or one of its own generic parameters 
-  /// (<c>Mixin&lt;T&gt;</c>) to its to its <see cref="Mixin{TThis}"/> or <see cref="Mixin{TThis,TBase}"/> base classes. This class detects these
+  /// (<c>Mixin&lt;T&gt;</c>) to its to its <see cref="Mixin{TTarget}"/> or <see cref="Mixin{TTarget,TNext}"/> base classes. This class detects these
   /// two scenarios and gathers concrete requirement information from either the type itself or its generic parameter constraints.
   /// </remarks>
   public class RequirementsAnalyzer

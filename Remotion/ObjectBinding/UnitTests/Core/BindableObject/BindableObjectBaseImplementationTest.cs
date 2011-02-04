@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var wrapper = new ClassDerivedFromBindableObjectBase ();
       var implementation = BindableObjectBaseImplementation.Create (wrapper);
       Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
-      Assert.That (PrivateInvoke.GetNonPublicProperty (implementation, "This"), Is.SameAs (wrapper));
+      Assert.That (PrivateInvoke.GetNonPublicProperty (implementation, "Target"), Is.SameAs (wrapper));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var implementation = BindableObjectBaseImplementation.Create (wrapper);
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (implementation, wrapper));
       Assert.That (deserializedData.Item1.BusinessObjectClass, Is.Not.Null);
-      Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.Item1, "This"), Is.SameAs (deserializedData.Item2));
+      Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.Item1, "Target"), Is.SameAs (deserializedData.Item2));
     }
 
     [Test]

@@ -23,28 +23,28 @@ namespace Remotion.UnitTests.Mixins.TestDomain
   [Serializable]
   public class BT3Mixin1 : Mixin<IBaseType31, IBaseType31>
   {
-    public new IBaseType31 This
+    public new IBaseType31 Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
 
-    public new IBaseType31 Base
+    public new IBaseType31 Next
     {
-      get { return base.Base; }
+      get { return base.Next; }
     }
   }
 
   [Serializable]
   public class BT3Mixin1B : Mixin<IBaseType31, IBaseType31>
   {
-    public new IBaseType31 This
+    public new IBaseType31 Target
     {
-      get { return base.This; }
+      get { return base.Target; }
     }
 
-    public new IBaseType31 Base
+    public new IBaseType31 Next
     {
-      get { return base.Base; }
+      get { return base.Next; }
     }
   }
 }

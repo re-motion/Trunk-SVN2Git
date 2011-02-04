@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void RaiseReferenceInitializatingEvent_InvokesMixinHook_WhilePropertyAccessForbidden ()
     {
       var mixinInstance = new HookedDomainObjectMixin ();
-      mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((HookedDomainObjectMixin) sender).This.Property;
+      mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((HookedDomainObjectMixin) sender).Target.Property;
 
       using (new MixedObjectInstantiationScope (mixinInstance))
       {

@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       get { throw new NotImplementedException(); }
     }
 
-    public object FirstBaseCallProxy
+    public object FirstNextCallProxy
     {
       get { throw new NotImplementedException(); }
     }

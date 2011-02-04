@@ -76,13 +76,13 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
       overrider.CopyParametersAndReturnType (method);
       overrider.AddCustomAttribute (new CustomAttributeBuilder (s_attributeConstructor, new object[0]));
 
-      Reference thisValue = GetThisReference ();
-      Expression overriddenMethodValue = new MethodTokenExpression (method);
+      Reference targetReference = GetTargetReference ();
+      Expression overriddenMethodToken = new MethodTokenExpression (method);
       LocalReference argsLocal = CopyArgumentsToLocalVariable (overrider);
       Expression baseMethodInvoker = GetBaseInvokerExpression (method);
 
       TypeReference handlerReference = new TypeReferenceWrapper (invocationHandler, typeof (MethodInvocationHandler));
-      Expression[] handlerArgs = new Expression[] { thisValue.ToExpression(), overriddenMethodValue, argsLocal.ToExpression (), baseMethodInvoker };
+      Expression[] handlerArgs = new Expression[] { targetReference.ToExpression(), overriddenMethodToken, argsLocal.ToExpression (), baseMethodInvoker };
 
       Expression handlerInvocation = new VirtualMethodInvocationExpression (handlerReference, s_handlerInvokeMethod, handlerArgs);
 
@@ -111,7 +111,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
       stubMethod.SetReturnType (typeof (object));
       stubMethod.SetParameterTypes (typeof (object[]));
 
-      PropertyReference baseReference = GetBaseReference ();
+      PropertyReference baseReference = GetNextReference ();
       ParameterInfo[] stubbedMethodSignature = methodToBeStubbed.GetParameters ();
       Expression[] baseCallArgs = new Expression[stubbedMethodSignature.Length];
       for (int i = 0; i < baseCallArgs.Length; ++i)
@@ -129,16 +129,16 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
       return stubMethod.MethodBuilder;
     }
 
-    private PropertyReference GetThisReference ()
+    private PropertyReference GetTargetReference ()
     {
-      PropertyInfo thisProperty = _emitter.BaseType.GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance);
-      return new PropertyReference (SelfReference.Self, thisProperty);
+      PropertyInfo targetProperty = _emitter.BaseType.GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance);
+      return new PropertyReference (SelfReference.Self, targetProperty);
     }
 
-    private PropertyReference GetBaseReference ()
+    private PropertyReference GetNextReference ()
     {
-      PropertyInfo baseProperty = _emitter.BaseType.GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance);
-      return new PropertyReference (SelfReference.Self, baseProperty);
+      PropertyInfo nextProperty = _emitter.BaseType.GetProperty ("Next", BindingFlags.NonPublic | BindingFlags.Instance);
+      return new PropertyReference (SelfReference.Self, nextProperty);
     }
 
     private LocalReference CopyArgumentsToLocalVariable (IMethodEmitter overrider)

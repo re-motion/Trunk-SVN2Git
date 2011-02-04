@@ -35,12 +35,12 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<MethodDefinition>> _methodRules = new List<IValidationRule<MethodDefinition>> ();
     private readonly List<IValidationRule<PropertyDefinition>> _propertyRules = new List<IValidationRule<PropertyDefinition>> ();
     private readonly List<IValidationRule<EventDefinition>> _eventRules = new List<IValidationRule<EventDefinition>> ();
-    private readonly List<IValidationRule<RequiredFaceTypeDefinition>> _requiredFaceTypeRules = new List<IValidationRule<RequiredFaceTypeDefinition>> ();
-    private readonly List<IValidationRule<RequiredBaseCallTypeDefinition>> _requiredBaseCallTypeRules = new List<IValidationRule<RequiredBaseCallTypeDefinition>> ();
+    private readonly List<IValidationRule<RequiredTargetCallTypeDefinition>> _requiredTargetCallTypeRules = new List<IValidationRule<RequiredTargetCallTypeDefinition>> ();
+    private readonly List<IValidationRule<RequiredNextCallTypeDefinition>> _requiredNextCallTypeRules = new List<IValidationRule<RequiredNextCallTypeDefinition>> ();
     private readonly List<IValidationRule<RequiredMixinTypeDefinition>> _requiredMixinTypeRules = new List<IValidationRule<RequiredMixinTypeDefinition>> ();
     private readonly List<IValidationRule<RequiredMethodDefinition>> _requiredMethodRules = new List<IValidationRule<RequiredMethodDefinition>> ();
-    private readonly List<IValidationRule<ThisDependencyDefinition>> _thisDependencyRules = new List<IValidationRule<ThisDependencyDefinition>> ();
-    private readonly List<IValidationRule<BaseDependencyDefinition>> _baseDependencyRules = new List<IValidationRule<BaseDependencyDefinition>> ();
+    private readonly List<IValidationRule<TargetCallDependencyDefinition>> _targetCallDependencyRules = new List<IValidationRule<TargetCallDependencyDefinition>> ();
+    private readonly List<IValidationRule<NextCallDependencyDefinition>> _nextCallDependencyRules = new List<IValidationRule<NextCallDependencyDefinition>> ();
     private readonly List<IValidationRule<MixinDependencyDefinition>> _mixinDependencyRules = new List<IValidationRule<MixinDependencyDefinition>> ();
     private readonly List<IValidationRule<AttributeDefinition>> _attributeRules = new List<IValidationRule<AttributeDefinition>> ();
     private readonly List<IValidationRule<AttributeIntroductionDefinition>> _attributeIntroductionRules = new List<IValidationRule<AttributeIntroductionDefinition>> ();
@@ -103,14 +103,14 @@ namespace Remotion.Mixins.Validation
       get { return _eventRules; }
     }
 
-    public IList<IValidationRule<RequiredFaceTypeDefinition>> RequiredFaceTypeRules
+    public IList<IValidationRule<RequiredTargetCallTypeDefinition>> RequiredTargetCallTypeRules
     {
-      get { return _requiredFaceTypeRules; }
+      get { return _requiredTargetCallTypeRules; }
     }
 
-    public IList<IValidationRule<RequiredBaseCallTypeDefinition>> RequiredBaseCallTypeRules
+    public IList<IValidationRule<RequiredNextCallTypeDefinition>> RequiredNextCallTypeRules
     {
-      get { return _requiredBaseCallTypeRules; }
+      get { return _requiredNextCallTypeRules; }
     }
 
     public IList<IValidationRule<RequiredMixinTypeDefinition>> RequiredMixinTypeRules
@@ -123,14 +123,14 @@ namespace Remotion.Mixins.Validation
       get { return _requiredMethodRules; }
     }
 
-    public IList<IValidationRule<ThisDependencyDefinition>> ThisDependencyRules
+    public IList<IValidationRule<TargetCallDependencyDefinition>> TargetCallDependencyRules
     {
-      get { return _thisDependencyRules; }
+      get { return _targetCallDependencyRules; }
     }
 
-    public IList<IValidationRule<BaseDependencyDefinition>> BaseDependencyRules
+    public IList<IValidationRule<NextCallDependencyDefinition>> NextCallDependencyRules
     {
-      get { return _baseDependencyRules; }
+      get { return _nextCallDependencyRules; }
     }
 
     public IList<IValidationRule<MixinDependencyDefinition>> MixinDependencyRules
@@ -218,16 +218,16 @@ namespace Remotion.Mixins.Validation
       CheckRules (_eventRules, eventDefinition);
     }
 
-    public void Visit (RequiredFaceTypeDefinition requiredFaceType)
+    public void Visit (RequiredTargetCallTypeDefinition requiredTargetCallType)
     {
-      ArgumentUtility.CheckNotNull ("requiredFaceType", requiredFaceType);
-      CheckRules (_requiredFaceTypeRules, requiredFaceType);
+      ArgumentUtility.CheckNotNull ("requiredTargetCallType", requiredTargetCallType);
+      CheckRules (_requiredTargetCallTypeRules, requiredTargetCallType);
     }
 
-    public void Visit (RequiredBaseCallTypeDefinition requiredBaseCallType)
+    public void Visit (RequiredNextCallTypeDefinition requiredNextCallType)
     {
-      ArgumentUtility.CheckNotNull ("requiredBaseCallType", requiredBaseCallType);
-      CheckRules (_requiredBaseCallTypeRules, requiredBaseCallType);
+      ArgumentUtility.CheckNotNull ("requiredNextCallType", requiredNextCallType);
+      CheckRules (_requiredNextCallTypeRules, requiredNextCallType);
     }
 
     public void Visit (RequiredMixinTypeDefinition requiredMixinType)
@@ -242,16 +242,16 @@ namespace Remotion.Mixins.Validation
       CheckRules (_requiredMethodRules, requiredMethod);
     }
 
-    public void Visit (ThisDependencyDefinition dependency)
+    public void Visit (TargetCallDependencyDefinition dependency)
     {
       ArgumentUtility.CheckNotNull ("dependency", dependency);
-      CheckRules (_thisDependencyRules, dependency);
+      CheckRules (_targetCallDependencyRules, dependency);
     }
 
-    public void Visit (BaseDependencyDefinition dependency)
+    public void Visit (NextCallDependencyDefinition dependency)
     {
       ArgumentUtility.CheckNotNull ("dependency", dependency);
-      CheckRules (_baseDependencyRules, dependency);
+      CheckRules (_nextCallDependencyRules, dependency);
     }
 
     public void Visit (MixinDependencyDefinition dependency)
