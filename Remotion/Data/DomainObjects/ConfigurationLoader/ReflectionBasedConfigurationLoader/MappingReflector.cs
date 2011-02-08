@@ -94,12 +94,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
               select type).Distinct();
     }
 
-    private IEnumerable<ClassReflectorForRelations> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
-    {
-      return from classDefinition in classDefinitions.Cast<ClassDefinition> ()
-             select ClassReflectorForRelations.CreateClassReflector (classDefinition.ClassType, NameResolver);
-    }
-
     private Type[] GetDomainObjectTypesSorted ()
     {
       return GetDomainObjectTypes ().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray ();
