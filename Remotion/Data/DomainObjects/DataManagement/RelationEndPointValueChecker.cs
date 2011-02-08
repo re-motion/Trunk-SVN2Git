@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public static class RelationEndPointValueChecker
   {
-    public static void CheckClientTransaction (IEndPoint endPoint, DomainObject domainObject, string exceptionFormatString)
+    public static void CheckClientTransaction (IRelationEndPoint endPoint, DomainObject domainObject, string exceptionFormatString)
     {
       if (domainObject != null && !endPoint.ClientTransaction.IsEnlisted (domainObject))
       {
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private static string GetTransactionInfoForMismatchingClientTransactions (IEndPoint endPoint, DomainObject otherDomainObject)
+    private static string GetTransactionInfoForMismatchingClientTransactions (IRelationEndPoint endPoint, DomainObject otherDomainObject)
     {
       var transactionInfo = new StringBuilder ();
 

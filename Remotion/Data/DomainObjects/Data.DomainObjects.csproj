@@ -595,7 +595,7 @@
     <Compile Include="DataManagement\DataManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\IEndPoint.cs">
+    <Compile Include="DataManagement\IRelationEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\MandatoryRelationNotSetException.cs">

@@ -21,11 +21,11 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Provides extension methods for <see cref="IEndPoint"/>.
+  /// Provides extension methods for <see cref="IRelationEndPoint"/>.
   /// </summary>
   public static class EndPointExtensions
   {
-    public static DomainObject GetDomainObject (this IEndPoint endPoint)
+    public static DomainObject GetDomainObject (this IRelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.ClientTransaction.GetObject (objectID, true);
     }
 
-    public static DomainObject GetDomainObjectReference (this IEndPoint endPoint)
+    public static DomainObject GetDomainObjectReference (this IRelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.ClientTransaction.GetObjectReference (objectID);
     }
 
-    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject oppositeObject) where T : IEndPoint
+    public static T GetEndPointWithOppositeDefinition<T> (this IRelationEndPoint endPoint, DomainObject oppositeObject) where T : IRelationEndPoint
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -61,13 +61,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.GetEndPointWithOppositeDefinition<T> (oppositeObjectID);
     }
 
-    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, ObjectID oppositeObjectID) where T : IEndPoint
+    public static T GetEndPointWithOppositeDefinition<T> (this IRelationEndPoint endPoint, ObjectID oppositeObjectID) where T : IRelationEndPoint
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       var oppositeDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      IEndPoint oppositeEndPoint;
+      IRelationEndPoint oppositeEndPoint;
       if (oppositeObjectID == null)
         oppositeEndPoint = RelationEndPoint.CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
       else

@@ -19,9 +19,9 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Represents an <see cref="IEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
+  /// Represents an <see cref="IRelationEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
   /// </summary>
-  public interface ICollectionEndPoint : IEndPoint
+  public interface ICollectionEndPoint : IRelationEndPoint
   {
     DomainObjectCollection OppositeDomainObjects { get; set; }
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }

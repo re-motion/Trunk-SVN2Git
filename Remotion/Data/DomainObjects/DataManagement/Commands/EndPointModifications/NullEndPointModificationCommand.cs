@@ -20,14 +20,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 {
   public class NullEndPointModificationCommand : IDataManagementCommand
   {
-    private readonly IEndPoint _affectedEndPoint;
+    private readonly IRelationEndPoint _affectedEndPoint;
 
-    public NullEndPointModificationCommand (IEndPoint affectedEndPoint)
+    public NullEndPointModificationCommand (IRelationEndPoint affectedEndPoint)
     {
       _affectedEndPoint = affectedEndPoint;
     }
 
-    public IEndPoint AffectedEndPoint
+    public IRelationEndPoint AffectedEndPoint
     {
       get { return _affectedEndPoint; }
     }

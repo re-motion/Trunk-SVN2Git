@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
 
-    private void CallCheckClientTransaction (IEndPoint endPoint, DomainObject relatedObject)
+    private void CallCheckClientTransaction (IRelationEndPoint endPoint, DomainObject relatedObject)
     {
       RelationEndPointValueChecker.CheckClientTransaction (
           endPoint, 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Cannot xx DomainObject '{0}' from/to collection of property '{1}' of DomainObject '{2}'.");
     }
 
-    private IEndPoint CreateCollectionEndPointStub (ClientTransaction transaction, Order owningObject)
+    private IRelationEndPoint CreateCollectionEndPointStub (ClientTransaction transaction, Order owningObject)
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, "OrderItems");
       return RelationEndPointObjectMother.CreateCollectionEndPoint (

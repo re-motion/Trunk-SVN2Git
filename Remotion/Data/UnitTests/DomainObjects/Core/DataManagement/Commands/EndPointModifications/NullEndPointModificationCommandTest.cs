@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public class NullEndPointModificationCommandTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private IEndPoint _endPointMock;
+    private IRelationEndPoint _endPointMock;
     private NullEndPointModificationCommand _command;
     private RelationEndPointID _id;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           DomainObjectIDs.Computer1,
           ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
 
-      _endPointMock = _mockRepository.StrictMock<IEndPoint> ();
+      _endPointMock = _mockRepository.StrictMock<IRelationEndPoint> ();
 
       _command = new NullEndPointModificationCommand (_endPointMock);
     }

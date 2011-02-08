@@ -609,7 +609,7 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Ensures that the data of the <see cref="IEndPoint"/> with the given <see cref="RelationEndPointID"/> has been loaded into this 
+  /// Ensures that the data of the <see cref="IRelationEndPoint"/> with the given <see cref="RelationEndPointID"/> has been loaded into this 
   /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the relation end point's data.
   /// </summary>
   /// <param name="endPointID">The <see cref="RelationEndPointID"/> of the end point whose data must be loaded. In order to force a collection-valued 

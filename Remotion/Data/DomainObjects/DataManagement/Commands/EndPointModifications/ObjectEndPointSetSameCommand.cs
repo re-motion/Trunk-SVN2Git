@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
       else
       {
-        var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IEndPoint> (NewRelatedObject);
+        var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IRelationEndPoint> (NewRelatedObject);
         return new ExpandedCommand (this, new RelationEndPointTouchCommand (oppositeEndPoint));
       }
     }

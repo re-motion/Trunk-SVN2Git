@@ -25,9 +25,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides an abstract base implementation of non-transient relation end points that can be stored in the <see cref="RelationEndPointMap"/>.
   /// </summary>
-  public abstract class RelationEndPoint : IEndPoint, IFlattenedSerializable
+  public abstract class RelationEndPoint : IRelationEndPoint, IFlattenedSerializable
   {
-    public static IEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
+    public static IRelationEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("definition", definition);

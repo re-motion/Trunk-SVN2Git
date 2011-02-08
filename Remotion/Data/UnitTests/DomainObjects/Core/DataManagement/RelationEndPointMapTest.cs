@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
-      IEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (client.ID, parentClientEndPointDefinition));
+      IRelationEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (client.ID, parentClientEndPointDefinition));
 
       Client parentClient = client.ParentClient;
       Assert.That (parentClient, Is.Not.Null);

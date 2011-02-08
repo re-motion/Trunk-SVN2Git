@@ -27,13 +27,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public abstract class RelationEndPointModificationCommand : IDataManagementCommand
   {
-    private readonly IEndPoint _modifiedEndPoint;
+    private readonly IRelationEndPoint _modifiedEndPoint;
     private readonly DomainObject _domainObject;
 
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
-    protected RelationEndPointModificationCommand (IEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    protected RelationEndPointModificationCommand (IRelationEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified);
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       _newRelatedObject = newRelatedObject;
     }
 
-    public IEndPoint ModifiedEndPoint
+    public IRelationEndPoint ModifiedEndPoint
     {
       get { return _modifiedEndPoint; }
     }

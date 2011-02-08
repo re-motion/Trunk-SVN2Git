@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides a common interface for objects representing one side of a relation between <see cref="DomainObject"/> instances.
   /// </summary>
-  public interface IEndPoint : INullObject
+  public interface IRelationEndPoint : INullObject
   {
     RelationEndPointID ID { get; }
     ClientTransaction ClientTransaction { get; }

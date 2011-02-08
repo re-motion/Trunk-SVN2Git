@@ -23,14 +23,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class RelationEndPointTouchCommand : IDataManagementCommand
   {
-    private readonly IEndPoint _endPoint;
+    private readonly IRelationEndPoint _endPoint;
 
-    public RelationEndPointTouchCommand (IEndPoint endPoint)
+    public RelationEndPointTouchCommand (IRelationEndPoint endPoint)
     {
       _endPoint = endPoint;
     }
 
-    public IEndPoint EndPoint
+    public IRelationEndPoint EndPoint
     {
       get { return _endPoint; }
     }

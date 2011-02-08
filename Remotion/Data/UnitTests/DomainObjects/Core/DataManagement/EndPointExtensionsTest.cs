@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDomainObject ()
     {
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDomainObject_Null ()
     {
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (null);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
 
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (invalidObject.State, Is.EqualTo (StateType.Invalid));
 
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (invalidObject.ID);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDomainObjectReference ()
     {
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDomainObjectReference_Null ()
     {
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (null);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (invalidObject.State, Is.EqualTo (StateType.Invalid));
 
-      var endPointStub = MockRepository.GenerateStub<IEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       endPointStub.Stub (stub => stub.ObjectID).Return (invalidObject.ID);
       endPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
 

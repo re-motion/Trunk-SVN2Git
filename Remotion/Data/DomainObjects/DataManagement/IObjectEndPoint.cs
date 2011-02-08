@@ -19,10 +19,10 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Represents an <see cref="IEndPoint"/> holding the <see cref="ObjectID"/> of a <see cref="DomainObject"/> instance, i.e. the "one" side of a 
+  /// Represents an <see cref="IRelationEndPoint"/> holding the <see cref="ObjectID"/> of a <see cref="DomainObject"/> instance, i.e. the "one" side of a 
   /// relation.
   /// </summary>
-  public interface IObjectEndPoint : IEndPoint
+  public interface IObjectEndPoint : IRelationEndPoint
   {
     ObjectID OppositeObjectID { get; set; }
     ObjectID OriginalOppositeObjectID { get; }
