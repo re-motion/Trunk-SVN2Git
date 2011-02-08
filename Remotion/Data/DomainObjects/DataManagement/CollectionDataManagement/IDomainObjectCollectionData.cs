@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     bool IsReadOnly { get; }
 
     ICollectionEndPoint AssociatedEndPoint { get; }
-    bool IsDataAvailable { get; }
+    bool IsDataComplete { get; }
 
-    void EnsureDataAvailable ();
+    void EnsureDataComplete ();
     IDomainObjectCollectionData GetDataStore ();
 
     bool ContainsObjectID (ObjectID objectID);

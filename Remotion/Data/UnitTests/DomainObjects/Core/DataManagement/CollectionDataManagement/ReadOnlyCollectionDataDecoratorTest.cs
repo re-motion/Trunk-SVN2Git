@@ -84,21 +84,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
-      Assert.That (_readOnlyDecorator.IsDataAvailable, Is.True);
+      _wrappedDataStub.Stub (stub => stub.IsDataComplete).Return (true);
+      Assert.That (_readOnlyDecorator.IsDataComplete, Is.True);
 
       _wrappedDataStub.BackToRecord ();
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
-      Assert.That (_readOnlyDecorator.IsDataAvailable, Is.False);
+      _wrappedDataStub.Stub (stub => stub.IsDataComplete).Return (false);
+      Assert.That (_readOnlyDecorator.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      _readOnlyDecorator.EnsureDataAvailable ();
-      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
+      _readOnlyDecorator.EnsureDataComplete ();
+      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataComplete ());
     }
     
     [Test]

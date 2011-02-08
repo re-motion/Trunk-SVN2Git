@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           throw new InvalidOperationException (message);
         }
 
-        collectionEndPoint.Unload();
+        collectionEndPoint.MarkDataIncomplete();
       }
 
       ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         if (!CanUnloadCollectionEndPoint (collectionEndPoint))
           return false;
 
-        collectionEndPoint.Unload ();
+        collectionEndPoint.MarkDataIncomplete ();
       }
 
       return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadCollectionEndPoint (tx, endPointID, transactionMode));
@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (endPoint != null && endPoint.IsDataAvailable)
+      if (endPoint != null && endPoint.IsDataComplete)
       {
         var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
         var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
@@ -263,7 +263,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (endPoint != null && endPoint.IsDataAvailable)
+      if (endPoint != null && endPoint.IsDataComplete)
       {
         if (!CanUnloadCollectionEndPoint (endPoint))
           return false;

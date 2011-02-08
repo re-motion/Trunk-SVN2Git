@@ -88,9 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      Assert.That (_readOnlyAdapter.IsDataAvailable, Is.True);
+      Assert.That (_readOnlyAdapter.IsDataComplete, Is.True);
 
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadCollectionEndPoint (
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
-      Assert.That (readOnlyAdapter.IsDataAvailable, Is.False);
+      Assert.That (readOnlyAdapter.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadCollectionEndPoint (
@@ -119,11 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
-      Assert.That (associatedCollection.IsDataAvailable, Is.False);
+      Assert.That (associatedCollection.IsDataComplete, Is.False);
 
-      readOnlyAdapter.EnsureDataAvailable ();
+      readOnlyAdapter.EnsureDataComplete ();
 
-      Assert.That (associatedCollection.IsDataAvailable, Is.True);
+      Assert.That (associatedCollection.IsDataComplete, Is.True);
     }
 
     [Test]

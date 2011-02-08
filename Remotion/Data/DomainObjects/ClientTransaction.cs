@@ -615,12 +615,12 @@ public class ClientTransaction
   /// <param name="endPointID">The <see cref="RelationEndPointID"/> of the end point whose data must be loaded. In order to force a collection-valued 
   /// relation property to be loaded, pass the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="endPointID"/> parameter is <see langword="null" />.</exception>
-  public void EnsureDataAvailable (RelationEndPointID endPointID)
+  public void EnsureDataComplete (RelationEndPointID endPointID)
   {
     var endPoint = DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-    endPoint.EnsureDataAvailable();
+    endPoint.EnsureDataComplete();
 
-    Assertion.IsTrue (endPoint.IsDataAvailable);
+    Assertion.IsTrue (endPoint.IsDataComplete);
   }
 
   // TODO 2072: Move

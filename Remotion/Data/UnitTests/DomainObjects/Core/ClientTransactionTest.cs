@@ -387,52 +387,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnsureDataAvailable_EndPoint_Virtual ()
+    public void EnsureDataComplete_EndPoint_Virtual ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
 
-      _transaction.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataComplete (endPointID);
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
-    public void EnsureDataAvailable_EndPoint_Real ()
+    public void EnsureDataComplete_EndPoint_Real ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
 
-      _transaction.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataComplete (endPointID);
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
-    public void EnsureDataAvailable_EndPoint_Loaded ()
+    public void EnsureDataComplete_EndPoint_Complete ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
-      _transaction.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataComplete (endPointID);
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
-    public void EnsureDataAvailable_EndPoint_Unloaded ()
+    public void EnsureDataComplete_EndPoint_Incomplete ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
       
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
-      endPoint.Unload ();
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      endPoint.MarkDataIncomplete ();
+      Assert.That (endPoint.IsDataComplete, Is.False);
 
-      _transaction.EnsureDataAvailable (endPointID);
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      _transaction.EnsureDataComplete (endPointID);
+      Assert.That (endPoint.IsDataComplete, Is.True);
     }
 
     [Test]

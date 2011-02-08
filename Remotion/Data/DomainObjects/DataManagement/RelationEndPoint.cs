@@ -39,11 +39,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _id = id;
     }
 
-    public abstract bool IsDataAvailable { get; }
+    public abstract bool IsDataComplete { get; }
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }
 
-    public abstract void EnsureDataAvailable ();
+    public abstract void EnsureDataComplete ();
     public abstract void Touch ();
     public abstract IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
 

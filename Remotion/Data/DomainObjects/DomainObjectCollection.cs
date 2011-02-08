@@ -343,9 +343,9 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
-      get { return _dataStrategy.IsDataAvailable; }
+      get { return _dataStrategy.IsDataComplete; }
     }
 
     /// <summary>
@@ -364,9 +364,9 @@ namespace Remotion.Data.DomainObjects
     /// If this <see cref="DomainObjectCollection"/> represents a relation end point, ensures that the end point's data has been loaded, loading
     /// the data if necessary. If this <see cref="DomainObjectCollection"/> is a stand-alone collection, this method does nothing.
     /// </summary>
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      _dataStrategy.EnsureDataAvailable ();
+      _dataStrategy.EnsureDataComplete ();
     }
 
     /// <summary>

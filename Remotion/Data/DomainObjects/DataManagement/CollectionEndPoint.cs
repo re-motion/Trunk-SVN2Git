@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get 
       {
-        EnsureDataAvailable ();
+        EnsureDataComplete ();
 
         var collectionType = Definition.PropertyType;
         return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
@@ -109,9 +109,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _changeDetectionStrategy; }
     }
 
-    public override bool IsDataAvailable
+    public override bool IsDataComplete
     {
-      get { return _dataKeeper.IsDataAvailable; }
+      get { return _dataKeeper.IsDataComplete; }
     }
 
     public override bool HasChanged
@@ -124,27 +124,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    public void Unload ()
+    public override void EnsureDataComplete ()
     {
-      if (IsDataAvailable)
-      {
-        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
-        _dataKeeper.Unload();
-      }
-    }
-
-    public override void EnsureDataAvailable ()
-    {
-      if (!IsDataAvailable)
+      if (!IsDataComplete)
       {
         _lazyLoader.LoadLazyCollectionEndPoint (this);
-        Assertion.IsTrue (IsDataAvailable);
+        Assertion.IsTrue (IsDataComplete);
       }
     }
 
-    public void MarkDataAvailable ()
+    public void MarkDataComplete ()
     {
-      _dataKeeper.MarkDataAvailable ();
+      _dataKeeper.MarkDataComplete ();
+    }
+
+    public void MarkDataIncomplete ()
+    {
+      if (IsDataComplete)
+      {
+        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
+        _dataKeeper.MarkDataIncomplete ();
+      }
     }
 
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObjectReference(), ClientTransaction);
 
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
 
       var command = ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
       var bidirectionalModification = command.ExpandToAllRelatedObjects ();
@@ -173,8 +173,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      EnsureDataAvailable ();
-      sourceCollectionEndPoint.EnsureDataAvailable ();
+      EnsureDataComplete ();
+      sourceCollectionEndPoint.EnsureDataComplete ();
 
       _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint._dataKeeper.CollectionData);
 
@@ -225,9 +225,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void CheckMandatory ()
     {
-      // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an unloaded end-point should be 
-      // checked. (DataManager will not check unloaded end-points, as it also ignores not-yet-loaded end-points.)
-      EnsureDataAvailable ();
+      // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
+      // checked. (DataManager will not check incomplete end-points, as it also ignores not-yet-loaded end-points.)
+      EnsureDataComplete ();
 
       if (_dataKeeper.CollectionData.Count == 0)
       {
@@ -265,13 +265,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
       return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _dataKeeper.CollectionData);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
       
       return new AdHocCommand
           {
@@ -284,20 +284,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
       return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData);
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
       return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
 
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
@@ -310,7 +310,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
-      EnsureDataAvailable ();
+      EnsureDataComplete ();
 
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
 

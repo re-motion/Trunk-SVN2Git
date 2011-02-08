@@ -36,15 +36,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
-    public override bool IsDataAvailable
+    public override bool IsDataComplete
     {
       get { return true; }
     }
 
-    public override void EnsureDataAvailable ()
+    public override void EnsureDataComplete ()
     {
-      // nothing to do, ObjectEndPoints' data is always available
-      Assertion.IsTrue (IsDataAvailable);
+      // nothing to do, ObjectEndPoints' data is always complete
+      Assertion.IsTrue (IsDataComplete);
     }
 
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)

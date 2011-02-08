@@ -33,11 +33,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IRelationEndPointDefinition Definition { get; }
     RelationDefinition RelationDefinition { get; }
 
-    bool IsDataAvailable { get; }
+    bool IsDataComplete { get; }
     bool HasChanged { get; }
     bool HasBeenTouched { get; }
 
-    void EnsureDataAvailable ();
+    void EnsureDataComplete ();
 
     void Touch ();
     void Commit ();

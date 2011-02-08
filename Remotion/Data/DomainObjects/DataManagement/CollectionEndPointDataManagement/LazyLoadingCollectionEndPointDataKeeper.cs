@@ -24,8 +24,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 {
   /// <summary>
   /// Implements lazy-loading support for the <see cref="CollectionEndPoint"/> class by wrapping the data kept by a <see cref="CollectionEndPoint"/> 
-  /// and allowing that data to be unloaded. When the <see cref="LazyLoadingCollectionEndPointDataKeeper"/> is accessed and its data is empty, 
-  /// it loads the data from a <see cref="ClientTransaction"/>.
+  /// and tracking whether that data is complete or not. Callers must react on the completeness and lazy-load the data via 
+  /// <see cref="CollectionEndPoint.EnsureDataComplete"/> is needed.
   /// </summary>
   [Serializable]
   public class LazyLoadingCollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
 
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
-    private bool _isDataAvailable;
+    private bool _isDataComplete;
     
     public LazyLoadingCollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       var wrappedData = new DomainObjectCollectionData (initialContents ?? Enumerable.Empty<DomainObject> ());
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
-      _isDataAvailable = initialContents != null;
+      _isDataComplete = initialContents != null;
     }
 
     public ClientTransaction ClientTransaction
@@ -70,9 +70,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _sortExpressionBasedComparer; }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
-      get { return _isDataAvailable; }
+      get { return _isDataComplete; }
     }
 
     public IDomainObjectCollectionData CollectionData
@@ -103,17 +103,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _collectionData.HasChanged (changeDetectionStrategy);
     }
 
-    public void MarkDataAvailable ()
+    public void MarkDataComplete ()
     {
       if (_sortExpressionBasedComparer != null)
         _collectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
 
-      _isDataAvailable = true;
+      _isDataComplete = true;
     }
 
-    public void Unload ()
+    public void MarkDataIncomplete ()
     {
-      _isDataAvailable = false;
+      _isDataComplete = false;
     }
 
     public void CommitOriginalContents ()

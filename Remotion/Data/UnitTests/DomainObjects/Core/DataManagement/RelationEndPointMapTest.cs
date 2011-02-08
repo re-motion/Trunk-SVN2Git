@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
       var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (collectionEndPoint);
       Assert.That (dataKeeper.CollectionData.ToArray(), List.Contains (itemReference));
     }
@@ -445,7 +445,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterRealObjectEndPoint_UnloadsOppositeVirtualCollectionEndPoint ()
+    public void UnregisterRealObjectEndPoint_MarksOppositeVirtualCollectionEndPointIncomplete ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
@@ -456,15 +456,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var oppositeCollectionEndPoint = (CollectionEndPoint)  _map[oppositeEndPointID];
       Assert.That (oppositeCollectionEndPoint, Is.Not.Null);
-      oppositeCollectionEndPoint.MarkDataAvailable ();
-      Assert.That (oppositeCollectionEndPoint.IsDataAvailable, Is.True);
+      oppositeCollectionEndPoint.MarkDataComplete ();
+      Assert.That (oppositeCollectionEndPoint.IsDataComplete, Is.True);
       Assert.That (oppositeCollectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
       Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
 
       _map.UnregisterRealObjectEndPoint (id);
 
       Assert.That (_map[oppositeEndPointID], Is.SameAs (oppositeCollectionEndPoint));
-      Assert.That (oppositeCollectionEndPoint.IsDataAvailable, Is.False);
+      Assert.That (oppositeCollectionEndPoint.IsDataComplete, Is.False);
 
       var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (oppositeCollectionEndPoint);
       Assert.That (dataKeeper.CollectionData.ToArray(), List.Not.Contains (itemReference));
@@ -548,7 +548,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.Not.Null);
       Assert.That (_map[endPointID], Is.SameAs (endPoint));
 
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.Not.Null);
       Assert.That (_map[endPointID], Is.SameAs (endPoint));
 
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
     }
 
@@ -633,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
       Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
     }
 
@@ -644,14 +644,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var item = DomainObjectMother.CreateFakeObject<Order> ();
       var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
-      collectionEndPoint.Unload ();
+      collectionEndPoint.MarkDataIncomplete ();
       Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
 
       _map.MarkCollectionEndPointComplete (endPointID);
 
       Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
     }
 
     [Test]
@@ -662,12 +662,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var item = DomainObjectMother.CreateFakeObject<Order> ();
       var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
       Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
 
       _map.MarkCollectionEndPointComplete (endPointID);
 
       Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
       Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
     }
 
@@ -951,7 +951,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var oppositeCollectionEndPoint = (ICollectionEndPoint) _map[oppositeCollectionEndPointID];
-      oppositeCollectionEndPoint.MarkDataAvailable (); // mark the current state as the "full" state of the collection
+      oppositeCollectionEndPoint.MarkDataComplete (); // mark the current state as the "full" state of the collection
 
       var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);
 

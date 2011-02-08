@@ -149,8 +149,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // When unregistering a non-virtual end-point, the opposite virtual object end-point (if any) is unregistered as well.
-    // If the opposite end-point is a collection, that collection is put into unloaded state. // TODO 3401: In addition, the end-point is unregistered 
-    // as an item of that collection.
+    // If the opposite end-point is a collection, that collection is put into incomplete state.
     public void UnregisterRealObjectEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -232,7 +231,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
 
       var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
-      endPoint.MarkDataAvailable ();
+      endPoint.MarkDataComplete ();
     }
 
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
@@ -317,7 +316,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (existingEndPoint != null)
         return _relationEndPoints[endPointID];
 
-      Assertion.IsTrue (endPointID.Definition.IsVirtual, 
+      Assertion.IsTrue (endPointID.Definition.IsVirtual,
           "EnsureDataAvailable should guarantee that the DataContainer is registered, which in turn guarantees that all non-virtual end points are "
           + "registered in the map");
 
@@ -336,7 +335,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         var endPoint = RegisterCollectionEndPoint (endPointID, null);
-        endPoint.EnsureDataAvailable ();
+        endPoint.EnsureDataComplete ();
       }
 
       Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
@@ -513,7 +512,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           {
             Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
             oppositeEndPoint.UnregisterOriginalObject (realObjectEndPoint.ObjectID);
-            oppositeEndPoint.Unload ();
+            oppositeEndPoint.MarkDataIncomplete ();
           }
         }
       }

@@ -9,7 +9,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointDataKeeper
   {
-    bool IsDataAvailable { get; }
+    bool IsDataComplete { get; }
 
     IDomainObjectCollectionData CollectionData { get; }
     IDomainObjectCollectionData OriginalCollectionData { get; }
@@ -18,8 +18,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void UnregisterOriginalObject (ObjectID objectID);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
-    void MarkDataAvailable ();
-    void Unload ();
+    void MarkDataComplete ();
+    void MarkDataIncomplete ();
     void CommitOriginalContents ();
   }
 }

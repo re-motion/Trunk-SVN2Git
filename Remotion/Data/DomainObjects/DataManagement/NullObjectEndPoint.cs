@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return Definition.RelationDefinition; }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
       get { return true; }
     }
@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint.");
     }
 
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
       // do nothing
     }

@@ -271,7 +271,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
     /// <param name="relatedObjects">
     ///   An implementation of <see cref="ReadOnlyDomainObjectCollectionAdapter{T}"/> wrapping the related object data that is returned to the reader.
-    ///   Implementors should check the <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection 
+    ///   Implementors should check the <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataComplete"/> property before accessing the collection 
     ///   data in order to avoid reloading an unloaded collection end-point.
     /// </param>
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>

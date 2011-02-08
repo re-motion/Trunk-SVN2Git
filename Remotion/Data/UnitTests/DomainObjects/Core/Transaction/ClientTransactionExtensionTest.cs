@@ -353,9 +353,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         official = _order1.Official;
         customer = _order1.Customer;
         customerOrders = customer.Orders;
-        customerOrders.EnsureDataAvailable ();
+        customerOrders.EnsureDataComplete ();
         officialOrders = official.Orders;
-        officialOrders.EnsureDataAvailable ();
+        officialOrders.EnsureDataComplete ();
         Dev.Null = orderTicket.Order; // preload
       }
 

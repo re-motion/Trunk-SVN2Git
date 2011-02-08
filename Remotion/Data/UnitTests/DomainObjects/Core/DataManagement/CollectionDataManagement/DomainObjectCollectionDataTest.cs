@@ -72,17 +72,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataComplete, Is.True);
     }
 
     [Test]
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
-      ((IDomainObjectCollectionData) _data).EnsureDataAvailable ();
-      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataComplete, Is.True);
+      ((IDomainObjectCollectionData) _data).EnsureDataComplete ();
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataComplete, Is.True);
     }
 
     [Test]

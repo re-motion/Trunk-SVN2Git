@@ -449,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
     }
 
@@ -781,7 +781,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CheckMandatoryRelations_UnloadedRelations_Ignored ()
+    public void CheckMandatoryRelations_IncompleteRelations_Ignored ()
     {
       var dataContainer = DataContainer.CreateNew (new ObjectID (DomainObjectIDs.Order1.ClassDefinition, Guid.NewGuid()));
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
@@ -798,12 +798,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var orderItemEndPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[new RelationEndPointID (dataContainer.ID, orderItemsPropertyName)];
       Assert.That (orderItemEndPoint, Is.Not.Null);
       Assert.That (orderItemEndPoint.Definition.IsMandatory, Is.True);
-      orderItemEndPoint.Unload ();
-      Assert.That (orderItemEndPoint.IsDataAvailable, Is.False);
+      orderItemEndPoint.MarkDataIncomplete ();
+      Assert.That (orderItemEndPoint.IsDataComplete, Is.False);
 
       _dataManager.CheckMandatoryRelations (dataContainer); // does not throw
 
-      Assert.That (orderItemEndPoint.IsDataAvailable, Is.False);
+      Assert.That (orderItemEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -954,7 +954,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.SetDomainObject (domainObject);
 
       var endPoint = ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, null);
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      Assert.That (endPoint.IsDataComplete, Is.False);
 
       _objectLoaderMock
           .Expect (mock => mock.LoadRelatedObjects (endPointID))
@@ -966,7 +966,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectLoaderMock.VerifyAllExpectations();
 
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { domainObject }));
     }
 
@@ -987,7 +987,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = ((RelationEndPointMap) _dataManager.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
 
       _dataManager. LoadLazyCollectionEndPoint (endPoint);
     }

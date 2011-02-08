@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
       var companiesOfIndustrialSector = industrialSector.Companies;
-      companiesOfIndustrialSector.EnsureDataAvailable ();
+      companiesOfIndustrialSector.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.Null);
       Assert.That (companiesOfIndustrialSector, List.Not.Contains (company));
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       // Resolve virtual end point - the database says that company points to IndustrialSector2, but the transaction says it points to IndustrialSector1!
       var companiesOfIndustrialSector = industrialSector.Companies;
-      companiesOfIndustrialSector.EnsureDataAvailable ();
+      companiesOfIndustrialSector.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
       Assert.That (companiesOfIndustrialSector, List.Contains (company));

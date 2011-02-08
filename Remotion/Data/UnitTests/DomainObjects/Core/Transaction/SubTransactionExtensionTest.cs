@@ -515,9 +515,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Official official = _order1.Official;
       Customer customer = _order1.Customer;
       OrderCollection customerOrders = customer.Orders;
-      customerOrders.EnsureDataAvailable ();
+      customerOrders.EnsureDataComplete ();
       ObjectList<Order> officialOrders = official.Orders;
-      officialOrders.EnsureDataAvailable ();
+      officialOrders.EnsureDataComplete ();
       Dev.Null = orderTicket.Order; // preload
 
       var order1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);

@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return Definition.RelationDefinition; }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
       get { return true; }
     }
@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { throw new InvalidOperationException ("It is not possible to get the OriginalCollectionReference from a NullCollectionEndPoint."); }
     }
 
-    public void MarkDataAvailable ()
+    public void MarkDataComplete ()
     {
       // ignore
     }
@@ -163,9 +163,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void Unload ()
+    public void MarkDataIncomplete ()
     {
-      throw new InvalidOperationException ("Unload cannot be called on a NullCollectionEndPoint.");
+      throw new InvalidOperationException ("MarkDataIncomplete cannot be called on a NullCollectionEndPoint.");
     }
 
     public void RegisterOriginalObject (DomainObject domainObject)
@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("UnregisterOriginalObject cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
       // do nothing
     }

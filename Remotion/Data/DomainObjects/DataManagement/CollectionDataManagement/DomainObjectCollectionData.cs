@@ -68,14 +68,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return null; }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
       get { return true; }
     }
 
-    void IDomainObjectCollectionData.EnsureDataAvailable ()
+    void IDomainObjectCollectionData.EnsureDataComplete ()
     {
-      Assertion.IsTrue (((IDomainObjectCollectionData) this).IsDataAvailable);
+      Assertion.IsTrue (((IDomainObjectCollectionData) this).IsDataComplete);
     }
 
     IDomainObjectCollectionData IDomainObjectCollectionData.GetDataStore ()

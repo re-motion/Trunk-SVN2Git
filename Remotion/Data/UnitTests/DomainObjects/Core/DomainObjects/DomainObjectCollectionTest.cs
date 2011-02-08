@@ -138,21 +138,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      _dataStrategyMock.Stub (mock => mock.IsDataAvailable).Return (true);
-      Assert.That (_collectionWithDataStrategyMock.IsDataAvailable, Is.True);
+      _dataStrategyMock.Stub (mock => mock.IsDataComplete).Return (true);
+      Assert.That (_collectionWithDataStrategyMock.IsDataComplete, Is.True);
 
       _dataStrategyMock.BackToRecord ();
-      _dataStrategyMock.Stub (mock => mock.IsDataAvailable).Return (false);
-      Assert.That (_collectionWithDataStrategyMock.IsDataAvailable, Is.False);
+      _dataStrategyMock.Stub (mock => mock.IsDataComplete).Return (false);
+      Assert.That (_collectionWithDataStrategyMock.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void EnsureDataAvailable_DelegatesToStrategy ()
+    public void EnsureDataComplete_DelegatesToStrategy ()
     {
-      _collectionWithDataStrategyMock.EnsureDataAvailable ();
-      _dataStrategyMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionWithDataStrategyMock.EnsureDataComplete ();
+      _dataStrategyMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]

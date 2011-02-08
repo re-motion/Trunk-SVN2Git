@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
     DomainObjectCollection OriginalCollectionReference { get; }
 
-    void MarkDataAvailable ();
+    void MarkDataComplete ();
 
     void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
 
@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
-    void Unload ();
+    void MarkDataIncomplete ();
     void RegisterOriginalObject (DomainObject domainObject);
     void UnregisterOriginalObject (ObjectID objectID);
   }

@@ -42,17 +42,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void IsDataAvailable_True ()
+    public void IsDataComplete_True ()
     {
-      Assert.That (_endPoint.IsDataAvailable, Is.True);
+      Assert.That (_endPoint.IsDataComplete, Is.True);
     }
 
     [Test]
-    public void EnsureDataAvailable_DoesNothing ()
+    public void EnsureDataComplete_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      _endPoint.EnsureDataAvailable ();
+      _endPoint.EnsureDataComplete ();
     }
     
     [Test]

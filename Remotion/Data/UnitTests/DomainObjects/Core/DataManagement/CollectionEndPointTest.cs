@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.ID, Is.EqualTo (_customerEndPointID));
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
       Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialize_WithNullInitialContents ()
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -235,8 +235,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       var result = _customerEndPoint.HasChanged;
       
@@ -255,8 +255,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Touch_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       _customerEndPoint.Touch ();
 
@@ -336,8 +336,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasBeenTouched_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       var result = _customerEndPoint.HasBeenTouched;
 
@@ -359,8 +359,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OriginalOppositeDomainObjectsContents_Get_LoadsData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
       PrepareLoading (_customerEndPoint);
 
       Dev.Null = _customerEndPoint.OriginalOppositeDomainObjectsContents;
@@ -368,55 +368,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       AssertDidLoadData (_customerEndPoint);
     }
 
-    [Test]
-    public void Unload ()
-    {
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
-      _customerEndPoint.Unload ();
-
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
-    }
-
-    [Test]
-    public void Unload_TriggersListener ()
-    {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, _customerEndPoint))
-          .WhenCalled (mi => Assert.That (_customerEndPoint.IsDataAvailable, Is.True));
-      listenerMock.Replay ();
-
-      ClientTransactionMock.AddListener (listenerMock);
-      
-      _customerEndPoint.Unload ();
-
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord(); // For Discard
-    }
-
-    [Test]
-    public void Unload_NoListener_IfNoDataAvailable ()
-    {
-      _customerEndPoint.Unload ();
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _customerEndPoint.Unload ();
-    }
-
- [Test]
-    public void EnsureDataAvailable_Loaded ()
+   [Test]
+    public void EnsureDataComplete_Complete ()
     {
       _lazyLoaderMock.Replay ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
 
-      _customerEndPoint.EnsureDataAvailable ();
+      _customerEndPoint.EnsureDataComplete ();
 
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
       _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (Arg<CollectionEndPoint>.Is.Anything));
     }
 
     [Test]
-    public void EnsureDataAvailable_Unloaded ()
+    public void EnsureDataComplete_Incomplete ()
     {
       _lazyLoaderMock
           .Expect (mock => mock.LoadLazyCollectionEndPoint (_customerEndPoint))
@@ -424,51 +389,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           {
             // Simulate what's usually done by DataManager when an end-point is loaded
             _customerEndPoint.RegisterOriginalObject (_order2);
-            _customerEndPoint.MarkDataAvailable ();
+            _customerEndPoint.MarkDataComplete ();
           });
       _lazyLoaderMock.Replay ();
 
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
-      _customerEndPoint.EnsureDataAvailable ();
+      _customerEndPoint.EnsureDataComplete ();
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
       _lazyLoaderMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void MarkDataAvailable ()
+    public void MarkDataComplete ()
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      endPoint.Unload ();
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      endPoint.MarkDataIncomplete ();
+      Assert.That (endPoint.IsDataComplete, Is.False);
 
-      endPoint.MarkDataAvailable ();
+      endPoint.MarkDataComplete ();
 
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1 }));
       Assert.That (endPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1 }));
       Assert.That (endPoint.HasChanged, Is.False);
     }
 
     [Test]
-    public void MarkDataAvailable_WithChangedEndPoint ()
+    public void MarkDataComplete_WithChangedEndPoint ()
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
       endPoint.OppositeDomainObjects.Add (_order2);
 
-      endPoint.Unload ();
-      Assert.That (endPoint.IsDataAvailable, Is.False);
+      endPoint.MarkDataIncomplete ();
+      Assert.That (endPoint.IsDataComplete, Is.False);
 
-      endPoint.MarkDataAvailable ();
+      endPoint.MarkDataComplete ();
 
-      Assert.That (endPoint.IsDataAvailable, Is.True);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _order2 }));
       Assert.That (endPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1 }));
       Assert.That (endPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void MarkDataIncomplete ()
+    {
+      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
+      _customerEndPoint.MarkDataIncomplete ();
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void MarkDataIncomplete_TriggersListener ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, _customerEndPoint))
+          .WhenCalled (mi => Assert.That (_customerEndPoint.IsDataComplete, Is.True));
+      listenerMock.Replay ();
+
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _customerEndPoint.MarkDataIncomplete ();
+
+      listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord (); // For Discard
+    }
+
+    [Test]
+    public void MarkDataIncomplete_NoListener_IfDataNotComplete ()
+    {
+      _customerEndPoint.MarkDataIncomplete ();
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      _customerEndPoint.MarkDataIncomplete ();
     }
 
     [Test]
@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDeleteCommand_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateDeleteCommand ();
@@ -550,10 +550,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetOppositeCollectionAndNotify_LoadsData ()
     {
       var originalCollection = _customerEndPoint.OppositeDomainObjects;
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       
-      Assert.That (originalCollection.IsDataAvailable, Is.False);
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      Assert.That (originalCollection.IsDataComplete, Is.False);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       PrepareLoading (_customerEndPoint);
       
@@ -561,7 +561,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       AssertDidLoadData (_customerEndPoint);
-      Assert.That (originalCollection.IsDataAvailable, Is.True);
+      Assert.That (originalCollection.IsDataComplete, Is.True);
     }
 
     [Test]
@@ -643,8 +643,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_Unchanged_DoesNotLoadData ()
     {
       _customerEndPoint.Touch ();
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
 
       _customerEndPoint.Commit();
@@ -714,8 +714,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback_Unchanged_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       _customerEndPoint.Rollback ();
 
@@ -746,8 +746,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransaction.Current,
           new[] { _order2 });
 
-      source.Unload ();
-      _customerEndPoint.Unload ();
+      source.MarkDataIncomplete ();
+      _customerEndPoint.MarkDataIncomplete ();
 
       PrepareLoading (source);
       PrepareLoading (_customerEndPoint);
@@ -834,7 +834,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RegisterOriginalObject_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       _customerEndPoint.RegisterOriginalObject (_order2);
 
       AssertDidNotLoadData (_customerEndPoint);
@@ -853,7 +853,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void UnregisterOriginalObject_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       _customerEndPoint.UnregisterOriginalObject (_order1.ID);
 
       AssertDidNotLoadData (_customerEndPoint);
@@ -874,7 +874,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateRemoveCommand_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateRemoveCommand (_order1);
@@ -898,7 +898,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateInsertCommand_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateInsertCommand (_order1, 12);
@@ -922,7 +922,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateAddCommand_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateAddCommand (_order1);
@@ -946,7 +946,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateReplaceCommand_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CreateReplaceCommand (0, _order1);
@@ -978,7 +978,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDelegatingCollectionData_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       _customerEndPoint.CreateDelegatingCollectionData ();
 
       AssertDidNotLoadData (_customerEndPoint);
@@ -989,8 +989,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oppositeCollection = _customerEndPoint.OppositeDomainObjects;
 
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       var result = _customerEndPoint.OppositeDomainObjects;
 
@@ -1012,7 +1012,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OppositeDomainObjects_Set_DoesNotLoadData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
 
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
@@ -1089,8 +1089,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var originalReference = _customerEndPoint.OriginalCollectionReference;
 
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       var result = _customerEndPoint.OriginalCollectionReference;
 
@@ -1117,7 +1117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPoints_LoadsData ()
     {
-      _customerEndPoint.Unload ();
+      _customerEndPoint.MarkDataIncomplete ();
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
@@ -1152,10 +1152,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CheckMandatory_Unloaded_LoadsData ()
+    public void CheckMandatory_Incomplete_LoadsData ()
     {
-      _customerEndPoint.Unload ();
-      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
       PrepareLoading (_customerEndPoint);
 
       _customerEndPoint.CheckMandatory ();
@@ -1171,18 +1171,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private void AssertDidNotLoadData (CollectionEndPoint collectionEndPoint)
     {
       _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
     }
 
     private void AssertDidLoadData (CollectionEndPoint collectionEndPoint)
     {
       _lazyLoaderMock.AssertWasCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
     }
 
     private void PrepareLoading (CollectionEndPoint source)
     {
-      _lazyLoaderMock.Stub (stub => stub.LoadLazyCollectionEndPoint (source)).WhenCalled (mi => source.MarkDataAvailable ());
+      _lazyLoaderMock.Stub (stub => stub.LoadLazyCollectionEndPoint (source)).WhenCalled (mi => source.MarkDataComplete ());
     }
   }
 }

@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (endPointID.Definition.IsMandatory)
         {
           IRelationEndPoint endPoint = _relationEndPointMap[endPointID];
-          if (endPoint != null && endPoint.IsDataAvailable)
+          if (endPoint != null && endPoint.IsDataComplete)
             endPoint.CheckMandatory();
         }
       }
@@ -273,7 +273,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (collectionEndPoint != _relationEndPointMap[collectionEndPoint.ID])
         throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
 
-      if (collectionEndPoint.IsDataAvailable)
+      if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
       
       _objectLoader.LoadRelatedObjects (collectionEndPoint.ID);

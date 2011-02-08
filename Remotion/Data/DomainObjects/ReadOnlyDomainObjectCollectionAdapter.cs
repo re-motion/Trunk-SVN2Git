@@ -48,9 +48,9 @@ namespace Remotion.Data.DomainObjects
       get { return _wrappedData.AssociatedEndPointID; }
     }
 
-    public bool IsDataAvailable
+    public bool IsDataComplete
     {
-      get { return _wrappedData.IsDataAvailable; }
+      get { return _wrappedData.IsDataComplete; }
     }
 
     public int Count
@@ -58,9 +58,9 @@ namespace Remotion.Data.DomainObjects
       get { return _wrappedData.Count; }
     }
 
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      _wrappedData.EnsureDataAvailable();
+      _wrappedData.EnsureDataComplete();
     }
 
     public IEnumerator<T> GetEnumerator ()

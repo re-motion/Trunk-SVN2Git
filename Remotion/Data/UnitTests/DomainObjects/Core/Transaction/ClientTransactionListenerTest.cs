@@ -259,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer newCustomer = Customer.NewObject();
       
       // preload all related objects
-      oldCustomer.Orders.EnsureDataAvailable ();
+      oldCustomer.Orders.EnsureDataComplete ();
 
       var oldCustomerEndPointID = oldCustomer.Orders.AssociatedEndPointID;
       var newCustomerEndPointID = newCustomer.Orders.AssociatedEndPointID;

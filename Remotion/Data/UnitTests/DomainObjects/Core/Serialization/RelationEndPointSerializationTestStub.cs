@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override bool IsDataAvailable
+    public override bool IsDataComplete
     {
       get { throw new NotImplementedException(); }
     }
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       get { throw new NotImplementedException(); }
     }
 
-    public override void EnsureDataAvailable ()
+    public override void EnsureDataComplete ()
     {
       throw new NotImplementedException();
     }

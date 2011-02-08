@@ -46,14 +46,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.AssociatedEndPoint; }
     }
 
-    public virtual bool IsDataAvailable
+    public virtual bool IsDataComplete
     {
-      get { return _wrappedData.IsDataAvailable; }
+      get { return _wrappedData.IsDataComplete; }
     }
 
-    public virtual void EnsureDataAvailable ()
+    public virtual void EnsureDataComplete ()
     {
-      _wrappedData.EnsureDataAvailable();
+      _wrappedData.EnsureDataComplete();
     }
 
     public virtual IDomainObjectCollectionData GetDataStore ()

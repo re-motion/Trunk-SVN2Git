@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
 
-      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems.IsDataComplete, Is.True);
 
       UnloadService.UnloadCollectionEndPoint (
           _subTransaction, 
@@ -87,12 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_EnsureDataAvailable ()
+    public void UnloadCollectionEndPoint_EnsureDataComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
 
-      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems.IsDataComplete, Is.True);
 
       UnloadService.UnloadCollectionEndPoint (
           _subTransaction,
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", false);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", false);
 
-      orderItems.EnsureDataAvailable ();
+      orderItems.EnsureDataComplete ();
 
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", true);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", true);
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", false);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", true);
 
-      orderItems.EnsureDataAvailable ();
+      orderItems.EnsureDataComplete ();
 
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", true);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", true);
@@ -207,15 +207,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderTicket = order1.OrderTicket;
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
-      customerOrders.EnsureDataAvailable ();
+      customerOrders.EnsureDataComplete ();
 
       Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems.IsDataComplete, Is.True);
       Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (customerOrders.IsDataAvailable, Is.True);
+      Assert.That (customerOrders.IsDataComplete, Is.True);
 
       UnloadService.UnloadData (_subTransaction, order1.ID, UnloadTransactionMode.RecurseToRoot);
 
@@ -248,12 +248,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, customer, "Orders", false);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems.IsDataComplete, Is.True);
       Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (customerOrders.IsDataAvailable, Is.False);
+      Assert.That (customerOrders.IsDataComplete, Is.False);
 
       Assert.That (order1.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (orderItemA.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Unchanged));
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
 
-      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems.IsDataComplete, Is.True);
 
       UnloadService.UnloadCollectionEndPointAndData (
           _subTransaction,
@@ -515,16 +515,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         ClientTransaction clientTransaction, 
         DomainObject owningObject, 
         string shortPropertyName, 
-        bool shouldDataBeAvailable)
+        bool shouldDataBeComplete)
     {
       CheckEndPointExists (clientTransaction, owningObject, shortPropertyName, true);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
       var endPoint = ClientTransactionTestHelper.GetDataManager (clientTransaction).RelationEndPointMap[endPointID];
-      if (shouldDataBeAvailable)
-        Assert.That (endPoint.IsDataAvailable, Is.True, "End point '{0}' does not have any data.", endPoint.ID);
+      if (shouldDataBeComplete)
+        Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' does not have any data.", endPoint.ID);
       else
-        Assert.That (endPoint.IsDataAvailable, Is.False, "End point '{0}' should not have any data.", endPoint.ID);
+        Assert.That (endPoint.IsDataComplete, Is.False, "End point '{0}' should not have any data.", endPoint.ID);
     }
   }
 }

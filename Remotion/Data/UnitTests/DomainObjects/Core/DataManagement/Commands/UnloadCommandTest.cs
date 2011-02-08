@@ -502,14 +502,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       Assert.That (_relationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
       Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
-      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataAvailable, Is.True);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataComplete, Is.True);
 
       var command = CreateCommand (DomainObjectIDs.Order1);
       command.Perform ();
 
       Assert.That (_relationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
       Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
-      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataAvailable, Is.True);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataComplete, Is.True);
     }
 
     [Test]
@@ -536,13 +536,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var collectionEndPoint = (ICollectionEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (collectionEndPointID);
 
       Assert.That (collectionEndPoint.HasChanged, Is.False);
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
       Assert.That (_dataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
 
       var command = CreateCommand (DomainObjectIDs.OrderItem1);
       command.Perform();
 
-      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]

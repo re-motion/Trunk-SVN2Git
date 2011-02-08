@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1);
 
       Assert.That (_delegatingData.Count, Is.EqualTo (1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -115,21 +115,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      _collectionEndPointMock.Stub (stub => stub.IsDataAvailable).Return (true).Repeat.Once();
-      Assert.That (_delegatingData.IsDataAvailable, Is.True);
+      _collectionEndPointMock.Stub (stub => stub.IsDataComplete).Return (true).Repeat.Once();
+      Assert.That (_delegatingData.IsDataComplete, Is.True);
 
-      _collectionEndPointMock.Stub (stub => stub.IsDataAvailable).Return (false).Repeat.Once ();
-      Assert.That (_delegatingData.IsDataAvailable, Is.False);
+      _collectionEndPointMock.Stub (stub => stub.IsDataComplete).Return (false).Repeat.Once ();
+      Assert.That (_delegatingData.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      _delegatingData.EnsureDataAvailable();
+      _delegatingData.EnsureDataComplete();
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _endPointDataStub.Stub (mock => mock.GetDataStore()).Return (dataStoreStub);
 
       Assert.That (_delegatingData.GetDataStore(), Is.SameAs (dataStoreStub));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_delegatingData.ContainsObjectID (DomainObjectIDs.OrderItem1), Is.True);
       Assert.That (_delegatingData.ContainsObjectID (DomainObjectIDs.OrderItem2), Is.False);
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_delegatingData.GetObject (1), Is.SameAs (_orderItem2));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_delegatingData.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
       Assert.That (_delegatingData.IndexOf (DomainObjectIDs.OrderItem2), Is.EqualTo (1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       IEnumerable<DomainObject> dataAsEnumerable = _delegatingData;
       Assert.That (dataAsEnumerable.ToArray(), Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3 }));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
     }
 
     [Test]
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock3.NotifyClientTransactionOfEnd");
       }
 
-      _collectionEndPointMock.Expect (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.Expect (mock => mock.EnsureDataComplete ());
 
       mockRepository.ReplayAll ();
 
@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _delegatingData.Clear();
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
     }
 
@@ -302,7 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _delegatingData.Insert (17, _orderItem1);
 
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
     }
@@ -327,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var result = _delegatingData.Remove (_orderItem1);
 
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
 
@@ -366,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var result = _delegatingData.Remove (_orderItem1.ID);
 
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
 
@@ -380,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveCommand (Arg<DomainObject>.Is.Anything));
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
 
       Assert.That (result, Is.False);
     }
@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _delegatingData.Replace (17, _orderItem1);
 
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
+      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
     }

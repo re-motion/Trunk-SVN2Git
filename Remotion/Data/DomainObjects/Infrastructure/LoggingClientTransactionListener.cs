@@ -219,7 +219,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       if (s_log.IsDebugEnabled)
       {
-        var domainObjectsString = relatedObjects.IsDataAvailable ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
+        var domainObjectsString = relatedObjects.IsDataComplete ? GetDomainObjectsString (relatedObjects) : "<data not loaded>";
         s_log.DebugFormat (
             "{0} RelationRead: {1} ({2}, {3}): {4}",
             clientTransaction.ID,

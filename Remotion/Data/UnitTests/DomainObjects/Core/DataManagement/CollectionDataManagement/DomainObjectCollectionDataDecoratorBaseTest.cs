@@ -118,24 +118,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsDataAvailable ()
+    public void IsDataComplete ()
     {
-      _wrappedDataMock.Expect (mock => mock.IsDataAvailable).Return (true);
+      _wrappedDataMock.Expect (mock => mock.IsDataComplete).Return (true);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.IsDataAvailable;
+      var result = _decorator.IsDataComplete;
 
       _wrappedDataMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (true));
     }
 
     [Test]
-    public void EnsureDataAvailable ()
+    public void EnsureDataComplete ()
     {
-      _wrappedDataMock.Expect (mock => mock.EnsureDataAvailable());
+      _wrappedDataMock.Expect (mock => mock.EnsureDataComplete());
       _wrappedDataMock.Replay ();
 
-      _decorator.EnsureDataAvailable();
+      _decorator.EnsureDataComplete();
 
       _wrappedDataMock.VerifyAllExpectations ();
     }
