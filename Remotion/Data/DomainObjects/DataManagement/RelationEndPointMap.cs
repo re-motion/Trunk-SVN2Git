@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -22,7 +23,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
 
@@ -30,21 +30,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
     private readonly IClientTransactionListener _transactionEventSink;
-    private readonly Dictionary<RelationEndPointID, RelationEndPoint> _relationEndPoints;
-
-    // construction and disposing
+    private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
 
     public RelationEndPointMap (
         ClientTransaction clientTransaction,
@@ -63,12 +55,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _lazyLoader = lazyLoader;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
-      _relationEndPoints = new Dictionary<RelationEndPointID, RelationEndPoint> ();
+      _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
     }
 
-    // methods and properties
-
-    public RelationEndPoint this [RelationEndPointID endPointID]
+    public IRelationEndPoint this[RelationEndPointID endPointID]
     {
       get { return _relationEndPoints.GetValueOrDefault (endPointID); }
     }
@@ -95,13 +85,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void CommitAllEndPoints ()
     {
-      foreach (RelationEndPoint endPoint in _relationEndPoints.Values)
+      foreach (IRelationEndPoint endPoint in _relationEndPoints.Values)
         endPoint.Commit ();
     }
 
     public void RollbackAllEndPoints ()
     {
-      foreach (RelationEndPoint endPoint in _relationEndPoints.Values)
+      foreach (IRelationEndPoint endPoint in _relationEndPoints.Values)
         endPoint.Rollback ();
     }
 
@@ -167,7 +157,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
 
-      var objectEndPoint = (RealObjectEndPoint) this[endPointID];
+      var objectEndPoint = (IObjectEndPoint) this[endPointID];
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
@@ -196,7 +186,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "UnregisterVirtualObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
 
-      var objectEndPoint = (ObjectEndPoint) this[endPointID];
+      var objectEndPoint = (IObjectEndPoint) this[endPointID];
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
@@ -226,7 +216,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.Many, "UnregisterCollectionEndPoint", "endPointID");
 
-      var collectionEndPoint = (CollectionEndPoint) this[endPointID];
+      var collectionEndPoint = (ICollectionEndPoint) this[endPointID];
       if (collectionEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
@@ -289,7 +279,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public RelationEndPoint[] GetNonUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
+    public IRelationEndPoint[] GetNonUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -314,7 +304,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
+    public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
@@ -353,7 +343,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPoints[endPointID];
     }
 
-    private void Add (RelationEndPoint endPoint)
+    private void Add (IRelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -375,9 +365,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Remove (endPointID);
     }
 
-    public IEnumerator<RelationEndPoint> GetEnumerator ()
+    public IEnumerator<IRelationEndPoint> GetEnumerator ()
     {
-      return _relationEndPoints.Values.GetEnumerator();
+      return _relationEndPoints.Values.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -396,7 +386,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
         {
-          var loadedVirtualObjectEndPoint = (ObjectEndPoint) this[endPointID];
+          var loadedVirtualObjectEndPoint = (IObjectEndPoint) this[endPointID];
           if (loadedVirtualObjectEndPoint != null && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
             yield return endPointID;
         }
@@ -446,7 +436,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, RelationEndPoint endPoint)
+    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IRelationEndPoint endPoint)
     {
       if (!IsUnregisterable(endPoint))
       {
@@ -457,7 +447,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private bool IsUnregisterable (RelationEndPoint endPoint)
+    private bool IsUnregisterable (IRelationEndPoint endPoint)
     {
       // An end-point must be unchanged to be unregisterable.
       if (endPoint.HasChanged)
@@ -470,7 +460,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var maybeOppositeEndPoint =
           Maybe.ForValue (endPoint)
               .Where (ep => !ep.Definition.IsVirtual)
-              .Select (ep => ep as ObjectEndPoint)
+              .Select (ep => ep as IObjectEndPoint)
               .Where (ep => ep.OppositeObjectID != null)
               .Select (ep => new RelationEndPointID (ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
               .Select (oppositeID => this[oppositeID]);
@@ -480,7 +470,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return true;
     }
 
-    private void RegisterOppositeForRealObjectEndPoint (RealObjectEndPoint realObjectEndPoint)
+    private void RegisterOppositeForRealObjectEndPoint (IObjectEndPoint realObjectEndPoint)
     {
       var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
       Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
@@ -502,7 +492,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void UnregisterOppositeForRealObjectEndPoint (RealObjectEndPoint realObjectEndPoint)
+    private void UnregisterOppositeForRealObjectEndPoint (IObjectEndPoint realObjectEndPoint)
     {
       Assertion.IsFalse (realObjectEndPoint.HasChanged, "Deregistration currently only works for unchanged end-points");
 
@@ -518,7 +508,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
         else
         {
-          var oppositeEndPoint = (CollectionEndPoint) this[oppositeVirtualEndPointID];
+          var oppositeEndPoint = (ICollectionEndPoint) this[oppositeVirtualEndPointID];
           if (oppositeEndPoint != null)
           {
             Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
@@ -529,9 +519,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private CollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
+    private ICollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
-      return (CollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID, null);
+      return (ICollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID, null);
     }
 
     // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it
@@ -552,7 +542,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
 
       var oppositeVirtualEndPointID = new RelationEndPointID (foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
-      var existingOppositeVirtualEndPoint = (VirtualObjectEndPoint) this[oppositeVirtualEndPointID];
+      var existingOppositeVirtualEndPoint = (IObjectEndPoint) this[oppositeVirtualEndPointID];
       if (existingOppositeVirtualEndPoint == null) // if the opposite end point does not exist, this is not a conflicting foreign key value
         return;
 
@@ -582,8 +572,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
       {
-        RelationEndPoint[] endPointArray = info.GetArray<RelationEndPoint>();
-        foreach (RelationEndPoint endPoint in endPointArray)
+        IRelationEndPoint[] endPointArray = info.GetArray<IRelationEndPoint> ();
+        foreach (IRelationEndPoint endPoint in endPointArray)
           _relationEndPoints.Add (endPoint.ID, endPoint);
       }
     }
@@ -595,7 +585,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_collectionEndPointChangeDetectionStrategy);
       info.AddHandle (_objectLoader);
       info.AddHandle (_lazyLoader);
-      var endPointArray = new RelationEndPoint[Count];
+      var endPointArray = new IRelationEndPoint[Count];
       _relationEndPoints.Values.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);
     }

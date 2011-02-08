@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
               originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
 
-      var collectionEndPoint = (CollectionEndPoint)
+      var collectionEndPoint = (ICollectionEndPoint)
                                ClientTransactionMock.DataManager.RelationEndPointMap[
                                    new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
       Assert.That (collectionEndPoint, Is.Not.Null);
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
               longPropertyName);
 
-      var objectEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
+      var objectEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
                                                 new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));

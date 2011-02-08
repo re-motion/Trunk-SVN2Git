@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return data;
     }
 
-    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint)
+    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint)
     {
       // collection => checking checking decorator => end point data => actual data store
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (data, Is.SameAs (((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData));
     }
 
-    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
+    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
     {
       // collection => checking checking decorator => end point data => actual data store
 

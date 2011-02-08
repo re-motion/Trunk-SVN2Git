@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints)
+    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<IRelationEndPoint> endPoints)
     {
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
       ArgumentUtility.CheckNotNull ("endPoints", endPoints);

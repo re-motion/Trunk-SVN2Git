@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 {
   public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
-    private ObjectEndPoint _endPoint;
+    private IObjectEndPoint _endPoint;
     private ObjectEndPointSetCommand _command;
 
     public override void SetUp ()
@@ -48,14 +48,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     protected abstract RelationEndPointID GetRelationEndPointID ();
 
     protected abstract ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject);
-    protected abstract ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
+    protected abstract ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, IObjectEndPoint endPoint, DomainObject newRelatedObject);
 
     public ObjectEndPointSetCommand Command
     {
       get { return _command; }
     }
 
-    public ObjectEndPoint EndPoint
+    public IObjectEndPoint EndPoint
     {
       get { return _endPoint; }
     }

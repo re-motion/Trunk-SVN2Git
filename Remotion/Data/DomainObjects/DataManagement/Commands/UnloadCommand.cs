@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       }
     }
 
-    private RelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
+    private IRelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
     {
       var loadedEndPoint = _relationEndPointMap[endPointID];
       Assertion.IsTrue (

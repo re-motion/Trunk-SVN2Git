@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DataContainer _dataContainer;
     private Client _domainObject;
     private PropertyValue _propertyValue;
-    private RelationEndPoint _relationEndPoint;
+    private IRelationEndPoint _relationEndPoint;
 
     [SetUp]
     public override void SetUp ()

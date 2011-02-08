@@ -426,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
       
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
       endPoint.Unload ();
       Assert.That (endPoint.IsDataAvailable, Is.False);

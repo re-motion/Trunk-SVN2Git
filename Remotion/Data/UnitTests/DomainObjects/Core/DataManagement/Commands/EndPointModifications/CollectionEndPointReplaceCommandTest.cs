@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         relationChangingCalled = true;
 
-        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
         Assert.That (args.NewRelatedObject, Is.SameAs (_replacementRelatedObject));
         Assert.That (args.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         relationChangedCalled = true;
 
-        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
         Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // collection gets event later
         Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // collection gets event later
       };

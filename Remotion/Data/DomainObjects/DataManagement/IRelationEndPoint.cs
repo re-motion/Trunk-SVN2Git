@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -22,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides a common interface for objects representing one side of a relation between <see cref="DomainObject"/> instances.
   /// </summary>
-  public interface IRelationEndPoint : INullObject
+  public interface IRelationEndPoint : INullObject, IFlattenedSerializable
   {
     RelationEndPointID ID { get; }
     ClientTransaction ClientTransaction { get; }
@@ -38,5 +40,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void EnsureDataAvailable ();
 
     void Touch ();
+    void Commit ();
+    void Rollback ();
+    IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
+    IDataManagementCommand CreateDeleteCommand ();
+    void CheckMandatory ();
+    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+    void SetValueFrom (IRelationEndPoint source);
   }
 }

@@ -300,7 +300,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} TransactionRolledBack: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
     }
 
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("{0} RelationEndPointMapRegistering: {1}", clientTransaction.ID, endPoint.ID);
@@ -312,7 +312,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationEndPointMapUnregistering: {1}", clientTransaction.ID, endPointID);
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPoint.ID);

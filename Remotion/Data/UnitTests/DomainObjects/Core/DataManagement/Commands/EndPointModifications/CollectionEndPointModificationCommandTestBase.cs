@@ -30,13 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 {
   public abstract class CollectionEndPointModificationCommandTestBase : ClientTransactionBaseTest
   {
-    private CollectionEndPoint _collectionEndPoint;
+    private ICollectionEndPoint _collectionEndPoint;
     private IDomainObjectCollectionData _collectionDataMock;
     private Customer _domainObject;
     private DomainObjectCollectionEventReceiver _collectionEventReceiver;
     private RelationEndPointID _relationEndPointID;
 
-    public CollectionEndPoint CollectionEndPoint
+    public ICollectionEndPoint CollectionEndPoint
     {
       get { return _collectionEndPoint; }
     }

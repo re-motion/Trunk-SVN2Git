@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _orderTicket.Delete ();
 
       Assert.AreEqual (StateType.Deleted, _orderTicket.State);
-			Assert.AreEqual (StateType.Deleted, _orderTicket.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Deleted, _orderTicket.InternalDataContainer.State);
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ObjectDeletedException))]
     public void ModifyDeletedObject ()
     {
-			PropertyValue propertyValue = _order.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
+      PropertyValue propertyValue = _order.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
 
       _order.Delete ();
 
@@ -99,8 +99,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (DomainObjectIDs.Order2, _order.ID);
       Assert.AreEqual (3, _order.OrderNumber);
       Assert.AreEqual (new DateTime (2005, 3, 1), _order.DeliveryDate);
-			Assert.IsNotNull (_order.InternalDataContainer.Timestamp);
-			Assert.IsNotNull (_order.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
+      Assert.IsNotNull (_order.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (_order.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
     }
 
     [Test]

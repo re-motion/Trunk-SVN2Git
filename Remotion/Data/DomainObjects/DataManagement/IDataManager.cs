@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
     IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedDataByObjectState ();
     IEnumerable<DataContainer> GetChangedDataContainersForCommit ();
-    IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ();
-    IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
+    IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ();
+    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer);
     
     bool HasRelationChanged (DataContainer dataContainer);
     void CheckMandatoryRelations (DataContainer dataContainer);

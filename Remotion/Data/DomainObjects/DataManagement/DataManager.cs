@@ -124,12 +124,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()
+    public IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ()
     {
       return _relationEndPointMap.Where (endPoint => endPoint.HasChanged);
     }
 
-    public IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
+    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs
              let endPoint = RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         if (endPointID.Definition.IsMandatory)
         {
-          RelationEndPoint endPoint = _relationEndPointMap[endPointID];
+          IRelationEndPoint endPoint = _relationEndPointMap[endPointID];
           if (endPoint != null && endPoint.IsDataAvailable)
             endPoint.CheckMandatory();
         }
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      RelationEndPoint[] endPoints;
+      IRelationEndPoint[] endPoints;
       try
       {
         endPoints = (from endPointID in dataContainer.AssociatedRelationEndPointIDs
@@ -266,7 +266,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return DataContainerMap[id];
     }
 
-    public void LoadLazyCollectionEndPoint (CollectionEndPoint collectionEndPoint)
+    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 
@@ -281,7 +281,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     }
 
-    private RelationEndPoint EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
+    private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
     {
       Maybe.ForValue (relationEndPoint as IObjectEndPoint)
           .Where (endPoint => endPoint.OppositeObjectID != null)

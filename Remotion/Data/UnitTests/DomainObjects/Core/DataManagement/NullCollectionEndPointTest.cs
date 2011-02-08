@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -162,11 +162,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateDeleteCommand ()
+    {
+      Assert.That (_nullEndPoint.CreateDeleteCommand(), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void CreateDelegatingCollectionData ()
+    {
+      _nullEndPoint.CreateDelegatingCollectionData();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Unload ()
+    {
+      _nullEndPoint.Unload ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void RegisterOriginalObject ()
+    {
+      _nullEndPoint.RegisterOriginalObject (_relatedObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void UnregisterOriginalObject ()
+    {
+      _nullEndPoint.UnregisterOriginalObject (_relatedObject.ID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void CheckMandatory ()
+    {
+      _nullEndPoint.CheckMandatory ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void GetOppositeRelationEndPoints ()
+    {
+      _nullEndPoint.GetOppositeRelationEndPoints (MockRepository.GenerateStub<IDataManager> ());
+    }
+
+    [Test]
     public void EnsureDataAvailable_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       _nullEndPoint.EnsureDataAvailable ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void SetValueFrom ()
+    {
+      _nullEndPoint.SetValueFrom (MockRepository.GenerateStub<IRelationEndPoint> ());
     }
 
     [Test]
@@ -181,6 +236,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback ()
     {
       _nullEndPoint.Commit ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void SerializeIntoFlatStructure ()
+    {
+      _nullEndPoint.SerializeIntoFlatStructure (new FlattenedSerializationInfo ());
     }
   }
 }

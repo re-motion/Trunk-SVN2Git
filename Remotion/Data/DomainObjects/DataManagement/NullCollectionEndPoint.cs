@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -27,8 +29,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
   /// object, this end point (or <see cref="NullObjectEndPoint"/>) is used to represent the object's part in the relation, and a 
   /// <see cref="NullEndPointModificationCommand"/> is used to represent the modification. The end point is created by 
-  /// <see cref="RelationEndPoint.CreateNullRelationEndPoint"/> (e.g. via 
-  /// <see cref="EndPointExtensions.GetEndPointWithOppositeDefinition{T}(IRelationEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
+  /// <see cref="RelationEndPointExtensions.CreateNullRelationEndPoint"/> (e.g. via 
+  /// <see cref="RelationEndPointExtensions.GetEndPointWithOppositeDefinition{T}(IRelationEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
   /// and is usually discarded after executing the modification.
   /// </summary>
   public class NullCollectionEndPoint : ICollectionEndPoint
@@ -90,9 +92,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
+    public void CheckMandatory ()
     {
-      return new NullEndPointModificationCommand (this);
+      throw new InvalidOperationException ("CheckMandatory cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    {
+      throw new InvalidOperationException ("GetOppositeRelationEndPoints cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void SetValueFrom (IRelationEndPoint source)
+    {
+      throw new InvalidOperationException ("SetValueFrom cannot be called on a NullCollectionEndPoint.");
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -136,9 +148,34 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new NullEndPointModificationCommand (this);
     }
 
+    public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
+    {
+      return new NullEndPointModificationCommand (this);
+    }
+
+    public IDataManagementCommand CreateDeleteCommand ()
+    {
+      return new NullEndPointModificationCommand (this);
+    }
+
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void Unload ()
+    {
+      throw new InvalidOperationException ("Unload cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void RegisterOriginalObject (DomainObject domainObject)
+    {
+      throw new InvalidOperationException ("RegisterOriginalObject cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void UnregisterOriginalObject (ObjectID objectID)
+    {
+      throw new InvalidOperationException ("UnregisterOriginalObject cannot be called on a NullCollectionEndPoint.");
     }
 
     public void EnsureDataAvailable ()
@@ -159,6 +196,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Rollback ()
     {
       throw new InvalidOperationException ("Rollback cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      throw new InvalidOperationException ("SerializeIntoFlatStructure cannot be called on a NullCollectionEndPoint.");
     }
   }
 }

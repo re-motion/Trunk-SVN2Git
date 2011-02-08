@@ -27,7 +27,7 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class EndPointExtensionsTest : ClientTransactionBaseTest
+  public class RelationEndPointExtensionsTest : ClientTransactionBaseTest
   {
     [Test]
     public void GetDomainObject ()

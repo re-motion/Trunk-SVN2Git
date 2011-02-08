@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
     }
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
     }
 

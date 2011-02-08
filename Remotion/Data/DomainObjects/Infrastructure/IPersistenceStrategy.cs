@@ -208,6 +208,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <paramref name="endPoints"/> is consistent and complete; otherwise an inconsistent state
     /// might arise in the underlying data store.
     /// </remarks>
-    void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints);
+    void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<IRelationEndPoint> endPoints);
   }
 }

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public class RelationEndPointTouchCommandTest : StandardMappingTest
   {
     private ClientTransactionMock _transaction;
-    private RelationEndPoint _endPoint;
+    private IRelationEndPoint _endPoint;
     private RelationEndPointTouchCommand _command;
 
     public override void SetUp ()

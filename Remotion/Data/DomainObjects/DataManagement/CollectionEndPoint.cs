@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       bidirectionalModification.NotifyAndPerform ();
     }
 
-    public override void SetValueFrom (RelationEndPoint source)
+    public override void SetValueFrom (IRelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
       if (Definition != sourceCollectionEndPoint.Definition)
@@ -306,7 +306,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
     }
 
-    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 

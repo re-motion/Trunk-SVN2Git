@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides extension methods for <see cref="IRelationEndPoint"/>.
   /// </summary>
-  public static class EndPointExtensions
+  public static class RelationEndPointExtensions
   {
     public static DomainObject GetDomainObject (this IRelationEndPoint endPoint)
     {
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       IRelationEndPoint oppositeEndPoint;
       if (oppositeObjectID == null)
-        oppositeEndPoint = RelationEndPoint.CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
+        oppositeEndPoint = CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
       else
       {
         var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (!(oppositeEndPoint is T))
       {
-        var message = string.Format (
+        var message = String.Format (
             "The opposite end point '{0}' is of type '{1}', not of type '{2}'.", 
             oppositeEndPoint.ID, 
             oppositeEndPoint.GetType(), 
@@ -88,6 +88,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       return (T) oppositeEndPoint;
+    }
+
+    private static IRelationEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
+    {
+      if (definition.Cardinality == CardinalityType.One)
+        return new NullObjectEndPoint (clientTransaction, definition);
+      else
+        return new NullCollectionEndPoint (clientTransaction, definition);
     }
   }
 }

@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "TransactionRolledBack");
     }
 
-    public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       EnsureWriteable (clientTransaction, "RelationEndPointMapRegistering");
     }
@@ -194,7 +194,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationEndPointMapUnregistering");
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
     }

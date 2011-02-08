@@ -263,7 +263,7 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\LazyLoadingCollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
-    <Compile Include="DataManagement\EndPointExtensions.cs" />
+    <Compile Include="DataManagement\RelationEndPointExtensions.cs" />
     <Compile Include="DataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
     <Compile Include="DataManagement\StateValueSet.cs" />

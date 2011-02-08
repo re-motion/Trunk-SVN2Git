@@ -631,7 +631,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.MarkCollectionEndPointComplete (endPointID);
 
-      var collectionEndPoint = (CollectionEndPoint) _map[endPointID];
+      var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
       Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
       Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
@@ -950,7 +950,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
 
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeCollectionEndPoint = (CollectionEndPoint) _map[oppositeCollectionEndPointID];
+      var oppositeCollectionEndPoint = (ICollectionEndPoint) _map[oppositeCollectionEndPointID];
       oppositeCollectionEndPoint.MarkDataAvailable (); // mark the current state as the "full" state of the collection
 
       var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);

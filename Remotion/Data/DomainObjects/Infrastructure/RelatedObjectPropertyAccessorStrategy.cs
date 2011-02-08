@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new RelationEndPointID (propertyAccessor.DomainObject.ID, propertyAccessor.PropertyData.RelationEndPointDefinition);
     }
 
-    public RelationEndPoint GetRelationEndPoint (PropertyAccessor propertyAccessor, ClientTransaction transaction)
+    public IRelationEndPoint GetRelationEndPoint (PropertyAccessor propertyAccessor, ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      RelationEndPoint endPoint = GetRelationEndPoint (propertyAccessor, transaction);
+      var endPoint = GetRelationEndPoint (propertyAccessor, transaction);
       return endPoint != null && endPoint.HasChanged;
     }
 
@@ -65,13 +65,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      RelationEndPoint endPoint = GetRelationEndPoint (propertyAccessor, transaction);
+      var endPoint = GetRelationEndPoint (propertyAccessor, transaction);
       return endPoint != null && endPoint.HasBeenTouched;
     }
 
     public bool IsNull (PropertyAccessor propertyAccessor, ClientTransaction transaction)
     {
-      ArgumentUtility.CheckNotNull ("accessor", propertyAccessor);
+      ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
       if (propertyAccessor.PropertyData.RelationEndPointDefinition.IsVirtual)

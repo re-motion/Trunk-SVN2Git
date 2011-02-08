@@ -589,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationCommand ()
     {
-      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new OrderCollection ();
       var command = (CollectionEndPointReplaceWholeCollectionCommand) ((IAssociatableDomainObjectCollection) newCollection).CreateAssociationCommand (endPoint);
@@ -603,7 +603,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationCommand_CollectionIsReadOnly ()
     {
-      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new OrderCollection ().Clone (true);
       var result = ((IAssociatableDomainObjectCollection) newCollection).CreateAssociationCommand (endPoint);
@@ -617,7 +617,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
     public void CreateAssociationCommand_DifferentCollectionTypes ()
     {
-      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new ObjectList<Order> ();
       ((IAssociatableDomainObjectCollection) newCollection).CreateAssociationCommand (endPoint);
@@ -628,7 +628,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         "This collection has a different item type than the end point's current opposite collection.")]
     public void CreateAssociationCommand_DifferentRequiredItemType ()
     {
-      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new DomainObjectCollection (typeof (Customer));
       ((IAssociatableDomainObjectCollection) newCollection).CreateAssociationCommand (endPoint);
@@ -637,7 +637,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationCommand_SelfReplace ()
     {
-      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var command = (CollectionEndPointReplaceWholeCollectionCommand)
                     ((IAssociatableDomainObjectCollection) endPoint.OppositeDomainObjects).CreateAssociationCommand (endPoint);

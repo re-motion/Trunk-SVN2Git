@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -26,8 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
   /// object, this end point (or <see cref="NullCollectionEndPoint"/>) is used to represent the object's part in the relation, and a 
   /// <see cref="NullEndPointModificationCommand"/> is used to represent the modification. The end point is created by 
-  /// <see cref="RelationEndPoint.CreateNullRelationEndPoint"/> (e.g. via 
-  /// <see cref="EndPointExtensions.GetEndPointWithOppositeDefinition{T}(IRelationEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
+  /// <see cref="RelationEndPointExtensions.CreateNullRelationEndPoint"/> (e.g. via 
+  /// <see cref="RelationEndPointExtensions.GetEndPointWithOppositeDefinition{T}(IRelationEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
   /// and is usually discarded after executing the modification.
   /// </summary>
   public class NullObjectEndPoint : IObjectEndPoint
@@ -130,9 +132,34 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new NullEndPointModificationCommand (this);
     }
 
+    public IDataManagementCommand CreateDeleteCommand ()
+    {
+      return new NullEndPointModificationCommand (this);
+    }
+
     public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       return new NullEndPointModificationCommand (this);
+    }
+
+    public void CheckMandatory ()
+    {
+      throw new InvalidOperationException ("CheckMandatory cannot be called on a NullObjectEndPoint.");
+    }
+
+    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    {
+      throw new InvalidOperationException ("GetOppositeRelationEndPoints cannot be called on a NullObjectEndPoint.");
+    }
+
+    public void SetValueFrom (IRelationEndPoint source)
+    {
+      throw new InvalidOperationException ("SetValueFrom cannot be called on a NullObjectEndPoint.");
+    }
+
+    public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      throw new InvalidOperationException ("SerializeIntoFlatStructure cannot be called on a NullObjectEndPoint.");
     }
   }
 }

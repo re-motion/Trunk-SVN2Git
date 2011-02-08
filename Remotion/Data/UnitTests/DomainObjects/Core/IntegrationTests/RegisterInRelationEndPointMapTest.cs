@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.AreEqual (
           DomainObjectIDs.Order1,
-          ((ObjectEndPoint) _endPoints[expectedEndPointIDForOrderTicket]).OppositeObjectID,
+          ((IObjectEndPoint) _endPoints[expectedEndPointIDForOrderTicket]).OppositeObjectID,
           "OppositeObjectID for OrderTicket");
 
       var expectedEndPointIDForOrder = new RelationEndPointID (
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.AreEqual (
           DomainObjectIDs.OrderTicket1,
-          ((ObjectEndPoint) _endPoints[expectedEndPointIDForOrder]).OppositeObjectID,
+          ((IObjectEndPoint) _endPoints[expectedEndPointIDForOrder]).OppositeObjectID,
           "OppositeObjectID for Order");
     }
 
@@ -103,11 +103,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.AreEqual (
           DomainObjectIDs.Customer1,
-          ((ObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")]).OppositeObjectID);
+          ((IObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")]).OppositeObjectID);
       Assert.IsNotNull (_endPoints[new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders")]);
 
       Assert.AreEqual (DomainObjectIDs.Official1,
-                       ((ObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")]).OppositeObjectID);
+                       ((IObjectEndPoint) _endPoints[new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official")]).OppositeObjectID);
       Assert.IsNotNull (_endPoints[new RelationEndPointID (DomainObjectIDs.Official1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders")]);
     }
   }

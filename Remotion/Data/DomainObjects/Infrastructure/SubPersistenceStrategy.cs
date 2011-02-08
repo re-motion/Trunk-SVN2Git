@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<RelationEndPoint> endPoints)
+    public virtual void PersistData (IEnumerable<DataContainer> dataContainers, IEnumerable<IRelationEndPoint> endPoints)
     {
       using (TransactionUnlocker.MakeWriteable (_parentTransaction))
       {
@@ -289,9 +289,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _parentTransaction.DataManager.GetDataContainerWithoutLoading (id);
     }
 
-    private void PersistRelationEndPoints (IEnumerable<RelationEndPoint> endPoints)
+    private void PersistRelationEndPoints (IEnumerable<IRelationEndPoint> endPoints)
     {
-      foreach (RelationEndPoint endPoint in endPoints)
+      foreach (var endPoint in endPoints)
       {
         var parentEndPoint = _parentTransaction.DataManager.RelationEndPointMap[endPoint.ID];
 

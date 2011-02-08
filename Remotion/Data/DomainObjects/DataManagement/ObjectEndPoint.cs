@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new ObjectEndPointSetOneManyCommand (this, newRelatedObject);
     }
 
-    public override void SetValueFrom (RelationEndPoint source)
+    public override void SetValueFrom (IRelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
 
@@ -138,14 +138,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Touch ();
     }
 
-    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
       if (oppositeEndPointDefinition.IsAnonymous || OppositeObjectID == null)
       {
-        return Enumerable.Empty<RelationEndPoint> ();
+        return Enumerable.Empty<IRelationEndPoint> ();
       }
       else
       {

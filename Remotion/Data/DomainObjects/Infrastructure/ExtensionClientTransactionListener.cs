@@ -171,7 +171,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RolledBack (clientTransaction, domainObjects);
     }
 
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       // not handled by this listener
     }
@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       // not handled by this listener
     }

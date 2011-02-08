@@ -15,7 +15,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     /// but it is automatically invoked when a collection-valued relation property is set to a new collection.
     /// </summary>
     /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
-    /// must have the same type and <see cref="DomainObjectCollection.RequiredItemType"/> as this collection.</param>
+    ///   must have the same type and <see cref="DomainObjectCollection.RequiredItemType"/> as this collection.</param>
     /// <exception cref="NotSupportedException">This collection is read-only.</exception>
     /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
     /// <remarks>
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     /// <see cref="CollectionEndPoint"/> has no possibility to do that.
     /// </para>
     /// </remarks>
-    IDataManagementCommand CreateAssociationCommand (CollectionEndPoint endPoint);
+    IDataManagementCommand CreateAssociationCommand (ICollectionEndPoint endPoint);
 
     /// <summary>
     /// Transforms the collection to an associated collection. The collection will represent the data stored by <paramref name="endPoint"/>, and

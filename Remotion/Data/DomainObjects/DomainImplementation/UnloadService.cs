@@ -284,7 +284,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           clientTransaction, transactionMode, tx => TryUnloadCollectionEndPointAndData (tx, endPointID, transactionMode));
     }
 
-    private static CollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    private static ICollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       if (endPointID.Definition.Cardinality != CardinalityType.Many)
       {
@@ -292,10 +292,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         throw new ArgumentException (message, "endPointID");
       }
 
-      return (CollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      return (ICollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
     }
 
-    private static bool CanUnloadCollectionEndPoint (CollectionEndPoint collectionEndPoint)
+    private static bool CanUnloadCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
     {
       return !collectionEndPoint.HasChanged;
     }

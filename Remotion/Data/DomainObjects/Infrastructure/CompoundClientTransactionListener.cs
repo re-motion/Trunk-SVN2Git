@@ -194,7 +194,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.TransactionRolledBack (clientTransaction, domainObjects);
     }
 
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       foreach (var listener in _listeners)
         listener.RelationEndPointMapRegistering (clientTransaction, endPoint);
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointMapUnregistering (clientTransaction, endPointID);
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       foreach (var listener in _listeners)
         listener.RelationEndPointUnloading (clientTransaction, endPoint);

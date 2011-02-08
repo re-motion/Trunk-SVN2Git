@@ -600,7 +600,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (parentOrdersEndPoint.OppositeDomainObjects[0].State, Is.EqualTo (StateType.Changed));
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      var subOrdersEndPoint = (CollectionEndPoint) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+      var subOrdersEndPoint = (ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
 
       Assert.That (subOrdersEndPoint.OppositeDomainObjects[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));

@@ -125,9 +125,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
     void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
 
-    void RelationEndPointMapRegistering (ClientTransaction clientTransaction, RelationEndPoint endPoint);
+    void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID);
-    void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPoint endPoint);
+    void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint);
 
     void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id);
 

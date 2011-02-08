@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       dataContainer.SetDomainObject (instance);
 
       var dataContainers = new[] { dataContainer };
-      var endPoints = new RelationEndPoint[0];
+      var endPoints = new IRelationEndPoint[0];
       _persistenceStrategy.PersistData (dataContainers, endPoints);
 
       Assert.That (_parentInvalidDomainObjectManager.IsInvalid (instance.ID), Is.False);

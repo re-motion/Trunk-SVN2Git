@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void CanUnload_False_ChangedAssociatedEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void CanUnload_False_ChangedOppositeEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void EnsureCanUnload_ThrowsOnChangedAssociatedEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void EnsureCanUnload_ThrowsOnChangedOppositeEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
       _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
@@ -521,7 +521,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _relationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
 
       Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
-      Assert.That (((ObjectEndPoint) _relationEndPointMap[virtualEndPointID]).OppositeObjectID, Is.Null);
+      Assert.That (((IObjectEndPoint) _relationEndPointMap[virtualEndPointID]).OppositeObjectID, Is.Null);
 
       var command = CreateCommand (DomainObjectIDs.Employee1);
       command.Perform();
@@ -533,7 +533,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void Perform_UnloadsOwningCollections ()
     {
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var collectionEndPoint = (CollectionEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (collectionEndPointID);
+      var collectionEndPoint = (ICollectionEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (collectionEndPointID);
 
       Assert.That (collectionEndPoint.HasChanged, Is.False);
       Assert.That (collectionEndPoint.IsDataAvailable, Is.True);

@@ -27,17 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public abstract class RelationEndPoint : IRelationEndPoint, IFlattenedSerializable
   {
-    public static IRelationEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("definition", definition);
-
-      if (definition.Cardinality == CardinalityType.One)
-        return new NullObjectEndPoint (clientTransaction, definition);
-      else
-        return new NullCollectionEndPoint (clientTransaction, definition);
-    }
-
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _id;
 
@@ -56,11 +45,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public abstract void EnsureDataAvailable ();
     public abstract void Touch ();
-    public abstract IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+    public abstract IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
 
     public abstract void Commit ();
     public abstract void Rollback ();
-    public abstract void SetValueFrom (RelationEndPoint source);
+    public abstract void SetValueFrom (IRelationEndPoint source);
 
     public abstract void CheckMandatory ();
     

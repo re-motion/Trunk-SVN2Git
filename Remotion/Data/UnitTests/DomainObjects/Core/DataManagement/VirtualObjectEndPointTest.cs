@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void InitializeWithNullObjectID ()
     {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
 
       Assert.That (endPoint.OriginalOppositeObjectID, Is.Null);
       Assert.That (endPoint.OppositeObjectID, Is.Null);
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_WithOriginalAndCurrentNull ()
     {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
 
       Assert.That (endPoint.HasChanged, Is.False);
     }
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_WithOriginalNull_CurrentNotNull ()
     {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
       endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
 
       Assert.That (endPoint.HasChanged, Is.True);

@@ -116,11 +116,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingEventArgs.Count, Is.EqualTo (2)); // operation was started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (relationChangingEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
       Assert.That (relationChangingEventArgs[0].OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
       Assert.That (relationChangingEventArgs[0].NewRelatedObject, Is.Null);
 
-      Assert.That (relationChangingEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
       Assert.That (relationChangingEventArgs[1].OldRelatedObject, Is.Null);
       Assert.That (relationChangingEventArgs[1].NewRelatedObject, Is.SameAs (_order2));
     }
@@ -150,9 +150,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangedEventArgs.Count, Is.EqualTo (2)); // operation was started
       Assert.That (relationChangingCalled, Is.False); // operation was not finished
 
-      Assert.That (relationChangedEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangedEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
 
-      Assert.That (relationChangedEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangedEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
     }
 
     [Test]

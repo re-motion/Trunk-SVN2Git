@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void TouchedContent ()
     {
       _endPoint.OppositeObjectID = DomainObjectIDs.Employee1;
-      ObjectEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
       Assert.AreEqual (DomainObjectIDs.Employee1, _endPoint.OppositeObjectID);

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
     }
 
-    public override void SetValueFrom (RelationEndPoint source)
+    public override void SetValueFrom (IRelationEndPoint source)
     {
       throw new NotImplementedException();
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       throw new NotImplementedException();
     }

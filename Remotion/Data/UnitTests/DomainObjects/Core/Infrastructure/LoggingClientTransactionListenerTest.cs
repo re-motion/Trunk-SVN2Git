@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void RelationEndPointMapRegistering ()
     {
       RelationEndPointID relationEndPointID;
-      RealObjectEndPoint relationEndPoint;
+      IObjectEndPoint relationEndPoint;
       using (_clientTransaction.EnterNonDiscardingScope())
       {
         relationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject.ID, "ParentClient");
@@ -460,7 +460,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void RelationEndPointUnloading ()
     {
       RelationEndPointID relationEndPointID;
-      RealObjectEndPoint relationEndPoint;
+      IObjectEndPoint relationEndPoint;
       using (_clientTransaction.EnterNonDiscardingScope())
       {
         relationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject.ID, "ParentClient");

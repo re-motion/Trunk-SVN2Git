@@ -429,13 +429,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _strictListenerMock.Expect (
             mock => mock.RelationEndPointMapRegistering (
                 Arg.Is (ClientTransactionMock), 
-                Arg<RelationEndPoint>.Matches (
-                    rep => rep.PropertyName == typeof (Company).FullName + ".IndustrialSector" && rep.ObjectID == DomainObjectIDs.Customer1)));
+                Arg<IRelationEndPoint>.Matches (
+                    rep => rep.Definition.PropertyName == typeof (Company).FullName + ".IndustrialSector" && rep.ObjectID == DomainObjectIDs.Customer1)));
         _strictListenerMock.Expect (
             mock => mock.RelationEndPointMapRegistering (
                 Arg.Is (ClientTransactionMock),
-                Arg<RelationEndPoint>.Matches (
-                    rep => rep.PropertyName == typeof (IndustrialSector).FullName + ".Companies" && rep.ObjectID == DomainObjectIDs.IndustrialSector1)));
+                Arg<IRelationEndPoint>.Matches (
+                    rep => rep.Definition.PropertyName == typeof (IndustrialSector).FullName + ".Companies" && rep.ObjectID == DomainObjectIDs.IndustrialSector1)));
 
         _strictListenerMock.Expect (mock => mock.ObjectsLoaded (
             Arg.Is (ClientTransactionMock), 
@@ -575,7 +575,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationEndPointUnload ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var orderItemsEndPoint = (RelationEndPoint) DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
+      var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
 
       Dev.Null = orderItemsEndPoint.HasChanged; // warm up has changed cache
 

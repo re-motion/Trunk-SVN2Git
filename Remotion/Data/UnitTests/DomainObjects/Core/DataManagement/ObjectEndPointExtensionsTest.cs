@@ -19,7 +19,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -28,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class ObjectEndPointExtensionsTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
-    private ObjectEndPoint _endPoint;
+    private IObjectEndPoint _endPoint;
 
     public override void SetUp ()
     {

@@ -816,7 +816,7 @@ namespace Remotion.Data.DomainObjects
       Deleted += source.Deleted;
     }
 
-    IDataManagementCommand IAssociatableDomainObjectCollection.CreateAssociationCommand (CollectionEndPoint endPoint)
+    IDataManagementCommand IAssociatableDomainObjectCollection.CreateAssociationCommand (ICollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 

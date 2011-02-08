@@ -782,7 +782,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetUnidirectionalCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointValueCheckerTest.cs" />
