@@ -1160,9 +1160,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\RegisterInRelationEndPointMapTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointCollectionTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointIDTest.cs">
       <SubType>Code</SubType>
     </Compile>

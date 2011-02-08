@@ -619,9 +619,6 @@
     <Compile Include="DataManagement\RelationEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\RelationEndPointCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DataManagement\RelationEndPointID.cs">
       <SubType>Code</SubType>
     </Compile>

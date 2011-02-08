@@ -24,6 +24,7 @@ using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
     private readonly IClientTransactionListener _transactionEventSink;
-    private readonly RelationEndPointCollection _relationEndPoints;
+    private readonly Dictionary<RelationEndPointID, RelationEndPoint> _relationEndPoints;
 
     // construction and disposing
 
@@ -62,14 +63,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _lazyLoader = lazyLoader;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
-      _relationEndPoints = new RelationEndPointCollection (_clientTransaction);
+      _relationEndPoints = new Dictionary<RelationEndPointID, RelationEndPoint> ();
     }
 
     // methods and properties
 
     public RelationEndPoint this [RelationEndPointID endPointID]
     {
-      get { return _relationEndPoints[endPointID]; }
+      get { return _relationEndPoints.GetValueOrDefault (endPointID); }
     }
 
     public int Count
@@ -94,13 +95,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void CommitAllEndPoints ()
     {
-      foreach (RelationEndPoint endPoint in _relationEndPoints)
+      foreach (RelationEndPoint endPoint in _relationEndPoints.Values)
         endPoint.Commit ();
     }
 
     public void RollbackAllEndPoints ()
     {
-      foreach (RelationEndPoint endPoint in _relationEndPoints)
+      foreach (RelationEndPoint endPoint in _relationEndPoints.Values)
         endPoint.Rollback ();
     }
 
@@ -322,7 +323,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!endPointID.Definition.IsVirtual)
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
 
-      var existingEndPoint = _relationEndPoints[endPointID];
+      var existingEndPoint = _relationEndPoints.GetValueOrDefault (endPointID);
       if (existingEndPoint != null)
         return _relationEndPoints[endPointID];
 
@@ -338,8 +339,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (relatedObject == null)
           RegisterVirtualObjectEndPoint (endPointID, null);
 
-        Assertion.IsNotNull (
-            _relationEndPoints[endPointID], 
+        Assertion.IsTrue (
+            _relationEndPoints.ContainsKey (endPointID), 
             "Loading related object should have indirectly registered this end point because that object holds the foreign key");
       }
       else
@@ -348,10 +349,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.EnsureDataAvailable ();
       }
 
-      var loadedEndPoint = _relationEndPoints[endPointID];
-      Assertion.IsNotNull (loadedEndPoint);
-
-      return loadedEndPoint;
+      Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
+      return _relationEndPoints[endPointID];
     }
 
     private void Add (RelationEndPoint endPoint)
@@ -359,7 +358,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       _transactionEventSink.RelationEndPointMapRegistering (_clientTransaction, endPoint);
-      _relationEndPoints.Add (endPoint);
+      _relationEndPoints.Add (endPoint.ID, endPoint);
     }
 
     public void RemoveEndPoint (RelationEndPointID endPointID)
@@ -378,7 +377,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IEnumerator<RelationEndPoint> GetEnumerator ()
     {
-      return _relationEndPoints.Cast<RelationEndPoint>().GetEnumerator();
+      return _relationEndPoints.Values.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -585,7 +584,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         RelationEndPoint[] endPointArray = info.GetArray<RelationEndPoint>();
         foreach (RelationEndPoint endPoint in endPointArray)
-          _relationEndPoints.Add (endPoint);
+          _relationEndPoints.Add (endPoint.ID, endPoint);
       }
     }
 
@@ -597,7 +596,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_objectLoader);
       info.AddHandle (_lazyLoader);
       var endPointArray = new RelationEndPoint[Count];
-      _relationEndPoints.CopyTo (endPointArray, 0);
+      _relationEndPoints.Values.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);
     }
 
