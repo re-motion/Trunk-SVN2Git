@@ -201,7 +201,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = true;
     }
 
-    // State-dependent
     public override void CheckMandatory ()
     {
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
@@ -232,57 +231,39 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
-    // All command methods: State-dependent
-
     public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-
-      EnsureDataComplete ();
-
-      return ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
+      return _loadState.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
     }
-
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      EnsureDataComplete();
-      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _dataKeeper.CollectionData);
+      return _loadState.CreateRemoveCommand (removedRelatedObject);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      EnsureDataComplete();
-
-      return new CollectionEndPointDeleteCommand (this, _dataKeeper.CollectionData);
+      return _loadState.CreateDeleteCommand();
     }
 
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      EnsureDataComplete();
-      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _dataKeeper.CollectionData);
+      return _loadState.CreateInsertCommand (insertedRelatedObject, index);
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      EnsureDataComplete();
-      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count);
+      return _loadState.CreateAddCommand (addedRelatedObject);
     }
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
-
-      EnsureDataComplete();
-
-      var replacedObject = OppositeDomainObjects[index];
-      if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _dataKeeper.CollectionData);
-      else
-        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
+      return _loadState.CreateReplaceCommand (index, replacementObject);
     }
 
     // State-dependent

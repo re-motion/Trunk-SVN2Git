@@ -492,39 +492,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateDeleteCommand ()
-    {
-      var command = _customerEndPoint.CreateDeleteCommand ();
-
-      var beginEventReceiver = new DomainObjectCollectionEventReceiver (_customerEndPoint.OppositeDomainObjects);
-      command.Begin ();
-      Assert.That (beginEventReceiver.HasDeletingEventBeenCalled, Is.True);
-
-      var endEventReceiver = new DomainObjectCollectionEventReceiver (_customerEndPoint.OppositeDomainObjects);
-      command.End ();
-      Assert.That (endEventReceiver.HasDeletedEventBeenCalled, Is.True);
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Not.Empty);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-
-      command.Perform ();
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Empty);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void CreateDeleteCommand_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
-
-      _customerEndPoint.CreateDeleteCommand ();
-
-      AssertDidLoadData (_customerEndPoint);
-    }
-
-    [Test]
     public void Commit ()
     {
       var newOrder = Order.NewObject ();
@@ -710,115 +677,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 3732")]
     public void CreateSetOppositeCollectionCommand ()
     {
-      Assert.Fail ("TODO 3732");
+      var oppositeDomainObjects = new DomainObjectCollection ();
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand>();
+
+      _loadStateMock.Expect (mock => mock.CreateSetOppositeCollectionCommand (oppositeDomainObjects)).Return (fakeResult);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void CreateRemoveCommand ()
     {
-      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateRemoveCommand (_order1);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
-      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
+      _loadStateMock.Expect (mock => mock.CreateRemoveCommand (_order1)).Return (fakeResult);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.CreateRemoveCommand (_order1);
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
-    public void CreateRemoveCommand_LoadsData ()
+    public void CreateDeleteCommand ()
     {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _customerEndPoint.CreateRemoveCommand (_order1);
+      _loadStateMock.Expect (mock => mock.CreateDeleteCommand ()).Return (fakeResult);
+      _loadStateMock.Replay ();
 
-      AssertDidLoadData (_customerEndPoint);
+      var result = _endPointWithLoadStateMock.CreateDeleteCommand ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void CreateInsertCommand ()
     {
-      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateInsertCommand (_order1, 12);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
-      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
-    }
+      _loadStateMock.Expect (mock => mock.CreateInsertCommand (_order1, 0)).Return (fakeResult);
+      _loadStateMock.Replay ();
 
-    [Test]
-    public void CreateInsertCommand_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
+      var result = _endPointWithLoadStateMock.CreateInsertCommand (_order1, 0);
 
-      _customerEndPoint.CreateInsertCommand (_order1, 12);
-
-      AssertDidLoadData (_customerEndPoint);
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void CreateAddCommand ()
     {
-      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateAddCommand (_order1);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
-      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
-    }
+      _loadStateMock.Expect (mock => mock.CreateAddCommand (_order1)).Return (fakeResult);
+      _loadStateMock.Replay ();
 
-    [Test]
-    public void CreateAddCommand_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
+      var result = _endPointWithLoadStateMock.CreateAddCommand (_order1);
 
-      _customerEndPoint.CreateAddCommand (_order1);
-
-      AssertDidLoadData (_customerEndPoint);
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
     public void CreateReplaceCommand ()
     {
-      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateReplaceCommand (0, _orderWithoutOrderItem);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
+      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      var dataStore = GetEndPointDataKeeper (_customerEndPoint).CollectionData;
-      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
-    }
+      _loadStateMock.Expect (mock => mock.CreateReplaceCommand (0, _order1)).Return (fakeResult);
+      _loadStateMock.Replay ();
 
-    [Test]
-    public void CreateReplaceCommand_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
+      var result = _endPointWithLoadStateMock.CreateReplaceCommand (0, _order1);
 
-      _customerEndPoint.CreateReplaceCommand (0, _order1);
-
-      AssertDidLoadData (_customerEndPoint);
-    }
-
-    [Test]
-    public void CreateReplaceCommand_SelfReplace ()
-    {
-      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateReplaceCommand (0, _customerEndPoint.OppositeDomainObjects[0]);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
