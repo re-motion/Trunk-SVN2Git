@@ -40,7 +40,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void MarkDataIncomplete ();
     void RegisterOriginalObject (DomainObject domainObject);
     void UnregisterOriginalObject (ObjectID objectID);
-    
-    ICollectionEndPointLoadState GetState ();
   }
 }

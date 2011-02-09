@@ -272,11 +272,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
-    public ICollectionEndPointLoadState GetState ()
-    {
-      throw new NotImplementedException("TODO 3732");
-    }
-
     // All command methods: State-dependent
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)

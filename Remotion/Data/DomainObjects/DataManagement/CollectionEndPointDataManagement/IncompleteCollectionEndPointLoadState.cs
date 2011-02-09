@@ -46,81 +46,72 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public DomainObjectCollection GetOriginalOppositeObjects ()
     {
-      var newState = MakeCompleteAndGetNewState();
-      return newState.GetOriginalOppositeObjects();
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.GetOppositeRelationEndPoints (dataManager);
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
     }
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection newOppositeCollection)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateSetOppositeCollectionCommand (newOppositeCollection);
+      _collectionEndPoint.EnsureDataComplete ();
+      throw new NotImplementedException ("TODO 3732");
+      // return _collectionEndPoint.CreateSetOppositeCollectionCommand (newOppositeCollection);
     }
 
     public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateRemoveCommand (removedRelatedObject);
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.CreateRemoveCommand (removedRelatedObject);
     }
 
     public IDataManagementCommand CreateDeleteCommand ()
     {
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateDeleteCommand ();
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.CreateDeleteCommand ();
     }
 
     public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateInsertCommand (insertedRelatedObject, index);
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.CreateInsertCommand (insertedRelatedObject, index);
     }
 
     public IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateAddCommand (addedRelatedObject);
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.CreateAddCommand (addedRelatedObject);
     }
 
     public IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
-      var newState = MakeCompleteAndGetNewState ();
-      return newState.CreateReplaceCommand (index, replacementObject);
+      _collectionEndPoint.EnsureDataComplete ();
+      return _collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
 
     public void SetValueFrom (ICollectionEndPoint sourceEndPoint)
     {
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      var newState = MakeCompleteAndGetNewState ();
-      newState.SetValueFrom (sourceEndPoint);
+      _collectionEndPoint.EnsureDataComplete ();
+      _collectionEndPoint.SetValueFrom (sourceEndPoint);
     }
 
     public void CheckMandatory ()
     {
-      var newState = MakeCompleteAndGetNewState ();
-      newState.CheckMandatory();
-    }
-
-    private ICollectionEndPointLoadState MakeCompleteAndGetNewState ()
-    {
       _collectionEndPoint.EnsureDataComplete ();
-
-      var newState = _collectionEndPoint.GetState ();
-      Assertion.IsTrue (newState != this, "EnsureDataComplete should change the state of the end-point.");
-      return newState;
+      _collectionEndPoint.CheckMandatory ();
     }
-
   }
 }
