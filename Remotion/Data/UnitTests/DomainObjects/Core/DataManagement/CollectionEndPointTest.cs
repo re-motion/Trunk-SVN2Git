@@ -15,17 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -180,13 +177,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order1, _order2), Is.EqualTo (-1));
       Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order1), Is.EqualTo (1));
       Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order2), Is.EqualTo (0));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void ChangeOriginalOppositeDomainObjects ()
-    {
-      _customerEndPoint.OriginalOppositeDomainObjectsContents.Remove (_order1.ID);
     }
 
     [Test]
@@ -898,30 +888,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPoints ()
     {
-      var oppositeEndPoints = _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray();
+      var fakeResult = new IRelationEndPoint[0];
+      var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
 
-      var expectedID1 = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
-      var expected1 = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID1];
-      Assert.That (expected1, Is.Not.Null);
+      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPoints (dataManagerStub)).Return (fakeResult);
+      _loadStateMock.Replay ();
 
-      var expectedID2 = RelationEndPointObjectMother.CreateRelationEndPointID (_orderWithoutOrderItem.ID, "Customer");
-      var expected2 = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID2];
-      Assert.That (expected2, Is.Not.Null);
+      var result = _endPointWithLoadStateMock.GetOppositeRelationEndPoints (dataManagerStub);
 
-      Assert.That (oppositeEndPoints, Is.EquivalentTo (new[] { expected1, expected2, }));
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
-
-    [Test]
-    public void GetOppositeRelationEndPoints_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      PrepareLoading (_customerEndPoint);
-
-      _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
-
-      AssertDidLoadData (_customerEndPoint);
-    }
-
+    
     [Test]
     public void ChangesToDataState_CauseTransactionListenerNotifications ()
     {
@@ -952,17 +930,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
-    }
-
-    private void AssertDidLoadData (CollectionEndPoint collectionEndPoint)
-    {
-      _lazyLoaderMock.AssertWasCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-    }
-
-    private void PrepareLoading (CollectionEndPoint source)
-    {
-      _lazyLoaderMock.Stub (stub => stub.LoadLazyCollectionEndPoint (source)).WhenCalled (mi => source.MarkDataComplete ());
     }
 
     private CollectionEndPoint CreateEndPointWithLoadStateMock (ICollectionEndPointLoadState loadStateMock)

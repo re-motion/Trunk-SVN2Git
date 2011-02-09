@@ -266,21 +266,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _loadState.CreateReplaceCommand (index, replacementObject);
     }
 
-    // State-dependent
-
     public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-
-      EnsureDataComplete();
-
-      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition();
-
-      Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
-
-      return from oppositeDomainObject in OppositeDomainObjects.Cast<DomainObject>()
-             let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, oppositeEndPointDefinition)
-             select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+      return _loadState.GetOppositeRelationEndPoints (dataManager);
     }
 
     private void RaiseStateUpdateNotification (bool hasChanged)

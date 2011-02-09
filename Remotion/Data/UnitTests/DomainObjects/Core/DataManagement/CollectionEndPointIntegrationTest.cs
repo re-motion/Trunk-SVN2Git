@@ -255,6 +255,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void ChangeOriginalOppositeDomainObjects ()
+    {
+      _customerEndPoint.OriginalOppositeDomainObjectsContents.Remove (_order1.ID);
+    }
+
+    [Test]
     public void Rollback_AfterReplace_RestoresPreviousReference ()
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
