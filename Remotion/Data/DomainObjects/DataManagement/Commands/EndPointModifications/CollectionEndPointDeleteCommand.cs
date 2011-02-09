@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents the removal of an element from a <see cref="CollectionEndPoint"/>.
+  /// Represents the deletion of an object owning a <see cref="CollectionEndPoint"/> from the end-point's point of view.
   /// </summary>
   public class CollectionEndPointDeleteCommand : RelationEndPointModificationCommand
   {
