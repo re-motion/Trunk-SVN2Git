@@ -22,16 +22,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   [Serializable]
   public class MandatoryRelationNotSetException : DataManagementException
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    private DomainObject _domainObject;
-    private string _propertyName;
-
-    // construction and disposing
+    private readonly DomainObject _domainObject;
+    private readonly string _propertyName;
 
     public MandatoryRelationNotSetException (DomainObject domainObject, string propertyName, string message) 
         : this (domainObject, propertyName, message, null) 
@@ -45,11 +37,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyName = propertyName;
     }
     
-    protected MandatoryRelationNotSetException (SerializationInfo info, StreamingContext context) : base (info, context) 
-    { 
+    protected MandatoryRelationNotSetException (SerializationInfo info, StreamingContext context) : base (info, context)
+    {
+      _domainObject = (DomainObject) info.GetValue ("_domainObject", typeof (DomainObject));
+      _propertyName = info.GetString ("_propertyName");
     }
 
-    // methods and properties
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+
+      info.AddValue ("_domainObject", _domainObject);
+      info.AddValue ("_propertyName", _propertyName);
+    }
 
     public DomainObject DomainObject
     {

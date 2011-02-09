@@ -213,6 +213,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
