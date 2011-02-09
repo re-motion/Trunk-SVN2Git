@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public bool IsNull (PropertyAccessor propertyAccessor, ClientTransaction transaction)
     {
-      ArgumentUtility.CheckNotNull ("accessor", propertyAccessor);
+      ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
       return false;
@@ -76,10 +76,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
+      var newOppositeCollection = ArgumentUtility.CheckNotNullAndType<DomainObjectCollection> ("value", value);
+
+      DomainObjectCheckUtility.EnsureNotDeleted (propertyAccessor.DomainObject, transaction);
 
       RelationEndPointID id = CreateRelationEndPointID (propertyAccessor);
       var endPoint = (ICollectionEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
-      endPoint.SetOppositeCollectionAndNotify ((DomainObjectCollection) value);
+
+      if (!newOppositeCollection.IsAssociatedWith (null) && !newOppositeCollection.IsAssociatedWith (endPoint))
+        throw new ArgumentException ("The given collection is already associated with an end point.", "value");
+
+      var command = endPoint.CreateSetOppositeCollectionCommand(newOppositeCollection);
+      var bidirectionalModification = command.ExpandToAllRelatedObjects();
+      bidirectionalModification.NotifyAndPerform();
     }
 
     public object GetOriginalValueWithoutTypeCheck (PropertyAccessor propertyAccessor, ClientTransaction transaction)

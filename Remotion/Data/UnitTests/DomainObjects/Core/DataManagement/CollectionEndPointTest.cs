@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransactionMock,
           new[] { _order1 });
 
-      endPoint.SetOppositeCollectionAndNotify (new OrderCollection { _order1 });
+      endPoint.CreateSetOppositeCollectionCommand (new OrderCollection { _order1 }).ExpandToAllRelatedObjects().NotifyAndPerform();
 
       var result = endPoint.HasChanged;
 
@@ -534,72 +534,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeCollectionAndNotify ()
-    {
-      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedWith (_customerEndPoint), Is.True);
-      Assert.That (_customerEndPoint.OriginalCollectionReference.IsAssociatedWith (null), Is.True);
-    }
-
-    [Test]
-    public void SetOppositeCollectionAndNotify_LoadsData ()
-    {
-      var originalCollection = _customerEndPoint.OppositeDomainObjects;
-      _customerEndPoint.MarkDataIncomplete ();
-      
-      Assert.That (originalCollection.IsDataComplete, Is.False);
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-
-      PrepareLoading (_customerEndPoint);
-      
-      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
-
-      AssertDidLoadData (_customerEndPoint);
-      Assert.That (originalCollection.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void SetOppositeCollectionAndNotify_PerformsBidirectionalChange ()
-    {
-      var newOpposites = new OrderCollection { _order2 };
-      Assert.That (_order2.Customer, Is.Not.SameAs (_customerEndPoint.GetDomainObject ()));
-
-      _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
-
-      Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The given collection is already associated with an end point.\r\n"
-        + "Parameter name: oppositeDomainObjects")]
-    public void SetOppositeCollectionAndNotify_NewCollectionAlreadyAssociated ()
-    {
-      var otherEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new DomainObject[0]);
-      _customerEndPoint.SetOppositeCollectionAndNotify (otherEndPoint.OppositeDomainObjects);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void SetOppositeCollectionAndNotify_ObjectDeleted ()
-    {
-      ((Customer) _customerEndPoint.GetDomainObject ()).Delete ();
-      _customerEndPoint.SetOppositeCollectionAndNotify (new OrderCollection ());
-    }
-
-    [Test]
-    public void SetOppositeCollectionAndNotify_SelfReplace ()
-    {
-      _customerEndPoint.SetOppositeCollectionAndNotify (_customerEndPoint.OppositeDomainObjects);
-      
-      Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedWith (_customerEndPoint), Is.True);
-    }
-
-    [Test]
     public void Commit ()
     {
       var newOrder = Order.NewObject ();
@@ -696,7 +630,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
 
       var newCollection = new OrderCollection { _order2 };
-      _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
+      _customerEndPoint.CreateSetOppositeCollectionCommand (newCollection).ExpandToAllRelatedObjects().NotifyAndPerform();
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newCollection));
       Assert.That (newCollection.IsAssociatedWith (_customerEndPoint), Is.True);
@@ -855,6 +789,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.UnregisterOriginalObject (_order1.ID);
 
       AssertDidNotLoadData (_customerEndPoint);
+    }
+
+    [Test]
+    [Ignore ("TODO 3732")]
+    public void CreateSetOppositeCollectionCommand ()
+    {
+      Assert.Fail ("TODO 3732");
     }
 
     [Test]

@@ -136,7 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void CollectionEndPoint_ReplacedCollection ()
     {
       var newOpposites = _endPoint.OppositeDomainObjects.Clone();
-      _endPoint.SetOppositeCollectionAndNotify (newOpposites);
+      _endPoint.CreateSetOppositeCollectionCommand (newOpposites).ExpandToAllRelatedObjects().NotifyAndPerform();
+      
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.That (deserializedEndPoint.HasChanged, Is.True);
 

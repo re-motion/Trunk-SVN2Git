@@ -135,18 +135,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void SetOppositeCollectionAndNotify ()
-    {
-      _nullEndPoint.SetOppositeCollectionAndNotify (new DomainObjectCollection ());
-    }
-
-    [Test]
     public void Touch ()
     {
       Assert.That (_nullEndPoint.HasBeenTouched, Is.False);
       _nullEndPoint.Touch ();
       Assert.That (_nullEndPoint.HasBeenTouched, Is.False);
+    }
+
+    [Test]
+    public void CreateSetOppositeCollectionCommand ()
+    {
+      Assert.That (_nullEndPoint.CreateSetOppositeCollectionCommand (new DomainObjectCollection()), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]

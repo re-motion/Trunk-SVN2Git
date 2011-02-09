@@ -19,9 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -152,24 +150,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // State-dependent
-    public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      // TODO: This check should be performed by the caller
-      if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
-        throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
-
-      // TODO: This check should be performed by the caller
-      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObjectReference(), ClientTransaction);
-
-      EnsureDataComplete();
-
-      var command = ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
-      var bidirectionalModification = command.ExpandToAllRelatedObjects();
-      bidirectionalModification.NotifyAndPerform();
-    }
-
     public override void SetValueFrom (IRelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<ICollectionEndPoint> ("source", source);
@@ -273,6 +253,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // All command methods: State-dependent
+
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
+
+      EnsureDataComplete ();
+
+      return ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
+    }
+
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {

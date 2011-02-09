@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -30,8 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void MarkDataComplete ();
 
-    void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
-
+    IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects);
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
     IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);

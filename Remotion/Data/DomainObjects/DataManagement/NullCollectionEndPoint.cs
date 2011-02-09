@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -139,9 +138,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // ignore
     }
 
-    public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
     {
-      throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint.");
+      return new NullEndPointModificationCommand (this);
     }
 
     public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
@@ -187,11 +186,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void UnregisterOriginalObject (ObjectID objectID)
     {
       throw new InvalidOperationException ("UnregisterOriginalObject cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public ICollectionEndPointLoadState GetState ()
-    {
-      throw new NotImplementedException("TODO 3732: Null state?");
     }
 
     public void EnsureDataComplete ()

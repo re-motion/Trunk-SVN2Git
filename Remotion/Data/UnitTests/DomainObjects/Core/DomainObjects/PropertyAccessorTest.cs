@@ -100,8 +100,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       IndustrialSector sector = IndustrialSector.NewObject ();
       var newCompanies = new ObjectList<Company> ();
+      var oldCompanies = sector.Companies;
+
       CreateAccessor (sector, "Companies").SetValue (newCompanies);
+
       Assert.That (sector.Companies, Is.SameAs (newCompanies));
+      Assert.That (sector.Companies.AssociatedEndPointID, Is.Not.Null);
+      Assert.That (oldCompanies.IsAssociatedWith (null), Is.True);
+    }
+
+    [Test]
+    public void SetValue_WithObjectList_PerformsBidirectionalChange ()
+    {
+      var sector = IndustrialSector.NewObject ();
+      var company = Company.NewObject();
+
+      var newCompanies = new ObjectList<Company> { company };
+
+      CreateAccessor (sector, "Companies").SetValue (newCompanies);
+
+      Assert.That (company.IndustrialSector, Is.SameAs (sector));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given collection is already associated with an end point.\r\n"
+        + "Parameter name: value")]
+    public void SetValue_WithObjectList_NewCollectionAlreadyAssociated ()
+    {
+      var sector1 = IndustrialSector.NewObject ();
+      var sector2 = IndustrialSector.NewObject ();
+
+      CreateAccessor (sector1, "Companies").SetValue (sector2.Companies);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void SetValue_ObjectDeleted ()
+    {
+      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      sector.Delete();
+
+      sector.Companies = new ObjectList<Company>();
+    }
+
+    [Test]
+    public void SetOppositeCollectionAndNotify_SelfReplace ()
+    {
+      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var previousEndPointID = sector.Companies.AssociatedEndPointID;
+
+      sector.Companies = sector.Companies;
+
+      Assert.That (sector.Companies.AssociatedEndPointID, Is.SameAs (previousEndPointID));
     }
 
     [Test]
