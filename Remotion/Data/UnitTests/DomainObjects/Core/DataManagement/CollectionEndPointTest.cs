@@ -992,36 +992,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }
 
-
-
     [Test]
-    public void CheckMandatory_NonEmpty ()
+    public void CheckMandatory ()
     {
-      _customerEndPoint.CheckMandatory ();
+      _loadStateMock.Expect (mock => mock.CheckMandatory());
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.CheckMandatory ();
+
+      _loadStateMock.VerifyAllExpectations ();
     }
-
-    [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
-        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of domain object "
-        + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' contains no items.")]
-    public void CheckMandatory_Empty ()
-    {
-      _customerEndPoint.OppositeDomainObjects.Clear ();
-      _customerEndPoint.CheckMandatory ();
-    }
-
-    [Test]
-    public void CheckMandatory_Incomplete_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-      PrepareLoading (_customerEndPoint);
-
-      _customerEndPoint.CheckMandatory ();
-
-      AssertDidLoadData (_customerEndPoint);
-    }
-
+    
     private LazyLoadingCollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
       return (LazyLoadingCollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");

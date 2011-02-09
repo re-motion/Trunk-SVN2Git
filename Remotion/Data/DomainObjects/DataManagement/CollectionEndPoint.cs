@@ -206,17 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
       // checked. (DataManager will not check incomplete end-points, as it also ignores not-yet-loaded end-points.)
-      EnsureDataComplete();
-
-      if (_dataKeeper.CollectionData.Count == 0)
-      {
-        throw CreateMandatoryRelationNotSetException (
-            GetDomainObjectReference(),
-            PropertyName,
-            "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
-            PropertyName,
-            ObjectID);
-      }
+      _loadState.CheckMandatory();
     }
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
