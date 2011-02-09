@@ -27,9 +27,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// <summary>
   /// Represents the state of a <see cref="CollectionEndPoint"/> where all of its data is available (ie., the end-point has been (lazily) loaded).
   /// </summary>
+  [Serializable]
   public class CompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
+    [NonSerialized] // Workaround for flattened serialization, see CollectionEndPoint.FixupLoadState
     private readonly ICollectionEndPoint _collectionEndPoint;
+
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
 
     public CompleteCollectionEndPointLoadState (ICollectionEndPoint collectionEndPoint, ICollectionEndPointDataKeeper dataKeeper)
@@ -39,6 +42,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _collectionEndPoint = collectionEndPoint;
       _dataKeeper = dataKeeper;
+    }
+
+    public ICollectionEndPoint CollectionEndPoint
+    {
+      get { return _collectionEndPoint; }
+    }
+
+    public ICollectionEndPointDataKeeper DataKeeper
+    {
+      get { return _dataKeeper; }
     }
 
     public void EnsureDataComplete ()

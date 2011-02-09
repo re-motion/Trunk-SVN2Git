@@ -25,9 +25,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// Represents the state of a <see cref="CollectionEndPoint"/> where not all of its data is available (ie., the end-point has not been (lazily) 
   /// loaded, or it has been unloaded).
   /// </summary>
+  [Serializable]
   public class IncompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
+    [NonSerialized] // Workaround for flattened serialization, see CollectionEndPoint.FixupLoadState
     private readonly ICollectionEndPoint _collectionEndPoint;
+
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
     public IncompleteCollectionEndPointLoadState (ICollectionEndPoint collectionEndPoint, IRelationEndPointLazyLoader lazyLoader)
@@ -37,6 +40,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _collectionEndPoint = collectionEndPoint;
       _lazyLoader = lazyLoader;
+    }
+
+    public ICollectionEndPoint CollectionEndPoint
+    {
+      get { return _collectionEndPoint; }
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
     }
 
     public void EnsureDataComplete ()

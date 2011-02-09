@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -71,6 +70,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.ID, Is.EqualTo (_customerEndPointID));
 
+      var loadState = GetLoadState (_customerEndPoint);
+      Assert.That (loadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
+      Assert.That (((CompleteCollectionEndPointLoadState) loadState).CollectionEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (((CompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_customerEndPoint)));
+
       Assert.That (_customerEndPoint.IsDataComplete, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
@@ -99,7 +103,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize_WithNullInitialContents ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          _customerEndPointID,
+          new RootCollectionEndPointChangeDetectionStrategy(),
+          _lazyLoaderMock,
+          ClientTransactionMock,
+          null);
+
+      var loadState = GetLoadState (endPoint);
+      Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).CollectionEndPoint, Is.SameAs (endPoint));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).LazyLoader, Is.SameAs (_lazyLoaderMock));
+
       Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
@@ -348,27 +363,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OriginalOppositeDomainObjectsContents ()
     {
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.GetType (), Is.EqualTo (typeof (OrderCollection)));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.True);
+      var loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState>();
+      var endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (loadStateMock);
 
-      Assert.That (
-          _customerEndPoint.OriginalOppositeDomainObjectsContents.RequiredItemType,
-          Is.Null);
+      var fakeResult = new DomainObjectCollection();
+      loadStateMock.Expect (mock => mock.GetOriginalOppositeObjects()).Return (fakeResult);
+      loadStateMock.Replay();
+
+      var result = endPointWithLoadStateMock.OriginalOppositeDomainObjectsContents;
+
+      loadStateMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
-    public void OriginalOppositeDomainObjectsContents_Get_LoadsData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-      PrepareLoading (_customerEndPoint);
-
-      Dev.Null = _customerEndPoint.OriginalOppositeDomainObjectsContents;
-
-      AssertDidLoadData (_customerEndPoint);
-    }
-
-   [Test]
     public void EnsureDataComplete_Complete ()
     {
       _lazyLoaderMock.Replay ();
@@ -409,10 +417,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
       endPoint.MarkDataIncomplete ();
+      Assert.That (GetLoadState (endPoint), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       endPoint.MarkDataComplete ();
 
+      Assert.That (GetLoadState (endPoint), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
       Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1 }));
       Assert.That (endPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1 }));
@@ -439,9 +449,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataIncomplete ()
     {
+      Assert.That (GetLoadState (_customerEndPoint), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
       Assert.That (_customerEndPoint.IsDataComplete, Is.True);
+      
       _customerEndPoint.MarkDataIncomplete ();
 
+      Assert.That (GetLoadState (_customerEndPoint), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (_customerEndPoint.IsDataComplete, Is.False);
     }
 
@@ -1122,6 +1135,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private void PrepareLoading (CollectionEndPoint source)
     {
       _lazyLoaderMock.Stub (stub => stub.LoadLazyCollectionEndPoint (source)).WhenCalled (mi => source.MarkDataComplete ());
+    }
+
+    private CollectionEndPoint CreateEndPointWithLoadStateMock (ICollectionEndPointLoadState loadStateMock)
+    {
+      var collectionEndPoint = new CollectionEndPoint (
+          ClientTransactionMock,
+          _customerEndPointID,
+          MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> (),
+          MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
+          null);
+      PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
+      return collectionEndPoint;
+    }
+
+    private ICollectionEndPointLoadState GetLoadState (CollectionEndPoint collectionEndPoint)
+    {
+      return (ICollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_loadState");
     }
   }
 }

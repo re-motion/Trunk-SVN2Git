@@ -38,6 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
+    private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
     private bool _hasBeenTouched;
 
@@ -64,6 +65,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
+      
+      if (initialContentsOrNull != null)
+        SetCompleteLoadState();
+      else
+        SetIncompleteLoadState();
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -89,16 +95,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // State-dependent
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
-      get
-      {
-        EnsureDataComplete();
-
-        var collectionType = Definition.PropertyType;
-        return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
-      }
+      get { return _loadState.GetOriginalOppositeObjects(); }
     }
 
     public DomainObjectCollection OriginalCollectionReference
@@ -139,6 +138,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void MarkDataComplete ()
     {
       _dataKeeper.MarkDataComplete();
+      SetCompleteLoadState();
     }
 
     public void MarkDataIncomplete ()
@@ -147,6 +147,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
         _dataKeeper.MarkDataIncomplete();
+        SetIncompleteLoadState ();
       }
     }
 
@@ -221,7 +222,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataKeeper.CollectionData.Count == 0)
       {
         throw CreateMandatoryRelationNotSetException (
-            this.GetDomainObjectReference(),
+            GetDomainObjectReference(),
             PropertyName,
             "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
             PropertyName,
@@ -341,19 +342,31 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);
     }
 
+    private void SetCompleteLoadState ()
+    {
+      _loadState = new CompleteCollectionEndPointLoadState (this, _dataKeeper);
+    }
+
+    private void SetIncompleteLoadState ()
+    {
+      _loadState = new IncompleteCollectionEndPointLoadState (this, _lazyLoader);
+    }
+
     #region Serialization
 
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
-      _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection>();
+      _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
       _dataKeeper = info.GetValue<ICollectionEndPointDataKeeper>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
-
-      FixupAssociatedEndPoint (_oppositeDomainObjects);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
+      _loadState = info.GetValue<ICollectionEndPointLoadState>();
+
+      FixupDomainObjectCollection (_oppositeDomainObjects);
+      FixupLoadState (_loadState);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -364,9 +377,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddValue (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
+      info.AddValue (_loadState);
     }
 
-    private void FixupAssociatedEndPoint (DomainObjectCollection collection)
+    private void FixupDomainObjectCollection (DomainObjectCollection collection)
     {
       // The reason we need to do a fix up for associated collections is that:
       // - CollectionEndPoint is not serializable; it is /flattened/ serializable (for performance reasons); this means no reference to it can be held
@@ -396,6 +410,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointData", BindingFlags.NonPublic | BindingFlags.Instance);
       endPointDataField.SetValue (endPointDelegatingData, _dataKeeper.CollectionData);
+    }
+
+    private void FixupLoadState (ICollectionEndPointLoadState loadState)
+    {
+      var endPointField = loadState.GetType ().GetField ("_collectionEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
+      endPointField.SetValue (loadState, this);
     }
 
     #endregion

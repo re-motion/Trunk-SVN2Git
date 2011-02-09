@@ -23,7 +23,9 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -355,6 +357,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var endPoint = new SerializableCollectionEndPointFake();
+      var dataKeeper = new SerializableCollectionEndPointDataKeeperFake();
+      var state = new CompleteCollectionEndPointLoadState (endPoint, dataKeeper);
+
+      var result = Serializer.SerializeAndDeserialize (state);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.CollectionEndPoint, Is.Null);
     }
   }
 }

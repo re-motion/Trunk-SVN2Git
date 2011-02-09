@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -239,6 +240,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (
           PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_lazyLoader"),
           Is.Not.Null);
+    }
+
+    [Test]
+    public void Serialization_LoadState ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          endPointID,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+          ClientTransaction.Current,
+          new DomainObject[0]);
+
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
+
+      var deserializedLoadState = (CompleteCollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
+      Assert.That (deserializedLoadState, Is.Not.Null);
+      Assert.That (deserializedLoadState.CollectionEndPoint, Is.SameAs (deserializedEndPoint));
     }
   }
 }

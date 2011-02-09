@@ -209,6 +209,9 @@
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\IncompleteCollectionEndPointLoadStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />

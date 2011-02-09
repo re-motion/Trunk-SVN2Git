@@ -20,7 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
@@ -148,6 +150,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void CheckMandatory ()
     {
       CheckOperationDelegatesToCompleteState (s => s.CheckMandatory (), s => s.CheckMandatory ());
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var endPoint = new SerializableCollectionEndPointFake ();
+      var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
+      var state = new IncompleteCollectionEndPointLoadState (endPoint, lazyLoader);
+
+      var result = Serializer.SerializeAndDeserialize (state);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.CollectionEndPoint, Is.Null);
     }
 
     private void CheckOperationDelegatesToCompleteState (
