@@ -289,12 +289,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
           .Do (message => { throw new InvalidOperationException (message); });
 
       Maybe.ForValue (relationEndPoint as ICollectionEndPoint)
-          .Where (endPoint => endPoint.OppositeDomainObjects.Count != 0)
+          .Where (endPoint => endPoint.Collection.Count != 0)
           .Select (
               endPoint => String.Format (
                   "End point '{0}' still references objects '{1}'.",
                   endPoint.ID,
-                  SeparatedStringBuilder.Build (", ", endPoint.OppositeDomainObjects, (DomainObject obj) => obj.ID.ToString())))
+                  SeparatedStringBuilder.Build (", ", endPoint.Collection, (DomainObject obj) => obj.ID.ToString())))
           .Do (message => { throw new InvalidOperationException (message); });
 
       return relationEndPoint;

@@ -117,20 +117,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("SetValueFrom cannot be called on a NullCollectionEndPoint.");
     }
 
-    public DomainObjectCollection OppositeDomainObjects
+    public DomainObjectCollection Collection
     {
       get { return new DomainObjectCollection (); }
-      set { throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint."); }
+      set { throw new InvalidOperationException ("It is not possible to set the Collection of a NullCollectionEndPoint."); }
     }
 
-    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsContents from a NullCollectionEndPoint."); }
+      throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsContents from a NullCollectionEndPoint.");
     }
 
-    public DomainObjectCollection OriginalCollectionReference
+    public DomainObjectCollection OriginalCollection
     {
-      get { throw new InvalidOperationException ("It is not possible to get the OriginalCollectionReference from a NullCollectionEndPoint."); }
+      get { throw new InvalidOperationException ("It is not possible to get the OriginalCollection from a NullCollectionEndPoint."); }
     }
 
     public void MarkDataComplete ()

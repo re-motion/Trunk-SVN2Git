@@ -383,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
       Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (collectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+      Assert.That (collectionEndPoint.Collection, List.Contains (itemReference));
     }
 
     [Test]
@@ -458,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oppositeCollectionEndPoint, Is.Not.Null);
       oppositeCollectionEndPoint.MarkDataComplete ();
       Assert.That (oppositeCollectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (oppositeCollectionEndPoint.OppositeDomainObjects, List.Contains (itemReference));
+      Assert.That (oppositeCollectionEndPoint.Collection, List.Contains (itemReference));
       Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
 
       _map.UnregisterRealObjectEndPoint (id);
@@ -563,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.SameAs (endPoint));
 
       Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
+      Assert.That (endPoint.Collection, Is.EqualTo (new[] { item }));
     }
 
     [Test]
@@ -634,7 +634,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
       Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (collectionEndPoint.Collection, Is.Empty);
     }
 
     [Test]
@@ -668,7 +668,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
       Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { item }));
+      Assert.That (collectionEndPoint.Collection, Is.EqualTo (new[] { item }));
     }
 
     [Test]
@@ -792,7 +792,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var collectionEndPoint = (CollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
-      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (collectionEndPoint.Collection, Is.Empty);
     }
 
     [Test]
@@ -1062,13 +1062,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
       var addedObject = Order.NewObject();
-      endPoint.OppositeDomainObjects.Add (addedObject);
+      endPoint.Collection.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
       _map.CommitAllEndPoints();
 
       Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { addedObject }));
+      Assert.That (endPoint.Collection, Is.EqualTo (new[] { addedObject }));
     }
 
     [Test]
@@ -1078,13 +1078,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
       var addedObject = Order.NewObject();
-      endPoint.OppositeDomainObjects.Add (addedObject);
+      endPoint.Collection.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
       _map.RollbackAllEndPoints();
 
       Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (endPoint.Collection, Is.Empty);
     }
 
     [Test]

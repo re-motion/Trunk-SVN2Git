@@ -597,7 +597,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
       Assert.That (command.NewOppositeCollection, Is.SameAs (newCollection));
       Assert.That (command.NewOppositeCollectionTransformer, Is.SameAs (newCollection));
-      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.Collection));
     }
 
     [Test]
@@ -640,12 +640,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var command = (CollectionEndPointReplaceWholeCollectionCommand)
-                    ((IAssociatableDomainObjectCollection) endPoint.OppositeDomainObjects).CreateAssociationCommand (endPoint);
+                    ((IAssociatableDomainObjectCollection) endPoint.Collection).CreateAssociationCommand (endPoint);
 
       Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
-      Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (command.NewOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.Collection));
+      Assert.That (command.NewOppositeCollectionTransformer, Is.SameAs (endPoint.Collection));
+      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.Collection));
     }
 
     [Test]
@@ -664,7 +664,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void TransformToStandAlone ()
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
-      var collection = endPoint.OppositeDomainObjects;
+      var collection = endPoint.Collection;
       var contents = collection.Cast<DomainObject>().ToArray();
 
       ((IAssociatableDomainObjectCollection) collection).TransformToStandAlone ();

@@ -22,7 +22,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents the replacement of the whole <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection, including the transformation
+  /// Represents the replacement of the whole <see cref="CollectionEndPoint.Collection"/> collection, including the transformation
   /// of the involved <see cref="DomainObjectCollection"/> instances into stand-alone resp. associated collections.
   /// </summary>
   public class CollectionEndPointReplaceWholeCollectionCommand : RelationEndPointModificationCommand
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       {
         if (_removedObjects == null)
         {
-          var oldOppositeObjects = ModifiedEndPoint.OppositeDomainObjects.Cast<DomainObject> ();
+          var oldOppositeObjects = ModifiedEndPoint.Collection.Cast<DomainObject> ();
           _removedObjects = oldOppositeObjects.Where (oldObject => !NewOppositeCollection.ContainsObject (oldObject)).ToArray();
         }
         return _removedObjects;
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         if (_addedObjects == null)
         {
           var newOppositeObjects = NewOppositeCollection.Cast<DomainObject> ();
-          _addedObjects = newOppositeObjects.Where (newObject => !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)).ToArray();
+          _addedObjects = newOppositeObjects.Where (newObject => !ModifiedEndPoint.Collection.ContainsObject (newObject)).ToArray();
         }
         return _addedObjects;
       }
@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       // now make end point refer to the new collection by reference, too
-      ModifiedEndPoint.OppositeDomainObjects = NewOppositeCollection; // this also touches the end point
+      ModifiedEndPoint.Collection = NewOppositeCollection; // this also touches the end point
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }
 

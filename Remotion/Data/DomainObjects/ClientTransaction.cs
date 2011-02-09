@@ -655,7 +655,7 @@ public class ClientTransaction
         var sourceEndPoint = (ICollectionEndPoint) sourceTransaction.DataManager.RelationEndPointMap[endPointID];
         if (sourceEndPoint != null)
         {
-          var sourceRelatedObjectCollection = sourceEndPoint.OppositeDomainObjects;
+          var sourceRelatedObjectCollection = sourceEndPoint.Collection;
           var destinationRelatedObjectCollection = DataManager.RelationEndPointMap.GetRelatedObjects (endPointID);
           destinationRelatedObjectCollection.CopyEventHandlersFrom (sourceRelatedObjectCollection);
         }

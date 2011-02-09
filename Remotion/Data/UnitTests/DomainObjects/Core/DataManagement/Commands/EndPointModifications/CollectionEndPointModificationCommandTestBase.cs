@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _relationEndPointID = new RelationEndPointID (DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new DomainObject[0]);
-      _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.OppositeDomainObjects);
+      _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.Collection);
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();
       CollectionDataMock.Replay ();

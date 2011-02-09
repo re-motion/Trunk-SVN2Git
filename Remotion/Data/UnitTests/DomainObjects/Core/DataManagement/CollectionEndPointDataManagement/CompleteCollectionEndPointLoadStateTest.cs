@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOriginalOppositeObjects_CreatesNewCollectionFromData ()
+    public void GetCollectionWithOriginalData_CreatesNewCollectionFromData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       collectionDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (stub => stub.Definition).Return (_definition);
       _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetOriginalOppositeObjects();
+      var result = _loadState.GetCollectionWithOriginalData();
 
       Assert.That (result, Is.TypeOf (typeof (OrderCollection)));
       var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result);
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var sourceCollection = new DomainObjectCollection (new DomainObject[] { sourceItem1, sourceItem2 }, null);
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.OppositeDomainObjects = sourceCollection;
+      sourceEndPointStub.Collection = sourceCollection;
 
       var targetItem1 = DomainObjectMother.CreateFakeObject<Order>();
       var targetCollectionData = new DomainObjectCollectionData (new DomainObject[] { targetItem1 });
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.OppositeDomainObjects = sourceCollection;
+      sourceEndPointStub.Collection = sourceCollection;
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.OppositeDomainObjects = sourceCollection;
+      sourceEndPointStub.Collection = sourceCollection;
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (true);
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.OppositeDomainObjects = sourceCollection;
+      sourceEndPointStub.Collection = sourceCollection;
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_relatedObject);
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand();
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_relatedObject, 12);
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_relatedObject);
@@ -328,7 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (0, _relatedObject);
@@ -349,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.OppositeDomainObjects).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (0, _relatedObject);

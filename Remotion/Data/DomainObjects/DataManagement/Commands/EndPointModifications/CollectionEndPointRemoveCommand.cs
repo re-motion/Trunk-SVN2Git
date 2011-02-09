@@ -41,9 +41,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-      _index = modifiedEndPoint.OppositeDomainObjects.IndexOf (removedObject);
+      _index = modifiedEndPoint.Collection.IndexOf (removedObject);
       _modifiedCollectionData = collectionData;
-      _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
+      _modifiedCollection = modifiedEndPoint.Collection;
     }
 
     public DomainObjectCollection ModifiedCollection

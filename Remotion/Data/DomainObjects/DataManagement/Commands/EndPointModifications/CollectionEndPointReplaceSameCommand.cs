@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _modifiedCollectionData = collectionData;
-      _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
+      _modifiedCollection = modifiedEndPoint.Collection;
     }
 
     public DomainObjectCollection ModifiedCollection

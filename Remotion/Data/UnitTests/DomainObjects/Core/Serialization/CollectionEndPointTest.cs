@@ -64,22 +64,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void CollectionEndPoint_Content ()
     {
-      _endPoint.OppositeDomainObjects.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+      _endPoint.Collection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
 
-      Assert.AreEqual (3, deserializedEndPoint.OppositeDomainObjects.Count);
-      Assert.IsTrue (deserializedEndPoint.OppositeDomainObjects.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (deserializedEndPoint.OppositeDomainObjects.Contains (DomainObjectIDs.OrderItem2));
-      Assert.IsTrue (deserializedEndPoint.OppositeDomainObjects.Contains (DomainObjectIDs.OrderItem5));
-      Assert.IsFalse (deserializedEndPoint.OppositeDomainObjects.IsReadOnly);
+      Assert.AreEqual (3, deserializedEndPoint.Collection.Count);
+      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem1));
+      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem2));
+      Assert.IsTrue (deserializedEndPoint.Collection.Contains (DomainObjectIDs.OrderItem5));
+      Assert.IsFalse (deserializedEndPoint.Collection.IsReadOnly);
 
-      Assert.AreEqual (2, deserializedEndPoint.OriginalOppositeDomainObjectsContents.Count);
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.Contains (DomainObjectIDs.OrderItem2));
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly);
+      Assert.AreEqual (2, deserializedEndPoint.GetCollectionWithOriginalData().Count);
+      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem1));
+      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().Contains (DomainObjectIDs.OrderItem2));
+      Assert.IsTrue (deserializedEndPoint.GetCollectionWithOriginalData().IsReadOnly);
     }
 
     [Test]
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (dataStore, Is.Not.Null);
 
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (
-          deserializedEndPoint.OppositeDomainObjects, 
+          deserializedEndPoint.Collection, 
           typeof (OrderItem), 
           deserializedEndPoint, 
           dataStore);
@@ -123,30 +123,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void CollectionEndPoint_DelegatingDataMembers ()
     {
-      _endPoint.OppositeDomainObjects.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+      _endPoint.Collection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (
-          deserializedEndPoint.OppositeDomainObjects,
-          _endPoint.OppositeDomainObjects.RequiredItemType,
+          deserializedEndPoint.Collection,
+          _endPoint.Collection.RequiredItemType,
           deserializedEndPoint);
     }
 
     [Test]
     public void CollectionEndPoint_ReplacedCollection ()
     {
-      var newOpposites = _endPoint.OppositeDomainObjects.Clone();
+      var newOpposites = _endPoint.Collection.Clone();
       _endPoint.CreateSetOppositeCollectionCommand (newOpposites).ExpandToAllRelatedObjects().NotifyAndPerform();
       
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.That (deserializedEndPoint.HasChanged, Is.True);
 
-      var deserializedNewOpposites = deserializedEndPoint.OppositeDomainObjects;
+      var deserializedNewOpposites = deserializedEndPoint.Collection;
       deserializedEndPoint.Rollback ();
       
       Assert.That (deserializedEndPoint.HasChanged, Is.False);
-      var deserializedOldOpposites = deserializedEndPoint.OppositeDomainObjects;
+      var deserializedOldOpposites = deserializedEndPoint.Collection;
       Assert.That (deserializedOldOpposites, Is.Not.SameAs (deserializedNewOpposites));
       Assert.That (deserializedOldOpposites, Is.Not.Null);
     }

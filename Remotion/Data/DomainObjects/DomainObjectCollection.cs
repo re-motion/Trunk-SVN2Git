@@ -820,22 +820,22 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType && !IsReadOnly && !endPoint.OppositeDomainObjects.IsReadOnly)
+      if (RequiredItemType != endPoint.Collection.RequiredItemType && !IsReadOnly && !endPoint.Collection.IsReadOnly)
         throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
 
-      if (GetType () != endPoint.OppositeDomainObjects.GetType ())
+      if (GetType () != endPoint.Collection.GetType ())
       {
         var message = string.Format (
             "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
             GetType (),
-            endPoint.OppositeDomainObjects.GetType ());
+            endPoint.Collection.GetType ());
         throw new InvalidOperationException (message);
       }
 
       return new CollectionEndPointReplaceWholeCollectionCommand (
           endPoint,
           this,
-          endPoint.OppositeDomainObjects,
+          endPoint.Collection,
           this);
     }
 

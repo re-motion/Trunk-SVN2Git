@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -34,10 +33,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
-    private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _oppositeDomainObjects and the original data for rollback
+    private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _collection and the original data for rollback
 
-    private DomainObjectCollection _oppositeDomainObjects; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
-    private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
+    private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
+    private DomainObjectCollection _originalCollection; // keeps the original reference of the _collection for rollback
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
     private bool _hasBeenTouched;
@@ -58,9 +57,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData();
-      _oppositeDomainObjects = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
+      _collection = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
 
-      _originalCollectionReference = _oppositeDomainObjects;
+      _originalCollection = _collection;
 
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
@@ -72,14 +71,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
         SetIncompleteLoadState();
     }
 
-    public DomainObjectCollection OppositeDomainObjects
+    public DomainObjectCollection Collection
     {
-      get { return _oppositeDomainObjects; }
+      get { return _collection; }
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
-        if (_oppositeDomainObjects.GetType() != value.GetType())
-          throw new ArgumentTypeException ("value", _oppositeDomainObjects.GetType(), value.GetType());
+        if (_collection.GetType() != value.GetType())
+          throw new ArgumentTypeException ("value", _collection.GetType(), value.GetType());
 
         if (!value.IsAssociatedWith (this))
         {
@@ -88,21 +87,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
               "value");
         }
 
-        _oppositeDomainObjects = value;
+        _collection = value;
         Touch();
 
         RaiseStateUpdateNotification (HasChanged);
       }
     }
 
-    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    public DomainObjectCollection OriginalCollection
     {
-      get { return _loadState.GetOriginalOppositeObjects(); }
+      get { return _originalCollection; }
     }
 
-    public DomainObjectCollection OriginalCollectionReference
+    public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      get { return _originalCollectionReference; }
+      return _loadState.GetCollectionWithOriginalData();
     }
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
@@ -117,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool HasChanged
     {
-      get { return OriginalCollectionReference != OppositeDomainObjects || _dataKeeper.HasDataChanged (_changeDetectionStrategy); }
+      get { return OriginalCollection != Collection || _dataKeeper.HasDataChanged (_changeDetectionStrategy); }
     }
 
     public override bool HasBeenTouched
@@ -165,7 +164,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (HasChanged)
       {
         _dataKeeper.CommitOriginalContents();
-        _originalCollectionReference = _oppositeDomainObjects;
+        _originalCollection = _collection;
       }
 
       _hasBeenTouched = false;
@@ -175,22 +174,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        var oppositeObjectsReferenceBeforeRollback = _oppositeDomainObjects;
+        var oppositeObjectsReferenceBeforeRollback = _collection;
 
-        if (_originalCollectionReference != _oppositeDomainObjects)
+        if (_originalCollection != _collection)
         {
-          var command = ((IAssociatableDomainObjectCollection) _originalCollectionReference).CreateAssociationCommand (this);
+          var command = ((IAssociatableDomainObjectCollection) _originalCollection).CreateAssociationCommand (this);
           command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
         }
 
-        _oppositeDomainObjects = _originalCollectionReference;
+        _collection = _originalCollection;
 
-        Assertion.IsTrue (_oppositeDomainObjects.IsAssociatedWith (this));
+        Assertion.IsTrue (_collection.IsAssociatedWith (this));
         Assertion.IsTrue (
-            _oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback
+            _collection == oppositeObjectsReferenceBeforeRollback
             || !oppositeObjectsReferenceBeforeRollback.IsAssociatedWith (this));
 
-        _oppositeDomainObjects.ReplaceItemsWithoutNotifications (OriginalOppositeDomainObjectsContents.Cast<DomainObject>());
+        _collection.ReplaceItemsWithoutNotifications (GetCollectionWithOriginalData().Cast<DomainObject>());
       }
 
       _hasBeenTouched = false;
@@ -306,22 +305,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
-      _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection> ();
+      _collection = info.GetValueForHandle<DomainObjectCollection>();
+      _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
       _dataKeeper = info.GetValue<ICollectionEndPointDataKeeper>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
 
-      FixupDomainObjectCollection (_oppositeDomainObjects);
+      FixupDomainObjectCollection (_collection);
       FixupLoadState (_loadState);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_oppositeDomainObjects);
-      info.AddHandle (_originalCollectionReference);
+      info.AddHandle (_collection);
+      info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
       info.AddValue (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);

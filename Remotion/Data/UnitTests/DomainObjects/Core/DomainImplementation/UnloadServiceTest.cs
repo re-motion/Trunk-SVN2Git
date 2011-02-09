@@ -287,8 +287,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
-      var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
-      var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
+      var orderItem1 = orderItemsEndPoint.Collection[0];
+      var orderItem2 = orderItemsEndPoint.Collection[1];
 
       UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItemsEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
 
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (ordersEndPoint.Collection, Is.Empty);
 
       UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
 
@@ -360,8 +360,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      var orderA = (Order) ordersEndPoint.OppositeDomainObjects[0];
-      var orderB = (Order) ordersEndPoint.OppositeDomainObjects[1];
+      var orderA = (Order) ordersEndPoint.Collection[0];
+      var orderB = (Order) ordersEndPoint.Collection[1];
       
       // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
       ++orderB.OrderNumber;
@@ -390,7 +390,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
-      var orderItem1 = parentOrderItemsEndPoint.OppositeDomainObjects[0];
+      var orderItem1 = parentOrderItemsEndPoint.Collection[0];
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
@@ -411,7 +411,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
-      var orderItem1 = parentOrderItemsEndPoint.OppositeDomainObjects[0];
+      var orderItem1 = parentOrderItemsEndPoint.Collection[0];
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      Assert.That (parentOrdersEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (parentOrdersEndPoint.Collection, Is.Empty);
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
@@ -450,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      Assert.That (parentOrdersEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (parentOrdersEndPoint.Collection, Is.Empty);
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
@@ -468,8 +468,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
-      var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
-      var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
+      var orderItem1 = orderItemsEndPoint.Collection[0];
+      var orderItem2 = orderItemsEndPoint.Collection[1];
 
       var result = UnloadService.TryUnloadCollectionEndPointAndData (
           ClientTransactionMock, 
@@ -490,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (ordersEndPoint.Collection, Is.Empty);
 
       var result = UnloadService.TryUnloadCollectionEndPointAndData (
           ClientTransactionMock, 
@@ -572,8 +572,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      var orderA = (Order) ordersEndPoint.OppositeDomainObjects[0];
-      var orderB = (Order) ordersEndPoint.OppositeDomainObjects[1];
+      var orderA = (Order) ordersEndPoint.Collection[0];
+      var orderB = (Order) ordersEndPoint.Collection[1];
 
       // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
       ++orderB.OrderNumber;
@@ -597,13 +597,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       customer.Orders[0].MarkAsChanged ();
 
-      Assert.That (parentOrdersEndPoint.OppositeDomainObjects[0].State, Is.EqualTo (StateType.Changed));
+      Assert.That (parentOrdersEndPoint.Collection[0].State, Is.EqualTo (StateType.Changed));
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = (ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
 
-      Assert.That (subOrdersEndPoint.OppositeDomainObjects[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (subOrdersEndPoint.Collection[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));
 
       var result = UnloadService.TryUnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadTransactionMode.RecurseToRoot);
 

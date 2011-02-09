@@ -707,49 +707,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order.OrderItems.Add (newItem);
 
         Assert.IsTrue (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
 
           Assert.IsFalse (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
 
           order.OrderItems[0].Delete ();
           Assert.IsTrue (order.OrderItems.ContainsObject (newItem));
 
           Assert.IsTrue (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
 
           ClientTransaction.Current.Commit ();
 
           Assert.IsFalse (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-          Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+          Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+          Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
         }
 
         Assert.IsTrue (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
 
         ClientTransaction.Current.Commit ();
         Assert.IsFalse (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+        Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+        Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
       }
       Assert.IsTrue (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
 
       ClientTransaction.Current.Commit ();
 
       Assert.IsFalse (GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID].HasChanged);
-      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (newItem));
-      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).OriginalOppositeDomainObjectsContents.ContainsObject (firstItem));
+      Assert.IsTrue (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (newItem));
+      Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).RelationEndPointMap[propertyID]).GetCollectionWithOriginalData().ContainsObject (firstItem));
     }
 
     private DataManager GetDataManager (ClientTransaction transaction)

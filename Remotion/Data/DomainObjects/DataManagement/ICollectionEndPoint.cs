@@ -23,9 +23,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPoint : IRelationEndPoint
   {
-    DomainObjectCollection OppositeDomainObjects { get; set; }
-    DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
-    DomainObjectCollection OriginalCollectionReference { get; }
+    DomainObjectCollection Collection { get; set; }
+    DomainObjectCollection GetCollectionWithOriginalData ();
+    DomainObjectCollection OriginalCollection { get; }
 
     void MarkDataComplete ();
 

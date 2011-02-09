@@ -94,8 +94,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
-      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+      CollectionEndPoint.Collection.Add (_order1); // will stay
+      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
-      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
-      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+      CollectionEndPoint.Collection.Add (_order1); // will stay
+      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -158,8 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
-      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+      CollectionEndPoint.Collection.Add (_order1); // will stay
+      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
       
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -189,8 +189,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
-      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+      CollectionEndPoint.Collection.Add (_order1); // will stay
+      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
             .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
             .WhenCalled (mi =>
             {
-              Assert.That (CollectionEndPoint.OppositeDomainObjects != _newCollection); // transformations occur before SetOppositeCollection
+              Assert.That (CollectionEndPoint.Collection != _newCollection); // transformations occur before SetOppositeCollection
               TransformToAssociated (_newCollection);
             });
       }
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (CollectionEndPoint.OppositeDomainObjects, Is.SameAs (_newCollection));
+      Assert.That (CollectionEndPoint.Collection, Is.SameAs (_newCollection));
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 
@@ -283,8 +283,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExpandToAllRelatedObjects ()
     {
-      CollectionEndPoint.OppositeDomainObjects.Add (_order1);
-      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem);
+      CollectionEndPoint.Collection.Add (_order1);
+      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem);
 
       Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));

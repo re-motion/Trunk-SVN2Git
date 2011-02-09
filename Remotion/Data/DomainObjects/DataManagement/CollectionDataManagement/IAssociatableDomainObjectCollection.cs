@@ -14,15 +14,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
     /// but it is automatically invoked when a collection-valued relation property is set to a new collection.
     /// </summary>
-    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
+    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.Collection"/> collection
     ///   must have the same type and <see cref="DomainObjectCollection.RequiredItemType"/> as this collection.</param>
     /// <exception cref="NotSupportedException">This collection is read-only.</exception>
     /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
     /// <remarks>
     /// <para>
-    /// When the command is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
+    /// When the command is executed, it replaces the given end point's <see cref="ICollectionEndPoint.Collection"/> collection with 
     /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
-    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
+    /// <see cref="ICollectionEndPoint.Collection"/> collection of the end point is transformed into a stand-alone collection.
     /// </para>
     /// <para>
     /// The returned <see cref="IDataManagementCommand"/> should be executed as a bidirectional modification 

@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
+      _transaction.Execute (() => endPoint.Collection.Add (OrderItem.NewObject ()));
 
       var unloadCommand = CreateCommand (DomainObjectIDs.Order1);
       Assert.That (unloadCommand.CanUnload, Is.False);
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ()));
+      _transaction.Execute (() => endPoint.Collection.Add (OrderItem.NewObject ()));
 
       var unloadCommand = CreateCommand (DomainObjectIDs.OrderItem1);
       Assert.That (unloadCommand.CanUnload, Is.False); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
+      _transaction.Execute (() => endPoint.Collection.Add (OrderItem.NewObject()));
 
       CreateCommand (DomainObjectIDs.Order1).EnsureCanUnload ();
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
+      _transaction.Execute (() => endPoint.Collection.Add (OrderItem.NewObject()));
 
       CreateCommand (DomainObjectIDs.OrderItem1).EnsureCanUnload (); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
     }

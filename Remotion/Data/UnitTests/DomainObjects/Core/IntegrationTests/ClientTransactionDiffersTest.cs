@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItem1 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem1);
 
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
-      endPoint.OppositeDomainObjects.Remove (orderItem1);
+      endPoint.Collection.Remove (orderItem1);
     }
 
     [Test]

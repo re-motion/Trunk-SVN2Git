@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       _index = index;
       _modifiedCollectionData = collectionData;
-      _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
+      _modifiedCollection = modifiedEndPoint.Collection;
     }
 
     public int Index

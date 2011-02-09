@@ -60,11 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOriginalOppositeObjects ()
+    public void GetCollectionWithOriginalData ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.GetOriginalOppositeObjects (), 
-          s => s.OriginalOppositeDomainObjectsContents, 
+          s => s.GetCollectionWithOriginalData (), 
+          s => s.GetCollectionWithOriginalData(), 
           new DomainObjectCollection ());
     }
 

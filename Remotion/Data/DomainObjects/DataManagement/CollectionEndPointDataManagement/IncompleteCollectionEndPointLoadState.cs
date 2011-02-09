@@ -57,10 +57,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _lazyLoader.LoadLazyCollectionEndPoint (_collectionEndPoint);
     }
 
-    public DomainObjectCollection GetOriginalOppositeObjects ()
+    public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.OriginalOppositeDomainObjectsContents;
+      return _collectionEndPoint.GetCollectionWithOriginalData();
     }
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)

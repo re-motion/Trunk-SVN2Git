@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
       if (endPoint != null && endPoint.IsDataComplete)
       {
-        var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
+        var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
         var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
         command.NotifyAndPerform ();
 
@@ -268,7 +268,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         if (!CanUnloadCollectionEndPoint (endPoint))
           return false;
 
-        var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
+        var unloadedIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
         var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
         if (!command.CanUnload)
           return false;

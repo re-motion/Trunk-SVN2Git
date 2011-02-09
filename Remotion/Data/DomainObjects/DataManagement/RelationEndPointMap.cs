@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.Many, "GetRelatedObjects", "endPointID");
 
       var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return collectionEndPoint.OppositeDomainObjects;
+      return collectionEndPoint.Collection;
     }
 
     public DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID endPointID)
@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.Many, "GetOriginalRelatedObjects", "endPointID");
 
       var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return collectionEndPoint.OriginalOppositeDomainObjectsContents;
+      return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
     // When registering a non-virtual end-point, the opposite virtual object end-point (if any) is registered as well.

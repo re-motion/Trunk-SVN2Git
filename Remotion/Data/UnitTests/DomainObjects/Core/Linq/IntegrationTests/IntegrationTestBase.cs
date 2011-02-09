@@ -88,9 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (ClientTransactionMock, id, false)).ToArray ();
       if (checkOrdering)
-        Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (expectedRelatedObjects));
+        Assert.That (collectionEndPoint.Collection, Is.EqualTo (expectedRelatedObjects));
       else
-        Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EquivalentTo (expectedRelatedObjects));
+        Assert.That (collectionEndPoint.Collection, Is.EquivalentTo (expectedRelatedObjects));
     }
 
     protected void CheckObjectRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, ObjectID expectedRelatedObjectID)

@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       // Data is already complete
     }
 
-    public DomainObjectCollection GetOriginalOppositeObjects ()
+    public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       var collectionType = _collectionEndPoint.Definition.PropertyType;
       return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.OppositeDomainObjects.Cast<DomainObject> ());
+      _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
 
       if (sourceEndPoint.HasBeenTouched || _collectionEndPoint.HasChanged)
         _collectionEndPoint.Touch ();

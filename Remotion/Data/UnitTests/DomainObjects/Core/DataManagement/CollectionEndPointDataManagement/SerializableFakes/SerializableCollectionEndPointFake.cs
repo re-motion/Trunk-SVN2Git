@@ -132,18 +132,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public DomainObjectCollection OppositeDomainObjects
+    public DomainObjectCollection Collection
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
-    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      get { throw new NotImplementedException(); }
+      throw new NotImplementedException();
     }
 
-    public DomainObjectCollection OriginalCollectionReference
+    public DomainObjectCollection OriginalCollection
     {
       get { throw new NotImplementedException(); }
     }

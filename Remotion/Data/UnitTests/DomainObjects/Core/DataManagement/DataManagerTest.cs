@@ -450,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (endPoint.Collection, Is.Empty);
     }
 
     [Test]
@@ -967,7 +967,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _objectLoaderMock.VerifyAllExpectations();
 
       Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { domainObject }));
+      Assert.That (endPoint.Collection, Is.EqualTo (new[] { domainObject }));
     }
 
     [Test]

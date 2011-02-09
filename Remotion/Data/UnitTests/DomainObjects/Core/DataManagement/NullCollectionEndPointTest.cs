@@ -68,28 +68,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OppositeDomainObjects_Get ()
     {
-      Assert.That (_nullEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (_nullEndPoint.Collection, Is.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void OppositeDomainObjects_Set ()
     {
-      _nullEndPoint.OppositeDomainObjects = new DomainObjectCollection ();
+      _nullEndPoint.Collection = new DomainObjectCollection ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void OriginalOppositeDomainObjectsContents ()
     {
-      Dev.Null = _nullEndPoint.OriginalOppositeDomainObjectsContents;
+      Dev.Null = _nullEndPoint.GetCollectionWithOriginalData();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void OriginalOppositeDomainObjectsReference ()
     {
-      Dev.Null = _nullEndPoint.OriginalCollectionReference;
+      Dev.Null = _nullEndPoint.OriginalCollection;
     }
 
     [Test]
