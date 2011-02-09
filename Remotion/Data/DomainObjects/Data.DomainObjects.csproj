@@ -170,7 +170,11 @@
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadState.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\IncompleteCollectionEndPointLoadState.cs" />
+    <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointLoadState.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
+    <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\IRelationEndPointLazyLoader.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />

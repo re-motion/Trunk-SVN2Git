@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -86,7 +87,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get { return false; }
     }
-    
+
+    public DomainObject GetDomainObject ()
+    {
+      return null;
+    }
+
+    public DomainObject GetDomainObjectReference ()
+    {
+      return null;
+    }
+
     public bool IsNull
     {
       get { return true; }
@@ -176,6 +187,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void UnregisterOriginalObject (ObjectID objectID)
     {
       throw new InvalidOperationException ("UnregisterOriginalObject cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public ICollectionEndPointLoadState GetState ()
+    {
+      throw new NotImplementedException("TODO 3732: Null state?");
     }
 
     public void EnsureDataComplete ()

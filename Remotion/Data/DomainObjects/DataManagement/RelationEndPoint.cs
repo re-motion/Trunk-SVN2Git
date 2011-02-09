@@ -96,6 +96,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return false; }
     }
 
+    public DomainObject GetDomainObject ()
+    {
+      if (ObjectID == null)
+        return null;
+
+      if (ClientTransaction.IsInvalid (ObjectID))
+        return ClientTransaction.GetInvalidObjectReference (ObjectID);
+
+      return ClientTransaction.GetObject (ObjectID, true);
+    }
+
+    public DomainObject GetDomainObjectReference ()
+    {
+      if (ObjectID == null)
+        return null;
+
+      if (ClientTransaction.IsInvalid (ObjectID))
+        return ClientTransaction.GetInvalidObjectReference (ObjectID);
+
+      return ClientTransaction.GetObjectReference (ObjectID);
+    }
+
     public override string ToString ()
     {
       return GetType().Name + ": " + ID;

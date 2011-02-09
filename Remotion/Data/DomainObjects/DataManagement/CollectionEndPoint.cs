@@ -91,6 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // State-dependent
     public DomainObjectCollection OriginalOppositeDomainObjectsContents
     {
       get
@@ -127,6 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
+    // State-dependent
     public override void EnsureDataComplete ()
     {
       if (!IsDataComplete)
@@ -150,12 +152,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // State-dependent
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
+      // TODO: This check should be performed by the caller
       if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
+      // TODO: This check should be performed by the caller
       DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObjectReference(), ClientTransaction);
 
       EnsureDataComplete();
@@ -167,7 +172,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void SetValueFrom (IRelationEndPoint source)
     {
-      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
+      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<ICollectionEndPoint> ("source", source);
       if (Definition != sourceCollectionEndPoint.Definition)
       {
         var message = string.Format (
@@ -176,10 +181,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      EnsureDataComplete();
-      sourceCollectionEndPoint.EnsureDataComplete();
+      // State-dependent
+      EnsureDataComplete ();
 
-      _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint._dataKeeper.CollectionData);
+      _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint.OppositeDomainObjects.Cast<DomainObject>());
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch();
@@ -226,6 +231,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = true;
     }
 
+    // State-dependent
     public override void CheckMandatory ()
     {
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
@@ -266,6 +272,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
+    public ICollectionEndPointLoadState GetState ()
+    {
+      throw new NotImplementedException("TODO 3732");
+    }
+
+    // All command methods: State-dependent
+
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
@@ -277,16 +290,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       EnsureDataComplete();
 
-      return new AdHocCommand
-             {
-                 BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete(),
-                 PerformHandler = () =>
-                 {
-                   _dataKeeper.CollectionData.Clear();
-                   Touch();
-                 },
-                 EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete()
-             };
+      return new CollectionEndPointDeleteCommand (this, _dataKeeper.CollectionData);
     }
 
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
@@ -305,6 +309,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
+      ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
+
       EnsureDataComplete();
 
       var replacedObject = OppositeDomainObjects[index];
@@ -313,6 +319,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
         return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
     }
+
+    // State-dependent
 
     public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {

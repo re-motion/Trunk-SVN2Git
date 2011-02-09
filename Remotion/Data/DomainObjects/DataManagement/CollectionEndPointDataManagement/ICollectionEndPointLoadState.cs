@@ -14,41 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
-  /// Provides a common interface for objects representing one side of a relation between <see cref="DomainObject"/> instances.
+  /// Represents a certain state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
-  public interface IRelationEndPoint : INullObject, IFlattenedSerializable
+  public interface ICollectionEndPointLoadState
   {
-    RelationEndPointID ID { get; }
-    ClientTransaction ClientTransaction { get; }
-
-    ObjectID ObjectID { get; }
-    IRelationEndPointDefinition Definition { get; }
-    RelationDefinition RelationDefinition { get; }
-
-    bool IsDataComplete { get; }
-    bool HasChanged { get; }
-    bool HasBeenTouched { get; }
-
-    DomainObject GetDomainObject ();
-    DomainObject GetDomainObjectReference ();
-
     void EnsureDataComplete ();
 
-    void Touch ();
-    void Commit ();
-    void Rollback ();
+    DomainObjectCollection GetOriginalOppositeObjects ();
+    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+
+    IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection newOppositeCollection);
     IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
     IDataManagementCommand CreateDeleteCommand ();
+    IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
+    IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
+    IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
+
+    void SetValueFrom (ICollectionEndPoint sourceEndPoint);
     void CheckMandatory ();
-    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
-    void SetValueFrom (IRelationEndPoint source);
   }
 }

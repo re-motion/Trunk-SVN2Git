@@ -207,6 +207,9 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\IncompleteCollectionEndPointLoadStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />

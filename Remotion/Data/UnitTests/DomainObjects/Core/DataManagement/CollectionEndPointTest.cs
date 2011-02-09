@@ -503,9 +503,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDeleteCommand ()
     {
-      var command = (AdHocCommand) _customerEndPoint.CreateDeleteCommand ();
-      Assert.That (command.NotifyClientTransactionOfBeginHandler, Is.Null);
-      Assert.That (command.NotifyClientTransactionOfEndHandler, Is.Null);
+      var command = _customerEndPoint.CreateDeleteCommand ();
 
       var beginEventReceiver = new DomainObjectCollectionEventReceiver (_customerEndPoint.OppositeDomainObjects);
       command.Begin ();

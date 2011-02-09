@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -39,5 +40,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void MarkDataIncomplete ();
     void RegisterOriginalObject (DomainObject domainObject);
     void UnregisterOriginalObject (ObjectID objectID);
+    
+    ICollectionEndPointLoadState GetState ();
   }
 }

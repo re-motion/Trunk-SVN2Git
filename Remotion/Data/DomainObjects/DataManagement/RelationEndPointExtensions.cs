@@ -25,34 +25,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public static class RelationEndPointExtensions
   {
-    public static DomainObject GetDomainObject (this IRelationEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      var objectID = endPoint.ObjectID;
-      if (objectID == null)
-        return null;
-
-      if (endPoint.ClientTransaction.IsInvalid (objectID))
-        return endPoint.ClientTransaction.GetInvalidObjectReference (objectID);
-
-      return endPoint.ClientTransaction.GetObject (objectID, true);
-    }
-
-    public static DomainObject GetDomainObjectReference (this IRelationEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      var objectID = endPoint.ObjectID;
-      if (objectID == null)
-        return null;
-
-      if (endPoint.ClientTransaction.IsInvalid (objectID))
-        return endPoint.ClientTransaction.GetInvalidObjectReference (objectID);
-
-      return endPoint.ClientTransaction.GetObjectReference (objectID);
-    }
-
     public static T GetEndPointWithOppositeDefinition<T> (this IRelationEndPoint endPoint, DomainObject oppositeObject) where T : IRelationEndPoint
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

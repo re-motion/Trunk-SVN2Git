@@ -111,6 +111,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetDomainObject_Null ()
+    {
+      Assert.That (_nullEndPoint.GetDomainObject (), Is.Null);
+    }
+
+    [Test]
+    public void GetDomainObjectReference_Null ()
+    {
+      Assert.That (_nullEndPoint.GetDomainObjectReference (), Is.Null);
+    }
+
+    [Test]
     public void IsNull ()
     {
       Assert.That (_nullEndPoint.IsNull, Is.True);

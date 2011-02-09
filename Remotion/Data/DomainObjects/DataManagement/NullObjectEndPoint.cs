@@ -92,6 +92,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return false; }
     }
 
+    public DomainObject GetDomainObject ()
+    {
+      return null;
+    }
+
+    public DomainObject GetDomainObjectReference ()
+    {
+      return null;
+    }
+
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
