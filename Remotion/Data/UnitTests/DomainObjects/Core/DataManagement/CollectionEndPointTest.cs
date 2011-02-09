@@ -646,89 +646,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetValueFrom_SetsOppositeDomainObjects ()
-    {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
-      var originalOppositeCollectionReference = _customerEndPoint.OppositeDomainObjects;
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Not.EqualTo (source.OppositeDomainObjects));
-
-      _customerEndPoint.SetValueFrom (source);
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (source.OppositeDomainObjects));
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (originalOppositeCollectionReference));
-    }
-
-    [Test]
-    public void SetValueFrom_LoadsData_ForBothCollections ()
-    {
-      var sourceID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer2, "Orders");
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          sourceID,
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          _lazyLoaderMock,
-          ClientTransaction.Current,
-          new[] { _order2 });
-
-      source.MarkDataIncomplete ();
-      _customerEndPoint.MarkDataIncomplete ();
-
-      PrepareLoading (source);
-      PrepareLoading (_customerEndPoint);
-
-      _customerEndPoint.SetValueFrom (source);
-
-      AssertDidLoadData (_customerEndPoint);
-      AssertDidLoadData (source);
-    }
-
-    [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
-    {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject>());
-
-      _customerEndPoint.Touch ();
-      _customerEndPoint.SetValueFrom (source);
-
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfSourceWasTouched ()
-    {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject> ());
-
-      source.Touch ();
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-
-      _customerEndPoint.SetValueFrom (source);
-
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
+    public void SetValueFrom ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-      Assert.That (source.HasBeenTouched, Is.False);
+      _loadStateMock.Expect (mock => mock.SetValueFrom (source));
+      _loadStateMock.Replay ();
 
-      _customerEndPoint.SetValueFrom (source);
+      _endPointWithLoadStateMock.SetValueFrom (source);
 
-      Assert.That (_customerEndPoint.HasChanged, Is.True);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
-    {
-      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject> ());
-
-      _customerEndPoint.SetValueFrom (source);
-
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -1064,6 +991,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
     }
+
+
 
     [Test]
     public void CheckMandatory_NonEmpty ()

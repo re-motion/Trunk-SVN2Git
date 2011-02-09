@@ -157,13 +157,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      // State-dependent
-      EnsureDataComplete ();
-
-      _dataKeeper.CollectionData.ReplaceContents (sourceCollectionEndPoint.OppositeDomainObjects.Cast<DomainObject>());
-
-      if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
-        Touch();
+      _loadState.SetValueFrom (sourceCollectionEndPoint);
     }
 
     public override void Commit ()
