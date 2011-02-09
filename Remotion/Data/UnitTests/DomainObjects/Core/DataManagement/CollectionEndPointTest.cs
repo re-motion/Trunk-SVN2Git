@@ -46,6 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private Order _orderWithoutOrderItem; // Customer1
     private Order _order2; // Customer3
 
+    private ICollectionEndPointLoadState _loadStateMock;
+    private CollectionEndPoint _endPointWithLoadStateMock;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -63,6 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           _lazyLoaderMock,
           ClientTransaction.Current,
           new[] { _order1, _orderWithoutOrderItem });
+
+      _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
+      _endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (_loadStateMock);
     }
 
     [Test]
@@ -363,53 +369,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OriginalOppositeDomainObjectsContents ()
     {
-      var loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState>();
-      var endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (loadStateMock);
-
       var fakeResult = new DomainObjectCollection();
-      loadStateMock.Expect (mock => mock.GetOriginalOppositeObjects()).Return (fakeResult);
-      loadStateMock.Replay();
+      _loadStateMock.Expect (mock => mock.GetOriginalOppositeObjects()).Return (fakeResult);
+      _loadStateMock.Replay();
 
-      var result = endPointWithLoadStateMock.OriginalOppositeDomainObjectsContents;
+      var result = _endPointWithLoadStateMock.OriginalOppositeDomainObjectsContents;
 
-      loadStateMock.VerifyAllExpectations();
+      _loadStateMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
-    public void EnsureDataComplete_Complete ()
+    public void EnsureDataComplete ()
     {
-      _lazyLoaderMock.Replay ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
+      _loadStateMock.Expect (mock => mock.EnsureDataComplete());
+      _loadStateMock.Replay ();
 
-      _customerEndPoint.EnsureDataComplete ();
+      _endPointWithLoadStateMock.EnsureDataComplete();
 
-      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
-      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (Arg<CollectionEndPoint>.Is.Anything));
-    }
-
-    [Test]
-    public void EnsureDataComplete_Incomplete ()
-    {
-      _lazyLoaderMock
-          .Expect (mock => mock.LoadLazyCollectionEndPoint (_customerEndPoint))
-          .WhenCalled (mi =>
-          {
-            // Simulate what's usually done by DataManager when an end-point is loaded
-            _customerEndPoint.RegisterOriginalObject (_order2);
-            _customerEndPoint.MarkDataComplete ();
-          });
-      _lazyLoaderMock.Replay ();
-
-      _customerEndPoint.MarkDataIncomplete ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-
-      _customerEndPoint.EnsureDataComplete ();
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
-      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
-      _lazyLoaderMock.VerifyAllExpectations ();
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]

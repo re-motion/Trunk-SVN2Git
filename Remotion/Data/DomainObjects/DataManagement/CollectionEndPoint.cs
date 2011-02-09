@@ -125,14 +125,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    // State-dependent
     public override void EnsureDataComplete ()
     {
-      if (!IsDataComplete)
-      {
-        _lazyLoader.LoadLazyCollectionEndPoint (this);
-        Assertion.IsTrue (IsDataComplete);
-      }
+      _loadState.EnsureDataComplete();
     }
 
     public void MarkDataComplete ()
