@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
-  /// Represents a certain state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
+  /// Represents the lazy-loading state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
   public interface ICollectionEndPointLoadState
   {

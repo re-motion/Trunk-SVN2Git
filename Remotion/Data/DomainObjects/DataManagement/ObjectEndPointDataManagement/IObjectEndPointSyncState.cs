@@ -16,20 +16,15 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
   /// <summary>
-  /// Represents an <see cref="IRelationEndPoint"/> holding the <see cref="ObjectID"/> of a <see cref="DomainObject"/> instance, i.e. the "one" side of a 
-  /// relation.
+  /// Represents the synchronization state of an <see cref="IObjectEndPoint"/> with the opposite <see cref="IRelationEndPoint"/>, and implements 
+  /// accessor methods for that end-point.
   /// </summary>
-  public interface IObjectEndPoint : IRelationEndPoint
+  public interface IObjectEndPointSyncState
   {
-    ObjectID OppositeObjectID { get; set; }
-    ObjectID OriginalOppositeObjectID { get; }
-
-    DomainObject GetOppositeObject (bool includeDeleted);
-    DomainObject GetOriginalOppositeObject ();
-
+    IDataManagementCommand CreateDeleteCommand ();
     IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
   }
 }

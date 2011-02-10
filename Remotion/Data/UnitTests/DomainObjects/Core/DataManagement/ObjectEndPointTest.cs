@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -37,6 +38,95 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPointID = new RelationEndPointID (DomainObjectIDs.OrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+    }
+
+
+
+    [Test]
+    public void GetOppositeObject ()
+    {
+      var oppositeObject = _endPoint.GetOppositeObject (true);
+      Assert.That (Order.GetObject (_endPoint.OppositeObjectID), Is.SameAs (oppositeObject));
+    }
+
+
+    [Test]
+    public void GetOppositeObject_Null ()
+    {
+      _endPoint.OppositeObjectID = null;
+      var oppositeObject = _endPoint.GetOppositeObject (false);
+      Assert.That (oppositeObject, Is.Null);
+    }
+
+    [Test]
+    public void GetOppositeObject_Deleted ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete ();
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+
+      _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void GetOppositeObject_Deleted_NoDeleted ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete ();
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+
+      _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOppositeObject_Invalid_IncludeDeleted ()
+    {
+      var oppositeObject = Order.NewObject ();
+      _endPoint.OppositeObjectID = oppositeObject.ID;
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetOppositeObject_Invalid_ExcludeDeleted ()
+    {
+      var oppositeObject = Order.NewObject ();
+      _endPoint.OppositeObjectID = oppositeObject.ID;
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject ()
+    {
+      var originalOppositeObject = _endPoint.GetOppositeObject (true);
+      _endPoint.CreateSetCommand (Order.NewObject ()).Perform ();
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject_Deleted ()
+    {
+      var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      _endPoint.CreateSetCommand (Order.NewObject ()).ExpandToAllRelatedObjects ().Perform ();
+
+      originalOppositeObject.Delete ();
+      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
     }
 
     [Test]

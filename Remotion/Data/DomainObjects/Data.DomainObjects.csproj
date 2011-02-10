@@ -177,6 +177,8 @@
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\IRelationEndPointLazyLoader.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\IObjectEndPointSyncState.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncState.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\InvalidDomainObjectManagerBase.cs" />
@@ -266,7 +268,6 @@
     <Compile Include="DataManagement\IRelationEndPointMapReadOnlyView.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\LazyLoadingCollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
-    <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\RelationEndPointExtensions.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />

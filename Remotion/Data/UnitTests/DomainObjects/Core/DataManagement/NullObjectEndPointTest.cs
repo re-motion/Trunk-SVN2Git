@@ -81,6 +81,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetOppositeObject ()
+    {
+      Assert.That (_nullEndPoint.GetOppositeObject (true), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void GetOriginalOppositeObject ()
+    {
+      Dev.Null = _nullEndPoint.GetOriginalOppositeObject();
+    }
+
+    [Test]
     public void IsDataComplete_True ()
     {
       Assert.That (_nullEndPoint.IsDataComplete, Is.True);

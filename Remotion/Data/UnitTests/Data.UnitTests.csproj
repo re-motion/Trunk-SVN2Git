@@ -215,6 +215,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
@@ -246,7 +247,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\InvalidObjects\SubInvalidDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\InvalidObjects\InvalidDomainObjectManagerBaseTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\StateValueSetTest.cs" />

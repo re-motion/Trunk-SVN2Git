@@ -35,6 +35,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
+    public DomainObject GetOppositeObject (bool includeDeleted)
+    {
+      if (OppositeObjectID == null)
+        return null;
+      else if (includeDeleted && ClientTransaction.IsInvalid (OppositeObjectID))
+        return ClientTransaction.GetInvalidObjectReference (OppositeObjectID);
+      else
+        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
+    }
+
+    public DomainObject GetOriginalOppositeObject()
+    {
+      if (OriginalOppositeObjectID == null)
+        return null;
+
+      return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
+    }
+
     public override bool IsDataComplete
     {
       get { return true; }
