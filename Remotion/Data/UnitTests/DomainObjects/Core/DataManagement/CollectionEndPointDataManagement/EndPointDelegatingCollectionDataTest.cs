@@ -23,11 +23,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
 {
@@ -54,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      _collectionEndPointMock = MockRepository.GenerateMock<ICollectionEndPoint>();
+      _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       StubCollectionEndPoint (_collectionEndPointMock, ClientTransactionMock, _owningOrder);
 
       _endPointDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
@@ -234,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem2);
       _endPointDataStub.Stub (stub => stub.GetObject (0)).Return (_orderItem1);
 
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub).Repeat.Any();
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
