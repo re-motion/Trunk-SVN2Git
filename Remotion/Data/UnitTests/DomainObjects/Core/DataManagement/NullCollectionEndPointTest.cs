@@ -66,30 +66,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
 
     [Test]
-    public void OppositeDomainObjects_Get ()
+    public void Collection_Get ()
     {
       Assert.That (_nullEndPoint.Collection, Is.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void OppositeDomainObjects_Set ()
+    public void Collection_Set ()
     {
       _nullEndPoint.Collection = new DomainObjectCollection ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void OriginalOppositeDomainObjectsContents ()
+    public void OriginalCollection ()
     {
-      Dev.Null = _nullEndPoint.GetCollectionWithOriginalData();
+      Dev.Null = _nullEndPoint.OriginalCollection;
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void OriginalOppositeDomainObjectsReference ()
+    public void GetCollectionData ()
     {
-      Dev.Null = _nullEndPoint.OriginalCollection;
+      Dev.Null = _nullEndPoint.GetCollectionData ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void GetCollectionWithOriginalData ()
+    {
+      Dev.Null = _nullEndPoint.GetCollectionWithOriginalData ();
     }
 
     [Test]
@@ -132,6 +139,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MarkDataComplete ()
     {
       _nullEndPoint.MarkDataComplete();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void MarkDataIncomplete ()
+    {
+      _nullEndPoint.MarkDataIncomplete ();
     }
 
     [Test]
@@ -183,13 +197,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateDelegatingCollectionData ()
     {
       _nullEndPoint.CreateDelegatingCollectionData();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void MarkDataIncomplete ()
-    {
-      _nullEndPoint.MarkDataIncomplete ();
     }
 
     [Test]

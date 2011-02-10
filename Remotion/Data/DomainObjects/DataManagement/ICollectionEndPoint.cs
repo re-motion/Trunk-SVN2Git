@@ -24,10 +24,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface ICollectionEndPoint : IRelationEndPoint
   {
     DomainObjectCollection Collection { get; set; }
-    DomainObjectCollection GetCollectionWithOriginalData ();
     DomainObjectCollection OriginalCollection { get; }
 
+    IDomainObjectCollectionData GetCollectionData ();
+    DomainObjectCollection GetCollectionWithOriginalData ();
+
     void MarkDataComplete ();
+    void MarkDataIncomplete ();
 
     IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects);
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
@@ -35,7 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
-    void MarkDataIncomplete ();
     void RegisterOriginalObject (DomainObject domainObject);
     void UnregisterOriginalObject (ObjectID objectID);
   }

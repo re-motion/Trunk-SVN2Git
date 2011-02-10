@@ -123,19 +123,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
       set { throw new InvalidOperationException ("It is not possible to set the Collection of a NullCollectionEndPoint."); }
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData ()
-    {
-      throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsContents from a NullCollectionEndPoint.");
-    }
-
     public DomainObjectCollection OriginalCollection
     {
       get { throw new InvalidOperationException ("It is not possible to get the OriginalCollection from a NullCollectionEndPoint."); }
     }
 
+    public IDomainObjectCollectionData GetCollectionData ()
+    {
+      throw new InvalidOperationException ("It is not possible to call GetCollectionData on a NullCollectionEndPoint.");
+    }
+
+    public DomainObjectCollection GetCollectionWithOriginalData ()
+    {
+      throw new InvalidOperationException ("It is not possible to call GetCollectionWithOriginalData on a NullCollectionEndPoint.");
+    }
+
     public void MarkDataComplete ()
     {
       // ignore
+    }
+
+    public void MarkDataIncomplete ()
+    {
+      throw new InvalidOperationException ("MarkDataIncomplete cannot be called on a NullCollectionEndPoint.");
     }
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
@@ -171,11 +181,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public void MarkDataIncomplete ()
-    {
-      throw new InvalidOperationException ("MarkDataIncomplete cannot be called on a NullCollectionEndPoint.");
     }
 
     public void RegisterOriginalObject (DomainObject domainObject)

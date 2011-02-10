@@ -99,6 +99,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _originalCollection; }
     }
 
+    public IDomainObjectCollectionData GetCollectionData ()
+    {
+      return _loadState.GetCollectionData();
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       return _loadState.GetCollectionWithOriginalData();

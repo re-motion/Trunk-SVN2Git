@@ -357,19 +357,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetCollectionWithOriginalData ()
-    {
-      var fakeResult = new DomainObjectCollection();
-      _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData()).Return (fakeResult);
-      _loadStateMock.Replay();
-
-      var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData();
-
-      _loadStateMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeResult));
-    }
-
-    [Test]
     public void EnsureDataComplete ()
     {
       _loadStateMock.Expect (mock => mock.EnsureDataComplete());
@@ -869,6 +856,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (result, Is.SameAs (originalReference));
       AssertDidNotLoadData (_customerEndPoint);
     }
+
+    [Test]
+    public void GetCollectionData ()
+    {
+      var fakeResult = new DomainObjectCollectionData ();
+      _loadStateMock.Expect (mock => mock.GetCollectionData ()).Return (fakeResult);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.GetCollectionData ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void GetCollectionWithOriginalData ()
+    {
+      var fakeResult = new DomainObjectCollection ();
+      _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData ()).Return (fakeResult);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
 
     [Test]
     public void GetOppositeRelationEndPoints ()

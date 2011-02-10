@@ -138,6 +138,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       set { throw new NotImplementedException(); }
     }
 
+    public IDomainObjectCollectionData GetCollectionData ()
+    {
+      throw new NotImplementedException();
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       throw new NotImplementedException();

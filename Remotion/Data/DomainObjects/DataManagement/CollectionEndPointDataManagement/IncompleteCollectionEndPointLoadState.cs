@@ -57,6 +57,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _lazyLoader.LoadLazyCollectionEndPoint (_collectionEndPoint);
     }
 
+    public IDomainObjectCollectionData GetCollectionData ()
+    {
+      _collectionEndPoint.EnsureDataComplete();
+      return _collectionEndPoint.GetCollectionData();
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       _collectionEndPoint.EnsureDataComplete ();

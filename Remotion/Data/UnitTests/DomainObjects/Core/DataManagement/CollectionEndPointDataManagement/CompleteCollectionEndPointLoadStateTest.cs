@@ -69,6 +69,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void GetCollectionData ()
+    {
+      var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
+
+      var result = _loadState.GetCollectionData();
+
+      Assert.That (result, Is.SameAs (collectionDataStub));
+    }
+
+    [Test]
     public void GetCollectionWithOriginalData_CreatesNewCollectionFromData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();

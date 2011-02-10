@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -57,6 +58,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _lazyLoaderMock.VerifyAllExpectations();
       _collectionEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GetCollectionData ()
+    {
+      CheckOperationDelegatesToCompleteState (
+          s => s.GetCollectionData (),
+          s => s.GetCollectionData (),
+          new DomainObjectCollectionData ());
     }
 
     [Test]

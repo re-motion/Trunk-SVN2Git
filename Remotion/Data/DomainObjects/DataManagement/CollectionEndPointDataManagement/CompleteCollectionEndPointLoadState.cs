@@ -59,6 +59,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       // Data is already complete
     }
 
+    public IDomainObjectCollectionData GetCollectionData ()
+    {
+      return _dataKeeper.CollectionData;
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       var collectionType = _collectionEndPoint.Definition.PropertyType;

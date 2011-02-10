@@ -26,6 +26,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     void EnsureDataComplete ();
 
+    IDomainObjectCollectionData GetCollectionData ();
+
     DomainObjectCollection GetCollectionWithOriginalData ();
     IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
 
