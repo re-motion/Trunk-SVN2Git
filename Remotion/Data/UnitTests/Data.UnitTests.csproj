@@ -219,6 +219,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
