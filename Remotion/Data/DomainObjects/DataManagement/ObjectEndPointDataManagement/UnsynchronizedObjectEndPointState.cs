@@ -15,50 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
-  /// <summary>
-  /// Represents the state of an <see cref="IObjectEndPoint"/> that is synchronized with the opposite <see cref="IRelationEndPoint"/>.
-  /// </summary>
-  [Serializable]
-  public class SynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
+  public class UnsynchronizedObjectEndPointState : IObjectEndPointSyncState
   {
-    [NonSerialized]
     private readonly IObjectEndPoint _endPoint;
 
-    public SynchronizedObjectEndPointSyncState (IObjectEndPoint endPoint)
+    public UnsynchronizedObjectEndPointState (IObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      _endPoint = endPoint;
-    }
 
-    public IObjectEndPoint EndPoint
-    {
-      get { return _endPoint; }
+      _endPoint = endPoint;
     }
 
     public IDataManagementCommand CreateDeleteCommand ()
     {
-      return new ObjectEndPointDeleteCommand (_endPoint);
+      throw CreateInvalidOperationException();
     }
 
     public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      var oppositeEndPointDefinition = _endPoint.Definition.GetOppositeEndPointDefinition ();
+      throw CreateInvalidOperationException ();
+    }
 
-      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-      if (_endPoint.OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (_endPoint);
-      else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (_endPoint, newRelatedObject);
-      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneCommand (_endPoint, newRelatedObject);
-      else
-        return new ObjectEndPointSetOneManyCommand (_endPoint, newRelatedObject);
+    private InvalidOperationException CreateInvalidOperationException ()
+    {
+      return new InvalidOperationException (
+          string.Format (
+              "The relation property '{0}' cannot be changed because its out of sync with the opposite property '{1}'. "
+              + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.",
+              _endPoint.Definition.PropertyName,
+              _endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
     }
   }
 }

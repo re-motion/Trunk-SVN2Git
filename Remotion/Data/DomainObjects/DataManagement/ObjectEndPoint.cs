@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using System.Reflection;
+using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -27,13 +27,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
+    private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
+
     protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
         : base (clientTransaction, id)
     {
+      _syncState = new SynchronizedObjectEndPointSyncState (this);
     }
 
     public abstract ObjectID OppositeObjectID { get; set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
+
+    public void MarkSynchronized ()
+    {
+      _syncState = new SynchronizedObjectEndPointSyncState (this);
+    }
+
+    public void MarkUnsynchronized ()
+    {
+      _syncState = new UnsynchronizedObjectEndPointState (this);
+    }
 
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
@@ -81,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      var currentRelatedObject = this.GetOppositeObject (true);
+      var currentRelatedObject = GetOppositeObject (true);
       if (removedRelatedObject != currentRelatedObject)
       {
         string removedID = removedRelatedObject.ID.ToString ();
@@ -97,22 +110,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return new ObjectEndPointDeleteCommand (this);
+      return _syncState.CreateDeleteCommand();
     }
 
     public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
-
-      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-      if (OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (this);
-      else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (this, newRelatedObject);
-      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneCommand (this, newRelatedObject);
-      else 
-        return new ObjectEndPointSetOneManyCommand (this, newRelatedObject);
+      return _syncState.CreateSetCommand (newRelatedObject);
     }
 
     public override void SetValueFrom (IRelationEndPoint source)
@@ -157,12 +160,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      // currently, there's nothing to do here
+      _syncState = info.GetValue<IObjectEndPointSyncState> ();
+
+      FixupLoadState (_syncState);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      // currently, there's nothing to do here
+      info.AddValue (_syncState);
+    }
+
+    private void FixupLoadState (IObjectEndPointSyncState syncState)
+    {
+      var endPointField = syncState.GetType ().GetField ("_endPoint", BindingFlags.NonPublic | BindingFlags.Instance);
+      endPointField.SetValue (syncState, this);
     }
 
     #endregion

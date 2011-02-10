@@ -27,6 +27,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     ObjectID OppositeObjectID { get; set; }
     ObjectID OriginalOppositeObjectID { get; }
 
+    void MarkSynchronized ();
+    void MarkUnsynchronized ();
+
     DomainObject GetOppositeObject (bool includeDeleted);
     DomainObject GetOriginalOppositeObject ();
 

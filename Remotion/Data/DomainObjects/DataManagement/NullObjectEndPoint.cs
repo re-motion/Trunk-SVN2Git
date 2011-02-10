@@ -82,6 +82,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeObjectID from a NullObjectEndPoint."); }
     }
 
+    public void MarkSynchronized ()
+    {
+      // do nothing
+    }
+
+    public void MarkUnsynchronized ()
+    {
+      // do nothing
+    }
+
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
       return null;
