@@ -798,7 +798,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       collectionEndPointStub.Stub (stub => stub.GetCollectionData()).Return (endPointDataStub);
 
-      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);
+      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub);
       var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (associatedCollection), Is.SameAs (collectionEndPointStub));
       return associatedCollection;

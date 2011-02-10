@@ -46,12 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) data;
     }
     
-    public static IDomainObjectCollectionData GetData (EndPointDelegatingCollectionData delegatingData)
-    {
-      var data = (IDomainObjectCollectionData) PrivateInvoke.GetNonPublicField (delegatingData, "_endPointData");
-      return data;
-    }
-
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint)
     {
       // collection => checking checking decorator => end point data => actual data store
@@ -61,9 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
-
-      var data = GetData (delegator);
-      Assert.That (data, Is.SameAs (((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData));
     }
 
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
@@ -76,9 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
       
-      var data = GetData (delegator);
-      Assert.That (data, Is.SameAs (((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData));
-
+      var data = ((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData;
       if (expectedDataStore != null)
         Assert.That (data, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }

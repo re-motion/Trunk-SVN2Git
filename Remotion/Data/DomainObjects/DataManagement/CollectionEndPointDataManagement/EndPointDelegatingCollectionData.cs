@@ -35,16 +35,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     [NonSerialized] // relies on the collection end point restoring the association on deserialization
     private readonly ICollectionEndPoint _associatedEndPoint;
-    [NonSerialized] // relies on the collection end point restoring the association on deserialization
-    private readonly IDomainObjectCollectionData _endPointData;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData endPointData)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("endPointData", endPointData);
-
       _associatedEndPoint = collectionEndPoint;
-      _endPointData = endPointData;
     }
 
     public int Count
@@ -58,12 +53,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public Type RequiredItemType
     {
-      get { return _endPointData.RequiredItemType; }
+      get 
+      {
+        // Currently, the data backing a CollectionEndPoint does not check the item type.
+        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().RequiredItemType) to avoid lazy loading for
+        // item type checks.
+        return null; 
+      }
     }
 
     public bool IsReadOnly
     {
-      get { return _endPointData.IsReadOnly; }
+      get 
+      { 
+        // Currently, the data backing a CollectionEndPoint is never read-only.
+        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().IsReadOnly) to avoid lazy loading for
+        // read-only checks.
+        return false; 
+      }
     }
 
     public ICollectionEndPoint AssociatedEndPoint

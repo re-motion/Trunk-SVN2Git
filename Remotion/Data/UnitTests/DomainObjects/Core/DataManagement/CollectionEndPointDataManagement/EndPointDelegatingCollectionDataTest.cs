@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
-      _delegatingData = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataStub);
+      _delegatingData = new EndPointDelegatingCollectionData (_collectionEndPointMock);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -90,22 +90,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RequiredItemType ()
     {
-      _endPointDataStub.Stub (mock => mock.RequiredItemType).Return (typeof (Computer));
-
-      Assert.That (_delegatingData.RequiredItemType, Is.SameAs (typeof (Computer)));
+      Assert.That (_delegatingData.RequiredItemType, Is.Null);
     }
 
     [Test]
     public void IsReadOnly ()
     {
-      _endPointDataStub.Stub (stub => stub.IsReadOnly).Return (false);
       Assert.That (_delegatingData.IsReadOnly, Is.False);
-
-      _endPointDataStub.BackToRecord ();
-      _endPointDataStub.Stub (stub => stub.IsReadOnly).Return (true);
-      _endPointDataStub.Replay ();
-
-      Assert.That (_delegatingData.IsReadOnly, Is.True);
     }
 
     [Test]
@@ -462,7 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var data = new EndPointDelegatingCollectionData (endPointStub, _endPointDataStub);
+      var data = new EndPointDelegatingCollectionData (endPointStub);
 
       using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
       {
