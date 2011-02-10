@@ -27,8 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     ObjectID OppositeObjectID { get; set; }
     ObjectID OriginalOppositeObjectID { get; }
 
-    void SetOppositeObjectAndNotify (DomainObject newRelatedObject);
-
     IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
   }
 }

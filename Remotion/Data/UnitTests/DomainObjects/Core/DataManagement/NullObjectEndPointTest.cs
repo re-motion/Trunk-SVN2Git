@@ -117,13 +117,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void SetOppositeDomainObjectAndNotify ()
-    {
-      _nullEndPoint.SetOppositeObjectAndNotify (Order.NewObject ());
-    }
-
-    [Test]
     public void Touch ()
     {
       Assert.That (_nullEndPoint.HasBeenTouched, Is.False);

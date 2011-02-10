@@ -92,10 +92,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
+      var newRelatedObject = ArgumentUtility.CheckType<DomainObject> ("value", value);
 
       var endPointID = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (IObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-      endPoint.SetOppositeObjectAndNotify ((DomainObject) value);
+      var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+
+      RelationEndPointValueChecker.CheckClientTransaction (
+          endPoint,
+          newRelatedObject,
+          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
+
+      DomainObjectCheckUtility.EnsureNotDeleted (endPoint.GetDomainObjectReference (), endPoint.ClientTransaction);
+      if (newRelatedObject != null)
+      {
+        DomainObjectCheckUtility.EnsureNotDeleted (newRelatedObject, endPoint.ClientTransaction);
+        CheckNewRelatedObjectType (endPoint, newRelatedObject);
+      }
+
+      var setCommand = endPoint.CreateSetCommand (newRelatedObject);
+      var bidirectionalModification = setCommand.ExpandToAllRelatedObjects ();
+      bidirectionalModification.NotifyAndPerform ();
     }
 
     public object GetOriginalValueWithoutTypeCheck (PropertyAccessor propertyAccessor, ClientTransaction transaction)
@@ -104,6 +120,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
       return transaction.GetOriginalRelatedObject (CreateRelationEndPointID (propertyAccessor));
+    }
+
+    private void CheckNewRelatedObjectType (ObjectEndPoint objectEndPoint, DomainObject newRelatedObject)
+    {
+      if (!objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
+      {
+        var message = string.Format (
+            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
+            + "with the type of the property.",
+            newRelatedObject.ID, objectEndPoint.PropertyName, objectEndPoint.ObjectID);
+        throw new ArgumentTypeException (
+            message,
+            "newRelatedObject", objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.ClassType,
+            newRelatedObject.ID.ClassDefinition.ClassType);
+      }
     }
   }
 }

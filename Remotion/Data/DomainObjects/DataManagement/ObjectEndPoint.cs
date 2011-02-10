@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -47,31 +46,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsTrue (IsDataComplete);
     }
 
-    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
-    {
-      RelationEndPointValueChecker.CheckClientTransaction (
-          this,
-          newRelatedObject,
-          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
-
-      DomainObjectCheckUtility.EnsureNotDeleted (this.GetDomainObjectReference (), ClientTransaction);
-      if (newRelatedObject != null)
-      {
-        DomainObjectCheckUtility.EnsureNotDeleted (newRelatedObject, ClientTransaction);
-        CheckNewRelatedObjectType (newRelatedObject);
-      }
-
-      var setCommand = CreateSetCommand (newRelatedObject);
-      var bidirectionalModification = setCommand.ExpandToAllRelatedObjects ();
-      bidirectionalModification.NotifyAndPerform ();
-    }
-
     public override void CheckMandatory ()
     {
       if (OppositeObjectID == null)
       {
         throw CreateMandatoryRelationNotSetException (
-            this.GetDomainObjectReference(),
+            GetDomainObjectReference(),
             PropertyName,
             "Mandatory relation property '{0}' of domain object '{1}' cannot be null.",
             PropertyName,
@@ -151,24 +131,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var oppositeEndPointID = new RelationEndPointID (OppositeObjectID, oppositeEndPointDefinition);
         return new[] { dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID) };
-      }
-    }
-
-    private void CheckNewRelatedObjectType (DomainObject newRelatedObject)
-    {
-      if (!Definition.GetOppositeEndPointDefinition().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
-      {
-        var message = string.Format (
-            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
-            + "with the type of the property.",
-            newRelatedObject.ID,
-            PropertyName,
-            ObjectID);
-        throw new ArgumentTypeException (
-            message, 
-            "newRelatedObject", 
-            Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType, 
-            newRelatedObject.ID.ClassDefinition.ClassType);
       }
     }
 

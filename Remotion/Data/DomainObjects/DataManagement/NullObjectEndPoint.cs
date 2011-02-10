@@ -112,11 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
-    {
-      throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint.");
-    }
-
     public void EnsureDataComplete ()
     {
       // do nothing
