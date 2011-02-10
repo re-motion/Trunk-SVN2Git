@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return new AdHocCommand { PerformHandler = () => OppositeObjectID = null };
+      return new ObjectEndPointDeleteCommand (this);
     }
 
     public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)

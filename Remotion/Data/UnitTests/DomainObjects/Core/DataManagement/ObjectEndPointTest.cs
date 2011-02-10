@@ -18,11 +18,9 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -230,19 +228,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDeleteCommand ()
     {
-      var command = (AdHocCommand) _endPoint.CreateDeleteCommand ();
-      Assert.That (command.NotifyClientTransactionOfBeginHandler, Is.Null);
-      Assert.That (command.NotifyClientTransactionOfEndHandler, Is.Null);
-      Assert.That (command.BeginHandler, Is.Null);
-      Assert.That (command.EndHandler, Is.Null);
-
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.Null);
-      Assert.That (_endPoint.HasBeenTouched, Is.False);
-
-      command.Perform ();
-
-      Assert.That (_endPoint.OppositeObjectID, Is.Null);
-      Assert.That (_endPoint.HasBeenTouched, Is.True);
+      var command = _endPoint.CreateDeleteCommand ();
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
+      Assert.That (((ObjectEndPointDeleteCommand) command).ModifiedEndPoint, Is.SameAs (_endPoint));
     }
 
     [Test]
