@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;

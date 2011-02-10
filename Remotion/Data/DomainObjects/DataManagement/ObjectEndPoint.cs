@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
+    public sealed override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 

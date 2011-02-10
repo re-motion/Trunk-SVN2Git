@@ -268,10 +268,10 @@
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\RelationEndPointExtensions.cs" />
-    <Compile Include="DataManagement\RealObjectEndPoint.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
     <Compile Include="DataManagement\StateValueSet.cs" />
-    <Compile Include="DataManagement\VirtualObjectEndPoint.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\VirtualObjectEndPoint.cs" />
     <Compile Include="DomainImplementation\RepositoryAccessor.cs" />
     <Compile Include="DomainImplementation\UnloadTransactionMode.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />

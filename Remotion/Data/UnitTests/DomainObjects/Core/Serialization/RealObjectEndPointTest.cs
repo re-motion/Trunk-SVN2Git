@@ -18,6 +18,7 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -41,7 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoint' in Assembly "
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+      "Type 'Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement.RealObjectEndPoint' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void RealObjectEndPoint_IsNotSerializable ()
     {
