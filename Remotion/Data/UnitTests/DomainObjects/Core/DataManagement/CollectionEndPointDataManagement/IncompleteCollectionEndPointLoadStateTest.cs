@@ -89,15 +89,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    [Ignore ("TODO 3732")]
     public void CreateSetOppositeCollectionCommand ()
     {
       var domainObjectCollection = new DomainObjectCollection ();
 
-      //CheckOperationDelegatesToCompleteState (
-      //    s => s.CreateSetOppositeCollectionCommand (domainObjectCollection), 
-      //    s => s.CreateSetOppositeCollectionCommand (domainObjectCollection), 
-      //    MockRepository.GenerateStub<IDataManagementCommand> ());
+      CheckOperationDelegatesToCompleteState (
+          s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
+          s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
+          MockRepository.GenerateStub<IDataManagementCommand> ());
     }
 
     [Test]

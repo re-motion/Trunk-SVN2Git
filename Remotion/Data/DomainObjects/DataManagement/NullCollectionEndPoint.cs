@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("MarkDataIncomplete cannot be called on a NullCollectionEndPoint.");
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
     {
       return new NullEndPointModificationCommand (this);
     }

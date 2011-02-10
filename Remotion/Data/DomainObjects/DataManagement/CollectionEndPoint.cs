@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper.UnregisterOriginalObject (objectID);
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection oppositeDomainObjects)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
       return _loadState.CreateSetOppositeCollectionCommand (oppositeDomainObjects);

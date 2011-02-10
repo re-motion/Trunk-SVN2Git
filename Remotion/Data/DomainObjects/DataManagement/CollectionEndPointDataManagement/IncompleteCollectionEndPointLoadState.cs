@@ -80,8 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
       _collectionEndPoint.EnsureDataComplete ();
-      throw new NotImplementedException ("TODO 3732");
-      // return _collectionEndPoint.CreateSetOppositeCollectionCommand (newOppositeCollection);
+      return _collectionEndPoint.CreateSetOppositeCollectionCommand (newOppositeCollection);
     }
 
     public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
