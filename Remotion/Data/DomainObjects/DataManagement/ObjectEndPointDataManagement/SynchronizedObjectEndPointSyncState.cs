@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
@@ -35,14 +36,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
     public IDataManagementCommand CreateDeleteCommand ()
     {
-      throw new NotImplementedException();
+      return new ObjectEndPointDeleteCommand (_endPoint);
     }
 
     public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      //var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-      // if (OppositeObjectID == newRelatedObjectID)
+      var oppositeEndPointDefinition = _endPoint.Definition.GetOppositeEndPointDefinition ();
+
+      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
+      if (_endPoint.OppositeObjectID == newRelatedObjectID)
         return new ObjectEndPointSetSameCommand (_endPoint);
+      else if (oppositeEndPointDefinition.IsAnonymous)
+        return new ObjectEndPointSetUnidirectionalCommand (_endPoint, newRelatedObject);
+      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
+        return new ObjectEndPointSetOneOneCommand (_endPoint, newRelatedObject);
+      else
+        return new ObjectEndPointSetOneManyCommand (_endPoint, newRelatedObject);
     }
   }
 }
