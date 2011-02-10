@@ -81,10 +81,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Count ()
     {
-      PrepareActualDataContents (_orderItem1);
+      _endPointDataStub.Stub (stub => stub.Count).Return (42);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay();
 
-      Assert.That (_delegatingData.Count, Is.EqualTo (1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.Count, Is.EqualTo (42));
+
+      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -127,113 +130,91 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void EnsureDataComplete ()
     {
-      _delegatingData.EnsureDataComplete();
+      _collectionEndPointMock.Expect (mock => mock.EnsureDataComplete ());
+      _collectionEndPointMock.Replay();
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      _delegatingData.EnsureDataComplete ();
+
+      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetDataStore ()
     {
-      var dataStoreStub = new DomainObjectCollectionData();
-      _endPointDataStub.Stub (mock => mock.GetDataStore()).Return (dataStoreStub);
+      var dataStoreStub = new DomainObjectCollectionData ();
+      _endPointDataStub.Stub (stub => stub.GetDataStore()).Return (dataStoreStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (_delegatingData.GetDataStore(), Is.SameAs (dataStoreStub));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.GetDataStore(), Is.SameAs(dataStoreStub));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void ContainsObjectID ()
     {
-      PrepareActualDataContents (_orderItem1);
+      _endPointDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (_delegatingData.ContainsObjectID (DomainObjectIDs.OrderItem1), Is.True);
-      Assert.That (_delegatingData.ContainsObjectID (DomainObjectIDs.OrderItem2), Is.False);
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.ContainsObjectID (_orderItem1.ID), Is.True);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetObject_Index ()
     {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+      _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem1);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (_delegatingData.GetObject (1), Is.SameAs (_orderItem2));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.GetObject (1), Is.SameAs(_orderItem1));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetObject_ID ()
     {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+      _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (_orderItem1);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (_delegatingData.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.GetObject (_orderItem1.ID), Is.SameAs (_orderItem1));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void IndexOf ()
     {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+      _endPointDataStub.Stub (stub => stub.IndexOf(_orderItem1.ID)).Return (3);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (_delegatingData.IndexOf (DomainObjectIDs.OrderItem2), Is.EqualTo (1));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      Assert.That (_delegatingData.IndexOf(_orderItem1.ID), Is.EqualTo(3));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetEnumerator ()
     {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+      var fakeEnumerator = MockRepository.GenerateStub<IEnumerator<DomainObject>>();
+      _endPointDataStub.Stub (stub => stub.GetEnumerator ()).Return (fakeEnumerator);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Replay ();
 
-      IEnumerable<DomainObject> dataAsEnumerable = _delegatingData;
-      Assert.That (dataAsEnumerable.ToArray(), Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3 }));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
-    }
+      Assert.That (_delegatingData.GetEnumerator(), Is.SameAs(fakeEnumerator));
 
-    [Test]
-    public void Clear_CompositeCommand ()
-    {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
-
-      var mockRepository = _collectionEndPointMock.GetMockRepository ();
-
-      var removeCommandStub1 = mockRepository.Stub<IDataManagementCommand> ();
-      var removeCommandStub2 = mockRepository.Stub<IDataManagementCommand> ();
-      var removeCommandStub3 = mockRepository.Stub<IDataManagementCommand> ();
-
-      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
-      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
-      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
-
-      var expandedCommand1 = new ExpandedCommand ();
-      var expandedCommand2 = new ExpandedCommand ();
-      var expandedCommand3 = new ExpandedCommand ();
-      
-      removeCommandStub1.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand1);
-      removeCommandStub2.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand2);
-      removeCommandStub3.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand3);
-
-      mockRepository.ReplayAll ();
-
-      var clearCommand = (CompositeCommand) PrivateInvoke.InvokeNonPublicMethod (_delegatingData, "GetClearCommand");
-      var nestedClearCommands = clearCommand.GetNestedCommands ();
-
-      Assert.That (nestedClearCommands.Count, Is.EqualTo (4));
-      
-      Assert.That (nestedClearCommands, List.Contains (expandedCommand1));
-      Assert.That (nestedClearCommands, List.Contains (expandedCommand2));
-      Assert.That (nestedClearCommands, List.Contains (expandedCommand3));
-      
-      Assert.That (nestedClearCommands[3], Is.InstanceOfType (typeof (RelationEndPointTouchCommand)));
-      Assert.That (((RelationEndPointTouchCommand) nestedClearCommands[3]).EndPoint, Is.SameAs (_collectionEndPointMock));
-
-      mockRepository.VerifyAll ();
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Clear ()
     {
-      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
-
       var mockRepository = _collectionEndPointMock.GetMockRepository ();
 
       var removeCommandStub1 = mockRepository.Stub<IDataManagementCommand> ();
@@ -248,6 +229,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       removeCommandStub2.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (nestedCommandMock2));
       removeCommandStub3.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (nestedCommandMock3));
 
+      _endPointDataStub.Stub (stub => stub.Count).Return (3);
+      _endPointDataStub.Stub (stub => stub.GetObject (2)).Return (_orderItem3);
+      _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem2);
+      _endPointDataStub.Stub (stub => stub.GetObject (0)).Return (_orderItem1);
+
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
@@ -272,8 +259,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock3.NotifyClientTransactionOfEnd");
       }
 
-      _collectionEndPointMock.Expect (mock => mock.EnsureDataComplete ());
-
       mockRepository.ReplayAll ();
 
       _delegatingData.Clear();
@@ -284,25 +269,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Clear_WithoutItems ()
     {
-      PrepareActualDataContents();
+      _endPointDataStub.Stub (stub => stub.Count).Return (0);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay();
 
       _delegatingData.Clear();
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
+      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
     public void Insert ()
     {
       _collectionEndPointMock.Expect (mock => mock.CreateInsertCommand (_orderItem1, 17)).Return (_commandStub);
-      _collectionEndPointMock.Replay();
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
       _commandStub.Stub (stub => stub.ExpandToAllRelatedObjects()).Return (_expandedCommandFake);
 
       _delegatingData.Insert (17, _orderItem1);
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
     }
@@ -318,16 +304,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove ()
     {
-      PrepareActualDataContents (_orderItem1);
-
+      _endPointDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (_commandStub);
-      _collectionEndPointMock.Replay();
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+
       _commandStub.Stub (stub => stub.ExpandToAllRelatedObjects()).Return (_expandedCommandFake);
 
       var result = _delegatingData.Remove (_orderItem1);
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
 
@@ -337,11 +323,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove_ObjectNotContained ()
     {
+      _endPointDataStub.Stub (stub => stub.ContainsObjectID(_orderItem1.ID)).Return (false);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect(mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+
       bool result = _delegatingData.Remove (_orderItem1);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveCommand (Arg<DomainObject>.Is.Anything));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
-
+      _collectionEndPointMock.VerifyAllExpectations();
       Assert.That (result, Is.False);
     }
 
@@ -356,8 +346,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove_ID ()
     {
-      PrepareActualDataContents (_orderItem1);
-
+      _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (_orderItem1);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (_commandStub);
       _collectionEndPointMock.Expect (mock => mock.Touch());
       _collectionEndPointMock.Replay();
@@ -365,8 +355,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var result = _delegatingData.Remove (_orderItem1.ID);
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
 
@@ -376,11 +364,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Remove_ID_ObjectNotContained ()
     {
+      _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (null);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+
       var result = _delegatingData.Remove (_orderItem1.ID);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveCommand (Arg<DomainObject>.Is.Anything));
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
+      _collectionEndPointMock.VerifyAllExpectations();
 
       Assert.That (result, Is.False);
     }
@@ -395,13 +387,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Replace ()
     {
       _collectionEndPointMock.Expect (mock => mock.CreateReplaceCommand (17, _orderItem1)).Return (_commandStub);
-      _collectionEndPointMock.Replay();
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
       _commandStub.Stub (stub => stub.ExpandToAllRelatedObjects()).Return (_expandedCommandFake);
 
       _delegatingData.Replace (17, _orderItem1);
 
-      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
-      _collectionEndPointMock.AssertWasCalled (mock => mock.EnsureDataComplete ());
       _collectionEndPointMock.VerifyAllExpectations ();
       DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_nestedCommandMock);
     }
@@ -489,21 +480,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       catch (ObjectDeletedException)
       {
         // ok
-      }
-    }
-
-    private void PrepareActualDataContents (params DomainObject[] contents)
-    {
-      _endPointDataStub.Stub (stub => stub.Count).Return (contents.Length);
-      _endPointDataStub.Stub (stub => stub.GetEnumerator()).Return (((IEnumerable<DomainObject>) contents).GetEnumerator());
-
-      for (int i = 0; i < contents.Length; i++)
-      {
-        int currentIndex = i; // required because Stub creates a closure
-        _endPointDataStub.Stub (stub => stub.ContainsObjectID (contents[currentIndex].ID)).Return (true);
-        _endPointDataStub.Stub (stub => stub.GetObject (contents[currentIndex].ID)).Return (contents[currentIndex]);
-        _endPointDataStub.Stub (stub => stub.GetObject (currentIndex)).Return (contents[currentIndex]);
-        _endPointDataStub.Stub (stub => stub.IndexOf (contents[currentIndex].ID)).Return (currentIndex);
       }
     }
   }

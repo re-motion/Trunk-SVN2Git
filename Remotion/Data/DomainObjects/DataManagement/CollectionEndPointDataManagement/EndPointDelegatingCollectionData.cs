@@ -49,10 +49,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public int Count
     {
-      get 
+      get
       {
-        EnsureDataComplete ();
-        return _endPointData.Count; 
+        var data = _associatedEndPoint.GetCollectionData();
+        return data.Count;
       }
     }
 
@@ -83,43 +83,45 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData GetDataStore ()
     {
-      EnsureDataComplete ();
-
       // This will usually return the ChangeCachingDomainObjectCollectionData
-      return _endPointData.GetDataStore();
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.GetDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      EnsureDataComplete ();
-      return _endPointData.ContainsObjectID (objectID);
+
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      EnsureDataComplete ();
-      return _endPointData.GetObject (index);
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      EnsureDataComplete ();
-      return _endPointData.GetObject (objectID);
+
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      EnsureDataComplete ();
-      return _endPointData.IndexOf (objectID);
+
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.IndexOf(objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      EnsureDataComplete ();
-      return _endPointData.GetEnumerator ();
+      var data = _associatedEndPoint.GetCollectionData ();
+      return data.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -130,8 +132,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void Clear ()
     {
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
-
-      EnsureDataComplete ();
 
       var combinedCommand = GetClearCommand ();
       combinedCommand.NotifyAndPerform ();
@@ -144,8 +144,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
-
-      EnsureDataComplete ();
 
       var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
       var bidirectionalModification = insertCommand.ExpandToAllRelatedObjects ();
@@ -162,8 +160,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
 
-      EnsureDataComplete ();
-
       var containsObjectID = ContainsObjectID (domainObject.ID);
       if (containsObjectID)
         CreateAndExecuteRemoveCommand (domainObject);
@@ -177,8 +173,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
-
-      EnsureDataComplete ();
 
       var domainObject = GetObject (objectID);
       if (domainObject != null)
@@ -200,8 +194,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
       DomainObjectCheckUtility.EnsureNotDeleted (value, AssociatedEndPoint.ClientTransaction);
       DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
-
-      EnsureDataComplete ();
 
       var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
       var bidirectionalModification = replaceCommand.ExpandToAllRelatedObjects ();
