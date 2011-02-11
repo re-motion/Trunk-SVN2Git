@@ -360,13 +360,14 @@
 
   <target name="relinq-release-notes" depends="relinq-release-notes-directory">
     <property name="release-notes.generator.exe" value="JiraReleaseNoteGenerator.exe" />
-    <property name="make-relinq-zips" value="${file::get-length(relinq-release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}" />
 
     <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
       <arg value="${build.version.noconfig}"/>
       <arg value="${relinq-release-notes.directory.full}"/>
       <arg value="component='Data.Linq'"/>
     </exec>
+
+    <property name="make-relinq-zips" value="${file::get-length(relinq-release-notes.directory.full + '\ReleaseNotes_v' + build.version.noconfig + '.html')>0}" />
 
     <call target="relinq-copy-release-notes" cascade="false"/>
   </target>
