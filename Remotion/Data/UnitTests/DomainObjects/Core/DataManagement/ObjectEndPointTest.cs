@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MarkUnsynchronized_MarkSynchronized ()
     {
       _endPoint.MarkUnsynchronized();
-      Assert.That (GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointState)));
+      Assert.That (GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
 
       _endPoint.MarkSynchronized ();
       Assert.That (GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));

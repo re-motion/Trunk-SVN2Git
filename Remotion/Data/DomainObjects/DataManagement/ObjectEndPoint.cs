@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkUnsynchronized ()
     {
-      _syncState = new UnsynchronizedObjectEndPointState (this);
+      _syncState = new UnsynchronizedObjectEndPointSyncState (this);
     }
 
     public DomainObject GetOppositeObject (bool includeDeleted)
@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       _syncState = info.GetValue<IObjectEndPointSyncState> ();
 
-      FixupLoadState (_syncState);
+      FixupSyncState (_syncState);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -170,7 +170,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddValue (_syncState);
     }
 
-    private void FixupLoadState (IObjectEndPointSyncState syncState)
+    private void FixupSyncState (IObjectEndPointSyncState syncState)
     {
       var endPointField = syncState.GetType ().GetField ("_endPoint", BindingFlags.NonPublic | BindingFlags.Instance);
       endPointField.SetValue (syncState, this);

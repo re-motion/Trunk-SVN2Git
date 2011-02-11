@@ -179,7 +179,7 @@
     <Compile Include="DataManagement\IRelationEndPointLazyLoader.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\IObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncState.cs" />
-    <Compile Include="DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointState.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointSyncState.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\InvalidDomainObjectManagerBase.cs" />

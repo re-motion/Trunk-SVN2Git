@@ -109,5 +109,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var expectedForeignKeyProperty = deserializedEndPoint.ForeignKeyDataContainer.PropertyValues[typeof (OrderTicket) + ".Order"];
       Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.SameAs (expectedForeignKeyProperty));
     }
+
+    [Test]
+    public void SyncState ()
+    {
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var syncState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_syncState");
+      Assert.That (syncState, Is.Not.Null);
+    }
   }
 }

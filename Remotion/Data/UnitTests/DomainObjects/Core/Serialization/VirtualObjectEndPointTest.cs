@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -73,6 +74,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
       Assert.AreEqual (DomainObjectIDs.Computer2, _endPoint.OppositeObjectID);
       Assert.AreEqual (DomainObjectIDs.Computer1, _endPoint.OriginalOppositeObjectID);
+    }
+
+    [Test]
+    public void SyncState ()
+    {
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var syncState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_syncState");
+      Assert.That (syncState, Is.Not.Null);
     }
   }
 }

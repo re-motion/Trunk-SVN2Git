@@ -20,15 +20,22 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
-  public class UnsynchronizedObjectEndPointState : IObjectEndPointSyncState
+  [Serializable]
+  public class UnsynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
   {
+    [NonSerialized]
     private readonly IObjectEndPoint _endPoint;
 
-    public UnsynchronizedObjectEndPointState (IObjectEndPoint endPoint)
+    public UnsynchronizedObjectEndPointSyncState (IObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       _endPoint = endPoint;
+    }
+
+    public IObjectEndPoint EndPoint
+    {
+      get { return _endPoint; }
     }
 
     public IDataManagementCommand CreateDeleteCommand ()
@@ -45,9 +52,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
       return new InvalidOperationException (
           string.Format (
-              "The relation property '{0}' cannot be changed because its out of sync with the opposite property '{1}'. "
+              "The relation property '{0}' of object '{1}' cannot be changed because it is out of sync with the opposite property '{2}'. "
               + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.",
               _endPoint.Definition.PropertyName,
+              _endPoint.ObjectID,
               _endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
     }
   }

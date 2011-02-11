@@ -16,19 +16,22 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
 {
   [TestFixture]
-  public class UnsynchronizedObjectEndPointStateTest : StandardMappingTest
+  public class UnsynchronizedObjectEndPointSyncStateTest : StandardMappingTest
   {
     private IObjectEndPoint _endPointStub;
-    private UnsynchronizedObjectEndPointState _state;
+    private UnsynchronizedObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
     public override void SetUp ()
@@ -38,16 +41,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _orderOrderTicketEndPointDefinition = GetRelationEndPointDefinition (typeof (Order), "OrderTicket");
       
       _endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
-      _state = new UnsynchronizedObjectEndPointState (_endPointStub);
+      _state = new UnsynchronizedObjectEndPointSyncState (_endPointStub);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-      "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' cannot be changed because its out of sync with the "
-      +"opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, synchronize the two properties by "
-      +"calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+      "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
+      + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be changed because it is "
+      + "out of sync with the opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, "
+      + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
     public void CreateDeleteCommand ()
     {
       _state.CreateDeleteCommand();
@@ -55,14 +60,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-      "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' cannot be changed because its out of sync with the "
-      + "opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, synchronize the two properties by "
-      + "calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
+      "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
+      + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be changed because it is "
+      + "out of sync with the opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, "
+      + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
     public void CreateSetCommand ()
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
       _state.CreateSetCommand (relatedObject);
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var endPoint = new SerializableObjectEndPointFake ();
+      var state = new UnsynchronizedObjectEndPointSyncState (endPoint);
+
+      var result = Serializer.SerializeAndDeserialize (state);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result.EndPoint, Is.Null);
     }
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)
