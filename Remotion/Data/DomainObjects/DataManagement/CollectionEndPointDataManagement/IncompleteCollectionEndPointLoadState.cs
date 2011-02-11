@@ -44,29 +44,37 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
     }
 
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
-      collectionEndPoint.EnsureDataComplete();
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      
+      collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.GetCollectionData();
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
     }
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
       collectionEndPoint.EnsureDataComplete ();
@@ -75,6 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
       collectionEndPoint.EnsureDataComplete ();
@@ -83,33 +92,42 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.CreateDeleteCommand ();
     }
 
     public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
+      
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.CreateInsertCommand (insertedRelatedObject, index);
     }
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
+      
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.CreateAddCommand (addedRelatedObject);
     }
 
     public IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
+
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
 
     public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
       collectionEndPoint.EnsureDataComplete ();
@@ -118,6 +136,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
       collectionEndPoint.EnsureDataComplete ();
       collectionEndPoint.CheckMandatory ();
     }

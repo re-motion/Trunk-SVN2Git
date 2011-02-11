@@ -46,22 +46,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       // Data is already complete
     }
 
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       return _dataKeeper.CollectionData;
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
       var collectionType = collectionEndPoint.Definition.PropertyType;
       return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
     }
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var oppositeEndPointDefinition = collectionEndPoint.Definition.GetOppositeEndPointDefinition ();
@@ -75,6 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
       return newOppositeCollection.CreateAssociationCommand (collectionEndPoint);
@@ -82,17 +88,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
+      
       return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, _dataKeeper.CollectionData);
     }
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       return new CollectionEndPointDeleteCommand (collectionEndPoint, _dataKeeper.CollectionData);
     }
 
     public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
 
       return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, _dataKeeper.CollectionData);
@@ -100,11 +110,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       return CreateInsertCommand (collectionEndPoint, addedRelatedObject, _dataKeeper.CollectionData.Count);
     }
 
     public IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
 
       var replacedObject = _dataKeeper.CollectionData.GetObject(index);
@@ -116,6 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
       _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
@@ -126,6 +139,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
       if (_dataKeeper.CollectionData.Count == 0)
       {
         var objectReference = collectionEndPoint.GetDomainObjectReference ();
