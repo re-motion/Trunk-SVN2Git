@@ -222,14 +222,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference());
+      _loadState.RegisterOppositeEndPoint (oppositeEndPoint);
     }
 
     public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-      
-      _dataKeeper.UnregisterOriginalObject (oppositeEndPoint.ObjectID);
+
+      _loadState.UnregisterOppositeEndPoint (oppositeEndPoint);
       // TODO: When moving this method to the loadState, CompleteState should automatically transition to IncompleteState before unregistering the object
       // TODO: Then, remove call to MarkDataIncomplete in RelationEndPointMap.UnregisterOppositeForRealObjectEndPoint.
     }

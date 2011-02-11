@@ -602,51 +602,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RegisterOppositeEndPoint ()
     {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
-      oppositeEndPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_order2);
-
-      _customerEndPoint.RegisterOppositeEndPoint (oppositeEndPointStub);
-
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.Collection, List.Contains (_order2));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), List.Contains (_order2));
-    }
-
-    [Test]
-    public void RegisterOppositeEndPoint_DoesNotLoadData ()
-    {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      oppositeEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_order2);
 
-      _customerEndPoint.MarkDataIncomplete ();
-      _customerEndPoint.RegisterOppositeEndPoint (oppositeEndPointStub);
+      _loadStateMock.Expect (mock => mock.RegisterOppositeEndPoint (oppositeEndPointStub));
+      _loadStateMock.Replay ();
 
-      AssertDidNotLoadData (_customerEndPoint);
+      _endPointWithLoadStateMock.RegisterOppositeEndPoint(oppositeEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void UnregisterOppositeEndPoint ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (_order1.ID);
 
-      _customerEndPoint.UnregisterOppositeEndPoint (oppositeEndPointStub);
+      _loadStateMock.Expect (mock => mock.UnregisterOppositeEndPoint (oppositeEndPointStub));
+      _loadStateMock.Replay ();
 
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.Collection, List.Not.Contains (_order1));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), List.Not.Contains (_order1));
-    }
+      _endPointWithLoadStateMock.UnregisterOppositeEndPoint (oppositeEndPointStub);
 
-    [Test]
-    public void UnregisterOppositeEndPoint_DoesNotLoadData ()
-    {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (_order1.ID);
-
-      _customerEndPoint.MarkDataIncomplete ();
-      _customerEndPoint.UnregisterOppositeEndPoint (oppositeEndPointStub);
-
-      AssertDidNotLoadData (_customerEndPoint);
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
