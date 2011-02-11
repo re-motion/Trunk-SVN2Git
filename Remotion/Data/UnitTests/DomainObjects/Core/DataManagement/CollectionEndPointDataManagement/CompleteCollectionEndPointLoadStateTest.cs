@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
       _dataKeeperMock.Replay();
 
-      _loadState.RegisterOppositeEndPoint (endPointStub);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
 
       _dataKeeperMock.VerifyAllExpectations();
     }
@@ -142,14 +142,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void UnregisterOppositeEndPoint ()
     {
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
 
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalObject(_relatedObject.ID));
-      _dataKeeperMock.Replay ();
+      using (_collectionEndPointMock.GetMockRepository ().Ordered ())
+      {
+        _collectionEndPointMock.Expect (mock => mock.MarkDataIncomplete());
+        _collectionEndPointMock.Expect (mock => mock.UnregisterOppositeEndPoint (endPointStub));
+      }
+      _collectionEndPointMock.Replay();
 
-      _loadState.UnregisterOppositeEndPoint (endPointStub);
+      _loadState.UnregisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
 
       _dataKeeperMock.VerifyAllExpectations ();
+      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]

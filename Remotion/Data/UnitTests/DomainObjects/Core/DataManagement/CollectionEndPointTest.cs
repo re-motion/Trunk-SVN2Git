@@ -604,7 +604,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _loadStateMock.Expect (mock => mock.RegisterOppositeEndPoint (oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.RegisterOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.RegisterOppositeEndPoint(oppositeEndPointStub);
@@ -617,7 +617,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _loadStateMock.Expect (mock => mock.UnregisterOppositeEndPoint (oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.UnregisterOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.UnregisterOppositeEndPoint (oppositeEndPointStub);

@@ -511,7 +511,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           {
             Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
             oppositeEndPoint.UnregisterOppositeEndPoint (realObjectEndPoint);
-            oppositeEndPoint.MarkDataIncomplete ();
           }
         }
       }

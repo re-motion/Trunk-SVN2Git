@@ -80,14 +80,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
     }
 
-    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
     }
 
-    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
