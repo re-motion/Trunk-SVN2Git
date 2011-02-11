@@ -285,7 +285,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContents);
+      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContents);
     }
 
     private void SetCompleteLoadState ()

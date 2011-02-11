@@ -16,19 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
-  /// Implements lazy-loading support for the <see cref="CollectionEndPoint"/> class by wrapping the data kept by a <see cref="CollectionEndPoint"/> 
-  /// and tracking whether that data is complete or not. Callers must react on the completeness and lazy-load the data via 
-  /// <see cref="CollectionEndPoint.EnsureDataComplete"/> is needed.
+  /// Keeps the data of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
   [Serializable]
-  public class LazyLoadingCollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
+  public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
@@ -36,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
     
-    public LazyLoadingCollectionEndPointDataKeeper (
+    public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
         IComparer<DomainObject> sortExpressionBasedComparer,

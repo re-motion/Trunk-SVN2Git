@@ -822,8 +822,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
     }
-
-
+    
     [Test]
     public void GetOppositeRelationEndPoints ()
     {
@@ -860,9 +859,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.VerifyAllExpectations ();
     }
     
-    private LazyLoadingCollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
+    private CollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
-      return (LazyLoadingCollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
+      return (CollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
     }
 
     private void AssertDidNotLoadData (CollectionEndPoint collectionEndPoint)

@@ -30,7 +30,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
 {
   [TestFixture]
-  public class LazyLoadingCollectionEndPointDataKeeperTest : StandardMappingTest
+  public class CollectionEndPointDataKeeperTest : StandardMappingTest
   {
     private RelationEndPointID _endPointID;
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategyMock;
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private ClientTransaction _clientTransaction;
     
-    private LazyLoadingCollectionEndPointDataKeeper _dataKeeper;
+    private CollectionEndPointDataKeeper _dataKeeper;
 
     private DelegateBasedComparer<DomainObject> _comparer123;
 
@@ -58,14 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1 });
+      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1 });
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
 
     public void Initialization_NonNullContents ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1, _domainObject2 });
+      var data = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1, _domainObject2 });
       Assert.That (data.CollectionData, Is.EqualTo (new[] {_domainObject1, _domainObject2}));
     }
     
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData_WithoutComparer ()
     {
-      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (
+      var dataKeeper = new CollectionEndPointDataKeeper (
           _clientTransaction,
           _endPointID,
           null,
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData_WithComparer ()
     {
-      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (
+      var dataKeeper = new CollectionEndPointDataKeeper (
           _clientTransaction,
           _endPointID,
           _comparer123,
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Serializable ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
       
       var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
