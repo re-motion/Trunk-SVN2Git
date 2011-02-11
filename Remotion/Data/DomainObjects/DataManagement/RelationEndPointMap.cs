@@ -485,9 +485,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
         {
           var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-
-          var collectionItemReference = ClientTransaction.GetObjectReference (realObjectEndPoint.ObjectID);
-          oppositeEndPoint.RegisterOriginalObject (collectionItemReference);
+          oppositeEndPoint.RegisterOppositeEndPoint (realObjectEndPoint);
         }
       }
     }
@@ -512,7 +510,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           if (oppositeEndPoint != null)
           {
             Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
-            oppositeEndPoint.UnregisterOriginalObject (realObjectEndPoint.ObjectID);
+            oppositeEndPoint.UnregisterOppositeEndPoint (realObjectEndPoint);
             oppositeEndPoint.MarkDataIncomplete ();
           }
         }

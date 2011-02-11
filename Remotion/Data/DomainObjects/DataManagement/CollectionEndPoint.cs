@@ -218,18 +218,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this));
     }
 
-    public void RegisterOriginalObject (DomainObject domainObject)
+    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _dataKeeper.RegisterOriginalObject (domainObject);
+      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference());
     }
 
-    public void UnregisterOriginalObject (ObjectID objectID)
+    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      _dataKeeper.UnregisterOriginalObject (objectID);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+      
+      _dataKeeper.UnregisterOriginalObject (oppositeEndPoint.ObjectID);
       // TODO: When moving this method to the loadState, CompleteState should automatically transition to IncompleteState before unregistering the object
       // TODO: Then, remove call to MarkDataIncomplete in RelationEndPointMap.UnregisterOppositeForRealObjectEndPoint.
     }

@@ -201,16 +201,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void RegisterOriginalObject ()
+    public void RegisterOppositeEndPoint ()
     {
-      _nullEndPoint.RegisterOriginalObject (_relatedObject);
+      _nullEndPoint.RegisterOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint>());
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void UnregisterOriginalObject ()
+    public void UnregisterOppositeEndPoint ()
     {
-      _nullEndPoint.UnregisterOriginalObject (_relatedObject.ID);
+      _nullEndPoint.UnregisterOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint> ());
     }
 
     [Test]
