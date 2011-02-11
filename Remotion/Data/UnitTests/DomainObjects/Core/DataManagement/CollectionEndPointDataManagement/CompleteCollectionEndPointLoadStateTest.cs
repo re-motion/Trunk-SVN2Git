@@ -427,11 +427,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void OnDataMarkedIncomplete_RaisesEvent ()
     {
+      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
+      _collectionEndPointMock
+          .Stub (stub => stub.ID)
+          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
       _collectionEndPointMock.Replay ();
       _dataKeeperMock.Replay ();
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
-
+      
       _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
 
       _collectionEndPointMock.VerifyAllExpectations ();
