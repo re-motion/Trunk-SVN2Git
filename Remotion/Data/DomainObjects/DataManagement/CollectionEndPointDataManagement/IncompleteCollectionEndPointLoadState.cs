@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -25,26 +26,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// Represents the state of a <see cref="CollectionEndPoint"/> where not all of its data is available (ie., the end-point has not been (lazily) 
   /// loaded, or it has been unloaded).
   /// </summary>
-  [Serializable]
   public class IncompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
-    [NonSerialized] // Workaround for flattened serialization, see CollectionEndPoint.FixupLoadState
-    private readonly ICollectionEndPoint _collectionEndPoint;
-
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
-    public IncompleteCollectionEndPointLoadState (ICollectionEndPoint collectionEndPoint, IRelationEndPointLazyLoader lazyLoader)
+    public IncompleteCollectionEndPointLoadState (IRelationEndPointLazyLoader lazyLoader)
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
-      _collectionEndPoint = collectionEndPoint;
       _lazyLoader = lazyLoader;
-    }
-
-    public ICollectionEndPoint CollectionEndPoint
-    {
-      get { return _collectionEndPoint; }
     }
 
     public IRelationEndPointLazyLoader LazyLoader
@@ -52,84 +42,101 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _lazyLoader; }
     }
 
-    public void EnsureDataComplete ()
+    public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
     {
-      _lazyLoader.LoadLazyCollectionEndPoint (_collectionEndPoint);
+      _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
     }
 
-    public IDomainObjectCollectionData GetCollectionData ()
+    public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
-      _collectionEndPoint.EnsureDataComplete();
-      return _collectionEndPoint.GetCollectionData();
+      collectionEndPoint.EnsureDataComplete();
+      return collectionEndPoint.GetCollectionData();
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData ()
+    public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)
     {
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.GetCollectionWithOriginalData();
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager)
     {
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection newOppositeCollection)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateSetOppositeCollectionCommand (newOppositeCollection);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateSetOppositeCollectionCommand (newOppositeCollection);
     }
 
-    public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
+    public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateRemoveCommand (removedRelatedObject);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateRemoveCommand (removedRelatedObject);
     }
 
-    public IDataManagementCommand CreateDeleteCommand ()
+    public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
     {
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateDeleteCommand ();
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateDeleteCommand ();
     }
 
-    public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
+    public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateInsertCommand (insertedRelatedObject, index);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateInsertCommand (insertedRelatedObject, index);
     }
 
-    public IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
+    public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateAddCommand (addedRelatedObject);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateAddCommand (addedRelatedObject);
     }
 
-    public IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
+    public IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
-      _collectionEndPoint.EnsureDataComplete ();
-      return _collectionEndPoint.CreateReplaceCommand (index, replacementObject);
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
 
-    public void SetValueFrom (ICollectionEndPoint sourceEndPoint)
+    public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
     {
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      _collectionEndPoint.EnsureDataComplete ();
-      _collectionEndPoint.SetValueFrom (sourceEndPoint);
+      collectionEndPoint.EnsureDataComplete ();
+      collectionEndPoint.SetValueFrom (sourceEndPoint);
     }
 
-    public void CheckMandatory ()
+    public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
     {
-      _collectionEndPoint.EnsureDataComplete ();
-      _collectionEndPoint.CheckMandatory ();
+      collectionEndPoint.EnsureDataComplete ();
+      collectionEndPoint.CheckMandatory ();
     }
+
+    #region Serialization
+
+    public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
+
+    }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+      info.AddHandle (_lazyLoader);
+    }
+
+    #endregion
   }
 }

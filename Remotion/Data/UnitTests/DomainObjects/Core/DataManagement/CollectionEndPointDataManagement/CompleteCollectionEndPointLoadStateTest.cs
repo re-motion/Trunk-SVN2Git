@@ -24,8 +24,8 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagemen
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper>();
-      _loadState = new CompleteCollectionEndPointLoadState (_collectionEndPointMock, _dataKeeperMock);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock);
 
       _definition = Configuration.ClassDefinitions[typeof (Customer)].GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
       _relatedObject = DomainObjectMother.CreateFakeObject<Order>();
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Replay();
       _dataKeeperMock.Replay();
 
-      _loadState.EnsureDataComplete();
+      _loadState.EnsureDataComplete(_collectionEndPointMock);
 
       _collectionEndPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetCollectionData();
+      var result = _loadState.GetCollectionData(_collectionEndPointMock);
 
       Assert.That (result, Is.SameAs (collectionDataStub));
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (stub => stub.Definition).Return (_definition);
       _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetCollectionWithOriginalData();
+      var result = _loadState.GetCollectionWithOriginalData(_collectionEndPointMock);
 
       Assert.That (result, Is.TypeOf (typeof (OrderCollection)));
       var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result);
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
       dataManagerStub.Stub (stub => stub.RelationEndPointMap).Return (relationEndPointMapStub);
       
-      var oppositeEndPoints = _loadState.GetOppositeRelationEndPoints (dataManagerStub).ToArray ();
+      var oppositeEndPoints = _loadState.GetOppositeRelationEndPoints (_collectionEndPointMock, dataManagerStub).ToArray ();
 
       Assert.That (oppositeEndPoints, Is.EqualTo (new[] { fakeEndPoint1, fakeEndPoint2 }));
     }
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       newOppositeCollectionMock.Expect (mock => mock.CreateAssociationCommand (_collectionEndPointMock)).Return (fakeCommand);
       newOppositeCollectionMock.Replay();
 
-      var result = _loadState.CreateSetOppositeCollectionCommand (newOppositeCollectionMock);
+      var result = _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, newOppositeCollectionMock);
 
       Assert.That (result, Is.SameAs (fakeCommand));
     }
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
 
-      _loadState.SetValueFrom (sourceEndPointStub);
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
 
       Assert.That (targetCollectionData.ToArray(), Is.EqualTo (new[] { sourceItem1, sourceItem2 }));
     }
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var targetCollectionData = new DomainObjectCollectionData();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
 
-      _loadState.SetValueFrom (sourceEndPointStub);
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
 
       _collectionEndPointMock.VerifyAllExpectations();
     }
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var targetCollectionData = new DomainObjectCollectionData();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
 
-      _loadState.SetValueFrom (sourceEndPointStub);
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
 
       _collectionEndPointMock.VerifyAllExpectations();
     }
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var targetCollectionData = new DomainObjectCollectionData();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
 
-      _loadState.SetValueFrom (sourceEndPointStub);
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.Touch());
       _collectionEndPointMock.VerifyAllExpectations();
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Stub (stub => stub.CollectionData)
           .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order>() }));
 
-      _loadState.CheckMandatory();
+      _loadState.CheckMandatory(_collectionEndPointMock);
     }
 
     [Test]
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Stub (stub => stub.GetDomainObjectReference())
           .Return (DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
 
-      _loadState.CheckMandatory();
+      _loadState.CheckMandatory(_collectionEndPointMock);
     }
 
     [Test]
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_relatedObject);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand();
+      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand(_collectionEndPointMock);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointDeleteCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
 
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_relatedObject, 12);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_relatedObject);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (0, _relatedObject);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
@@ -363,7 +363,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (0, _relatedObject);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
@@ -371,16 +371,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Serializable ()
+    public void FlattenedSerializable ()
     {
-      var endPoint = new SerializableCollectionEndPointFake();
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake();
-      var state = new CompleteCollectionEndPointLoadState (endPoint, dataKeeper);
+      var state = new CompleteCollectionEndPointLoadState (dataKeeper);
 
-      var result = Serializer.SerializeAndDeserialize (state);
+      var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.CollectionEndPoint, Is.Null);
+      Assert.That (result.DataKeeper, Is.Not.Null);
     }
   }
 }

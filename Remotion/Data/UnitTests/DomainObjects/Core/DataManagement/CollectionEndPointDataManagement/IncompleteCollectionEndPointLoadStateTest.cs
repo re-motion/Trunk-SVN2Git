@@ -22,8 +22,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
       _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader> ();
 
-      _loadState = new IncompleteCollectionEndPointLoadState (_collectionEndPointMock, _lazyLoaderMock);
+      _loadState = new IncompleteCollectionEndPointLoadState (_lazyLoaderMock);
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _lazyLoaderMock.Replay();
       _collectionEndPointMock.Replay();
       
-      _loadState.EnsureDataComplete();
+      _loadState.EnsureDataComplete (_collectionEndPointMock);
 
       _lazyLoaderMock.VerifyAllExpectations();
       _collectionEndPointMock.VerifyAllExpectations();
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void GetCollectionData ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.GetCollectionData (),
+          s => s.GetCollectionData (_collectionEndPointMock),
           s => s.GetCollectionData (),
           new DomainObjectCollectionData ());
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void GetCollectionWithOriginalData ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.GetCollectionWithOriginalData (), 
+          s => s.GetCollectionWithOriginalData (_collectionEndPointMock), 
           s => s.GetCollectionWithOriginalData(), 
           new DomainObjectCollection ());
     }
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataManager = MockRepository.GenerateStub<IDataManager>();
       CheckOperationDelegatesToCompleteState (
-          s => s.GetOppositeRelationEndPoints (dataManager),
+          s => s.GetOppositeRelationEndPoints (_collectionEndPointMock, dataManager),
           s => s.GetOppositeRelationEndPoints (dataManager),
           new IRelationEndPoint[0]);
     }
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var domainObjectCollection = new DomainObjectCollection ();
 
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
+          s => s.CreateSetOppositeCollectionCommand (_collectionEndPointMock, domainObjectCollection),
           s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<Order>();
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateRemoveCommand (relatedObject), 
+          s => s.CreateRemoveCommand (_collectionEndPointMock, relatedObject), 
           s => s.CreateRemoveCommand (relatedObject), 
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void CreateDeleteCommand ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateDeleteCommand (), 
+          s => s.CreateDeleteCommand (_collectionEndPointMock), 
           s => s.CreateDeleteCommand (), 
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateInsertCommand (relatedObject, 0), 
+          s => s.CreateInsertCommand (_collectionEndPointMock, relatedObject, 0), 
           s => s.CreateInsertCommand (relatedObject, 0), 
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateAddCommand (relatedObject), 
+          s => s.CreateAddCommand (_collectionEndPointMock, relatedObject), 
           s => s.CreateAddCommand (relatedObject), 
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateReplaceCommand (0, relatedObject), 
+          s => s.CreateReplaceCommand (_collectionEndPointMock, 0, relatedObject), 
           s => s.CreateReplaceCommand (0, relatedObject), 
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -152,26 +152,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void SetValueFrom ()
     {
       var fakeSourceEndPoint = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      CheckOperationDelegatesToCompleteState (s => s.SetValueFrom (fakeSourceEndPoint), s => s.SetValueFrom (fakeSourceEndPoint));
+      CheckOperationDelegatesToCompleteState (s => s.SetValueFrom (_collectionEndPointMock, fakeSourceEndPoint), s => s.SetValueFrom (fakeSourceEndPoint));
     }
 
     [Test]
     public void CheckMandatory ()
     {
-      CheckOperationDelegatesToCompleteState (s => s.CheckMandatory (), s => s.CheckMandatory ());
+      CheckOperationDelegatesToCompleteState (s => s.CheckMandatory (_collectionEndPointMock), s => s.CheckMandatory ());
     }
 
     [Test]
-    public void Serializable ()
+    public void FlattenedSerializable ()
     {
-      var endPoint = new SerializableCollectionEndPointFake ();
       var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
-      var state = new IncompleteCollectionEndPointLoadState (endPoint, lazyLoader);
+      var state = new IncompleteCollectionEndPointLoadState (lazyLoader);
 
-      var result = Serializer.SerializeAndDeserialize (state);
+      var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.CollectionEndPoint, Is.Null);
+      Assert.That (result.LazyLoader, Is.Not.Null);
     }
 
     private void CheckOperationDelegatesToCompleteState (

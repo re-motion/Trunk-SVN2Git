@@ -75,7 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var loadState = GetLoadState (_customerEndPoint);
       Assert.That (loadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
-      Assert.That (((CompleteCollectionEndPointLoadState) loadState).CollectionEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (((CompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_customerEndPoint)));
 
       Assert.That (_customerEndPoint.IsDataComplete, Is.True);
@@ -115,7 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var loadState = GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).CollectionEndPoint, Is.SameAs (endPoint));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).LazyLoader, Is.SameAs (_lazyLoaderMock));
 
       Assert.That (endPoint.IsDataComplete, Is.False);
@@ -359,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnsureDataComplete ()
     {
-      _loadStateMock.Expect (mock => mock.EnsureDataComplete());
+      _loadStateMock.Expect (mock => mock.EnsureDataComplete (_endPointWithLoadStateMock));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.EnsureDataComplete();
@@ -579,7 +577,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
-      _loadStateMock.Expect (mock => mock.SetValueFrom (source));
+      _loadStateMock.Expect (mock => mock.SetValueFrom (_endPointWithLoadStateMock, source));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.SetValueFrom (source);
@@ -644,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeDomainObjects = new DomainObjectCollection ();
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand>();
 
-      _loadStateMock.Expect (mock => mock.CreateSetOppositeCollectionCommand (oppositeDomainObjects)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateSetOppositeCollectionCommand (_endPointWithLoadStateMock, oppositeDomainObjects)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
@@ -658,7 +656,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _loadStateMock.Expect (mock => mock.CreateRemoveCommand (_order1)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateRemoveCommand (_endPointWithLoadStateMock, _order1)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateRemoveCommand (_order1);
@@ -672,7 +670,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _loadStateMock.Expect (mock => mock.CreateDeleteCommand ()).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateDeleteCommand (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateDeleteCommand ();
@@ -686,7 +684,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _loadStateMock.Expect (mock => mock.CreateInsertCommand (_order1, 0)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateInsertCommand (_endPointWithLoadStateMock, _order1, 0)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateInsertCommand (_order1, 0);
@@ -700,7 +698,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _loadStateMock.Expect (mock => mock.CreateAddCommand (_order1)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateAddCommand (_endPointWithLoadStateMock, _order1)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateAddCommand (_order1);
@@ -714,7 +712,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _loadStateMock.Expect (mock => mock.CreateReplaceCommand (0, _order1)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.CreateReplaceCommand (_endPointWithLoadStateMock, 0, _order1)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateReplaceCommand (0, _order1);
@@ -861,7 +859,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetCollectionData ()
     {
       var fakeResult = new DomainObjectCollectionData ();
-      _loadStateMock.Expect (mock => mock.GetCollectionData ()).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetCollectionData (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.GetCollectionData ();
@@ -874,7 +872,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetCollectionWithOriginalData ()
     {
       var fakeResult = new DomainObjectCollection ();
-      _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData ()).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData ();
@@ -890,7 +888,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var fakeResult = new IRelationEndPoint[0];
       var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
 
-      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPoints (dataManagerStub)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPoints (_endPointWithLoadStateMock, dataManagerStub)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.GetOppositeRelationEndPoints (dataManagerStub);
@@ -912,7 +910,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CheckMandatory ()
     {
-      _loadStateMock.Expect (mock => mock.CheckMandatory());
+      _loadStateMock.Expect (mock => mock.CheckMandatory(_endPointWithLoadStateMock));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.CheckMandatory ();

@@ -101,12 +101,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDomainObjectCollectionData GetCollectionData ()
     {
-      return _loadState.GetCollectionData();
+      return _loadState.GetCollectionData (this);
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      return _loadState.GetCollectionWithOriginalData();
+      return _loadState.GetCollectionWithOriginalData(this);
     }
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void EnsureDataComplete ()
     {
-      _loadState.EnsureDataComplete();
+      _loadState.EnsureDataComplete(this);
     }
 
     public void MarkDataComplete ()
@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      _loadState.SetValueFrom (sourceCollectionEndPoint);
+      _loadState.SetValueFrom (this, sourceCollectionEndPoint);
     }
 
     public override void Commit ()
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
       // checked. (DataManager will not check incomplete end-points, as it also ignores not-yet-loaded end-points.)
-      _loadState.CheckMandatory();
+      _loadState.CheckMandatory(this);
     }
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
@@ -235,42 +235,42 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      return _loadState.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
+      return _loadState.CreateSetOppositeCollectionCommand (this, oppositeDomainObjects);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return _loadState.CreateRemoveCommand (removedRelatedObject);
+      return _loadState.CreateRemoveCommand (this, removedRelatedObject);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _loadState.CreateDeleteCommand();
+      return _loadState.CreateDeleteCommand(this);
     }
 
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return _loadState.CreateInsertCommand (insertedRelatedObject, index);
+      return _loadState.CreateInsertCommand (this, insertedRelatedObject, index);
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      return _loadState.CreateAddCommand (addedRelatedObject);
+      return _loadState.CreateAddCommand (this, addedRelatedObject);
     }
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
-      return _loadState.CreateReplaceCommand (index, replacementObject);
+      return _loadState.CreateReplaceCommand (this, index, replacementObject);
     }
 
     public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      return _loadState.GetOppositeRelationEndPoints (dataManager);
+      return _loadState.GetOppositeRelationEndPoints (this, dataManager);
     }
 
     private void RaiseStateUpdateNotification (bool hasChanged)
@@ -294,12 +294,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void SetCompleteLoadState ()
     {
-      _loadState = new CompleteCollectionEndPointLoadState (this, _dataKeeper);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper);
     }
 
     private void SetIncompleteLoadState ()
     {
-      _loadState = new IncompleteCollectionEndPointLoadState (this, _lazyLoader);
+      _loadState = new IncompleteCollectionEndPointLoadState (_lazyLoader);
     }
 
     #region Serialization
@@ -310,13 +310,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
-      _dataKeeper = info.GetValue<ICollectionEndPointDataKeeper>();
+      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
 
       FixupDomainObjectCollection (_collection);
-      FixupLoadState (_loadState);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -324,7 +323,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_collection);
       info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
-      info.AddValue (_dataKeeper);
+      info.AddHandle (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
       info.AddValue (_loadState);
@@ -358,12 +357,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           "_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
       associatedEndPointField.SetValue (endPointDelegatingData, this);
 
-    }
-
-    private void FixupLoadState (ICollectionEndPointLoadState loadState)
-    {
-      var endPointField = loadState.GetType ().GetField ("_collectionEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
-      endPointField.SetValue (loadState, this);
     }
 
     #endregion

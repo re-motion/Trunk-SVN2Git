@@ -16,29 +16,30 @@
 // 
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
   /// <summary>
   /// Represents the lazy-loading state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
-  public interface ICollectionEndPointLoadState
+  public interface ICollectionEndPointLoadState : IFlattenedSerializable
   {
-    void EnsureDataComplete ();
+    void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 
-    IDomainObjectCollectionData GetCollectionData ();
+    IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint);
 
-    DomainObjectCollection GetCollectionWithOriginalData ();
-    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+    DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
+    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager);
 
-    IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection newOppositeCollection);
-    IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
-    IDataManagementCommand CreateDeleteCommand ();
-    IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
-    IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
-    IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
+    IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection);
+    IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject);
+    IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint);
+    IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index);
+    IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject);
+    IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject);
 
-    void SetValueFrom (ICollectionEndPoint sourceEndPoint);
-    void CheckMandatory ();
+    void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint);
+    void CheckMandatory (ICollectionEndPoint collectionEndPoint);
   }
 }

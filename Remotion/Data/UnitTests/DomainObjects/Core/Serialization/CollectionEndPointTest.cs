@@ -257,7 +257,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedLoadState = (CompleteCollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
       Assert.That (deserializedLoadState, Is.Not.Null);
-      Assert.That (deserializedLoadState.CollectionEndPoint, Is.SameAs (deserializedEndPoint));
     }
   }
 }
