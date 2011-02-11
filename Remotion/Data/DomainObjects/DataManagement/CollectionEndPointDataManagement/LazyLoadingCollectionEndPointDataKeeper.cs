@@ -35,7 +35,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
 
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
-    private bool _isDataComplete;
     
     public LazyLoadingCollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -45,14 +44,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
-      var wrappedData = new DomainObjectCollectionData (initialContents ?? Enumerable.Empty<DomainObject> ());
+      var wrappedData = new DomainObjectCollectionData (initialContents);
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
-      _isDataComplete = initialContents != null;
     }
 
     public ClientTransaction ClientTransaction
@@ -68,11 +67,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public IComparer<DomainObject> SortExpressionBasedComparer
     {
       get { return _sortExpressionBasedComparer; }
-    }
-
-    public bool IsDataComplete
-    {
-      get { return _isDataComplete; }
     }
 
     public IDomainObjectCollectionData CollectionData
@@ -103,17 +97,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _collectionData.HasChanged (changeDetectionStrategy);
     }
 
-    public void MarkDataComplete ()
+    public void SortCurrentAndOriginalData()
     {
       if (_sortExpressionBasedComparer != null)
         _collectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
-
-      _isDataComplete = true;
-    }
-
-    public void MarkDataIncomplete ()
-    {
-      _isDataComplete = false;
     }
 
     public void CommitOriginalContents ()

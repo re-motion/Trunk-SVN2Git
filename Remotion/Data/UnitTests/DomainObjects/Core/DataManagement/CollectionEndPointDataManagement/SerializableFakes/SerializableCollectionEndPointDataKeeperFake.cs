@@ -25,11 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   [Serializable]
   public class SerializableCollectionEndPointDataKeeperFake : ICollectionEndPointDataKeeper
   {
-    public bool IsDataComplete
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public IDomainObjectCollectionData CollectionData
     {
       get { throw new NotImplementedException(); }
@@ -55,12 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void MarkDataComplete ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void MarkDataIncomplete ()
+    public void SortCurrentAndOriginalData ()
     {
       throw new NotImplementedException();
     }

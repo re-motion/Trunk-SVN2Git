@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       // TODO 3401: Inject DataKeeper from the outside
-      _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull);
+      _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull ?? Enumerable.Empty<DomainObject> ());
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData();
@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool IsDataComplete
     {
-      get { return _dataKeeper.IsDataComplete; }
+      get { return _loadState.IsDataComplete(); }
     }
 
     public override bool HasChanged
@@ -136,8 +136,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkDataComplete ()
     {
-      _dataKeeper.MarkDataComplete();
-      SetCompleteLoadState();
+      if (!IsDataComplete)
+      {
+        _dataKeeper.SortCurrentAndOriginalData(); // TODO: Test
+        SetCompleteLoadState();
+      }
     }
 
     public void MarkDataIncomplete ()
@@ -145,7 +148,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (IsDataComplete)
       {
         ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
-        _dataKeeper.MarkDataIncomplete();
         SetIncompleteLoadState ();
       }
     }
@@ -281,7 +283,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private ICollectionEndPointDataKeeper CreateDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        IEnumerable<DomainObject> initialContentsOrNull)
+        IEnumerable<DomainObject> initialContents)
     {
       var sortExpression = ((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression();
       // Only root transactions use the sort expression (if any)
@@ -289,7 +291,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContentsOrNull);
+      return new LazyLoadingCollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContents);
     }
 
     private void SetCompleteLoadState ()

@@ -52,6 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void IsDataComplete ()
+    {
+      Assert.That (_loadState.IsDataComplete (), Is.False);
+    }
+
+    [Test]
     public void EnsureDataComplete ()
     {
       _lazyLoaderMock.Expect (mock => mock.LoadLazyCollectionEndPoint (_collectionEndPointMock));

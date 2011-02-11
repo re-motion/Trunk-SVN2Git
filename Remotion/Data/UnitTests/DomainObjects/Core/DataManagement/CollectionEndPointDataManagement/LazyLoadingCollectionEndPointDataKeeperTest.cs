@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -40,11 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private DomainObject _domainObject2;
     private DomainObject _domainObject3;
 
-    private IObjectLoader _objectLoaderMock;
-    private ClientTransaction _clientTransactionWithObjectLoaderMock;
+    private ClientTransaction _clientTransaction;
     
-    private LazyLoadingCollectionEndPointDataKeeper _completeDataKeeper;
-    private LazyLoadingCollectionEndPointDataKeeper _incompleteDataKeeper;
+    private LazyLoadingCollectionEndPointDataKeeper _dataKeeper;
 
     private DelegateBasedComparer<DomainObject> _comparer123;
 
@@ -52,72 +49,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       base.SetUp ();
 
-      _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      _clientTransactionWithObjectLoaderMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoader<ClientTransaction> ((tx, cs, es) => _objectLoaderMock);
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _changeDetectionStrategyMock = MockRepository.GenerateStrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _completeDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionWithObjectLoaderMock, _endPointID, null, new[] { _domainObject1 });
-      _incompleteDataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionWithObjectLoaderMock, _endPointID, null, null);
+      _dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1 });
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
 
-    [Test]
-    public void Initialization_NullContents ()
-    {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionWithObjectLoaderMock, _endPointID, null, null);
-      Assert.That (data.IsDataComplete, Is.False);
-    }
-
-    [Test]
     public void Initialization_NonNullContents ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransactionWithObjectLoaderMock, _endPointID, null, new[] { _domainObject1, _domainObject2 });
-      Assert.That (data.IsDataComplete, Is.True);
+      var data = new LazyLoadingCollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1, _domainObject2 });
+      Assert.That (data.CollectionData, Is.EqualTo (new[] {_domainObject1, _domainObject2}));
     }
     
     [Test]
     public void RegisterOriginalObject ()
     {
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
 
-      _completeDataKeeper.RegisterOriginalObject (_domainObject2);
+      _dataKeeper.RegisterOriginalObject (_domainObject2);
 
-      Assert.That (_completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
     }
 
     [Test]
     public void UnregisterOriginalObject ()
     {
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), List.Contains (_domainObject1));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject1));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject1));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject1));
       
-      _completeDataKeeper.UnregisterOriginalObject (_domainObject1.ID);
+      _dataKeeper.UnregisterOriginalObject (_domainObject1.ID);
 
-      Assert.That (_completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject1));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject1));
+      Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject1));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject1));
     }
 
     [Test]
     public void HasDataChanged ()
     {
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (Arg.Is (_completeDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.OriginalCollectionData)))
+          .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
 
-      _completeDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+      _dataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
-      var result = _completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
+      var result = _dataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
       _changeDetectionStrategyMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (true));
@@ -127,15 +115,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void HasDataChanged_Cached ()
     {
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (Arg.Is (_completeDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.OriginalCollectionData)))
+          .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true)
           .Repeat.Once();
       _changeDetectionStrategyMock.Replay ();
 
-      _completeDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+      _dataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
  
-      var result1 = _completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
-      var result2 = _completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
+      var result1 = _dataKeeper.HasDataChanged (_changeDetectionStrategyMock);
+      var result2 = _dataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
       _changeDetectionStrategyMock.VerifyAllExpectations ();
 
@@ -149,21 +137,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (Arg.Is (_completeDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.OriginalCollectionData)))
+            .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (true);
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (Arg.Is (_completeDataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.OriginalCollectionData)))
+            .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();
 
-      _completeDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+      _dataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
-      var result1 = _completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
+      var result1 = _dataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
-      _completeDataKeeper.CollectionData.Clear ();
+      _dataKeeper.CollectionData.Clear ();
 
-      var result2 = _completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
+      var result2 = _dataKeeper.HasDataChanged (_changeDetectionStrategyMock);
 
       _changeDetectionStrategyMock.VerifyAllExpectations ();
       Assert.That (result1, Is.EqualTo (true));
@@ -171,121 +159,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void HasDataChanged_Incomplete_DoesNotLoadData ()
+    public void SortCurrentAndOriginalData_WithoutComparer ()
     {
-      _incompleteDataKeeper.HasDataChanged (_changeDetectionStrategyMock);
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-    }
-
-    [Test]
-    public void MarkDataComplete_Loaded ()
-    {
-      _objectLoaderMock.Replay ();
-      Assert.That (_completeDataKeeper.IsDataComplete, Is.True);
-
-      _completeDataKeeper.MarkDataComplete ();
-
-      Assert.That (_completeDataKeeper.IsDataComplete, Is.True);
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
-    }
-
-    [Test]
-    public void MarkDataComplete_Incomplete ()
-    {
-      _objectLoaderMock.Replay ();
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-
-      _incompleteDataKeeper.MarkDataComplete ();
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.True);
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
-    }
-
-    [Test]
-    public void MarkDataComplete_Incomplete_WithSortComparer ()
-    {
-      _objectLoaderMock.Replay ();
-
       var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (
-          _clientTransactionWithObjectLoaderMock, _endPointID, _comparer123, new[] { _domainObject3, _domainObject1, _domainObject2 });
-      dataKeeper.MarkDataIncomplete();
+          _clientTransaction,
+          _endPointID,
+          null,
+          new[] { _domainObject3, _domainObject1, _domainObject2 });
 
-      Assert.That (dataKeeper.IsDataComplete, Is.False);
+      dataKeeper.SortCurrentAndOriginalData ();
 
-      dataKeeper.MarkDataComplete ();
+      Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject3, _domainObject1, _domainObject2 }));
+      Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject3, _domainObject1, _domainObject2 }));
+    }
 
-      Assert.That (dataKeeper.IsDataComplete, Is.True);
+    [Test]
+    public void SortCurrentAndOriginalData_WithComparer ()
+    {
+      var dataKeeper = new LazyLoadingCollectionEndPointDataKeeper (
+          _clientTransaction,
+          _endPointID,
+          _comparer123,
+          new[] { _domainObject3, _domainObject1, _domainObject2 });
+      
+      dataKeeper.SortCurrentAndOriginalData();
+
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
       Assert.That (dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
-
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
     }
 
     [Test]
-    public void DataStore_Loaded ()
+    public void DataStore ()
     {
-      _objectLoaderMock.Replay ();
-
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
     }
-
+    
     [Test]
-    public void DataStore_Incomplete_DoesNotLoadData ()
+    public void OriginalData ()
     {
-      _objectLoaderMock.Replay ();
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-      
-      Assert.That (_incompleteDataKeeper.CollectionData.ToArray (), Is.Empty);
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
-    }
-
-    [Test]
-    public void OriginalData_Loaded ()
-    {
-      _objectLoaderMock.Replay ();
-
-      var originalData = _completeDataKeeper.OriginalCollectionData;
-
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
+      var originalData = _dataKeeper.OriginalCollectionData;
 
       Assert.That (originalData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (originalData.IsReadOnly, Is.True);
     }
 
     [Test]
-    public void OriginalData_Incomplete_LoadsData ()
-    {
-      _objectLoaderMock.Replay ();
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-      
-      var originalData = _incompleteDataKeeper.OriginalCollectionData;
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
-      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadRelatedObjects (_endPointID));
-
-      Assert.That (originalData.ToArray(), Is.Empty);
-      Assert.That (originalData.IsReadOnly, Is.True);
-    }
-    
-    [Test]
-    public void MarkDataIncomplete ()
-    {
-      Assert.That (_completeDataKeeper.IsDataComplete, Is.True);
-
-      _completeDataKeeper.MarkDataIncomplete ();
-
-      Assert.That (_completeDataKeeper.IsDataComplete, Is.False);
-    }
-
-    [Test]
-    public void Serializable_Complete ()
+    public void Serializable ()
     {
       var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
       
@@ -294,74 +213,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
 
-      Assert.That (deserializedInstance.IsDataComplete, Is.True);
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
     }
 
     [Test]
-    public void Serializable_Incomplete ()
+    public void CommitOriginalContents_UpdatesOriginalContents ()
     {
-      var data = new LazyLoadingCollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, null);
+      _dataKeeper.CollectionData.Insert (1, _domainObject2);
+      Assert.That (_dataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
 
-      var deserializedInstance = Serializer.SerializeAndDeserialize (data);
+      _dataKeeper.CommitOriginalContents ();
 
-      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
-
-      Assert.That (deserializedInstance.IsDataComplete, Is.False);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 , _domainObject2}));
     }
 
     [Test]
-    public void CommitOriginalContents_Complete_UpdatesOriginalContents ()
-    {
-      _completeDataKeeper.CollectionData.Insert (1, _domainObject2);
-      Assert.That (_completeDataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
-
-      _completeDataKeeper.CommitOriginalContents ();
-
-      Assert.That (_completeDataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-      Assert.That (_completeDataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 , _domainObject2}));
-    }
-
-    [Test]
-    public void CommitOriginalContents_Complete_InvalidatesHasChangedCache ()
+    public void CommitOriginalContents_InvalidatesHasChangedCache ()
     {
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
             .Expect (mock => mock.HasDataChanged (
-                Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.CollectionData),
-                Arg<IDomainObjectCollectionData>.List.Equal (_completeDataKeeper.OriginalCollectionData)))
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.CollectionData),
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (true);
       }
       _changeDetectionStrategyMock.Replay ();
 
-      _completeDataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+      _dataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
 
-      Assert.That (_completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.True);
+      Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.True);
 
-      _completeDataKeeper.CommitOriginalContents ();
+      _dataKeeper.CommitOriginalContents ();
 
-      Assert.That (_completeDataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
-    }
-
-    [Test]
-    public void CommitOriginalContents_Incomplete_DoesNotLoadData ()
-    {
-      _incompleteDataKeeper.CommitOriginalContents ();
-
-      Assert.That (_incompleteDataKeeper.IsDataComplete, Is.False);
+      Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
     }
 
     [Test]
     public void StateUpdates_RoutedToTransactionEventSink ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransactionWithObjectLoaderMock);
-      _completeDataKeeper.CollectionData.Clear();
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
+      _dataKeeper.CollectionData.Clear();
 
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransactionWithObjectLoaderMock, _endPointID, null));
+      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
     }
 
     private int Compare123 (DomainObject x, DomainObject y)

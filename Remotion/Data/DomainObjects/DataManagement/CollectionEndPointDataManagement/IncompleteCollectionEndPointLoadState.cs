@@ -50,6 +50,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _lazyLoader; }
     }
 
+    public bool IsDataComplete ()
+    {
+      return false;
+    }
+
     public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

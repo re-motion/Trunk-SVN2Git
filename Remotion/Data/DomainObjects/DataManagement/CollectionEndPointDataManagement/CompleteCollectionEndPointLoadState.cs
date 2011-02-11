@@ -44,6 +44,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _dataKeeper; }
     }
 
+    public bool IsDataComplete ()
+    {
+      return true;
+    }
+
     public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

@@ -57,6 +57,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void IsDataComplete ()
+    {
+      Assert.That (_loadState.IsDataComplete (), Is.True);
+    }
+
+    [Test]
     public void EnsureDataComplete_DoesNothing ()
     {
       _collectionEndPointMock.Replay();

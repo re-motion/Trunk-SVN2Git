@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -9,8 +8,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointDataKeeper
   {
-    bool IsDataComplete { get; }
-
     IDomainObjectCollectionData CollectionData { get; }
     IDomainObjectCollectionData OriginalCollectionData { get; }
 
@@ -18,8 +15,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void UnregisterOriginalObject (ObjectID objectID);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
-    void MarkDataComplete ();
-    void MarkDataIncomplete ();
+
+    void SortCurrentAndOriginalData ();
     void CommitOriginalContents ();
   }
 }
