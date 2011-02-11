@@ -20,9 +20,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
@@ -44,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
-      _state = new UnsynchronizedObjectEndPointSyncState (_endPointStub);
+      _state = new UnsynchronizedObjectEndPointSyncState ();
     }
 
     [Test]
@@ -55,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
     public void CreateDeleteCommand ()
     {
-      _state.CreateDeleteCommand();
+      _state.CreateDeleteCommand(_endPointStub);
     }
 
     [Test]
@@ -68,19 +67,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
-      _state.CreateSetCommand (relatedObject);
+      _state.CreateSetCommand (_endPointStub, relatedObject);
     }
 
     [Test]
-    public void Serializable ()
+    public void FlattenedSerializable ()
     {
-      var endPoint = new SerializableObjectEndPointFake ();
-      var state = new UnsynchronizedObjectEndPointSyncState (endPoint);
+      var state = new UnsynchronizedObjectEndPointSyncState ();
 
-      var result = Serializer.SerializeAndDeserialize (state);
+      var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.EndPoint, Is.Null);
     }
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)

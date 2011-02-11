@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -27,38 +28,44 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   [Serializable]
   public class SynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
   {
-    [NonSerialized]
-    private readonly IObjectEndPoint _endPoint;
+    public SynchronizedObjectEndPointSyncState()
+    {
+    }
 
-    public SynchronizedObjectEndPointSyncState (IObjectEndPoint endPoint)
+    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint)
+    {
+      return new ObjectEndPointDeleteCommand (endPoint);
+    }
+
+    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      _endPoint = endPoint;
-    }
 
-    public IObjectEndPoint EndPoint
-    {
-      get { return _endPoint; }
-    }
-
-    public IDataManagementCommand CreateDeleteCommand ()
-    {
-      return new ObjectEndPointDeleteCommand (_endPoint);
-    }
-
-    public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
-    {
-      var oppositeEndPointDefinition = _endPoint.Definition.GetOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-      if (_endPoint.OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (_endPoint);
+      if (endPoint.OppositeObjectID == newRelatedObjectID)
+        return new ObjectEndPointSetSameCommand (endPoint);
       else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (_endPoint, newRelatedObject);
+        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject);
       else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneCommand (_endPoint, newRelatedObject);
+        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject);
       else
-        return new ObjectEndPointSetOneManyCommand (_endPoint, newRelatedObject);
+        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject);
     }
+
+    #region Serialization
+
+    public SynchronizedObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+    }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+    }
+
+    #endregion
   }
 }

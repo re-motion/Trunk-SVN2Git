@@ -21,9 +21,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
@@ -46,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       base.SetUp ();
       
       _endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint>();
-      _state = new SynchronizedObjectEndPointSyncState (_endPointMock);
+      _state = new SynchronizedObjectEndPointSyncState ();
 
       _order = DomainObjectMother.CreateFakeObject<Order> ();
       _location = DomainObjectMother.CreateFakeObject<Location> ();
@@ -62,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand();
+      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand(_endPointMock);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_order));
@@ -81,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (relatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (relatedObject);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (relatedObject);
+      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, relatedObject);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_order));
@@ -100,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (null);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (null);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (null);
+      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, null);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_order));
@@ -122,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (newRelatedObject);
+      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject);
 
       Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetUnidirectionalCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
@@ -143,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
       
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (newRelatedObject);
+      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject);
 
       Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
@@ -164,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (newRelatedObject);
+      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject);
       Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
@@ -172,15 +171,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
-    public void Serializable ()
+    public void FlattenedSerializable ()
     {
-      var endPoint = new SerializableObjectEndPointFake ();
-      var state = new SynchronizedObjectEndPointSyncState (endPoint);
+      var state = new SynchronizedObjectEndPointSyncState ();
 
-      var result = Serializer.SerializeAndDeserialize (state);
+      var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.EndPoint, Is.Null);
     }
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)

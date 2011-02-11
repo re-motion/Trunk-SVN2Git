@@ -15,48 +15,53 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
-  [Serializable]
   public class UnsynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
   {
-    [NonSerialized]
-    private readonly IObjectEndPoint _endPoint;
+    public UnsynchronizedObjectEndPointSyncState ()
+    {
+    }
 
-    public UnsynchronizedObjectEndPointSyncState (IObjectEndPoint endPoint)
+    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      _endPoint = endPoint;
+      throw CreateInvalidOperationException(endPoint);
     }
 
-    public IObjectEndPoint EndPoint
+    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
-      get { return _endPoint; }
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      throw CreateInvalidOperationException (endPoint);
     }
 
-    public IDataManagementCommand CreateDeleteCommand ()
-    {
-      throw CreateInvalidOperationException();
-    }
-
-    public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
-    {
-      throw CreateInvalidOperationException ();
-    }
-
-    private InvalidOperationException CreateInvalidOperationException ()
+    private InvalidOperationException CreateInvalidOperationException (IObjectEndPoint endPoint)
     {
       return new InvalidOperationException (
           string.Format (
               "The relation property '{0}' of object '{1}' cannot be changed because it is out of sync with the opposite property '{2}'. "
               + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.",
-              _endPoint.Definition.PropertyName,
-              _endPoint.ObjectID,
-              _endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
+              endPoint.Definition.PropertyName,
+              endPoint.ObjectID,
+              endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
     }
+
+    #region Serialization
+
+    public UnsynchronizedObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+    }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+    }
+
+    #endregion Serialization
   }
 }

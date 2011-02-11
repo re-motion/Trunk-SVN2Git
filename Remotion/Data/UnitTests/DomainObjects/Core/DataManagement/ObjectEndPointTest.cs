@@ -263,7 +263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
       var relatedObject = DomainObjectMother.CreateFakeObject<Order>();
 
-      _syncStateMock.Expect (mock => mock.CreateSetCommand (relatedObject)).Return (fakeResult);
+      _syncStateMock.Expect (mock => mock.CreateSetCommand (_endPointWithSyncStateMock, relatedObject)).Return (fakeResult);
       _syncStateMock.Replay ();
 
       var result = _endPointWithSyncStateMock.CreateSetCommand (relatedObject);
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _syncStateMock.Expect (mock => mock.CreateDeleteCommand ()).Return (fakeResult);
+      _syncStateMock.Expect (mock => mock.CreateDeleteCommand (_endPointWithSyncStateMock)).Return (fakeResult);
       _syncStateMock.Replay ();
 
       var result = _endPointWithSyncStateMock.CreateDeleteCommand();
