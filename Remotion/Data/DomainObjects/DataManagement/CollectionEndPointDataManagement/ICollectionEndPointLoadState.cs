@@ -32,6 +32,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
     IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager);
 
+    void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+
     IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection);
     IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject);
     IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint);

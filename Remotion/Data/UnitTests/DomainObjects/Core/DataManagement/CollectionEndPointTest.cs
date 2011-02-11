@@ -115,6 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var loadState = GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).LazyLoader, Is.SameAs (_lazyLoaderMock));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (endPoint)));
 
       Assert.That (endPoint.IsDataComplete, Is.False);
     }

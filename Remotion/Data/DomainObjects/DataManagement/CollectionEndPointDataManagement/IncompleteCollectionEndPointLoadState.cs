@@ -28,13 +28,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public class IncompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
+    private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
-    public IncompleteCollectionEndPointLoadState (IRelationEndPointLazyLoader lazyLoader)
+    public IncompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader)
     {
+      ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
+      _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
+    }
+
+    public ICollectionEndPointDataKeeper DataKeeper
+    {
+      get { return _dataKeeper; }
     }
 
     public IRelationEndPointLazyLoader LazyLoader
@@ -70,6 +78,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
+    }
+
+    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
+    }
+
+    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _dataKeeper.UnregisterOriginalObject (oppositeEndPoint.ObjectID);
     }
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
@@ -148,13 +170,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
-
+      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_lazyLoader);
+      info.AddHandle (_dataKeeper);
     }
 
     #endregion

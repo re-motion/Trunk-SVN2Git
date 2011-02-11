@@ -78,6 +78,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
              select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
+    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference());
+    }
+
+    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _dataKeeper.UnregisterOriginalObject (oppositeEndPoint.ObjectID);
+    }
+
     public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

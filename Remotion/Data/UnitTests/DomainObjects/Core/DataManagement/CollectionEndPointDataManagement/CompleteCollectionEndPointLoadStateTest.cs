@@ -125,6 +125,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void RegisterOppositeEndPoint ()
+    {
+       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_relatedObject);
+
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.Replay();
+
+      _loadState.RegisterOppositeEndPoint (endPointStub);
+
+      _dataKeeperMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void UnregisterOppositeEndPoint ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
+
+      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalObject(_relatedObject.ID));
+      _dataKeeperMock.Replay ();
+
+      _loadState.UnregisterOppositeEndPoint (endPointStub);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void CreateSetOppositeCollectionCommand ()
     {
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand>();
