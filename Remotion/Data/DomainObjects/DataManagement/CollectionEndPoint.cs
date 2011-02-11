@@ -136,20 +136,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkDataComplete ()
     {
-      if (!IsDataComplete)
-      {
-        _dataKeeper.SortCurrentAndOriginalData(); // TODO: Test
-        SetCompleteLoadState();
-      }
+      _loadState.OnDataMarkedComplete (this);
+      SetCompleteLoadState ();
     }
 
     public void MarkDataIncomplete ()
     {
-      if (IsDataComplete)
-      {
-        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (ClientTransaction, this);
-        SetIncompleteLoadState ();
-      }
+      _loadState.OnDataMarkedIncomplete (this);
+      SetIncompleteLoadState ();
     }
 
     public override void SetValueFrom (IRelationEndPoint source)
@@ -296,7 +290,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void SetCompleteLoadState ()
     {
-      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper, ClientTransaction);
     }
 
     private void SetIncompleteLoadState ()

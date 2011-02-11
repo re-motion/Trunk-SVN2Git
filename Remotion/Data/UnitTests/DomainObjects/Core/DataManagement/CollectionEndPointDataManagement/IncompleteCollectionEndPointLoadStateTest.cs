@@ -196,6 +196,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void OnDataMarkedComplete_SortsData ()
+    {
+      _collectionEndPointMock.Replay ();
+
+      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData());
+      _dataKeeperMock.Replay ();
+
+      _loadState.OnDataMarkedComplete (_collectionEndPointMock);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void OnDataMarkedIncomplete_DoesNothing ()
+    {
+      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();

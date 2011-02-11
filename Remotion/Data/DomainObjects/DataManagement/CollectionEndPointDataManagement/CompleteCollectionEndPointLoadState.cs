@@ -31,17 +31,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class CompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
+    private readonly ClientTransaction _clientTransaction;
 
-    public CompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper)
+    public CompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _dataKeeper = dataKeeper;
+      _clientTransaction = clientTransaction;
     }
 
     public ICollectionEndPointDataKeeper DataKeeper
     {
       get { return _dataKeeper; }
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
     }
 
     public bool IsDataComplete ()
@@ -174,18 +182,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
+    public void OnDataMarkedComplete (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      // ignore, data is already complete
+    }
+
+    public void OnDataMarkedIncomplete (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
+    }
+
     #region Serialization
 
     public CompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
+      _clientTransaction = info.GetValueForHandle<ClientTransaction>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_dataKeeper);
+      info.AddHandle (_clientTransaction);
     }
 
     #endregion

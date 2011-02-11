@@ -36,6 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   {
     private ICollectionEndPoint _collectionEndPointMock;
     private ICollectionEndPointDataKeeper _dataKeeperMock;
+    private ClientTransaction _clientTransaction;
+
     private CompleteCollectionEndPointLoadState _loadState;
 
     private IRelationEndPointDefinition _definition;
@@ -49,7 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper>();
-      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock);
+      _clientTransaction = ClientTransaction.CreateRootTransaction ();
+
+      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock, _clientTransaction);
 
       _definition = Configuration.ClassDefinitions[typeof (Customer)].GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
       _relatedObject = DomainObjectMother.CreateFakeObject<Order>();
@@ -409,15 +413,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void OnDataMarkedComplete_DoesNothing ()
+    {
+      _collectionEndPointMock.Replay();
+      _dataKeeperMock.Replay();
+
+      _loadState.OnDataMarkedComplete (_collectionEndPointMock);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void OnDataMarkedIncomplete_RaisesEvent ()
+    {
+      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
+
+      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _collectionEndPointMock));
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
-      var dataKeeper = new SerializableCollectionEndPointDataKeeperFake();
-      var state = new CompleteCollectionEndPointLoadState (dataKeeper);
+      var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();
+      var state = new CompleteCollectionEndPointLoadState (dataKeeper, _clientTransaction);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataKeeper, Is.Not.Null);
+      Assert.That (result.ClientTransaction, Is.Not.Null);
     }
   }
 }

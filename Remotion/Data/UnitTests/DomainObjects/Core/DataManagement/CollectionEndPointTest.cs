@@ -76,6 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var loadState = GetLoadState (_customerEndPoint);
       Assert.That (loadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
       Assert.That (((CompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_customerEndPoint)));
+      Assert.That (((CompleteCollectionEndPointLoadState) loadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
 
       Assert.That (_customerEndPoint.IsDataComplete, Is.True);
       Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
@@ -369,73 +370,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataComplete ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      endPoint.MarkDataIncomplete ();
-      Assert.That (GetLoadState (endPoint), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (endPoint.IsDataComplete, Is.False);
+      _loadStateMock.Expect (mock => mock.OnDataMarkedComplete (_endPointWithLoadStateMock));
+      _loadStateMock.Replay ();
 
-      endPoint.MarkDataComplete ();
+      _endPointWithLoadStateMock.MarkDataComplete();
 
-      Assert.That (GetLoadState (endPoint), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
-      Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (endPoint.Collection, Is.EqualTo (new[] { _order1 }));
-      Assert.That (endPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1 }));
-      Assert.That (endPoint.HasChanged, Is.False);
-    }
-
-    [Test]
-    public void MarkDataComplete_WithChangedEndPoint ()
-    {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      endPoint.Collection.Add (_order2);
-
-      endPoint.MarkDataIncomplete ();
-      Assert.That (endPoint.IsDataComplete, Is.False);
-
-      endPoint.MarkDataComplete ();
-
-      Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (endPoint.Collection, Is.EqualTo (new[] { _order1, _order2 }));
-      Assert.That (endPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1 }));
-      Assert.That (endPoint.HasChanged, Is.True);
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
     }
 
     [Test]
     public void MarkDataIncomplete ()
     {
-      Assert.That (GetLoadState (_customerEndPoint), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
-      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
-      
-      _customerEndPoint.MarkDataIncomplete ();
+      _loadStateMock.Expect (mock => mock.OnDataMarkedIncomplete (_endPointWithLoadStateMock));
+      _loadStateMock.Replay ();
 
-      Assert.That (GetLoadState (_customerEndPoint), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-    }
+      _endPointWithLoadStateMock.MarkDataIncomplete ();
 
-    [Test]
-    public void MarkDataIncomplete_TriggersListener ()
-    {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, _customerEndPoint))
-          .WhenCalled (mi => Assert.That (_customerEndPoint.IsDataComplete, Is.True));
-      listenerMock.Replay ();
-
-      ClientTransactionMock.AddListener (listenerMock);
-
-      _customerEndPoint.MarkDataIncomplete ();
-
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord (); // For Discard
-    }
-
-    [Test]
-    public void MarkDataIncomplete_NoListener_IfDataNotComplete ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _customerEndPoint.MarkDataIncomplete ();
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
     }
 
     [Test]

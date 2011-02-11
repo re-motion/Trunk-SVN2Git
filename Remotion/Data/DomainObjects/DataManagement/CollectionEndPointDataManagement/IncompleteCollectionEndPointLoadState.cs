@@ -169,6 +169,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.CheckMandatory ();
     }
 
+    public void OnDataMarkedComplete (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      _dataKeeper.SortCurrentAndOriginalData();
+    }
+
+    public void OnDataMarkedIncomplete (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      // ignore, data is already incomplete
+    }
+
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
