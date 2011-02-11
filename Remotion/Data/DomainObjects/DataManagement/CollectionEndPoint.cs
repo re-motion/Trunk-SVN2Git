@@ -230,6 +230,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       _dataKeeper.UnregisterOriginalObject (objectID);
+      // TODO: When moving this method to the loadState, CompleteState should automatically transition to IncompleteState before unregistering the object
+      // TODO: Then, remove call to MarkDataIncomplete in RelationEndPointMap.UnregisterOppositeForRealObjectEndPoint.
     }
 
     public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
