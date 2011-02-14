@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 {
   public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
-    private IObjectEndPoint _endPoint;
+    private ObjectEndPoint _endPoint;
     private Action<ObjectID> _oppositeObjectIDSetter;
 
     private ObjectEndPointSetCommand _command;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp();
 
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      _oppositeObjectIDSetter = id => PrivateInvoke.SetPublicProperty (_endPoint, "OppositeObjectID", id);
+      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
 
       _command = CreateCommand (_endPoint, NewRelatedObject, _oppositeObjectIDSetter);
     }

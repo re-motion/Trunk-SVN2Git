@@ -77,15 +77,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
-        if (_collection.GetType() != value.GetType())
-          throw new ArgumentTypeException ("value", _collection.GetType(), value.GetType());
-
-        if (!value.IsAssociatedWith (this))
-        {
-          throw new ArgumentException (
-              "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
-              "value");
-        }
 
         _collection = value;
         Touch();
@@ -231,7 +222,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection newOppositeCollection)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
-      return _loadState.CreateSetOppositeCollectionCommand (this, newOppositeCollection);
+      return _loadState.CreateSetOppositeCollectionCommand (this, newOppositeCollection, collection => Collection = collection);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)

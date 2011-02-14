@@ -20,11 +20,11 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public static class ObjectEndPointTestHelper
+  public static class CollectionEndPointTestHelper
   {
-    public static void SetOppositeObjectID (ObjectEndPoint objectEndPoint, ObjectID newID)
+    public static void SetCollection (CollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection)
     {
-      PrivateInvoke.SetPublicProperty (objectEndPoint, "OppositeObjectID", newID);
+      PrivateInvoke.SetPublicProperty (collectionEndPoint, "Collection", newCollection);
     }
   }
 }

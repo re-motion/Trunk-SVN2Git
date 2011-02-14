@@ -34,6 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   {
     private DomainObjectCollection _newCollection;
 
+    private Action<DomainObjectCollection> _collectionSetter;
+
     private MockRepository _mockRepository;
     private IAssociatableDomainObjectCollection _oldTransformerMock;
     private IAssociatableDomainObjectCollection _newTransformerMock;
@@ -50,6 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _newCollection = new OrderCollection();
 
+      _collectionSetter = collection => CollectionEndPointTestHelper.SetCollection (CollectionEndPoint, collection);
+
       _mockRepository = new MockRepository ();
       _oldTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
       _newTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
@@ -57,6 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _command = new CollectionEndPointReplaceWholeCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
+          _collectionSetter,
           _oldTransformerMock,
           _newTransformerMock);
 
@@ -88,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock);
+      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, collection => { }, _oldTransformerMock, _newTransformerMock);
     }
 
     [Test]

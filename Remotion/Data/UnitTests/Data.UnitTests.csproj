@@ -215,6 +215,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointSyncStateTest.cs" />

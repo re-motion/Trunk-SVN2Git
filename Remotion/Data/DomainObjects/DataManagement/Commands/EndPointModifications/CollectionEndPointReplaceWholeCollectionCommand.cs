@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   {
     private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newOppositeCollection;
+    private readonly Action<DomainObjectCollection> _collectionSetter;
 
     private readonly IAssociatableDomainObjectCollection _oldOppositeCollectionTransformer;
     private readonly IAssociatableDomainObjectCollection _newOppositeCollectionTransformer;
@@ -39,11 +40,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public CollectionEndPointReplaceWholeCollectionCommand (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
+        Action<DomainObjectCollection> collectionSetter,
         IAssociatableDomainObjectCollection oldOppositeCollectionTransformer,
         IAssociatableDomainObjectCollection newOppositeCollectionTransformer)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
+      ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
       ArgumentUtility.CheckNotNull ("oldOppositeCollectionTransformer", oldOppositeCollectionTransformer);
       ArgumentUtility.CheckNotNull ("newOppositeCollectionTransformer", newOppositeCollectionTransformer);
 
@@ -52,6 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       _modifiedEndPoint = modifiedEndPoint;
       _newOppositeCollection = newOppositeCollection;
+      _collectionSetter = collectionSetter;
 
       _oldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
       _newOppositeCollectionTransformer = newOppositeCollectionTransformer;
@@ -132,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       // now make end point refer to the new collection by reference, too
-      ModifiedEndPoint.Collection = NewOppositeCollection; // this also touches the end point
+      _collectionSetter (NewOppositeCollection); // this also touches the end point
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }
 

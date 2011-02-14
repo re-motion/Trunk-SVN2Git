@@ -131,8 +131,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var domainObjectCollection = new DomainObjectCollection ();
 
+      Action<DomainObjectCollection> fakeSetter = collection => { };
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetOppositeCollectionCommand (_collectionEndPointMock, domainObjectCollection),
+          s => s.CreateSetOppositeCollectionCommand (_collectionEndPointMock, domainObjectCollection, fakeSetter),
           s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }

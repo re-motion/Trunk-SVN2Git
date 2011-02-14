@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -581,16 +580,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateSetOppositeCollectionCommand ()
     {
-      var oppositeDomainObjects = new DomainObjectCollection ();
+      var oppositeDomainObjects = new OrderCollection ();
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand>();
 
-      _loadStateMock.Expect (mock => mock.CreateSetOppositeCollectionCommand (_endPointWithLoadStateMock, oppositeDomainObjects)).Return (fakeResult);
+      Action<DomainObjectCollection> collectionSetter = null;
+      _loadStateMock
+          .Expect (
+              mock => mock.CreateSetOppositeCollectionCommand (
+                  Arg.Is (_endPointWithLoadStateMock),
+                  Arg.Is (oppositeDomainObjects),
+                  Arg<Action<DomainObjectCollection>>.Is.Anything))
+          .Return (fakeResult)
+          .WhenCalled (mi => { collectionSetter = (Action<DomainObjectCollection>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
 
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
+
+      Assert.That (_endPointWithLoadStateMock.Collection, Is.Not.SameAs (oppositeDomainObjects));
+      collectionSetter (oppositeDomainObjects);
+      Assert.That (_endPointWithLoadStateMock.Collection, Is.SameAs (oppositeDomainObjects));
     }
 
     [Test]
@@ -746,41 +757,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Collection = _customerEndPoint.OriginalCollection;
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, false));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead."
-        + "\r\nParameter name: value")]
-    public void Collection_Set_NotAssociated ()
-    {
-      var newOppositeCollection = new OrderCollection { _order1 };
-
-      _customerEndPoint.Collection = newOppositeCollection;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "Argument value has type Remotion.Data.DomainObjects.DomainObjectCollection when type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection was expected.\r\nParameter name: value")]
-    public void Collection_Set_OtherType ()
-    {
-      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new DomainObjectCollection (delegatingData);
-
-      _customerEndPoint.Collection = newOppositeCollection;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
-        "Argument value has type Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.DerivedOrderCollection when type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection was expected.\r\nParameter name: value")]
-    public void Collection_Set_DerivedType ()
-    {
-      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new DerivedOrderCollection (delegatingData);
-
-      _customerEndPoint.Collection = newOppositeCollection;
     }
 
     [Test]

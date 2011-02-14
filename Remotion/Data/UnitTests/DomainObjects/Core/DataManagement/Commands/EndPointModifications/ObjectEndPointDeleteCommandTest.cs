@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.OrderTicket1);
       _domainObject = _endPoint.GetDomainObject();
-      Action<ObjectID> oppositeObjectIDSetter = id => PrivateInvoke.SetPublicProperty (_endPoint, "OppositeObjectID", id);
+      Action<ObjectID> oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
       _command = new ObjectEndPointDeleteCommand (_endPoint, oppositeObjectIDSetter);
     }
 

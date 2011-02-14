@@ -108,16 +108,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.UnregisterOppositeEndPoint (oppositeEndPoint);
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newOppositeCollection)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (
+        ICollectionEndPoint collectionEndPoint, 
+        DomainObjectCollection newCollection, 
+        Action<DomainObjectCollection> collectionSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
+      ArgumentUtility.CheckNotNull ("newCollection", newCollection);
+      ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
 
       return new CollectionEndPointReplaceWholeCollectionCommand (
           collectionEndPoint,
-          newOppositeCollection,
+          newCollection,
+          collectionSetter,
           collectionEndPoint.Collection,
-          newOppositeCollection);
+          newCollection);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
