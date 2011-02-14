@@ -97,6 +97,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference());
+      // TODO 3737: _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint);
+      // TODO 3737: oppositeEndPoint.MarkAsUnsynchronized();
     }
 
     public void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
@@ -201,6 +203,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
+
+      // TODO 3737: for each ep in _unsynchronizedEndPoints => _dataKeeper.RegisterOriginalItem (ep.GetDomainObjectReference()), ep.MarkAsSynchronized
     }
 
     #region Serialization

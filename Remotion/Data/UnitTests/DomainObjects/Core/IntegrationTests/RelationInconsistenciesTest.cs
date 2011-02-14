@@ -169,11 +169,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable();
 
-      // set up new IndustrialSector object in database
+      // set up new IndustrialSector object in database with one company
       var industrialSector = CreateNewIndustrialSector();
       ClientTransactionMock.Commit();
 
-      // in parallel transaction, add a Company to the IndustrialSector
+      // in parallel transaction, add a second Company to the IndustrialSector
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
 
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
@@ -182,8 +182,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompany = Company.GetObject (newCompanyID);
 
       Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
+      // TODO 3737: Should only be 1 company, List should not contain new company
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (2)); // Note: An additional item has been added to the collection.
       Assert.That (industrialSector.Companies, List.Contains (newCompany));
+
+      // TODO 3737: In a try catch block, try to set newCompany.IndustrialSector to a different value - an InvalidOperationExcpetion should occur
     }
 
     [Test]

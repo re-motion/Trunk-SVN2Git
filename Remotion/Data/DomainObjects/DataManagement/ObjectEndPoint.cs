@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
         : base (clientTransaction, id)
     {
+       // TODO 3737: Unsynchronized
       _syncState = new SynchronizedObjectEndPointSyncState();
     }
 

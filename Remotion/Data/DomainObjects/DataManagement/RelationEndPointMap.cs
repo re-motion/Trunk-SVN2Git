@@ -177,6 +177,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
       Add (objectEndPoint);
 
+       // TODO 3737: MarkAsSynchronized
+
       return objectEndPoint;
     }
 
@@ -481,6 +483,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
         {
           RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
+           // TODO 3737: realObjectEndPoint.MarkAsSynchronized
         }
         else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
         {
