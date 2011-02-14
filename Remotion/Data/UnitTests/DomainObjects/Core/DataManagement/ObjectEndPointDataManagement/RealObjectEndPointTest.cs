@@ -93,8 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     public void OppositeObjectID_Set_ToProperty ()
     {
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order2;
+
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order2);
       
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order2));
     }

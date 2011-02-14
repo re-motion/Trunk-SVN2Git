@@ -77,7 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeObject_Null ()
     {
-      _endPoint.OppositeObjectID = null;
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
+
       var oppositeObject = _endPoint.GetOppositeObject (false);
       Assert.That (oppositeObject, Is.Null);
     }
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       order1.Delete ();
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
 
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
 
       Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
     }
@@ -102,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       order1.Delete ();
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
 
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
 
       _endPoint.GetOppositeObject (false);
     }
@@ -111,10 +112,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOppositeObject_Invalid_IncludeDeleted ()
     {
       var oppositeObject = Order.NewObject ();
-      _endPoint.OppositeObjectID = oppositeObject.ID;
 
       oppositeObject.Delete ();
       Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
+
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
 
       Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
     }
@@ -124,11 +126,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOppositeObject_Invalid_ExcludeDeleted ()
     {
       var oppositeObject = Order.NewObject ();
-      _endPoint.OppositeObjectID = oppositeObject.ID;
 
       oppositeObject.Delete ();
       Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
 
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
+      
       _endPoint.GetOppositeObject (false);
     }
 
@@ -167,15 +170,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPoint.EnsureDataComplete ();
     }
     
-    [Test]
-    public void PerformWithoutBegin ()
-    {
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
-      Assert.IsNotNull (_endPoint.OppositeObjectID);
-      _endPoint.CreateRemoveCommand (Order.GetObject (DomainObjectIDs.Order1)).Perform();
-      Assert.IsNull (_endPoint.OppositeObjectID);
-    }
-
     [Test]
     public void SetValueFrom_SetsOppositeObjectID ()
     {
@@ -329,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPoints_NullEndPoint ()
     {
-      _endPoint.OppositeObjectID = null;
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
 
       var oppositeEndPoints = _endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray();
 

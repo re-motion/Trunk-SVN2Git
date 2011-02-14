@@ -19,6 +19,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -68,7 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void TouchedContent ()
     {
-      _endPoint.OppositeObjectID = DomainObjectIDs.Employee1;
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Employee1);
+
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);

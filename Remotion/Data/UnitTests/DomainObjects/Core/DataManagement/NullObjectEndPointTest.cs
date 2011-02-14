@@ -68,13 +68,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void OppositeObjectID_Set ()
-    {
-      _nullEndPoint.OppositeObjectID = DomainObjectIDs.Order3;
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void OriginalOppositeObjectID_Get ()
     {
       Dev.Null = _nullEndPoint.OriginalOppositeObjectID;

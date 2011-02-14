@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       else
       {
         var endPoint = CreateRealObjectEndPoint (endPointID);
-        endPoint.OppositeObjectID = oppositeObjectID;
+        endPoint.ForeignKeyProperty.Value = oppositeObjectID;
         endPoint.Commit ();
         return endPoint;
       }

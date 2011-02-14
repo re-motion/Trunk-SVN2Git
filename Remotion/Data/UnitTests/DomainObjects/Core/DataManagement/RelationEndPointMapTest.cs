@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
       Assert.That (_map[id], Is.Not.Null);
 
-      objectEndPoint.OppositeObjectID = null;
+      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       try
@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[id], Is.Not.Null);
 
       Assert.That (objectEndPoint.OppositeObjectID, Is.Not.Null);
-      objectEndPoint.OppositeObjectID = null;
+      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       try
@@ -845,7 +845,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       var virtualEndPoint = _map.RegisterVirtualObjectEndPoint (endPointID, DomainObjectIDs.OrderTicket1);
-      virtualEndPoint.OppositeObjectID = null; // the current value is ignored
+      // the current value is ignored, only the original value is relevant
+      ObjectEndPointTestHelper.SetOppositeObjectID (virtualEndPoint, null);
       Assert.That (_map[endPointID], Is.Not.Null);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -920,7 +921,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var objectEndPoint = (ObjectEndPoint) _map[endPointID];
       Assert.That (objectEndPoint, Is.Not.Null);
-      objectEndPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -935,7 +936,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var objectEndPoint = (ObjectEndPoint) _map[endPointID];
       Assert.That (objectEndPoint, Is.Not.Null);
-      objectEndPoint.OppositeObjectID = DomainObjectIDs.Order1;
+      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
