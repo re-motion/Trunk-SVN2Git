@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DomainObjectCollection Collection
     {
       get { return _collection; }
-      set
+      private set
       {
         ArgumentUtility.CheckNotNull ("value", value);
 

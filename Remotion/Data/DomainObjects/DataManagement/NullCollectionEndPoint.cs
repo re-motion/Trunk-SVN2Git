@@ -120,7 +120,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DomainObjectCollection Collection
     {
       get { return new DomainObjectCollection (); }
-      set { throw new InvalidOperationException ("It is not possible to set the Collection of a NullCollectionEndPoint."); }
     }
 
     public DomainObjectCollection OriginalCollection

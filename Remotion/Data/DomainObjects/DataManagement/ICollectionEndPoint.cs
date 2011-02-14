@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPoint : IRelationEndPoint
   {
-    DomainObjectCollection Collection { get; set; }
+    DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
 
     IDomainObjectCollectionData GetCollectionData ();

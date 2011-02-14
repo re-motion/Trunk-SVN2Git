@@ -714,7 +714,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
-      _customerEndPoint.Collection = newOppositeCollection;
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newOppositeCollection));
     }
@@ -727,7 +727,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
-      _customerEndPoint.Collection = newOppositeCollection;
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
 
       AssertDidNotLoadData (_customerEndPoint);
     }
@@ -738,7 +738,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
-      _customerEndPoint.Collection = newOppositeCollection;
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
@@ -750,11 +750,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
-      _customerEndPoint.Collection = newOppositeCollection;
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, true));
 
-      _customerEndPoint.Collection = _customerEndPoint.OriginalCollection;
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, _customerEndPoint.OriginalCollection);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, false));
     }

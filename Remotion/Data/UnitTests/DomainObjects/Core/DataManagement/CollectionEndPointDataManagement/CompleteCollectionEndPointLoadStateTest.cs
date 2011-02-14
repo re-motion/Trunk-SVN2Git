@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var sourceCollection = new DomainObjectCollection (new DomainObject[] { sourceItem1, sourceItem2 }, null);
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Collection = sourceCollection;
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
 
       var targetItem1 = DomainObjectMother.CreateFakeObject<Order>();
       var targetCollectionData = new DomainObjectCollectionData (new DomainObject[] { targetItem1 });
@@ -358,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Collection = sourceCollection;
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
@@ -378,7 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Collection = sourceCollection;
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (true);
@@ -398,7 +398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var sourceCollection = new DomainObjectCollection();
       var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Collection = sourceCollection;
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
       sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
 
       _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);

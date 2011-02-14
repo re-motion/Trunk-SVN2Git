@@ -73,13 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void Collection_Set ()
-    {
-      _nullEndPoint.Collection = new DomainObjectCollection ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void OriginalCollection ()
     {
       Dev.Null = _nullEndPoint.OriginalCollection;
