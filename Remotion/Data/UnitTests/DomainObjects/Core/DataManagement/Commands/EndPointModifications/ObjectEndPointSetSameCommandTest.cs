@@ -49,14 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       return new RelationEndPointID (DomainObjectIDs.Computer1, typeof (Computer).FullName + ".Employee");
     }
 
-    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
+    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
-      return new ObjectEndPointSetSameCommand (endPoint);
-    }
-
-    protected override ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, IObjectEndPoint endPoint, DomainObject newRelatedObject)
-    {
-      return repository.StrictMock<ObjectEndPointSetSameCommand> (endPoint);
+      return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectIDSetter);
     }
 
     [Test]
@@ -123,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
-      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
+      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint, mi => { });
       var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects ();
       Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setSameModification }));
     }
@@ -142,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
 
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
-      var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint);
+      var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint, mi => { });
 
       var bidirectionalModification = setSameCommand.ExpandToAllRelatedObjects ();
 

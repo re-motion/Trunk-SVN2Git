@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return _syncState.CreateSetCommand (this, newRelatedObject);
+      return _syncState.CreateSetCommand (this, newRelatedObject, id => OppositeObjectID = id);
     }
 
     public override void SetValueFrom (IRelationEndPoint source)

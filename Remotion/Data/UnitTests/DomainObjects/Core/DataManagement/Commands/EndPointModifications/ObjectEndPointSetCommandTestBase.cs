@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -32,6 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
     private IObjectEndPoint _endPoint;
+    private Action<ObjectID> _oppositeObjectIDSetter;
+
     private ObjectEndPointSetCommand _command;
 
     public override void SetUp ()
@@ -39,7 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp();
 
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      _command = CreateCommand (_endPoint, NewRelatedObject);
+      _oppositeObjectIDSetter = id => PrivateInvoke.SetPublicProperty (_endPoint, "OppositeObjectID", id);
+
+      _command = CreateCommand (_endPoint, NewRelatedObject, _oppositeObjectIDSetter);
     }
 
     protected abstract DomainObject OldRelatedObject { get; }
@@ -47,8 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     protected abstract RelationEndPointID GetRelationEndPointID ();
 
-    protected abstract ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject);
-    protected abstract ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, IObjectEndPoint endPoint, DomainObject newRelatedObject);
+    protected abstract ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter);
 
     public ObjectEndPointSetCommand Command
     {
@@ -74,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, GetRelationEndPointID().Definition);
-      CreateCommand (endPoint, NewRelatedObject);
+      CreateCommand (endPoint, NewRelatedObject, _oppositeObjectIDSetter);
     }
 
     [Test]
@@ -100,14 +104,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform_TouchesEndPoint ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      Assert.That (endPoint.HasBeenTouched, Is.False);
-
-      var command = CreateCommand (endPoint, NewRelatedObject);
-
-      command.Perform();
-
-      Assert.That (endPoint.HasBeenTouched, Is.True);
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+      _command.Perform();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

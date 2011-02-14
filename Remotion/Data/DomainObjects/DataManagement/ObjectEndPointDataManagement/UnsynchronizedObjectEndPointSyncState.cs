@@ -33,9 +33,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       throw CreateInvalidOperationException(endPoint);
     }
 
-    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
+    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+
       throw CreateInvalidOperationException (endPoint);
     }
 

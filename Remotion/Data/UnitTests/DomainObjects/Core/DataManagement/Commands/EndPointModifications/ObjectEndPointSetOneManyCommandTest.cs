@@ -22,10 +22,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
-using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -48,14 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       return new RelationEndPointID (DomainObjectIDs.OrderItem1, typeof (OrderItem).FullName + ".Order");
     }
 
-    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
+    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
-      return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject);
-    }
-
-    protected override ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, IObjectEndPoint endPoint, DomainObject newRelatedObject)
-    {
-      return repository.StrictMock<ObjectEndPointSetOneManyCommand> (endPoint, newRelatedObject);
+      return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
     }
 
     [Test]
@@ -68,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var relationEndPointID = new RelationEndPointID (Client.GetObject(DomainObjectIDs.Client1).ID, definition);
       var endPoint = (IObjectEndPoint)
           ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      new ObjectEndPointSetOneManyCommand (endPoint, Client.NewObject ());
+      new ObjectEndPointSetOneManyCommand (endPoint, Client.NewObject (), mi => { });
     }
 
     [Test]
@@ -80,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
       var relationEndPointID = new RelationEndPointID (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
       var endPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      new ObjectEndPointSetOneManyCommand (endPoint, Order.NewObject ());
+      new ObjectEndPointSetOneManyCommand (endPoint, Order.NewObject (), mi => { });
     }
 
     [Test]
@@ -90,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_Same ()
     {
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      new ObjectEndPointSetOneManyCommand (endPoint, OldRelatedObject);
+      new ObjectEndPointSetOneManyCommand (endPoint, OldRelatedObject, mi => { });
     }
 
     [Test]
@@ -104,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // orderItem.Order = newOrder;
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
-      var setDifferentModification = new ObjectEndPointSetOneManyCommand (bidirectionalEndPoint, newOrder);
+      var setDifferentModification = new ObjectEndPointSetOneManyCommand (bidirectionalEndPoint, newOrder, mi => { });
 
       var bidirectionalModification = setDifferentModification.ExpandToAllRelatedObjects ();
 

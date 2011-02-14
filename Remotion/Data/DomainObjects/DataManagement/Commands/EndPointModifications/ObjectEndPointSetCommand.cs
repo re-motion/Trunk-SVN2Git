@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
@@ -23,21 +24,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public abstract class ObjectEndPointSetCommand : RelationEndPointModificationCommand
   {
-    private readonly IObjectEndPoint _modifiedEndPoint;
+    private readonly Action<ObjectID> _oppositeObjectIDSetter;
 
-    protected ObjectEndPointSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    protected ObjectEndPointSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
       : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-      _modifiedEndPoint = modifiedEndPoint;
+      _oppositeObjectIDSetter = oppositeObjectIDSetter;
     }
 
     public override void Perform ()
     {
       var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
-      _modifiedEndPoint.OppositeObjectID = id;
+      _oppositeObjectIDSetter(id);
     }
   }
 }

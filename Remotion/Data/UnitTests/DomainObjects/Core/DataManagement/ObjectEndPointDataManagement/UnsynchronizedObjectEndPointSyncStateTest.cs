@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -33,6 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     private UnsynchronizedObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
+    private Action<ObjectID> _fakeSetter;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -44,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
       _state = new UnsynchronizedObjectEndPointSyncState ();
+      _fakeSetter = id => { };
     }
 
     [Test]
@@ -67,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
-      _state.CreateSetCommand (_endPointStub, relatedObject);
+      _state.CreateSetCommand (_endPointStub, relatedObject, _fakeSetter);
     }
 
     [Test]

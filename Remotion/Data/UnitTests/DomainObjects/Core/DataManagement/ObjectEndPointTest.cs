@@ -263,13 +263,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
       var relatedObject = DomainObjectMother.CreateFakeObject<Order>();
 
-      _syncStateMock.Expect (mock => mock.CreateSetCommand (_endPointWithSyncStateMock, relatedObject)).Return (fakeResult);
+      Action<ObjectID> oppositeObjectIDSetter = null;
+
+      _syncStateMock
+          .Expect (mock => mock.CreateSetCommand (Arg.Is (_endPointWithSyncStateMock), Arg.Is (relatedObject), Arg<Action<ObjectID>>.Is.Anything))
+          .Return (fakeResult)
+          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[2]; });
       _syncStateMock.Replay ();
 
       var result = _endPointWithSyncStateMock.CreateSetCommand (relatedObject);
 
       _syncStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
+
+      Assert.That (_endPointWithSyncStateMock.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      oppositeObjectIDSetter (DomainObjectIDs.Order2);
+      Assert.That (_endPointWithSyncStateMock.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
 

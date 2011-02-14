@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -24,8 +25,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class ObjectEndPointSetSameCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint)
-        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true))
+    public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint, Action<ObjectID> oppositeObjectIDSetter)
+        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true), oppositeObjectIDSetter)
     {
     }
 

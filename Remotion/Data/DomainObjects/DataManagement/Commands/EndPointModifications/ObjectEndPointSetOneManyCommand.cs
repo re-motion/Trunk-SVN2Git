@@ -24,8 +24,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class ObjectEndPointSetOneManyCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetOneManyCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
-        : base(modifiedEndPoint, newRelatedObject)
+    public ObjectEndPointSetOneManyCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+      : base (modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
     {
       if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {

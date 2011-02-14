@@ -37,21 +37,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return new ObjectEndPointDeleteCommand (endPoint);
     }
 
-    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
+    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (endPoint.OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (endPoint);
+        return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectIDSetter);
       else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject);
+        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
       else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject);
+        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
       else
-        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject);
+        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
     }
 
     #region Serialization
