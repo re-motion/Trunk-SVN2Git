@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection newOppositeCollection)
     {
       throw new NotImplementedException();
     }

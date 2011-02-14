@@ -169,15 +169,161 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void CreateSetOppositeCollectionCommand ()
     {
-      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand>();
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+      _collectionEndPointMock.Replay ();
 
-      var newOppositeCollectionMock = MockRepository.GenerateMock<IAssociatableDomainObjectCollection>();
-      newOppositeCollectionMock.Expect (mock => mock.CreateAssociationCommand (_collectionEndPointMock)).Return (fakeCommand);
-      newOppositeCollectionMock.Replay();
+      var newCollection = new OrderCollection ();
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, newCollection);
 
-      var result = _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, newOppositeCollectionMock);
+      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointReplaceWholeCollectionCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollection, Is.SameAs (newCollection));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollectionTransformer, Is.SameAs (newCollection));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).OldOppositeCollectionTransformer, Is.SameAs (fakeCollection));
+    }
+    
+    [Test]
+    public void CreateSetOppositeCollectionCommand_SelfReplace ()
+    {
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+      _collectionEndPointMock.Replay ();
 
-      Assert.That (result, Is.SameAs (fakeCommand));
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, fakeCollection);
+
+      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointReplaceWholeCollectionCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollection, Is.SameAs (_collectionEndPointMock.Collection));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollectionTransformer, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).OldOppositeCollectionTransformer, Is.SameAs (fakeCollection));
+    }
+
+    [Test]
+    public void CreateRemoveCommand ()
+    {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.DomainObject, Is.SameAs (_owningObject));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
+
+      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+    }
+
+    [Test]
+    public void CreateDeleteCommand ()
+    {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand (_collectionEndPointMock);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointDeleteCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+
+      Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
+    }
+
+    [Test]
+    public void CreateInsertCommand ()
+    {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
+
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
+    }
+
+    [Test]
+    public void CreateAddCommand ()
+    {
+      var fakeCollectionData =
+          new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> (), DomainObjectMother.CreateFakeObject<Order> () });
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
+
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
+    }
+
+    [Test]
+    public void CreateReplaceCommand ()
+    {
+      var oldRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
+      var fakeCollectionData = new DomainObjectCollectionData (new[] { oldRelatedObject });
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+
+      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
+    }
+
+    [Test]
+    public void CreateReplaceCommand_SelfReplace ()
+    {
+      var fakeCollectionData = new DomainObjectCollectionData (new[] { _relatedObject });
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
+      var fakeCollection = new DomainObjectCollection ();
+      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
     }
 
     [Test]
@@ -287,129 +433,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Return (DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
 
       _loadState.CheckMandatory(_collectionEndPointMock);
-    }
-
-    [Test]
-    public void CreateRemoveCommand ()
-    {
-      var fakeCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (command.DomainObject, Is.SameAs (_owningObject));
-      Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
-
-      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
-    }
-
-    [Test]
-    public void CreateDeleteCommand ()
-    {
-      var fakeCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand(_collectionEndPointMock);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointDeleteCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-
-      Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
-      Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-    }
-
-    [Test]
-    public void CreateInsertCommand ()
-    {
-      var fakeCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
-
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-    }
-
-    [Test]
-    public void CreateAddCommand ()
-    {
-      var fakeCollectionData =
-          new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order>(), DomainObjectMother.CreateFakeObject<Order>() });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
-
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-    }
-
-    [Test]
-    public void CreateReplaceCommand ()
-    {
-      var oldRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
-      var fakeCollectionData = new DomainObjectCollectionData (new[] { oldRelatedObject });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection ();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-
-      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
-      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-    }
-
-    [Test]
-    public void CreateReplaceCommand_SelfReplace ()
-    {
-      var fakeCollectionData = new DomainObjectCollectionData (new[] { _relatedObject });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
-      var fakeCollection = new DomainObjectCollection ();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
     }
 
     [Test]

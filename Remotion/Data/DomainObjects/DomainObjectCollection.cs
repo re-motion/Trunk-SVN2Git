@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
@@ -814,29 +815,6 @@ namespace Remotion.Data.DomainObjects
       Removed += source.Removed;
       Deleting += source.Deleting;
       Deleted += source.Deleted;
-    }
-
-    IDataManagementCommand IAssociatableDomainObjectCollection.CreateAssociationCommand (ICollectionEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (RequiredItemType != endPoint.Collection.RequiredItemType && !IsReadOnly && !endPoint.Collection.IsReadOnly)
-        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
-
-      if (GetType () != endPoint.Collection.GetType ())
-      {
-        var message = string.Format (
-            "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
-            GetType (),
-            endPoint.Collection.GetType ());
-        throw new InvalidOperationException (message);
-      }
-
-      return new CollectionEndPointReplaceWholeCollectionCommand (
-          endPoint,
-          this,
-          endPoint.Collection,
-          this);
     }
 
     void IAssociatableDomainObjectCollection.TransformToAssociated (ICollectionEndPoint endPoint)

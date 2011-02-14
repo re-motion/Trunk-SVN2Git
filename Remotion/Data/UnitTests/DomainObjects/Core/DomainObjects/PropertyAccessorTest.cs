@@ -152,6 +152,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void SetValue_WithObjectList_CollectionIsReadOnly ()
+    {
+      var customer1 = Customer.NewObject ();
+
+      var newCollection = (OrderCollection) new OrderCollection ().Clone (true);
+      CreateAccessor (customer1, "Orders").SetValue (newCollection);
+
+      Assert.That (customer1.Orders, Is.SameAs (newCollection));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The given collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
+        + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
+    public void SetValue_WithObjectList_DifferentCollectionTypes ()
+    {
+      var customer1 = Customer.NewObject ();
+
+      var newCollection = new ObjectList<Order> ();
+      CreateAccessor (customer1, "Orders").SetValueWithoutTypeCheck (newCollection);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The given collection has a different item type than the end point's current opposite collection.")]
+    public void SetValue_WithObjectList_DifferentRequiredItemType ()
+    {
+      var customer1 = Customer.NewObject ();
+
+      var newCollection = new DomainObjectCollection (typeof (Customer));
+      CreateAccessor (customer1, "Orders").SetValueWithoutTypeCheck (newCollection);
+    }
+
+    [Test]
     [ExpectedException (typeof (ObjectDeletedException))]
     public void SetValue_WithObjectList_ObjectDeleted ()
     {

@@ -108,12 +108,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.UnregisterOppositeEndPoint (oppositeEndPoint);
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, IAssociatableDomainObjectCollection newOppositeCollection)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newOppositeCollection)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
 
-      return newOppositeCollection.CreateAssociationCommand (collectionEndPoint);
+      return new CollectionEndPointReplaceWholeCollectionCommand (
+          collectionEndPoint,
+          newOppositeCollection,
+          collectionEndPoint.Collection,
+          newOppositeCollection);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
@@ -174,7 +178,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_dataKeeper.CollectionData.Count == 0)
       {
         var objectReference = collectionEndPoint.GetDomainObjectReference ();
-        var message = string.Format (
+        var message = String.Format (
             "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
             collectionEndPoint.Definition.PropertyName,
             objectReference.ID);

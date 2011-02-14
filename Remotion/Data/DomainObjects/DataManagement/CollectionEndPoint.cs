@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         if (_originalCollection != _collection)
         {
-          var command = ((IAssociatableDomainObjectCollection) _originalCollection).CreateAssociationCommand (this);
+          var command = CreateSetOppositeCollectionCommand (_originalCollection);
           command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
         }
 
@@ -228,10 +228,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.UnregisterOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (IAssociatableDomainObjectCollection oppositeDomainObjects)
+    public IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection newOppositeCollection)
     {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      return _loadState.CreateSetOppositeCollectionCommand (this, oppositeDomainObjects);
+      ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
+      return _loadState.CreateSetOppositeCollectionCommand (this, newOppositeCollection);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)

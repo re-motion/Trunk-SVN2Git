@@ -86,6 +86,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (!newOppositeCollection.IsAssociatedWith (null) && !newOppositeCollection.IsAssociatedWith (endPoint))
         throw new ArgumentException ("The given collection is already associated with an end point.", "value");
 
+      // TODO 3742: Check what these read-only checks are for
+      if (newOppositeCollection.RequiredItemType != endPoint.Collection.RequiredItemType
+          && !newOppositeCollection.IsReadOnly
+          && !endPoint.Collection.IsReadOnly)
+      {
+        throw new InvalidOperationException ("The given collection has a different item type than the end point's current opposite collection.");
+      }
+
+      if (newOppositeCollection.GetType () != endPoint.Collection.GetType ())
+      {
+        var message = string.Format (
+            "The given collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
+            newOppositeCollection.GetType (),
+            endPoint.Collection.GetType ());
+        throw new InvalidOperationException (message);
+      }
+
       var command = endPoint.CreateSetOppositeCollectionCommand(newOppositeCollection);
       var bidirectionalModification = command.ExpandToAllRelatedObjects();
       bidirectionalModification.NotifyAndPerform();
