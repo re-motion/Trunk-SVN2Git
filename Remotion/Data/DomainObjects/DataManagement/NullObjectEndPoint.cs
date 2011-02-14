@@ -74,7 +74,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ObjectID OppositeObjectID
     {
       get { return null; }
-      set { throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint."); }
     }
 
     public ObjectID OriginalOppositeObjectID

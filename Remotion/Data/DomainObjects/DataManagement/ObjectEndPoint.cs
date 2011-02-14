@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _syncState = new SynchronizedObjectEndPointSyncState();
     }
 
-    public abstract ObjectID OppositeObjectID { get; set; }
+    public abstract ObjectID OppositeObjectID { get; protected set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
     public void MarkSynchronized ()

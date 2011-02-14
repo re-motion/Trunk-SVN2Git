@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public override ObjectID OppositeObjectID
     {
       get { return _oppositeObjectID; }
-      set
+      protected set
       {
         _oppositeObjectID = value;
         _hasBeenTouched = true;

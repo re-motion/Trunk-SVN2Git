@@ -20,7 +20,7 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public class ObjectEndPointTestHelper
+  public static class ObjectEndPointTestHelper
   {
     public static void SetOppositeObjectID (IRelationEndPoint objectEndPoint, ObjectID newID)
     {

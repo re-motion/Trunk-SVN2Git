@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public override ObjectID OppositeObjectID
     {
       get { return (ObjectID) ForeignKeyProperty.GetValueWithoutEvents (ValueAccess.Current); }
-      set { _foreignKeyProperty.Value = value; } // TODO 1925: This is with events, which is a little inconsistent
+      protected set { _foreignKeyProperty.Value = value; } // TODO 1925: This is with events, which is a little inconsistent
     }
 
     public override ObjectID OriginalOppositeObjectID

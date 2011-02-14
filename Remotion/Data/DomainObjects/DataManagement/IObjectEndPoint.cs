@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IObjectEndPoint : IRelationEndPoint
   {
-    ObjectID OppositeObjectID { get; set; }
+    ObjectID OppositeObjectID { get; }
     ObjectID OriginalOppositeObjectID { get; }
 
     void MarkSynchronized ();
