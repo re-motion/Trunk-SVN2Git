@@ -309,13 +309,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      _syncStateMock.Expect (mock => mock.CreateDeleteCommand (_endPointWithSyncStateMock)).Return (fakeResult);
+      Action<ObjectID> oppositeObjectIDSetter = null;
+      _syncStateMock
+          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPointWithSyncStateMock), Arg<Action<ObjectID>>.Is.Anything))
+          .Return (fakeResult)
+          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[1]; });
       _syncStateMock.Replay ();
 
       var result = _endPointWithSyncStateMock.CreateDeleteCommand();
 
       _syncStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
+
+      Assert.That (_endPointWithSyncStateMock.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      oppositeObjectIDSetter (DomainObjectIDs.Order2);
+      Assert.That (_endPointWithSyncStateMock.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]

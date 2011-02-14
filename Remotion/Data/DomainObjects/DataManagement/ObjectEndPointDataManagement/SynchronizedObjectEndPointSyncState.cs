@@ -32,9 +32,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint)
+    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
-      return new ObjectEndPointDeleteCommand (endPoint);
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+
+      return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
     }
 
     public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)

@@ -27,9 +27,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint)
+    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+
       throw CreateInvalidOperationException(endPoint);
     }
 

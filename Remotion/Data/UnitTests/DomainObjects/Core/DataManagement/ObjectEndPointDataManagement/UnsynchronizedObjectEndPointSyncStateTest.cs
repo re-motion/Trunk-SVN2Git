@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
     public void CreateDeleteCommand ()
     {
-      _state.CreateDeleteCommand(_endPointStub);
+      _state.CreateDeleteCommand(_endPointStub, _fakeSetter);
     }
 
     [Test]

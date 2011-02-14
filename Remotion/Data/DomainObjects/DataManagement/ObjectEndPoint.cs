@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _syncState.CreateDeleteCommand (this);
+      return _syncState.CreateDeleteCommand (this, id => OppositeObjectID = id);
     }
 
     public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)

@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -38,7 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.OrderTicket1);
       _domainObject = _endPoint.GetDomainObject();
-      _command = new ObjectEndPointDeleteCommand (_endPoint);
+      Action<ObjectID> oppositeObjectIDSetter = id => PrivateInvoke.SetPublicProperty (_endPoint, "OppositeObjectID", id);
+      _command = new ObjectEndPointDeleteCommand (_endPoint, oppositeObjectIDSetter);
     }
 
     [Test]
@@ -55,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointDeleteCommand (endPoint);
+      new ObjectEndPointDeleteCommand (endPoint, id => { });
     }
 
     [Test]

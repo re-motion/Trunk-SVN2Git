@@ -67,11 +67,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock);
+      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_order));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
+      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
     }
 
     [Test]
