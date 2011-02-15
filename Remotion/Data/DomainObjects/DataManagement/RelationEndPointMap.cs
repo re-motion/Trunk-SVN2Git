@@ -144,7 +144,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer);
       Add (objectEndPoint);
 
-      objectEndPoint.MarkSynchronized(); // mark synchronized, opposite end-point may mark as unsyncrhonized if necessary
       RegisterOppositeForRealObjectEndPoint (objectEndPoint);
       return objectEndPoint;
     }
@@ -477,18 +476,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
       Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
 
-      if (realObjectEndPoint.OppositeObjectID != null)
+      if (realObjectEndPoint.OppositeObjectID == null || oppositeVirtualEndPointDefinition.IsAnonymous)
       {
-        var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-        {
-          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
-        }
-        else if (!oppositeVirtualEndPointDefinition.IsAnonymous)
-        {
-          var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-          oppositeEndPoint.RegisterOppositeEndPoint (realObjectEndPoint);
-        }
+        realObjectEndPoint.MarkSynchronized ();
+        return;
+      }
+
+      var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+      if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+      {
+        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
+        realObjectEndPoint.MarkSynchronized();
+      }
+      else
+      {
+        var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
+        oppositeEndPoint.RegisterOppositeEndPoint (realObjectEndPoint); // calls MarkSynchronized/MarkUnsynchronized
       }
     }
 
