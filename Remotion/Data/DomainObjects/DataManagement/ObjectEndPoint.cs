@@ -160,12 +160,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _syncState = info.GetValue<IObjectEndPointSyncState>();
+
+      var isSynchronized = info.GetBoolValue();
+      if (isSynchronized)
+        MarkSynchronized ();
+      else
+        MarkUnsynchronized();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddValue (_syncState);
+
+      info.AddBoolValue (_syncState is SynchronizedObjectEndPointSyncState);
     }
 
     #endregion

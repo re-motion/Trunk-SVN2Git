@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Linq;
-using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -25,11 +25,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Identifies a relation end point on a given object (<see cref="ObjectID"/>) of a given kind (<see cref="Definition"/>).
   /// </summary>
-  /// <remarks>
-  /// This type implements custom serialization. It serializes the class definition ID, the relation end point name, and the objectID.
-  /// </remarks>
   [Serializable]
-  public sealed class RelationEndPointID
+  public sealed class RelationEndPointID : IFlattenedSerializable
   {
     public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
     {
@@ -140,5 +137,30 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var propertyName = Definition.PropertyName;
       return (_objectID != null ? _objectID.GetHashCode () : 0) ^ (propertyName != null ? propertyName.GetHashCode () : 0);
     }
+
+    #region Serialization
+
+    // ReSharper disable UnusedMember.Local
+    private RelationEndPointID (FlattenedDeserializationInfo info)
+    {
+      var classDefinitionID = info.GetValueForHandle<string> ();
+      var propertyName = info.GetValueForHandle<string> ();
+
+      _definition =
+          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
+      _objectID = info.GetValueForHandle<ObjectID> ();
+
+      _cachedHashCode = CalculateHashCode ();
+    }
+    // ReSharper restore UnusedMember.Local
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      info.AddHandle (_definition.ClassDefinition.ID);
+      info.AddHandle (_definition.PropertyName);
+      info.AddHandle (_objectID);
+    }
+
+    #endregion
   }
 }

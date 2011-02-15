@@ -622,7 +622,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues.RegisterForChangeNotification (this);
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
-      _state = info.GetValue<DataContainerStateType> ();
+      _state = (DataContainerStateType) info.GetIntValue ();
       _domainObject = info.GetValueForHandle<DomainObject> ();
       _hasBeenMarkedChanged = info.GetBoolValue ();
       _hasBeenChanged = info.GetBoolValue();
@@ -654,7 +654,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       info.AddHandle (_clientTransaction);
-      info.AddValue (_state);
+      info.AddIntValue ((int) _state);
       info.AddHandle (_domainObject);
       info.AddBoolValue(_hasBeenMarkedChanged);
       info.AddBoolValue(_hasBeenChanged);
