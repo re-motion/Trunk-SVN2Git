@@ -71,6 +71,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       // Data is already complete
     }
 
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      // Data is already complete
+    }
+
+    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
+
+      stateSetter();
+      
+      foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints)
+        collectionEndPoint.RegisterOppositeEndPoint (oppositeEndPoint);
+    }
+
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
@@ -197,24 +218,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             collectionEndPoint.Definition.PropertyName,
             objectReference.ID);
         throw new MandatoryRelationNotSetException (objectReference, collectionEndPoint.Definition.PropertyName, message);
-      }
-    }
-
-    public void OnDataMarkedComplete (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      // ignore, data is already complete
-    }
-
-    public void OnDataMarkedIncomplete (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
-
-      foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints)
-      {
-        _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
-        oppositeEndPoint.MarkSynchronized ();
       }
     }
 

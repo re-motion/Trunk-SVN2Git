@@ -29,6 +29,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     bool IsDataComplete ();
     void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 
+    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, Action stateSetter);
+    void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter);
+
     IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint);
 
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
@@ -46,8 +49,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint);
     void CheckMandatory (ICollectionEndPoint collectionEndPoint);
-
-    void OnDataMarkedComplete (ICollectionEndPoint collectionEndPoint);
-    void OnDataMarkedIncomplete (ICollectionEndPoint collectionEndPoint);
   }
 }

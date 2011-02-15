@@ -127,14 +127,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkDataComplete ()
     {
-      _loadState.OnDataMarkedComplete (this);
-      SetCompleteLoadState ();
+      _loadState.MarkDataComplete (this, SetCompleteLoadState);
     }
 
     public void MarkDataIncomplete ()
     {
-      _loadState.OnDataMarkedIncomplete (this);
-      SetIncompleteLoadState ();
+      _loadState.MarkDataIncomplete (this, SetIncompleteLoadState);
     }
 
     public override void SetValueFrom (IRelationEndPoint source)

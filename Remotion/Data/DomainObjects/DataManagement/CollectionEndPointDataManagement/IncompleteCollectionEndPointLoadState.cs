@@ -61,6 +61,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
     }
 
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+      
+      _dataKeeper.SortCurrentAndOriginalData();
+      stateSetter();
+    }
+
+    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+      
+      // Data is already incomplete
+    }
+
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
@@ -169,18 +186,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       collectionEndPoint.EnsureDataComplete ();
       collectionEndPoint.CheckMandatory ();
-    }
-
-    public void OnDataMarkedComplete (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      _dataKeeper.SortCurrentAndOriginalData();
-    }
-
-    public void OnDataMarkedIncomplete (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      // ignore, data is already incomplete
     }
 
     #region Serialization

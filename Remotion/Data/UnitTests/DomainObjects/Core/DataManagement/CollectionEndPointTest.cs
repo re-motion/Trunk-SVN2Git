@@ -369,24 +369,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataComplete ()
     {
-      _loadStateMock.Expect (mock => mock.OnDataMarkedComplete (_endPointWithLoadStateMock));
+      Action stateSetter = null;
+
+      _loadStateMock
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPointWithLoadStateMock), Arg<Action>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[1]; });
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.MarkDataComplete();
 
       _loadStateMock.VerifyAllExpectations ();
+
+      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
+      stateSetter();
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
     }
 
     [Test]
     public void MarkDataIncomplete ()
     {
-      _loadStateMock.Expect (mock => mock.OnDataMarkedIncomplete (_endPointWithLoadStateMock));
+      Action stateSetter = null;
+
+      _loadStateMock
+          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPointWithLoadStateMock), Arg<Action>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[1]; });
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.MarkDataIncomplete ();
 
       _loadStateMock.VerifyAllExpectations ();
+
+      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
+      stateSetter ();
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
     }
 

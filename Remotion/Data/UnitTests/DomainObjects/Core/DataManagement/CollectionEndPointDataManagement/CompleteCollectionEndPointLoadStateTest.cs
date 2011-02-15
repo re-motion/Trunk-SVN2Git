@@ -81,6 +81,69 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void MarkDataComplete_DoesNothing ()
+    {
+      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called"));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void MarkDataIncomplete_RaisesEvent ()
+    {
+      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
+      _collectionEndPointMock
+          .Stub (stub => stub.ID)
+          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
+      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
+
+      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => { });
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _collectionEndPointMock));
+    }
+
+    [Test]
+    public void MarkDataIncomplete_ExecutesStateSetter_AndSynchronizesOppositeEndPoints ()
+    {
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      PrivateInvoke.SetNonPublicField (_loadState, "_unsynchronizedOppositeEndPoints", new List<IObjectEndPoint> (new[] { endPointMock }));
+
+      bool stateSetterCalled = false;
+
+      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
+      _collectionEndPointMock
+          .Stub (stub => stub.ID)
+          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
+      _collectionEndPointMock
+          .Expect (mock => mock.RegisterOppositeEndPoint (endPointMock))
+// ReSharper disable AccessToModifiedClosure
+          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
+// ReSharper restore AccessToModifiedClosure
+      _collectionEndPointMock.Replay ();
+
+      endPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+
+      Assert.That (stateSetterCalled, Is.True);
+    }
+
+    [Test]
     public void GetCollectionData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
@@ -444,64 +507,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           .Return (DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
 
       _loadState.CheckMandatory(_collectionEndPointMock);
-    }
-
-    [Test]
-    public void OnDataMarkedComplete_DoesNothing ()
-    {
-      _collectionEndPointMock.Replay();
-      _dataKeeperMock.Replay();
-
-      _loadState.OnDataMarkedComplete (_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void OnDataMarkedIncomplete_RaisesEvent ()
-    {
-      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
-      _collectionEndPointMock
-          .Stub (stub => stub.ID)
-          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
-
-      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _collectionEndPointMock));
-    }
-
-    [Test]
-    public void OnDataMarkedIncomplete_SynchronizesOppositeEndPoints ()
-    {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      PrivateInvoke.SetNonPublicField (_loadState, "_unsynchronizedOppositeEndPoints", new List<IObjectEndPoint> (new[]{ endPointMock }));
-
-      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
-      _collectionEndPointMock
-          .Stub (stub => stub.ID)
-          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
-      _collectionEndPointMock.Replay ();
-
-      endPointMock.Stub (mock => mock.GetDomainObjectReference()).Return (_relatedObject);
-      endPointMock.Expect (mock => mock.MarkSynchronized());
-      endPointMock.Replay();
-
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
-      _dataKeeperMock.Replay ();
-
-      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      endPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]

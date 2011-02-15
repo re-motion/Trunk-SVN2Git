@@ -71,6 +71,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void MarkDataComplete_SortsData ()
+    {
+      bool stateSetterCalled = false;
+      
+      _collectionEndPointMock.Replay ();
+
+      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());
+      _dataKeeperMock.Replay ();
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+
+      Assert.That (stateSetterCalled, Is.True);
+    }
+
+    [Test]
+    public void MarkDataIncomplete_DoesNothing ()
+    {
+      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Replay ();
+
+      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called."));
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void GetCollectionData ()
     {
       CheckOperationDelegatesToCompleteState (
@@ -200,32 +230,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void CheckMandatory ()
     {
       CheckOperationDelegatesToCompleteState (s => s.CheckMandatory (_collectionEndPointMock), s => s.CheckMandatory ());
-    }
-
-    [Test]
-    public void OnDataMarkedComplete_SortsData ()
-    {
-      _collectionEndPointMock.Replay ();
-
-      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData());
-      _dataKeeperMock.Replay ();
-
-      _loadState.OnDataMarkedComplete (_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void OnDataMarkedIncomplete_DoesNothing ()
-    {
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
-      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]
