@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -138,15 +139,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOppositeEndPoint ()
     {
-       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_relatedObject);
+       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      endPointMock.Expect (mock => mock.MarkUnsynchronized());
+      endPointMock.Replay();
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
       _dataKeeperMock.Replay();
 
-      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
 
+      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOriginalObject (_relatedObject));
+      endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Is.EqualTo (new[] { endPointMock }));
     }
 
     [Test]
@@ -465,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.Replay ();
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
-      
+
       _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
 
       _collectionEndPointMock.VerifyAllExpectations ();
@@ -475,16 +479,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void OnDataMarkedIncomplete_SynchronizesOppositeEndPoints ()
+    {
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      PrivateInvoke.SetNonPublicField (_loadState, "_unsynchronizedOppositeEndPoints", new List<IObjectEndPoint> (new[]{ endPointMock }));
+
+      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
+      _collectionEndPointMock
+          .Stub (stub => stub.ID)
+          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
+      _collectionEndPointMock.Replay ();
+
+      endPointMock.Stub (mock => mock.GetDomainObjectReference()).Return (_relatedObject);
+      endPointMock.Expect (mock => mock.MarkSynchronized());
+      endPointMock.Replay();
+
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.Replay ();
+
+      _loadState.OnDataMarkedIncomplete (_collectionEndPointMock);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations();
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();
       var state = new CompleteCollectionEndPointLoadState (dataKeeper, _clientTransaction);
+
+      var oppositeEndPoint = new SerializableObjectEndPointFake();
+      PrivateInvoke.SetNonPublicField (state, "_unsynchronizedOppositeEndPoints", new List<IObjectEndPoint> (new[] { oppositeEndPoint }));
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataKeeper, Is.Not.Null);
       Assert.That (result.ClientTransaction, Is.Not.Null);
+      Assert.That (result.UnsynchronizedOppositeEndPoints, Is.Not.Null);
+      Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
+
     }
   }
 }

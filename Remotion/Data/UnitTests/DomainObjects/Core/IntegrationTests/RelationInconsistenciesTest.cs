@@ -182,17 +182,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompany = Company.GetObject (newCompanyID);
 
       Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
-      // TODO 3737: Should only be 1 company, List should not contain new company
-      Assert.That (industrialSector.Companies.Count, Is.EqualTo (2)); // Note: An additional item has been added to the collection.
-      Assert.That (industrialSector.Companies, List.Contains (newCompany));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
+      Assert.That (industrialSector.Companies, List.Not.Contains (newCompany));
 
-      // TODO 3737: In a try catch block, try to set newCompany.IndustrialSector to a different value - an InvalidOperationExcpetion should occur
+      try
+      {
+        newCompany.IndustrialSector = CreateNewIndustrialSector();
+        Assert.Fail ("Expected InvalidOperationException.");
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo (
+          "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector' of object '" + newCompany.ID + "' "
+          + "cannot be changed because it is out of sync with the opposite property "
+           + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies'. "
+          + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method."));
+      }
     }
 
     [Test]
     [ExpectedException (
-        typeof (ArgumentException), 
-        ExpectedMessage = "The collection already contains an object with ID 'Company",
+        typeof (InvalidOperationException),
+        ExpectedMessage = "cannot be changed because it is out of sync with the opposite property",
         MatchType = MessageMatch.Contains)]
     public void ObjectLoaded_WithInconsistentForeignKey_OneMany_ProblemDetectedInAdd ()
     {

@@ -16,6 +16,7 @@
 // 
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -25,6 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public static void SetOppositeObjectID (ObjectEndPoint objectEndPoint, ObjectID newID)
     {
       PrivateInvoke.SetPublicProperty (objectEndPoint, "OppositeObjectID", newID);
+    }
+
+    public static IObjectEndPointSyncState GetSyncState (ObjectEndPoint objectEndPoint)
+    {
+      return (IObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
     }
   }
 }

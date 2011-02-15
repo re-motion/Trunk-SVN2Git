@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -32,6 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly ClientTransaction _clientTransaction;
+    private readonly List<IObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
     public CompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, ClientTransaction clientTransaction)
     {
@@ -40,6 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _dataKeeper = dataKeeper;
       _clientTransaction = clientTransaction;
+      _unsynchronizedOppositeEndPoints = new List<IObjectEndPoint> ();
     }
 
     public ICollectionEndPointDataKeeper DataKeeper
@@ -50,6 +53,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
+    }
+
+    public ReadOnlyCollection<IObjectEndPoint> UnsynchronizedOppositeEndPoints
+    {
+      get { return _unsynchronizedOppositeEndPoints.AsReadOnly(); }
     }
 
     public bool IsDataComplete ()
@@ -96,9 +104,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference());
-      // TODO 3737: _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint);
-      // TODO 3737: oppositeEndPoint.MarkAsUnsynchronized();
+      _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint);
+      oppositeEndPoint.MarkUnsynchronized();
     }
 
     public void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
@@ -204,7 +211,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
 
-      // TODO 3737: for each ep in _unsynchronizedEndPoints => _dataKeeper.RegisterOriginalItem (ep.GetDomainObjectReference()), ep.MarkAsSynchronized
+      foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints)
+      {
+        _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
+        oppositeEndPoint.MarkSynchronized ();
+      }
     }
 
     #region Serialization
@@ -212,15 +223,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public CompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      
       _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
+      _unsynchronizedOppositeEndPoints = new List<IObjectEndPoint>();
+       info.FillCollection (_unsynchronizedOppositeEndPoints);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      
       info.AddHandle (_dataKeeper);
       info.AddHandle (_clientTransaction);
+      info.AddCollection (_unsynchronizedOppositeEndPoints);
     }
 
     #endregion

@@ -26,6 +26,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   [Serializable]
   public class SerializableObjectEndPointFake : IObjectEndPoint
   {
+    public SerializableObjectEndPointFake ()
+    {
+    }
+
+    public SerializableObjectEndPointFake (FlattenedDeserializationInfo info)
+    {
+    }
+
     public bool IsNull
     {
       get { throw new NotImplementedException(); }
@@ -33,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      throw new NotImplementedException();
     }
 
     public RelationEndPointID ID

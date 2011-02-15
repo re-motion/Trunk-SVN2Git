@@ -51,19 +51,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_SyncState ()
     {
-      var state = GetSyncState (_endPoint);
+      var state = ObjectEndPointTestHelper.GetSyncState (_endPoint);
 
-      Assert.That (state, Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (state, Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
     public void MarkUnsynchronized_MarkSynchronized ()
     {
-      _endPoint.MarkUnsynchronized();
-      Assert.That (GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
-
       _endPoint.MarkSynchronized ();
-      Assert.That (GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      
+      _endPoint.MarkUnsynchronized();
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
@@ -111,6 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeObject_Invalid_IncludeDeleted ()
     {
+      _endPoint.MarkSynchronized ();
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -125,6 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectInvalidException))]
     public void GetOppositeObject_Invalid_ExcludeDeleted ()
     {
+      _endPoint.MarkSynchronized();
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -138,6 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalOppositeObject ()
     {
+      _endPoint.MarkSynchronized ();
       var originalOppositeObject = _endPoint.GetOppositeObject (true);
       _endPoint.CreateSetCommand (Order.NewObject ()).Perform ();
 
@@ -147,6 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalOppositeObject_Deleted ()
     {
+      _endPoint.MarkSynchronized ();
       var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
       _endPoint.CreateSetCommand (Order.NewObject ()).ExpandToAllRelatedObjects ().Perform ();
 
@@ -279,6 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateRemoveCommand ()
     {
+      _endPoint.MarkSynchronized();
       var order = Order.GetObject (_endPoint.OppositeObjectID);
       var command = (RelationEndPointModificationCommand) _endPoint.CreateRemoveCommand (order);
       Assert.That (command, Is.InstanceOfType (typeof (ObjectEndPointSetOneManyCommand)));
@@ -360,11 +365,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
       PrivateInvoke.SetNonPublicField (objectEndPoint, "_syncState", syncStateMock);
       return objectEndPoint;
-    }
-
-    private IObjectEndPointSyncState GetSyncState (ObjectEndPoint objectEndPoint)
-    {
-      return (IObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
     }
   }
 }

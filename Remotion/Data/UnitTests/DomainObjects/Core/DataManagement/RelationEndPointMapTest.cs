@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -277,6 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
@@ -363,28 +365,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       var expectedOppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var oppositeEndPoint = (VirtualObjectEndPoint) _map[expectedOppositeEndPointID];
       Assert.That (oppositeEndPoint, Is.Not.Null);
       Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+    }
+
+    [Test]
+    public void RegisterRealObjectEndPoint_WithNullValue ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, null);
+
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
     public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionAlreadyRegistered ()
     {
-      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (collectionEndPointID, new DomainObject[0]);
-
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+
+      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
+      collectionEndPointMock.Stub (stub => stub.ID).Return (collectionEndPointID);
+      collectionEndPointMock.Expect (mock => mock.RegisterOppositeEndPoint (Arg<IObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
+      collectionEndPointMock.Replay();
+      
+      PrivateInvoke.InvokeNonPublicMethod (_map, "Add", collectionEndPointMock);
+
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
-      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (collectionEndPoint.Collection, List.Contains (itemReference));
+      collectionEndPointMock.VerifyAllExpectations();
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
@@ -395,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       var itemReference = ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.OrderItem1);
       Assert.That (itemReference, Is.Not.Null);
@@ -405,6 +425,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
       var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (collectionEndPoint);
       Assert.That (dataKeeper.CollectionData.ToArray(), List.Contains (itemReference));
+
+      Assert.That (
+          ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), 
+          Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)),
+          "Because collection's state is incomplete.");
     }
 
     [Test]
@@ -413,7 +438,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
 
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
     }
 
     [Test]
