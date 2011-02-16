@@ -25,7 +25,7 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Framework
   /// and provides a <see cref="This"/> property that provides access to the composed interface.
   /// </summary>
   /// <typeparam name="TComposedInterface">The composed interface of the derived class.</typeparam>
-  public abstract class ComposedDomainObject<TComposedInterface> : IDomainObject
+  public abstract class ComposedDomainObject<TComposedInterface> : IDomainObject, IHasCompleteInterface<TComposedInterface>
       where TComposedInterface: class, IDomainObject
   {
     /// <summary>

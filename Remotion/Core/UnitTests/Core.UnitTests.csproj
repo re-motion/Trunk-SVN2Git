@@ -214,6 +214,8 @@
     <Compile Include="Logging\ILogManagerImplementationTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
+    <Compile Include="Mixins\TestDomain\ClassWithHasCompleteInterfaces.cs" />
     <Compile Include="Mixins\TestDomain\GeneratedTypes\MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation.cs" />
     <Compile Include="Mixins\TestDomain\GeneratedTypes\ClassWithMixedMixin_Mixed_Generated.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />

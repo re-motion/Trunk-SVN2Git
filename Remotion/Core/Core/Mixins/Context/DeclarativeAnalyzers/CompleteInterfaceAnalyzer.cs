@@ -17,6 +17,7 @@
 using System;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
@@ -30,13 +31,24 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
       _configurationBuilder = configurationBuilder;
     }
 
-    public virtual void Analyze (Type interfaceType)
+    public void Analyze (Type type)
     {
-      foreach (CompleteInterfaceAttribute interfaceAttribute in interfaceType.GetCustomAttributes (typeof (CompleteInterfaceAttribute), false))
-        AnalyzeCompleteInterfaceAttribute (interfaceType, interfaceAttribute);
+      foreach (CompleteInterfaceAttribute interfaceAttribute in type.GetCustomAttributes (typeof (CompleteInterfaceAttribute), false))
+        AnalyzeCompleteInterfaceAttribute (type, interfaceAttribute);
+
+      var completeInterfaceMarkers = (from ifc in type.GetInterfaces()
+                                      where ifc.IsGenericType
+                                      let genericTypeDef = ifc.GetGenericTypeDefinition()
+                                      where genericTypeDef == typeof (IHasCompleteInterface<>)
+                                      let completeInterfaceType = ifc.GetGenericArguments ().Single ()
+                                      where !completeInterfaceType.ContainsGenericParameters
+                                      select completeInterfaceType).ToArray();
+
+      if (completeInterfaceMarkers.Length > 0)
+        _configurationBuilder.ForClass (type).AddCompleteInterfaces (completeInterfaceMarkers);
     }
 
-    public virtual void AnalyzeCompleteInterfaceAttribute (Type interfaceType, CompleteInterfaceAttribute completeInterfaceAttribute)
+    public void AnalyzeCompleteInterfaceAttribute (Type interfaceType, CompleteInterfaceAttribute completeInterfaceAttribute)
     {
       _configurationBuilder.ForClass (completeInterfaceAttribute.TargetType).AddCompleteInterface (interfaceType);
     }

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
@@ -64,19 +65,58 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     [Test]
     public void Analyze ()
     {
-      CompleteInterfaceAnalyzer analyzer = _mockRepository.StrictMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
+      var intBuilderMock = MockRepository.GenerateStrictMock<ClassContextBuilder> (typeof (int));
+      var stringBuilderMock = MockRepository.GenerateStrictMock<ClassContextBuilder> (typeof (string));
 
+      _configurationBuilderMock.Expect (mock => mock.ForClass (typeof (int))).Return (intBuilderMock);
+      _configurationBuilderMock.Expect (mock => mock.ForClass (typeof (string))).Return (stringBuilderMock);
+      _configurationBuilderMock.Replay();
+
+      intBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes))).Return (null);
+      intBuilderMock.Replay ();
+
+      stringBuilderMock.Expect (mock => mock.AddCompleteInterface (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes))).Return (null);
+      stringBuilderMock.Replay ();
+
+      var analyzer = new CompleteInterfaceAnalyzer (_configurationBuilderMock);
       analyzer.Analyze (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes));
-      LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);
 
-      CompleteInterfaceAttribute[] attributes = (CompleteInterfaceAttribute[]) typeof (IInterfaceWithMultipleCompleteInterfaceAttributes).GetCustomAttributes (typeof (CompleteInterfaceAttribute), false);
+      _configurationBuilderMock.VerifyAllExpectations();
+      intBuilderMock.VerifyAllExpectations ();
+      stringBuilderMock.VerifyAllExpectations ();
+    }
 
-      analyzer.AnalyzeCompleteInterfaceAttribute (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes), attributes[0]); // expect
-      analyzer.AnalyzeCompleteInterfaceAttribute (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes), attributes[1]); // expect
+    [Test]
+    public void Analyze_IncludesClasses_ImplementingIHasCompleteInterface ()
+    {
+      var classBuilderMock = MockRepository.GenerateStrictMock<ClassContextBuilder> (typeof (int));
 
-      _mockRepository.ReplayAll ();
-      analyzer.Analyze (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes));
-      _mockRepository.VerifyAll ();
+      _configurationBuilderMock.Expect (mock => mock.ForClass (typeof (ClassWithHasCompleteInterfaces))).Return (classBuilderMock);
+      _configurationBuilderMock.Replay ();
+
+      classBuilderMock
+          .Expect (mock => mock.AddCompleteInterfaces (
+              typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1), 
+              typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)))
+          .Return (null);
+      classBuilderMock.Replay ();
+
+      var analyzer = new CompleteInterfaceAnalyzer (_configurationBuilderMock);
+      analyzer.Analyze (typeof (ClassWithHasCompleteInterfaces));
+
+      _configurationBuilderMock.VerifyAllExpectations ();
+      classBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Analyze_IgnoresClasses_ImplementingIHasCompleteInterfaceWithGenericParameters ()
+    {
+      _configurationBuilderMock.Replay ();
+
+      var analyzer = new CompleteInterfaceAnalyzer (_configurationBuilderMock);
+      analyzer.Analyze (typeof (BaseClassWithHasCompleteInterfaces<>));
+
+      _configurationBuilderMock.AssertWasNotCalled (mock => mock.ForClass (Arg<Type>.Is.Anything));
     }
   }
 }

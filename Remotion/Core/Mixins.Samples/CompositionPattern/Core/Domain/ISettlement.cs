@@ -26,7 +26,6 @@ namespace Remotion.Mixins.Samples.CompositionPattern.Core.Domain
   /// because <see cref="Settlement"/> derives from <see cref="ComposedDomainObject{TComposedInterface}"/>, passing <see cref="ISettlement"/> as
   /// the type parameter.
   /// </summary>
-  [CompleteInterface (typeof (Settlement))]
   public interface ISettlement : ISettlementImplementation, IDocument, ITenantBoundObject
   {
   }
