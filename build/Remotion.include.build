@@ -701,14 +701,15 @@
   <if test="${make-relinq-zips}">
     <zip zipfile="${relinq-zipfile.name}">
       <fileset basedir="${build.basedir}">
-      <include name="**/Remotion.Data.Linq.*" />
-      <include name="**/Remotion.Data.Linq.SqlBackend.*" />
-      <include name="relinq-release-notes/**" />
-      <exclude name="*/bin/documentation/**" />
+        <include name="**/Remotion.Data.Linq.*" />
+        <include name="**/Remotion.Data.Linq.SqlBackend.*" />
+        <include name="relinq-release-notes/**" />
+        <exclude name="*/bin/documentation/**" />
       </fileset>
 
       <fileset basedir="${solution.basedir}\Remotion">
-      <include name="license/**/*"/>
+        <include name="license/**/*"/>
+        <exclude name="license/LGPLv2.1.txt" />
       </fileset>
     </zip>
   </if>
@@ -719,25 +720,26 @@
     <if test="${make-relinq-zips}">
       <zip zipfile="${relinq-sourcezipfile.name}">
         <fileset basedir="${solution.basedir}">
-        <include name="Remotion-Linq.sln" />
-        <include name="prereq/Assemblies/Rhino.Mocks*" />
-        <include name="prereq/Assemblies/nunit*" />
-        <include name="prereq/Assemblies/ThirdPartyDependencies.txt" />
-        <include name="Remotion/Data/Linq/**" />
-        <include name="Remotion/Data/Linq.SqlBackend/*" />
-        <include name="Remotion/Data/Linq.UnitTests/**" />
-        <include name="Remotion/license/**/*"/>
+          <include name="Remotion-Linq.sln" />
+          <include name="prereq/Assemblies/Rhino.Mocks*" />
+          <include name="prereq/Assemblies/nunit*" />
+          <include name="prereq/Assemblies/ThirdPartyDependencies.txt" />
+          <include name="Remotion/Data/Linq/**" />
+          <include name="Remotion/Data/Linq.SqlBackend/*" />
+          <include name="Remotion/Data/Linq.UnitTests/**" />
+          <include name="Remotion/license/**/*"/>
 
-        <exclude name="*.log" />
-        <exclude name="*.snk" />
-        <exclude name="*.suo" />
-        <exclude name="*.user" />
-        <exclude name="Remotion/**/obj/**" />
-        <exclude name="Remotion/**/bin/**" />
-        <exclude name="Remotion/**/*.zip" />
-        <exclude name="Remotion/**/*.dll" />
-        <exclude name="Remotion/**/*.exe" />
-        <exclude name="Remotion/**/*.pdb" />
+          <exclude name="*.log" />
+          <exclude name="*.snk" />
+          <exclude name="*.suo" />
+          <exclude name="*.user" />
+          <exclude name="Remotion/**/obj/**" />
+          <exclude name="Remotion/**/bin/**" />
+          <exclude name="Remotion/**/*.zip" />
+          <exclude name="Remotion/**/*.dll" />
+          <exclude name="Remotion/**/*.exe" />
+          <exclude name="Remotion/**/*.pdb" />
+          <exclude name="Remotion/license/LGPLv2.1.txt" />  
         </fileset>
       </zip>
     </if>
