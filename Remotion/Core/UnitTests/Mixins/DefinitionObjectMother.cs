@@ -267,5 +267,10 @@ namespace Remotion.UnitTests.Mixins
       var builder = new TargetClassDefinitionBuilder();
       return builder.Build (context);
     }
+
+    public static void AddRequiringDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase dependency)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (requirement.RequiringDependencies, "Add", dependency);
+    }
   }
 }

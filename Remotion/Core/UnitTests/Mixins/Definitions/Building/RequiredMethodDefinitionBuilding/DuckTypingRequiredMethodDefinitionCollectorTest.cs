@@ -110,9 +110,28 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building.RequiredMethodDefinitio
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The dependency 'IInterface' (required by mixin(s)  applied to class "
-        + "'System.Object') is not fulfilled - public or protected method 'Void Method1()' could not be found on the target class.")]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
+        "The dependency 'IBaseType2' (required by mixin(s) 'System.String' applied to class 'System.Object') is not fulfilled - public or protected "
+        + "method 'System.String IfcMethod()' could not be found on the target class.")]
     public void CreateRequiredMethodDefinitions_NoMatch ()
+    {
+      var targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
+      var requiringMixin = DefinitionObjectMother.CreateMixinDefinition (targetClassDefinition, typeof (string));
+
+      var dependency = DefinitionObjectMother.CreateTargetCallDependencyDefinition (requiringMixin);
+      var requirement = dependency.RequiredType;
+      DefinitionObjectMother.AddRequiringDependency (requirement, dependency);
+      
+      var builder = new DuckTypingRequiredMethodDefinitionCollector (targetClassDefinition);
+
+      builder.CreateRequiredMethodDefinitions (requirement).ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
+        "The dependency 'IInterface' (required by a complete interface) is not fulfilled - public or protected method 'Void Method1()' could not be "
+        + "found on the target class.")]
+    public void CreateRequiredMethodDefinitions_NoMatch_NoRequiringMixin ()
     {
       var targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));
 
