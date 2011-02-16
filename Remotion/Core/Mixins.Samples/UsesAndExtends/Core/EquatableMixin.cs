@@ -23,12 +23,11 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.Core
   public class EquatableMixin<[BindToTargetType]T> : Mixin<T>, IEquatable<T>
      where T : class
   {
-    private FieldInfo[] _targetFields;
+    private static readonly FieldInfo[] s_targetFields;
 
-    protected override void OnInitialized ()
+    static EquatableMixin()
     {
-      base.OnInitialized ();
-      _targetFields = typeof (T).GetFields (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      s_targetFields = typeof (T).GetFields (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
     }
 
     bool IEquatable<T>.Equals (T other)
@@ -36,13 +35,15 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.Core
       if (other == null)
         return false;
 
-      foreach (FieldInfo field in _targetFields)
+      for (int i = 0; i < s_targetFields.Length; i++)
       {
-        object thisFieldValue = field.GetValue (Target);
-        object otherFieldValue = field.GetValue (other);
+        object thisFieldValue = s_targetFields[i].GetValue (Target);
+        object otherFieldValue = s_targetFields[i].GetValue (other);
+        
         if (!Equals (thisFieldValue, otherFieldValue))
           return false;
       }
+
       return true;
     }
 
@@ -55,9 +56,9 @@ namespace Remotion.Mixins.Samples.UsesAndExtends.Core
     [OverrideTarget]
     protected new int GetHashCode ()
     {
-      object[] fieldValues = new object[_targetFields.Length];
+      var fieldValues = new object[s_targetFields.Length];
       for (int i = 0; i < fieldValues.Length; ++i)
-        fieldValues[i] = _targetFields[i].GetValue (Target);
+        fieldValues[i] = s_targetFields[i].GetValue (Target);
       
       return EqualityUtility.GetRotatedHashCode (fieldValues);
     }
