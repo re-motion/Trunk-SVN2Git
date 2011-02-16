@@ -21,7 +21,7 @@ namespace Remotion.Mixins
 {
   /// <summary>
   /// Acts as a convenience base class for domain objects in the mixin-based composition pattern. Provides a <see cref="This"/> property that 
-  /// allows access to the composed interface, and a <see cref="NewObject{TComposite}"/> class that acts as a factory method for subclasses.
+  /// allows access to the composed interface, and a <see cref="NewObject{TComposite}"/> factory method for subclasses.
   /// </summary>
   /// <typeparam name="TComposedInterface">The composed interface of the derived class. This interface defines the members available via
   /// the <see cref="This"/> property. See the Remarks section for details. Each composed interface can only be associated with one single subclass
