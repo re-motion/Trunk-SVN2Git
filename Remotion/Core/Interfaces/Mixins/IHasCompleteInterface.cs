@@ -30,7 +30,7 @@ namespace Remotion.Mixins
   /// class has the same effect as marking the respective <typeparamref name="TInterface"/> with the <see cref="CompleteInterfaceAttribute"/>.
   /// </para>
   /// <para>
-  /// The <see cref="IHasCompleteInterface{TInterface}"/> is automatically taken into account when the declarative mixin configuration is analyzed.
+  /// <see cref="IHasCompleteInterface{TInterface}"/> is automatically taken into account when the declarative mixin configuration is analyzed.
   /// When building a mixin configuration using the fluent mixin building APIs (<see cref="M:Remotion.Mixins.MixinConfiguration.BuildNew()"/> and 
   /// similar), it is not automatically taken into account. Register the interface by hand using 
   /// <see cref="M:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.AddCompleteInterface{TInterface}()"/>.
