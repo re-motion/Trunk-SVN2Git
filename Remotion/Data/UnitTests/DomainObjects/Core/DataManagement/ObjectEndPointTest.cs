@@ -51,19 +51,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_SyncState ()
     {
-      var state = ObjectEndPointTestHelper.GetSyncState (_endPoint);
-
-      Assert.That (state, Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (_endPoint.IsSynchronized, Is.False);
     }
 
     [Test]
     public void MarkUnsynchronized_MarkSynchronized ()
     {
+      Assert.That (_endPoint.IsSynchronized, Is.False);
+
       _endPoint.MarkSynchronized ();
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (_endPoint.IsSynchronized, Is.True);
       
       _endPoint.MarkUnsynchronized();
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (_endPoint.IsSynchronized, Is.False);
     }
 
     [Test]

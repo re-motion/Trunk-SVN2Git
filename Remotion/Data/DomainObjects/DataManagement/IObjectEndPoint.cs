@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     ObjectID OppositeObjectID { get; }
     ObjectID OriginalOppositeObjectID { get; }
 
+    bool IsSynchronized { get; }
     void MarkSynchronized ();
     void MarkUnsynchronized ();
 

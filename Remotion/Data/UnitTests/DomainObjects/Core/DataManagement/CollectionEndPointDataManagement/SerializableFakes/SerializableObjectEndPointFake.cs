@@ -149,6 +149,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public void MarkSynchronized ()
     {
       throw new NotImplementedException();

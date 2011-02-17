@@ -41,6 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void IsSynchronized ()
+    {
+      Assert.That (_nullEndPoint.IsSynchronized, Is.True);
+    }
+
+    [Test]
     public void Definition ()
     {
       Assert.That (_nullEndPoint.Definition, Is.SameAs (_definition));
