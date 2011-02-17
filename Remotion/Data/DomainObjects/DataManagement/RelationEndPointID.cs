@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -60,20 +61,45 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("declaringType", declaringType);
       ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
 
+      return CreateViaPropertyAccessorData (
+          objectID, 
+          "shortPropertyName", 
+          cache => cache.GetMandatoryPropertyAccessorData (declaringType, shortPropertyName));
+    }
+
+    public static RelationEndPointID Create<TDomainObject, TRelation> (
+        TDomainObject domainObject, 
+        Expression<Func<TDomainObject, TRelation>> propertyAccessExpression)
+        where TDomainObject : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
+
+      return CreateViaPropertyAccessorData (
+          domainObject.ID,
+          "propertyAccessExpression",
+          cache => cache.GetMandatoryPropertyAccessorData (propertyAccessExpression));
+    }
+
+    private static RelationEndPointID CreateViaPropertyAccessorData (
+        ObjectID objectID, 
+        string argumentName, 
+        Func<PropertyAccessorDataCache, PropertyAccessorData> dataGetter)
+    {
       PropertyAccessorData data;
       try
       {
-        data = objectID.ClassDefinition.PropertyAccessorDataCache.GetMandatoryPropertyAccessorData (declaringType, shortPropertyName);
+        data = dataGetter (objectID.ClassDefinition.PropertyAccessorDataCache);
       }
       catch (MappingException ex)
       {
-        throw new ArgumentException (ex.Message, "shortPropertyName", ex);
+        throw new ArgumentException (ex.Message, argumentName, ex);
       }
 
       if (data.RelationEndPointDefinition == null)
       {
         var message = string.Format ("The property '{0}' is not a relation property.", data.PropertyIdentifier);
-        throw new ArgumentException (message, "shortPropertyName");
+        throw new ArgumentException (message, argumentName);
       }
 
       return new RelationEndPointID (objectID, data.RelationEndPointDefinition);

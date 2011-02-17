@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Create_WithType_AndPropertyName ()
+    public void Create_WithTypeAndPropertyName ()
     {
       var endPointID = RelationEndPointID.Create (_objectID, typeof (Order), "OrderTicket");
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderJoe'.\r\nParameter name: shortPropertyName")]
-    public void Create_WithType_AndPropertyName_NonExistingProperty ()
+    public void Create_WithTypeAndPropertyName_NonExistingProperty ()
     {
       RelationEndPointID.Create (_objectID, typeof (Order), "OrderJoe");
     }
@@ -114,9 +114,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' is not a relation property.\r\n"
         + "Parameter name: shortPropertyName")]
-    public void Create_WithType_AndPropertyName_NonRelationProperty ()
+    public void Create_WithTypeAndPropertyName_NonRelationProperty ()
     {
       RelationEndPointID.Create (_objectID, typeof (Order), "OrderNumber");
+    }
+
+    [Test]
+    public void Create_WithExpression ()
+    {
+      var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
+      var endPointID = RelationEndPointID.Create (instance, o => o.OrderTicket);
+
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product'.\r\nParameter name: propertyAccessExpression")]
+    public void Create_WithExpression_NonExistingProperty ()
+    {
+      var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
+      RelationEndPointID.Create (instance, o => ((OrderItem) (object) o).Product);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' is not a relation property.\r\n"
+        + "Parameter name: propertyAccessExpression")]
+    public void Create_WithExpression_NonRelationProperty ()
+    {
+      var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
+      RelationEndPointID.Create (instance, o => o.OrderNumber);
     }
 
     [Test]
