@@ -163,6 +163,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void GetUnsynchronizedOppositeEndPoints ()
+    {
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints(), Is.Empty);
+    }
+
+    [Test]
     public void CreateSetCollectionCommand ()
     {
       var domainObjectCollection = new DomainObjectCollection ();

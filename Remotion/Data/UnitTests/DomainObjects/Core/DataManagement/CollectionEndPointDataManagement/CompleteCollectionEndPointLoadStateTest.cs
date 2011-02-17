@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOppositeEndPoint ()
     {
-       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
       endPointMock.Expect (mock => mock.MarkUnsynchronized());
       endPointMock.Replay();
 
@@ -213,7 +213,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOriginalObject (_relatedObject));
       endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Is.EqualTo (new[] { endPointMock }));
     }
 
     [Test]
@@ -232,6 +231,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _dataKeeperMock.VerifyAllExpectations ();
       _collectionEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GetUnsynchronizedOppositeEndPoints_Empty ()
+    {
+      var result = _loadState.GetUnsynchronizedOppositeEndPoints();
+
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    public void GetUnsynchronizedOppositeEndPoints_NonEmpty ()
+    {
+      var endPointStub1 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointStub2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub1);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub2);
+      
+      var result = _loadState.GetUnsynchronizedOppositeEndPoints ();
+
+      Assert.That (result, Is.EqualTo (new[] { endPointStub1, endPointStub2 }));
     }
 
     [Test]
@@ -523,8 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataKeeper, Is.Not.Null);
       Assert.That (result.ClientTransaction, Is.Not.Null);
-      Assert.That (result.UnsynchronizedOppositeEndPoints, Is.Not.Null);
-      Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
+      Assert.That (result.GetUnsynchronizedOppositeEndPoints().Count, Is.EqualTo (1));
 
     }
   }

@@ -55,11 +55,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _clientTransaction; }
     }
 
-    public ReadOnlyCollection<IObjectEndPoint> UnsynchronizedOppositeEndPoints
-    {
-      get { return _unsynchronizedOppositeEndPoints.AsReadOnly(); }
-    }
-
     public bool IsDataComplete ()
     {
       return true;
@@ -136,6 +131,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       collectionEndPoint.MarkDataIncomplete ();
       collectionEndPoint.UnregisterOppositeEndPoint (oppositeEndPoint);
+    }
+
+    public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
+    {
+      return _unsynchronizedOppositeEndPoints.AsReadOnly();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (
