@@ -180,6 +180,7 @@
     <Compile Include="DataManagement\ObjectEndPointDataManagement\IObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\SynchronizedObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointSyncState.cs" />
+    <Compile Include="DomainImplementation\ClientTransactionSyncService.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\InvalidDomainObjectManagerBase.cs" />
