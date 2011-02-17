@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -190,6 +191,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("UnregisterOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
+    {
+      return Array.AsReadOnly (new IObjectEndPoint[0]);
     }
 
     public void EnsureDataComplete ()

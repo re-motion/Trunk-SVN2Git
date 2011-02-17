@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -588,6 +589,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointWithLoadStateMock.UnregisterOppositeEndPoint (oppositeEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetUnsynchronizedOppositeEndPoints ()
+    {
+      var fakeEndPoints = Array.AsReadOnly (new IObjectEndPoint[0]);
+      _loadStateMock.Expect (mock => mock.GetUnsynchronizedOppositeEndPoints ()).Return(fakeEndPoints);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.GetUnsynchronizedOppositeEndPoints();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeEndPoints));
     }
 
     [Test]

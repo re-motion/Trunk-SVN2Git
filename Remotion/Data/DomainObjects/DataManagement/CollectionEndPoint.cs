@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
@@ -215,6 +216,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.UnregisterOppositeEndPoint (this, oppositeEndPoint);
+    }
+
+    public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
+    {
+      return _loadState.GetUnsynchronizedOppositeEndPoints();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
