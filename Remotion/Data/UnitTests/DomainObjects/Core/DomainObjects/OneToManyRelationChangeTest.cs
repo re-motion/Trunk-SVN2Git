@@ -336,34 +336,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouched_FromOneProperty ()
     {
       CheckTouching (delegate { _order1.Customer = _newCustomer; }, _order1, "Customer", 
-        new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-        new RelationEndPointID (_newCustomer.ID, typeof (Customer).FullName + ".Orders"),
-        new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+        RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+        RelationEndPointID.Create(_newCustomer.ID, typeof (Customer).FullName + ".Orders"),
+        RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
 
     [Test]
     public void HasBeenTouched_FromManyPropertyAdd ()
     {
       CheckTouching (delegate { _newCustomer.Orders.Add (_order1); }, _order1, "Customer",
-          new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-          new RelationEndPointID (_newCustomer.ID, typeof (Customer).FullName + ".Orders"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+          RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+          RelationEndPointID.Create(_newCustomer.ID, typeof (Customer).FullName + ".Orders"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
 
     [Test]
     public void HasBeenTouched_FromManyPropertyRemove ()
     {
       CheckTouching (delegate { _oldCustomer.Orders.Remove (_order1); }, _order1, "Customer",
-          new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+          RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
 
     [Test]
     public void HasBeenTouched_FromManyPropertyReplaceWithNull ()
     {
       CheckTouching (delegate { _oldCustomer.Orders[_oldCustomer.Orders.IndexOf (_order1)] = null; }, _order1, "Customer",
-          new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+          RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
 
     [Test]
@@ -374,9 +374,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsFalse (newOrder.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"].HasBeenTouched, "newOrder ObjectID touched");
 
       CheckTouching (delegate { _oldCustomer.Orders[_oldCustomer.Orders.IndexOf (_order1)] = newOrder; }, _order1, "Customer",
-        new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-        new RelationEndPointID (newOrder.ID, typeof (Order).FullName + ".Customer"),
-        new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+        RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+        RelationEndPointID.Create(newOrder.ID, typeof (Order).FullName + ".Customer"),
+        RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
       
       Assert.IsTrue (newOrder.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"].HasBeenTouched, "newOrder ObjectID touched");
     }
@@ -385,17 +385,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouched_FromOneProperty_OriginalValue ()
     {
       CheckTouching (delegate { _order1.Customer = _order1.Customer; }, _order1, "Customer",
-          new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+          RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
 
     [Test]
     public void HasBeenTouched_FromManyPropertyReplace_OriginalValue ()
     {
       CheckTouching (delegate { _oldCustomer.Orders[_oldCustomer.Orders.IndexOf (_order1)] = _order1; }, _order1, "Customer",
-          new RelationEndPointID (_order1.ID, typeof (Order).FullName + ".Customer"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"),
-          new RelationEndPointID (_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
+          RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"),
+          RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
     }
     
     [Test]

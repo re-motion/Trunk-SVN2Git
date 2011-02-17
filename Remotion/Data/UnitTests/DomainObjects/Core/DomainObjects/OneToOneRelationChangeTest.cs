@@ -410,10 +410,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order oldOrder = _newOrderTicket.Order;
 
       CheckTouching (delegate { _order.OrderTicket = _newOrderTicket; }, _newOrderTicket, "Order",
-          new RelationEndPointID (_order.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (oldOrder.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"),
-          new RelationEndPointID (_newOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
+          RelationEndPointID.Create(_order.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(oldOrder.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"),
+          RelationEndPointID.Create(_newOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
     }
 
     [Test]
@@ -424,10 +424,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsFalse (_oldOrderTicket.InternalDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].HasBeenTouched);
 
       CheckTouching (delegate { _newOrderTicket.Order = _order; }, _newOrderTicket, "Order",
-          new RelationEndPointID (_order.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (oldOrder.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"),
-          new RelationEndPointID (_newOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
+          RelationEndPointID.Create(_order.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(oldOrder.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"),
+          RelationEndPointID.Create(_newOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
 
       Assert.IsTrue (_oldOrderTicket.InternalDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].HasBeenTouched);
     }
@@ -436,16 +436,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouched_VirtualSide_OriginalValue ()
     {
       CheckTouching (delegate { _order.OrderTicket = _order.OrderTicket; }, _order.OrderTicket, "Order",
-          new RelationEndPointID (_order.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
+          RelationEndPointID.Create(_order.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
     }
 
     [Test]
     public void HasBeenTouched_RealSide_OriginalValue ()
     {
       CheckTouching (delegate { _oldOrderTicket.Order = _order; }, _oldOrderTicket, "Order",
-          new RelationEndPointID (_order.ID, typeof (Order).FullName + ".OrderTicket"),
-          new RelationEndPointID (_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
+          RelationEndPointID.Create(_order.ID, typeof (Order).FullName + ".OrderTicket"),
+          RelationEndPointID.Create(_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
     }
 
     [Test]

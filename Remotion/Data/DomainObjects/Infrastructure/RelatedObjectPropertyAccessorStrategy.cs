@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public RelationEndPointID CreateRelationEndPointID (PropertyAccessor propertyAccessor)
     {
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
-      return new RelationEndPointID (propertyAccessor.DomainObject.ID, propertyAccessor.PropertyData.RelationEndPointDefinition);
+      return RelationEndPointID.Create(propertyAccessor.DomainObject.ID, propertyAccessor.PropertyData.RelationEndPointDefinition);
     }
 
     public IRelationEndPoint GetRelationEndPoint (PropertyAccessor propertyAccessor, ClientTransaction transaction)

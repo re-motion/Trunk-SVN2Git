@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderTicketContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer();
 
       DataContainer orderContainer = _persistenceManager.LoadRelatedDataContainer (
-          orderTicketContainer, new RelationEndPointID (orderTicketContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+          orderTicketContainer, RelationEndPointID.Create(orderTicketContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
       DataContainerChecker checker = new DataContainerChecker();
       checker.Check (TestDataContainerFactory.CreateOrder1DataContainer(), orderContainer);
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer();
 
       DataContainer orderTicketContainer = _persistenceManager.LoadRelatedDataContainer (
-          orderContainer, new RelationEndPointID (orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+          orderContainer, RelationEndPointID.Create(orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
 
       DataContainerChecker checker = new DataContainerChecker();
       checker.Check (TestDataContainerFactory.CreateOrderTicket1DataContainer(), orderTicketContainer);
@@ -180,8 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       DataContainer relatedDataContainer = _persistenceManager.LoadRelatedDataContainer (
           dataContainer,
-          new RelationEndPointID (
-              dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"));
+          RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"));
 
       Assert.IsNull (relatedDataContainer);
     }
@@ -195,8 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       DataContainer relatedDataContainer = _persistenceManager.LoadRelatedDataContainer (
           dataContainer,
-          new RelationEndPointID (
-              dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional"));
+          RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional"));
 
       Assert.IsNull (relatedDataContainer);
     }
@@ -211,8 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       {
         _persistenceManager.LoadRelatedDataContainer (
             dataContainer,
-            new RelationEndPointID (
-                dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional"));
+            RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyNonOptional"));
 
         Assert.Fail ("Test expects a PersistenceException.");
       }
@@ -245,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       try
       {
         _persistenceManager.LoadRelatedDataContainer (
-            dataContainer, new RelationEndPointID (dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"));
+            dataContainer, RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"));
         Assert.Fail ("Test expects a PersistenceException.");
       }
       catch (PersistenceException e)
@@ -277,8 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       _persistenceManager.LoadRelatedDataContainer (
           dataContainer,
-          new RelationEndPointID (
-              dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
+          RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
     }
 
     [Test]
@@ -291,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer dataContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.PartnerWithoutCeo);
 
       _persistenceManager.LoadRelatedDataContainer (
-          dataContainer, new RelationEndPointID (dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
+          dataContainer, RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
     }
 
     [Test]
@@ -303,8 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       DataContainer relatedContainer = _persistenceManager.LoadRelatedDataContainer (
           classWithGuidKey,
-          new RelationEndPointID (
-              classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
+          RelationEndPointID.Create(classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
 
       ObjectID expectedID = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
@@ -326,9 +321,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       _persistenceManager.LoadRelatedDataContainer (
           classWithGuidKey,
-          new RelationEndPointID (
-              classWithGuidKey.ID,
-              "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
+          RelationEndPointID.Create(classWithGuidKey.ID,
+                 "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsNonOptional"));
     }
 
     [Test]
@@ -344,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       _persistenceManager.LoadRelatedDataContainer (
           dataContainer,
-          new RelationEndPointID (dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRelation.ClassWithGuidKey"));
+          RelationEndPointID.Create(dataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRelation.ClassWithGuidKey"));
     }
 
     [Test]
@@ -353,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
 
       DataContainer officialContainer = _persistenceManager.LoadRelatedDataContainer (
-          orderContainer, new RelationEndPointID (orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"));
+          orderContainer, RelationEndPointID.Create(orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"));
 
       Assert.IsNotNull (officialContainer);
       Assert.AreEqual ("UnitTestStorageProviderStub", officialContainer.ID.StorageProviderDefinition.Name, "StorageProviderID");
@@ -365,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadRelatedDataContainers ()
     {
       DataContainerCollection collection = _persistenceManager.LoadRelatedDataContainers (
-          new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.IsNotNull (collection);
       Assert.AreEqual (2, collection.Count, "DataContainerCollection.Count");
@@ -382,7 +376,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadRelatedDataContainersForNonVirtualEndPoint ()
     {
       _persistenceManager.LoadRelatedDataContainers (
-          new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+          RelationEndPointID.Create(DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
     }
 
     [Test]
@@ -395,14 +389,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadEmptyRelatedDataContainersForMandatoryRelation ()
     {
       _persistenceManager.LoadRelatedDataContainers (
-          new RelationEndPointID (DomainObjectIDs.OrderWithoutOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+          RelationEndPointID.Create(DomainObjectIDs.OrderWithoutOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]
     public void LoadEmptyRelatedDataContainersForMandatoryRelationWithOptionalOppositeEndPoint ()
     {
       DataContainerCollection orderContainers = _persistenceManager.LoadRelatedDataContainers (
-          new RelationEndPointID (DomainObjectIDs.Customer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(DomainObjectIDs.Customer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.AreEqual (0, orderContainers.Count);
     }
@@ -415,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
       _persistenceManager.LoadRelatedDataContainer (
-          orderContainer, new RelationEndPointID (orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+          orderContainer, RelationEndPointID.Create(orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]
@@ -425,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadRelatedDataContainersForOneToOneRelation ()
     {
       _persistenceManager.LoadRelatedDataContainers (
-          new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+          RelationEndPointID.Create(DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
     [Test]
@@ -498,7 +492,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadRelatedDataContainerWithInvalidClassIDOverEndPoint ()
     {
       DataContainer orderContainer = CreateOrder1DataContainerWithInvalidCustomer();
-      RelationEndPointID endPointID = new RelationEndPointID (orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
+      RelationEndPointID endPointID = RelationEndPointID.Create(orderContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
 
       _persistenceManager.LoadRelatedDataContainer (orderContainer, endPointID);
     }
@@ -512,7 +506,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       ObjectID companyID = new ObjectID ("Company", new Guid ("{C3DB20D6-138E-4ced-8576-E81BB4B7961F}"));
 
       DataContainer companyContainer = _persistenceManager.LoadDataContainer (companyID);
-      RelationEndPointID endPointID = new RelationEndPointID (companyContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo");
+      RelationEndPointID endPointID = RelationEndPointID.Create(companyContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo");
 
       _persistenceManager.LoadRelatedDataContainer (companyContainer, endPointID);
     }
@@ -525,7 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       ObjectID customerID = new ObjectID ("Customer", new Guid ("{DA658F26-8107-44ce-9DD0-1804503ECCAF}"));
 
-      RelationEndPointID endPointID = new RelationEndPointID (customerID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      RelationEndPointID endPointID = RelationEndPointID.Create(customerID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
 
       _persistenceManager.LoadRelatedDataContainers (endPointID);
     }
@@ -538,8 +532,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadRelatedDataContainersOverOneToOneRelationWithMultipleFound ()
     {
       DataContainer contactPersonInTwoOrganizations = _persistenceManager.LoadDataContainer (DomainObjectIDs.ContactPersonInTwoOrganizations);
-      RelationEndPointID endPointID = new RelationEndPointID (
-          contactPersonInTwoOrganizations.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany");
+      RelationEndPointID endPointID = RelationEndPointID.Create(contactPersonInTwoOrganizations.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany");
 
       _persistenceManager.LoadRelatedDataContainer (contactPersonInTwoOrganizations, endPointID);
     }

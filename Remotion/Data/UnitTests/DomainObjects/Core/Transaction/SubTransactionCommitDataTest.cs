@@ -590,7 +590,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       OrderTicket oldOrderTicket2 = newOrder2.OrderTicket;
 
 
-      RelationEndPointID propertyID = new RelationEndPointID (orderTicket.ID, typeof (OrderTicket).FullName + ".Order");
+      RelationEndPointID propertyID = RelationEndPointID.Create(orderTicket.ID, typeof (OrderTicket).FullName + ".Order");
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -647,7 +647,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order3 = Order.GetObject (DomainObjectIDs.Order2);
       OrderTicket orderTicket3 = order3.OrderTicket;
 
-      RelationEndPointID propertyID = new RelationEndPointID (order3.ID, typeof (Order).FullName + ".OrderTicket");
+      RelationEndPointID propertyID = RelationEndPointID.Create(order3.ID, typeof (Order).FullName + ".OrderTicket");
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -700,7 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       OrderItem newItem = OrderItem.NewObject ();
       OrderItem firstItem = order.OrderItems[0];
 
-      RelationEndPointID propertyID = new RelationEndPointID (order.ID, typeof (Order).FullName + ".OrderItems");
+      RelationEndPointID propertyID = RelationEndPointID.Create(order.ID, typeof (Order).FullName + ".OrderItems");
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {

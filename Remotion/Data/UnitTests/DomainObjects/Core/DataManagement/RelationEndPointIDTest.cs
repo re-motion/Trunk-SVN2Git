@@ -20,7 +20,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -41,56 +40,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _propertyName = "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket";
       _endPointDefinition = _objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (_propertyName);
 
-      _endPointID = new RelationEndPointID (_objectID, _propertyName);
-      _nullEndPointID = new RelationEndPointID (null, _endPointID.Definition);
+      _endPointID = RelationEndPointID.Create (_objectID, _propertyName);
+      _nullEndPointID = RelationEndPointID.Create (null, _endPointID.Definition);
     }
 
     [Test]
-    public void Initialize_WithDefinition ()
+    public void Create_WithDefinition ()
     {
-      var endPointID = new RelationEndPointID (_objectID, _endPointDefinition);
+      var endPointID = RelationEndPointID.Create(_objectID, _endPointDefinition);
       
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
-    public void Initialize_WithPropertyName ()
+    public void Create_WithDefinition_NullObjectID ()
     {
-      var endPointID = new RelationEndPointID (_objectID, _propertyName);
+      var endPointID = RelationEndPointID.Create (null, _endPointDefinition);
+
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
-      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+      Assert.That (endPointID.ObjectID, Is.Null);
     }
 
     [Test]
-    public void Initialize_WithShortPropertyName ()
+    public void Create_WithPropertyName ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_objectID, "OrderTicket");
+      var endPointID = RelationEndPointID.Create(_objectID, _propertyName);
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void InitializeWithInvalidPropertyName ()
+    public void Create_WithPropertyName_NullObjectID ()
     {
-      new RelationEndPointID (_objectID, (string) null);
+      RelationEndPointID.Create (null, _propertyName);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void InitializeWithInvalidObjectID ()
+    public void Create_WithPropertyName_NullPropertyName ()
     {
-      new RelationEndPointID (null, _propertyName);
+      RelationEndPointID.Create (_objectID, (string) null);
     }
 
     [Test]
     [ExpectedException (typeof (MappingException))]
-    public void InitializeWithInvalidClassID ()
+    public void Create_WithPropertyName_InvalidPropertyName ()
     {
-      var objectIDWithInvalidClass = new ObjectID ("InvalidClassID", Guid.NewGuid());
+      RelationEndPointID.Create (DomainObjectIDs.Order1, "PropertyName");
+    }
 
-      new RelationEndPointID (objectIDWithInvalidClass, "PropertyName");
+    [Test]
+    public void Create_WithShortPropertyName ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_objectID, "OrderTicket");
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
@@ -111,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HashCode_AnonymousEndPoint ()
     {
       var anonymousDefinition = new AnonymousRelationEndPointDefinition (DomainObjectIDs.Client1.ClassDefinition);
-      var anonymousEndPointID = new RelationEndPointID (DomainObjectIDs.Client1, anonymousDefinition);
+      var anonymousEndPointID = RelationEndPointID.Create(DomainObjectIDs.Client1, anonymousDefinition);
       
       int expectedHashCode = DomainObjectIDs.Client1.GetHashCode ();
       Assert.That (anonymousEndPointID.GetHashCode (), Is.EqualTo (expectedHashCode));
@@ -120,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Equals ()
     {
-      var endPointID2 = new RelationEndPointID (_objectID, _propertyName);
+      var endPointID2 = RelationEndPointID.Create(_objectID, _propertyName);
 
       Assert.That (_endPointID.Equals (endPointID2), Is.True);
     }
@@ -128,8 +134,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualsForObjectID ()
     {
-      var endPointID2 = new RelationEndPointID (ObjectID.Parse (_objectID.ToString()), _propertyName);
-      var endPointID3 = new RelationEndPointID (DomainObjectIDs.Order2, _propertyName);
+      var endPointID2 = RelationEndPointID.Create(ObjectID.Parse (_objectID.ToString()), _propertyName);
+      var endPointID3 = RelationEndPointID.Create(DomainObjectIDs.Order2, _propertyName);
 
       Assert.That (_endPointID.Equals (endPointID2), Is.True);
       Assert.That (endPointID2.Equals (_endPointID), Is.True);
@@ -183,8 +189,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void StaticEquals ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
-      var id2 = new RelationEndPointID (_objectID, _propertyName);
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
+      var id2 = RelationEndPointID.Create(_objectID, _propertyName);
 
       Assert.That (RelationEndPointID.Equals (id1, id2), Is.True);
     }
@@ -192,8 +198,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void StaticNotEquals ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
-      var id2 = new RelationEndPointID (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
+      var id2 = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
       Assert.That (RelationEndPointID.Equals (id1, id2), Is.False);
     }
@@ -201,8 +207,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualityOperatorTrue ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
-      var id2 = new RelationEndPointID (_objectID, _propertyName);
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
+      var id2 = RelationEndPointID.Create(_objectID, _propertyName);
 
       Assert.That (id1 == id2, Is.True);
       Assert.That (id1 != id2, Is.False);
@@ -211,8 +217,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualityOperatorFalse ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
-      var id2 = new RelationEndPointID (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
+      var id2 = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
       Assert.That (id1 == id2, Is.False);
       Assert.That (id1 != id2, Is.True);
@@ -221,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualityOperatorForSameObject ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
       var id2 = id1;
 
       Assert.That (id1 == id2, Is.True);
@@ -240,8 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualityOperatorID1Null ()
     {
-      var id2 = new RelationEndPointID (
-          DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+      var id2 = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
       Assert.That (null == id2, Is.False);
       Assert.That (null != id2, Is.True);
@@ -250,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EqualityOperatorID2Null ()
     {
-      var id1 = new RelationEndPointID (_objectID, _propertyName);
+      var id1 = RelationEndPointID.Create(_objectID, _propertyName);
 
       Assert.That (id1 == null, Is.False);
       Assert.That (id1 != null, Is.True);

@@ -182,8 +182,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var relationEndPointMapStub = MockRepository.GenerateStub<IRelationEndPointMapReadOnlyView>();
 
-      var oppositeEndPointID1 = new RelationEndPointID (relatedObject1.ID, typeof (Order).FullName + ".Customer");
-      var oppositeEndPointID2 = new RelationEndPointID (relatedObject2.ID, typeof (Order).FullName + ".Customer");
+      var oppositeEndPointID1 = RelationEndPointID.Create(relatedObject1.ID, typeof (Order).FullName + ".Customer");
+      var oppositeEndPointID2 = RelationEndPointID.Create(relatedObject2.ID, typeof (Order).FullName + ".Customer");
 
       var fakeEndPoint1 = MockRepository.GenerateStub<IRelationEndPoint> ();
       var fakeEndPoint2 = MockRepository.GenerateStub<IRelationEndPoint> ();

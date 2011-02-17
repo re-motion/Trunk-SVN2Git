@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Computer.GetObject (DomainObjectIDs.Computer1);
       _endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"))];
+          RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"))];
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ForeignKeyProperty ()
     {
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+      var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
       var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ForeignKeyProperty_IntegrationWithDataManager ()
     {
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+      var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
 
       var deserializedDataManager = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager);
 

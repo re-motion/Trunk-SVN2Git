@@ -229,21 +229,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (changedEndPoints.Count, Is.EqualTo (8));
 
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (order1.ID, typeof (Order) + ".OrderItems")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(order1.ID, typeof (Order) + ".OrderItems")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (orderItem1.ID, typeof (OrderItem) + ".Order")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(orderItem1.ID, typeof (OrderItem) + ".Order")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (orderTicket.ID, typeof (OrderTicket) + ".Order")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(orderTicket.ID, typeof (OrderTicket) + ".Order")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (order1.ID, typeof (Order) + ".OrderTicket")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(order1.ID, typeof (Order) + ".OrderTicket")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (computer.ID, typeof (Computer) + ".Employee")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(computer.ID, typeof (Computer) + ".Employee")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (computer.Employee.ID, typeof (Employee) + ".Computer")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(computer.Employee.ID, typeof (Employee) + ".Computer")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (employee.ID, typeof (Employee) + ".Computer")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(employee.ID, typeof (Employee) + ".Computer")],
           changedEndPoints);
-      Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (location.ID, typeof (Location) + ".Client")],
+      Assert.Contains (_dataManager.RelationEndPointMap[RelationEndPointID.Create(location.ID, typeof (Location) + ".Client")],
           changedEndPoints);
     }
 
@@ -280,8 +280,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       SetDomainObject (dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
-      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
-      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      var collectionEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
@@ -301,8 +301,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       SetDomainObject (dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
-      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
-      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      var collectionEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       Assert.That (_dataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
@@ -460,7 +460,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
       _dataManager.Discard (dataContainer);
@@ -517,7 +517,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
       endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order1)).Perform ();
 
@@ -530,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
       endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order2)).Perform();
 
@@ -563,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       dataContainer.Delete ();
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
       _dataManager.Commit ();
@@ -625,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
       endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order2)).Perform ();
 
@@ -658,7 +658,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
       _dataManager.Rollback ();
@@ -796,7 +796,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           DataManagerTestHelper.RemoveEndPoint (_dataManager, endPointID);
       }
 
-      var orderItemEndPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[new RelationEndPointID (dataContainer.ID, orderItemsPropertyName)];
+      var orderItemEndPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[RelationEndPointID.Create(dataContainer.ID, orderItemsPropertyName)];
       Assert.That (orderItemEndPoint, Is.Not.Null);
       Assert.That (orderItemEndPoint.Definition.IsMandatory, Is.True);
       orderItemEndPoint.MarkDataIncomplete ();

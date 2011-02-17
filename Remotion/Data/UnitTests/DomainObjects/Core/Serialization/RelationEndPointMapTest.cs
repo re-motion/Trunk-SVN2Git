@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedMap.Count, Is.EqualTo (7));
 
       var collectionEndPoint = (CollectionEndPoint)
-          deserializedMap[new RelationEndPointID (DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"))];
+          deserializedMap[RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"))];
 
       Assert.That (collectionEndPoint.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
     }

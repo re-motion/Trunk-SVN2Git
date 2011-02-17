@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
-        var id = new RelationEndPointID (oppositeObjectID, oppositeDefinition);
+        var id = RelationEndPointID.Create(oppositeObjectID, oppositeDefinition);
         oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       }
 

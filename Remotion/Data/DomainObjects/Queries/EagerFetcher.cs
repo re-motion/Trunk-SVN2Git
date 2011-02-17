@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Queries
       {
         if (originalObject != null)
         {
-          var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
+          var relationEndPointID = RelationEndPointID.Create(originalObject.ID, relationEndPointDefinition);
           dataManager.MarkCollectionEndPointComplete (relationEndPointID);
         }
       }

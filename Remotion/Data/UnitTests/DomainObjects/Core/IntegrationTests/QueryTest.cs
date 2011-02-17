@@ -114,8 +114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           typeof (DomainObjectCollection));
       ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
 
-      var id1 = new RelationEndPointID (DomainObjectIDs.Order1, relationEndPointDefinition);
-      var id2 = new RelationEndPointID (DomainObjectIDs.Order2, relationEndPointDefinition);
+      var id1 = RelationEndPointID.Create(DomainObjectIDs.Order1, relationEndPointDefinition);
+      var id2 = RelationEndPointID.Create(DomainObjectIDs.Order2, relationEndPointDefinition);
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id1], Is.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id2], Is.Null);

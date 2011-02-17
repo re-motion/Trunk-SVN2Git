@@ -114,8 +114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
 
       CheckTouching (delegate { computer.Employee = null; }, computer, "Employee",
-          new RelationEndPointID (employee.ID, typeof (Employee).FullName + ".Computer"),
-          new RelationEndPointID (computer.ID, typeof (Computer).FullName + ".Employee"));
+          RelationEndPointID.Create(employee.ID, typeof (Employee).FullName + ".Computer"),
+          RelationEndPointID.Create(computer.ID, typeof (Computer).FullName + ".Employee"));
     }
 
     [Test]
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ClientTransactionMock.Commit ();
 
       CheckTouching (delegate { computer.Employee = null; }, computer, "Employee",
-          new RelationEndPointID (computer.ID, typeof (Computer).FullName + ".Employee"));
+          RelationEndPointID.Create(computer.ID, typeof (Computer).FullName + ".Employee"));
     }
 
     [Test]
@@ -140,8 +140,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
 
       CheckTouching (delegate { employee.Computer = null; }, computer, "Employee",
-          new RelationEndPointID (employee.ID, typeof (Employee).FullName + ".Computer"),
-          new RelationEndPointID (computer.ID, typeof (Computer).FullName + ".Employee"));
+          RelationEndPointID.Create(employee.ID, typeof (Employee).FullName + ".Computer"),
+          RelationEndPointID.Create(computer.ID, typeof (Computer).FullName + ".Employee"));
     }
 
     [Test]
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ClientTransactionMock.Commit ();
 
       CheckTouching (delegate { employee.Computer = null; }, null, null,
-          new RelationEndPointID (employee.ID, typeof (Employee).FullName + ".Computer"));
+          RelationEndPointID.Create(employee.ID, typeof (Employee).FullName + ".Computer"));
     }
   }
 }

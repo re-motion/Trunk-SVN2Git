@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     protected override RelationEndPointID GetRelationEndPointID ()
     {
-      return new RelationEndPointID (DomainObjectIDs.OrderItem1, typeof (OrderItem).FullName + ".Order");
+      return RelationEndPointID.Create(DomainObjectIDs.OrderItem1, typeof (OrderItem).FullName + ".Order");
     }
 
     protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client))
           .GetMandatoryRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var relationEndPointID = new RelationEndPointID (Client.GetObject(DomainObjectIDs.Client1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create(Client.GetObject(DomainObjectIDs.Client1).ID, definition);
       var endPoint = (IObjectEndPoint)
           ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetOneManyCommand (endPoint, Client.NewObject (), mi => { });
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      var relationEndPointID = new RelationEndPointID (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create(OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
       var endPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetOneManyCommand (endPoint, Order.NewObject (), mi => { });
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
-      var relationEndPointID = new RelationEndPointID (orderItem.ID, orderEndPointDefinition);
+      var relationEndPointID = RelationEndPointID.Create(orderItem.ID, orderEndPointDefinition);
       var bidirectionalEndPoint = 
           (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // newOrder.OrderItems.Add (orderItem);
 
-      var orderItemsOfNewOrderEndPointID = new RelationEndPointID (newOrder.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
+      var orderItemsOfNewOrderEndPointID = RelationEndPointID.Create(newOrder.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderItemsOfNewOrderEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderItemsOfNewOrderEndPointID);
 
       Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // oldOrder.OrderItems.Remove (orderItem)
 
-      var orderItemsOfOldOrderEndPointID = new RelationEndPointID (orderItem.Order.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
+      var orderItemsOfOldOrderEndPointID = RelationEndPointID.Create(orderItem.Order.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderItemsOfOldOrderEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderItemsOfOldOrderEndPointID);
 
       Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));

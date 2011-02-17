@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      _relationEndPointID = new RelationEndPointID (DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      _relationEndPointID = RelationEndPointID.Create(DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new DomainObject[0]);
       _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.Collection);
 

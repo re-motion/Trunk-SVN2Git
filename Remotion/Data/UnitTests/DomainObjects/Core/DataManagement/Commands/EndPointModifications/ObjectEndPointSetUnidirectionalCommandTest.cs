@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     protected override RelationEndPointID GetRelationEndPointID ()
     {
-      return new RelationEndPointID (DomainObjectIDs.Client3, typeof (Client).FullName + ".ParentClient");
+      return RelationEndPointID.Create(DomainObjectIDs.Client3, typeof (Client).FullName + ".ParentClient");
     }
 
     protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var id = new RelationEndPointID (orderItem.ID, definition);
+      var id = RelationEndPointID.Create(orderItem.ID, definition);
 
       var endPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       new ObjectEndPointSetUnidirectionalCommand (endPoint, Order.NewObject (), mi => { });
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      var relationEndPointID = new RelationEndPointID (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create(OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
       var endPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetUnidirectionalCommand (endPoint, Order.NewObject (), mi => { });
     }
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var unidirectionalEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
+      var unidirectionalEndPointID = RelationEndPointID.Create(client.ID, parentClientEndPointDefinition);
       var unidirectionalEndPoint =
           (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);

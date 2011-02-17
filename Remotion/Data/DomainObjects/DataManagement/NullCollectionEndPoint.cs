@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public RelationEndPointID ID
     {
-      get { return new RelationEndPointID (null, Definition); }
+      get { return RelationEndPointID.Create(null, Definition); }
     }
 
     public ClientTransaction ClientTransaction

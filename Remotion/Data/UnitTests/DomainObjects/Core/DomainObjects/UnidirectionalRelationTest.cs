@@ -274,14 +274,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouched ()
     {
       CheckTouching (delegate { _location.Client = _newClient; }, _location, "Client",
-          new RelationEndPointID (_location.ID, typeof (Location).FullName + ".Client"));
+          RelationEndPointID.Create(_location.ID, typeof (Location).FullName + ".Client"));
     }
 
     [Test]
     public void HasBeenTouched_OriginalValue ()
     {
       CheckTouching (delegate { _location.Client = _location.Client; }, _location, "Client",
-          new RelationEndPointID (_location.ID, typeof (Location).FullName + ".Client"));
+          RelationEndPointID.Create(_location.ID, typeof (Location).FullName + ".Client"));
     }
   }
 }

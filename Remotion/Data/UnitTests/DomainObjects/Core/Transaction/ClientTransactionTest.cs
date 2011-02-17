@@ -114,11 +114,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       Assert.AreSame (orderTicket, ClientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket")));
+          RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket")));
 
       Assert.AreEqual (0, _eventReceiver.LoadedDomainObjects.Count);
 
-      Assert.AreSame (order, ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")));
+      Assert.AreSame (order, ClientTransactionMock.GetRelatedObject (RelationEndPointID.Create(orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")));
       Assert.AreEqual (0, _eventReceiver.LoadedDomainObjects.Count);
     }
 
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1, false);
       _eventReceiver.Clear ();
-      DomainObject order = ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      DomainObject order = ClientTransactionMock.GetRelatedObject (RelationEndPointID.Create(orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       DomainObject orderTicket = ClientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+          RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
 
       Assert.IsNotNull (orderTicket);
       Assert.AreEqual (DomainObjectIDs.OrderTicket1, orderTicket.ID);
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       Assert.IsNull (ClientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")));
+          RelationEndPointID.Create(classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")));
 
       Assert.AreEqual (0, _eventReceiver.LoadedDomainObjects.Count);
     }
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       Assert.IsNull (ClientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")));
+          RelationEndPointID.Create(classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")));
 
       Assert.AreEqual (0, _eventReceiver.LoadedDomainObjects.Count);
     }
@@ -198,13 +198,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (0, decorator.NumberOfCallsToLoadRelatedObject);
 
       Assert.IsNull (clientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")));
+          RelationEndPointID.Create(classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")));
 
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadObject);
       Assert.AreEqual (0, decorator.NumberOfCallsToLoadRelatedObject);
 
       clientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"));
+          RelationEndPointID.Create(classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"));
 
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadObject);
       Assert.AreEqual (0, decorator.NumberOfCallsToLoadRelatedObject);
@@ -224,13 +224,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (0, decorator.NumberOfCallsToLoadRelatedObject);
 
       Assert.IsNull (clientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")));
+          RelationEndPointID.Create(classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")));
 
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadObject);
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadRelatedObject);
 
       clientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional"));
+          RelationEndPointID.Create(classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional"));
 
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadObject);
       Assert.AreEqual (1, decorator.NumberOfCallsToLoadRelatedObject);
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject expectedCeo = ClientTransactionMock.GetObject (DomainObjectIDs.Ceo6, false);
       DomainObject partner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner1, false);
 
-      DomainObject actualCeo = ClientTransactionMock.GetRelatedObject (new RelationEndPointID (partner.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
+      DomainObject actualCeo = ClientTransactionMock.GetRelatedObject (RelationEndPointID.Create(partner.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
       Assert.AreSame (expectedCeo, actualCeo);
     }
 
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.IsNotNull (orders);
       Assert.AreEqual (typeof (OrderCollection), orders.GetType (), "Type of collection");
@@ -270,10 +270,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders1 = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       DomainObjectCollection orders2 = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.IsTrue (ReferenceEquals (orders1, orders2));
 
@@ -290,7 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _eventReceiver.Clear ();
 
       DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.AreSame (order, orders[DomainObjectIDs.Order1]);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
@@ -302,7 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer2);
       _eventReceiver.Clear ();
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.IsNotNull (orders);
       Assert.IsEmpty (orders);
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
       DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -328,10 +328,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
       DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+          RelationEndPointID.Create(customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.AreSame (customer, ClientTransactionMock.GetRelatedObject (
-          new RelationEndPointID (orders[0].ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")));
+          RelationEndPointID.Create(orders[0].ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")));
     }
 
     [Test]
@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject expectedPartner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner2, false);
 
       DomainObjectCollection companies = ClientTransactionMock.GetRelatedObjects (
-          new RelationEndPointID (industrialSector.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
+          RelationEndPointID.Create(industrialSector.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
 
       Assert.AreSame (expectedPartner, companies[DomainObjectIDs.Partner2]);
     }

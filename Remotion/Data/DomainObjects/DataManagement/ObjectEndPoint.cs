@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return Enumerable.Empty<IRelationEndPoint>();
       else
       {
-        var oppositeEndPointID = new RelationEndPointID (OppositeObjectID, oppositeEndPointDefinition);
+        var oppositeEndPointID = RelationEndPointID.Create(OppositeObjectID, oppositeEndPointDefinition);
         return new[] { dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID) };
       }
     }

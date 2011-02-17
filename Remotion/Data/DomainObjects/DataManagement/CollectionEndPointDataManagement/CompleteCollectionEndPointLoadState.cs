@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
 
       return from oppositeDomainObject in _dataKeeper.CollectionData
-             let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, oppositeEndPointDefinition)
+             let oppositeEndPointID = RelationEndPointID.Create(oppositeDomainObject.ID, oppositeEndPointDefinition)
              select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 

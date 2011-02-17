@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (listener => listener.TransactionRollingBack (ClientTransactionMock, domainObjects));
       CheckNotification (listener => listener.TransactionRolledBack (ClientTransactionMock, domainObjects));
 
-      var id = new RelationEndPointID (order.ID, typeof (Order).FullName + ".Customer");
+      var id = RelationEndPointID.Create(order.ID, typeof (Order).FullName + ".Customer");
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       CheckNotification (listener => listener.RelationEndPointMapRegistering (ClientTransactionMock, endPoint));

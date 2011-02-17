@@ -100,9 +100,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock.Replay();
 
       _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (new RelationEndPointID (_fakeOriginalObject1.ID, _endPointDefinitionWithCardinalityMany)));
+          mock => mock.MarkCollectionEndPointComplete (RelationEndPointID.Create(_fakeOriginalObject1.ID, _endPointDefinitionWithCardinalityMany)));
       _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (new RelationEndPointID (_fakeOriginalObject2.ID, _endPointDefinitionWithCardinalityMany)));
+          mock => mock.MarkCollectionEndPointComplete (RelationEndPointID.Create(_fakeOriginalObject2.ID, _endPointDefinitionWithCardinalityMany)));
       _dataManagerMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock.Replay();
 
       _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (new RelationEndPointID (_fakeOriginalObject1.ID, _endPointDefinitionWithCardinalityMany)));
+          mock => mock.MarkCollectionEndPointComplete (RelationEndPointID.Create(_fakeOriginalObject1.ID, _endPointDefinitionWithCardinalityMany)));
       _dataManagerMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (

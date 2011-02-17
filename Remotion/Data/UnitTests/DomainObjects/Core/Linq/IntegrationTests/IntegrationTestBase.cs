@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       var collectionEndPoint = (ICollectionEndPoint)
                                ClientTransactionMock.DataManager.RelationEndPointMap[
-                                   new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
+                                   RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition)];
       Assert.That (collectionEndPoint, Is.Not.Null);
 
       var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (ClientTransactionMock, id, false)).ToArray ();
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
               longPropertyName);
 
       var objectEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-                                                new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
+                                                RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition)];
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));
     }

@@ -463,7 +463,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
               .Where (ep => !ep.Definition.IsVirtual)
               .Select (ep => ep as IObjectEndPoint)
               .Where (ep => ep.OppositeObjectID != null)
-              .Select (ep => new RelationEndPointID (ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
+              .Select (ep => RelationEndPointID.Create(ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
               .Select (oppositeID => this[oppositeID]);
       if (maybeOppositeEndPoint.Where (oppositeEndPoint => oppositeEndPoint.HasChanged).HasValue)
         return false;
@@ -482,7 +482,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
       }
 
-      var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+      var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
       if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
       {
         RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
@@ -504,7 +504,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (realObjectEndPoint.OppositeObjectID != null)
       {
-        var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+        var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
         if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
         {
           UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
@@ -543,7 +543,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (foreignKeyValue == null) // null is never a conflicting foreign key value
         return;
 
-      var oppositeVirtualEndPointID = new RelationEndPointID (foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
+      var oppositeVirtualEndPointID = RelationEndPointID.Create(foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
       var existingOppositeVirtualEndPoint = (IObjectEndPoint) this[oppositeVirtualEndPointID];
       if (existingOppositeVirtualEndPoint == null) // if the opposite end point does not exist, this is not a conflicting foreign key value
         return;

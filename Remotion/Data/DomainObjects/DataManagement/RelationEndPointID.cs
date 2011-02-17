@@ -28,12 +28,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
   [Serializable]
   public sealed class RelationEndPointID : IFlattenedSerializable
   {
+    public static RelationEndPointID Create (ObjectID objectID, IRelationEndPointDefinition definition)
+    {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
+      return new RelationEndPointID (objectID, definition);
+    }
+    
+    public static RelationEndPointID Create (ObjectID objectID, string propertyName)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
+      var endPointDefinition = objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+      return new RelationEndPointID (objectID, endPointDefinition);
+    }
+
     public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       
       var endPointDefinitions = objectID.ClassDefinition.GetRelationEndPointDefinitions ();
-      return endPointDefinitions.Select (endPointDefinition => new RelationEndPointID (objectID, endPointDefinition)).ToArray();
+      return endPointDefinitions.Select (endPointDefinition => Create(objectID, endPointDefinition)).ToArray();
     }
 
     public static bool operator == (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
@@ -56,32 +72,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPointID1.Equals (endPointID2);
     }
 
-    private static IRelationEndPointDefinition GetRelationEndPointDefinition (ObjectID objectID, string propertyName)
-    {
-      return objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
-    }
-
     private readonly IRelationEndPointDefinition _definition;
     private readonly ObjectID _objectID;
 
     [NonSerialized]
     private int _cachedHashCode;
 
-    public RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
+    private RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
     {
-      ArgumentUtility.CheckNotNull ("definition", definition);
-
       _objectID = objectID;
       _definition = definition;
 
       _cachedHashCode = CalculateHashCode();
-    }
-
-    public RelationEndPointID (ObjectID objectID, string propertyName)
-        : this (
-            ArgumentUtility.CheckNotNull ("objectID", objectID),
-            GetRelationEndPointDefinition (objectID, ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName)))
-    {
     }
 
     public IRelationEndPointDefinition Definition

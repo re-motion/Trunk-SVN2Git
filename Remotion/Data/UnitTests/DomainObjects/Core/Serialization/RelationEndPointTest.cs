@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override void SetUp ()
     {
       base.SetUp();
-      var id = new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
+      var id = RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
       _endPoint = new RelationEndPointSerializationTestStub (ClientTransactionMock, id);
     }
 

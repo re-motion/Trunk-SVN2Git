@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     protected override RelationEndPointID GetRelationEndPointID ()
     {
-      return new RelationEndPointID (DomainObjectIDs.Computer1, typeof (Computer).FullName + ".Employee");
+      return RelationEndPointID.Create(DomainObjectIDs.Computer1, typeof (Computer).FullName + ".Employee");
     }
 
     protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var unidirectionalEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
+      var unidirectionalEndPointID = RelationEndPointID.Create(client.ID, parentClientEndPointDefinition);
       var unidirectionalEndPoint =
           (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
@@ -128,13 +128,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
-      var orderTicketEndPointID = new RelationEndPointID (order.ID, orderTicketEndPointDefinition);
+      var orderTicketEndPointID = RelationEndPointID.Create(order.ID, orderTicketEndPointDefinition);
       var bidirectionalEndPoint =
           (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
 
-      var oppositeEndPointID = new RelationEndPointID (
-          bidirectionalEndPoint.GetOppositeObject (true).ID, 
-          bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
+      var oppositeEndPointID = RelationEndPointID.Create(bidirectionalEndPoint.GetOppositeObject (true).ID, 
+                                      bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
 
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint, mi => { });

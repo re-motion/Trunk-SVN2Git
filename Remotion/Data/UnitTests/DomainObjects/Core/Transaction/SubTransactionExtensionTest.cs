@@ -911,7 +911,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         IRelationEndPointDefinition orderEndPointDefinition =
             orderTicketDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
         persistanceManager.LoadRelatedDataContainer (
-            orderTicket.InternalDataContainer, new RelationEndPointID (orderTicket.ID, orderEndPointDefinition));
+            orderTicket.InternalDataContainer, RelationEndPointID.Create(orderTicket.ID, orderEndPointDefinition));
       }
 
       _mockRepository.VerifyAll();
@@ -929,7 +929,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         IRelationEndPointDefinition orderTicketEndPointDefinition =
             orderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
         persistenceManager.LoadRelatedDataContainer (
-            _order1.InternalDataContainer, new RelationEndPointID (_order1.ID, orderTicketEndPointDefinition));
+            _order1.InternalDataContainer, RelationEndPointID.Create(_order1.ID, orderTicketEndPointDefinition));
       }
 
       _mockRepository.VerifyAll();

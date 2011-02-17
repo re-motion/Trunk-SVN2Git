@@ -64,14 +64,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOriginalRelatedObjectsWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObjects (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      _map.GetOriginalRelatedObjects (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
     [Test]
     public void GetOriginalRelatedObjectsWithLazyLoad ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       DomainObjectCollection originalOrderItems = _map.GetOriginalRelatedObjects (endPointID);
       DomainObjectCollection orderItems = _map.GetRelatedObjects (endPointID);
 
@@ -84,14 +84,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOriginalRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      _map.GetOriginalRelatedObject (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]
     public void GetOriginalRelatedObjectWithLazyLoad ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject originalOrderTicket = _map.GetOriginalRelatedObject (endPointID);
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
       Assert.That (orderTicket, Is.Not.Null);
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       location.Client.Delete();
 
-      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       _map.GetRelatedObject (endPointID, false);
     }
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       location.Client.Delete();
 
-      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.That (client, Is.Not.Null);
       Assert.That (client.ID, Is.EqualTo (DomainObjectIDs.Client1));
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObjectsWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetRelatedObjects (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      _map.GetRelatedObjects (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       location.Client = newClient;
       location.Client.Delete();
 
-      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.That (client, Is.Not.Null);
       Assert.That (client, Is.SameAs (newClient));
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
+      _map.GetRelatedObject (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
     }
 
     [Test]
@@ -176,13 +176,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
-      IRelationEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (client.ID, parentClientEndPointDefinition));
+      IRelationEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create(client.ID, parentClientEndPointDefinition));
 
       Client parentClient = client.ParentClient;
       Assert.That (parentClient, Is.Not.Null);
 
       var anonymousEndPointDefinition = unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition();
-      _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (parentClient.ID, anonymousEndPointDefinition));
+      _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create(parentClient.ID, anonymousEndPointDefinition));
     }
 
     [Test]
@@ -522,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      var oppositeEndPointID = new RelationEndPointID (DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition ());
+      var oppositeEndPointID = RelationEndPointID.Create(DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition ());
       Assert.That (_map[oppositeEndPointID], Is.Null);
 
       _map.UnregisterRealObjectEndPoint (id);
@@ -713,7 +713,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void MarkCollectionEndPointComplete_ChecksAnonymity ()
     {
-      var endPointID = new RelationEndPointID (DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
+      var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
       _map.MarkCollectionEndPointComplete (endPointID);
     }
 
@@ -757,7 +757,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var oppositeEndPointDefinition = endPointID.Definition.GetOppositeEndPointDefinition();
-      var expectedID = new RelationEndPointID (null, oppositeEndPointDefinition);
+      var expectedID = RelationEndPointID.Create(null, oppositeEndPointDefinition);
 
       Assert.That (_map[expectedID], Is.Null);
     }
