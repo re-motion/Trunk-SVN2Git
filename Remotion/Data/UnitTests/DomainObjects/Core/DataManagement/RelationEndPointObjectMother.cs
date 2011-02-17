@@ -89,8 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
-      var propertyName = ReflectionMappingHelper.GetPropertyName(objectID.ClassDefinition.ClassType, shortPropertyName);
-      return RelationEndPointID.Create(objectID, propertyName);
+      return RelationEndPointID.Create (objectID, objectID.ClassDefinition.ClassType, shortPropertyName);
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint_Customer1_Orders (params Order[] initialContents)
