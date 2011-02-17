@@ -365,6 +365,7 @@
     <Compile Include="ServiceLocation\TestDomain\ITestTypeWithNotExactOnePublicConstructor.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeTypeThrowingExceptionInCtor.cs" />
+    <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameter.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithInstanceLifetime.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithSingletonLifetime.cs" />

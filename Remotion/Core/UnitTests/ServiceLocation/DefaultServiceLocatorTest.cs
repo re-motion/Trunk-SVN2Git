@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (ActivationException), ExpectedMessage = 
+    [ExpectedException (typeof (ActivationException), ExpectedMessage =
         "Cannot get a concrete implementation of type 'Microsoft.Practices.ServiceLocation.IServiceLocator': " +
         "Expected 'ConcreteImplementationAttribute' could not be found.")]
     public void GetInstance_ServiceTypeWithoutConcreteImplementationAttribute ()
@@ -143,10 +143,10 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetAllInstances_Generic_ServiceTypeWithConcreteImplementationAttribute ()
     {
-      var result = _serviceLocator.GetAllInstances<ITestInstanceConcreteImplementationAttributeType> ();
+      var result = _serviceLocator.GetAllInstances<ITestInstanceConcreteImplementationAttributeType>();
 
-      Assert.That (result.ToArray ().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray ()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (result.ToArray().Length, Is.EqualTo (1));
+      Assert.That (result.ToArray()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]
@@ -166,9 +166,13 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (result, Is.TypeOf (typeof (TestConstructorInjectionWithThreeParameters)));
 
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param1, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
-      Assert.That (((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param1).Param, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (
+          ((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param1).Param,
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param2, Is.TypeOf (typeof (TestConstructorInjectionWithOneParameter)));
-      Assert.That (((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param2).Param, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (
+          ((TestConstructorInjectionWithOneParameter) ((TestConstructorInjectionWithThreeParameters) result).Param2).Param,
+          Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
       Assert.That (((TestConstructorInjectionWithThreeParameters) result).Param3, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
@@ -221,8 +225,8 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-      ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestInstanceConcreteImplementationAttributeType")
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestInstanceConcreteImplementationAttributeType")
     ]
     public void Register_Factory_ServiceAlreadyExists ()
     {
@@ -250,8 +254,8 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-      ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")]
     public void Register_ConcreteImplementation_ServiceAlreadyExists_ThrowsException ()
     {
       _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
@@ -271,8 +275,17 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-      ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")
+    public void Register_SingletonServiceIsLazyInitialized ()
+    {
+      _serviceLocator.Register (
+          typeof (TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute),
+          typeof (TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute),
+          LifetimeKind.Singleton);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")
     ]
     public void Register_ServiceConfigurationEntry_ServiceAlreadyExists_ThrowsException ()
     {
@@ -292,7 +305,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
       var instance1 = _serviceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType));
       var instance2 = _serviceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType));
-      Assert.That (instance1, Is.SameAs(instance2));
+      Assert.That (instance1, Is.SameAs (instance2));
     }
   }
 }

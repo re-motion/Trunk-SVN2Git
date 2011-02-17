@@ -295,9 +295,8 @@ namespace Remotion.ServiceLocation
       switch (serviceConfigurationEntry.Lifetime)
       {
         case LifetimeKind.Singleton:
-          var instance = factory();
-          return () => instance;
-
+          var factoryContainer = new DoubleCheckedLockingContainer<object> (factory);
+          return () => factoryContainer.Value;
         default:
           return factory;
       }
