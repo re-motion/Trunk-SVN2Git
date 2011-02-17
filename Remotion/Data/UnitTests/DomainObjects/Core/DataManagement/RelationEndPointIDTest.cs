@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -63,40 +64,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Create_WithPropertyName ()
+    public void Create_WithPropertyIdentifier ()
     {
-      var endPointID = RelationEndPointID.Create(_objectID, _propertyName);
+      var endPointID = RelationEndPointID.Create (_objectID, _propertyName);
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void Create_WithPropertyName_NullObjectID ()
+    public void Create_WithPropertyIdentifier_NullObjectID ()
     {
       RelationEndPointID.Create (null, _propertyName);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void Create_WithPropertyName_NullPropertyName ()
+    public void Create_WithPropertyIdentifier_NullPropertyName ()
     {
       RelationEndPointID.Create (_objectID, (string) null);
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException))]
-    public void Create_WithPropertyName_InvalidPropertyName ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "No relation found for class 'Order' and property 'PropertyName'.\r\nParameter name: propertyIdentifier")]
+    public void Create_WithPropertyIdentifier_InvalidPropertyName ()
     {
       RelationEndPointID.Create (DomainObjectIDs.Order1, "PropertyName");
     }
 
     [Test]
-    public void Create_WithShortPropertyName ()
+    public void Create_WithType_AndPropertyName ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_objectID, "OrderTicket");
+      var endPointID = RelationEndPointID.Create (_objectID, typeof (Order), "OrderTicket");
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderJoe'.\r\nParameter name: shortPropertyName")]
+    public void Create_WithType_AndPropertyName_NonExistingProperty ()
+    {
+      RelationEndPointID.Create (_objectID, typeof (Order), "OrderJoe");
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' is not a relation property.\r\n"
+        + "Parameter name: shortPropertyName")]
+    public void Create_WithType_AndPropertyName_NonRelationProperty ()
+    {
+      RelationEndPointID.Create (_objectID, typeof (Order), "OrderNumber");
     }
 
     [Test]
