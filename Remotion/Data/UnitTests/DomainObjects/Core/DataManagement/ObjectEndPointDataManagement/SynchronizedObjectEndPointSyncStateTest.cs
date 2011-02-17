@@ -62,6 +62,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void IsSynchronized ()
+    {
+      Assert.That (_state.IsSynchronized, Is.True);
+    }
+
+    [Test]
     public void CreateDeleteCommand ()
     {
       _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);

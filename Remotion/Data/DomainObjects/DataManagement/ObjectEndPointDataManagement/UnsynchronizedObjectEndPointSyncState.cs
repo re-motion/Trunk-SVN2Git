@@ -27,6 +27,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
     }
 
+    public bool IsSynchronized
+    {
+      get { return false; }
+    }
+
     public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

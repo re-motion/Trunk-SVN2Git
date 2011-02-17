@@ -25,6 +25,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// </summary>
   public interface IObjectEndPointSyncState : IFlattenedSerializable
   {
+    bool IsSynchronized { get; }
+
     IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter);
     IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter);
   }
