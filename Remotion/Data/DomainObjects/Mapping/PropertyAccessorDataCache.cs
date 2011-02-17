@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
@@ -57,6 +59,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       return GetPropertyAccessorData (propertyIdentifier);
     }
 
+    public PropertyAccessorData GetPropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression) 
+        where TDomainObject : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
+
+      var member = GetMemberFromExpression (propertyAccessExpression);
+      return GetPropertyAccessorData (member.DeclaringType, member.Name);
+    }
+
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -82,6 +93,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       return GetMandatoryPropertyAccessorData (propertyName);
     }
 
+    public PropertyAccessorData GetMandatoryPropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression)
+        where TDomainObject : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
+
+      var member = GetMemberFromExpression (propertyAccessExpression);
+      return GetMandatoryPropertyAccessorData (member.DeclaringType, member.Name);
+    }
+
     public PropertyAccessorData FindPropertyAccessorData (Type typeToStartSearch, string shortPropertyName)
     {
       ArgumentUtility.CheckNotNull ("typeToStartSearch", typeToStartSearch);
@@ -103,6 +123,22 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return domainObjectType.FullName + "." + shortPropertyName;
     }
+
+    private MemberInfo GetMemberFromExpression<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression)
+    {
+      MemberExpression memberExpression;
+      try
+      {
+        memberExpression = (MemberExpression) propertyAccessExpression.Body;
+      }
+      catch (InvalidCastException ex)
+      {
+        throw new ArgumentException ("The propertyAccessExpression must be a simple member access expression.", "propertyAccessExpression", ex);
+      }
+
+      return memberExpression.Member;
+    }
+
 
     private Dictionary<string, PropertyAccessorData> BuildAccessorDataDictionary ()
     {
