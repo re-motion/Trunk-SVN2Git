@@ -140,6 +140,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void SetValue_WithObjectList_SelfReplace ()
+    {
+      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var previousEndPointID = sector.Companies.AssociatedEndPointID;
+
+      sector.Companies = sector.Companies;
+
+      Assert.That (sector.Companies.AssociatedEndPointID, Is.SameAs (previousEndPointID));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The given collection is already associated with an end point.\r\n"
         + "Parameter name: value")]
@@ -297,17 +308,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var orderTicketFromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<OrderTicket> (DomainObjectIDs.OrderTicket1);
 
       CreateAccessor (order, "OrderTicket").SetValueWithoutTypeCheck (orderTicketFromOtherTransaction);
-    }
-
-    [Test]
-    public void SetOppositeCollectionAndNotify_SelfReplace ()
-    {
-      var sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      var previousEndPointID = sector.Companies.AssociatedEndPointID;
-
-      sector.Companies = sector.Companies;
-
-      Assert.That (sector.Companies.AssociatedEndPointID, Is.SameAs (previousEndPointID));
     }
 
     [Test]

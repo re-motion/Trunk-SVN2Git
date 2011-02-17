@@ -785,7 +785,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointModificationCommandTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceSameCommandTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceWholeCollectionCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointSetCollectionCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointTouchCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetOneManyCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetOneOneCommandTest.cs" />

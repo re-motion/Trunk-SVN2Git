@@ -150,9 +150,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSetOppositeCollectionCommand ()
+    public void CreateSetCollectionCommand ()
     {
-      Assert.That (_nullEndPoint.CreateSetOppositeCollectionCommand (new DomainObjectCollection()), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateSetCollectionCommand (new DomainObjectCollection()), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]

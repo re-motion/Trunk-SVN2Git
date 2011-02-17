@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransactionMock,
           new[] { _order1 });
 
-      endPoint.CreateSetOppositeCollectionCommand (new OrderCollection { _order1 }).ExpandToAllRelatedObjects().NotifyAndPerform();
+      endPoint.CreateSetCollectionCommand (new OrderCollection { _order1 }).ExpandToAllRelatedObjects().NotifyAndPerform();
 
       var result = endPoint.HasChanged;
 
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oldCollection = _customerEndPoint.Collection;
 
       var newCollection = new OrderCollection { _order2 };
-      _customerEndPoint.CreateSetOppositeCollectionCommand (newCollection).ExpandToAllRelatedObjects().NotifyAndPerform();
+      _customerEndPoint.CreateSetCollectionCommand (newCollection).ExpandToAllRelatedObjects().NotifyAndPerform();
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
       Assert.That (newCollection.IsAssociatedWith (_customerEndPoint), Is.True);
@@ -592,7 +592,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSetOppositeCollectionCommand ()
+    public void CreateSetCollectionCommand ()
     {
       var oppositeDomainObjects = new OrderCollection ();
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand>();
@@ -600,7 +600,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Action<DomainObjectCollection> collectionSetter = null;
       _loadStateMock
           .Expect (
-              mock => mock.CreateSetOppositeCollectionCommand (
+              mock => mock.CreateSetCollectionCommand (
                   Arg.Is (_endPointWithLoadStateMock),
                   Arg.Is (oppositeDomainObjects),
                   Arg<Action<DomainObjectCollection>>.Is.Anything))
@@ -608,7 +608,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .WhenCalled (mi => { collectionSetter = (Action<DomainObjectCollection>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
-      var result = _endPointWithLoadStateMock.CreateSetOppositeCollectionCommand (oppositeDomainObjects);
+      var result = _endPointWithLoadStateMock.CreateSetCollectionCommand (oppositeDomainObjects);
 
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
@@ -711,14 +711,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Collection_Get_DoesNotLoadData ()
     {
-      var oppositeCollection = _customerEndPoint.Collection;
+      var collection = _customerEndPoint.Collection;
 
       _customerEndPoint.MarkDataIncomplete ();
       Assert.That (_customerEndPoint.IsDataComplete, Is.False);
 
       var result = _customerEndPoint.Collection;
 
-      Assert.That (result, Is.SameAs (oppositeCollection));
+      Assert.That (result, Is.SameAs (collection));
       AssertDidNotLoadData (_customerEndPoint);
     }
 
@@ -726,11 +726,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Collection_Set ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection (delegatingData);
 
-      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newCollection);
 
-      Assert.That (_customerEndPoint.Collection, Is.SameAs (newOppositeCollection));
+      Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
     }
 
     [Test]
@@ -739,9 +739,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.MarkDataIncomplete ();
 
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection (delegatingData);
 
-      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newCollection);
 
       AssertDidNotLoadData (_customerEndPoint);
     }
@@ -750,9 +750,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Collection_Set_TouchesEndPoint ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection (delegatingData);
 
-      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newCollection);
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
@@ -763,8 +763,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
 
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
-      var newOppositeCollection = new OrderCollection (delegatingData);
-      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newOppositeCollection);
+      var newCollection = new OrderCollection (delegatingData);
+      CollectionEndPointTestHelper.SetCollection (_customerEndPoint, newCollection);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, true));
 

@@ -163,14 +163,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CreateSetOppositeCollectionCommand ()
+    public void CreateSetCollectionCommand ()
     {
       var domainObjectCollection = new DomainObjectCollection ();
 
       Action<DomainObjectCollection> fakeSetter = collection => { };
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetOppositeCollectionCommand (_collectionEndPointMock, domainObjectCollection, fakeSetter),
-          s => s.CreateSetOppositeCollectionCommand (domainObjectCollection),
+          s => s.CreateSetCollectionCommand (_collectionEndPointMock, domainObjectCollection, fakeSetter),
+          s => s.CreateSetCollectionCommand (domainObjectCollection),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
 

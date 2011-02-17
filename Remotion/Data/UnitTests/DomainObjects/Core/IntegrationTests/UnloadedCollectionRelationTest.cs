@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void SetOppositeCollection ()
+    public void SetCollection ()
     {
       var newOrderItems = new ObjectList<OrderItem> (new[] { _newOrderItem });
       Assert.That (_orderWithUnloadedCollection.OrderItems.IsDataComplete, Is.False);

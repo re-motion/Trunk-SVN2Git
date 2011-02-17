@@ -12,7 +12,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     /// <summary>
     /// Transforms the collection to an associated collection. The collection will represent the data stored by <paramref name="endPoint"/>, and
     /// all modifications will be performed on the <paramref name="endPoint"/>. 
-    /// This interface is used by  <see cref="CollectionEndPointReplaceWholeCollectionCommand"/> and should usually not be required by framework 
+    /// This interface is used by  <see cref="CollectionEndPointSetCollectionCommand"/> and should usually not be required by framework 
     /// users.
     /// </summary>
     /// <param name="endPoint">The end point to associate with.</param>
@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     /// <summary>
     /// Transforms the collection to a stand-alone collection. The collection will get its own data store and will not be associated with an 
     /// <see cref="ICollectionEndPoint"/> any longer.
-    /// This interface is used by  <see cref="CollectionEndPointReplaceWholeCollectionCommand"/> and should usually not be required by framework 
+    /// This interface is used by  <see cref="CollectionEndPointSetCollectionCommand"/> and should usually not be required by framework 
     /// users.
     /// </summary>
     void TransformToStandAlone ();

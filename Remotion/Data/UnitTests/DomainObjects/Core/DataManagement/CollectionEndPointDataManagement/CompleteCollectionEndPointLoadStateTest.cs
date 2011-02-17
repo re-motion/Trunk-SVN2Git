@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CreateSetOppositeCollectionCommand ()
+    public void CreateSetCollectionCommand ()
     {
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -246,18 +246,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter);
 
-      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointReplaceWholeCollectionCommand)));
+      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollection, Is.SameAs (newCollection));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollectionTransformer, Is.SameAs (newCollection));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).OldOppositeCollectionTransformer, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollectionTransformer, Is.SameAs (newCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).OldCollectionTransformer, Is.SameAs (fakeCollection));
       Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
     
     [Test]
-    public void CreateSetOppositeCollectionCommand_SelfReplace ()
+    public void CreateSetCollectionCommand_SelfReplace ()
     {
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -267,13 +267,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       
       Action<DomainObjectCollection> fakeSetter = collection => { };
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetOppositeCollectionCommand (_collectionEndPointMock, fakeCollection, fakeSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, fakeCollection, fakeSetter);
 
-      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointReplaceWholeCollectionCommand)));
+      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollection, Is.SameAs (_collectionEndPointMock.Collection));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).NewOppositeCollectionTransformer, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointReplaceWholeCollectionCommand) command).OldOppositeCollectionTransformer, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (_collectionEndPointMock.Collection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollectionTransformer, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).OldCollectionTransformer, Is.SameAs (fakeCollection));
       Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
 

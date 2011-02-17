@@ -22,43 +22,43 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents the replacement of the whole <see cref="CollectionEndPoint.Collection"/> collection, including the transformation
+  /// Represents the replacement of the whole <see cref="CollectionEndPoint.Collection"/>, including the transformation
   /// of the involved <see cref="DomainObjectCollection"/> instances into stand-alone resp. associated collections.
   /// </summary>
-  public class CollectionEndPointReplaceWholeCollectionCommand : RelationEndPointModificationCommand
+  public class CollectionEndPointSetCollectionCommand : RelationEndPointModificationCommand
   {
     private readonly ICollectionEndPoint _modifiedEndPoint;
-    private readonly DomainObjectCollection _newOppositeCollection;
+    private readonly DomainObjectCollection _newCollection;
     private readonly Action<DomainObjectCollection> _collectionSetter;
 
-    private readonly IAssociatableDomainObjectCollection _oldOppositeCollectionTransformer;
-    private readonly IAssociatableDomainObjectCollection _newOppositeCollectionTransformer;
+    private readonly IAssociatableDomainObjectCollection _oldCollectionTransformer;
+    private readonly IAssociatableDomainObjectCollection _newCollectionTransformer;
 
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
 
-    public CollectionEndPointReplaceWholeCollectionCommand (
+    public CollectionEndPointSetCollectionCommand (
         ICollectionEndPoint modifiedEndPoint, 
-        DomainObjectCollection newOppositeCollection,
+        DomainObjectCollection newCollection,
         Action<DomainObjectCollection> collectionSetter,
-        IAssociatableDomainObjectCollection oldOppositeCollectionTransformer,
-        IAssociatableDomainObjectCollection newOppositeCollectionTransformer)
+        IAssociatableDomainObjectCollection oldCollectionTransformer,
+        IAssociatableDomainObjectCollection newCollectionTransformer)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
-      ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
+      ArgumentUtility.CheckNotNull ("newCollection", newCollection);
       ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
-      ArgumentUtility.CheckNotNull ("oldOppositeCollectionTransformer", oldOppositeCollectionTransformer);
-      ArgumentUtility.CheckNotNull ("newOppositeCollectionTransformer", newOppositeCollectionTransformer);
+      ArgumentUtility.CheckNotNull ("oldCollectionTransformer", oldCollectionTransformer);
+      ArgumentUtility.CheckNotNull ("newCollectionTransformer", newCollectionTransformer);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _modifiedEndPoint = modifiedEndPoint;
-      _newOppositeCollection = newOppositeCollection;
+      _newCollection = newCollection;
       _collectionSetter = collectionSetter;
 
-      _oldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
-      _newOppositeCollectionTransformer = newOppositeCollectionTransformer;
+      _oldCollectionTransformer = oldCollectionTransformer;
+      _newCollectionTransformer = newCollectionTransformer;
     }
 
     public new ICollectionEndPoint ModifiedEndPoint
@@ -66,19 +66,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedEndPoint; }
     }
 
-    public DomainObjectCollection NewOppositeCollection
+    public DomainObjectCollection NewCollection
     {
-      get { return _newOppositeCollection; }
+      get { return _newCollection; }
     }
 
-    public IAssociatableDomainObjectCollection OldOppositeCollectionTransformer
+    public IAssociatableDomainObjectCollection OldCollectionTransformer
     {
-      get { return _oldOppositeCollectionTransformer; }
+      get { return _oldCollectionTransformer; }
     }
 
-    public IAssociatableDomainObjectCollection NewOppositeCollectionTransformer
+    public IAssociatableDomainObjectCollection NewCollectionTransformer
     {
-      get { return _newOppositeCollectionTransformer; }
+      get { return _newCollectionTransformer; }
     }
 
     public DomainObject[] RemovedObjects
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         if (_removedObjects == null)
         {
           var oldOppositeObjects = ModifiedEndPoint.Collection.Cast<DomainObject> ();
-          _removedObjects = oldOppositeObjects.Where (oldObject => !NewOppositeCollection.ContainsObject (oldObject)).ToArray();
+          _removedObjects = oldOppositeObjects.Where (oldObject => !NewCollection.ContainsObject (oldObject)).ToArray();
         }
         return _removedObjects;
       }
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       {
         if (_addedObjects == null)
         {
-          var newOppositeObjects = NewOppositeCollection.Cast<DomainObject> ();
+          var newOppositeObjects = NewCollection.Cast<DomainObject> ();
           _addedObjects = newOppositeObjects.Where (newObject => !ModifiedEndPoint.Collection.ContainsObject (newObject)).ToArray();
         }
         return _addedObjects;
@@ -129,14 +129,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       // only transform the old collection to stand-alone if it is still associated with this end point
       // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
-      if (OldOppositeCollectionTransformer.IsAssociatedWith (ModifiedEndPoint))
-        OldOppositeCollectionTransformer.TransformToStandAlone();
+      if (OldCollectionTransformer.IsAssociatedWith (ModifiedEndPoint))
+        OldCollectionTransformer.TransformToStandAlone();
 
       // we must always associate the new collection with the end point, however - even during rollback phase
-      NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
+      NewCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       // now make end point refer to the new collection by reference, too
-      _collectionSetter (NewOppositeCollection); // this also touches the end point
+      _collectionSetter (NewCollection); // this also touches the end point
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }
 

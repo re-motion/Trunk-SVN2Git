@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void CollectionEndPoint_ReplacedCollection ()
     {
       var newOpposites = _endPoint.Collection.Clone();
-      _endPoint.CreateSetOppositeCollectionCommand (newOpposites).ExpandToAllRelatedObjects().NotifyAndPerform();
+      _endPoint.CreateSetCollectionCommand (newOpposites).ExpandToAllRelatedObjects().NotifyAndPerform();
       
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.That (deserializedEndPoint.HasChanged, Is.True);
@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void CollectionEndPoint_AssociatedEndPoint_OfOppositeCollection ()
+    public void CollectionEndPoint_AssociatedEndPoint_OfCollection ()
     {
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       var oldOpposites = industrialSector.Companies;

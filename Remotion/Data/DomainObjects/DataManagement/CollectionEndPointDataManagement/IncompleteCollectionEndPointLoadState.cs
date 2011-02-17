@@ -118,13 +118,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       oppositeEndPoint.MarkUnsynchronized();
     }
 
-    public IDataManagementCommand CreateSetOppositeCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
+    public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
       collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateSetOppositeCollectionCommand (newCollection);
+      return collectionEndPoint.CreateSetCollectionCommand (newCollection);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)

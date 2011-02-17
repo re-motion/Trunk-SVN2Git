@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void MarkDataComplete ();
     void MarkDataIncomplete ();
 
-    IDataManagementCommand CreateSetOppositeCollectionCommand (DomainObjectCollection newOppositeCollection);
+    IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection);
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
     IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);

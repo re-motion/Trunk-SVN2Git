@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointReplaceWholeCollectionCommandTest : CollectionEndPointModificationCommandTestBase
+  public class CollectionEndPointSetCollectionCommandTest : CollectionEndPointModificationCommandTestBase
   {
     private DomainObjectCollection _newCollection;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private IAssociatableDomainObjectCollection _oldTransformerMock;
     private IAssociatableDomainObjectCollection _newTransformerMock;
 
-    private CollectionEndPointReplaceWholeCollectionCommand _command;
+    private CollectionEndPointSetCollectionCommand _command;
 
     private Order _order1;
     private Order _orderWithoutOrderItem;
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
       _newTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
 
-      _command = new CollectionEndPointReplaceWholeCollectionCommand (
+      _command = new CollectionEndPointSetCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
           _collectionSetter,
@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_command.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
       Assert.That (_command.OldRelatedObject, Is.Null);
       Assert.That (_command.NewRelatedObject, Is.Null);
-      Assert.That (_command.NewOppositeCollection, Is.SameAs (_newCollection));
-      Assert.That (_command.OldOppositeCollectionTransformer, Is.SameAs (_oldTransformerMock));
-      Assert.That (_command.NewOppositeCollectionTransformer, Is.SameAs (_newTransformerMock));
+      Assert.That (_command.NewCollection, Is.SameAs (_newCollection));
+      Assert.That (_command.OldCollectionTransformer, Is.SameAs (_oldTransformerMock));
+      Assert.That (_command.NewCollectionTransformer, Is.SameAs (_newTransformerMock));
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, collection => { }, _oldTransformerMock, _newTransformerMock);
+      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, collection => { }, _oldTransformerMock, _newTransformerMock);
     }
 
     [Test]
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
             .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
             .WhenCalled (mi =>
             {
-              Assert.That (CollectionEndPoint.Collection != _newCollection); // transformations occur before SetOppositeCollection
+              Assert.That (CollectionEndPoint.Collection != _newCollection); // transformations occur before setting the collection
               TransformToAssociated (_newCollection);
             });
       }

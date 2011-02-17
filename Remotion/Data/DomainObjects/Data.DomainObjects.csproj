@@ -370,7 +370,7 @@
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceCommand.cs" />
-    <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceWholeCollectionCommand.cs" />
+    <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointSetCollectionCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceSameCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointSetOneManyCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointSetOneOneCommand.cs" />
