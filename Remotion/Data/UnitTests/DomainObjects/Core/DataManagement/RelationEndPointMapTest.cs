@@ -652,72 +652,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkCollectionEndPointComplete_EndPointNotRegistered ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Assert.That (_map[endPointID], Is.Null);
-
-      _map.MarkCollectionEndPointComplete (endPointID);
-
-      var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
-      Assert.That (collectionEndPoint, Is.Not.Null);
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (collectionEndPoint.Collection, Is.Empty);
-    }
-
-    [Test]
-    public void MarkCollectionEndPointComplete_EndPointRegistered_Incomplete ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-
-      var item = DomainObjectMother.CreateFakeObject<Order> ();
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
-      collectionEndPoint.MarkDataIncomplete ();
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
-
-      _map.MarkCollectionEndPointComplete (endPointID);
-
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void MarkCollectionEndPointComplete_EndPointRegistered_AlreadyComplete ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-
-      var item = DomainObjectMother.CreateFakeObject<Order> ();
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-
-      _map.MarkCollectionEndPointComplete (endPointID);
-
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (collectionEndPoint.Collection, Is.EqualTo (new[] { item }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "MarkCollectionEndPointComplete can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
-    public void MarkCollectionEndPointComplete_ChecksCardinality ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      _map.MarkCollectionEndPointComplete (endPointID);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
-    public void MarkCollectionEndPointComplete_ChecksAnonymity ()
-    {
-      var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
-      _map.MarkCollectionEndPointComplete (endPointID);
-    }
-
-    [Test]
     public void RegisterEndPointsForDataContainer_Existing_RegistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -1082,6 +1016,72 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
 
       _map.CheckForConflictingForeignKeys (dataContainer2);
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (_map[endPointID], Is.Null);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
+      Assert.That (collectionEndPoint, Is.Not.Null);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+      Assert.That (collectionEndPoint.Collection, Is.Empty);
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointRegistered_Incomplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+      collectionEndPoint.MarkDataIncomplete ();
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void MarkCollectionEndPointComplete_EndPointRegistered_AlreadyComplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID, new[] { item });
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+
+      _map.MarkCollectionEndPointComplete (endPointID);
+
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+      Assert.That (collectionEndPoint.Collection, Is.EqualTo (new[] { item }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "MarkCollectionEndPointComplete can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
+    public void MarkCollectionEndPointComplete_ChecksCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      _map.MarkCollectionEndPointComplete (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+    public void MarkCollectionEndPointComplete_ChecksAnonymity ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
+      _map.MarkCollectionEndPointComplete (endPointID);
     }
 
     [Test]

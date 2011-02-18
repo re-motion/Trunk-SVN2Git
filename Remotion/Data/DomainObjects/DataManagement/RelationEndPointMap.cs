@@ -226,16 +226,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RemoveEndPoint (endPointID);
     }
 
-    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
-      CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
-
-      var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
-      endPoint.MarkDataComplete ();
-    }
-
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
@@ -303,6 +293,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
             CheckForConflictingForeignKey (dataContainer, endPointID.Definition, oppositeVirtualEndPointDefinition);
         }
       }
+    }
+
+    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
+      CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
+
+      var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
+      endPoint.MarkDataComplete ();
     }
 
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
