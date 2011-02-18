@@ -309,10 +309,32 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      // TODO: Throw if anonymous, throw if part of unidirectional relation
-      // TODO: Get end-point, throw if it doesn't exist
-      // TODO: If objectEndPoint, get opposite end-point, call oppositeObjectEndPoint.Synchronize (endPoint)
-      // TODO: If collectionEndPoint, get all unsynchronized opposite end-points, call Synchronize (endPoint) for each of them
+      if (relationEndPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
+        throw new ArgumentException ("Synchronize cannot be called for unidirectional relation end-points.", "relationEndPointID");
+
+      var endPoint = this[relationEndPointID];
+      if (endPoint == null)
+      {
+        var message = string.Format (
+            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
+            relationEndPointID.Definition.PropertyName,
+            relationEndPointID.ObjectID);
+        throw new InvalidOperationException (message);
+      }
+
+      if (endPoint.Definition.Cardinality == CardinalityType.One)
+      {
+        var objectEndPoint = (IObjectEndPoint) endPoint;
+        var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID();
+        var oppositeEndPoint = this[oppositeRelationEndPointID] ?? CreateNullEndPoint (oppositeRelationEndPointID);
+        objectEndPoint.Synchronize (oppositeEndPoint);
+      }
+      else
+      {
+        var collectionEndPoint = (ICollectionEndPoint) endPoint;
+        foreach (var unsynchronizedOppositeEndPoint in collectionEndPoint.GetUnsynchronizedOppositeEndPoints())
+          unsynchronizedOppositeEndPoint.Synchronize (collectionEndPoint);
+      }
     }
 
 
@@ -324,10 +346,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (endPointID.ObjectID == null)
       {
-        if (endPointID.Definition.Cardinality == CardinalityType.One)
-          return new NullObjectEndPoint (ClientTransaction, endPointID.Definition);
-        else
-          return new NullCollectionEndPoint (ClientTransaction, endPointID.Definition);
+        return CreateNullEndPoint(endPointID);
       }
 
       if (!endPointID.Definition.IsVirtual)
@@ -578,6 +597,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
                 foreignKeyValue,
                 existingConflictingObjectID != null ? existingConflictingObjectID.ToString() : "<null>");
       throw new InvalidOperationException (message);
+    }
+
+    private IRelationEndPoint CreateNullEndPoint (RelationEndPointID endPointID)
+    {
+      if (endPointID.Definition.Cardinality == CardinalityType.One)
+        return new NullObjectEndPoint (ClientTransaction, endPointID.Definition);
+      else
+        return new NullCollectionEndPoint (ClientTransaction, endPointID.Definition);
     }
 
     #region Serialization

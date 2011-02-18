@@ -421,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       collectionEndPointMock.Expect (mock => mock.RegisterOppositeEndPoint (Arg<IObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
       collectionEndPointMock.Replay();
       
-      PrivateInvoke.InvokeNonPublicMethod (_map, "Add", collectionEndPointMock);
+      AddEndPoint (_map, collectionEndPointMock);
 
       var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
@@ -1109,9 +1109,106 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Synchronize ()
+    public void Synchronize_WithObjectEndPoint ()
     {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
+      oppositeEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems"));
+
+      var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint>();
+      objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointMock.Stub (stub => stub.GetOppositeRelationEndPointID()).Return (oppositeEndPointStub.ID);
+      objectEndPointMock.Expect (mock => mock.Synchronize (oppositeEndPointStub));
+      objectEndPointMock.Replay();
+
+      AddEndPoint (_map, objectEndPointMock);
+      AddEndPoint (_map, oppositeEndPointStub);
+
+      _map.Synchronize (endPointID);
+
+      objectEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Synchronize_WithObjectEndPoint_NonExistingOppositeEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+
+      var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointMock.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointMock.Expect (mock => mock.Synchronize (Arg<IRelationEndPoint>.Matches (ep => ep is NullCollectionEndPoint)));
+      objectEndPointMock.Replay ();
+
+      AddEndPoint (_map, objectEndPointMock);
+
+      _map.Synchronize (endPointID);
+
+      objectEndPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Synchronize_WithCollectionEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+
+      var oppositeEndPointMock1 = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var oppositeEndPointMock2 = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+
+      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      collectionEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      collectionEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      collectionEndPointStub
+          .Stub (stub => stub.GetUnsynchronizedOppositeEndPoints())
+          .Return (Array.AsReadOnly (new[]{ oppositeEndPointMock1, oppositeEndPointMock2 }));
+
+      oppositeEndPointMock1.Expect (mock => mock.Synchronize (collectionEndPointStub));
+      oppositeEndPointMock1.Replay();
       
+      oppositeEndPointMock2.Expect (mock => mock.Synchronize (collectionEndPointStub));
+      oppositeEndPointMock2.Replay ();
+
+      AddEndPoint (_map, collectionEndPointStub);
+
+      _map.Synchronize (endPointID);
+
+      oppositeEndPointMock1.VerifyAllExpectations ();
+      oppositeEndPointMock2.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "Synchronize cannot be called for unidirectional relation end-points.\r\nParameter name: relationEndPointID")]
+    public void Synchronize_UnidirectionalEndpoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
+
+      _map.Synchronize (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Synchronize cannot be called for unidirectional relation end-points.\r\nParameter name: relationEndPointID")]
+    public void Synchronize_AnonymousEndPoint ()
+    {
+      var locationClientEndPoint = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, locationClientEndPoint.Definition.GetOppositeEndPointDefinition());
+
+      _map.Synchronize (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' of object "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' has not yet been loaded into the given ClientTransaction.")]
+    public void Synchronize_NonExistingEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      _map.Synchronize (endPointID);
     }
 
     [Test]
@@ -1210,6 +1307,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           null,
           pd => pd.DefaultValue);
       return foreignKeyDataContainer;
+    }
+
+    private void AddEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (endPointMap, "Add", endPoint);
     }
   }
 }
