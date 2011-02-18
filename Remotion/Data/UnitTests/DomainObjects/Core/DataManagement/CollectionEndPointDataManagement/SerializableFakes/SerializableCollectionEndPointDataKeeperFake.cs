@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
@@ -35,12 +34,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public void RegisterOriginalObject (DomainObject domainObject)
+    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterOriginalObject (ObjectID objectID)
+    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

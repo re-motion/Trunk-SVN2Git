@@ -150,8 +150,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         throw new InvalidOperationException (message);
       }
 
-      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
-      oppositeEndPoint.MarkSynchronized ();
+      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (

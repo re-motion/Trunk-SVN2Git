@@ -70,26 +70,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
     
     [Test]
-    public void RegisterOriginalObject ()
+    public void RegisterOppositeEndPoint ()
     {
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      endPointMock.Expect (mock => mock.MarkSynchronized ());
+      endPointMock.Replay ();
+
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
 
-      _dataKeeper.RegisterOriginalObject (_domainObject2);
+      _dataKeeper.RegisterOppositeEndPoint (endPointMock);
 
+      endPointMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
     }
 
     [Test]
-    public void UnregisterOriginalObject ()
+    public void UnregisterOppositeEndPoint ()
     {
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+      endPointMock.Expect (mock => mock.MarkUnsynchronized ());
+      endPointMock.Replay ();
+
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject1));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject1));
       
-      _dataKeeper.UnregisterOriginalObject (_domainObject1.ID);
+      _dataKeeper.UnregisterOppositeEndPoint (endPointMock);
 
+      endPointMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject1));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject1));

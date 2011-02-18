@@ -76,16 +76,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _collectionData.OriginalData; }
     }
 
-    public void RegisterOriginalObject (DomainObject domainObject)
+    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      _collectionData.RegisterOriginalItem (domainObject);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+      
+      var item = oppositeEndPoint.GetDomainObjectReference();
+      _collectionData.RegisterOriginalItem (item);
+      oppositeEndPoint.MarkSynchronized ();
     }
 
-    public void UnregisterOriginalObject (ObjectID objectID)
+    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      _collectionData.UnregisterOriginalItem (objectID);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      var itemID = oppositeEndPoint.ObjectID;
+      _collectionData.UnregisterOriginalItem (itemID);
+      oppositeEndPoint.MarkUnsynchronized ();
     }
 
     public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)

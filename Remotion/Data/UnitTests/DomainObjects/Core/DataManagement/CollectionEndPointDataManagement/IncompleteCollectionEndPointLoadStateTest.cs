@@ -131,34 +131,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOppositeEndPoint ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      endPointMock.Expect (mock => mock.GetDomainObjectReference ()).Return (_relatedObject);
-      endPointMock.Expect (mock => mock.MarkSynchronized());
-      endPointMock.Replay();
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.Expect (mock => mock.RegisterOppositeEndPoint (endPointStub));
       _dataKeeperMock.Replay ();
 
-      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
 
-      endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void UnregisterOppositeEndPoint ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      endPointMock.Expect(mock => mock.ObjectID).Return (_relatedObject.ID);
-      endPointMock.Expect (mock => mock.MarkUnsynchronized());
-      endPointMock.Replay();
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalObject (_relatedObject.ID));
+      _dataKeeperMock.Expect (mock => mock.UnregisterOppositeEndPoint (endPointStub));
       _dataKeeperMock.Replay ();
 
-      _loadState.UnregisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
+      _loadState.UnregisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
 
-      endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations ();
     }
 

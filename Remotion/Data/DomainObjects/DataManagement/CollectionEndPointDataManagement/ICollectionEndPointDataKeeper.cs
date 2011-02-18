@@ -10,8 +10,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IDomainObjectCollectionData CollectionData { get; }
     IDomainObjectCollectionData OriginalCollectionData { get; }
 
-    void RegisterOriginalObject (DomainObject domainObject);
-    void UnregisterOriginalObject (ObjectID objectID);
+    void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
 

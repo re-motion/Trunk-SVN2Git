@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
 
-      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOppositeEndPoint (endPointMock));
       endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
     }
@@ -258,22 +258,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SynchronizeWith_InList ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.MarkUnsynchronized());
-      endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
-      endPointMock.Expect (mock => mock.MarkSynchronized ());
-      endPointMock.Replay ();
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.Expect (mock => mock.RegisterOppositeEndPoint (endPointStub));
       _dataKeeperMock.Replay ();
 
-      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
-      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Contains (endPointMock));
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Contains (endPointStub));
 
-      _loadState.SynchronizeWith (endPointMock);
+      _loadState.SynchronizeWith (endPointStub);
 
-      endPointMock.VerifyAllExpectations();
-      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Not.Contains (endPointMock));
+      _dataKeeperMock.VerifyAllExpectations();
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Not.Contains (endPointStub));
     }
 
     [Test]
