@@ -256,6 +256,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void SynchronizeWith_InList ()
+    {
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.MarkUnsynchronized());
+      endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
+      endPointMock.Expect (mock => mock.MarkSynchronized ());
+      endPointMock.Replay ();
+
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalObject (_relatedObject));
+      _dataKeeperMock.Replay ();
+
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointMock);
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Contains (endPointMock));
+
+      _loadState.SynchronizeWith (endPointMock);
+
+      endPointMock.VerifyAllExpectations();
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Not.Contains (endPointMock));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot synchronize with opposite end-point "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - the "
+        + "end-point is not in the list of unsynchronized end-points.")]
+    public void SynchronizeWith_NotInList ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
+
+      _loadState.SynchronizeWith (endPointStub);
+    }
+
+    [Test]
     public void CreateSetCollectionCommand ()
     {
       var fakeCollection = new DomainObjectCollection ();

@@ -124,6 +124,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return Array.AsReadOnly (new IObjectEndPoint[0]);
     }
 
+    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      var message = string.Format (
+          "Cannot synchronize with opposite end-point '{0}' - the end-point is not in the list of unsynchronized end-points.", 
+          oppositeEndPoint.ID);
+      throw new InvalidOperationException (message);
+    }
+
     public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

@@ -138,6 +138,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _unsynchronizedOppositeEndPoints.AsReadOnly();
     }
 
+    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (!_unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint))
+      {
+        var message = string.Format (
+            "Cannot synchronize with opposite end-point '{0}' - the end-point is not in the list of unsynchronized end-points.",
+            oppositeEndPoint.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      _dataKeeper.RegisterOriginalObject (oppositeEndPoint.GetDomainObjectReference ());
+      oppositeEndPoint.MarkSynchronized ();
+    }
+
     public IDataManagementCommand CreateSetCollectionCommand (
         ICollectionEndPoint collectionEndPoint, 
         DomainObjectCollection newCollection, 

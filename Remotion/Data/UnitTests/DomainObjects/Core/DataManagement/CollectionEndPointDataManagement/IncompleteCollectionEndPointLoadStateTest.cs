@@ -169,6 +169,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot synchronize with opposite end-point "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - the "
+        + "end-point is not in the list of unsynchronized end-points.")]
+    public void SynchronizeWith ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
+
+      _loadState.SynchronizeWith (endPointStub);
+    }
+
+    [Test]
     public void CreateSetCollectionCommand ()
     {
       var domainObjectCollection = new DomainObjectCollection ();
