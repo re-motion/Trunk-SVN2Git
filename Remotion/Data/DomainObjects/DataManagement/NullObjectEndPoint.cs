@@ -86,6 +86,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
+    public void Synchronize (IRelationEndPoint oppositeEndPoint)
+    {
+      // do nothing
+    }
+
+    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+    }
+
     public void MarkSynchronized ()
     {
       // do nothing
@@ -93,7 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkUnsynchronized ()
     {
-      // do nothing
+      throw new InvalidOperationException ("It is not possible to call MarkUnsynchronized on a NullObjectEndPoint.");
     }
 
     public DomainObject GetOppositeObject (bool includeDeleted)
@@ -139,11 +149,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void EnsureDataComplete ()
     {
       // do nothing
-    }
-
-    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
-    {
-      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
     }
 
     public void Touch ()

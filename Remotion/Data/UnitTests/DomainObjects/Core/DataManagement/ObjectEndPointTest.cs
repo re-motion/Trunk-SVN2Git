@@ -56,6 +56,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Synchronize ()
+    {
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
+
+      _syncStateMock
+          .Expect (mock => mock.Synchronize (_endPointWithSyncStateMock, oppositeEndPointStub));
+      _syncStateMock.Replay ();
+
+      _endPointWithSyncStateMock.Synchronize (oppositeEndPointStub);
+
+      _syncStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
     public void SynchronizeOppositeEndPoint ()

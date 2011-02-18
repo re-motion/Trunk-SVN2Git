@@ -169,6 +169,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void Synchronize (IRelationEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
       throw new NotImplementedException();
