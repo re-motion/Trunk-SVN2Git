@@ -193,6 +193,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("UnregisterOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
 
+    public bool IsSynchronized
+    {
+      get { return true; }
+    }
+
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
     {
       return Array.AsReadOnly (new IObjectEndPoint[0]);

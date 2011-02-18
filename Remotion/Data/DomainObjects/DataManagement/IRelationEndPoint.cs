@@ -33,14 +33,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IRelationEndPointDefinition Definition { get; }
     RelationDefinition RelationDefinition { get; }
 
-    bool IsDataComplete { get; }
     bool HasChanged { get; }
     bool HasBeenTouched { get; }
 
     DomainObject GetDomainObject ();
     DomainObject GetDomainObjectReference ();
 
+    bool IsDataComplete { get; }
     void EnsureDataComplete ();
+
+    bool IsSynchronized { get; }
 
     void Touch ();
     void Commit ();

@@ -221,6 +221,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnsynchronizedObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\ClientTransactionSyncServiceTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
@@ -1063,7 +1064,6 @@
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializationReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializationWriterTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointIDTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\RelationEndPointSerializationTestStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DataContainerMapTest.cs" />

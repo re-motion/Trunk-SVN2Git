@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -185,6 +186,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
       Assert.That (industrialSector.Companies, List.Not.Contains (newCompany));
 
+      Assert.That (
+          ClientTransactionSyncService.IsSynchronized (
+              ClientTransactionMock, RelationEndPointID.Create (industrialSector, sector => sector.Companies)),
+          Is.False);
+      Assert.That (
+          ClientTransactionSyncService.IsSynchronized (
+              ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
+          Is.False);
+
       try
       {
         newCompany.IndustrialSector = CreateNewIndustrialSector();
@@ -217,6 +227,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
       // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
       var newCompany = Company.GetObject (newCompanyID);
+
+      Assert.That (
+          ClientTransactionSyncService.IsSynchronized (
+              ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
+          Is.False);
 
       industrialSector.Companies.Add (newCompany);
     }

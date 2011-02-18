@@ -16,6 +16,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation
 {
@@ -98,7 +100,22 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </remarks>
     public static bool IsSynchronized (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (endPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
+        throw new ArgumentException ("IsSynchronized cannot be called for unidirectional relation end-points.", "endPointID");
+
+      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      if (endPoint == null)
+      {
+        var message = string.Format (
+            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
+            endPointID.Definition.PropertyName,
+            endPointID.ObjectID);
+        throw new InvalidOperationException (message);
+      }
+      return endPoint.IsSynchronized;
     }
 
     /// <summary>

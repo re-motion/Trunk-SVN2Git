@@ -93,6 +93,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public void Touch ()
     {
       throw new NotImplementedException();

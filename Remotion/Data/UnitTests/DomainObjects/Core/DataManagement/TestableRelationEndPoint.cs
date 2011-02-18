@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
+  [Serializable]
   public class TestableRelationEndPoint : RelationEndPoint
   {
     public TestableRelationEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
@@ -54,6 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       throw new NotImplementedException();
     }
 
+    public override bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public override void Touch ()
     {
       throw new NotImplementedException();
@@ -81,7 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      throw new NotImplementedException();
     }
 
     public override void SetValueFrom (IRelationEndPoint source)

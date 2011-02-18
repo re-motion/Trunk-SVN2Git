@@ -218,6 +218,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.UnregisterOppositeEndPoint (this, oppositeEndPoint);
     }
 
+    public override bool IsSynchronized
+    {
+      get { return !GetUnsynchronizedOppositeEndPoints().Any(); }
+    }
+
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
     {
       return _loadState.GetUnsynchronizedOppositeEndPoints();

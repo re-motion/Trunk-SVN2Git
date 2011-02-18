@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; protected set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
-    public bool IsSynchronized
+    public override bool IsSynchronized
     {
       get { return _syncState.IsSynchronized; }
     }
