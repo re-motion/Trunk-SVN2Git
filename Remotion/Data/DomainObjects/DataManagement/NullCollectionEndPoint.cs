@@ -203,6 +203,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return Array.AsReadOnly (new IObjectEndPoint[0]);
     }
 
+    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("SynchronizeWith cannot be called on a NullCollectionEndPoint.");
+    }
+
     public void EnsureDataComplete ()
     {
       // do nothing

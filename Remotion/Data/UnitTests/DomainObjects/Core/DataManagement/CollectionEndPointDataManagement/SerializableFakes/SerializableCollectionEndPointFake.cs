@@ -204,6 +204,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public void MarkDataIncomplete ()
     {
       throw new NotImplementedException();

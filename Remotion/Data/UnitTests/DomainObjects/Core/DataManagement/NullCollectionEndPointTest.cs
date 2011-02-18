@@ -220,6 +220,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
+    public void SynchronizeWith ()
+    {
+      _nullEndPoint.SynchronizeWith (MockRepository.GenerateStub<IObjectEndPoint>());
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void CheckMandatory ()
     {
       _nullEndPoint.CheckMandatory ();

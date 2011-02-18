@@ -631,6 +631,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SynchronizeWith ()
+    {
+      var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();
+      _loadStateMock.Expect (mock => mock.SynchronizeWith(fakeEndPoint));
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.SynchronizeWith (fakeEndPoint);
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void CreateSetCollectionCommand ()
     {
       var oppositeDomainObjects = new OrderCollection ();
