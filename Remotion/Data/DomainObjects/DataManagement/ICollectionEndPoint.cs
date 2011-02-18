@@ -43,6 +43,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ();
-    void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
   }
 }

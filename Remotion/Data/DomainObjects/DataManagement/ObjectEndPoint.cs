@@ -42,6 +42,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _syncState.IsSynchronized; }
     }
 
+    public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+    }
+
     public void MarkSynchronized ()
     {
       _syncState = new SynchronizedObjectEndPointSyncState();

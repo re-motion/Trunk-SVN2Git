@@ -60,6 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { throw new NotImplementedException(); }
     }
 
+    public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public override void Touch ()
     {
       throw new NotImplementedException();

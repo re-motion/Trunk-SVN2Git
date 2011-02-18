@@ -46,6 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract void EnsureDataComplete ();
 
     public abstract bool IsSynchronized { get; }
+    public abstract void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     public abstract void Touch ();
     public abstract IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);

@@ -43,6 +43,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void EnsureDataComplete ();
 
     bool IsSynchronized { get; }
+    /// <summary>
+    /// Synchronizes the opposite end point with this end-point. Must only be called if the oppositeEndPoint is out-of-sync with this end-point.
+    /// </summary>
+    void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     void Touch ();
     void Commit ();

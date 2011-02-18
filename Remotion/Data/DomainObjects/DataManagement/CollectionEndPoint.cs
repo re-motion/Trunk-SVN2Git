@@ -228,7 +228,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _loadState.GetUnsynchronizedOppositeEndPoints();
     }
 
-    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 

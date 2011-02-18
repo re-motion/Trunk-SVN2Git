@@ -141,6 +141,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // do nothing
     }
 
+    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+    }
+
     public void Touch ()
     {
       // do nothing
