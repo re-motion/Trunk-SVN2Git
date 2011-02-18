@@ -170,6 +170,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelationEndPointWithLazyLoad_NullObjectEndPoint ()
+    {
+      var endPointDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var relationEndPointID = RelationEndPointID.Create (null, endPointDefinition);
+
+      var result = _map.GetRelationEndPointWithLazyLoad (relationEndPointID);
+
+      Assert.That (result, Is.TypeOf (typeof (NullObjectEndPoint)));
+      Assert.That (result.Definition, Is.EqualTo (endPointDefinition));
+    }
+
+    [Test]
+    public void GetRelationEndPointWithLazyLoad_NullCollectionEndPoint ()
+    {
+      var endPointDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      var relationEndPointID = RelationEndPointID.Create (null, endPointDefinition);
+
+      var result = _map.GetRelationEndPointWithLazyLoad (relationEndPointID);
+
+      Assert.That (result, Is.TypeOf (typeof (NullCollectionEndPoint)));
+      Assert.That (result.Definition, Is.EqualTo (endPointDefinition));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "GetRelationEndPointWithLazyLoad cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()

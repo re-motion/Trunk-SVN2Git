@@ -321,6 +321,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
+      if (endPointID.ObjectID == null)
+      {
+        if (endPointID.Definition.Cardinality == CardinalityType.One)
+          return new NullObjectEndPoint (ClientTransaction, endPointID.Definition);
+        else
+          return new NullCollectionEndPoint (ClientTransaction, endPointID.Definition);
+      }
+
       if (!endPointID.Definition.IsVirtual)
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
 

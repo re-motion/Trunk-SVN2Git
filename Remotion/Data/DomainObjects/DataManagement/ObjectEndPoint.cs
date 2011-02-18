@@ -161,11 +161,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition();
-      if (oppositeEndPointDefinition.IsAnonymous || OppositeObjectID == null)
+      if (oppositeEndPointDefinition.IsAnonymous)
         return Enumerable.Empty<RelationEndPointID>();
       else
       {
-        var oppositeEndPointID = RelationEndPointID.Create(OppositeObjectID, oppositeEndPointDefinition);
+        var oppositeEndPointID = RelationEndPointID.Create (OppositeObjectID, oppositeEndPointDefinition);
         return new[] { oppositeEndPointID };
       }
     }

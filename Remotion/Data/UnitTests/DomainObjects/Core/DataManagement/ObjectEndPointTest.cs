@@ -357,7 +357,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray();
 
-      Assert.That (oppositeEndPoints, Is.Empty);
+      var expectedID = RelationEndPointID.Create (null, _endPoint.Definition.GetOppositeEndPointDefinition());
+      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedID }));
     }
 
     [Test]
@@ -379,7 +380,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
 
       var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-
       Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedID }));
     }
 

@@ -39,15 +39,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var oppositeDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      IRelationEndPoint oppositeEndPoint;
-      if (oppositeObjectID == null)
-        oppositeEndPoint = CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
-      else
-      {
-        var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
-        var id = RelationEndPointID.Create(oppositeObjectID, oppositeDefinition);
-        oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
-      }
+      var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
+      var id = RelationEndPointID.Create(oppositeObjectID, oppositeDefinition);
+      var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
 
       if (!(oppositeEndPoint is T))
       {
@@ -60,14 +54,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       return (T) oppositeEndPoint;
-    }
-
-    private static IRelationEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
-    {
-      if (definition.Cardinality == CardinalityType.One)
-        return new NullObjectEndPoint (clientTransaction, definition);
-      else
-        return new NullCollectionEndPoint (clientTransaction, definition);
     }
   }
 }

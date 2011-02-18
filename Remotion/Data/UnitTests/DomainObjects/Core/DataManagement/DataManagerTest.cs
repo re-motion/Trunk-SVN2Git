@@ -869,6 +869,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetOppositeRelationEndPoints_WithNulls ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      order.OrderTicket = null;
+      var dataContainer = order.InternalDataContainer;
+      
+      var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
+
+      var nullEndPoint = endPoints.OfType<NullObjectEndPoint>().SingleOrDefault();
+      Assert.That (nullEndPoint, Is.Not.Null);
+      var expectedEndPointDefinition = 
+          Configuration.ClassDefinitions[typeof (OrderTicket)].GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+      Assert.That (nullEndPoint.Definition, Is.EqualTo (expectedEndPointDefinition));
+    }
+
+    [Test]
     public void GetDataContainerWithoutLoading_NotLoaded ()
     {
       var result = _dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.Order1);
