@@ -270,10 +270,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _loadState.CreateReplaceCommand (this, index, replacementObject);
     }
 
-    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      return _loadState.GetOppositeRelationEndPoints (this, dataManager);
+      return _loadState.GetOppositeRelationEndPointIDs (this);
     }
 
     private void RaiseStateUpdateNotification (bool hasChanged)

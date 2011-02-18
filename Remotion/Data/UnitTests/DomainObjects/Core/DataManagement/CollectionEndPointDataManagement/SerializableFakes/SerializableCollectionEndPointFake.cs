@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
       throw new NotImplementedException();
     }

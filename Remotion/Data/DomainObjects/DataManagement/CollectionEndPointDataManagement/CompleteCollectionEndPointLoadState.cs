@@ -101,18 +101,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager)
+    public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var oppositeEndPointDefinition = collectionEndPoint.Definition.GetOppositeEndPointDefinition ();
 
       Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
 
       return from oppositeDomainObject in _dataKeeper.CollectionData
-             let oppositeEndPointID = RelationEndPointID.Create(oppositeDomainObject.ID, oppositeEndPointDefinition)
-             select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+             select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 
     public void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)

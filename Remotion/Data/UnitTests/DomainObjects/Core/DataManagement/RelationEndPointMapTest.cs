@@ -1085,6 +1085,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Synchronize ()
+    {
+      
+    }
+
+    [Test]
     public void CommitAllEndPoints_CommitsEndPoints ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");

@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints ()
+    public void GetOppositeRelationEndPointIDs ()
     {
       var relatedObject1 = DomainObjectMother.CreateFakeObject<Order> ();
       var relatedObject2 = DomainObjectMother.CreateFakeObject<Order> ();
@@ -180,23 +180,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (stub => stub.Definition).Return (_definition);
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionData);
 
-      var relationEndPointMapStub = MockRepository.GenerateStub<IRelationEndPointMapReadOnlyView>();
+      var oppositeEndPoints = _loadState.GetOppositeRelationEndPointIDs (_collectionEndPointMock).ToArray ();
 
-      var oppositeEndPointID1 = RelationEndPointID.Create(relatedObject1.ID, typeof (Order).FullName + ".Customer");
-      var oppositeEndPointID2 = RelationEndPointID.Create(relatedObject2.ID, typeof (Order).FullName + ".Customer");
-
-      var fakeEndPoint1 = MockRepository.GenerateStub<IRelationEndPoint> ();
-      var fakeEndPoint2 = MockRepository.GenerateStub<IRelationEndPoint> ();
-
-      relationEndPointMapStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oppositeEndPointID1)).Return (fakeEndPoint1);
-      relationEndPointMapStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oppositeEndPointID2)).Return (fakeEndPoint2);
-
-      var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
-      dataManagerStub.Stub (stub => stub.RelationEndPointMap).Return (relationEndPointMapStub);
-      
-      var oppositeEndPoints = _loadState.GetOppositeRelationEndPoints (_collectionEndPointMock, dataManagerStub).ToArray ();
-
-      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { fakeEndPoint1, fakeEndPoint2 }));
+      var expectedOppositeEndPointID1 = RelationEndPointID.Create (relatedObject1.ID, typeof (Order).FullName + ".Customer");
+      var expectedOppositeEndPointID2 = RelationEndPointID.Create (relatedObject2.ID, typeof (Order).FullName + ".Customer");
+      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedOppositeEndPointID1, expectedOppositeEndPointID2 }));
     }
 
     [Test]

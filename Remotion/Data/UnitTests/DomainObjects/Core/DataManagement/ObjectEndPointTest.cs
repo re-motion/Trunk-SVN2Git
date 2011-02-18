@@ -351,38 +351,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints_NullEndPoint ()
+    public void GetOppositeRelationEndPointIDs_NullEndPoint ()
     {
       ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
 
-      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray();
+      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray();
 
       Assert.That (oppositeEndPoints, Is.Empty);
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints_UnidirectionalEndPoint ()
+    public void GetOppositeRelationEndPointIDs_UnidirectionalEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
       var endPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (endPointID);
 
       Assert.That (endPoint.Definition.GetOppositeEndPointDefinition ().IsAnonymous, Is.True);
 
-      var oppositeEndPoints = endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
+      var oppositeEndPoints = endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
 
       Assert.That (oppositeEndPoints, Is.Empty);
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints_NonNullEndPoint ()
+    public void GetOppositeRelationEndPointIDs_NonNullEndPoint ()
     {
-      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
+      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
 
       var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var expected = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID];
-      Assert.That (expectedID, Is.Not.Null);
 
-      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expected }));
+      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedID }));
     }
 
     private ObjectEndPoint CreateEndPointWithSyncStateMock (IObjectEndPointSyncState syncStateMock)

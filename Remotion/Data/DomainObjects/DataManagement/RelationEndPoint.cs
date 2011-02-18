@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     public abstract void Touch ();
-    public abstract IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+    public abstract IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ();
 
     public abstract void Commit ();
     public abstract void Rollback ();

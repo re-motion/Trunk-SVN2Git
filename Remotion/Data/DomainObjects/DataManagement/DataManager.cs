@@ -133,9 +133,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs
              let endPoint = RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
-             let oppositeRelationEndPoints = endPoint.GetOppositeRelationEndPoints (this)
-             from oppositeEndPoint in oppositeRelationEndPoints
-             select oppositeEndPoint;
+             let oppositeRelationEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ()
+             from oppositeEndPointID in oppositeRelationEndPointIDs
+             select RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
     public bool HasRelationChanged (DataContainer dataContainer)

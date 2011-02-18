@@ -186,9 +186,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("CheckMandatory cannot be called on a NullObjectEndPoint.");
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
-      throw new InvalidOperationException ("GetOppositeRelationEndPoints cannot be called on a NullObjectEndPoint.");
+      throw new InvalidOperationException ("GetOppositeRelationEndPointIDs cannot be called on a NullObjectEndPoint.");
     }
 
     public void SetValueFrom (IRelationEndPoint source)

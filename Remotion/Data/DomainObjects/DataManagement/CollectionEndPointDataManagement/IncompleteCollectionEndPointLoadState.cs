@@ -95,12 +95,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
-    public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (ICollectionEndPoint collectionEndPoint, IDataManager dataManager)
+    public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       
       collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.GetOppositeRelationEndPoints (dataManager);
+      return collectionEndPoint.GetOppositeRelationEndPointIDs ();
     }
 
     public void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)

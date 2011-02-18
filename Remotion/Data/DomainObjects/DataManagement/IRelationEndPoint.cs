@@ -54,7 +54,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
     IDataManagementCommand CreateDeleteCommand ();
     void CheckMandatory ();
-    IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager);
+
+    IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ();
     void SetValueFrom (IRelationEndPoint source);
   }
 }

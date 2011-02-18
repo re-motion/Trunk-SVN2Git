@@ -158,17 +158,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Touch();
     }
 
-    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
-      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition();
       if (oppositeEndPointDefinition.IsAnonymous || OppositeObjectID == null)
-        return Enumerable.Empty<IRelationEndPoint>();
+        return Enumerable.Empty<RelationEndPointID>();
       else
       {
         var oppositeEndPointID = RelationEndPointID.Create(OppositeObjectID, oppositeEndPointDefinition);
-        return new[] { dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID) };
+        return new[] { oppositeEndPointID };
       }
     }
 

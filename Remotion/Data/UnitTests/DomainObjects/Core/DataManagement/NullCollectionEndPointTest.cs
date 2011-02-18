@@ -234,9 +234,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void GetOppositeRelationEndPoints ()
+    public void GetOppositeRelationEndPointIDs ()
     {
-      _nullEndPoint.GetOppositeRelationEndPoints (MockRepository.GenerateStub<IDataManager> ());
+      _nullEndPoint.GetOppositeRelationEndPointIDs ();
     }
 
     [Test]

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -865,15 +864,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
     
     [Test]
-    public void GetOppositeRelationEndPoints ()
+    public void GetOppositeRelationEndPointsIDs ()
     {
-      var fakeResult = new IRelationEndPoint[0];
-      var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
+      var fakeResult = new RelationEndPointID[0];
 
-      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPoints (_endPointWithLoadStateMock, dataManagerStub)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPointIDs (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
-      var result = _endPointWithLoadStateMock.GetOppositeRelationEndPoints (dataManagerStub);
+      var result = _endPointWithLoadStateMock.GetOppositeRelationEndPointIDs ();
 
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));

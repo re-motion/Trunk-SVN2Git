@@ -119,13 +119,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOppositeRelationEndPoints ()
+    public void GetOppositeRelationEndPointIDs ()
     {
-      var dataManager = MockRepository.GenerateStub<IDataManager>();
-      CheckOperationDelegatesToCompleteState (
-          s => s.GetOppositeRelationEndPoints (_collectionEndPointMock, dataManager),
-          s => s.GetOppositeRelationEndPoints (dataManager),
-          new IRelationEndPoint[0]);
+      CheckOperationDelegatesToCompleteState(
+          s => s.GetOppositeRelationEndPointIDs (_collectionEndPointMock),
+          s => s.GetOppositeRelationEndPointIDs (),
+          new RelationEndPointID[0]);
     }
 
     [Test]

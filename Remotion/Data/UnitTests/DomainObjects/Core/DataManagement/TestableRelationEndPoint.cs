@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       throw new NotImplementedException();
     }
 
-    public override IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (IDataManager dataManager)
+    public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
       throw new NotImplementedException();
     }

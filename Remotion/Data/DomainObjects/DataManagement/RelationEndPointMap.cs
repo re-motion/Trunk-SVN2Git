@@ -305,6 +305,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       endPoint.MarkDataComplete ();
     }
 
+    public void Synchronize (RelationEndPointID relationEndPointID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+      // TODO: Throw if anonymous, throw if part of unidirectional relation
+      // TODO: Get end-point, throw if it doesn't exist
+      // TODO: If objectEndPoint, get opposite end-point, call objectEndPoint.Synchronize (oppositeEndPoint)
+    }
+
+
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
