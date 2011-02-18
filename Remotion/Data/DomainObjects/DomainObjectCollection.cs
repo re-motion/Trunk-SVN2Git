@@ -20,8 +20,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 using System.Linq;
@@ -110,57 +109,13 @@ namespace Remotion.Data.DomainObjects
   /// is being calculated.
   /// </para>
   /// <para>
-  ///  When, after a bidirectional related objects collection is loaded, an object is loaded into the <see cref="ClientTransaction"/> that also holds 
-  ///  a foreign key to the object owning the collection, a conflict arises. Consider the following example (Order - OrderItems):
-  ///  <list type="number">
-  ///  <item>
-  ///    Order1.OrderItems is resolved and causes OrderItem1 and OrderItem2 to be loaded into the ClientTransaction, both holding foreign keys 
-  ///    back to Order1. Order1.OrderItems is determined to be the collection [OrderItem1, OrderItem2].
-  ///  </item>
-  ///  <item>
-  ///    Object OrderItem3 is loaded (eg., by ID or via a search query), and it also contains a foreign key back to Order1.
-  ///  </item>
-  ///  </list>
-  ///  This is a conflict because the query in step 1 was supposed to return all OrderItems that hold a foreign key back to Order1, but now an 
-  ///  additional item has been found. This is a general problem with lazy loading of objects, and it can occur when the underlying data source 
-  ///  changes between step 1 and step 2. It can only be technically prevented by using a database transaction that spans both steps 1 and 2.
-  ///  </para>
-  ///  <para> 
-  ///  The behavior in this scenario is as follows: when an object with a foreign key that is part of an 1:n relationship is loaded into the 
-  ///  <see cref="ClientTransaction"/>, the item is automatically added to the respective collection. When that collection has already been 
-  ///  "resolved" before, the item will be added at the end of the collection without considering the 
-  ///  <see cref="BidirectionalRelationAttribute.SortExpression"/> or raising an <see cref="Adding"/>/<see cref="Added"/> event (or calling the 
-  ///  <see cref="OnAdding"/>/<see cref="OnAdded"/> methods) or any relation change events.
-  ///  </para>
-  ///  <para>
-  ///  The reason for not considering the <see cref="BidirectionalRelationAttribute.SortExpression"/> is that the collection might have changed in 
-  ///  the meantime, and the original sort order might no longer be valid. Considering the <see cref="BidirectionalRelationAttribute.SortExpression"/>
-  ///  would not reliably lead to a state equivalent to that in the underlying data source, although it might give the impression that it would. In 
-  ///  addition, transparently inserting objects into collections at arbitrary positions would automatically invalidate any stored (selection) 
-  ///  indexes and similar.
-  ///  </para>
-  ///  <para>
-  ///  The reason for not raising the <see cref="Adding"/>/<see cref="Added"/> events is that the semantics of these events (as with the relation 
-  ///  change events) is that the collection has been changed, ie., the original state and the current state differ. This is not the case in this 
-  ///  scenario; the collection has not changed, the loaded object is part of the original state of the collection.
-  ///  </para>
-  ///  <para>
-  ///  When using collection-valued relations, keep in mind that the <see cref="DomainObjectCollection"/> might change when objects that could 
-  ///  potentially be collection items are loaded (by query, ID, or a relation property lookup). Specifically, keep this in mind when iterating over 
-  ///  a collection via foreach, and avoid performing unconstrained load operations from within such loops. Iteration using an index into the 
-  ///  collection (eg, via for loops) should be able to handle the new items gracefully.
-  ///  </para>
-  ///  <para>
-  ///  Subclasses of <see cref="DomainObjectCollection"/> that keep state additional to that managed by re-store might need to take additional 
-  ///  considerations. For example, "indexed collections", where the items keep a property storing their position in the owning collection, now have 
-  ///  to deal with loaded objects being registered at the end of the collection without the <see cref="Added"/> event being called. Collections are 
-  ///  often implemented in such a way that they recalculate the items' indexes whenever an item is added or removed and when the item owning 
-  ///  the collection is committed. The latter might cause such implementations to trigger an <see cref="ConcurrencyViolationException"/> because 
-  ///  reindexing will cause the additional item's index to be overwritten with a new value.
-  ///  </para>
-  ///  <para> 
-  ///  To avoid this exception, reindexing on commit should be handled with care. If it cannot be avoided, the algorithm might need to perform 
-  ///  additional checks to determine whether a reindexing operation is actually necessary.
+  /// When, after a bidirectional related objects collection is loaded, an object is loaded into the <see cref="ClientTransaction"/> that also holds 
+  /// a foreign key to the object owning the collection, the bidirectional relation goes out-of-sync. See 
+  /// <see cref="BidirectionalRelationSyncService"/> for more information.
+  /// </para>
+  /// <para>
+  ///   Subclasses of <see cref="DomainObjectCollection"/> that keep state additional to that managed by re-store might need to take additional 
+  ///   considerations when the <see cref="BidirectionalRelationSyncService"/> is used.
   /// </para>
   /// <para>
   /// If a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, consider the following about ordering:

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -134,6 +135,14 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </para>
     /// <para>
     ///   In the current implementation, 1:1 relations are always synchronized.
+    /// </para>
+    /// <para> 
+    ///   When a relation involving a <see cref="DomainObjectCollection"/> is synchronized, its current and original contents may be changed.
+    ///   For these changes, the <see cref="BidirectionalRelationAttribute.SortExpression"/> is not re-executed, the 
+    ///   <see cref="DomainObjectCollection.Adding"/>/<see cref="DomainObjectCollection.Added"/> events are not raised (and the 
+    ///   <see cref="DomainObjectCollection.OnAdding"/>/<see cref="DomainObjectCollection.OnAdded"/> methods not called), and no relation change 
+    ///   events are raised. Because synchronization affects current and original relation value alike, the <see cref="DomainObject.State"/> of the
+    ///   <see cref="DomainObjects"/> involved in the relation is not changed.
     /// </para>
     /// </remarks>
     public static void Synchronize (ClientTransaction clientTransaction, RelationEndPointID endPointID)
