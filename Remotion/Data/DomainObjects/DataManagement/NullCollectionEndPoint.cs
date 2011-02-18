@@ -203,9 +203,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return Array.AsReadOnly (new IObjectEndPoint[0]);
     }
 
-    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("SynchronizeWith cannot be called on a NullCollectionEndPoint.");
+      throw new InvalidOperationException ("SynchronizeOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
 
     public void EnsureDataComplete ()

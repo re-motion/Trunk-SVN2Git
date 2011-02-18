@@ -228,11 +228,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _loadState.GetUnsynchronizedOppositeEndPoints();
     }
 
-    public void SynchronizeWith (IObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _loadState.SynchronizeWith (oppositeEndPoint);
+      _loadState.SynchronizeOppositeEndPoint (oppositeEndPoint);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)

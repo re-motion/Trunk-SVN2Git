@@ -631,13 +631,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SynchronizeWith ()
+    public void SynchronizeOppositeEndPoint ()
     {
       var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();
-      _loadStateMock.Expect (mock => mock.SynchronizeWith(fakeEndPoint));
+      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint(fakeEndPoint));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.SynchronizeWith (fakeEndPoint);
+      _endPointWithLoadStateMock.SynchronizeOppositeEndPoint (fakeEndPoint);
 
       _loadStateMock.VerifyAllExpectations ();
     }
