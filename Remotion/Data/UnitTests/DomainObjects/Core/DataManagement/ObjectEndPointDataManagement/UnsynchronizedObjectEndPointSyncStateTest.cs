@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
       + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be changed because it is "
       + "out of sync with the opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, "
-      + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
+      + "synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method.")]
     public void CreateDeleteCommand ()
     {
       _state.CreateDeleteCommand(_endPointStub, _fakeSetter);
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
       + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be changed because it is "
       + "out of sync with the opposite property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, "
-      + "synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.")]
+      + "synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method.")]
     public void CreateSetCommand ()
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();

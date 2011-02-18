@@ -23,7 +23,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 {
   /// <summary>
   /// Provides APIs for checking whether the opposite relation properties in a bidirectional relation are out-of-sync, and - if yes -
-  /// allows to synchronize them. 
+  /// allows to synchronize them. Synchronization is performed only in the scope of a <see cref="ClientTransaction"/>, nothing is loaded from the
+  /// underlying data source.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -58,32 +59,32 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </code>
   /// </para>
   /// <para>
-  /// The <see cref="ClientTransactionSyncService"/> class allows users to check whether a relation is out-of-sync (<see cref="IsSynchronized"/>)
+  /// The <see cref="BidirectionalRelationSyncService"/> class allows users to check whether a relation is out-of-sync (<see cref="IsSynchronized"/>)
   /// and, if so, get re-store to synchronize the opposite sides in the relation (<see cref="Synchronize"/>):
   /// <code>
   /// var endPointID = RelationEndPointID.Create (newOrderItem, oi => oi.Order);
   /// 
   /// // Prints "False" - the relation is out-of-sync
-  /// Console.WriteLine (ClientTransactionSyncService.IsSynchronized (ClientTransaction.Current, endPointID));
+  /// Console.WriteLine (BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, endPointID));
   /// 
-  /// ClientTransactionSyncService.Synchronize (ClientTransaction.Current, endPointID);
+  /// BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, endPointID);
   /// 
   /// // Prints "True" - the relation is now synchronized
-  /// Console.WriteLine (ClientTransactionSyncService.IsSynchronized (ClientTransaction.Current, endPointID));
+  /// Console.WriteLine (BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, endPointID));
   /// 
   /// // prints "True" - the relation is now synchronized
   /// Console.WriteLine (order.OrderItems.ContainsObject (newOrderItem));
   /// </code>
   /// </para>
   /// </remarks>
-  public static class ClientTransactionSyncService
+  public static class BidirectionalRelationSyncService
   {
     /// <summary>
     /// Determines whether the given relation property is in-sync with the opposite relation property/properties.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to check the relation property in.</param>
     /// <param name="endPointID">The ID of the relation property to check. This contains the ID of the originating object and the
-    /// relation property to check.</param>
+    /// relation property to check. The relation property must have been loaded into the given <paramref name="clientTransaction"/>.</param>
     /// <returns>
     /// 	<see langword="true"/> if the specified relation property is synchronized; otherwise, <see langword="false"/>.
     /// </returns>

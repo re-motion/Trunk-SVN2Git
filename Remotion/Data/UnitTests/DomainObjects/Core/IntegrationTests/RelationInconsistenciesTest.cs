@@ -187,11 +187,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (industrialSector.Companies, List.Not.Contains (newCompany));
 
       Assert.That (
-          ClientTransactionSyncService.IsSynchronized (
+          BidirectionalRelationSyncService.IsSynchronized (
               ClientTransactionMock, RelationEndPointID.Create (industrialSector, sector => sector.Companies)),
           Is.False);
       Assert.That (
-          ClientTransactionSyncService.IsSynchronized (
+          BidirectionalRelationSyncService.IsSynchronized (
               ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
           Is.False);
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector' of object '" + newCompany.ID + "' "
           + "cannot be changed because it is out of sync with the opposite property "
            + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies'. "
-          + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method."));
+          + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method."));
       }
     }
 
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompany = Company.GetObject (newCompanyID);
 
       Assert.That (
-          ClientTransactionSyncService.IsSynchronized (
+          BidirectionalRelationSyncService.IsSynchronized (
               ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
           Is.False);
 

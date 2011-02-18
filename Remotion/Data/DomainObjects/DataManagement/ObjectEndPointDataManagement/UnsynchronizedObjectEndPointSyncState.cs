@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return new InvalidOperationException (
           string.Format (
               "The relation property '{0}' of object '{1}' cannot be changed because it is out of sync with the opposite property '{2}'. "
-              + "To make this change, synchronize the two properties by calling the 'ClientTransactionSyncService.SynchronizeRelation' method.",
+              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method.",
               endPoint.Definition.PropertyName,
               endPoint.ObjectID,
               endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));

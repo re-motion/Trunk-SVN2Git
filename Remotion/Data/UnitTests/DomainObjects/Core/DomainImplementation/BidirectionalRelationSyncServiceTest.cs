@@ -26,7 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 {
   [TestFixture]
-  public class ClientTransactionSyncServiceTest : StandardMappingTest
+  public class BidirectionalRelationSyncServiceTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
     private Order _order;
@@ -46,8 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       var orderItem = _transaction.Execute (() => _order.OrderItems[0]);
 
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.True);
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
     }
 
     [Test]
@@ -55,8 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var orderTicket = _transaction.Execute (() => _order.OrderTicket);
 
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket)), Is.True);
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderTicket, ot => ot.Order)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderTicket, ot => ot.Order)), Is.True);
     }
 
     [Test]
@@ -74,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (_transaction.Execute (() => newOrderItem.Order), Is.SameAs (_order));
       Assert.That (_transaction.Execute (() => _order.OrderItems), List.Not.Contains (newOrderItem));
 
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (newOrderItem, oi => oi.Order)), Is.False);
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.False);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (newOrderItem, oi => oi.Order)), Is.False);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.False);
       
-      Assert.That (ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
     }
 
     [Test]
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been loaded into the given ClientTransaction.")]
     public void IsSynchronized_RelationNotLoaded ()
     {
-      ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket));
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket));
     }
 
     [Test]
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
         "IsSynchronized cannot be called for unidirectional relation end-points.\r\nParameter name: endPointID")]
     public void IsSynchronized_UnidirectionalRelationEndPoint ()
     {
-      ClientTransactionSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client"));
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client"));
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var locationClientEndPoint = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
       var oppositeEndPoint = RelationEndPointID.Create (DomainObjectIDs.Client1, locationClientEndPoint.Definition.GetOppositeEndPointDefinition());
-      ClientTransactionSyncService.IsSynchronized (_transaction, oppositeEndPoint);
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, oppositeEndPoint);
     }
 
     private ObjectID CreateOrderItemAndSetOrderInOtherTransaction (ObjectID orderID)
