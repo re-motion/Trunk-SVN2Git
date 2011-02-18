@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </para>
   /// <para>
   /// The <see cref="BidirectionalRelationSyncService"/> class allows users to check whether a relation is out-of-sync (<see cref="IsSynchronized"/>)
-  /// and, if so, get re-store to synchronize the opposite sides in the relation (<see cref="Synchronize"/>):
+  /// and, if so, get re-store to synchronize the opposite sides in the relation (<see cref="Synchronize(Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.DataManagement.RelationEndPointID)"/>):
   /// <code>
   /// var endPointID = RelationEndPointID.Create (newOrderItem, oi => oi.Order);
   /// 
@@ -104,18 +104,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (endPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
-        throw new ArgumentException ("IsSynchronized cannot be called for unidirectional relation end-points.", "endPointID");
+      CheckNotUnidirectional (endPointID, "endPointID");
 
-      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
-      if (endPoint == null)
-      {
-        var message = string.Format (
-            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
-            endPointID.Definition.PropertyName,
-            endPointID.ObjectID);
-        throw new InvalidOperationException (message);
-      }
+      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
       return endPoint.IsSynchronized;
     }
 
@@ -147,7 +138,46 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </remarks>
     public static void Synchronize (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      CheckNotUnidirectional (endPointID, "endPointID");
+
+      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
+
+      if (endPoint.Definition.Cardinality == CardinalityType.One)
+      {
+        var objectEndPoint = (IObjectEndPoint) endPoint;
+        var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID();
+        var oppositeEndPoint = clientTransaction.DataManager.RelationEndPointMap[oppositeRelationEndPointID] 
+            ?? RelationEndPointMap.CreateNullEndPoint (clientTransaction, oppositeRelationEndPointID);
+        objectEndPoint.Synchronize (oppositeEndPoint);
+      }
+      else
+      {
+        var collectionEndPoint = (ICollectionEndPoint) endPoint;
+        foreach (var unsynchronizedOppositeEndPoint in collectionEndPoint.GetUnsynchronizedOppositeEndPoints())
+          unsynchronizedOppositeEndPoint.Synchronize (collectionEndPoint);
+      }
+    }
+
+    private static void CheckNotUnidirectional (RelationEndPointID endPointID, string paramName)
+    {
+      if (endPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
+        throw new ArgumentException ("BidirectionalSyncService cannot be used for unidirectional relation end-points.", paramName);
+    }
+
+    private static IRelationEndPoint GetAndCheckLoadedEndPoint (RelationEndPointID endPointID, ClientTransaction clientTransaction)
+    {
+      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      if (endPoint == null)
+      {
+        var message = String.Format (
+            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
+            endPointID.Definition.PropertyName,
+            endPointID.ObjectID);
+        throw new InvalidOperationException (message);
+      }
+      return endPoint;
     }
   }
 }

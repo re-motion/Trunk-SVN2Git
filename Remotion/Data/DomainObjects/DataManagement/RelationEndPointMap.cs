@@ -31,6 +31,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
+    public static IRelationEndPoint CreateNullEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (endPointID.Definition.Cardinality == CardinalityType.One)
+        return new NullObjectEndPoint (clientTransaction, endPointID.Definition);
+      else
+        return new NullCollectionEndPoint (clientTransaction, endPointID.Definition);
+    }
+
     private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
     private readonly IObjectLoader _objectLoader;
@@ -304,40 +315,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
       endPoint.MarkDataComplete ();
     }
-
-    public void Synchronize (RelationEndPointID relationEndPointID)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-
-      if (relationEndPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
-        throw new ArgumentException ("Synchronize cannot be called for unidirectional relation end-points.", "relationEndPointID");
-
-      var endPoint = this[relationEndPointID];
-      if (endPoint == null)
-      {
-        var message = string.Format (
-            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
-            relationEndPointID.Definition.PropertyName,
-            relationEndPointID.ObjectID);
-        throw new InvalidOperationException (message);
-      }
-
-      if (endPoint.Definition.Cardinality == CardinalityType.One)
-      {
-        var objectEndPoint = (IObjectEndPoint) endPoint;
-        var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID();
-        var oppositeEndPoint = this[oppositeRelationEndPointID] ?? CreateNullEndPoint (oppositeRelationEndPointID);
-        objectEndPoint.Synchronize (oppositeEndPoint);
-      }
-      else
-      {
-        var collectionEndPoint = (ICollectionEndPoint) endPoint;
-        foreach (var unsynchronizedOppositeEndPoint in collectionEndPoint.GetUnsynchronizedOppositeEndPoints())
-          unsynchronizedOppositeEndPoint.Synchronize (collectionEndPoint);
-      }
-    }
-
-
+    
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -345,9 +323,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
       if (endPointID.ObjectID == null)
-      {
-        return CreateNullEndPoint(endPointID);
-      }
+        return CreateNullEndPoint(ClientTransaction, endPointID);
 
       if (!endPointID.Definition.IsVirtual)
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
@@ -597,14 +573,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
                 foreignKeyValue,
                 existingConflictingObjectID != null ? existingConflictingObjectID.ToString() : "<null>");
       throw new InvalidOperationException (message);
-    }
-
-    private IRelationEndPoint CreateNullEndPoint (RelationEndPointID endPointID)
-    {
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-        return new NullObjectEndPoint (ClientTransaction, endPointID.Definition);
-      else
-        return new NullCollectionEndPoint (ClientTransaction, endPointID.Definition);
     }
 
     #region Serialization
