@@ -188,5 +188,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       throw new NotImplementedException();
     }
+
+    public RelationEndPointID GetOppositeRelationEndPointID ()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

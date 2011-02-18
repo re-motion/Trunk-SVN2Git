@@ -311,7 +311,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       // TODO: Throw if anonymous, throw if part of unidirectional relation
       // TODO: Get end-point, throw if it doesn't exist
-      // TODO: If objectEndPoint, get opposite end-point, call objectEndPoint.Synchronize (oppositeEndPoint)
+      // TODO: If objectEndPoint, get opposite end-point, call oppositeObjectEndPoint.Synchronize (endPoint)
+      // TODO: If collectionEndPoint, get all unsynchronized opposite end-points, call Synchronize (endPoint) for each of them
     }
 
 

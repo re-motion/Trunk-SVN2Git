@@ -351,14 +351,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeRelationEndPointIDs_NullEndPoint ()
+    public void GetOppositeRelationEndPointID_NullEndPoint ()
     {
       ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
 
-      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray();
+      var oppositeEndPointID = _endPoint.GetOppositeRelationEndPointID ();
 
-      var expectedID = RelationEndPointID.Create (null, _endPoint.Definition.GetOppositeEndPointDefinition());
-      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedID }));
+      var expectedID = RelationEndPointID.Create (null, _endPoint.Definition.GetOppositeEndPointDefinition ());
+      Assert.That (oppositeEndPointID, Is.EqualTo (expectedID));
+    }
+
+    [Test]
+    public void GetOppositeRelationEndPointID_UnidirectionalEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      var endPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (endPointID);
+      Assert.That (endPoint.Definition.GetOppositeEndPointDefinition ().IsAnonymous, Is.True);
+
+      var oppositeEndPointID = endPoint.GetOppositeRelationEndPointID ();
+
+      Assert.That (oppositeEndPointID, Is.Null);
+    }
+
+    [Test]
+    public void GetOppositeRelationEndPointID_NonNullEndPoint ()
+    {
+      var oppositeEndPointID = _endPoint.GetOppositeRelationEndPointID ();
+
+      var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      Assert.That (oppositeEndPointID, Is.EqualTo (expectedID));
     }
 
     [Test]
@@ -369,18 +390,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (endPoint.Definition.GetOppositeEndPointDefinition ().IsAnonymous, Is.True);
 
-      var oppositeEndPoints = endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
+      var oppositeEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
 
-      Assert.That (oppositeEndPoints, Is.Empty);
+      Assert.That (oppositeEndPointIDs, Is.Empty);
     }
 
     [Test]
-    public void GetOppositeRelationEndPointIDs_NonNullEndPoint ()
+    public void GetOppositeRelationEndPointIDs_BidirectionalEndPoint ()
     {
-      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
+      var oppositeEndPointIDs = _endPoint.GetOppositeRelationEndPointIDs ().ToArray ();
 
       var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedID }));
+      Assert.That (oppositeEndPointIDs, Is.EqualTo (new[] { expectedID }));
     }
 
     private ObjectEndPoint CreateEndPointWithSyncStateMock (IObjectEndPointSyncState syncStateMock)

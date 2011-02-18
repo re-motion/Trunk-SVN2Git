@@ -206,6 +206,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void GetOppositeRelationEndPointID ()
+    {
+      _nullEndPoint.GetOppositeRelationEndPointID ();
+    }
+
+    [Test]
     public void EnsureDataComplete_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
