@@ -32,6 +32,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return false; }
     }
 
+    public void Synchronize (IObjectEndPoint endPoint, IRelationEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      oppositeEndPoint.SynchronizeOppositeEndPoint (endPoint);
+    }
+
     public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

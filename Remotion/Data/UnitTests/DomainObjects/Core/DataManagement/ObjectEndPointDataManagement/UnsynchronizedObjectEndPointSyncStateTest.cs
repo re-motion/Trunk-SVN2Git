@@ -57,6 +57,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void Synchronize ()
+    {
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      oppositeEndPointMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_endPointStub));
+      oppositeEndPointMock.Replay ();
+
+      _state.Synchronize (_endPointStub, oppositeEndPointMock);
+
+      oppositeEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
       "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
       + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be changed because it is "
