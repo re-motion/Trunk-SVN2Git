@@ -26,11 +26,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public interface IObjectLoader
   {
-    DomainObject LoadObject (ObjectID id);
-    DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound);
-    DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID);
-    DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID);
-    T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject;
+    DomainObject LoadObject (ObjectID id, IDataManager dataManager);
+    DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager);
+    DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager);
+    DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager);
+    T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject;
     ClientTransaction ClientTransaction { get; }
   }
 }

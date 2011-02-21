@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -40,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     private Order _fakeOrder1;
     private Order _fakeOrder2;
+    private IDataManager _dataManagerMock;
 
     public override void SetUp ()
     {
@@ -49,7 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock = MockRepository.GenerateMock<IObjectLoader> ();
       _transactionEventSinkMock = MockRepository.GenerateMock<IClientTransactionListener> ();
 
-      _queryManager = new QueryManager (_persistenceStrategyMock, _objectLoaderMock, _transactionEventSinkMock);
+      _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager>();
+      _queryManager = new QueryManager (_persistenceStrategyMock, _objectLoaderMock, _transactionEventSinkMock, _dataManagerMock);
 
       _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       _scalarQuery = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
@@ -80,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetCollection ()
     {
-      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery)).Return (new[] { _fakeOrder1, _fakeOrder2 });
+      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerMock)).Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
       _queryManager.GetCollection<Order> (_collectionQuery);
@@ -95,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
 
       _objectLoaderMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
-      _objectLoaderMock.Stub (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery)).Return (originalResult);
+      _objectLoaderMock.Stub (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery, _dataManagerMock)).Return (originalResult);
       _objectLoaderMock.Replay ();
 
       _transactionEventSinkMock
@@ -124,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
 
       _objectLoaderMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
-      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_collectionQuery)).Return (new[] { _fakeOrder1, _fakeOrder2 });
+      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_collectionQuery, _dataManagerMock)).Return (new[] { _fakeOrder1, _fakeOrder2 });
       _objectLoaderMock.Replay ();
 
       _transactionEventSinkMock

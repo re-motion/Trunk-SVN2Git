@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void PerformEagerFetching_EndPointCardinalityOne ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub))
+          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerMock))
           .Return (new[] { _fakeFetchedOneObject1, _fakeFetchedOneObject2 });
       _objectLoaderMock.Replay();
       _dataManagerMock.Replay();
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void PerformEagerFetching_EndPointCardinalityMany ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub))
+          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerMock))
           .Return (new[] { _fakeFetchedManyObject1, _fakeFetchedManyObject2 });
       _objectLoaderMock.Replay();
 
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void PerformEagerFetching_EndPointCardinalityMany_WithNullOriginalObject ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub))
+          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerMock))
           .Return (new DomainObject[0]);
       _objectLoaderMock.Replay();
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void PerformEagerFetching_WithNullRelatedObject ()
     {
       _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub))
+          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerMock))
           .Return (new DomainObject[] { null });
       _objectLoaderMock.Replay();
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var invalidFetchedObject = DomainObjectMother.CreateFakeObject<OrderItem> (DomainObjectIDs.OrderItem1);
 
       _objectLoaderMock
-          .Stub (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub))
+          .Stub (mock => mock.LoadCollectionQueryResult<DomainObject> (_queryStub, _dataManagerMock))
           .Return (new[] { invalidFetchedObject });
       _objectLoaderMock.Replay();
 

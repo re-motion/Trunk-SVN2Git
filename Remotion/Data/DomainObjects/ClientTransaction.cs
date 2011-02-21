@@ -285,7 +285,7 @@ public class ClientTransaction
     get
     {
       if (_queryManager == null)
-        _queryManager = new QueryManager (_persistenceStrategy, _objectLoader, TransactionEventSink);
+        _queryManager = new QueryManager (_persistenceStrategy, _objectLoader, TransactionEventSink, DataManager);
 
       return _queryManager;
     }
@@ -593,7 +593,7 @@ public class ClientTransaction
                         where DataManager.GetDataContainerWithoutLoading (objectID) == null
                         select objectID;
 
-    _objectLoader.LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound);
+    _objectLoader.LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound, DataManager);
   }
 
   /// <summary>

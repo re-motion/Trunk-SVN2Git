@@ -937,7 +937,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.SetDomainObject (domainObject);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObject (domainObject.ID))
+          .Expect (mock => mock.LoadObject (domainObject.ID, _dataManagerWitLoaderMock))
           .WhenCalled (mi => _dataManagerWitLoaderMock.RegisterDataContainer (dataContainer))
           .Return (domainObject);
       _objectLoaderMock.Replay ();
@@ -974,7 +974,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadRelatedObjects (endPointID))
+          .Expect (mock => mock.LoadRelatedObjects (endPointID, _dataManagerWitLoaderMock))
           .WhenCalled (mi => _dataManagerWitLoaderMock.RegisterDataContainer (dataContainer))
           .Return (new[] { domainObject });
       _objectLoaderMock.Replay ();

@@ -340,7 +340,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         // loading the related object will automatically register the related's real end points via RegisterEndPointsForExistingDataContainer, 
         // which also registers the opposite virtual end point; see assertion below
-        var relatedObject = _objectLoader.LoadRelatedObject (endPointID);
+        var relatedObject = _objectLoader.LoadRelatedObject (endPointID, ClientTransaction.DataManager);
         if (relatedObject == null)
           RegisterVirtualObjectEndPoint (endPointID, null);
 

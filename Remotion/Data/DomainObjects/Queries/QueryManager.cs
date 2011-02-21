@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
@@ -30,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IDataManager _dataManager;
 
     // construction and disposing
 
@@ -40,15 +42,18 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
     /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
-    public QueryManager (IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
+    /// <param name="dataManager">The <see cref="IDataManager"/> managing the data inside the <see cref="ClientTransaction"/>.</param>
+    public QueryManager (IPersistenceStrategy persistenceStrategy, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       _persistenceStrategy = persistenceStrategy;
       _objectLoader = objectLoader;
       _transactionEventSink = transactionEventSink;
+      _dataManager = dataManager;
     }
 
     /// <summary>
@@ -128,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query);
+      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query, _dataManager);
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_objectLoader.ClientTransaction, queryResult);
     }

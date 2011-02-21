@@ -59,20 +59,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _clientTransaction; }
     }
 
-    public DomainObject LoadObject (ObjectID id)
+    public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainer = _persistenceStrategy.LoadDataContainer (id);
-      return LoadObject (dataContainer);
+      return LoadObject (dataContainer, dataManager);
     }
 
-    public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainers = _persistenceStrategy.LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-      LoadObjects (dataContainers);
+      LoadObjects (dataContainers, dataManager);
 
       var loadedDomainObjects = (from id in idsToBeLoaded
                                  let dataContainer = dataContainers[id]
@@ -80,22 +82,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return loadedDomainObjects;
     }
 
-    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+    public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
       if (!relationEndPointID.Definition.IsVirtual)
         throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
         throw new ArgumentException ("LoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
-      var originatingDataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
+      var originatingDataContainer = dataManager.GetDataContainerWithLazyLoad (relationEndPointID.ObjectID);
       var relatedDataContainer = _persistenceStrategy.LoadRelatedDataContainer (originatingDataContainer, relationEndPointID);
 
       if (relatedDataContainer != null)
       {
-        CheckRelatedDataContainerForConflicts (relationEndPointID, relatedDataContainer);
-        return LoadObject (relatedDataContainer);
+        CheckRelatedDataContainerForConflicts (relationEndPointID, relatedDataContainer, dataManager);
+        return LoadObject (relatedDataContainer, dataManager);
       }
       else
       {
@@ -103,28 +107,30 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _persistenceStrategy.LoadRelatedDataContainers (relationEndPointID);
-      return MergeQueryResult<DomainObject> (relatedDataContainers);
+      return MergeQueryResult<DomainObject> (relatedDataContainers, dataManager);
     }
 
-    public T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject
+    public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("query", query);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var dataContainers = _persistenceStrategy.LoadDataContainersForQuery (query);
-      var resultArray = MergeQueryResult<T> (dataContainers);
+      var resultArray = MergeQueryResult<T> (dataContainers, dataManager);
       
       if (resultArray.Length > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
-          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, ClientTransaction.DataManager);
+          _fetcher.PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value, this, dataManager);
       }
 
       return resultArray;
@@ -152,29 +158,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    private T[] MergeQueryResult<T> (IEnumerable<DataContainer> queryResult) 
+    private T[] MergeQueryResult<T> (IEnumerable<DataContainer> queryResult, IDataManager dataManager) 
         where T : DomainObject
     {
-      FindNewDataContainersAndInitialize (queryResult);
+      FindNewDataContainersAndInitialize (queryResult, dataManager);
 
       var relatedObjects = from loadedDataContainer in queryResult
                            let maybeDataContainer = 
                               Maybe // loadedDataContainer is null when the query returned null at this position
                                 .ForValue (loadedDataContainer)
-                                .Select (dc => Assertion.IsNotNull (_clientTransaction.DataManager.DataContainerMap[dc.ID]))
+                                .Select (dc => Assertion.IsNotNull (dataManager.DataContainerMap[dc.ID]))
                            let maybeDomainObject = maybeDataContainer.Select (dc => GetCastQueryResultObject<T> (dc.DomainObject))
                            select maybeDomainObject.ValueOrDefault();
 
       return relatedObjects.ToArray ();
     }
 
-    private void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers)
+    private void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers, IDataManager dataManager)
     {
       var newlyLoadedDataContainers = (from dataContainer in dataContainers
-                                       where dataContainer != null && _clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == null
+                                       where dataContainer != null && dataManager.DataContainerMap[dataContainer.ID] == null
                                        select dataContainer).ToList ();
 
-      LoadObjects (newlyLoadedDataContainers);
+      LoadObjects (newlyLoadedDataContainers, dataManager);
     }
 
     private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
@@ -193,17 +199,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    private DomainObject LoadObject (DataContainer dataContainer)
+    private DomainObject LoadObject (DataContainer dataContainer, IDataManager dataManager)
     {
       RaiseLoadingNotificiations (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
 
-      var loadedDomainObject = InitializeLoadedDataContainer (dataContainer);
+      var loadedDomainObject = InitializeLoadedDataContainer (dataContainer, dataManager);
       RaiseLoadedNotifications (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject }));
 
       return loadedDomainObject;
     }
 
-    private List<DomainObject> LoadObjects (IList<DataContainer> dataContainers)
+    private List<DomainObject> LoadObjects (IList<DataContainer> dataContainers, IDataManager dataManager)
     {
       var newlyLoadedIDs = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.ID);
       RaiseLoadingNotificiations (newlyLoadedIDs);
@@ -214,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         // Leave forech loop (instead of LINQ query + AddRange) for readability
         // ReSharper disable LoopCanBeConvertedToQuery
         foreach (var dataContainer in dataContainers)
-          loadedDomainObjects.Add (InitializeLoadedDataContainer (dataContainer));
+          loadedDomainObjects.Add (InitializeLoadedDataContainer (dataContainer, dataManager));
         // ReSharper restore LoopCanBeConvertedToQuery
       }
       finally
@@ -225,14 +231,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return loadedDomainObjects;
     }
 
-    private DomainObject InitializeLoadedDataContainer (DataContainer dataContainer)
+    private DomainObject InitializeLoadedDataContainer (DataContainer dataContainer, IDataManager dataManager)
     {
       var domainObjectReference = _clientTransaction.GetObjectReference (dataContainer.ID);
 
       dataContainer.SetDomainObject (domainObjectReference);
       try
       {
-        _clientTransaction.DataManager.RegisterDataContainer (dataContainer);
+        dataManager.RegisterDataContainer (dataContainer);
       }
       catch (InvalidOperationException ex)
       {
@@ -241,18 +247,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
       Assertion.IsTrue (dataContainer.ClientTransaction == _clientTransaction);
-      Assertion.IsTrue (_clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == dataContainer);
+      Assertion.IsTrue (dataManager.DataContainerMap[dataContainer.ID] == dataContainer);
 
       return domainObjectReference;
     }
 
-    private void CheckRelatedDataContainerForConflicts (RelationEndPointID relationEndPointID, DataContainer relatedDataContainer)
+    private void CheckRelatedDataContainerForConflicts (RelationEndPointID relationEndPointID, DataContainer relatedDataContainer, IDataManager dataManager)
     {
-      var existingDataContainer = _clientTransaction.DataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
+      var existingDataContainer = dataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
       if (existingDataContainer != null)
       {
         var existingOppositeEndPointID = RelationEndPointID.Create(existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
-        var existingBackPointer = _clientTransaction.DataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
+        var existingBackPointer = dataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
         var message = string.Format (
             "Cannot load the related '{0}' of '{1}': The database returned related object '{2}', but that object already exists in the current "
             + "ClientTransaction (and points to a different object '{3}').",

@@ -118,27 +118,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Serializable]
     class SerializableFakeObjectLoader : IObjectLoader
     {
-      public DomainObject LoadObject (ObjectID id)
+      public DomainObject LoadObject (ObjectID id, IDataManager dataManager)
       {
         throw new NotImplementedException ();
       }
 
-      public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+      public DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound, IDataManager dataManager)
       {
         throw new NotImplementedException ();
       }
 
-      public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+      public DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID, IDataManager dataManager)
       {
         throw new NotImplementedException ();
       }
 
-      public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
+      public DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID, IDataManager dataManager)
       {
         throw new NotImplementedException ();
       }
 
-      public T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject
+      public T[] LoadCollectionQueryResult<T> (IQuery query, IDataManager dataManager) where T : DomainObject
       {
         throw new NotImplementedException ();
       }

@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Queries
       CheckOriginalObjects (relationEndPointDefinition, originalObjects);
 
       // Executing the query will automatically register all virtual end-points. Collection end-points will be explicitly marked complete below
-      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery);
+      var fetchedObjects = fetchQueryResultLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery, dataManager);
       s_log.DebugFormat (
           "The eager fetch query yielded {0} related objects for {1} original objects.",
           fetchedObjects.Length,

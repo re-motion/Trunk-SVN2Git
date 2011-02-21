@@ -249,7 +249,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var dataContainer = GetDataContainerWithoutLoading (objectID);
       if (dataContainer == null)
-        _objectLoader.LoadObject (objectID);
+        _objectLoader.LoadObject (objectID, this);
 
       dataContainer = GetDataContainerWithoutLoading (objectID);
       Assertion.IsNotNull (dataContainer);
@@ -276,7 +276,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
       
-      _objectLoader.LoadRelatedObjects (collectionEndPoint.ID);
+      _objectLoader.LoadRelatedObjects (collectionEndPoint.ID, this);
       _relationEndPointMap.MarkCollectionEndPointComplete (collectionEndPoint.ID);
 
     }
