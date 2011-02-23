@@ -708,8 +708,7 @@
       </fileset>
 
       <fileset basedir="${solution.basedir}\Remotion">
-        <include name="license/**/*"/>
-        <exclude name="license/LGPLv2.1.txt" />
+        <include name="license/LGPLv2.1.txt" />
       </fileset>
     </zip>
   </if>
@@ -727,7 +726,7 @@
           <include name="Remotion/Data/Linq/**" />
           <include name="Remotion/Data/Linq.SqlBackend/*" />
           <include name="Remotion/Data/Linq.UnitTests/**" />
-          <include name="Remotion/license/**/*"/>
+          <include name="Remotion/license/LGPLv2.1.txt" />
 
           <exclude name="*.log" />
           <exclude name="*.snk" />
@@ -739,7 +738,6 @@
           <exclude name="Remotion/**/*.dll" />
           <exclude name="Remotion/**/*.exe" />
           <exclude name="Remotion/**/*.pdb" />
-          <exclude name="Remotion/license/LGPLv2.1.txt" />  
         </fileset>
       </zip>
     </if>
