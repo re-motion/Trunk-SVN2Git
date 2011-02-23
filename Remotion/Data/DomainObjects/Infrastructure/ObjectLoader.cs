@@ -42,7 +42,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly IClientTransactionListener _eventSink;
     private readonly IEagerFetcher _fetcher;
 
-    public ObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink, IEagerFetcher fetcher)
+    public ObjectLoader (
+        ClientTransaction clientTransaction,
+        IPersistenceStrategy persistenceStrategy,
+        IClientTransactionListener eventSink,
+        IEagerFetcher fetcher)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
@@ -209,7 +213,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return loadedDomainObject;
     }
 
-    private List<DomainObject> LoadObjects (IList<DataContainer> dataContainers, IDataManager dataManager)
+    private void LoadObjects (IList<DataContainer> dataContainers, IDataManager dataManager)
     {
       var newlyLoadedIDs = ListAdapter.AdaptReadOnly (dataContainers, dc => dc.ID);
       RaiseLoadingNotificiations (newlyLoadedIDs);
@@ -227,8 +231,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         RaiseLoadedNotifications (loadedDomainObjects.AsReadOnly ());
       }
-
-      return loadedDomainObjects;
     }
 
     private DomainObject InitializeLoadedDataContainer (DataContainer dataContainer, IDataManager dataManager)
