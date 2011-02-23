@@ -24,16 +24,12 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
   /// </summary>
   public abstract class RelationEndPointCombinationIsSupportedValidationRule : IRelationDefinitionValidatorRule
   {
-    protected RelationEndPointCombinationIsSupportedValidationRule ()
-    {
-    }
-
     public abstract MappingValidationResult Validate (RelationDefinition relationDefinition);
 
     protected bool IsInvalidEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
-      return endPointDefinition is PropertyNotFoundRelationEndPointDefinition || endPointDefinition is TypeNotObjectIDRelationEndPointDefinition;
+      return endPointDefinition is InvalidRelationEndPointDefinitionBase;
     }
   }
 }

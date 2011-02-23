@@ -17,10 +17,13 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointReflectorTests
 {
@@ -69,6 +72,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
           new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse(relationEndPointReflector.IsVirtualEndRelationEndpoint ());
+    }
+
+    [Test]
+    public void GetMetadata_NonVirtualEndPoint_PropertyTypeIsNoObjectID ()
+    {
+      var propertyInfo = typeof (ClassWithRealRelationEndPoints).GetProperty ("Unidirectional");
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
+      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+          classDefinition, "Unidirectional", typeof (ClassWithRealRelationEndPoints));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
+
+      var mappingNameResolverMock = MockRepository.GenerateStrictMock<IMappingNameResolver> ();
+      mappingNameResolverMock
+          .Expect (mock => mock.GetPropertyName (Arg<PropertyInfoAdapter>.Matches (pia => pia.PropertyInfo == propertyInfo)))
+          .Return ("Unidirectional");
+      mappingNameResolverMock.Replay ();
+
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          classDefinition, propertyInfo, mappingNameResolverMock);
+
+      var result = relationEndPointReflector.GetMetadata ();
+
+      mappingNameResolverMock.VerifyAllExpectations ();
+      Assert.That (result, Is.TypeOf (typeof (TypeNotObjectIDRelationEndPointDefinition)));
     }
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
