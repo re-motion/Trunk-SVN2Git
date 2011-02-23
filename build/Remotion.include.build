@@ -206,6 +206,7 @@
 
     <nant buildfile="${project.dir}/${project.name}.build" target="build" inheritrefs="true" />
 
+    <copy file="${project.doc}" tofile="${build.outputdir}/${project.output}.xml" />
   </target>
 
   <target name="buildtest" depends="check-project-config">
