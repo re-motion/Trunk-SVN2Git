@@ -17,11 +17,11 @@
     <DestinationFolder>BuildOutput\</DestinationFolder>
   </PropertyGroup>
   
-  <Target Name="BuildAll" DependsOnTargets="CleanDestination">
+  <Target Name="BuildAll" DependsOnTargets="CleanDestinationFolder">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
          Properties="ConfigurationID=%(Configuration.Identity);Configuration=%(Configuration.Name);"
-         Targets="LogConfiguration;CleanAll;BuildReleaseProjects;BuildTestProjects;RunTests;CopyReleaseProjectsToDestination;"/>
+         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;CopyReleaseProjectsToDestinationFolder;"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll">

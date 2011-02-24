@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="CopyReleaseProjectsToDestination">
+  <Target Name="ValidateProjects">
+    <Error Text="Project '%(ProjectFiles.Identity)' has invalid project type: '%(ProjectFiles.ProjectType)'"
+           Condition="!('%(ProjectFiles.ProjectType)' == 'Release' Or '%(ProjectFiles.ProjectType)' == 'UnitTests' Or '%(ProjectFiles.ProjectType)' == 'Support')" />
+  </Target>
+  
+  <Target Name="CleanDestinationFolder">
+    <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
+
+    <Exec Command="rmdir /Q /S $(DestinationFolder)" />
+  </Target>
+
+  <Target Name="LogConfiguration">
+    <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
+  </Target>
+
+  <Target Name="CleanProjects">
+    <MSBuild Projects="@(ProjectFiles)"
+             Targets="Clean"
+             Properties="Configuration=$(Configuration);"/>
+  </Target>
+
+  <Target Name="BuildReleaseProjects" DependsOnTargets="ValidateProjects">
+    <MSBuild Projects ="@(ProjectFiles)"
+             Condition="'%(ProjectFiles.ProjectType)' == 'Release'"
+             ContinueOnError="false"
+             Properties="Configuration=$(Configuration);">
+      <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
+    </MSBuild>
+  </Target>
+
+  <Target Name="BuildTestProjects" DependsOnTargets="ValidateProjects">
+    <MSBuild Projects ="@(ProjectFiles)"
+             Condition="'%(ProjectFiles.ProjectType)' == 'UnitTests'"
+             ContinueOnError="false"
+             Properties="Configuration=$(Configuration);">
+      <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
+    </MSBuild>
+  </Target>
+
+  <Target Name="RunTests">
+    <Message Text="%(TestOutputFiles.Identity)"/>
+  </Target>
+  
+  <Target Name="CopyReleaseProjectsToDestinationFolder">
     <ItemGroup>
       <_CompleteOutputFiles Remove="@(_CompleteOutputFiles)" />
       <_CompleteOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
@@ -15,45 +58,5 @@
           DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
-  <Target Name="CleanDestination">
-    <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
-
-    <ItemGroup>
-      <_GeneratedFiles Include="$(DestinationFolder)\**" />
-    </ItemGroup>
-    <Delete Files="@(_GeneratedFiles)"/>
-  </Target>
-
-  <Target Name="LogConfiguration">
-    <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
-  </Target>
-
-  <Target Name="CleanAll">
-    <MSBuild Projects="@(ProjectFiles)"
-             Targets="Clean"
-             Properties="Configuration=$(Configuration);"/>
-  </Target>
-
-  <Target Name="BuildReleaseProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'Release'"
-             ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
-      <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
-    </MSBuild>
-  </Target>
-
-  <Target Name="BuildTestProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'UnitTests'"
-             ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
-      <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
-    </MSBuild>
-  </Target>
-
-  <Target Name="RunTests">
-    <Message Text="%(TestOutputFiles.Identity)"/>
-  </Target>
 
 </Project>
