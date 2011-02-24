@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <Configuration Include="Debug">
+      <Name>Debug</Name>
+      <DestinationFolder>Debug</DestinationFolder>
+    </Configuration>
+    <Configuration Include="Release">
+      <Name>Release</Name>
+      <DestinationFolder>Release</DestinationFolder>
+    </Configuration>
+    <Configuration Include="Doc">
+      <Name>Release</Name>
+    </Configuration>
+  </ItemGroup>
+
+</Project>

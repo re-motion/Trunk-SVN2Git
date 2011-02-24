@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0"  encoding="utf-8"?>
 <Project DefaultTargets="FullBuild" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Import Project="Remotion.Projects.include.build" />
+  <Import Project="Remotion.Configurations.include.build" />
+  
   <PropertyGroup>
     <OutputDirectory>..\</OutputDirectory>
     <TempDirectory>$(OutputDirectory)\build2\temp\</TempDirectory>
@@ -9,42 +12,7 @@
     <SolutionDirectory>$(OutputDirectory)</SolutionDirectory>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj">
-      <ProjectType>Release</ProjectType>
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Interfaces\Core.Interfaces.csproj">
-      <ProjectType>Release</ProjectType>
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj">
-      <ProjectType>Release</ProjectType>
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Mixins.MixerTools\Core.Mixins.MixerTools.csproj">
-      <ProjectType>Release</ProjectType>
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Mixins.Samples\Core.Mixins.Samples.csproj">
-      <ProjectType>Support</ProjectType>  
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj">
-      <ProjectType>UnitTests</ProjectType>
-    </ProjectFiles>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Configuration Include="Debug">
-      <Name>Debug</Name>
-      <DestinationFolder>Debug</DestinationFolder>
-    </Configuration>
-    <Configuration Include="Release">
-      <Name>Release</Name>
-      <DestinationFolder>Release</DestinationFolder>
-    </Configuration>
-    <Configuration Include="Doc">
-      <Name>Release</Name>
-    </Configuration>
-  </ItemGroup>
-
-  <PropertyGroup>
+    <PropertyGroup>
     <DestinationFolder>BuildOutput\</DestinationFolder>
   </PropertyGroup>
   
