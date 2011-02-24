@@ -14,7 +14,7 @@
     <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Interfaces\Core.Interfaces.csproj"/>
     <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj"/>
     <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Mixins.MixerTools\Core.Mixins.MixerTools.csproj"/>
-    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Mixins.Samples\Core.Mixins.Samples.csproj"/>
+    <!--<ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Mixins.Samples\Core.Mixins.Samples.csproj"/>-->
     <UnitTestProjects Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj"/>
   </ItemGroup>
 
@@ -22,26 +22,40 @@
     <Configuration Include="Debug">
       <Name>Debug</Name>
     </Configuration>
-    <!--<Configuration Include="Release">
+    <Configuration Include="Release">
       <Name>Release</Name>
     </Configuration>
     <Configuration Include="Doc">
       <Name>Release</Name>
-    </Configuration>-->
+    </Configuration>
   </ItemGroup>
 
   <PropertyGroup>
-    <DestFolder>BuildOutput\</DestFolder>
+    <DestinationFolder>BuildOutput\</DestinationFolder>
   </PropertyGroup>
-
+  
   <Target Name="CopyReleaseProjectsToDestination">
-    <!--<Copy SourceFiles="@(CompleteOutputFiles)"
-          DestinationFiles="@(CompleteOutputFiles->'$(DestFolder)%(RecursiveDir)%(Filename)%(Extension)')" />-->
+    <ItemGroup>
+      <_CompleteOutputFiles Remove="@(_CompleteOutputFiles)" />
+      <_CompleteOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_ConfigurationDestinationFolder>$(DestinationFolder)$(Configuration)\</_ConfigurationDestinationFolder>
+    </PropertyGroup>
+    
+    <Message Text="CompleteOutputFiles:"/>
+    <Message Text="%(_CompleteOutputFiles.Identity)"/>
+
+    <Copy SourceFiles="@(_CompleteOutputFiles)"
+          DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="CleanDestination">
+    <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
+    
     <ItemGroup>
-      <_GeneratedFiles Include="$(DestFolder)\**" />
+      <_GeneratedFiles Include="$(DestinationFolder)\**" />
     </ItemGroup>
     <Delete Files="@(_GeneratedFiles)"/>
   </Target>
@@ -60,16 +74,8 @@
     <MSBuild Projects ="@(ReleaseProjects)"
              ContinueOnError="false"
              Properties="Configuration=$(Configuration);">
-      <Output ItemName="PrimaryOutputFiles" TaskParameter="TargetOutputs"/>
+      <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
-
-    <ItemGroup>
-      <CompleteOutputFiles Remove="@(CompleteOutputFiles)" />
-      <CompleteOutputFiles Include="@(PrimaryOutputFiles->'$(DestFolder)%(RecursiveDir)**')" />
-    </ItemGroup>
-
-    <Message Text="CompleteOutputFiles:"/>
-    <Message Text="%(CompleteOutputFiles.Identity)"/>
   </Target>
 
   <Target Name="BuildTestProjects">
