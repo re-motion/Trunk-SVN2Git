@@ -3,6 +3,7 @@
 
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
+  <Import Project="Remotion.BuildTargets.include.build" />
   
   <PropertyGroup>
     <OutputDirectory>..\</OutputDirectory>
@@ -16,61 +17,6 @@
     <DestinationFolder>BuildOutput\</DestinationFolder>
   </PropertyGroup>
   
-  <Target Name="CopyReleaseProjectsToDestination">
-    <ItemGroup>
-      <_CompleteOutputFiles Remove="@(_CompleteOutputFiles)" />
-      <_CompleteOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
-    </ItemGroup>
-
-    <PropertyGroup>
-      <_ConfigurationDestinationFolder>$(DestinationFolder)$(ConfigurationID)\</_ConfigurationDestinationFolder>
-    </PropertyGroup>
-    
-    <Copy SourceFiles="@(_CompleteOutputFiles)"
-          DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
-
-  <Target Name="CleanDestination">
-    <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
-    
-    <ItemGroup>
-      <_GeneratedFiles Include="$(DestinationFolder)\**" />
-    </ItemGroup>
-    <Delete Files="@(_GeneratedFiles)"/>
-  </Target>
-
-  <Target Name="LogConfiguration">
-     <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
-  </Target>
-
-  <Target Name="CleanAll">
-    <MSBuild Projects="@(ProjectFiles)" 
-             Targets="Clean" 
-             Properties="Configuration=$(Configuration);"/>
-  </Target>
-
-  <Target Name="BuildReleaseProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'Release'"
-             ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
-      <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
-    </MSBuild>
-  </Target>
-
-  <Target Name="BuildTestProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'UnitTests'"
-             ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
-      <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
-    </MSBuild>
-  </Target>
-
-  <Target Name="RunTests">
-    <Message Text="%(TestOutputFiles.Identity)"/>
-  </Target>
-
   <Target Name="BuildAll" DependsOnTargets="CleanDestination">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
