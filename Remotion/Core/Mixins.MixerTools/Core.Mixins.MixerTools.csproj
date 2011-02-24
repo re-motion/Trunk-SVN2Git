@@ -57,6 +57,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\TypeMixer.XML</DocumentationFile>
+    <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -1,0 +1,91 @@
+﻿<?xml version="1.0"  encoding="utf-8"?>
+<Project DefaultTargets="FullBuild" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <OutputDirectory>..\</OutputDirectory>
+    <TempDirectory>$(OutputDirectory)\build2\temp\</TempDirectory>
+    <LogDirectory>$(OutputDirectory)\build2\log\</LogDirectory>
+
+    <SolutionDirectory>$(OutputDirectory)</SolutionDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj"/>
+    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Interfaces\Core.Interfaces.csproj"/>
+    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj"/>
+    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Mixins.MixerTools\Core.Mixins.MixerTools.csproj"/>
+    <ReleaseProjects Include="$(SolutionDirectory)\Remotion\Core\Mixins.Samples\Core.Mixins.Samples.csproj"/>
+    <UnitTestProjects Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Configuration Include="Debug">
+      <Name>Debug</Name>
+    </Configuration>
+    <Configuration Include="Release">
+      <Name>Release</Name>
+    </Configuration>
+    <Configuration Include="Doc">
+      <Name>Release</Name>
+    </Configuration>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DestFolder>BuildOutput\</DestFolder>
+  </PropertyGroup>
+
+  <Target Name="CopyReleaseProjectsToDestination">
+    <!--<Copy SourceFiles="@(CompleteOutputFiles)"
+          DestinationFiles="@(CompleteOutputFiles->'$(DestFolder)%(RecursiveDir)%(Filename)%(Extension)')" />-->
+  </Target>
+
+  <Target Name="CleanDestination">
+    <ItemGroup>
+      <_GeneratedFiles Include="$(DestFolder)\**" />
+    </ItemGroup>
+    <Delete Files="@(_GeneratedFiles)"/>
+  </Target>
+
+  <Target Name="LogConfiguration">
+     <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
+  </Target>
+
+  <Target Name="CleanReleaseProjects">
+    <MSBuild Projects="@(ReleaseProjects)" 
+             Targets="Clean" 
+             Properties="Configuration=$(Configuration);"/>
+  </Target>
+
+  <Target Name="BuildReleaseProjects">
+    <MSBuild Projects ="@(ReleaseProjects)"
+             ContinueOnError ="false"
+             Properties="Configuration=$(Configuration);">
+      <Output ItemName="PrimaryOutputFiles" TaskParameter="TargetOutputs"/>
+    </MSBuild>
+
+    <ItemGroup>
+      <CompleteOutputFiles Remove="@(CompleteOutputFiles)" />
+      <CompleteOutputFiles Include="@(PrimaryOutputFiles->'$(DestFolder)%(RecursiveDir)**')" />
+    </ItemGroup>
+
+    <Message Text="CompleteOutputFiles:"/>
+    <Message Text="%(CompleteOutputFiles.Identity)"/>
+  </Target>
+
+  <Target Name="RunTests">
+    <Message Text="UnitTestProjects"/>
+    <Message Text="@(UnitTestProjects)"/>
+  </Target>
+
+  <Target Name="BuildAll" DependsOnTargets="CleanDestination">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+         BuildInParallel="false"
+         Properties="ConfigurationID=%(Configuration.Identity);Configuration=%(Configuration.Name);"
+         Targets="LogConfiguration;CleanReleaseProjects;BuildReleaseProjects;RunTests;CopyReleaseProjectsToDestination;"/>
+  </Target>
+
+  <Target Name="FullBuild" DependsOnTargets="BuildAll">
+    <Message Text="Executing FullBuild"/>
+    <Message Text="%(OutputFiles.Identity)"/>
+  </Target>
+</Project>
