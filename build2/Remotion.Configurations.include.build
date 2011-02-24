@@ -2,17 +2,22 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <Configuration Include="Debug">
+    <AllConfigurations Include="Debug">
       <Name>Debug</Name>
       <DestinationFolder>Debug</DestinationFolder>
-    </Configuration>
-    <!--<Configuration Include="Release">
+      <RunTests>True</RunTests>
+    </AllConfigurations>
+    
+    <AllConfigurations Include="Release">
       <Name>Release</Name>
       <DestinationFolder>Release</DestinationFolder>
-    </Configuration>
-    <Configuration Include="Doc">
+      <RunTests>True</RunTests>
+    </AllConfigurations>
+    
+    <AllConfigurations Include="Doc">
       <Name>Release</Name>
-    </Configuration>-->
+      <RunTests>False</RunTests>
+    </AllConfigurations>
   </ItemGroup>
 
 </Project>

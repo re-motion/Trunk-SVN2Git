@@ -20,6 +20,8 @@
 
   <Target Name="LogConfiguration">
     <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
+    <Message Text="* Name: %(AllConfigurations.Name)" Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'"/>
+    <Message Text="* Runs Tests" Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'"/>
   </Target>
 
   <Target Name="CleanProjects">
@@ -46,13 +48,17 @@
     </MSBuild>
   </Target>
 
-  <Target Name="RunTests" DependsOnTargets="CreateLogDirectory">
+  <Target Name="RunTests" DependsOnTargets="CreateLogDirectory;BuildTestProjects">
+    <PropertyGroup>
+      <_isActive Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'">True</_isActive>      
+    </PropertyGroup>
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)" 
                                    OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml" 
-                                   ToolPath="$(NUnitToolPath)" />
+                                   ToolPath="$(NUnitToolPath)"
+                                   Condition="$(_isActive) == 'True'"/>
   </Target>
   
-  <Target Name="CopyReleaseProjectsToDestinationFolder">
+  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="BuildReleaseProjects">
     <ItemGroup>
       <_CompleteOutputFiles Remove="@(_CompleteOutputFiles)" />
       <_CompleteOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
@@ -62,8 +68,13 @@
       <_ConfigurationDestinationFolder>$(DestinationFolder)$(ConfigurationID)\</_ConfigurationDestinationFolder>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <_isActive Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.DestinationFolder) != ''">True</_isActive>
+    </PropertyGroup>
+
     <Copy SourceFiles="@(_CompleteOutputFiles)"
-          DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')" />
+          DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')"
+          Condition="$(_isActive) == 'True'"/>
   </Target>
 
 
