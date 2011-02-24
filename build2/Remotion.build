@@ -22,12 +22,12 @@
     <Configuration Include="Debug">
       <Name>Debug</Name>
     </Configuration>
-    <Configuration Include="Release">
+    <!--<Configuration Include="Release">
       <Name>Release</Name>
     </Configuration>
     <Configuration Include="Doc">
       <Name>Release</Name>
-    </Configuration>
+    </Configuration>-->
   </ItemGroup>
 
   <PropertyGroup>
@@ -50,15 +50,15 @@
      <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
   </Target>
 
-  <Target Name="CleanReleaseProjects">
-    <MSBuild Projects="@(ReleaseProjects)" 
+  <Target Name="CleanAll">
+    <MSBuild Projects="@(ReleaseProjects);@(UnitTestProjects)" 
              Targets="Clean" 
              Properties="Configuration=$(Configuration);"/>
   </Target>
 
   <Target Name="BuildReleaseProjects">
     <MSBuild Projects ="@(ReleaseProjects)"
-             ContinueOnError ="false"
+             ContinueOnError="false"
              Properties="Configuration=$(Configuration);">
       <Output ItemName="PrimaryOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
@@ -72,16 +72,23 @@
     <Message Text="%(CompleteOutputFiles.Identity)"/>
   </Target>
 
+  <Target Name="BuildTestProjects">
+    <MSBuild Projects ="@(UnitTestProjects)"
+             ContinueOnError="false"
+             Properties="Configuration=$(Configuration);">
+      <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
+    </MSBuild>
+  </Target>
+
   <Target Name="RunTests">
-    <Message Text="UnitTestProjects"/>
-    <Message Text="@(UnitTestProjects)"/>
+    <Message Text="%(TestOutputFiles.Identity)"/>
   </Target>
 
   <Target Name="BuildAll" DependsOnTargets="CleanDestination">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
          Properties="ConfigurationID=%(Configuration.Identity);Configuration=%(Configuration.Name);"
-         Targets="LogConfiguration;CleanReleaseProjects;BuildReleaseProjects;RunTests;CopyReleaseProjectsToDestination;"/>
+         Targets="LogConfiguration;CleanAll;BuildReleaseProjects;BuildTestProjects;RunTests;CopyReleaseProjectsToDestination;"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll">
