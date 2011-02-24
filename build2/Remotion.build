@@ -26,8 +26,8 @@
   <Target Name="BuildAll" DependsOnTargets="CleanDestinationFolder">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
-         Properties="ConfigurationID=%(AllConfigurations.Identity);Configuration=%(AllConfigurations.Name);"
-         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;CopyReleaseProjectsToDestinationFolder;"/>
+         Properties="ConfigurationID=%(AllConfigurations.Identity);"
+         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll">
@@ -38,7 +38,7 @@
   <Target Name="Try">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
-         Properties="ConfigurationID=%(AllConfigurations.Identity);Configuration=%(AllConfigurations.Name);"
+         Properties="ConfigurationID=%(AllConfigurations.Identity);"
          Targets="LogConfiguration;EchoConfiguration;"/>
   </Target>
   <Target Name="EchoConfiguration">
@@ -47,6 +47,16 @@
     </PropertyGroup>
 
     <Message Text="RunTests" Condition="$(_isActive) == 'True'"/>
+
+    <PropertyGroup>
+      <_configurationName Condition="%(AllConfigurations.Identity) == $(ConfigurationID)">%(AllConfigurations.Name)</_configurationName>
+    </PropertyGroup>
+    <Message Text="Config $(_configurationName)"/>
+    
+    <ItemGroup>
+      <_activeConfiguration Include="@(AllConfigurations)" Condition="%(AllConfigurations.Identity) == $(ConfigurationID)"/>
+    </ItemGroup>
+    <Message Text="Config %(_activeConfiguration.Name)"/>
   </Target>
 
   

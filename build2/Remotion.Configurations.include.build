@@ -4,13 +4,13 @@
   <ItemGroup>
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
-      <DestinationFolder>Debug</DestinationFolder>
+      <DestinationFolder>net3.5\Debug\</DestinationFolder>
       <RunTests>True</RunTests>
     </AllConfigurations>
     
     <AllConfigurations Include="Release">
       <Name>Release</Name>
-      <DestinationFolder>Release</DestinationFolder>
+      <DestinationFolder>net3.5\Release\</DestinationFolder>
       <RunTests>True</RunTests>
     </AllConfigurations>
     

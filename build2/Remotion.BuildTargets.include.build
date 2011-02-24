@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Target Name="CreateActiveConfiguration">
+    <Error Text="The property 'ConfigurationID' is not set." Condition="'$(ConfigurationID)' == ''" />
+
+    <ItemGroup>
+      <_activeConfiguration Include="@(AllConfigurations)" Condition="%(AllConfigurations.Identity) == $(ConfigurationID)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
+      <ActiveConfigurationRunTests>%(_activeConfiguration.RunTests)</ActiveConfigurationRunTests>
+      <ActiveConfigurationHasDestinationFolder Condition="%(_activeConfiguration.DestinationFolder) == ''">False</ActiveConfigurationHasDestinationFolder>
+      <ActiveConfigurationHasDestinationFolder Condition="%(_activeConfiguration.DestinationFolder) != ''">True</ActiveConfigurationHasDestinationFolder>
+      <ActiveConfigurationDestinationFolder Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'">$(DestinationFolder)%(_activeConfiguration.DestinationFolder)</ActiveConfigurationDestinationFolder>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="ValidateProjects">
     <Error Text="Project '%(ProjectFiles.Identity)' has invalid project type: '%(ProjectFiles.ProjectType)'"
            Condition="!('%(ProjectFiles.ProjectType)' == 'Release' Or '%(ProjectFiles.ProjectType)' == 'UnitTests' Or '%(ProjectFiles.ProjectType)' == 'Support')" />
   </Target>
-  
+
   <Target Name="CleanDestinationFolder">
     <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
 
@@ -18,64 +34,59 @@
     <MakeDir Directories="$(LogDirectory)" />
   </Target>
 
-  <Target Name="LogConfiguration">
-    <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
-    <Message Text="* Name: %(AllConfigurations.Name)" Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'"/>
-    <Message Text="* Runs Tests" Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'"/>
+  <Target Name="LogConfiguration" DependsOnTargets="CreateActiveConfiguration">
+    <Message Text="Current configuration: $(ConfigurationID)"/>
+    <Message Text="* Name: $(ActiveConfigurationName)"/>
+    <Message Text="* Runs Tests" Condition="$(ActiveConfigurationRunTests) == 'True'"/>
+    <Message Text="* Destination Folder: $(ActiveConfigurationDestinationFolder)" Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
   </Target>
 
-  <Target Name="CleanProjects">
+  <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">
     <MSBuild Projects="@(ProjectFiles)"
              Targets="Clean"
-             Properties="Configuration=$(Configuration);"/>
+             Properties="Configuration=$(ActiveConfigurationName);"/>
   </Target>
 
-  <Target Name="BuildReleaseProjects" DependsOnTargets="ValidateProjects">
+  <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration;ValidateProjects">
     <MSBuild Projects ="@(ProjectFiles)"
              Condition="'%(ProjectFiles.ProjectType)' == 'Release'"
              ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
+             Properties="Configuration=$(ActiveConfigurationName);">
       <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
   </Target>
 
-  <Target Name="BuildTestProjects" DependsOnTargets="ValidateProjects">
+  <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration;ValidateProjects">
     <MSBuild Projects ="@(ProjectFiles)"
              Condition="'%(ProjectFiles.ProjectType)' == 'UnitTests'"
              ContinueOnError="false"
-             Properties="Configuration=$(Configuration);">
+             Properties="Configuration=$(ActiveConfigurationName);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
   </Target>
 
-  <Target Name="RunTests" DependsOnTargets="CreateLogDirectory;BuildTestProjects">
-    <PropertyGroup>
-      <_isActive Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.RunTests) == 'True'">True</_isActive>      
-    </PropertyGroup>
+  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)" 
                                    OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml" 
                                    ToolPath="$(NUnitToolPath)"
-                                   Condition="$(_isActive) == 'True'"/>
+                                   Condition="$(ActiveConfigurationRunTests) == 'True'"/>
   </Target>
   
-  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="BuildReleaseProjects">
+  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
-      <_CompleteOutputFiles Remove="@(_CompleteOutputFiles)" />
-      <_CompleteOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
+      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
+      <_completeOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
     </ItemGroup>
 
-    <PropertyGroup>
-      <_ConfigurationDestinationFolder>$(DestinationFolder)$(ConfigurationID)\</_ConfigurationDestinationFolder>
-    </PropertyGroup>
-
-    <PropertyGroup>
-      <_isActive Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.DestinationFolder) != ''">True</_isActive>
-    </PropertyGroup>
-
-    <Copy SourceFiles="@(_CompleteOutputFiles)"
-          DestinationFiles="@(_CompleteOutputFiles->'$(_ConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="$(_isActive) == 'True'"/>
+    <Copy SourceFiles="@(_completeOutputFiles)"
+          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')"
+          Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
   </Target>
 
+  <Target Name="CopyResourcesToDestinationFolder"></Target>
+
+  <Target Name="CopySchemasToDestinationFolder"></Target>
+
+  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder" />
 
 </Project>
