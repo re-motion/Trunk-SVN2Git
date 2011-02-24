@@ -4,13 +4,19 @@
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
+  <Import Project="Remotion.Tasks.include.build" />
   
   <PropertyGroup>
     <OutputDirectory>..\</OutputDirectory>
     <TempDirectory>$(OutputDirectory)\build2\temp\</TempDirectory>
     <LogDirectory>$(OutputDirectory)\build2\log\</LogDirectory>
-
     <SolutionDirectory>$(OutputDirectory)</SolutionDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NUnitToolPath>$(SolutionDirectory)\prereq\Tools\NUnit 2.4.7\bin\</NUnitToolPath>
+    <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
   </PropertyGroup>
 
     <PropertyGroup>

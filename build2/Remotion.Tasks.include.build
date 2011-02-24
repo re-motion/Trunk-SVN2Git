@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath Condition="'$(MSBuildCommunityTasksPath)' == ''">$(MSBuildExtensionsPath)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath Condition="'$(MSBuildExtensionPackPath)' == ''">$(MSBuildExtensionsPath)\MSBuildExtensionPack</MSBuildExtensionPackPath>
+  </PropertyGroup>
+
+  <!-- Use tasks of the MSBuild Community Task library -->
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
+  
+</Project>

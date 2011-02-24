@@ -12,6 +12,12 @@
     <Exec Command="rmdir /Q /S $(DestinationFolder)" />
   </Target>
 
+  <Target Name="CreateLogDirectory">
+    <Error Text="The property 'LogDirectory' is not set." Condition="'$(LogDirectory)' == ''" />
+
+    <MakeDir Directories="$(LogDirectory)" />
+  </Target>
+
   <Target Name="LogConfiguration">
     <Message Text="Current configuration: $(ConfigurationID)" Importance="high"/>
   </Target>
@@ -40,8 +46,10 @@
     </MSBuild>
   </Target>
 
-  <Target Name="RunTests">
-    <Message Text="%(TestOutputFiles.Identity)"/>
+  <Target Name="RunTests" DependsOnTargets="CreateLogDirectory">
+    <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)" 
+                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml" 
+                                   ToolPath="$(NUnitToolPath)" />
   </Target>
   
   <Target Name="CopyReleaseProjectsToDestinationFolder">
