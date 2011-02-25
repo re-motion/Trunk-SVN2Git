@@ -123,7 +123,37 @@
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopySchemasToDestinationFolder"></Target>
+  <Target Name="CopySchemasToDestinationFolder">
+    <ItemGroup>
+      <_projectFiles Remove="@(_projectFiles)" />
+      <_projectFiles Include="%(ReleaseOutputFiles.MSBuildSourceProjectFile)" >
+        <AssemblyName>%(ReleaseOutputFiles.FileName)</AssemblyName>          
+      </_projectFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_projectDirectories Remove="@(_projectDirectories)" />
+      <_projectDirectories Include="%(RootDir)%(_projectFiles.Directory)">
+        <AssemblyName>%(_projectFiles.AssemblyName)</AssemblyName>
+      </_projectDirectories>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_schemaFolder>schema\</_schemaFolder>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
+
+      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.xsd" Exclude="%(_projectDirectories.Identity)bin\**;%(_projectDirectories.Identity)obj\**" >
+        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      </_completeOutputFiles>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_completeOutputFiles)"
+          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_schemaFolder)%(SubDirectory)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"/>
+  </Target>
 
   <Target Name="CopyTxtFilesToDestinationFolder"></Target>
 
