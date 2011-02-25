@@ -66,12 +66,12 @@
   </Target>
 
   <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
-    <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)" 
-                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml" 
+    <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
+                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml"
                                    ToolPath="$(NUnitToolPath)"
                                    Condition="$(ActiveConfigurationRunTests) == 'True'"/>
   </Target>
-  
+
   <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
@@ -83,10 +83,50 @@
           Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
   </Target>
 
-  <Target Name="CopyResourcesToDestinationFolder"></Target>
+  <Target Name="CopyResourcesToDestinationFolder">
+    <ItemGroup>
+      <_projectFiles Remove="@(_projectFiles)" />
+      <_projectFiles Include="%(ReleaseOutputFiles.MSBuildSourceProjectFile)">
+        <AssemblyName>%(ReleaseOutputFiles.FileName)</AssemblyName>
+      </_projectFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_projectDirectories Remove="@(_projectDirectories)" />
+      <_projectDirectories Include="%(RootDir)%(_projectFiles.Directory)">
+        <AssemblyName>%(_projectFiles.AssemblyName)</AssemblyName>
+      </_projectDirectories>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_resFolder>res\</_resFolder>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
+      
+      <_completeOutputFiles Include="%(_projectDirectories.Identity)$(_resFolder)**">
+        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      </_completeOutputFiles>
+      
+      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.as?x" Exclude="%(_projectDirectories.Identity)$(_resFolder)**" >
+        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      </_completeOutputFiles>
+      
+      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.master" Exclude="%(_projectDirectories.Identity)$(_resFolder)**" >
+        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      </_completeOutputFiles>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_completeOutputFiles)"
+          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_resFolder)%(SubDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"/>
+  </Target>
 
   <Target Name="CopySchemasToDestinationFolder"></Target>
 
-  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder" />
+  <Target Name="CopyTxtFilesToDestinationFolder"></Target>
+
+  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyTxtFilesToDestinationFolder" />
 
 </Project>
