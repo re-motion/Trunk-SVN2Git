@@ -42,7 +42,20 @@
         <ProjectDirectory>%(RootDir)%(Directory)</ProjectDirectory>
       </ReleaseOutputFiles>
     </ItemGroup>
-    <Message Text="ProjectDirectory %(ReleaseOutputFiles.ProjectDirectory)"/>
+
+    <AddComponentMetadataToItems InputValues="@(ReleaseOutputFiles)"
+                                  ComponentDirectory="$(SolutionDirectory)Remotion\"
+                                  ComponentName="Core">
+      <Output ItemName="ReleaseOutputFiles1" TaskParameter="OutputValues"/>
+    </AddComponentMetadataToItems>
+
+    <AddComponentMetadataToItems InputValues="@(ReleaseOutputFiles1)"
+                                  ComponentDirectory="$(SolutionDirectory)Remotion\Data\Linq"
+                                  ComponentName="Relinq">
+      <Output ItemName="ReleaseOutputFiles1" TaskParameter="OutputValues"/>
+    </AddComponentMetadataToItems>
+
+    <Message Text="ComponentName %(ReleaseOutputFiles1.Identity): %(ReleaseOutputFiles1.ComponentName)"/>
   </Target>
 
   <Target Name="CleanDestinationFolder">
@@ -94,80 +107,4 @@
                                    ToolPath="$(NUnitToolPath)"
                                    Condition="$(ActiveConfigurationRunTests) == 'True'"/>
   </Target>
-
-  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateActiveConfiguration;BuildReleaseProjects;">
-    <ItemGroup>
-      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
-  </Target>
-
-  <Target Name="CopyResourcesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
-    <PropertyGroup>
-      <_resFolder>res\</_resFolder>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**">
-        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
-      </_completeOutputFiles>
-      
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.as?x;" 
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
-        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
-      </_completeOutputFiles>
-      
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.master" 
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
-        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
-      </_completeOutputFiles>
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_resFolder)%(SubDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true"/>
-  </Target>
-
-  <Target Name="CopySchemasToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
-    <PropertyGroup>
-      <_schemaFolder>schema\</_schemaFolder>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.xsd" 
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)bin\**;%(ReleaseOutputFiles.ProjectDirectory)obj\**" >
-        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
-      </_completeOutputFiles>
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_schemaFolder)%(SubDirectory)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true"/>
-  </Target>
-
-  <Target Name="CopyDocFilesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
-    <PropertyGroup>
-      <_docFolder>doc\</_docFolder>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)\Readme*" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true"/>
-  </Target>
-
-  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyDocFilesToDestinationFolder" />
-
 </Project>

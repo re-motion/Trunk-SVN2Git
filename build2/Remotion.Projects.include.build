@@ -20,6 +20,13 @@
     <ProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj">
       <ProjectType>UnitTests</ProjectType>
     </ProjectFiles>
+
+    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Linq\Data.Linq.csproj">
+      <ProjectType>Release</ProjectType>
+    </ProjectFiles>
+    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Linq\Data.Linq.UnitTests.csproj">
+      <ProjectType>UnitTests</ProjectType>
+    </ProjectFiles>
   </ItemGroup>
 
 </Project>

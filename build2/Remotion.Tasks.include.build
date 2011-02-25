@@ -9,5 +9,33 @@
   <!-- Use tasks of the MSBuild Community Task library -->
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
-  
+
+  <UsingTask TaskName="AddComponentMetadataToItems"
+           TaskFactory="CodeTaskFactory"
+           AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <InputValues Required="true" ParameterType="Microsoft.Build.Framework.ITaskItem[]"/>
+      <ComponentDirectory Required="true"/>
+      <ComponentName Required="true"/>
+      <OutputValues Output="true" ParameterType="Microsoft.Build.Framework.ITaskItem[]"/>
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        foreach (var item in InputValues)
+        {
+          if (item.GetMetadata ("ProjectDirectory").StartsWith (ComponentDirectory))
+          {
+            var componentName = item.GetMetadata ("ComponentName") ?? "";
+            if (componentName.Length > 0)
+              componentName += ";";
+            componentName += ComponentName;
+            item.SetMetadata ("ComponentName", componentName);
+          }
+        }
+        OutputValues = InputValues;
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 </Project>

@@ -5,12 +5,13 @@
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
   <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.AssembleBuildOutputTargets.include.build" />
   
   <PropertyGroup>
     <OutputDirectory>..\</OutputDirectory>
     <TempDirectory>$(OutputDirectory)\build2\temp\</TempDirectory>
     <LogDirectory>$(OutputDirectory)\build2\log\</LogDirectory>
-    <SolutionDirectory>$(OutputDirectory)</SolutionDirectory>
+    <SolutionDirectory>$([System.IO.Path]::GetFullPath($(OutputDirectory)))</SolutionDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -30,16 +31,30 @@
          Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
 
-  <Target Name="FullBuild" DependsOnTargets="BuildAll">
+  <Target Name="FullBuild" DependsOnTargets="BuildAll">  
     <Message Text="Executing FullBuild"/>
     <Message Text="%(OutputFiles.Identity)"/>
   </Target>
 
   <Target Name="Try">
-    <MSBuild Projects="$(MSBuildProjectFile)"
+    <ItemGroup>
+      <Items Include="A">
+        <MetadataValue>a1</MetadataValue>
+      </Items>
+      <Items Include="B">
+        <MetadataValue>b1</MetadataValue>
+      </Items>
+    </ItemGroup>
+
+    <TestTask InputValue="@(Items)">
+      <Output PropertyName="Items" TaskParameter="OutputValue"/>
+    </TestTask>
+
+    <Message Text="x %(Items.Identity) %(Items.MetadataValue)"/>
+    <!--<MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
          Properties="ConfigurationID=%(AllConfigurations.Identity);"
-         Targets="LogConfiguration;EchoConfiguration;"/>
+         Targets="LogConfiguration;EchoConfiguration;"/>-->
   </Target>
   <Target Name="EchoConfiguration">
     <PropertyGroup>
@@ -59,5 +74,19 @@
     <Message Text="Config %(_activeConfiguration.Name)"/>
   </Target>
 
-  
+  <UsingTask TaskName="TestTask"
+           TaskFactory="CodeTaskFactory"
+           AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <InputValue Required="true"/>
+      <OutputValue Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        OutputValue = InputValue;
+      </Code>
+    </Task>
+  </UsingTask>
+
+
 </Project>
