@@ -153,8 +153,21 @@
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopyTxtFilesToDestinationFolder"></Target>
+  <Target Name="CopyDocFilesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
+    <PropertyGroup>
+      <_docFolder>doc\</_docFolder>
+    </PropertyGroup>
 
-  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyTxtFilesToDestinationFolder" />
+    <ItemGroup>
+      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)\Readme*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_completeOutputFiles)"
+          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"/>
+  </Target>
+
+  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyDocFilesToDestinationFolder" />
 
 </Project>
