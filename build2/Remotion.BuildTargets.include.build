@@ -22,6 +22,29 @@
            Condition="!('%(ProjectFiles.ProjectType)' == 'Release' Or '%(ProjectFiles.ProjectType)' == 'UnitTests' Or '%(ProjectFiles.ProjectType)' == 'Support')" />
   </Target>
 
+  <Target Name="AddAdditionalMetadataToReleaseOutputFiles">
+    <ItemGroup>
+      <_projectFiles Remove="@(_projectFiles)" />
+      <_projectFiles Include="%(ReleaseOutputFiles.MSBuildSourceProjectFile)">
+        <ReleaseOutputFileIdentity>%(Identity)</ReleaseOutputFileIdentity>
+        <MSBuildSourceProjectFile>%(MSBuildSourceProjectFile)</MSBuildSourceProjectFile>
+        <MSBuildSourceTargetName>%(MSBuildSourceTargetName)</MSBuildSourceTargetName>
+        <AssemblyName>%(FileName)</AssemblyName>
+      </_projectFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ReleaseOutputFiles Remove="@(ReleaseOutputFiles)" />
+      <ReleaseOutputFiles Include="%(_projectFiles.ReleaseOutputFileIdentity)">
+        <MSBuildSourceProjectFile>%(MSBuildSourceProjectFile)</MSBuildSourceProjectFile>
+        <MSBuildSourceTargetName>%(MSBuildSourceTargetName)</MSBuildSourceTargetName>
+        <AssemblyName>%(FileName)</AssemblyName>
+        <ProjectDirectory>%(RootDir)%(Directory)</ProjectDirectory>
+      </ReleaseOutputFiles>
+    </ItemGroup>
+    <Message Text="ProjectDirectory %(ReleaseOutputFiles.ProjectDirectory)"/>
+  </Target>
+
   <Target Name="CleanDestinationFolder">
     <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
 
@@ -83,21 +106,7 @@
           Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
   </Target>
 
-  <Target Name="CopyResourcesToDestinationFolder">
-    <ItemGroup>
-      <_projectFiles Remove="@(_projectFiles)" />
-      <_projectFiles Include="%(ReleaseOutputFiles.MSBuildSourceProjectFile)">
-        <AssemblyName>%(ReleaseOutputFiles.FileName)</AssemblyName>
-      </_projectFiles>
-    </ItemGroup>
-
-    <ItemGroup>
-      <_projectDirectories Remove="@(_projectDirectories)" />
-      <_projectDirectories Include="%(RootDir)%(_projectFiles.Directory)">
-        <AssemblyName>%(_projectFiles.AssemblyName)</AssemblyName>
-      </_projectDirectories>
-    </ItemGroup>
-
+  <Target Name="CopyResourcesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_resFolder>res\</_resFolder>
     </PropertyGroup>
@@ -105,16 +114,18 @@
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
       
-      <_completeOutputFiles Include="%(_projectDirectories.Identity)$(_resFolder)**">
-        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**">
+        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
       
-      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.as?x" Exclude="%(_projectDirectories.Identity)$(_resFolder)**" >
-        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.as?x;" 
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
+        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
       
-      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.master" Exclude="%(_projectDirectories.Identity)$(_resFolder)**" >
-        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.master" 
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
+        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
     </ItemGroup>
 
@@ -123,21 +134,7 @@
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopySchemasToDestinationFolder">
-    <ItemGroup>
-      <_projectFiles Remove="@(_projectFiles)" />
-      <_projectFiles Include="%(ReleaseOutputFiles.MSBuildSourceProjectFile)" >
-        <AssemblyName>%(ReleaseOutputFiles.FileName)</AssemblyName>          
-      </_projectFiles>
-    </ItemGroup>
-
-    <ItemGroup>
-      <_projectDirectories Remove="@(_projectDirectories)" />
-      <_projectDirectories Include="%(RootDir)%(_projectFiles.Directory)">
-        <AssemblyName>%(_projectFiles.AssemblyName)</AssemblyName>
-      </_projectDirectories>
-    </ItemGroup>
-
+  <Target Name="CopySchemasToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_schemaFolder>schema\</_schemaFolder>
     </PropertyGroup>
@@ -145,8 +142,9 @@
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
 
-      <_completeOutputFiles Include="%(_projectDirectories.Identity)**\*.xsd" Exclude="%(_projectDirectories.Identity)bin\**;%(_projectDirectories.Identity)obj\**" >
-        <SubDirectory>%(_projectDirectories.AssemblyName)\</SubDirectory>
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.xsd" 
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)bin\**;%(ReleaseOutputFiles.ProjectDirectory)obj\**" >
+        <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
     </ItemGroup>
 
