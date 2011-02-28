@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects

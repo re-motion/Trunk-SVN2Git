@@ -19,8 +19,8 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence

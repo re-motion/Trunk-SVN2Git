@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq;
+using Remotion.Linq.EagerFetching;
 
 namespace Remotion.Data.DomainObjects.Linq
 {

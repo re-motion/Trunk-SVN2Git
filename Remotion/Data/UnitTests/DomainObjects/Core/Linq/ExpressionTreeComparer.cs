@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Collections;
 using NUnit.Framework;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {

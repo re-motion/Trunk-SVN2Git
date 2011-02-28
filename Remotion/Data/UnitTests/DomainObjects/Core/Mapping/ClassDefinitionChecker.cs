@@ -16,7 +16,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Model;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;

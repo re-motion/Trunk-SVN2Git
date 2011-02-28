@@ -22,14 +22,14 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.Parsing.Structure;
-using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
+using Remotion.Linq;
+using Remotion.Linq.Clauses;
+using Remotion.Linq.Clauses.Expressions;
+using Remotion.Linq.Clauses.ResultOperators;
+using Remotion.Linq.Parsing.Structure;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using ReflectionUtility=Remotion.Data.Linq.ReflectionUtility;
+using ReflectionUtility=Remotion.Linq.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {

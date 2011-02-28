@@ -17,7 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 
 namespace Remotion.Data.DomainObjects.Linq
 {

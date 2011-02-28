@@ -21,12 +21,12 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Linq;
+using Remotion.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {

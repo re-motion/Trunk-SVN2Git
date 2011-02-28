@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Linq;
+using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Mixins;

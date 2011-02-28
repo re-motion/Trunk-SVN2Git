@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Linq.Utilities;
 using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Queries

@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.EagerFetching;
+using Remotion.Linq;
+using Remotion.Linq.EagerFetching;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
