@@ -17,11 +17,6 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="ValidateProjects">
-    <Error Text="Project '%(ProjectFiles.Identity)' has invalid project type: '%(ProjectFiles.ProjectType)'"
-           Condition="!('%(ProjectFiles.ProjectType)' == 'Release' Or '%(ProjectFiles.ProjectType)' == 'UnitTests' Or '%(ProjectFiles.ProjectType)' == 'Support')" />
-  </Target>
-
   <Target Name="AddAdditionalMetadataToReleaseOutputFiles">
     <ItemGroup>
       <_projectFiles Remove="@(_projectFiles)" />
@@ -78,23 +73,21 @@
   </Target>
 
   <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">
-    <MSBuild Projects="@(ProjectFiles)"
+    <MSBuild Projects="@(ReleaseProjectFiles);@(UnitTestProjectFiles)"
              Targets="Clean"
              Properties="Configuration=$(ActiveConfigurationName);"/>
   </Target>
 
-  <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration;ValidateProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'Release'"
+  <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration">
+    <MSBuild Projects ="@(ReleaseProjectFiles)"
              ContinueOnError="false"
              Properties="Configuration=$(ActiveConfigurationName);">
       <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
   </Target>
 
-  <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration;ValidateProjects">
-    <MSBuild Projects ="@(ProjectFiles)"
-             Condition="'%(ProjectFiles.ProjectType)' == 'UnitTests'"
+  <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration">
+    <MSBuild Projects ="@(UnitTestProjectFiles)"
              ContinueOnError="false"
              Properties="Configuration=$(ActiveConfigurationName);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
