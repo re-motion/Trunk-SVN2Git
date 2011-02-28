@@ -60,7 +60,7 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Metadata.Importer\SecurityManager.Metadata.Importer.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj" />
     
-    <!--TODO: LINQ-projects
+    <!--TODO: LINQ-projects (IntegrationTestProjectFiles for the integration tests!)
      <ProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Linq\Data.Linq.csproj">
       <ProjectType>Release</ProjectType>
     </ProjectFiles>
