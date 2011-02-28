@@ -18,7 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
 

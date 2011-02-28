@@ -21,8 +21,8 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.SqlBackend;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Linq.SqlBackend;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {

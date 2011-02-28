@@ -17,14 +17,8 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq

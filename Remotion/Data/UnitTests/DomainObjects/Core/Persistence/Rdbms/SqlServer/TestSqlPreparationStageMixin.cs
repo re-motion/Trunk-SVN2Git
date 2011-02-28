@@ -17,8 +17,8 @@
 using System.Linq.Expressions;
 using Remotion.Linq;
 using Remotion.Linq.Clauses.StreamedData;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer

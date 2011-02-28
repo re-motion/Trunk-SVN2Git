@@ -27,18 +27,18 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.EagerFetching;
+using Remotion.Linq.SqlBackend.MappingResolution;
+using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
+using SqlCommandBuilder = Remotion.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
 {

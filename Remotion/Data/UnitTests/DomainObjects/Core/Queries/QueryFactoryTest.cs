@@ -36,11 +36,11 @@ using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.Parsing.Structure.ExpressionTreeProcessors;
 using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries

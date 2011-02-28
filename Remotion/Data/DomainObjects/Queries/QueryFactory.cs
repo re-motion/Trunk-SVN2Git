@@ -22,13 +22,13 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
 using Remotion.Linq.EagerFetching.Parsing;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Linq.Parsing.Structure;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
+using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 

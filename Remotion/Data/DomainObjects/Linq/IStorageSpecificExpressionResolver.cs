@@ -17,7 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 
 namespace Remotion.Data.DomainObjects.Linq
 {

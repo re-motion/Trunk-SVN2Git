@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
-using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Linq.SqlBackend.SqlPreparation;
 
 namespace Remotion.Data.DomainObjects.Queries
 {

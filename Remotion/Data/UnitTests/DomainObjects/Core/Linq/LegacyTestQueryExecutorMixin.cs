@@ -21,9 +21,9 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Mixins;
-using CommandParameter=Remotion.Data.Linq.SqlBackend.SqlGeneration.CommandParameter;
+using CommandParameter=Remotion.Linq.SqlBackend.SqlGeneration.CommandParameter;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
