@@ -86,6 +86,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
+      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
+      <Name>Linq.SqlBackend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
@@ -97,14 +105,6 @@
     <ProjectReference Include="..\..\Data\DomainObjects\Data.DomainObjects.csproj">
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
       <Name>Data.DomainObjects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Data\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
-      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
-      <Name>Data.Linq.SqlBackend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Data\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

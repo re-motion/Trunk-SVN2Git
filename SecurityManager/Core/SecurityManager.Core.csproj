@@ -371,6 +371,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Relinq\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
@@ -390,10 +394,6 @@
     <ProjectReference Include="..\..\Remotion\Data\Interfaces\Data.Interfaces.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Remotion\Data\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Remotion\ObjectBinding\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>

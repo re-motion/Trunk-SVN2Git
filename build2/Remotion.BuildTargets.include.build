@@ -87,7 +87,7 @@
   </Target>
 
   <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration">
-    <MSBuild Projects ="@(UnitTestProjectFiles)"
+    <MSBuild Projects ="@(UnitTestProjectFiles);@(IntegrationTestProjectFiles)"
              ContinueOnError="false"
              Properties="Configuration=$(ActiveConfigurationName);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>

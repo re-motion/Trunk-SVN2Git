@@ -59,15 +59,16 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core\SecurityManager.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Metadata.Importer\SecurityManager.Metadata.Importer.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj" />
+
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Core\Linq.Core.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\SqlBackend\Linq.SqlBackend.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj" />
     
-    <!--TODO: LINQ-projects (IntegrationTestProjectFiles for the integration tests!)
-     <ProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Linq\Data.Linq.csproj">
-      <ProjectType>Release</ProjectType>
-    </ProjectFiles>
-    <ProjectFiles Include="$(SolutionDirectory)\Remotion\Data\Linq\Data.Linq.UnitTests.csproj">
-      <ProjectType>UnitTests</ProjectType>
-    </ProjectFiles>-->
-    
+      
     <!--TODO: Scripting-projects-->
   </ItemGroup>
 

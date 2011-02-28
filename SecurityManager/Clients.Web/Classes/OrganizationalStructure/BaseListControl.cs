@@ -18,9 +18,9 @@
 using System;
 using System.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.Linq.Utilities;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure

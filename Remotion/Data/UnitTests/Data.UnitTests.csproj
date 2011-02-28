@@ -130,6 +130,14 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Linq.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
+      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
+      <Name>Linq.SqlBackend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
@@ -173,7 +181,7 @@
     </ProjectReference>
     <ProjectReference Include="..\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj">
       <Project>{A6505EE0-0F6B-4CB6-ACC7-1C05C0E236BC}</Project>
-      <Name>Data.DomainObjects.RdbmsTools.Console</Name>
+      <Name>Data.DomainObjects.RdbmsTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
@@ -187,14 +195,6 @@
     <ProjectReference Include="..\Interfaces\Data.Interfaces.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
-      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
-      <Name>Data.Linq.SqlBackend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Linq\Data.Linq.csproj">
-      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
-      <Name>Data.Linq</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
