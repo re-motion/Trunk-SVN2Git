@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!--ReleaseProjectFiles
-      UnitTestProjectFiles
-      IntegrationTestProjectFiles
-      Support-> stanzen
-  -->
-  <ItemGroup>
+   <ItemGroup>
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Interfaces\Core.Interfaces.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Mixins.MixerTools\Core.Mixins.MixerTools.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\UnitTests\Core.UnitTests.csproj" />
+
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Core\Linq.Core.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\SqlBackend\Linq.SqlBackend.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj" />
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj" />
 
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects\Data.DomainObjects.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.RdbmsTools\Data.DomainObjects.RdbmsTools.csproj" />
@@ -46,6 +49,9 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Web\Security\Web.Security.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Web\UnitTests\Web.UnitTests.csproj" />
 
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Scripting\Core\Scripting.Core.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Scripting\UnitTests\Scripting.UnitTests.csproj" />
+
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Clients.Windows.Tray\Dms.Clients.Windows.Tray.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\Core\Dms.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Dms\DesktopConnector\Dms.DesktopConnector.csproj" />
@@ -59,17 +65,7 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core\SecurityManager.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\SecurityManager\Metadata.Importer\SecurityManager.Metadata.Importer.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj" />
-
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\Core\Linq.Core.csproj" />
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj" />
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\Relinq\SqlBackend\Linq.SqlBackend.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\Relinq\UnitTests\Linq.UnitTests.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj" />
-    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Relinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj" />
-    
-      
-    <!--TODO: Scripting-projects-->
+                         
   </ItemGroup>
 
 </Project>
