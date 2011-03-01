@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="Remotion.Tasks.include.build" />
+
+  <PropertyGroup>
+    <PackageName>Remotion</PackageName>
+  </PropertyGroup>
+    
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+  </PropertyGroup>
+
+  <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage"/>
+
+  <Target Name="DeployPackages" />
+
+  <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileName;CreateSourceFiles;CreateOutputDirectory;">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <MSBuild.Community.Tasks.Zip ZipFileName="$(SourceZipFileName)" 
+                                 Files="@(SourceFiles)"
+                                 WorkingDirectory="$(SolutionDirectory)"/>
+
+  </Target>
+
+  <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileName;CreateBinaryFiles;CreateOutputDirectory;">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+
+    <MSBuild.Community.Tasks.Zip ZipFileName="$(BinaryZipFileName)"
+                                 Files="@(BinaryFiles)"
+                                 WorkingDirectory="$(BinariesDirectory)"/>
+
+  </Target>
+
+  <Target Name="CreateOutputDirectory">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+
+    <MakeDir Directories="$(OutputDirectory)" />
+  </Target>
+
+  <Target Name="CreateSourceZipFileName">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+      <SourceZipFileName>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFileName>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)Remotion\**"
+                   Exclude="$(SolutionDirectory)Remotion\**\bin\**;$(SolutionDirectory)Remotion\**\obj\**;@(StandardExcludes)">
+      </SourceFiles>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateBinaryZipFileName">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+      <BinaryZipFileName>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFileName>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
+
+    <ItemGroup>
+      <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <BinaryFiles Remove="@(BinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**" 
+                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
+      <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
+
+      <StandardExcludes Include="$(SolutionDirectory)**\*.log" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.snk" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.suo" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.user" />
+    </ItemGroup>
+  </Target>
+
+</Project>

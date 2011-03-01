@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;BuildReleaseProjects;">
+  <Target Name="CopyReleaseProjectsToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
       <_completeOutputFiles Include="%(ReleaseOutputFiles.RootDir)%(ReleaseOutputFiles.Directory)**" 
@@ -9,11 +9,11 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationDestinationFolder)%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
+          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationBinariesDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
+          Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'"/>
   </Target>
 
-  <Target Name="CopyResourcesToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopyResourcesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_resFolder>res\</_resFolder>
     </PropertyGroup>
@@ -38,11 +38,11 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_resFolder)%(SubDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
+          DestinationFiles="@(_completeOutputFiles->'$(BinariesDirectory)$(_resFolder)%(SubDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopySchemasToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopySchemasToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_schemaFolder>schema\</_schemaFolder>
     </PropertyGroup>
@@ -57,11 +57,11 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)$(_schemaFolder)%(SubDirectory)%(Filename)%(Extension)')"
+          DestinationFiles="@(_completeOutputFiles->'$(BinariesDirectory)$(_schemaFolder)%(SubDirectory)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopyDocFilesToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopyDocFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_docFolder>doc\</_docFolder>
     </PropertyGroup>
@@ -73,7 +73,7 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)%(Filename)%(Extension)')"
+          DestinationFiles="@(_completeOutputFiles->'$(BinariesDirectory)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"/>
   </Target>
 
@@ -86,6 +86,6 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyDocFilesToDestinationFolder" />
+  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToBinariesDirectory;CopyResourcesToBinariesDirectory;CopySchemasToBinariesDirectory;CopyDocFilesToBinariesDirectory" />
 
 </Project>

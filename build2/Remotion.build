@@ -1,92 +1,40 @@
 ﻿<?xml version="1.0"  encoding="utf-8"?>
 <Project DefaultTargets="FullBuild" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
-  <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.AssembleBuildOutputTargets.include.build" />
   
   <PropertyGroup>
-    <OutputDirectory>..\</OutputDirectory>
-    <TempDirectory>$(OutputDirectory)\build2\temp\</TempDirectory>
-    <LogDirectory>$(OutputDirectory)\build2\log\</LogDirectory>
-    <SolutionDirectory>$([System.IO.Path]::GetFullPath($(OutputDirectory)))</SolutionDirectory>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <NUnitToolPath>$(SolutionDirectory)\prereq\Tools\NUnit 2.4.7\bin\</NUnitToolPath>
-    <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
-    <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
-  </PropertyGroup>
-
-    <PropertyGroup>
-    <DestinationFolder>BuildOutput\</DestinationFolder>
+    <Version>1.13.97</Version>
+    <SolutionDirectory>$([System.IO.Path]::GetFullPath('..\'))</SolutionDirectory>
+    <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\$(Version)\</OutputDirectory>
+    <LogDirectory>$(OutputDirectory)log\</LogDirectory>
+    <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\temp\</TempDirectory>
+    <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
   </PropertyGroup>
   
-  <Target Name="BuildAll" DependsOnTargets="CleanDestinationFolder">
+  <PropertyGroup>
+    <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit 2.4.7\bin\</NUnitToolPath>
+    <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
+    <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+  </PropertyGroup>
+  
+  <Target Name="BuildAll" DependsOnTargets="CleanFolders">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
          Properties="ConfigurationID=%(AllConfigurations.Identity);"
          Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
-
-  <Target Name="FullBuild" DependsOnTargets="BuildAll">  
-    <Message Text="Executing FullBuild"/>
-    <Message Text="%(OutputFiles.Identity)"/>
-  </Target>
-
-  <Target Name="Try">
-    <ItemGroup>
-      <Items Include="A">
-        <MetadataValue>a1</MetadataValue>
-      </Items>
-      <Items Include="B">
-        <MetadataValue>b1</MetadataValue>
-      </Items>
-    </ItemGroup>
-
-    <TestTask InputValue="@(Items)">
-      <Output PropertyName="Items" TaskParameter="OutputValue"/>
-    </TestTask>
-
-    <Message Text="x %(Items.Identity) %(Items.MetadataValue)"/>
-    <!--<MSBuild Projects="$(MSBuildProjectFile)"
+  
+  <Target Name="PackageAll">
+    <MSBuild Projects="Remotion.Packaging.Core.include.build"
          BuildInParallel="false"
-         Properties="ConfigurationID=%(AllConfigurations.Identity);"
-         Targets="LogConfiguration;EchoConfiguration;"/>-->
-  </Target>
-  <Target Name="EchoConfiguration">
-    <PropertyGroup>
-      <_isActive Condition="%(AllConfigurations.Identity) == $(ConfigurationID) AND %(AllConfigurations.DestinationFolder) != ''">True</_isActive>
-    </PropertyGroup>
-
-    <Message Text="RunTests" Condition="$(_isActive) == 'True'"/>
-
-    <PropertyGroup>
-      <_configurationName Condition="%(AllConfigurations.Identity) == $(ConfigurationID)">%(AllConfigurations.Name)</_configurationName>
-    </PropertyGroup>
-    <Message Text="Config $(_configurationName)"/>
-    
-    <ItemGroup>
-      <_activeConfiguration Include="@(AllConfigurations)" Condition="%(AllConfigurations.Identity) == $(ConfigurationID)"/>
-    </ItemGroup>
-    <Message Text="Config %(_activeConfiguration.Name)"/>
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);"/>
   </Target>
 
-  <UsingTask TaskName="TestTask"
-           TaskFactory="CodeTaskFactory"
-           AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <InputValue Required="true"/>
-      <OutputValue Output="true" />
-    </ParameterGroup>
-    <Task>
-      <Code Type="Fragment" Language="cs">
-        OutputValue = InputValue;
-      </Code>
-    </Task>
-  </UsingTask>
-
+  <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />
 
 </Project>

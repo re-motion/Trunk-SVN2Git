@@ -11,9 +11,9 @@
     <PropertyGroup>
       <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
       <ActiveConfigurationRunTests>%(_activeConfiguration.RunTests)</ActiveConfigurationRunTests>
-      <ActiveConfigurationHasDestinationFolder Condition="%(_activeConfiguration.DestinationFolder) == ''">False</ActiveConfigurationHasDestinationFolder>
-      <ActiveConfigurationHasDestinationFolder Condition="%(_activeConfiguration.DestinationFolder) != ''">True</ActiveConfigurationHasDestinationFolder>
-      <ActiveConfigurationDestinationFolder Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'">$(DestinationFolder)%(_activeConfiguration.DestinationFolder)</ActiveConfigurationDestinationFolder>
+      <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) == ''">False</ActiveConfigurationHasBinariesDirectory>
+      <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) != ''">True</ActiveConfigurationHasBinariesDirectory>
+      <ActiveConfigurationBinariesDirectory Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'">$(BinariesDirectory)%(_activeConfiguration.BinariesDirectory)</ActiveConfigurationBinariesDirectory>
     </PropertyGroup>
   </Target>
 
@@ -33,30 +33,22 @@
       <ReleaseOutputFiles Include="%(_projectFiles.ReleaseOutputFileIdentity)">
         <MSBuildSourceProjectFile>%(MSBuildSourceProjectFile)</MSBuildSourceProjectFile>
         <MSBuildSourceTargetName>%(MSBuildSourceTargetName)</MSBuildSourceTargetName>
-        <AssemblyName>%(FileName)</AssemblyName>
+        <AssemblyName>%(AssemblyName)</AssemblyName>
         <ProjectDirectory>%(RootDir)%(Directory)</ProjectDirectory>
       </ReleaseOutputFiles>
     </ItemGroup>
-
-    <AddComponentMetadataToItems InputValues="@(ReleaseOutputFiles)"
-                                  ComponentDirectory="$(SolutionDirectory)Remotion\"
-                                  ComponentName="Core">
-      <Output ItemName="ReleaseOutputFiles1" TaskParameter="OutputValues"/>
-    </AddComponentMetadataToItems>
-
-    <AddComponentMetadataToItems InputValues="@(ReleaseOutputFiles1)"
-                                  ComponentDirectory="$(SolutionDirectory)Remotion\Data\Linq"
-                                  ComponentName="Relinq">
-      <Output ItemName="ReleaseOutputFiles1" TaskParameter="OutputValues"/>
-    </AddComponentMetadataToItems>
-
-    <Message Text="ComponentName %(ReleaseOutputFiles1.Identity): %(ReleaseOutputFiles1.ComponentName)"/>
   </Target>
 
-  <Target Name="CleanDestinationFolder">
-    <Error Text="The property 'DestinationFolder' is not set." Condition="'$(DestinationFolder)' == ''" />
+  <Target Name="CleanFolders">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'LogDirectory' is not set." Condition="'$(LogDirectory)' == ''" />
+    <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
+    <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
 
-    <Exec Command="rmdir /Q /S $(DestinationFolder)" />
+    <Exec Command="rmdir /Q /S $(OutputDirectory)" />
+    <Exec Command="rmdir /Q /S $(LogDirectory)" />
+    <Exec Command="rmdir /Q /S $(TempDirectory)" />
+    <Exec Command="rmdir /Q /S $(BinariesDirectory)" />
   </Target>
 
   <Target Name="CreateLogDirectory">
@@ -69,7 +61,7 @@
     <Message Text="Current configuration: $(ConfigurationID)"/>
     <Message Text="* Name: $(ActiveConfigurationName)"/>
     <Message Text="* Runs Tests" Condition="$(ActiveConfigurationRunTests) == 'True'"/>
-    <Message Text="* Destination Folder: $(ActiveConfigurationDestinationFolder)" Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
+    <Message Text="* Destination Folder: $(ActiveConfigurationBinariesDirectory)" Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'"/>
   </Target>
 
   <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">
