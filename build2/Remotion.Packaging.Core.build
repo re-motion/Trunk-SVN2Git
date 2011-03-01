@@ -3,9 +3,9 @@
 
   <Import Project="Remotion.Packaging.include.build" />
 
-  <Target Name="CreatePackageName">
+  <Target Name="CreatePackageProperties">
     <PropertyGroup>
-      <PackageName>Remotion</PackageName>
+      <ReleaseNoteComponentName>Remotion</ReleaseNoteComponentName>
     </PropertyGroup>
   </Target>
   

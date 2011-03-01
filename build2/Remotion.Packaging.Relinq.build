@@ -3,9 +3,9 @@
 
   <Import Project="Remotion.Packaging.include.build" />
 
-  <Target Name="CreatePackageName">
+  <Target Name="CreatePackageProperties">
     <PropertyGroup>
-      <PackageName>Relinq</PackageName>
+      <ReleaseNoteComponentName>Relinq</ReleaseNoteComponentName>
     </PropertyGroup>
   </Target>
 

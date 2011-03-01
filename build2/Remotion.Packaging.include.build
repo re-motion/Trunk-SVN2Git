@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="CreatePackageName">
-    <Error Text="The target 'CreatePackageName' is not implemented." />
+  <Target Name="CreatePackageProperties">
+    <Error Text="The target 'CreatePackageProperties' is not implemented." />
   </Target>
 
   <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
@@ -34,12 +34,12 @@
                                              CompressFiles="@(SourceFiles)" />
   </Target>
 
-  <Target Name="CreateSourceZipFileProperty" DependsOnTargets="CreatePackageName">
+  <Target Name="CreateSourceZipFileProperty" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <SourceZipFile>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFile>
+      <SourceZipFile>$(OutputDirectory)$(ReleaseNoteComponentName)_SourceCode_$(Version).zip</SourceZipFile>
     </PropertyGroup>
   </Target>
 
@@ -52,12 +52,12 @@
                                              CompressFiles="@(BinaryFiles)" />
   </Target>
 
-  <Target Name="CreateBinaryZipFileProperty" DependsOnTargets="CreatePackageName">
+  <Target Name="CreateBinaryZipFileProperty" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <BinaryZipFile>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFile>
+      <BinaryZipFile>$(OutputDirectory)$(ReleaseNoteComponentName)_$(Version).zip</BinaryZipFile>
     </PropertyGroup>
   </Target>
 
@@ -99,11 +99,11 @@
 
   </Target>
 
-  <Target Name="CreateReleaseNotesDirectoryProperty" DependsOnTargets="CreatePackageName">
+  <Target Name="CreateReleaseNotesDirectoryProperty" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
 
     <PropertyGroup>
-      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\</ReleaseNotesDirectory>
+      <ReleaseNotesDirectory>$(ArchiveDirectory)$(ReleaseNoteComponentName)\release-notes\</ReleaseNotesDirectory>
     </PropertyGroup>
   </Target>
 
