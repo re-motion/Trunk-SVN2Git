@@ -17,13 +17,29 @@
 // 
 using System;
 using System.Reflection;
+using System.Resources;
+
+[assembly: NeutralResourcesLanguage ("en")]
 
 //
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle ("Remotion Security Manager ACL Expander")]
-//[assembly: AssemblyDescription("")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: debug")]
+[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
+[assembly: AssemblyProduct ("Remotion Security Manager")]
+[assembly: AssemblyCopyright ("(c) 2006 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
+[assembly: AssemblyTrademark ("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly: AssemblyVersion("1.13.60.2")]

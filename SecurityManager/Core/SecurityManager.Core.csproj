@@ -69,7 +69,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <EmbeddedResource Include="Configuration\SecurityManagerConfiguration.xsd">
       <SubType>
       </SubType>
@@ -79,6 +78,9 @@
     <None Include="Database\SecurityManagerSetupDB.sql">
     </None>
     <None Include="SecurityManager.Core.build" />
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriter\HtmlTagWriter.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriter\HtmlTagWriterTags.cs" />

@@ -82,6 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterImplementationTest.cs" />
@@ -259,7 +262,6 @@
     <Compile Include="TestDomain\PremiumOrder.cs" />
     <Compile Include="TestDomain\SecurityStates.cs" />
     <Compile Include="TestDomain\SpecialOrder.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

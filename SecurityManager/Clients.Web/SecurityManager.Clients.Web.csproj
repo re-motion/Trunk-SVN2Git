@@ -78,7 +78,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
@@ -169,6 +168,9 @@
     <Content Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Classes\AccessControl\CollapsedAccessControlConditionsRenderer.cs" />
     <Compile Include="Classes\AccessControl\EditAccessControlListControlBase.cs">
       <SubType>ASPXCodeBehind</SubType>
