@@ -3,19 +3,12 @@
 
   <Import Project="Remotion.Packaging.include.build" />
 
-  <PropertyGroup>
-    <PackageName>Remotion</PackageName>
-  </PropertyGroup>
-    
-  <Target Name="CreateSourceZipFileName">
-    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
-    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-
+  <Target Name="CreatePackageName">
     <PropertyGroup>
-      <SourceZipFileName>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFileName>
+      <PackageName>Remotion</PackageName>
     </PropertyGroup>
   </Target>
-
+  
   <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
 
@@ -25,15 +18,6 @@
                    Exclude="$(SolutionDirectory)Remotion\**\bin\**;$(SolutionDirectory)Remotion\**\obj\**;@(StandardExcludes)">
       </SourceFiles>
     </ItemGroup>
-  </Target>
-
-  <Target Name="CreateBinaryZipFileName">
-    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
-    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-
-    <PropertyGroup>
-      <BinaryZipFileName>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFileName>
-    </PropertyGroup>
   </Target>
 
   <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">

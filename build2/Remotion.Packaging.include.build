@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="CreateSourceZipFileName">
-    <Error Text="The target 'CreateSourceZipFileName' is not implemented." />
+  <Target Name="CreatePackageName">
+    <Error Text="The target 'CreatePackageName' is not implemented." />
   </Target>
 
   <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
     <Error Text="The target 'CreateSourceFiles' is not implemented." />
-  </Target>
-
-  <Target Name="CreateBinaryZipFileName">
-    <Error Text="The target 'CreateBinaryZipFileName' is not implemented." />
   </Target>
 
   <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">
@@ -37,6 +33,15 @@
 
   </Target>
 
+  <Target Name="CreateSourceZipFileName" DependsOnTargets="CreatePackageName">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+      <SourceZipFileName>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFileName>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileName;CreateBinaryFiles;CreateOutputDirectory;">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
@@ -44,6 +49,15 @@
                                  Files="@(BinaryFiles)"
                                  WorkingDirectory="$(BinariesDirectory)"/>
 
+  </Target>
+
+  <Target Name="CreateBinaryZipFileName" DependsOnTargets="CreatePackageName">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+      <BinaryZipFileName>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFileName>
+    </PropertyGroup>
   </Target>
 
   <Target Name="CreateOutputDirectory">

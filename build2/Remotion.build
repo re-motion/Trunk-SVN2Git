@@ -28,10 +28,16 @@
          Properties="ConfigurationID=%(AllConfigurations.Identity);"
          Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
+
+  <ItemGroup>
+    <Packages Include="Remotion.Packaging.Core.build"/>
+    <Packages Include="Remotion.Packaging.Relinq.build"/>
+  </ItemGroup>
   
   <Target Name="PackageAll">
-    <MSBuild Projects="Remotion.Packaging.Core.build"
+    <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
+         Targets="CreatePackages"
          Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);"/>
   </Target>
 

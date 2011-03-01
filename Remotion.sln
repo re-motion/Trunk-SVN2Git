@@ -184,6 +184,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles2", "_BuildFiles
 		build2\Remotion.Configurations.include.build = build2\Remotion.Configurations.include.build
 		build2\Remotion.Packaging.Core.build = build2\Remotion.Packaging.Core.build
 		build2\Remotion.Packaging.include.build = build2\Remotion.Packaging.include.build
+		build2\Remotion.Packaging.Relinq.build = build2\Remotion.Packaging.Relinq.build
 		build2\Remotion.Projects.include.build = build2\Remotion.Projects.include.build
 		build2\Remotion.Tasks.include.build = build2\Remotion.Tasks.include.build
 	EndProjectSection
