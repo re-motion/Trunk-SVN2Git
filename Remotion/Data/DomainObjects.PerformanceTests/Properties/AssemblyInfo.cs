@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using Remotion.Data.DomainObjects;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -27,23 +25,7 @@ using Remotion.Data.DomainObjects;
 
 [assembly: AssemblyTitle("Performance Tests for Remotion DomainObjects Library")]
 [assembly: AssemblyDescription("Performance Tests for Remotion DomainObjects Library")]
-[assembly: AssemblyConfiguration(".NET Framework: net-1.1, build type: release")]
-[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct("Remotion")]
-[assembly: AssemblyCopyright("(c) 2003 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
-[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
-//
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.0.*")]
 

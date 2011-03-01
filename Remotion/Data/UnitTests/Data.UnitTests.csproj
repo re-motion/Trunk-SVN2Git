@@ -198,6 +198,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionObjectMother.cs" />
@@ -1705,9 +1708,6 @@
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
     <None Include="DomainObjects\RdbmsTools\Test.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs">
-      <SubType>Code</SubType>
     </None>
     <None Include="Data.UnitTests.build">
       <SubType>Designer</SubType>

@@ -25,11 +25,6 @@ using System.Runtime.InteropServices;
 //
 [assembly: AssemblyTitle ("Remtion.Scripting")]
 [assembly: AssemblyDescription ("Remotion Core Library Scripting Component")]
-[assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
-[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
-[assembly: AssemblyCopyright("(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu")]
-[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
 
@@ -41,15 +36,3 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid ("1C8FF8C6-FEB4-4564-B8CD-C24C0E5D6977")]
 
-//
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-
-[assembly: AssemblyVersion ("1.13.60.2")]

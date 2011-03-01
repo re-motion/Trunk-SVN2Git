@@ -160,6 +160,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AdapterRegistryMock.cs" />
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
@@ -1146,7 +1149,6 @@
     <Compile Include="Xml\SchemaLoaderBaseTest.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\DeserializeUsingSchema.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Core.UnitTests.build">
       <SubType>Designer</SubType>
     </None>

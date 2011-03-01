@@ -124,6 +124,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="BridgeImplementations\InterlockedCacheFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
@@ -719,7 +722,6 @@
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Content Include="Core.Core.build">
       <SubType>Designer</SubType>
     </Content>

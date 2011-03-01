@@ -98,6 +98,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="ExpressionScript.cs" />
     <Compile Include="ScriptVariable.cs" />
     <Compile Include="StableBindingImplementation\ForwardingProxyBuilder.cs" />
@@ -114,7 +117,6 @@
     <Compile Include="ScriptLanguageType.cs" />
     <Compile Include="StableBindingImplementation\ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="ScriptBase.cs" />
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />

@@ -157,6 +157,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="BusinessObjectWithIdentityProxy.cs" />
     <Compile Include="ISearchAvailableObjectWebService.cs" />
     <Compile Include="UI\Controls\BindableObjectDataSourceControl.cs">
@@ -433,7 +436,6 @@
     <Compile Include="UI\Design\PropertyPathBindingCollectionEditor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="ObjectBinding.Web.build">
       <SubType>Designer</SubType>
     </None>

@@ -62,6 +62,9 @@
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AbstractRoleAttribute.cs" />
     <Compile Include="AccessType.cs" />
     <Compile Include="AccessTypeAttribute.cs" />
@@ -81,7 +84,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ISecurityPrincipalRole.cs" />
     <Compile Include="SecurityStateAttribute.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

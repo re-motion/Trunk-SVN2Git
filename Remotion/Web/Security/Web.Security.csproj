@@ -71,6 +71,9 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="ExecutionEngine\WxeDemandCreatePermissionAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeDemandMethodPermissionAttributeHelper.cs" />
     <Compile Include="ExecutionEngine\WxeDemandTargetMethodPermissionAttribute.cs" />
@@ -83,7 +86,6 @@
     <Compile Include="UI\DemandTargetPermissionAttribute.cs" />
     <Compile Include="UI\DemandTargetWxeFunctionPermissionAttribute.cs" />
     <Compile Include="UI\WebSecurityAdapter.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

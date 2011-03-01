@@ -83,6 +83,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseIntegrationTest.cs" />
@@ -450,7 +453,6 @@
     <None Include="ObjectBinding.UnitTests.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

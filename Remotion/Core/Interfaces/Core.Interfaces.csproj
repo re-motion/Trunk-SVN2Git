@@ -73,6 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AdapterRegistry.cs" />
     <Compile Include="BridgeInterfaces\IInterlockedCacheFactoryImplementation.cs" />
     <Compile Include="BridgeInterfaces\ITypeDiscoveryServiceFactoryImplementation.cs" />
@@ -162,7 +165,6 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Core.Interfaces.build">

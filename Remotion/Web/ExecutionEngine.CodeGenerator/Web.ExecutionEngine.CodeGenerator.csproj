@@ -77,6 +77,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Arguments.cs" />
     <Compile Include="CaseInsensitiveStringComparer.cs" />
     <Compile Include="CodeLineType.cs" />
@@ -96,7 +99,6 @@
     <Compile Include="PageFunctionGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="Schema\FunctionDeclaration.cs" />
     <Compile Include="VBProvider.cs" />
     <Compile Include="XmlFragmentContext.cs" />

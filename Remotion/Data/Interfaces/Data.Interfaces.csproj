@@ -64,6 +64,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="ITransaction.cs" />
     <Compile Include="ITransactionFactory.cs" />
     <Compile Include="ITransactionScope.cs">
@@ -73,7 +76,6 @@
     <None Include="Data.Interfaces.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

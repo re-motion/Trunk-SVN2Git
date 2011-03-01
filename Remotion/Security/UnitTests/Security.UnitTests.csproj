@@ -74,6 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Core\AccessTypeTest.cs" />
     <Compile Include="Core\Configuration\GlobalAccessTypeCacheProviderMock.cs" />
     <Compile Include="Core\Configuration\FunctionalSecurityStrategyMock.cs" />
@@ -210,7 +213,6 @@
     <Compile Include="Core\XmlAsserter\XmlDocumentSimilarAsserter.cs" />
     <Compile Include="Core\XmlAsserter\XmlElementAsserter.cs" />
     <Compile Include="Core\XmlAsserter\XmlnsAttributeFilter.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

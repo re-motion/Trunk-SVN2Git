@@ -90,6 +90,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="TestDomain\Cascade.cs" />
     <Compile Include="TestDomain\CascadeGetCustomMemberReturnsAttributeProxyFromMap.cs" />
     <Compile Include="TestDomain\CascadeGetCustomMemberReturnsFixedAttributeProxy.cs" />
@@ -136,7 +139,6 @@
     <Compile Include="TestDomain\IPropertyAmbigous2.cs" />
     <Compile Include="TestDomain\IProxiedGetName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Proxied.cs" />
     <Compile Include="ScriptingHostTest.cs" />
     <Compile Include="StableBindingImplementation\AssemblyLevelTypeFilterTest.cs" />

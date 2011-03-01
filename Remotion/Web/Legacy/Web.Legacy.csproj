@@ -76,6 +76,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Factories\QuirksModeResourceUrlFactory.cs" />
     <Compile Include="Infrastructure\Factories\QuirksModeResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\QuirksModeResourceUrlResolver.cs" />
@@ -93,7 +96,6 @@
     <Compile Include="UI\Controls\Rendering\WebButtonQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStripQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeViewQuirksModeRenderer.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">

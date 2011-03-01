@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <EmbeddedResource Include="Metadata\SecurityMetadataLocalization.xsd">
       <SubType>
       </SubType>
@@ -81,6 +80,9 @@
     <None Include="Security.build">
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />

@@ -74,6 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="CompositionPattern\Core\Domain\ITenantBoundObject.cs" />
     <Compile Include="CompositionPattern\Core\Domain\Mixins\SerialNumberMixin.cs" />
     <Compile Include="CompositionPattern\Core\Domain\Mixins\TenantBoundMixin.cs" />
@@ -109,7 +112,6 @@
     <None Include="Core.Mixins.Samples.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

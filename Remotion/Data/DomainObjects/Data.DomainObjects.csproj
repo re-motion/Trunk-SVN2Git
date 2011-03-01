@@ -154,6 +154,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
     <Compile Include="ClientTransactionEventArgs.cs" />
@@ -842,9 +845,6 @@
       </SubType>
     </None>
     <Compile Include="DomainObjectCollection.Obsolete.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs">
-      <SubType>Code</SubType>
-    </None>
     <None Include="Data.DomainObjects.build">
       <SubType>Designer</SubType>
     </None>

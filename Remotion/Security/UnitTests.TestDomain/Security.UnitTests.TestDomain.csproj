@@ -61,6 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoShared.cs">
+      <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
     <Compile Include="Confidentiality.cs" />
     <Compile Include="DomainAbstractRoles.cs" />
     <Compile Include="DomainAccessTypes.cs" />
@@ -71,7 +74,6 @@
     <Compile Include="SomeEnum.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="SpecialAbstractRoles.cs" />
-    <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
