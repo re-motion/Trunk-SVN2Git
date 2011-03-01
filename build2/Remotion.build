@@ -13,6 +13,8 @@
     <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
     <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\temp\</TempDirectory>
+    <ArchiveDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\Archive\</ArchiveDirectory>
+    <WebShareDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\WebShare\</WebShareDirectory>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
   </PropertyGroup>
   
@@ -38,8 +40,15 @@
     <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
          Targets="CreatePackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);"/>
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);ArchiveDirectory=$(ArchiveDirectory);Version=$(Version);"/>
   </Target>
+
+  <!--<Target Name="DeployAll">
+    <MSBuild Projects="@(Packages)"
+         BuildInParallel="false"
+         Targets="DeployPackages"
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);ArchiveDirectory=$(ArchiveDirectory);Version=$(Version);"/>
+  </Target>-->
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />
 

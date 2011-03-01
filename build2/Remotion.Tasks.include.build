@@ -9,6 +9,7 @@
   <!-- Use tasks of the MSBuild Community Task library -->
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
+  <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
 
   <UsingTask TaskName="AddComponentMetadataToItems"
            TaskFactory="CodeTaskFactory"

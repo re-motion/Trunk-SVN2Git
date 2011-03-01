@@ -18,46 +18,46 @@
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+    <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
   </PropertyGroup>
 
-  <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage"/>
+  <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
-  <Target Name="DeployPackages" />
-
-  <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileName;CreateSourceFiles;CreateOutputDirectory;">
+  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;CopyToArchive;CopyToWebShare;UploadToCodePlex" />-->
+  
+  <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileProperty;CreateSourceFiles;CreateOutputDirectory;">
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
 
-    <MSBuild.Community.Tasks.Zip ZipFileName="$(SourceZipFileName)" 
-                                 Files="@(SourceFiles)"
-                                 WorkingDirectory="$(SolutionDirectory)"/>
-
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" 
+                                             ZipFileName="$(SourceZipFile)" 
+                                             RemoveRoot="$(SolutionDirectory)" 
+                                             CompressFiles="@(SourceFiles)" />
   </Target>
 
-  <Target Name="CreateSourceZipFileName" DependsOnTargets="CreatePackageName">
+  <Target Name="CreateSourceZipFileProperty" DependsOnTargets="CreatePackageName">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <SourceZipFileName>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFileName>
+      <SourceZipFile>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFile>
     </PropertyGroup>
   </Target>
 
-  <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileName;CreateBinaryFiles;CreateOutputDirectory;">
+  <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateBinaryFiles;CreateOutputDirectory;">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
-    <Message Text="@(BinaryFiles)" />
-    <MSBuild.Community.Tasks.Zip ZipFileName="$(BinaryZipFileName)"
-                                 Files="@(BinaryFiles)"
-                                 WorkingDirectory="$(BinariesDirectory)"/>
-
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" 
+                                             ZipFileName="$(BinaryZipFile)" 
+                                             RemoveRoot="$(BinariesDirectory)" 
+                                             CompressFiles="@(BinaryFiles)" />
   </Target>
 
-  <Target Name="CreateBinaryZipFileName" DependsOnTargets="CreatePackageName">
+  <Target Name="CreateBinaryZipFileProperty" DependsOnTargets="CreatePackageName">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <BinaryZipFileName>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFileName>
+      <BinaryZipFile>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFile>
     </PropertyGroup>
   </Target>
 
@@ -79,6 +79,32 @@
       <StandardExcludes Include="$(SolutionDirectory)**\*.suo" />
       <StandardExcludes Include="$(SolutionDirectory)**\*.user" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesDirectoryProperty">
+    <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
+
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesDirectory)"
+          WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
+
+    <ItemGroup>
+      <_releaseNoteFiles Remove="(_releaseNoteFiles)"/>
+      <_releaseNoteFiles Include="$(ReleaseNotesDirectory)*.*"/>
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
+                                             ZipFileName="$(BinaryZipFile)"
+                                             RemoveRoot="$([System.IO.Directory]::GetParent ($(ReleaseNotesDirectory)))"
+                                             CompressFiles="@(_releaseNoteFiles)" />
+
+  </Target>
+
+  <Target Name="CreateReleaseNotesDirectoryProperty" DependsOnTargets="CreatePackageName">
+    <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
+
+    <PropertyGroup>
+      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\</ReleaseNotesDirectory>
+    </PropertyGroup>
   </Target>
 
 </Project>
