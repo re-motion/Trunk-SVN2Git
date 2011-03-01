@@ -45,6 +45,7 @@
   <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileName;CreateBinaryFiles;CreateOutputDirectory;">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
+    <Message Text="@(BinaryFiles)" />
     <MSBuild.Community.Tasks.Zip ZipFileName="$(BinaryZipFileName)"
                                  Files="@(BinaryFiles)"
                                  WorkingDirectory="$(BinariesDirectory)"/>

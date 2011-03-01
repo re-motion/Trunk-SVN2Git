@@ -25,8 +25,8 @@
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
-      <BinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq." 
-                   Exclude="@(StandardExcludes);"/>
+      <BinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq.*" 
+                   Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 
