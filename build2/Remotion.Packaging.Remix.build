@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="Remotion.Packaging.include.build" />
+
+  <Target Name="CreatePackageProperties">
+    <PropertyGroup>
+      <ReleaseNoteComponentName>Remix</ReleaseNoteComponentName>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
+                   Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)">
+      </SourceFiles>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
+
+    <ItemGroup>
+      <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Data*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Data.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Development*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Development.*" />
+      
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.ObjectBinding*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.ObjectBinding.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Scripting*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Scripting.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Security*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Security.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Web*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Web.*" />
+
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Microsoft*.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\wxegen.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\JetBrains.Annotations.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\IronPython*.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\dbschema.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.SharpZipLib.dll" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <BinaryFiles Remove="@(BinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**"
+                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -4,6 +4,7 @@
   <ItemGroup>
     <Packages Include="Remotion.Packaging.Core.build"/>
     <Packages Include="Remotion.Packaging.Relinq.build"/>
+    <Packages Include="Remotion.Packaging.Remix.build"/>
   </ItemGroup>
   
 </Project>
