@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingNameResolver = mappingNameResolver;
     }
 
-    public ClassDefinition CreateClassDefinition (Type type, ReflectionBasedClassDefinition baseClass)
+    public ReflectionBasedClassDefinition CreateClassDefinition (Type type, ReflectionBasedClassDefinition baseClass)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
