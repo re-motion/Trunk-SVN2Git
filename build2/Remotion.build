@@ -30,7 +30,7 @@
   </Target>
   
   <Target Name="PackageAll">
-    <MSBuild Projects="Remotion.Packaging.Core.include.build"
+    <MSBuild Projects="Remotion.Packaging.Core.build"
          BuildInParallel="false"
          Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);"/>
   </Target>
