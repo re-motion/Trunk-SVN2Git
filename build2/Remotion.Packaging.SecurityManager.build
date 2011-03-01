@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="Remotion.Packaging.include.build" />
+
+  <Target Name="CreatePackageProperties">
+    <PropertyGroup>
+      <ReleaseNoteComponentName>SecurityManager</ReleaseNoteComponentName>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateSourceFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)SecurityManager\**"
+                   Exclude="$(SolutionDirectory)SecurityManager\**\bin\**;$(SolutionDirectory)SecurityManager\**\obj\**;@(StandardExcludes)">
+      </SourceFiles>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
+
+    <ItemGroup>
+      <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\JetBrains.Annotations.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.SharpZipLib.dll" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <BinaryFiles Remove="@(BinaryFiles)"/>
+      <BinaryFiles Include="$(BinariesDirectory)**"
+                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+    </ItemGroup>
+  </Target>
+
+</Project>
