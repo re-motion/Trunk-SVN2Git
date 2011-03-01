@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateActiveConfiguration;BuildReleaseProjects;">
+  <Target Name="CopyReleaseProjectsToDestinationFolder" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="%(RootDir)%(ReleaseOutputFiles.Directory)**" />
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.RootDir)%(ReleaseOutputFiles.Directory)**" 
+                            Exclude="@(StandardExcludes)" />
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
@@ -12,7 +13,7 @@
           Condition="$(ActiveConfigurationHasDestinationFolder) == 'True'"/>
   </Target>
 
-  <Target Name="CopyResourcesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopyResourcesToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_resFolder>res\</_resFolder>
     </PropertyGroup>
@@ -20,17 +21,18 @@
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
 
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**">
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" 
+                            Exclude="@(StandardExcludes)">
         <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
 
       <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.as?x;"
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**;@(StandardExcludes)">
         <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
 
       <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.master"
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**" >
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)$(_resFolder)**;@(StandardExcludes)">
         <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
     </ItemGroup>
@@ -40,7 +42,7 @@
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopySchemasToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopySchemasToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_schemaFolder>schema\</_schemaFolder>
     </PropertyGroup>
@@ -49,7 +51,7 @@
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
 
       <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)**\*.xsd"
-                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)bin\**;%(ReleaseOutputFiles.ProjectDirectory)obj\**" >
+                            Exclude="%(ReleaseOutputFiles.ProjectDirectory)bin\**;%(ReleaseOutputFiles.ProjectDirectory)obj\**;@(StandardExcludes)">
         <SubDirectory>%(ReleaseOutputFiles.AssemblyName)\</SubDirectory>
       </_completeOutputFiles>
     </ItemGroup>
@@ -59,19 +61,29 @@
           SkipUnchangedFiles="true"/>
   </Target>
 
-  <Target Name="CopyDocFilesToDestinationFolder" DependsOnTargets="AddAdditionalMetadataToReleaseOutputFiles">
+  <Target Name="CopyDocFilesToDestinationFolder" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
     <PropertyGroup>
       <_docFolder>doc\</_docFolder>
     </PropertyGroup>
 
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)\Readme*" />
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)\Readme*"
+                            Exclude="@(StandardExcludes)"/>
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
           DestinationFiles="@(_completeOutputFiles->'$(DestinationFolder)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"/>
+  </Target>
+
+  <Target Name="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
+      <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
+    </ItemGroup>
   </Target>
 
   <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToDestinationFolder;CopyResourcesToDestinationFolder;CopySchemasToDestinationFolder;CopyDocFilesToDestinationFolder" />
