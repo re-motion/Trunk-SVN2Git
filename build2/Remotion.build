@@ -2,6 +2,7 @@
 <Project DefaultTargets="FullBuild" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packages.include.build" />
   <Import Project="Remotion.Projects.include.build" />
   <Import Project="Remotion.Configurations.include.build" />
   <Import Project="Remotion.BuildTargets.include.build" />
@@ -31,11 +32,6 @@
          Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
 
-  <ItemGroup>
-    <Packages Include="Remotion.Packaging.Core.build"/>
-    <Packages Include="Remotion.Packaging.Relinq.build"/>
-  </ItemGroup>
-  
   <Target Name="PackageAll">
     <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
