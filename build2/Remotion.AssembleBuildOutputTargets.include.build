@@ -68,7 +68,7 @@
 
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
-      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)\Readme*"
+      <_completeOutputFiles Include="%(ReleaseOutputFiles.ProjectDirectory)$(_docFolder)Readme*"
                             Exclude="@(StandardExcludes)"/>
     </ItemGroup>
 
