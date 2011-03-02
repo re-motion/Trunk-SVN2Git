@@ -24,8 +24,10 @@
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;UploadToCodePlex" />
+  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;CopyToArchive;CopyToWebShare" />
   <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;CopyToArchive;CopyToWebShare;UploadToCodePlex" />-->
+  
+  <!-- Source Package -->
   
   <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileProperty;CreateSourceFiles;CreateOutputDirectory;">
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
@@ -45,6 +47,8 @@
     </PropertyGroup>
   </Target>
 
+  <!-- Binary Package -->
+
   <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateBinaryFiles;CreateOutputDirectory;">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
@@ -63,25 +67,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="CreateOutputDirectory">
-    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
-
-    <MakeDir Directories="$(OutputDirectory)" />
-  </Target>
-
-  <Target Name="CreateStandardExcludes">
-    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
-
-    <ItemGroup>
-      <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
-      <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
-
-      <StandardExcludes Include="$(SolutionDirectory)**\*.log" />
-      <StandardExcludes Include="$(SolutionDirectory)**\*.snk" />
-      <StandardExcludes Include="$(SolutionDirectory)**\*.suo" />
-      <StandardExcludes Include="$(SolutionDirectory)**\*.user" />
-    </ItemGroup>
-  </Target>
+  <!-- Release Notes -->
 
   <Target Name="CreateReleaseNotes" DependsOnTargets="CreateBinaryZipFileProperty;CreateSourceZipFileProperty;CreateReleaseNotesDirectoryProperty">
     <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
@@ -109,6 +95,50 @@
     </PropertyGroup>
   </Target>
 
+  <!-- Archive Upload -->
+
+  <Target Name="CopyToArchive" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
+    <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
+
+    <PropertyGroup>
+      <_sourceFileName>$([System.IO.Path]::GetFileName ($(SourceZipFile)))</_sourceFileName>
+      <_binaryFileName>$([System.IO.Path]::GetFileName ($(BinaryZipFile)))</_binaryFileName>
+
+      <_publishDirectory>$(ArchiveDirectory)$(PackageName)\builds\</_publishDirectory>
+      <_publishedSourceFile>$(_publishDirectory)$(_sourceFileName)</_publishedSourceFile>
+      <_publishedBinaryFile>$(_publishDirectory)$(_binaryFileName)</_publishedBinaryFile>
+    </PropertyGroup>
+    
+    <Error Text="The source zip file ($(_sourceFileName)) already exists in the archive ($(_publishDirectory))." Condition="Exists ($(_publishedSourceFile))"/>
+    <Error Text="The binary zip file ($(_binaryFileName)) already exists in the archive ($(_publishDirectory))." Condition="Exists ($(_publishedBinaryFile))"/>
+
+    <Copy SourceFiles="$(SourceZipFile)" DestinationFiles="$(_publishedSourceFile)"/>
+    <Copy SourceFiles="$(BinaryZipFile)" DestinationFiles="$(_publishedBinaryFile)"/>
+  </Target>
+
+  <!-- WebShare Upload -->
+
+  <Target Name="CopyToWebShare" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
+    <Error Text="The property 'WebShareDirectory' is not set." Condition="'$(WebShareDirectory)' == ''" />
+
+    <PropertyGroup>
+      <_sourceFileName>$([System.IO.Path]::GetFileName ($(SourceZipFile)))</_sourceFileName>
+      <_binaryFileName>$([System.IO.Path]::GetFileName ($(BinaryZipFile)))</_binaryFileName>
+
+      <_publishDirectory>$(WebShareDirectory)</_publishDirectory>
+      <_publishedSourceFile>$(_publishDirectory)$(_sourceFileName)</_publishedSourceFile>
+      <_publishedBinaryFile>$(_publishDirectory)$(_binaryFileName)</_publishedBinaryFile>
+    </PropertyGroup>
+
+    <Error Text="The source zip file ($(_sourceFileName)) already exists on the web share ($(_publishDirectory))." Condition="Exists ($(_publishedSourceFile))"/>
+    <Error Text="The binary zip file ($(_binaryFileName)) already exists on the web share ($(_publishDirectory))." Condition="Exists ($(_publishedBinaryFile))"/>
+
+    <Copy SourceFiles="$(SourceZipFile)" DestinationFiles="$(_publishedSourceFile)"/>
+    <Copy SourceFiles="$(BinaryZipFile)" DestinationFiles="$(_publishedBinaryFile)"/>
+  </Target>
+
+  <!-- CodePlex Upload -->
+
   <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties">
     <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
           WorkingDirectory="$(CodeplexReleaseToolPath)" 
@@ -121,6 +151,28 @@
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /username:$(CodePlexUsername) /password:$(CodePlexPassword) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
           WorkingDirectory="$(CodeplexReleaseToolPath)"
           Condition="$(CodePlexProjectName) != ''"></Exec>
+  </Target>
+
+  <!-- Shared Code -->
+  
+  <Target Name="CreateOutputDirectory">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+
+    <MakeDir Directories="$(OutputDirectory)" />
+  </Target>
+
+  <Target Name="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <StandardExcludes Include="$(SolutionDirectory)**\.svn\**"/>
+      <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
+
+      <StandardExcludes Include="$(SolutionDirectory)**\*.log" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.snk" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.suo" />
+      <StandardExcludes Include="$(SolutionDirectory)**\*.user" />
+    </ItemGroup>
   </Target>
 
 </Project>
