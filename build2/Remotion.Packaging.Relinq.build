@@ -16,6 +16,10 @@
 
     <ItemGroup>
       <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)Remotion-Linq.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Rhino.Mocks*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\nunit*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\ThirdPartyDependencies.txt" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Relinq\**"
                    Exclude="$(SolutionDirectory)Relinq\**\bin\**;$(SolutionDirectory)Relinq\**\obj\**;@(StandardExcludes)">
       </SourceFiles>

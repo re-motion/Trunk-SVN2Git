@@ -16,6 +16,10 @@
 
     <ItemGroup>
       <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)Remotion-DMS.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)*.cmd" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\**" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)build\*.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Dms\**"
                    Exclude="$(SolutionDirectory)Dms\**\bin\**;$(SolutionDirectory)Dms\**\obj\**;@(StandardExcludes)">
       </SourceFiles>

@@ -15,6 +15,10 @@
 
     <ItemGroup>
       <SourceFiles Remove="@(SourceFiles)"/>
+      <SourceFiles Include="$(SolutionDirectory)Remotion-SecurityManager.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)*.cmd" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\**" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)build\*.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)SecurityManager\**"
                    Exclude="$(SolutionDirectory)SecurityManager\**\bin\**;$(SolutionDirectory)SecurityManager\**\obj\**;@(StandardExcludes)">
       </SourceFiles>
