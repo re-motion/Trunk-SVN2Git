@@ -39,7 +39,7 @@
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <SourceZipFile>$(OutputDirectory)$(ReleaseNoteComponentName)_SourceCode_$(Version).zip</SourceZipFile>
+      <SourceZipFile>$(OutputDirectory)$(PackageName)_SourceCode_$(Version).zip</SourceZipFile>
     </PropertyGroup>
   </Target>
 
@@ -57,7 +57,7 @@
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <BinaryZipFile>$(OutputDirectory)$(ReleaseNoteComponentName)_$(Version).zip</BinaryZipFile>
+      <BinaryZipFile>$(OutputDirectory)$(PackageName)_$(Version).zip</BinaryZipFile>
     </PropertyGroup>
   </Target>
 
@@ -103,7 +103,7 @@
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
 
     <PropertyGroup>
-      <ReleaseNotesDirectory>$(ArchiveDirectory)$(ReleaseNoteComponentName)\release-notes\</ReleaseNotesDirectory>
+      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\</ReleaseNotesDirectory>
     </PropertyGroup>
   </Target>
 
