@@ -24,8 +24,8 @@
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;CopyToArchive;CopyToWebShare" />
-  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;CopyToArchive;CopyToWebShare;UploadToCodePlex" />-->
+  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;UploadToShares" />
+  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;UploadToShares;UploadToCodePlex" />-->
   
   <!-- Source Package -->
   
@@ -95,49 +95,36 @@
     </PropertyGroup>
   </Target>
 
-  <!-- Archive Upload -->
+  <!-- Publishing -->
 
-  <Target Name="CopyToArchive" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
+  <Target Name="UploadToShares" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
-
-    <PropertyGroup>
-      <_sourceFileName>$([System.IO.Path]::GetFileName ($(SourceZipFile)))</_sourceFileName>
-      <_binaryFileName>$([System.IO.Path]::GetFileName ($(BinaryZipFile)))</_binaryFileName>
-
-      <_publishDirectory>$(ArchiveDirectory)$(PackageName)\builds\</_publishDirectory>
-      <_publishedSourceFile>$(_publishDirectory)$(_sourceFileName)</_publishedSourceFile>
-      <_publishedBinaryFile>$(_publishDirectory)$(_binaryFileName)</_publishedBinaryFile>
-    </PropertyGroup>
-    
-    <Error Text="The source zip file ($(_sourceFileName)) already exists in the archive ($(_publishDirectory))." Condition="Exists ($(_publishedSourceFile))"/>
-    <Error Text="The binary zip file ($(_binaryFileName)) already exists in the archive ($(_publishDirectory))." Condition="Exists ($(_publishedBinaryFile))"/>
-
-    <Copy SourceFiles="$(SourceZipFile)" DestinationFiles="$(_publishedSourceFile)"/>
-    <Copy SourceFiles="$(BinaryZipFile)" DestinationFiles="$(_publishedBinaryFile)"/>
-  </Target>
-
-  <!-- WebShare Upload -->
-
-  <Target Name="CopyToWebShare" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
     <Error Text="The property 'WebShareDirectory' is not set." Condition="'$(WebShareDirectory)' == ''" />
 
-    <PropertyGroup>
-      <_sourceFileName>$([System.IO.Path]::GetFileName ($(SourceZipFile)))</_sourceFileName>
-      <_binaryFileName>$([System.IO.Path]::GetFileName ($(BinaryZipFile)))</_binaryFileName>
+    <ItemGroup>
+      <_temp Remove="@(_temp)"/>
+      <_temp Include="$(SourceZipFile);$(BinaryZipFile)">
+        <DestinationFolder>$(ArchiveDirectory)$(PackageName)\builds\</DestinationFolder>
+      </_temp>
+      <_temp Include="$(SourceZipFile);$(BinaryZipFile)">
+        <DestinationFolder>$(WebShareDirectory)</DestinationFolder>
+      </_temp>
+    </ItemGroup>
 
-      <_publishDirectory>$(WebShareDirectory)</_publishDirectory>
-      <_publishedSourceFile>$(_publishDirectory)$(_sourceFileName)</_publishedSourceFile>
-      <_publishedBinaryFile>$(_publishDirectory)$(_binaryFileName)</_publishedBinaryFile>
-    </PropertyGroup>
+    <ItemGroup>
+      <_publishedFiles Remove="@(_publishedFiles)"/>
+      <_publishedFiles Include="@(_temp)">
+        <DestinationFolder>%(DestinationFolder)</DestinationFolder>
+        <DestinationFile>%(DestinationFolder)%(FileName)%(Extension)</DestinationFile>
+      </_publishedFiles>
+    </ItemGroup>
 
-    <Error Text="The source zip file ($(_sourceFileName)) already exists on the web share ($(_publishDirectory))." Condition="Exists ($(_publishedSourceFile))"/>
-    <Error Text="The binary zip file ($(_binaryFileName)) already exists on the web share ($(_publishDirectory))." Condition="Exists ($(_publishedBinaryFile))"/>
+    <Error Text="The file '%(_publishedFiles.FileName)%(_publishedFiles.Extension)' already exists in the destination folder '%(_publishedFiles.DestinationFolder)'."
+           Condition="Exists (%(_publishedFiles.DestinationFile))"/>
 
-    <Copy SourceFiles="$(SourceZipFile)" DestinationFiles="$(_publishedSourceFile)"/>
-    <Copy SourceFiles="$(BinaryZipFile)" DestinationFiles="$(_publishedBinaryFile)"/>
+    <Copy SourceFiles="%(_publishedFiles.Identity)" DestinationFiles="%(_publishedFiles.DestinationFile)"/>
+
   </Target>
-
-  <!-- CodePlex Upload -->
 
   <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties">
     <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
