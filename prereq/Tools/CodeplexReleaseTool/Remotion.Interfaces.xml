@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="utf-8"?><doc><assembly>
+        <name>Remotion.Interfaces</name>
+    </assembly><members><member name="T:Remotion.AdapterRegistry"><summary>Used to register <see cref="T:Remotion.IAdapter" /> instances.</summary></member><member name="T:Remotion.IAdapter"><summary>
+            Marker interface, used as type parameter for the <see cref="M:Remotion.BridgeInterfaces.IAdapterRegistryImplementation.SetAdapter(System.Type,Remotion.IAdapter)" /> and 
+            <see cref="M:Remotion.BridgeInterfaces.IAdapterRegistryImplementation.GetAdapter``1" /> methods of <see cref="T:Remotion.AdapterRegistry" />.
+            </summary></member><member name="T:Remotion.INullObject"><summary>
+            Represents a nullable object according to the "Null Object Pattern".
+            </summary></member><member name="P:Remotion.INullObject.IsNull"><summary>
+            Gets a value indicating whether the object is a "Null Object".
+            </summary></member><member name="T:Remotion.PermanentGuidAttribute"><summary>
+              Supplies an identifier that should remain constant even accross refactorings. Can be applied to reference types, properties and fields.
+            </summary></member><member name="M:Remotion.PermanentGuidAttribute.#ctor(System.String)"><summary>
+              Initializes a new instance of the <see cref="T:Remotion.PermanentGuidAttribute" /> class.
+            </summary><param name="value"> The <see cref="T:System.String" /> representation of a <see cref="T:System.Guid" />. </param></member><member name="P:Remotion.PermanentGuidAttribute.Value"><summary>
+              Gets the <see cref="T:System.Guid" /> supplied during initialization.
+            </summary></member><member name="T:Remotion.Action`5"><summary>
+            Provides a standard delegate type for an action without return value
+            </summary></member><member name="T:Remotion.Action`6"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`7"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`8"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`9"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`10"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`11"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`12"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`13"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`14"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`15"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`16"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`17"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`18"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`19"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Action`20"><summary>
+            Provides a standard delegate type for an action without return value.
+            </summary></member><member name="T:Remotion.Func`6"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`7"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`8"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`9"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`10"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`11"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`12"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`13"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`14"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`15"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`16"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`17"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`18"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`19"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`20"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.Func`21"><summary>
+            Provides a standard delegate type for a function with a return value.
+            </summary></member><member name="T:Remotion.SuppressAttributesAttribute"><summary>
+            When applied to a class, causes certain custom attributes to be filtered out by 
+            <see cref="M:Remotion.Utilities.AttributeUtility.GetCustomAttributes(System.Type,System.Type,System.Boolean)" /> and 
+            <see cref="M:Remotion.Utilities.AttributeUtility.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)" />.
+            </summary></member><member name="T:Remotion.Context.ISafeContextStorageProvider"><summary>
+            Common interface for classes implementing a storage mechanism for <see cref="T:Remotion.Context.SafeContext" />.
+            </summary></member><member name="M:Remotion.Context.ISafeContextStorageProvider.GetData(System.String)"><summary>
+            Retrieves a data item from the context storage.
+            </summary><param name="key">The key identifying the data item.</param></member><member name="M:Remotion.Context.ISafeContextStorageProvider.SetData(System.String,System.Object)"><summary>
+            Sets a data item in the context storage, overwriting a previous value identified by the same key.
+            </summary><param name="key">The key identifying the data item.</param><param name="value">The value to be stored in the context storage.</param></member><member name="M:Remotion.Context.ISafeContextStorageProvider.FreeData(System.String)"><summary>
+            Frees the resources used by a specific data item in the context storage.
+            </summary><param name="key">The key identifying the data item to be freed.</param></member><member name="T:Remotion.BridgeInterfaces.ITypeDiscoveryServiceFactoryImplementation"><summary>
+            This interface is used to separate the <see cref="T:Remotion.BridgeImplementations.TypeDiscoveryServiceFactoryImplementation" />
+            from it's instantiation in the <see cref="T:Remotion.Implementation.VersionDependentImplementationBridge`1" />.
+            </summary></member><member name="T:Remotion.Collections.ICache`2"><summary>
+            Provides a comnmon interface for caches, which provide efficient storage and retrieval for values that are costly to calculate.
+            </summary></member><member name="T:Remotion.Collections.IDataStore`2"><summary>
+            Provides a common interface for data structures used for storing and retrieving key/value pairs.
+            </summary></member><member name="M:Remotion.Collections.IDataStore`2.ContainsKey(`0)"><summary>
+            Determines whether the store contains an element with the specified <paramref name="key" />.
+            </summary><param name="key">The key to look up.</param></member><member name="M:Remotion.Collections.IDataStore`2.Add(`0,`1)"><summary>
+            Adds a new element to the store.
+            </summary><param name="key">The key of the new element.</param><param name="value">The value of the new element.</param></member><member name="M:Remotion.Collections.IDataStore`2.Remove(`0)"><summary>
+            Removes the element with the specified key from the store, if any.
+            </summary><param name="key">The key of the element to be removed.</param></member><member name="M:Remotion.Collections.IDataStore`2.Clear"><summary>
+            Removes all elements from the store.
+            </summary></member><member name="M:Remotion.Collections.IDataStore`2.GetValueOrDefault(`0)"><summary>
+            Gets the value of the element with the specified key, or <typeparamref name="TValue" />'s default value if no such element exists.
+            </summary><param name="key">The key to look up.</param></member><member name="M:Remotion.Collections.IDataStore`2.TryGetValue(`0,`1@)"><summary>
+            Tries to get the value of the element with the specified key.
+            </summary><param name="key">The key to look up.</param><param name="value">The value of the element with the specified key, or <typeparamref name="TValue" />'s default value if no such element 
+            exists.</param></member><member name="M:Remotion.Collections.IDataStore`2.GetOrCreateValue(`0,System.Func{`0,`1})"><summary>
+            Gets the value of the element with the specified key, creating a new one if none exists.
+            </summary><param name="key">The key of the element to be retrieved.</param><param name="creator">A delegate used for creating a new element if none exists.</param></member><member name="P:Remotion.Collections.IDataStore`2.Item(`0)"><summary>
+            Gets or sets the value of the element with the specified key.
+            </summary></member><member name="T:Remotion.Context.SafeContext"><summary>
+            Superior alternative to [ThreadStatic] (see <see cref="T:System.ThreadStaticAttribute" />) for making member variables
+            thread safe, which also works with ASP.NET threads.
+            </summary></member><member name="M:Remotion.Context.SafeContext.GetDefaultInstance"><summary>
+            Gets or creates the default instance to be used when the <see cref="T:Remotion.Context.SafeContext" /> is initialized.
+            </summary></member><member name="T:Remotion.Design.IDesignModeHelper"><summary>
+            The <see cref="T:Remotion.Design.IDesignModeHelper" /> interface defines methods to encapsulate the access to various design-mode properties of a project.
+            It is intended to be used by components offering design-time support.
+            </summary></member><member name="T:Remotion.Implementation.FrameworkVersion"><summary>
+            Holds the <see cref="T:System.Version" /> object used by <see cref="T:Remotion.Implementation.VersionDependentImplementationBridge`1" /> to retrieve types from
+            the re-motion implementation assemblies.
+            </summary></member><member name="M:Remotion.Implementation.FrameworkVersion.Reset"><summary>
+            Resets the version information so that the next retrieval of <see cref="P:Remotion.Implementation.FrameworkVersion.Value" /> will trigger an automatic resolution. After calling this
+            method, <see cref="P:Remotion.Implementation.FrameworkVersion.Value" /> can be used to set a different <see cref="T:System.Version" /> value.
+            </summary></member><member name="M:Remotion.Implementation.FrameworkVersion.RetrieveFromType(System.Type)"><summary>
+            Retrieves from version information from the assembly defining the given type. This is a shortcut for the following statemnt:
+            <code>Value = frameworkType.Assembly.GetName ().Version;</code>
+            </summary><param name="frameworkType">A framework type to retrieve the version from.</param></member><member name="P:Remotion.Implementation.FrameworkVersion.Value"><summary>
+            Gets or sets the framework version value.
+            </summary></member><member name="T:Remotion.Implementation.FrameworkVersionNotFoundException"><summary>
+            Thrown by <see cref="T:Remotion.Implementation.FrameworkVersionRetriever" /> when the framework version cannot be determined automatically. Use 
+            <see cref="T:Remotion.Implementation.FrameworkVersion" /> to manually set the version or add a reference to the framework implementation assembly.
+            </summary></member><member name="T:Remotion.Implementation.VersionDependentImplementationBridge`1"><summary>
+            Provides a bridge between a version-independent interface and a version-dependent implementation of that interface by querying for
+            a <see cref="T:Remotion.Implementation.ConcreteImplementationAttribute" /> in the interface and instantiating the type mentioned by that interface using 
+            <see cref="P:Remotion.Implementation.FrameworkVersion.Value" />.
+            </summary></member><member name="M:Remotion.Logging.BridgeInterfaces.ILogManagerImplementation.GetLogger(System.String)"><summary>
+            Gets or creates a logger.
+            </summary><param name="name">The name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.BridgeInterfaces.ILogManagerImplementation.GetLogger(System.Type)"><summary>
+            Gets or creates a logger.
+            </summary><param name="type">The full name of <paramref name="type" /> will be used as the name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.BridgeInterfaces.ILogManagerImplementation.Initialize"><summary>
+            Initializes the current logging framework.
+            </summary></member><member name="M:Remotion.Logging.BridgeInterfaces.ILogManagerImplementation.InitializeConsole"><summary>
+            Initializes the current logging framework to log to the console.
+            </summary></member><member name="T:Remotion.Logging.ILog"><summary>
+            The <see cref="T:Remotion.Logging.ILog" /> interface declares methods for logging messages.
+            </summary></member><member name="M:Remotion.Logging.ILog.Log(Remotion.Logging.LogLevel,System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the specified <paramref name="logLevel" /> and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Log(Remotion.Logging.LogLevel,System.Int32,System.Object)"><summary>
+            Log a message object with the specified <paramref name="logLevel" /> and <paramref name="eventID" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Log(Remotion.Logging.LogLevel,System.Object,System.Exception)"><summary>
+            Log a message object with the specified <paramref name="logLevel" />,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Log(Remotion.Logging.LogLevel,System.Object)"><summary>
+            Log a message object with the specified <paramref name="logLevel" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the specified <paramref name="logLevel" /> and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the specified <paramref name="logLevel" /> and <paramref name="eventID" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.String,System.Object[])"><summary>
+            Log a formatted string with the specified <paramref name="logLevel" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the specified <paramref name="logLevel" />,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.Enum,System.Exception,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the specified <paramref name="logLevel" />, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.LogFormat(Remotion.Logging.LogLevel,System.Enum,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the specified <paramref name="logLevel" />.
+            </summary><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> of the message to be logged.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.Debug(System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Debug(System.Int32,System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Debug(System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Debug(System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level.
+            </summary><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level.
+            </summary><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.Enum,System.Exception,System.Object[])"><summary>
+            Log message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.DebugFormat(System.Enum,System.Object[])"><summary>
+            Log message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level.
+            </summary><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.Info(System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Info(System.Int32,System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Info(System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Info(System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level.
+            </summary><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level.
+            </summary><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.Enum,System.Exception,System.Object[])"><summary>
+            Log message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.InfoFormat(System.Enum,System.Object[])"><summary>
+            Log message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Info" /> level.
+            </summary><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.Warn(System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Warn(System.Int32,System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Warn(System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Warn(System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level.
+            </summary><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level.
+            </summary><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.Enum,System.Exception,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.WarnFormat(System.Enum,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level.
+            </summary><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.Error(System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Error(System.Int32,System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Error(System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Error(System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level.
+            </summary><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level.
+            </summary><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.Enum,System.Exception,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.ErrorFormat(System.Enum,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Error" /> level.
+            </summary><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.Fatal(System.Int32,System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Fatal(System.Int32,System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.Fatal(System.Object,System.Exception)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="message">The message object to log.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param></member><member name="M:Remotion.Logging.ILog.Fatal(System.Object)"><summary>
+            Log a message object with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level.
+            </summary><param name="message">The message object to log.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.Int32,System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level and <paramref name="eventID" />,
+            including the stack trace of <paramref name="exceptionObject" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.Int32,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level and <paramref name="eventID" />.
+            </summary><param name="eventID">The numeric identifier for the event.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level.
+            </summary><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.Exception,System.String,System.Object[])"><summary>
+            Log a formatted string with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level,
+            including the stack trace of <paramref name="exceptionObject" />. 
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="format">A String containing zero or more format items.</param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.Enum,System.Exception,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level, including the stack 
+            trace of <paramref name="exceptionObject" />.
+            </summary><param name="exceptionObject">The <see cref="T:System.Exception" /> to log, including its stack trace. Pass <see langword="null" /> to not log an exception.</param><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.FatalFormat(System.Enum,System.Object[])"><summary>
+            Log a message and event id derived from the <paramref name="messageEnum" /> with the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level.
+            </summary><param name="messageEnum">
+      An <see cref="T:System.Enum" /> value that is used to supply the event id and the message or format string. Must not be <see langword="null" />.
+    </param><param name="args">An Object array containing zero or more objects to format.</param></member><member name="M:Remotion.Logging.ILog.IsEnabled(Remotion.Logging.LogLevel)"><summary>
+            Checks if this logger is enabled for the given <see cref="T:Remotion.Logging.LogLevel" />.
+            </summary><param name="logLevel">The log level to check for.</param></member><member name="P:Remotion.Logging.ILog.IsDebugEnabled"><summary>
+            Checks if this logger is enabled for the <see cref="F:Remotion.Logging.LogLevel.Debug" /> level.
+            </summary></member><member name="P:Remotion.Logging.ILog.IsInfoEnabled"><summary>
+            Checks if this logger is enabled for the <see cref="F:Remotion.Logging.LogLevel.Info" /> level.
+            </summary></member><member name="P:Remotion.Logging.ILog.IsWarnEnabled"><summary>
+            Checks if this logger is enabled for the <see cref="F:Remotion.Logging.LogLevel.Warn" /> level.
+            </summary></member><member name="P:Remotion.Logging.ILog.IsErrorEnabled"><summary>
+            Checks if this logger is enabled for the <see cref="F:Remotion.Logging.LogLevel.Error" /> level.
+            </summary></member><member name="P:Remotion.Logging.ILog.IsFatalEnabled"><summary>
+            Checks if this logger is enabled for the <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level.
+            </summary></member><member name="T:Remotion.Logging.ILogManager"><summary>
+            The <see cref="T:Remotion.Logging.ILogManager" /> interface declares the methods available for retrieving a logger that implements
+            <see cref="T:Remotion.Logging.ILog" /> and initializing the respective logging framework.
+            </summary></member><member name="M:Remotion.Logging.ILogManager.GetLogger(System.String)"><summary>
+            Gets or creates a logger.
+            </summary><param name="name">The name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.ILogManager.GetLogger(System.Type)"><summary>
+            Gets or creates a logger.
+            </summary><param name="type">The full name of <paramref name="type" /> will be used as the name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.ILogManager.Initialize"><summary>
+            Initializes the logging framework abstracted through the <see cref="T:Remotion.Logging.ILogManager" /> interface.
+            </summary></member><member name="M:Remotion.Logging.ILogManager.InitializeConsole"><summary>
+            Initializes the logging framework to log to the console.
+            </summary></member><member name="T:Remotion.Logging.LogExtensions"><summary>
+            Provides extension methods used for logging.
+            </summary></member><member name="M:Remotion.Logging.LogExtensions.LogAndReturn``1(``0,Remotion.Logging.ILog,Remotion.Logging.LogLevel,System.Func{``0,System.String})"><summary>
+            Logs the given value and returns it to the caller. This is typically used to log a value returned by a method directly in the return 
+            statement.
+            </summary><param name="value">The value to be logged.</param><param name="log">The <see cref="T:Remotion.Logging.ILog" /> to log the value with.</param><param name="logLevel">The <see cref="T:Remotion.Logging.LogLevel" /> to log the value at. If the <paramref name="log" /> does not support this level, the 
+            <paramref name="messageCreator" /> is not called.</param><param name="messageCreator">A function object building the message to be logged.</param></member><member name="T:Remotion.Logging.LogLevel"><summary>
+            Defines the log levels available when logging through the <see cref="T:Remotion.Logging.ILog" /> interface.
+            </summary></member><member name="F:Remotion.Logging.LogLevel.Debug"><summary>
+            The <see cref="F:Remotion.Logging.LogLevel.Debug" /> level designates fine-grained informational events that are most useful to debug an application.
+            </summary></member><member name="F:Remotion.Logging.LogLevel.Info"><summary>
+            The <see cref="F:Remotion.Logging.LogLevel.Info" /> level designates informational messages that highlight the progress of the application at coarse-grained level. 
+            </summary></member><member name="F:Remotion.Logging.LogLevel.Warn"><summary>
+            The <see cref="F:Remotion.Logging.LogLevel.Warn" /> level designates potentially harmful situations.
+            </summary></member><member name="F:Remotion.Logging.LogLevel.Error"><summary>
+            The <see cref="F:Remotion.Logging.LogLevel.Error" /> level designates error events that might still allow the application to continue running. 
+            </summary></member><member name="F:Remotion.Logging.LogLevel.Fatal"><summary>
+            The <see cref="F:Remotion.Logging.LogLevel.Fatal" /> level designates very severe error events that will presumably lead the application to abort.
+            </summary></member><member name="T:Remotion.Logging.LogManager"><summary>
+            Use this class to create a logger implementing <see cref="T:Remotion.Logging.ILog" /> from the current <see cref="T:Remotion.Logging.ILogManager" />.
+            </summary></member><member name="M:Remotion.Logging.LogManager.GetLogger(System.String)"><summary>
+            Gets or creates a logger.
+            </summary><param name="name">The name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.LogManager.GetLogger(System.Type)"><summary>
+            Gets or creates a logger.
+            </summary><param name="type">The full name of <paramref name="type" /> will be used as the name of the logger to retrieve.</param></member><member name="M:Remotion.Logging.LogManager.Initialize"><summary>
+            Initializes the current logging framework.
+            </summary></member><member name="M:Remotion.Logging.LogManager.InitializeConsole"><summary>
+            Initializes the current logging framework to log to the console.
+            </summary></member><member name="T:Remotion.Mixins.AcceptsAlphabeticOrderingAttribute"><summary>
+            Indicates that an ordinal name comparison can be used to determine the order between two mixins when these override the same methods
+            on a target object. Only use this if you don't care about the actual mixin order.
+            </summary></member><member name="T:Remotion.Mixins.BindToConstraintsAttribute"><summary>
+            Indicates that a generic parameter of a mixin should be bound to a type inferred from the type parameter's generic constraints 
+            (unless the generic parameter type is explicitly specified when the mixin is configured).
+            </summary></member><member name="T:Remotion.Mixins.BindToGenericTargetParameterAttribute"><summary>
+            Indicates that a generic parameter of a mixin should be bound to the mixin's target type's generic parameter (unless the generic parameter 
+            type is explicitly specified when the mixin is configured). Generic parameters with this attribute must be at the front of a mixin's generic
+            parameter list, and they are mapped to the generic parameter of the target type by position.
+            </summary></member><member name="T:Remotion.Mixins.BindToTargetTypeAttribute"><summary>
+            Indicates that a generic parameter of a mixin should be bound to the mixin's target type (unless the generic parameter type is explicitly
+            specified when the mixin is configured).
+            </summary></member><member name="T:Remotion.Mixins.CompleteInterfaceAttribute"><summary>
+            Indicates that an interface acts as a complete interface for a class instantiated via <see cref="T:Remotion.Mixins.ObjectFactory" />.
+            </summary></member><member name="M:Remotion.Mixins.CompleteInterfaceAttribute.#ctor(System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.CompleteInterfaceAttribute" /> class.
+            </summary><param name="targetType">Target type for which this interface constitutes a complete interface.</param></member><member name="P:Remotion.Mixins.CompleteInterfaceAttribute.TargetType"><summary>
+            Gets the target tyoe for which this interface constitutes a complete interface.
+            </summary></member><member name="T:Remotion.Mixins.CopyCustomAttributesAttribute"><summary>
+            When applied to a mixin, specifies a class whose custom attributes should be added to the mixin's target class. This is useful when a mixin
+            should add certain attributes without itself exposing those attributes.
+            </summary></member><member name="T:Remotion.Mixins.ExtendsAttribute"><summary>
+            Indicates that a mixin extends a specific class, providing some part of its functionality or public interface.
+            </summary></member><member name="T:Remotion.Mixins.MixinRelationshipAttribute"><summary>
+            Acts as a common base class for attributes used in declaratively specifying the mixin configuration by expressing the relationship between a
+            mixin and its target class, eg. <see cref="T:Remotion.Mixins.ExtendsAttribute" />, <see cref="T:Remotion.Mixins.UsesAttribute" />, <see cref="T:Remotion.Mixins.MixAttribute" />
+            </summary></member><member name="P:Remotion.Mixins.MixinRelationshipAttribute.AdditionalDependencies"><summary>
+            Gets or sets additional explicit base call dependencies for the applied mixin type. This can be used to establish an ordering when
+            combining unrelated mixins on a class which override the same methods.
+            </summary></member><member name="P:Remotion.Mixins.MixinRelationshipAttribute.SuppressedMixins"><summary>
+            Gets or sets the mixins suppressed by the applied mixin.
+            </summary></member><member name="P:Remotion.Mixins.MixinRelationshipAttribute.IntroducedMemberVisibility"><summary>
+            Gets or sets the default visibility of members introduced by the mixin to the target class. The default is <see cref="F:Remotion.Mixins.MemberVisibility.Private" />.
+            </summary></member><member name="M:Remotion.Mixins.ExtendsAttribute.#ctor(System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.ExtendsAttribute" /> class.
+            </summary><param name="targetType">The target type extended by this mixin.</param></member><member name="P:Remotion.Mixins.ExtendsAttribute.TargetType"><summary>
+            Gets the target type the mixin class applies to.
+            </summary></member><member name="P:Remotion.Mixins.ExtendsAttribute.MixinTypeArguments"><summary>
+            Gets or sets the generic type arguments to be used when applying a generic mixin to the given target type. This is useful when the
+            <see cref="T:Remotion.Mixins.ExtendsAttribute" /> is to be applied to a generic mixin class, but the default generic type specialization algorithm of the
+            mixin engine does not give the desired results.
+            </summary></member><member name="T:Remotion.Mixins.GenerationPolicy"><summary>
+            Defines how the <see cref="T:Remotion.Mixins.TypeFactory" /> and <see cref="T:Remotion.Mixins.ObjectFactory" /> behave when asked to generate a concrete type for a target
+            type without any mixin configuration information.
+            </summary></member><member name="F:Remotion.Mixins.GenerationPolicy.ForceGeneration"><summary>
+            Specifies that <see cref="T:Remotion.Mixins.TypeFactory" /> and <see cref="T:Remotion.Mixins.ObjectFactory" /> should always generate concrete types, no matter whether
+            mixin configuration information exists for the given target type or not.
+            </summary></member><member name="F:Remotion.Mixins.GenerationPolicy.GenerateOnlyIfConfigured"><summary>
+            Specifies that <see cref="T:Remotion.Mixins.TypeFactory" /> and <see cref="T:Remotion.Mixins.ObjectFactory" /> should only generate concrete types if
+            mixin configuration information exists for the given target type.
+            </summary></member><member name="T:Remotion.Mixins.IgnoreForMixinConfigurationAttribute"><summary>
+            Causes the mixin engine to ignore all mixin configuration attributes on the type this attribute is applied to when building the default
+            mixin configuration.
+            </summary></member><member name="T:Remotion.Mixins.IgnoresClassAttribute"><summary>
+            Defines that a mixin is not applied to a specific class, even when it is explicitly or implicitly configured for that class via
+            the declarative configuration attributes <see cref="T:Remotion.Mixins.UsesAttribute" />, <see cref="T:Remotion.Mixins.ExtendsAttribute" />, and <see cref="T:Remotion.Mixins.MixAttribute" />.
+            </summary></member><member name="M:Remotion.Mixins.IgnoresClassAttribute.#ctor(System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.IgnoresClassAttribute" /> class, specifying the class to be ignored by this mixin.
+            </summary><param name="classToIgnore">The class to be ignored in declarative configuration. Subclasses of this class
+            will not inherit the mixin either.</param></member><member name="P:Remotion.Mixins.IgnoresClassAttribute.ClassToIgnore"><summary>
+            Gets the class to be ignored by this mixin.
+            </summary></member><member name="T:Remotion.Mixins.IgnoresMixinAttribute"><summary>
+            Defines that a specific mixin is not applied to a class, even when it is explicitly or implicitly configured for that class via
+            the declarative configuration attributes <see cref="T:Remotion.Mixins.UsesAttribute" />, <see cref="T:Remotion.Mixins.ExtendsAttribute" />, and <see cref="T:Remotion.Mixins.MixAttribute" />.
+            </summary></member><member name="M:Remotion.Mixins.IgnoresMixinAttribute.#ctor(System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.IgnoresClassAttribute" /> class, specifying the mixin to be ignored by this class.
+            </summary><param name="mixinToIgnore">The mixin to be ignored in declarative configuration. Subclasses of this class will not inherit the mixin either.</param></member><member name="P:Remotion.Mixins.IgnoresMixinAttribute.MixinToIgnore"><summary>
+            Gets the mixin to be ignored by this class.
+            </summary></member><member name="T:Remotion.Mixins.IInitializableMixin"><summary>
+            Denotes a mixin that can be initialized. This interface is used by the infrastructure and should not be applied by user code.
+            </summary></member><member name="T:Remotion.Mixins.IOverrideAttribute"><summary>
+            Common interface for attributes specifying member overrides. This interface is used by the infrastructure and should not be applied by user code.
+            </summary></member><member name="T:Remotion.Mixins.MemberVisibility"><summary>
+            Defines the visibility of members generated by the mixin infrastructure.
+            </summary></member><member name="F:Remotion.Mixins.MemberVisibility.Private"><summary>
+            The members are generated private.
+            </summary></member><member name="F:Remotion.Mixins.MemberVisibility.Public"><summary>
+            The members are generated public.
+            </summary></member><member name="T:Remotion.Mixins.MemberVisibilityAttribute"><summary>
+            When applied to an interface member, defines the visibility of that member when it is introduced into a mixed type. This overrides the value
+            specified via <see cref="P:Remotion.Mixins.MixinRelationshipAttribute.IntroducedMemberVisibility" />.
+            </summary></member><member name="M:Remotion.Mixins.MemberVisibilityAttribute.#ctor(Remotion.Mixins.MemberVisibility)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.MemberVisibilityAttribute" /> class.
+            </summary><param name="visibility">The visibility to be used for the attributed member.</param></member><member name="P:Remotion.Mixins.MemberVisibilityAttribute.Visibility"><summary>
+            Gets the visibility set to be used for the attributed member.
+            </summary></member><member name="T:Remotion.Mixins.MixAttribute"><summary>
+            Configures that a class and a mixin should be mixed together.
+            </summary></member><member name="M:Remotion.Mixins.MixAttribute.#ctor(System.Type,System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.MixAttribute" /> class.
+            </summary><param name="targetType">The target type to be mixed.</param><param name="mixinType">The mixin type to be mixed with the target type.</param></member><member name="P:Remotion.Mixins.MixAttribute.MixinKind"><summary>
+            Gets or sets the kind of relationship between the mixin and its target class. For more information see <see cref="T:Remotion.Mixins.MixinKind" />. If not
+            explicitly specified, <see cref="F:Remotion.Mixins.MixinKind.Extending" /> is assumed.
+            </summary></member><member name="P:Remotion.Mixins.MixAttribute.TargetType"><summary>
+            Gets the target type to be mixed.
+            </summary></member><member name="P:Remotion.Mixins.MixAttribute.MixinType"><summary>
+            Gets the mixin type mixed with the target class.
+            </summary></member><member name="T:Remotion.Mixins.Mixin"><summary>
+            Provides reflective access to the mixins integrated with a target class.
+            </summary></member><member name="M:Remotion.Mixins.Mixin.Get``1(System.Object)"><summary>
+            Gets the instance of the specified mixin type <typeparamref name="TMixin" /> that was mixed into the given <paramref name="mixinTarget" />.
+            </summary><param name="mixinTarget">The mixin target to get the mixin instance from.</param></member><member name="M:Remotion.Mixins.Mixin.Get(System.Type,System.Object)"><summary>
+            Gets the instance of the specified <paramref name="mixinType" /> that was mixed into the given <paramref name="mixinTarget" />.
+            </summary><param name="mixinType">The mixin type to get an instance of.</param><param name="mixinTarget">The mixin target to get the mixin instance from.</param></member><member name="T:Remotion.Mixins.Mixin`2"><summary>
+            Base class for mixins that require a reference to their target object (<see cref="P:Remotion.Mixins.Mixin`1.This" />) and a reference for making base calls
+            (<see cref="P:Remotion.Mixins.Mixin`2.Base" />).
+            </summary></member><member name="T:Remotion.Mixins.Mixin`1"><summary>
+            Base class for mixins that require a reference to their target object (<see cref="P:Remotion.Mixins.Mixin`1.This" />).
+            </summary></member><member name="M:Remotion.Mixins.Mixin`1.OnInitialized"><summary>
+            Called when the mixin has been initialized and its properties can be safely accessed.
+            </summary></member><member name="M:Remotion.Mixins.Mixin`1.OnDeserialized"><summary>
+            Called when the mixin has been deserialized and its properties can be safely accessed.
+            </summary></member><member name="P:Remotion.Mixins.Mixin`1.This"><summary>
+            Gets a reference to the concrete mixed object.
+            </summary></member><member name="P:Remotion.Mixins.Mixin`2.Base"><summary>
+            Gets an object reference for performing base calls from member overrides.
+            </summary></member><member name="T:Remotion.Mixins.MixinKind"><summary>
+            Describes how a mixin influences its target class.
+            </summary></member><member name="F:Remotion.Mixins.MixinKind.Extending"><summary>
+            The mixin extends the target class from the outside, the target class might not know about being mixed. The mixin therefore has the
+            possibility to override attributes (with <see cref="P:System.AttributeUsageAttribute.AllowMultiple" /> set to false) and interfaces declared
+            or implemented by the target class.
+            </summary></member><member name="F:Remotion.Mixins.MixinKind.Used"><summary>
+            The mixin is explicitly used by the target class. The mixin therefore behaves more like a base class, eg. attributes (with 
+            <see cref="P:System.AttributeUsageAttribute.AllowMultiple" /> set to false) and interfaces introduced by the mixin can be overridden by the 
+            target class.
+            </summary></member><member name="T:Remotion.Mixins.NonIntroducedAttribute"><summary>
+            When applied to a mixin, specifies that this mixin does not introduce a specific interface or attribute to the target class.
+            </summary></member><member name="T:Remotion.Mixins.ObjectFactory"><summary>
+            Provides support for instantiating type which are combined with mixins.
+            </summary></member><member name="M:Remotion.Mixins.ObjectFactory.Create``1(Remotion.Reflection.ParamList,System.Object[])"><summary>
+            Creates a mixed instance of the given type <typeparamref name="T" /> with a public constructor.
+            </summary><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <typeparamref name="T" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create``1(Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,System.Object[])"><summary>
+            Creates a mixed instance of the given base type <typeparamref name="T" /> with a public constructor.
+            </summary><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <typeparamref name="T" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create(System.Type,Remotion.Reflection.ParamList,System.Object[])"><summary>
+            Creates a mixed instance of the given <paramref name="targetOrConcreteType" /> with a public constructor.
+            </summary><param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <paramref name="targetOrConcreteType" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create(System.Type,Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,System.Object[])"><summary>
+            Creates a mixed instance of the given <paramref name="targetOrConcreteType" /> with a public constructor.
+            </summary><param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <paramref name="targetOrConcreteType" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create``1(System.Boolean,Remotion.Reflection.ParamList,System.Object[])"><summary>
+            Creates a mixed instance of the given base type <typeparamref name="T" />.
+            </summary><param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
+            unless a public constructor is available.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <typeparamref name="T" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create``1(System.Boolean,Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,System.Object[])"><summary>
+            Creates a mixed instance of the given base type <typeparamref name="T" />.
+            </summary><param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
+            unless a public constructor is available.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <typeparamref name="T" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create(System.Boolean,System.Type,Remotion.Reflection.ParamList,System.Object[])"><summary>
+            Creates a mixed instance of the given <paramref name="targetOrConcreteType" />.
+            </summary><param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
+            unless a public constructor is available.</param><param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <paramref name="targetOrConcreteType" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="M:Remotion.Mixins.ObjectFactory.Create(System.Boolean,System.Type,Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,System.Object[])"><summary>
+            Creates a mixed instance of the given <paramref name="targetOrConcreteType" />.
+            </summary><param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
+            unless a public constructor is available.</param><param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param><param name="constructorParameters">A <see cref="T:Remotion.Reflection.ParamList" /> object holding the parameters to be passed to the constructor.</param><param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param><param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+            of the mixins currently configured with <paramref name="targetOrConcreteType" />. Those mixins for which no
+            prepared instances are given will be automatically created when the mixed object is constructed.</param></member><member name="T:Remotion.Mixins.OverrideMixinAttribute"><summary>
+            Indicates that a target class member overrides a virtual or abstract member of one of the mixins combined with the class.
+            </summary></member><member name="M:Remotion.Mixins.OverrideMixinAttribute.#ctor"><summary>
+            Indicates that this member overrides a virtual or abstract member of one of the mixins combined with the class. The overridden member
+            has the same name and signature as this member. If more than one mixin defines such a member, an exception is thrown.
+            </summary></member><member name="M:Remotion.Mixins.OverrideMixinAttribute.#ctor(System.Type)"><summary>
+            Indicates that this member overrides a virtual or abstract member of the given mixin type. The overridden member
+            has the same name and signature as this member. If the given mixin type is not part of the current configuration, an exception is thrown.
+            </summary><param name="mixinType">The type (or base type or interface) of the mixin whose member to override. For generic mixins, you can specify the
+            open type (with unbound generic parameters) even if the configuration contains a closed type (with bound parameters).</param></member><member name="T:Remotion.Mixins.OverrideTargetAttribute"><summary>
+            Indicates that a mixin member overrides a virtual member of the mixin's target class.
+            </summary></member><member name="T:Remotion.Mixins.TypeFactory"><summary>
+            Provides support for combining mixins and target classes into concrete, "mixed", instantiable types.
+            </summary></member><member name="M:Remotion.Mixins.TypeFactory.GetConcreteType(System.Type)"><summary>
+            Retrieves a concrete, instantiable, mixed type for the given <paramref name="targetOrConcreteType" />, or <paramref name="targetOrConcreteType" /> itself if no
+            mixin configuration exists for the type on the current thread.
+            </summary><param name="targetOrConcreteType">Base type for which a mixed type should be retrieved or a concrete mixed type.</param></member><member name="M:Remotion.Mixins.TypeFactory.GetConcreteType(System.Type,Remotion.Mixins.GenerationPolicy)"><summary>
+            Retrieves a concrete, instantiable, mixed type for the given <paramref name="targetOrConcreteType" />.
+            </summary><param name="targetOrConcreteType">Base type for which a mixed type should be retrieved or a concrete mixed type.</param><param name="generationPolicy">Defines whether to force generation of a type even if no mixin configuration is currently available
+            for the given type.</param></member><member name="M:Remotion.Mixins.TypeFactory.InitializeUnconstructedInstance(System.Object)"><summary>
+            Initializes a mixin target instance which was created without its constructor having been called.
+            </summary><param name="mixinTarget">The mixin target to initialize.</param></member><member name="T:Remotion.Mixins.UsesAttribute"><summary>
+            Indicates that a class integrates a mixin to implement some part of its functionality or public interface.
+            </summary></member><member name="M:Remotion.Mixins.UsesAttribute.#ctor(System.Type)"><summary>
+            Initializes a new instance of the <see cref="T:Remotion.Mixins.UsesAttribute" /> class.
+            </summary><param name="mixinType">The mixin type the class depends on.</param></member><member name="P:Remotion.Mixins.UsesAttribute.MixinType"><summary>
+            Gets the mixin type the class depends on.
+            </summary></member><member name="T:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility"><summary>
+            Represents the central entry point into re-motion's type discovery mechanism. All components requiring type discovery should use this class and
+            its <see cref="M:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService" /> method. All components retriving a type by its name that could be executed in the context of the
+            designer should use <see cref="M:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.GetType(System.String,System.Boolean)" />.
+            </summary></member><member name="M:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"><summary>
+            Gets the current context-specific <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" />. If <see cref="P:Remotion.Utilities.DesignerUtility.IsDesignMode" /> is set to 
+            <see langword="true" />, the designer's <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" /> is returned. Otherwise, the 
+            <see cref="P:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService" /> is returned. If no custom instance has been set for the <see cref="P:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService" />
+            property, <see cref="T:Remotion.Configuration.TypeDiscovery.TypeDiscoveryConfiguration" /> is used to create a new 
+            <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" /> when the property is first retrieved. That instance is stored for later uses.
+            </summary></member><member name="M:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.GetType(System.String,System.Boolean)"><summary>
+            Gets a type by its name, agnostic of whether the code is executing in the designer or not. If <see cref="P:Remotion.Utilities.DesignerUtility.IsDesignMode" />
+            is set to <see langword="true" />, the designer services are used to retrieve the type. Otherwise, <see cref="M:System.Type.GetType(System.String,System.Boolean)" /> is 
+            used. Use <see cref="T:Remotion.Utilities.TypeUtility" /> in order to get types by an abbreviated type name.
+            </summary><param name="typeName">The name of the type to get. This must follow the conventions of <see cref="M:System.Type.GetType(System.String,System.Boolean)" />.</param><param name="throwOnError">If <see langword="true" />, a <see cref="T:System.TypeLoadException" /> is thrown if the given type cannot be loaded.
+            Otherwise, <see langword="null" /> is returned.</param></member><member name="P:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService"><summary>
+            Gets or sets the default non-design mode <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" />. This service is returned whenever 
+            <see cref="M:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService" /> is called unless <see cref="P:Remotion.Utilities.DesignerUtility.IsDesignMode" /> is set to <see langword="true" /> (in which
+            case the designer's <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" /> is used instead). If no custom instance has been set for this property, 
+            <see cref="T:Remotion.Configuration.TypeDiscovery.TypeDiscoveryConfiguration" /> is used to create a new <see cref="T:System.ComponentModel.Design.ITypeDiscoveryService" />
+            when the property is first retrieved. That instance is stored for later uses.
+            </summary></member><member name="T:Remotion.Reflection.IActionInvoker"><summary>
+            This interface allows invokers with fixed arguments to be returned without references to their generic argument types. 
+            </summary></member><member name="T:Remotion.Reflection.ActionInvokerWrapper"><summary>
+            Used to wrap an <see cref="T:Remotion.Reflection.IActionInvoker" /> object rather than returning it directly.
+            </summary></member><member name="T:Remotion.Reflection.IFuncInvoker`1"><summary>
+            This interface allows invokers with fixed arguments to be returned without references to their generic argument types. 
+            </summary></member><member name="T:Remotion.Reflection.FuncInvokerWrapper`1"><summary>
+            Used to wrap an <see cref="T:Remotion.Reflection.IFuncInvoker`1" /> object rather than returning it directly.
+            </summary></member><member name="T:Remotion.Reflection.IConstructorLookupInfo"><summary>
+            Represents an object that can be used to lookup and dynamically invoke constructors of a specific defining type.
+            </summary></member><member name="T:Remotion.Reflection.ParamList"><summary>
+            Represents a strongly typed list of parameters to be passed to a function or action delegate.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``2(``0,``1)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``3(``0,``1,``2)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``4(``0,``1,``2,``3)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``5(``0,``1,``2,``3,``4)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``6(``0,``1,``2,``3,``4,``5)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``7(``0,``1,``2,``3,``4,``5,``6)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``8(``0,``1,``2,``3,``4,``5,``6,``7)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``9(``0,``1,``2,``3,``4,``5,``6,``7,``8)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``10(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``11(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``12(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``13(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``14(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``15(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``16(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14,``15)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``17(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14,``15,``16)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``18(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14,``15,``16,``17)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``19(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14,``15,``16,``17,``18)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``20(``0,``1,``2,``3,``4,``5,``6,``7,``8,``9,``10,``11,``12,``13,``14,``15,``16,``17,``18,``19)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create``1(``0)"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.Create"><summary>
+            Returns an empty parameter list to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.CreateDynamic(System.Type[],System.Object[])"><summary>
+            Creates a strongly typed list of parameters to be passed to a function or action.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.CreateDynamic(System.Object[])"><summary>
+            Creates a list of parameters to be passed to a function or action. This overload takes a <c>params</c> array, which is convenient, but might
+            lead to subtle bugs, especially when <see langword="null" /> values are supplied.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.InvokeAction(System.Delegate)"><summary>
+            Executes the given action delegate, passing in the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.
+            </summary><param name="action">The action to be executed. This delegate must match <see cref="P:Remotion.Reflection.ParamList.ActionType" />. If <see cref="P:Remotion.Reflection.ParamList.ActionType" /> is null,
+            it must match the types returned by <see cref="M:Remotion.Reflection.ParamList.GetParameterTypes" />.</param></member><member name="M:Remotion.Reflection.ParamList.InvokeFunc(System.Delegate)"><summary>
+            Executes the given function delegate, passing in the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.
+            </summary><param name="func">The function to be executed. This delegate must match <see cref="P:Remotion.Reflection.ParamList.FuncType" />. If <see cref="P:Remotion.Reflection.ParamList.FuncType" /> is null,
+            it must match the types returned by <see cref="M:Remotion.Reflection.ParamList.GetParameterTypes" />, plus <see cref="T:System.Object" /> as the return type.</param></member><member name="M:Remotion.Reflection.ParamList.InvokeConstructor(Remotion.Reflection.IConstructorLookupInfo)"><summary>
+            Executes a constructor, passing in the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.
+            </summary><param name="constructorLookupInfo">An object looking up the constructor to be invoked. The lookup is performed with the signature defined 
+            by the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.</param></member><member name="M:Remotion.Reflection.ParamList.GetParameterTypes"><summary>
+            Gets the parameter types of the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.
+            </summary></member><member name="M:Remotion.Reflection.ParamList.GetParameterValues"><summary>
+            Gets the parameter values of the parameters encapsulated by this <see cref="T:Remotion.Reflection.ParamList" />.
+            </summary></member><member name="P:Remotion.Reflection.ParamList.Empty"><summary>
+            Represents an empty parameter list. This is equivalent to calling the <see cref="M:Remotion.Reflection.ParamList.Create" /> overload without parameters.
+            </summary></member><member name="P:Remotion.Reflection.ParamList.FuncType"><summary>
+            Gets the type of <see cref="T:System.Func`1" /> delegates supported by this <see cref="T:Remotion.Reflection.ParamList" /> instance.
+            </summary></member><member name="P:Remotion.Reflection.ParamList.ActionType"><summary>
+            Gets the type of <see cref="T:System.Action" /> delegates supported by this <see cref="T:Remotion.Reflection.ParamList" /> instance.
+            </summary></member><member name="T:Remotion.Utilities.ArgumentEmptyException"><summary>
+            This exception is thrown if an argument is empty although it must have a content.
+            </summary></member><member name="T:Remotion.Utilities.ArgumentItemDuplicateException"><summary>
+            This exception is thrown if a list argument contains duplicates.
+            </summary></member><member name="T:Remotion.Utilities.ArgumentItemNullException"><summary>
+            This exception is thrown if a list argument contains a null reference.
+            </summary></member><member name="T:Remotion.Utilities.ArgumentItemTypeException"><summary>
+            This exception is thrown if a list argument contains an item of the wrong type.
+            </summary></member><member name="T:Remotion.Utilities.ArgumentTypeException"><summary>
+            This exception is thrown if an argument has an invalid type.
+            </summary></member></members></doc>

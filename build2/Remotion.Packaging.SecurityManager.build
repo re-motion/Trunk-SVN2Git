@@ -6,6 +6,7 @@
   <Target Name="CreatePackageProperties">
     <PropertyGroup>
       <PackageName>SecurityManager</PackageName>
+      <CodePlexProjectName></CodePlexProjectName>
     </PropertyGroup>
   </Target>
 

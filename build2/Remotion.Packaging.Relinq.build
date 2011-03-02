@@ -6,6 +6,8 @@
   <Target Name="CreatePackageProperties">
     <PropertyGroup>
       <PackageName>Relinq</PackageName>
+      <ReleaseNotesComponentName>Data.Linq</ReleaseNotesComponentName>
+      <CodePlexProjectName>relinq</CodePlexProjectName>
     </PropertyGroup>
   </Target>
 

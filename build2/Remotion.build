@@ -39,12 +39,12 @@
          Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);ArchiveDirectory=$(ArchiveDirectory);Version=$(Version);"/>
   </Target>
 
-  <!--<Target Name="DeployAll">
+  <Target Name="DeployAll">
     <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
          Targets="DeployPackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);ArchiveDirectory=$(ArchiveDirectory);Version=$(Version);"/>
-  </Target>-->
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);ArchiveDirectory=$(ArchiveDirectory);Version=$(Version);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
+  </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />
 

@@ -6,6 +6,8 @@
   <Target Name="CreatePackageProperties">
     <PropertyGroup>
       <PackageName>Remotion</PackageName>
+      <ReleaseNotesComponentName></ReleaseNotesComponentName>
+      <CodePlexProjectName></CodePlexProjectName>
     </PropertyGroup>
   </Target>
   
