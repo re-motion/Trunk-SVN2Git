@@ -6,7 +6,7 @@
     <Packages Include="Remotion.Packaging.Relinq.build"/>
     <Packages Include="Remotion.Packaging.Remix.build"/>
     <Packages Include="Remotion.Packaging.Dms.build" />
-    <Packages Include="Remotion.Packaging.SecurityManager.build" />-->
+    <Packages Include="Remotion.Packaging.SecurityManager.build" />
   </ItemGroup>
   
 </Project>
