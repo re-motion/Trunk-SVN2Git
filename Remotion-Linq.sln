@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq", "Remotion\Data\Linq\Data.Linq.csproj", "{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq", "ReLinq\Core\Linq.Core.csproj", "{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.UnitTests", "Remotion\Data\Linq.UnitTests\Data.Linq.UnitTests.csproj", "{1D56FFB7-8118-463A-81EA-37A8668BCD31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.UnitTests", "ReLinq\UnitTests\Linq.UnitTests.csproj", "{1D56FFB7-8118-463A-81EA-37A8668BCD31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.SqlBackend", "Remotion\Data\Linq.SqlBackend\Data.Linq.SqlBackend.csproj", "{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.SqlBackend", "ReLinq\SqlBackend\Linq.SqlBackend.csproj", "{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.IntegrationTests.CSharp", "Remotion\Data\Linq.IntegrationTests.CSharp\Data.Linq.IntegrationTests.CSharp.csproj", "{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.IntegrationTests.CSharp", "ReLinq\IntegrationTests.CSharp\Linq.IntegrationTests.CSharp.csproj", "{8A053015-CD1A-45D7-BCF4-95ADD9E6DDBC}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Data.Linq.IntegrationTests.VisualBasic", "Remotion\Data\Linq.IntegrationTests.VisualBasic\Data.Linq.IntegrationTests.VisualBasic.vbproj", "{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Linq.IntegrationTests.VisualBasic", "ReLinq\IntegrationTests.VisualBasic\Linq.IntegrationTests.VisualBasic.vbproj", "{9A0EDD9F-DA8E-48EA-8D91-D194E97CFD67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.LinqToSqlAdapter", "Remotion\Data\Linq.LinqToSqlAdapter\Data.Linq.LinqToSqlAdapter.csproj", "{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.LinqToSqlAdapter", "ReLinq\LinqToSqlAdapter\Linq.LinqToSqlAdapter.csproj", "{EDBD197D-2A1C-4EA7-BC7E-C09562E307A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.IntegrationTests.Common", "Remotion\Data\Linq.IntegrationTests.Common\Data.Linq.IntegrationTests.Common.csproj", "{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq.IntegrationTests.Common", "ReLinq\IntegrationTests.Common\Linq.IntegrationTests.Common.csproj", "{DA8EFB63-353E-4E1A-9298-28B0C9302A2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
