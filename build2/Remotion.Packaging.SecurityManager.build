@@ -25,12 +25,9 @@
 
     <ItemGroup>
       <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms*\**" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\JetBrains.Annotations.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.SharpZipLib.dll" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
     </ItemGroup>

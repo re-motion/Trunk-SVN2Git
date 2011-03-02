@@ -27,7 +27,6 @@
       <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager*\**" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
 

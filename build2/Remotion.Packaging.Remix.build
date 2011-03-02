@@ -24,54 +24,21 @@
     <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
 
     <ItemGroup>
-      <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Data*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Data.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Development*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Development.*" />
-      
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Dms.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.ObjectBinding*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.ObjectBinding.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Scripting*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Scripting.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Security*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Security.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Web*\**" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Web.*" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\Microsoft*.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\wxegen.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\JetBrains.Annotations.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\IronPython*.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\dbschema.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.SharpZipLib.dll" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
+      <_includedBinaryFiles Remove="@(_includedBinaryFiles)"/>
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Interfaces.*" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\TypeMixer.*" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Castle.*" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Microsoft.Practices.*" />
     </ItemGroup>
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
-      <BinaryFiles Include="$(BinariesDirectory)**"
-                   Exclude="@(StandardExcludes);@(_excludedBinaryFiles)"/>
+      <BinaryFiles Include="@(_includedBinaryFiles)"
+                   Exclude="@(StandardExcludes);"/>
     </ItemGroup>
   </Target>
 

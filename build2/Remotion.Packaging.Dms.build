@@ -25,16 +25,10 @@
 
     <ItemGroup>
       <_excludedBinaryFiles Remove="@(_excludedBinaryFiles)"/>
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpansion.css" />
-
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager*\**" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\AclExpander.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\Remotion.SecurityManager.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\SecurityManager*.xml" />
-
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\JetBrains.Annotations.*" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.SharpZipLib.dll" />
-      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
     </ItemGroup>
 
     <ItemGroup>
