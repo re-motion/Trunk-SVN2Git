@@ -7,8 +7,9 @@
     <PropertyGroup>
       <PackageName>Remotion</PackageName>
       <ReleaseNotesComponentName></ReleaseNotesComponentName>
-      <CodePlexProjectName></CodePlexProjectName>
       <UploadToWebShare>True</UploadToWebShare>
+      <UploadToCodePlex>False</UploadToCodePlex>
+      <CodePlexProjectName></CodePlexProjectName>
     </PropertyGroup>
   </Target>
   
@@ -41,6 +42,7 @@
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\DmsTray.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\DocumentEventMonitor.*" />
       <_excludedBinaryFiles Include="$(BinariesDirectory)**\ApplicationMappings.config" />
+      <_excludedBinaryFiles Include="$(BinariesDirectory)**\ICSharpCode.*" />
     </ItemGroup>
 
     <ItemGroup>

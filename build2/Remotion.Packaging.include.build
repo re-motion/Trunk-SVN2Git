@@ -24,8 +24,9 @@
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;UploadToShares" />
-  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;UploadToShares;UploadToCodePlex" />-->
+  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;" />
+
+  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex" />-->
   
   <!-- Source Package -->
   
@@ -69,29 +70,58 @@
 
   <!-- Release Notes -->
 
-  <Target Name="CreateReleaseNotes" DependsOnTargets="CreateBinaryZipFileProperty;CreateSourceZipFileProperty;CreateReleaseNotesDirectoryProperty">
+  <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesDirectoryProperty">
+    <PropertyGroup>
+      <_jiraComponent Condition="$(ReleaseNotesComponentName) == ''"></_jiraComponent>
+      <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
+    </PropertyGroup>
+
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesDirectory) $(_jiraComponent)"
+          WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
+  </Target>
+  
+  <Target Name="AddReleaseNotesToBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateReleaseNotesDirectoryProperty">
     <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesDirectory)"
-          WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
+    <PropertyGroup>
+      <_regexVersionPatten>(\d+\.\d+\.\d+)</_regexVersionPatten>
+    </PropertyGroup>
 
     <ItemGroup>
-      <_releaseNoteFiles Remove="(_releaseNoteFiles)"/>
+      <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
       <_releaseNoteFiles Include="$(ReleaseNotesDirectory)*.*"/>
-    </ItemGroup>
 
+      <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
+      <_emptyReleaseNoteFiles Include="@(_releaseNoteFiles)" 
+                              Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
+
+      <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
+      <_futureReleaseNoteFiles Include="@(_releaseNoteFiles)" 
+                               Condition="$([System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse ( $([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Value) )) ) ) &lt; 0"/>
+
+      <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
+      <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
+    </ItemGroup>
+    
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
                                              ZipFileName="$(BinaryZipFile)"
                                              RemoveRoot="$([System.IO.Directory]::GetParent ($(ReleaseNotesDirectory)))"
-                                             CompressFiles="@(_releaseNoteFiles)" />
+                                             CompressFiles="@(_releaseNoteFiles)" 
+                                             Condition="@(_releaseNoteFiles) != ''"/>
 
+    <PropertyGroup>
+      <_releaseNotesFile>$(ReleaseNotesDirectory)ReleaseNotes_v$(Version).html</_releaseNotesFile>
+      <_hasResolvedIssues Condition="Exists ($(_releaseNotesFile)) AND $([System.IO.File]::ReadAllText ($(_releaseNotesFile)).Length) > 0">True</_hasResolvedIssues>
+      <UploadToCodePlex Condition="$(UploadToCodePlex) == 'True' AND $(_hasResolvedIssues) != 'True'">False</UploadToCodePlex>
+    </PropertyGroup>
   </Target>
 
   <Target Name="CreateReleaseNotesDirectoryProperty" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
 
     <PropertyGroup>
-      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\</ReleaseNotesDirectory>
+      <_releaseNotesVersionDirectory>$([System.Version]::Parse ($(Version)).ToString (2))</_releaseNotesVersionDirectory>
+      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\$(_releaseNotesVersionDirectory)\</ReleaseNotesDirectory>
     </PropertyGroup>
   </Target>
 
@@ -126,15 +156,17 @@
 
   </Target>
 
-  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties" Condition="$(CodePlexProjectName) != ''">
-    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
+  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties" Condition="$(UploadToCodePlex) == 'True'">
+    <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
+    <Message Text="Stub: Uploaded to code plex"/>
+    <!--<Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
 
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
     
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+          WorkingDirectory="$(CodeplexReleaseToolPath)" />-->
   </Target>
 
   <!-- Shared Code -->

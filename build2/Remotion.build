@@ -9,7 +9,7 @@
   <Import Project="Remotion.AssembleBuildOutputTargets.include.build" />
   
   <PropertyGroup>
-    <Version>1.13.97</Version>
+    <Version></Version>
     <SolutionDirectory>$([System.IO.Path]::GetFullPath('..\'))</SolutionDirectory>
     <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>

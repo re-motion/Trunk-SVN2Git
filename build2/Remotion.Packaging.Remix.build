@@ -7,8 +7,9 @@
     <PropertyGroup>
       <PackageName>Remix</PackageName>
       <ReleaseNotesComponentName>Mixins</ReleaseNotesComponentName>
-      <CodePlexProjectName></CodePlexProjectName>
       <UploadToWebShare>False</UploadToWebShare>
+      <UploadToCodePlex>False</UploadToCodePlex>
+      <CodePlexProjectName></CodePlexProjectName>
     </PropertyGroup>
   </Target>
 
