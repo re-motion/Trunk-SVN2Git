@@ -117,8 +117,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var syncState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_syncState");
+      var syncState = ObjectEndPointTestHelper.GetSyncState (deserializedEndPoint);
       Assert.That (syncState, Is.Not.Null);
+      Assert.That (syncState.GetType (), Is.SameAs (ObjectEndPointTestHelper.GetSyncState (_endPoint).GetType ()));
     }
 
     [Test]
@@ -126,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var lazyLoader = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_lazyLoader");
+      var lazyLoader = ObjectEndPointTestHelper.GetLazyLoader (deserializedEndPoint);
       Assert.That (lazyLoader, Is.Not.Null);
     }
   }

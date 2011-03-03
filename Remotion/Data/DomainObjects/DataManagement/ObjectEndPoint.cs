@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       _lazyLoader = lazyLoader;
-      _syncState = new UnsynchronizedObjectEndPointSyncState();
+      _syncState = new UnknownObjectEndPointSyncState (_lazyLoader);
     }
 
     public abstract ObjectID OppositeObjectID { get; protected set; }
@@ -114,11 +114,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      var currentRelatedObject = GetOppositeObject (true);
-      if (removedRelatedObject != currentRelatedObject)
+      if (removedRelatedObject.ID != OppositeObjectID)
       {
         string removedID = removedRelatedObject.ID.ToString();
-        string currentID = currentRelatedObject != null ? currentRelatedObject.ID.ToString() : "<null>";
+        string currentID = OppositeObjectID != null ? OppositeObjectID.ToString () : "<null>";
 
         var message = string.Format (
             "Cannot remove object '{0}' from object end point '{1}' - it currently holds object '{2}'.",
@@ -188,18 +187,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
         : base (info)
     {
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
-
-      var isSynchronized = info.GetBoolValue();
-      if (isSynchronized)
-        MarkSynchronized ();
-      else
-        MarkUnsynchronized();
+      _syncState = info.GetValueForHandle<IObjectEndPointSyncState> ();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddHandle (_lazyLoader);
-      info.AddBoolValue (_syncState is SynchronizedObjectEndPointSyncState);
+      info.AddHandle (_syncState);
     }
 
     #endregion

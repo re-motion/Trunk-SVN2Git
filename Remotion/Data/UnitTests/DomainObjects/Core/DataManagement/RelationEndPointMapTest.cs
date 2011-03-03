@@ -437,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       collectionEndPointMock.VerifyAllExpectations();
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
     }
 
     [Test]
