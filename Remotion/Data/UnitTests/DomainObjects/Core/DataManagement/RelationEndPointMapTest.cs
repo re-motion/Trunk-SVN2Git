@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Contains_True ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      _map.RegisterRealObjectEndPoint (endPointID, CreateNewDataContainer (endPointID));
+      _map.RegisterRealObjectEndPoint (endPointID, RelationEndPointTestHelper.CreateNewDataContainer (endPointID));
 
       Assert.That (_map.Contains (endPointID), Is.True);
     }
@@ -388,7 +388,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_CreatesRealObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_RegistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -410,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_RegistersOppositeVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -426,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_WithNullValue ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, null);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, null);
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -446,7 +446,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       
       RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
 
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -460,7 +460,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -483,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_WithOppositeAnonymousEndPoint()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_UnregistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       Assert.That (_map[id], Is.Not.Null);
@@ -508,7 +508,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_UnregistersOppositeVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
@@ -523,7 +523,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_MarksOppositeVirtualCollectionEndPointIncomplete ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
@@ -550,7 +550,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_OppositeVirtualCollectionEndPointNotLoaded ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -566,7 +566,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_OppositeAnonymousEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       var oppositeEndPointID = RelationEndPointID.Create(DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition ());
@@ -595,7 +595,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterRealObjectEndPoint_ThrowsWhenChanged ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
 
       var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       Assert.That (_map[id], Is.Not.Null);
@@ -702,7 +702,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_Existing_RegistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
       var foreignKeyProperty = dataContainer.PropertyValues[endPointID.Definition.PropertyName];
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
@@ -718,7 +718,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_Existing_RegistersOppositeVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -733,7 +733,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_Existing_RegistersNoOppositeNullObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, null);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, null);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -747,7 +747,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_Existing_RegistersNoCollectionEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var dataContainer = CreateExistingDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -758,7 +758,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_Existing_RegistersNoVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = CreateExistingDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -769,7 +769,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_New_RegistersVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -782,7 +782,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_New_RegistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -795,7 +795,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterEndPointsForDataContainer_New_RegistersCollectionEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
@@ -808,7 +808,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_Existing_UnregistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       Assert.That (_map[endPointID], Is.Not.Null);
 
@@ -821,7 +821,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_Existing_UnregistersOppositeVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var oppositeID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order2, "OrderTicket");
@@ -836,7 +836,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_Existing_UnregistersNoCollectionEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var dataContainer = CreateExistingDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       _map.RegisterCollectionEndPoint (endPointID, null);
       Assert.That (_map[endPointID], Is.Not.Null);
@@ -850,7 +850,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_Existing_UnregistersNoOriginalNonNullVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = CreateExistingDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       var virtualEndPoint = _map.RegisterVirtualObjectEndPoint (endPointID, DomainObjectIDs.OrderTicket1);
       // the current value is ignored, only the original value is relevant
@@ -866,7 +866,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_Existing_UnregistersOriginalNullVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = CreateExistingDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       _map.RegisterVirtualObjectEndPoint (endPointID, null);
       Assert.That (_map[endPointID], Is.Not.Null);
@@ -880,7 +880,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_New_UnregistersVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       Assert.That (_map[endPointID], Is.Not.Null);
 
@@ -893,7 +893,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_New_UnregistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       Assert.That (_map[endPointID], Is.Not.Null);
 
@@ -906,7 +906,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_New_UnregistersCollectionEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
       Assert.That (_map[endPointID], Is.Not.Null);
 
@@ -924,7 +924,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterEndPointsForDataContainer_WithUnregisterableEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var objectEndPoint = (ObjectEndPoint) _map[endPointID];
@@ -939,7 +939,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNonUnregisterableEndPointsForDataContainer()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var objectEndPoint = (ObjectEndPoint) _map[endPointID];
@@ -956,7 +956,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNonUnregisterableEndPointsForDataContainer_OppositeCollectionEndPoint ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
       var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
 
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -978,7 +978,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNonUnregisterableEndPointsForDataContainer_None ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
@@ -990,7 +990,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNonUnregisterableEndPointsForDataContainer_EndPointNotRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       Assert.That (_map[endPointID], Is.Null);
 
       var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
@@ -1002,7 +1002,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckForConflictingForeignKeys_NoConflicts ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer = CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order1);
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order1);
       
       _map.CheckForConflictingForeignKeys (dataContainer);
     }
@@ -1012,7 +1012,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       // use DataContainer with State New because that owns virtual end-points
-      var dataContainer = CreateNewDataContainer (endPointID);
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
 
       _map.CheckForConflictingForeignKeys (dataContainer);
     }
@@ -1021,11 +1021,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckForConflictingForeignKeys_NoConflicts_Nulls ()
     {
       var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer1 = CreateExistingForeignKeyDataContainer (endPointID1, null);
+      var dataContainer1 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID1, null);
       _map.RegisterEndPointsForDataContainer (dataContainer1);
 
       var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
-      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, null);
+      var dataContainer2 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID2, null);
 
       _map.CheckForConflictingForeignKeys (dataContainer2);
     }
@@ -1039,11 +1039,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckForConflictingForeignKeys_Conflict ()
     {
       var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var dataContainer1 = CreateExistingForeignKeyDataContainer (endPointID1, DomainObjectIDs.Order1);
+      var dataContainer1 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID1, DomainObjectIDs.Order1);
       _map.RegisterEndPointsForDataContainer (dataContainer1);
 
       var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
-      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
+      var dataContainer2 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
 
       _map.CheckForConflictingForeignKeys (dataContainer2);
     }
@@ -1060,7 +1060,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterVirtualObjectEndPoint (endPointID1, null);
 
       var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
-      var dataContainer2 = CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
+      var dataContainer2 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
 
       _map.CheckForConflictingForeignKeys (dataContainer2);
     }
@@ -1203,30 +1203,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RemoveEndPoint (endPointID);
-    }
-
-    private DataContainer CreateNewDataContainer (RelationEndPointID id)
-    {
-      var foreignKeyDataContainer = DataContainer.CreateNew (id.ObjectID);
-      return foreignKeyDataContainer;
-    }
-
-    private DataContainer CreateExistingForeignKeyDataContainer (RelationEndPointID id, ObjectID initialForeignKeyValue)
-    {
-      var foreignKeyDataContainer = DataContainer.CreateForExisting (
-          id.ObjectID, 
-          null, 
-          pd => pd.PropertyName == id.Definition.PropertyName ? initialForeignKeyValue : pd.DefaultValue);
-      return foreignKeyDataContainer;
-    }
-
-    private DataContainer CreateExistingDataContainer (RelationEndPointID id)
-    {
-      var foreignKeyDataContainer = DataContainer.CreateForExisting (
-          id.ObjectID,
-          null,
-          pd => pd.DefaultValue);
-      return foreignKeyDataContainer;
     }
   }
 }

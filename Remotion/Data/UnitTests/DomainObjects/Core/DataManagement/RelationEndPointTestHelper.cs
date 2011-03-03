@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Development.UnitTesting;
@@ -25,6 +26,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public static ICollectionEndPointDataKeeper GetCollectionEndPointDataKeeper (CollectionEndPoint collectionEndPoint)
     {
       return (ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_dataKeeper");
+    }
+
+    public static DataContainer CreateNewDataContainer (RelationEndPointID id)
+    {
+      var foreignKeyDataContainer = DataContainer.CreateNew (id.ObjectID);
+      return foreignKeyDataContainer;
+    }
+
+    public static DataContainer CreateExistingForeignKeyDataContainer (RelationEndPointID id, ObjectID initialForeignKeyValue)
+    {
+      var foreignKeyDataContainer = DataContainer.CreateForExisting (
+          id.ObjectID, 
+          null, 
+          pd => pd.PropertyName == id.Definition.PropertyName ? initialForeignKeyValue : pd.DefaultValue);
+      return foreignKeyDataContainer;
+    }
+
+    public static DataContainer CreateExistingDataContainer (RelationEndPointID id)
+    {
+      var foreignKeyDataContainer = DataContainer.CreateForExisting (
+          id.ObjectID,
+          null,
+          pd => pd.DefaultValue);
+      return foreignKeyDataContainer;
     }
   }
 }
