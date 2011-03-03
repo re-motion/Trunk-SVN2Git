@@ -16,6 +16,7 @@
     <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\temp\</TempDirectory>
     <ArchiveDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\Archive\</ArchiveDirectory>
     <WebShareDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\WebShare\</WebShareDirectory>
+    <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
   </PropertyGroup>
   
@@ -28,7 +29,7 @@
   <Target Name="BuildAll" DependsOnTargets="CleanFolders">
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
-         Properties="ConfigurationID=%(AllConfigurations.Identity);"
+         Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"
          Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
 

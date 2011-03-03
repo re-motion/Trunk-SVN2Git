@@ -65,23 +65,30 @@
   </Target>
 
   <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">
+    <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
+
     <MSBuild Projects="@(ReleaseProjectFiles);@(UnitTestProjectFiles)"
              Targets="Clean"
              Properties="Configuration=$(ActiveConfigurationName);"/>
   </Target>
 
   <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration">
+    <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
+    <Error Text="The property 'SolutionKeyFile' is not set." Condition="'$(SolutionKeyFile)' == ''" />
+
     <MSBuild Projects ="@(ReleaseProjectFiles)"
              ContinueOnError="false"
-             Properties="Configuration=$(ActiveConfigurationName);">
+             Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
   </Target>
 
   <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration">
+    <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
+
     <MSBuild Projects ="@(UnitTestProjectFiles);@(IntegrationTestProjectFiles)"
              ContinueOnError="false"
-             Properties="Configuration=$(ActiveConfigurationName);">
+             Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
   </Target>
