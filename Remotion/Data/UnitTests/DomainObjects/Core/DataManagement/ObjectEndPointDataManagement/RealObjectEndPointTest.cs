@@ -30,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   public class RealObjectEndPointTest : ClientTransactionBaseTest
   {
     private RealObjectEndPoint _endPoint;
+    private IRelationEndPointLazyLoader _lazyLoaderStub;
 
     public override void SetUp ()
     {
@@ -37,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       _endPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (endPointID);
+      _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
     }
 
     [Test]
@@ -46,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub);
     }
 
     [Test]
@@ -56,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub);
     }
 
     [Test]

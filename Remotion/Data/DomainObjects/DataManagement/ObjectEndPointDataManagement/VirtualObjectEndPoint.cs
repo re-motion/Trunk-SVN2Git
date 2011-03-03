@@ -31,10 +31,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
 
-    public VirtualObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, ObjectID oppositeObjectID)
+    public VirtualObjectEndPoint (
+        ClientTransaction clientTransaction, 
+        RelationEndPointID id, 
+        ObjectID oppositeObjectID, 
+        IRelationEndPointLazyLoader lazyLoader)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
-          ArgumentUtility.CheckNotNull ("id", id))
+          ArgumentUtility.CheckNotNull ("id", id),
+          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader))
     {
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");

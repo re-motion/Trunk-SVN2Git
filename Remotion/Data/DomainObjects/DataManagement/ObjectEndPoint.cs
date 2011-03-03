@@ -26,12 +26,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
+    private readonly IRelationEndPointLazyLoader _lazyLoader;
     private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
 
-    protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
+    protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader)
         : base (clientTransaction, id)
     {
-       _syncState = new UnsynchronizedObjectEndPointSyncState();
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+
+      _lazyLoader = lazyLoader;
+      _syncState = new UnsynchronizedObjectEndPointSyncState();
     }
 
     public abstract ObjectID OppositeObjectID { get; protected set; }
@@ -183,6 +187,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
 
       var isSynchronized = info.GetBoolValue();
       if (isSynchronized)
@@ -193,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-
+      info.AddHandle (_lazyLoader);
       info.AddBoolValue (_syncState is SynchronizedObjectEndPointSyncState);
     }
 

@@ -66,12 +66,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
     {
-      return new RealObjectEndPoint (ClientTransaction.Current, endPointID, dataContainer);
+      var clientTransaction = dataContainer.ClientTransaction;
+      var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader);
     }
 
     public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
-      return new VirtualObjectEndPoint (ClientTransaction.Current, endPointID, oppositeObjectID);
+      var clientTransaction = ClientTransaction.Current;
+      var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader);
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)

@@ -120,5 +120,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var syncState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_syncState");
       Assert.That (syncState, Is.Not.Null);
     }
+
+    [Test]
+    public void LazyLoader ()
+    {
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var lazyLoader = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_lazyLoader");
+      Assert.That (lazyLoader, Is.Not.Null);
+    }
   }
 }
