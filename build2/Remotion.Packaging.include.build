@@ -24,9 +24,7 @@
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;" />
-
-  <!--<Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex" />-->
+  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex" />
   
   <!-- Source Package -->
   
