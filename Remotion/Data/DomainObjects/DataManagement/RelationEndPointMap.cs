@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -178,12 +177,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       UnregisterOppositeForRealObjectEndPoint(objectEndPoint);
     }
 
-    public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    public VirtualObjectEndPoint RegisterVirtualObjectEndPointWithNullOpposite (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, true, "RegisterVirtualObjectEndPoint", "endPointID");
 
+      return RegisterVirtualObjectEndPoint (endPointID, null);
+    }
+
+    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    {
       var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
       Add (objectEndPoint);
 
@@ -192,15 +196,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
-    public void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
+    private void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "UnregisterVirtualObjectEndPoint", "endPointID");
-      CheckVirtuality (endPointID, true, "UnregisterVirtualObjectEndPoint", "endPointID");
-
       var objectEndPoint = (IObjectEndPoint) this[endPointID];
-      if (objectEndPoint == null)
-        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
+      Assertion.IsNotNull (objectEndPoint, "This method is only called in situations where the end-point has been registered.");
 
       CheckUnchangedForUnregister (endPointID, objectEndPoint);
 

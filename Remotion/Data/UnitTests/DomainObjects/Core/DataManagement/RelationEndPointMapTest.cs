@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -316,24 +317,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterVirtualObjectEndPoint_CreatesVirtualObjectEndPoint ()
+    public void RegisterVirtualObjectEndPointWithNullOpposite ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPointWithNullOpposite (id);
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
-      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
       Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+
+      Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
     [Test]
-    public void RegisterVirtualObjectEndPoint_RegistersEndPoint ()
+    public void RegisterVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
+
+      Assert.That (objectEndPoint.ID, Is.EqualTo (id));
+      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
@@ -342,22 +348,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_RemovesEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
       Assert.That (_map[id], Is.Not.Null);
-      
-      _map.UnregisterVirtualObjectEndPoint (id);
+
+      CallUnregisterVirtualObjectEndPoint (_map, id);
 
       Assert.That (_map[id], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The given end-point is not part of this map.\r\nParameter name: endPointID")]
-    public void UnregisterVirtualObjectEndPoint_ThrowsWhenNotRegistered ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-
-      _map.UnregisterVirtualObjectEndPoint (id);
     }
 
     [Test]
@@ -368,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, DomainObjectIDs.OrderTicket1);
       Assert.That (_map[id], Is.Not.Null);
 
       ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
@@ -376,7 +372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       try
       {
-        _map.UnregisterVirtualObjectEndPoint (id);
+        CallUnregisterVirtualObjectEndPoint (_map, id);
       }
       finally
       {
@@ -385,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterRealObjectEndPoint_CreatesRealObjectEndPoint ()
+    public void RegisterRealObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
@@ -393,16 +389,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"]));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
@@ -852,7 +838,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      var virtualEndPoint = _map.RegisterVirtualObjectEndPoint (endPointID, DomainObjectIDs.OrderTicket1);
+      var virtualEndPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID, DomainObjectIDs.OrderTicket1);
       // the current value is ignored, only the original value is relevant
       ObjectEndPointTestHelper.SetOppositeObjectID (virtualEndPoint, null);
       Assert.That (_map[endPointID], Is.Not.Null);
@@ -868,7 +854,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      _map.RegisterVirtualObjectEndPoint (endPointID, null);
+      CallRegisterVirtualObjectEndPoint (_map, endPointID, null);
       Assert.That (_map[endPointID], Is.Not.Null);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -1057,7 +1043,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckForConflictingForeignKeys_Conflict_WithNull ()
     {
       var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _map.RegisterVirtualObjectEndPoint (endPointID1, null);
+      CallRegisterVirtualObjectEndPoint (_map, endPointID1, null);
 
       var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
       var dataContainer2 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
@@ -1265,6 +1251,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
 
       _map.GetOppositeEndPoint (objectEndPointStub);
+    }
+
+    private VirtualObjectEndPoint CallRegisterVirtualObjectEndPoint (
+        RelationEndPointMap relationEndPointMap,
+        RelationEndPointID id,
+        ObjectID oppositeObjectID)
+    {
+      return (VirtualObjectEndPoint) PrivateInvoke.InvokeNonPublicMethod (relationEndPointMap, "RegisterVirtualObjectEndPoint", id, oppositeObjectID);
+    }
+
+    private void CallUnregisterVirtualObjectEndPoint (
+        RelationEndPointMap relationEndPointMap,
+        RelationEndPointID id)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (relationEndPointMap, "UnregisterVirtualObjectEndPoint", id);
     }
   }
 }
