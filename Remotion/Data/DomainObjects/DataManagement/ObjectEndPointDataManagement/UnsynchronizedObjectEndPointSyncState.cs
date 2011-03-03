@@ -27,9 +27,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
     }
 
-    public bool IsSynchronized
+    public bool IsSynchronized (IObjectEndPoint endPoint)
     {
-      get { return false; }
+      return false;
     }
 
     public void Synchronize (IObjectEndPoint endPoint, IRelationEndPoint oppositeEndPoint)

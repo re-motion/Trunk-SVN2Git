@@ -52,7 +52,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialization_SyncState ()
     {
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
-      Assert.That (_endPoint.IsSynchronized, Is.False);
+    }
+
+    [Test]
+    public void IsSynchronized ()
+    {
+      _syncStateMock
+          .Expect (mock => mock.IsSynchronized (_endPointWithSyncStateMock))
+          .Return (true);
+      _syncStateMock.Replay ();
+
+      var result = _endPointWithSyncStateMock.IsSynchronized;
+
+      _syncStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
     }
 
     [Test]

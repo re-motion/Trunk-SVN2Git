@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool IsSynchronized
     {
-      get { return _syncState.IsSynchronized; }
+      get { return _syncState.IsSynchronized(this); }
     }
 
     public void Synchronize (IRelationEndPoint oppositeEndPoint)

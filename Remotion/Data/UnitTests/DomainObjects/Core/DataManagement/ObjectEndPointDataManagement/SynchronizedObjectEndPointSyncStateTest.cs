@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void IsSynchronized ()
     {
-      Assert.That (_state.IsSynchronized, Is.True);
+      Assert.That (_state.IsSynchronized(_endPointMock), Is.True);
     }
 
     [Test]
