@@ -8,6 +8,7 @@
       <PackageName>Dms</PackageName>
       <ReleaseNotesComponentName></ReleaseNotesComponentName>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToWebShare>False</UploadToWebShare>
     </PropertyGroup>
   </Target>
 

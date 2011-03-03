@@ -8,6 +8,7 @@
       <PackageName>Remotion</PackageName>
       <ReleaseNotesComponentName></ReleaseNotesComponentName>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToWebShare>True</UploadToWebShare>
     </PropertyGroup>
   </Target>
   

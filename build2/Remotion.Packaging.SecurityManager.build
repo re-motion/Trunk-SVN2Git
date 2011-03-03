@@ -7,6 +7,7 @@
     <PropertyGroup>
       <PackageName>SecurityManager</PackageName>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToWebShare>False</UploadToWebShare>
     </PropertyGroup>
   </Target>
 

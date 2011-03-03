@@ -6,8 +6,9 @@
   <Target Name="CreatePackageProperties">
     <PropertyGroup>
       <PackageName>Remix</PackageName>
-      <ReleaseNotesComponentName></ReleaseNotesComponentName>
+      <ReleaseNotesComponentName>Mixins</ReleaseNotesComponentName>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToWebShare>False</UploadToWebShare>
     </PropertyGroup>
   </Target>
 
