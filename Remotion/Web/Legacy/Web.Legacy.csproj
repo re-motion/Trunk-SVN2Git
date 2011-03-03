@@ -56,7 +56,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591;1573;0419</NoWarn>
+    <NoWarn>1591;0419</NoWarn>
     <WarningsAsErrors>
     </WarningsAsErrors>
     <DocumentationFile>bin\Release\Remotion.Web.Legacy.XML</DocumentationFile>

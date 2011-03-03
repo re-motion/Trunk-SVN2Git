@@ -42,7 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0618;1591;0419</NoWarn>
+    <NoWarn>1591;0419</NoWarn>
     <WarningsAsErrors>
     </WarningsAsErrors>
     <DocumentationFile>bin\Debug\Remotion.ObjectBinding.Web.Preview.XML</DocumentationFile>
@@ -59,6 +59,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\Remotion.ObjectBinding.Web.Preview.XML</DocumentationFile>
+    <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">

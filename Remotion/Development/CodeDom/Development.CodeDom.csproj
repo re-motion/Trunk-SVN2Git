@@ -61,7 +61,7 @@
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>0618;1591;0419</NoWarn>
+    <NoWarn>1591;0419;0618</NoWarn>
     <WarningsAsErrors>
     </WarningsAsErrors>
     <Optimize>false</Optimize>
@@ -85,7 +85,7 @@
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>1591;0618</NoWarn>
+    <NoWarn>1591;0419;0618</NoWarn>
     <WarningsAsErrors>
     </WarningsAsErrors>
     <Optimize>true</Optimize>
