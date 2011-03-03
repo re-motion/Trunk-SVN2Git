@@ -281,6 +281,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     }
 
+    public void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
+
+      var oppositeEndPoint = _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
+      if (oppositeEndPoint.ObjectID == null)
+        throw new InvalidOperationException ("The end-point's opposite object is null, so no opposite end-point can be loaded.");
+      if (oppositeEndPoint.IsDataComplete)
+        throw new InvalidOperationException ("The opposite end-point has already been loaded.");
+
+      oppositeEndPoint.EnsureDataComplete ();
+    }
+
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
     {
       Maybe.ForValue (relationEndPoint as IObjectEndPoint)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -144,7 +145,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // When registering a non-virtual end-point, the opposite virtual object end-point (if any) is registered as well.
-    // TODO 3401: If the opposite end-point is a collection, the end-point is registered in that collection.
     public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, DataContainer foreignKeyDataContainer)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -388,6 +388,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
+    }
+
+    public IRelationEndPoint GetOppositeEndPoint (IObjectEndPoint objectEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
+
+      if (this[objectEndPoint.ID] != objectEndPoint)
+        throw new ArgumentException ("The end-point is not registered in this map.", "objectEndPoint");
+
+      var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID ();
+      if (oppositeRelationEndPointID == null)
+        throw new ArgumentException ("The end-point is not part of a bidirectional relation.", "objectEndPoint");
+
+      if (oppositeRelationEndPointID.ObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, oppositeRelationEndPointID);
+
+      var oppositeEndPoint = this[oppositeRelationEndPointID];
+      Assertion.IsNotNull (
+          oppositeEndPoint,
+          "The implementation of RelationEndPointMap guarantees that when an object end-point is registered, the opposite is registered, too.");
+
+      return oppositeEndPoint;
     }
 
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)

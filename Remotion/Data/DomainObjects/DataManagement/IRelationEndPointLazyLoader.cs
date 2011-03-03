@@ -19,5 +19,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface IRelationEndPointLazyLoader
   {
     void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint);
+    void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint);
   }
 }

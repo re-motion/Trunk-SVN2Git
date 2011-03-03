@@ -21,5 +21,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObject GetOriginalRelatedObject (RelationEndPointID endPointID);
     DomainObjectCollection GetRelatedObjects (RelationEndPointID endPointID);
     DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID endPointID);
+    IRelationEndPoint GetOppositeEndPoint (IObjectEndPoint objectEndPoint);
   }
 }

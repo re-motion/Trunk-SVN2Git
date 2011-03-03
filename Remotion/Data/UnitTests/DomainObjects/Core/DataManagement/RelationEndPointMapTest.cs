@@ -1204,5 +1204,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RemoveEndPoint (endPointID);
     }
+
+    [Test]
+    public void GetOppositeEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
+
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointStub.Stub (stub => stub.IsDataComplete).Return (false);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointStub);
+
+      var result = _map.GetOppositeEndPoint (objectEndPointStub);
+
+      Assert.That (result, Is.SameAs (oppositeEndPointStub));
+    }
+
+    [Test]
+    public void GetOppositeEndPoint_OppositeIsNull ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var oppositeEndPointID = RelationEndPointID.Create (null, endPointID.Definition.GetMandatoryOppositeEndPointDefinition ());
+
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
+
+      var result = _map.GetOppositeEndPoint (objectEndPointStub);
+
+      Assert.That (result, Is.TypeOf (typeof (NullCollectionEndPoint)));
+      Assert.That (result.ID, Is.EqualTo (oppositeEndPointID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The end-point is not registered in this map.\r\nParameter name: objectEndPoint")]
+    public void GetOppositeEndPoint_EndPointNotAdded_ThrowsException ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+
+      _map.GetOppositeEndPoint (objectEndPointStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The end-point is not part of a bidirectional relation.\r\nParameter name: objectEndPoint")]
+    public void GetOppositeEndPoint_Unidirectional_ThrowsException ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
+
+      _map.GetOppositeEndPoint (objectEndPointStub);
+    }
   }
 }

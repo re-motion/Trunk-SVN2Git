@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -1009,6 +1010,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager. LoadLazyCollectionEndPoint (endPoint);
     }
 
+    [Test]
+    public void LoadOppositeEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
+
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointMock.Stub (stub => stub.ObjectID).Return (oppositeEndPointID.ObjectID);
+      oppositeEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
+      oppositeEndPointMock.Expect (mock => mock.EnsureDataComplete ());
+      oppositeEndPointMock.Replay ();
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, oppositeEndPointMock);
+
+      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+
+      oppositeEndPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The end-point's opposite object is null, so no opposite end-point can be loaded.")]
+    public void LoadOppositeEndPoint_OppositeIsNull ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var oppositeEndPointID = RelationEndPointID.Create (null, endPointID.Definition.GetMandatoryOppositeEndPointDefinition ());
+
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
+
+      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been loaded.")]
+    public void LoadOppositeEndPoint_AlreadLoaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
+
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (oppositeEndPointID.ObjectID);
+      oppositeEndPointStub.Stub (stub => stub.IsDataComplete).Return (true);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, oppositeEndPointStub);
+
+      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+    }
+    
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
