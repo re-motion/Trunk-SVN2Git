@@ -156,9 +156,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       if (endPoint.Definition.Cardinality == CardinalityType.One)
       {
         var objectEndPoint = (IObjectEndPoint) endPoint;
-        var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID();
-        var oppositeEndPoint = clientTransaction.DataManager.RelationEndPointMap[oppositeRelationEndPointID] 
-            ?? RelationEndPointMap.CreateNullEndPoint (clientTransaction, oppositeRelationEndPointID);
+        var oppositeEndPoint = clientTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (objectEndPoint);
         objectEndPoint.Synchronize (oppositeEndPoint);
       }
       else

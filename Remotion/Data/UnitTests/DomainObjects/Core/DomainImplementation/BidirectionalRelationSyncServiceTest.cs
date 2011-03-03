@@ -137,26 +137,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void Synchronize_WithObjectEndPoint_NonExistingOppositeEndPoint ()
-    {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
-      var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-
-      var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
-      objectEndPointMock.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
-      objectEndPointMock.Expect (mock => mock.Synchronize (Arg<IRelationEndPoint>.Matches (ep => ep is NullCollectionEndPoint)));
-      objectEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointMock);
-
-      BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
-
-      objectEndPointMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void Synchronize_WithCollectionEndPoint ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
