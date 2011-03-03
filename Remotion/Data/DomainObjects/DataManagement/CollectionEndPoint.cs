@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
-      // TODO 3401: Inject DataKeeper from the outside
+      // TODO 3653: Inject DataKeeper from the outside
       _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull ?? Enumerable.Empty<DomainObject> ());
 
       var collectionType = id.Definition.PropertyType;
