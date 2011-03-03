@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<project SchemaVersion="2.0">
+  <assemblies>
+    <assembly location=".\BuildOutput\temp\Binaries\net3.5\Debug\Remotion.dll" 
+              documentation=".\BuildOutput\temp\Binaries\net3.5\Debug\Remotion.xml" />
+  </assemblies>
+  <namespaces>
+    <namespace name="Remotion">abc</namespace>
+  </namespaces>
+  <documenters>
+    <documenter name="MSDN-CHM">
+      <property name="ShowVisualBasic" value="False" />
+      <property name="RootPageTOCName" value="Getting Started" />
+      <property name="SdkLinksOnWeb" value="False" />
+      <property name="ShowMissingParams" value="True" />
+      <property name="ShowMissingRemarks" value="True" />
+      <property name="ShowMissingReturns" value="True" />
+      <property name="ShowMissingSummaries" value="True" />
+      <property name="ShowMissingValues" value="True" />
+      <property name="IncludeDefaultThreadSafety" value="False" />
+      <property name="DocumentEmptyNamespaces" value="False" />
+      <property name="DocumentExplicitInterfaceImplementations" value="False" />
+      <property name="DocumentInternals" value="True" />
+      <property name="DocumentPrivates" value="False" />
+      <property name="DocumentSealedProtected" value="True" />
+      <property name="AutoDocumentStaticClasses" value="False" />
+    </documenter>
+  </documenters>
+</project>

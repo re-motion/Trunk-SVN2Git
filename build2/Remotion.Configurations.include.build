@@ -4,19 +4,25 @@
   <ItemGroup>
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
+      <Framework>net-3.5</Framework>
       <BinariesDirectory>net3.5\Debug\</BinariesDirectory>
+      <AssemblyRevision>2</AssemblyRevision>
       <RunTests>True</RunTests>
     </AllConfigurations>
     
     <AllConfigurations Include="Release">
       <Name>Release</Name>
+      <Framework>net-3.5</Framework>
       <BinariesDirectory>net3.5\Release\</BinariesDirectory>
+      <AssemblyRevision>1</AssemblyRevision>
       <RunTests>True</RunTests>
     </AllConfigurations>
     
     <AllConfigurations Include="Doc">
       <Name>Release</Name>
+      <Framework>net-3.5</Framework>
       <RunTests>False</RunTests>
+      <AssemblyRevision>0</AssemblyRevision>
     </AllConfigurations>
   </ItemGroup>
 

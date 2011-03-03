@@ -14,6 +14,8 @@
       <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) == ''">False</ActiveConfigurationHasBinariesDirectory>
       <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) != ''">True</ActiveConfigurationHasBinariesDirectory>
       <ActiveConfigurationBinariesDirectory Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'">$(BinariesDirectory)%(_activeConfiguration.BinariesDirectory)</ActiveConfigurationBinariesDirectory>
+      <ActiveConfigurationFramework>%(_activeConfiguration.Framework)</ActiveConfigurationFramework>
+      <ActiveConfigurationAssemblyRevision>%(_activeConfiguration.AssemblyRevision)</ActiveConfigurationAssemblyRevision>
     </PropertyGroup>
   </Target>
 
@@ -71,8 +73,8 @@
              Targets="Clean"
              Properties="Configuration=$(ActiveConfigurationName);"/>
   </Target>
-
-  <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration">
+  
+  <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration;UpdateAssemblyInfos">
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
     <Error Text="The property 'SolutionKeyFile' is not set." Condition="'$(SolutionKeyFile)' == ''" />
 
@@ -83,7 +85,7 @@
     </MSBuild>
   </Target>
 
-  <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration">
+  <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration;UpdateAssemblyInfos">
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
 
     <MSBuild Projects ="@(UnitTestProjectFiles);@(IntegrationTestProjectFiles)"
@@ -104,5 +106,40 @@
                                              Use32Bit="True"
                                              OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
                                              Condition="$(ActiveConfigurationRunTests) == 'True'"/>-->
+  </Target>
+
+  <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+    <Error Text="The property 'ConfigurationID' is not set." Condition="'$(ConfigurationID)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <ItemGroup>
+      <_assemblyInfoFiles Remove="@(_assemblyInfoFiles)"/>
+      <_assemblyInfoFiles Include="$(SolutionDirectory)%(Packages.AssemblyInfoFile)">
+      </_assemblyInfoFiles>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_fullVersion>$(Version).$(ActiveConfigurationAssemblyRevision)</_fullVersion>
+      <_configuration>.NET Framework: $(ActiveConfigurationFramework), build type: $(ConfigurationID)</_configuration>
+    </PropertyGroup>
+
+    <Error Text="The version ($(Version) is not valid. It must be in the format 'Major.Minor.Build'."
+           Condition="$([System.Version]::Parse ($(_fullVersion))) == $(fullVersion)"/>
+    
+    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(_assemblyInfoFiles)"
+                                                  AssemblyVersion="$(_fullVersion)"
+                                                  AssemblyFileVersion="$(_fullVersion)"
+                                                  AssemblyConfiguration="$(_configuration)"/>
+  </Target>
+
+  <Target Name="Doc">
+    <ItemGroup>
+      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
+      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\NamespaceDoc.xml" />
+    </ItemGroup>
+
+    <Message Text="%(_namespaceSummaries.Identity)"/>
+    
   </Target>
 </Project>

@@ -2,11 +2,21 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <Packages Include="Remotion.Packaging.Core.build"/>
-    <Packages Include="Remotion.Packaging.Relinq.build"/>
-    <Packages Include="Remotion.Packaging.Remix.build"/>
-    <Packages Include="Remotion.Packaging.Dms.build" />
-    <Packages Include="Remotion.Packaging.SecurityManager.build" />
+    <Packages Include="Remotion.Packaging.Core.build">
+      <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
+    </Packages>
+    <Packages Include="Remotion.Packaging.Relinq.build">
+      <AssemblyInfoFile>Relinq\AssemblyInfoShared.cs</AssemblyInfoFile>
+    </Packages>
+    <Packages Include="Remotion.Packaging.Remix.build">
+      <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
+    </Packages>
+    <Packages Include="Remotion.Packaging.Dms.build">
+      <AssemblyInfoFile>Dms\AssemblyInfoShared.cs</AssemblyInfoFile>
+    </Packages>
+    <Packages Include="Remotion.Packaging.SecurityManager.build">
+      <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.cs</AssemblyInfoFile>
+    </Packages>
   </ItemGroup>
-  
+
 </Project>

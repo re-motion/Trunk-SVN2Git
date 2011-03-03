@@ -1,4 +1,4 @@
-// This file is part of re-strict (www.re-motion.org)
+﻿// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // This program is free software; you can redistribute it and/or modify
@@ -23,10 +23,10 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: debug")]
+[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: Doc")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
 [assembly: AssemblyProduct ("Remotion Security Manager")]
-[assembly: AssemblyCopyright ("(c) 2006 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
+[assembly: AssemblyCopyright ("(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu")]
 [assembly: AssemblyTrademark ("")]
 //
 // Version information for an assembly consists of the following four values:
@@ -39,4 +39,5 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.60.2")]
+[assembly: AssemblyVersion("1.13.97.0")]
+[assembly: AssemblyFileVersion ("1.13.97.0")]

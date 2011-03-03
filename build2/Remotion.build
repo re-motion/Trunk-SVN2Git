@@ -30,7 +30,7 @@
     <MSBuild Projects="$(MSBuildProjectFile)"
          BuildInParallel="false"
          Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"
-         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;RunTests;AssembleBuildOutput;"/>
+         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"/>
   </Target>
 
   <Target Name="PackageAll">
