@@ -95,8 +95,14 @@
 
   <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
-                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).xml"
+                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
                                    ToolPath="$(NUnitToolPath)"
                                    Condition="$(ActiveConfigurationRunTests) == 'True'"/>
+    
+    <!--<MSBuild.ExtensionPack.CodeQuality.NUnit ToolPath="$(NUnitToolPath)"
+                                             Assemblies="%(TestOutputFiles.FullPath)"
+                                             Use32Bit="True"
+                                             OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
+                                             Condition="$(ActiveConfigurationRunTests) == 'True'"/>-->
   </Target>
 </Project>
