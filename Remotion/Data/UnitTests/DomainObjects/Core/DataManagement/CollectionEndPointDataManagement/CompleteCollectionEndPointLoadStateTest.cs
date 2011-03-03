@@ -159,15 +159,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       collectionDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
+      var readOnlyCollectionDataDecorator = new ReadOnlyCollectionDataDecorator (collectionDataStub, false);
 
       _collectionEndPointMock.Stub (stub => stub.Definition).Return (_definition);
-      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
+      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (readOnlyCollectionDataDecorator);
 
       var result = _loadState.GetCollectionWithOriginalData(_collectionEndPointMock);
 
       Assert.That (result, Is.TypeOf (typeof (OrderCollection)));
       var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result);
-      Assert.That (actualCollectionData, Is.SameAs (collectionDataStub));
+      Assert.That (actualCollectionData, Is.SameAs (readOnlyCollectionDataDecorator));
     }
 
     [Test]

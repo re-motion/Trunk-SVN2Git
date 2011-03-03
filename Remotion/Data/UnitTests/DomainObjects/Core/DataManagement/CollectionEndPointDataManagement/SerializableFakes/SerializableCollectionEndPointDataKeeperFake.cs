@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public IDomainObjectCollectionData OriginalCollectionData
+    public ReadOnlyCollectionDataDecorator OriginalCollectionData
     {
       get { throw new NotImplementedException(); }
     }

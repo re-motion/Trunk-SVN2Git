@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _collectionData; }
     }
 
-    public IDomainObjectCollectionData OriginalCollectionData
+    public ReadOnlyCollectionDataDecorator OriginalCollectionData
     {
       get { return _collectionData.OriginalData; }
     }

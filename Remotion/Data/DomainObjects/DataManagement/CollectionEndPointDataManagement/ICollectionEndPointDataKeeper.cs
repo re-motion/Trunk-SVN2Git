@@ -8,7 +8,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public interface ICollectionEndPointDataKeeper
   {
     IDomainObjectCollectionData CollectionData { get; }
-    IDomainObjectCollectionData OriginalCollectionData { get; }
+    ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
 
     void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);

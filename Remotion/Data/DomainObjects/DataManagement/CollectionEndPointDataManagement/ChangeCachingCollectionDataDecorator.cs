@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _stateUpdateListener = stateUpdateListener;
     }
 
-    public IDomainObjectCollectionData OriginalData
+    public ReadOnlyCollectionDataDecorator OriginalData
     {
       get { return new ReadOnlyCollectionDataDecorator (_originalData, false); }
     }
