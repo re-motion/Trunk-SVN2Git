@@ -37,14 +37,14 @@
     <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
          Targets="CreatePackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);"/>
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
 
   <Target Name="DeployAll">
     <MSBuild Projects="@(Packages)"
          BuildInParallel="false"
          Targets="DeployPackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
+         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />

@@ -30,11 +30,21 @@
 
   <Target Name="CreateBinaryFiles" DependsOnTargets="CreateStandardExcludes">
     <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
 
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(BinariesDirectory)**\Remotion.Linq.*" 
                    Exclude="@(StandardExcludes)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateLicenseFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <LicenseFiles Remove="@(LicenseFiles)"/>
+      <LicenseFiles Include="$(SolutionDirectory)Relinq\license\*.*" Exclude="@(StandardExcludes)" />
     </ItemGroup>
   </Target>
 

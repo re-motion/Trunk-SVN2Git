@@ -13,6 +13,10 @@
     <Error Text="The target 'CreateBinaryFiles' is not implemented." />
   </Target>
 
+  <Target Name="CreateLicenseFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The target 'CreateLicenseFiles' is not implemented." />
+  </Target>
+
   <Import Project="Remotion.Tasks.include.build" />
 
   <PropertyGroup>
@@ -48,13 +52,30 @@
 
   <!-- Binary Package -->
 
-  <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateBinaryFiles;CreateOutputDirectory;">
+  <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateBinaryFiles;CreateLicenseFiles;CreateOutputDirectory;">
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
-    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" 
-                                             ZipFileName="$(BinaryZipFile)" 
-                                             RemoveRoot="$(BinariesDirectory)" 
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create"
+                                             ZipFileName="$(BinaryZipFile)"
+                                             RemoveRoot="$(BinariesDirectory)"
                                              CompressFiles="@(BinaryFiles)" />
+
+    <PropertyGroup>
+      <_tempLicenseFilesDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\</_tempLicenseFilesDirectory>
+    </PropertyGroup>
+
+    <Copy DestinationFolder="$(_tempLicenseFilesDirectory)license" SourceFiles="@(LicenseFiles)" />
+
+    <ItemGroup>
+      <_tempLicenseFiles Remove="@(_tempReleaseNoteFiles)"/>
+      <_tempLicenseFiles Include="$(_tempLicenseFilesDirectory)\**" />
+    </ItemGroup>
+
+
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
+                                             ZipFileName="$(BinaryZipFile)"
+                                             RemoveRoot="$(_tempLicenseFilesDirectory)"
+                                             CompressFiles="@(_tempLicenseFiles)" />
   </Target>
 
   <Target Name="CreateBinaryZipFileProperty" DependsOnTargets="CreatePackageProperties">
@@ -100,12 +121,23 @@
       <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
       <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
     </ItemGroup>
+
+    <PropertyGroup>
+      <_tempReleaseNotesDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\</_tempReleaseNotesDirectory>
+    </PropertyGroup>
+    
+    <Copy DestinationFolder="$(_tempReleaseNotesDirectory)release-notes" SourceFiles="@(_releaseNoteFiles)" />
+
+    <ItemGroup>
+      <_tempReleaseNoteFiles Remove="@(_tempReleaseNoteFiles)"/>
+      <_tempReleaseNoteFiles Include="$(_tempReleaseNotesDirectory)**" />
+    </ItemGroup>
     
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
                                              ZipFileName="$(BinaryZipFile)"
-                                             RemoveRoot="$([System.IO.Directory]::GetParent ($(ReleaseNotesDirectory)))"
-                                             CompressFiles="@(_releaseNoteFiles)" 
-                                             Condition="@(_releaseNoteFiles) != ''"/>
+                                             RemoveRoot="$(_tempReleaseNotesDirectory)"
+                                             CompressFiles="@(_tempReleaseNoteFiles)" 
+                                             Condition="@(_tempReleaseNoteFiles) != ''"/>
 
     <PropertyGroup>
       <_releaseNotesFile>$(ReleaseNotesDirectory)ReleaseNotes_v$(Version).html</_releaseNotesFile>
