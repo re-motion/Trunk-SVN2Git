@@ -66,9 +66,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       // Data is already complete
     }
 
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       // Data is already complete

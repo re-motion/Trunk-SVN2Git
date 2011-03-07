@@ -80,7 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());
       _dataKeeperMock.Replay ();
 
-      _loadState.MarkDataComplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+      var items = new DomainObject[] { _relatedObject };
+      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => { stateSetterCalled = true; });
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations ();
@@ -110,7 +111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       }
       _dataKeeperMock.Replay ();
 
-      _loadState.MarkDataComplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+      var items = new DomainObject[] { _relatedObject };
+      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => { stateSetterCalled = true; });
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations ();

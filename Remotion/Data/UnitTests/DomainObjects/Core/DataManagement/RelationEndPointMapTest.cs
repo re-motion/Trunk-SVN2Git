@@ -20,13 +20,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -500,30 +498,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterRealObjectEndPoint_MarksOppositeVirtualCollectionEndPointIncomplete ()
+    public void UnregisterRealObjectEndPoint_UnregistersFromOppositeVirtualCollectionEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realEndPoint = new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
 
-      var itemReference = LifetimeService.GetObjectReference (_map.ClientTransaction, DomainObjectIDs.OrderItem1);
-      
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeCollectionEndPoint = (CollectionEndPoint)  _map[oppositeEndPointID];
-      Assert.That (oppositeCollectionEndPoint, Is.Not.Null);
-      oppositeCollectionEndPoint.MarkDataComplete ();
-      Assert.That (oppositeCollectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (oppositeCollectionEndPoint.Collection, List.Contains (itemReference));
-      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
+      oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
+      oppositeEndPointMock.Expect (mock => mock.UnregisterOppositeEndPoint (realEndPoint));
+      oppositeEndPointMock.Replay();
 
       _map.UnregisterRealObjectEndPoint (id);
 
-      Assert.That (_map[oppositeEndPointID], Is.SameAs (oppositeCollectionEndPoint));
-      Assert.That (oppositeCollectionEndPoint.IsDataComplete, Is.False);
-
-      var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (oppositeCollectionEndPoint);
-      Assert.That (dataKeeper.CollectionData.ToArray(), List.Not.Contains (itemReference));
-      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
+      oppositeEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -647,7 +639,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID);
-      collectionEndPoint.MarkDataComplete();
+      collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       Assert.That (_map[endPointID], Is.Not.Null);
 
       var item = DomainObjectMother.CreateFakeObject<Order> ();
@@ -767,6 +759,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var collectionEndPoint = (CollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
       Assert.That (collectionEndPoint.Collection, Is.Empty);
     }
 
@@ -927,7 +920,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var oppositeCollectionEndPoint = (ICollectionEndPoint) _map[oppositeCollectionEndPointID];
-      oppositeCollectionEndPoint.MarkDataComplete (); // mark the current state as the "full" state of the collection
+      oppositeCollectionEndPoint.MarkDataComplete (new DomainObject[0]);
 
       var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);
 
@@ -1037,7 +1030,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (_map[endPointID], Is.Null);
 
-      _map.MarkCollectionEndPointComplete (endPointID);
+      _map.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
 
       var collectionEndPoint = (ICollectionEndPoint) _map[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
@@ -1050,30 +1043,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
 
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID);
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
+      var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
+      collectionEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPointMock));
 
-      _map.MarkCollectionEndPointComplete (endPointID);
+      var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order>() };
 
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-    }
+      collectionEndPointMock.Expect (mock => mock.MarkDataComplete (items));
+      collectionEndPointMock.Replay();
 
-    [Test]
-    public void MarkCollectionEndPointComplete_EndPointRegistered_AlreadyComplete ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.MarkCollectionEndPointComplete (endPointID, items);
 
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID);
-      collectionEndPoint.MarkDataComplete();
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-
-      _map.MarkCollectionEndPointComplete (endPointID);
-
-      Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+      collectionEndPointMock.VerifyAllExpectations();
+      Assert.That (_map[endPointID], Is.SameAs (collectionEndPointMock));
     }
 
     [Test]
@@ -1082,7 +1065,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MarkCollectionEndPointComplete_ChecksCardinality ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      _map.MarkCollectionEndPointComplete (endPointID);
+      _map.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
     }
 
     [Test]
@@ -1091,7 +1074,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MarkCollectionEndPointComplete_ChecksAnonymity ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
-      _map.MarkCollectionEndPointComplete (endPointID);
+      _map.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
     }
 
     [Test]
@@ -1099,7 +1082,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-      endPoint.MarkDataComplete();
+      endPoint.MarkDataComplete (new DomainObject[0]);
 
       var addedObject = Order.NewObject();
       endPoint.Collection.Add (addedObject);
@@ -1116,7 +1099,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-      endPoint.MarkDataComplete();
+      endPoint.MarkDataComplete (new DomainObject[0]);
 
       var addedObject = Order.NewObject();
       endPoint.Collection.Add (addedObject);

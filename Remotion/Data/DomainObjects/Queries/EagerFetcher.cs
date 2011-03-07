@@ -16,10 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -39,6 +41,12 @@ namespace Remotion.Data.DomainObjects.Queries
         IObjectLoader fetchQueryResultLoader,
         IDataManager dataManager)
     {
+      ArgumentUtility.CheckNotNull ("originalObjects", originalObjects);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
+      ArgumentUtility.CheckNotNull ("fetchQueryResultLoader", fetchQueryResultLoader);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').",
           relationEndPointDefinition.PropertyName,
@@ -57,7 +65,60 @@ namespace Remotion.Data.DomainObjects.Queries
       CheckFetchedObjects (relationEndPointDefinition, fetchedObjects);
 
       if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
-        MarkCollectionEndPointsComplete (relationEndPointDefinition, originalObjects, dataManager);
+        MarkCollectionEndPointsComplete (relationEndPointDefinition, dataManager, originalObjects, fetchedObjects);
+    }
+
+    private void MarkCollectionEndPointsComplete (
+        IRelationEndPointDefinition relationEndPointDefinition,
+        IDataManager dataManager,
+        IEnumerable<DomainObject> originalObjects,
+        IEnumerable<DomainObject> fetchedObjects)
+    {
+      var relatedObjectsByOriginalObject = GroupFetchedObjectsOneMany (fetchedObjects, relationEndPointDefinition, dataManager);
+      foreach (var originalObject in originalObjects)
+      {
+        if (originalObject != null)
+        {
+          var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
+          var relatedObjects = relatedObjectsByOriginalObject[originalObject.ID];
+          try
+          {
+            dataManager.MarkCollectionEndPointComplete (relationEndPointID, relatedObjects.ToArray ());
+          }
+          catch (InvalidOperationException ex)
+          {
+            s_log.WarnFormat (
+                ex, 
+                "Eager fetch result for relation end-point '{0}' is discarded; the end-point has already been loaded.", 
+                relationEndPointID);
+          }
+        }
+      }
+    }
+
+    private MultiDictionary<ObjectID, DomainObject> GroupFetchedObjectsOneMany (
+        IEnumerable<DomainObject> relatedObjects, 
+        IRelationEndPointDefinition relationEndPointDefinition,
+        IDataManager dataManager)
+    {
+      var result = new MultiDictionary<ObjectID, DomainObject> ();
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
+
+      foreach (var relatedObject in relatedObjects)
+      {
+        if (relatedObject != null)
+        {
+          // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query
+          var dataContainer = dataManager.GetDataContainerWithoutLoading (relatedObject.ID);
+          Assertion.IsNotNull (dataContainer);
+
+          var propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyName];
+          var originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current);
+          if (originatingObjectID != null)
+            result.Add (originatingObjectID, relatedObject);
+        }
+      }
+      return result;
     }
 
     private void CheckOriginalObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originalObjects)
@@ -65,9 +126,7 @@ namespace Remotion.Data.DomainObjects.Queries
       foreach (var originalObject in originalObjects)
       {
         if (originalObject != null)
-        {
           CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
-        }
       }
     }
 
@@ -88,21 +147,6 @@ namespace Remotion.Data.DomainObjects.Queries
         {
           LogNullRelatedObject (relationEndPointDefinition);
           loggedNullRelatedObject = true;
-        }
-      }
-    }
-
-    private void MarkCollectionEndPointsComplete (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        IEnumerable<DomainObject> originalObjects,
-        IDataManager dataManager)
-    {
-      foreach (var originalObject in originalObjects)
-      {
-        if (originalObject != null)
-        {
-          var relationEndPointID = RelationEndPointID.Create(originalObject.ID, relationEndPointDefinition);
-          dataManager.MarkCollectionEndPointComplete (relationEndPointID);
         }
       }
     }

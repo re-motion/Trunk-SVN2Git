@@ -370,12 +370,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Action stateSetter = null;
 
+      var items = new DomainObject[0];
+
       _loadStateMock
-          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPointWithLoadStateMock), Arg<Action>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[1]; });
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPointWithLoadStateMock), Arg.Is (items), Arg<Action>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.MarkDataComplete();
+      _endPointWithLoadStateMock.MarkDataComplete (items);
 
       _loadStateMock.VerifyAllExpectations ();
 

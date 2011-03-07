@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         else
         {
           var endPoint = RegisterCollectionEndPoint (endPointID);
-          endPoint.MarkDataComplete ();
+          endPoint.MarkDataComplete (new DomainObject[0]);
         }
       }
     }
@@ -311,14 +311,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID)
+    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("items", items);
       CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
       CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
 
       var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
-      endPoint.MarkDataComplete ();
+      endPoint.MarkDataComplete (items);
     }
     
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)

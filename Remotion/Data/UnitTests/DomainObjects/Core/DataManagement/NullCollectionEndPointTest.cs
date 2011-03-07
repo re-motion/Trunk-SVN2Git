@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataComplete ()
     {
-      _nullEndPoint.MarkDataComplete();
+      _nullEndPoint.MarkDataComplete (new DomainObject[0]);
     }
 
     [Test]

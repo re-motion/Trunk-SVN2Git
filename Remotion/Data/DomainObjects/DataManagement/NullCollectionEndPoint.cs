@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("It is not possible to call GetCollectionWithOriginalData on a NullCollectionEndPoint.");
     }
 
-    public void MarkDataComplete ()
+    public void MarkDataComplete (DomainObject[] items)
     {
       // ignore
     }

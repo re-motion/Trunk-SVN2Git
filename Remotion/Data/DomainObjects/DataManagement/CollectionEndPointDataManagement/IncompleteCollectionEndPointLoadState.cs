@@ -70,9 +70,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
     }
 
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       foreach (var oppositeEndPoint in _oppositeEndPoints)

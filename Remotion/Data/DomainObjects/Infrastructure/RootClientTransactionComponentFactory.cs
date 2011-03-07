@@ -58,7 +58,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ObjectFactory.Create<RootPersistenceStrategy> (true, ParamList.Create (id));
     }
 
-    public virtual IObjectLoader CreateObjectLoader (ClientTransaction clientTransaction, IPersistenceStrategy persistenceStrategy, IClientTransactionListener eventSink)
+    public virtual IObjectLoader CreateObjectLoader (
+        ClientTransaction clientTransaction, 
+        IPersistenceStrategy persistenceStrategy, 
+        IClientTransactionListener eventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);

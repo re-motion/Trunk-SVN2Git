@@ -86,7 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Replay ();
       _dataKeeperMock.Replay ();
 
-      _loadState.MarkDataComplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called"));
+      var items = new DomainObject[] { _relatedObject };
+      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => Assert.Fail ("Must not be called"));
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations ();

@@ -25,6 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -57,13 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       if (initialContents != null)
       {
         var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
-        foreach (var domainObject in initialContents)
+        var domainObjects = initialContents.ToArray ();
+        foreach (var domainObject in domainObjects)
         {
           var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPointID.Definition.GetOppositeEndPointDefinition());
           var oppositeEndPoint = (IObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
           newCollectionEndPoint.RegisterOppositeEndPoint (oppositeEndPoint);
         }
-        newCollectionEndPoint.MarkDataComplete();
+        newCollectionEndPoint.MarkDataComplete (domainObjects);
       }
       return newCollectionEndPoint;
     }

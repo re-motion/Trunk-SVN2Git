@@ -154,14 +154,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void MarkDataComplete (DomainObject[] items)
+    {
+      throw new NotImplementedException();
+    }
+
     public DomainObjectCollection OriginalCollection
     {
       get { throw new NotImplementedException(); }
-    }
-
-    public void MarkDataComplete ()
-    {
-      throw new NotImplementedException();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)

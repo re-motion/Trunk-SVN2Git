@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void CheckMandatoryRelations (DataContainer dataContainer);
     
     void RegisterDataContainer (DataContainer dataContainer);
-    void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID);
+    void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items);
     
     void Commit ();
     void Rollback ();

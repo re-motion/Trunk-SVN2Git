@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDomainObjectCollectionData GetCollectionData ();
     DomainObjectCollection GetCollectionWithOriginalData ();
 
-    void MarkDataComplete ();
+    void MarkDataComplete (DomainObject[] items);
     void MarkDataIncomplete ();
 
     IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection);

@@ -180,11 +180,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
     }
 
-    public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID)
+    public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      ArgumentUtility.CheckNotNull ("items", items);
 
-      _relationEndPointMap.MarkCollectionEndPointComplete (relationEndPointID);
+      _relationEndPointMap.MarkCollectionEndPointComplete (relationEndPointID, items);
     }
 
     public void Commit ()
@@ -275,9 +276,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
-      
-      _objectLoader.LoadRelatedObjects (collectionEndPoint.ID, this);
-      _relationEndPointMap.MarkCollectionEndPointComplete (collectionEndPoint.ID);
+
+      var domainObjects = _objectLoader.LoadRelatedObjects (collectionEndPoint.ID, this);
+      _relationEndPointMap.MarkCollectionEndPointComplete (collectionEndPoint.ID, domainObjects);
 
     }
 

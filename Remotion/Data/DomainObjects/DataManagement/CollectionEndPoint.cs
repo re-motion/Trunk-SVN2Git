@@ -122,9 +122,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.EnsureDataComplete(this);
     }
 
-    public void MarkDataComplete ()
+    public void MarkDataComplete (DomainObject[] items)
     {
-      _loadState.MarkDataComplete (this, SetCompleteLoadState);
+      ArgumentUtility.CheckNotNull ("items", items);
+      _loadState.MarkDataComplete (this, items, SetCompleteLoadState);
     }
 
     public void MarkDataIncomplete ()
