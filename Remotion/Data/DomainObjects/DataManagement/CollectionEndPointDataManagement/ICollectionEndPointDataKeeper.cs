@@ -11,7 +11,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
-    ICollection<IObjectEndPoint> OppositeEndPoints { get; }
+    IObjectEndPoint[] OppositeEndPoints { get; }
 
     void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);

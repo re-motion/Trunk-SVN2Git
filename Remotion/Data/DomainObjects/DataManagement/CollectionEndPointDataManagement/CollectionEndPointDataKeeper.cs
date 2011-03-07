@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
@@ -79,9 +80,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _collectionData.OriginalData; }
     }
 
-    public ICollection<IObjectEndPoint> OppositeEndPoints
+    public IObjectEndPoint[] OppositeEndPoints
     {
-      get { return _oppositeEndPoints; }
+      get { return _oppositeEndPoints.ToArray(); }
     }
 
     public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)

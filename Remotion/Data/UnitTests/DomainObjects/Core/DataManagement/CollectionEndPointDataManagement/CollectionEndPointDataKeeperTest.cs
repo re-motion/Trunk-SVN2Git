@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _dataKeeper.RegisterOppositeEndPoint (endPointMock);
 
-      Assert.That (_dataKeeper.OppositeEndPoints.Count, Is.EqualTo (1));
+      Assert.That (_dataKeeper.OppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
       
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
-      Assert.That (deserializedInstance.OppositeEndPoints.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OppositeEndPoints.Length, Is.EqualTo (1));
     }
 
     [Test]
