@@ -25,12 +25,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// <summary>
   /// Keeps the data of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
-  public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
+  public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
+
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
+
     private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
@@ -46,7 +48,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
       var wrappedData = new DomainObjectCollectionData ();
-      _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
+      var updateListener = new CollectionDataStateUpdateListener (_clientTransaction, _endPointID);
+      _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
+      
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
     }
 
@@ -117,16 +121,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _collectionData.Commit ();
     }
 
-    private void RaiseChangeStateNotification (bool? newChangedState)
-    {
-      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, EndPointID, newChangedState);
-    }
-
-    void ICollectionDataStateUpdateListener.StateUpdated (bool? newChangedState)
-    {
-      RaiseChangeStateNotification (newChangedState);
-    }
-
     #region Serialization
 
     // ReSharper disable UnusedMember.Local
@@ -139,7 +133,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
       
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
-      _collectionData.SetStateUpdateListener (this);
 
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
       info.FillCollection (_oppositeEndPoints);
@@ -158,6 +151,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     }
 
     #endregion
-
   }
 }

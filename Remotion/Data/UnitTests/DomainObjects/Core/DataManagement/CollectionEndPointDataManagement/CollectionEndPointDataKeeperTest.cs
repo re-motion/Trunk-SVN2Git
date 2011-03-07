@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagemen
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -244,9 +243,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OppositeEndPoints.Count, Is.EqualTo (1));
-      
-      var deserializedCollectionData = (ChangeCachingCollectionDataDecorator) deserializedInstance.CollectionData;
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedCollectionData, "_stateUpdateListener"), Is.SameAs (deserializedInstance));
     }
 
     [Test]
