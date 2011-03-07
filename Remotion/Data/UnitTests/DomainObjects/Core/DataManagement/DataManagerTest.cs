@@ -971,7 +971,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.PropertyValues[typeof (OrderItem).FullName + ".Order"].Value = endPointID.ObjectID;
       dataContainer.SetDomainObject (domainObject);
 
-      var endPoint = ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, null);
+      var endPoint = ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap).RegisterCollectionEndPoint (endPointID);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       _objectLoaderMock
@@ -1004,7 +1004,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void LoadLazyCollectionEndPoint_AlreadyLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = ((RelationEndPointMap) _dataManager.RelationEndPointMap).RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      var endPoint = ((RelationEndPointMap) _dataManager.RelationEndPointMap).RegisterCollectionEndPoint (endPointID);
+      endPoint.MarkDataComplete();
       Assert.That (endPoint.IsDataComplete, Is.True);
 
       _dataManager. LoadLazyCollectionEndPoint (endPoint);

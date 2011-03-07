@@ -33,22 +33,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
     private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
 
-    // TODO 3772: Remove ctor argument for initial contents
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        IComparer<DomainObject> sortExpressionBasedComparer,
-        IEnumerable<DomainObject> initialContents)
+        IComparer<DomainObject> sortExpressionBasedComparer)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
-      var wrappedData = new DomainObjectCollectionData (initialContents);
+      var wrappedData = new DomainObjectCollectionData ();
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
     }

@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -52,8 +53,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           transaction,
           endPointID,
           changeDetectionStrategy,
-          lazyLoader,
-          initialContents);
+          lazyLoader);
+      if (initialContents != null)
+      {
+        foreach (var domainObject in initialContents)
+        {
+          CollectionEndPointTestHelper.RegisterOppositeEndPointForItem (newCollectionEndPoint, domainObject);
+        }
+        newCollectionEndPoint.MarkDataComplete();
+      }
       return newCollectionEndPoint;
     }
 

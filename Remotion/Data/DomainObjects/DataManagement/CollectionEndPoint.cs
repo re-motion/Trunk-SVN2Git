@@ -46,15 +46,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
-        IRelationEndPointLazyLoader lazyLoader,
-        IEnumerable<DomainObject> initialContentsOrNull)
+        IRelationEndPointLazyLoader lazyLoader)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       // TODO 3653: Inject DataKeeper from the outside
-      _dataKeeper = CreateDataKeeper (clientTransaction, id, initialContentsOrNull ?? Enumerable.Empty<DomainObject> ());
+      _dataKeeper = CreateDataKeeper (clientTransaction, id);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData();
@@ -66,10 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
       
-      if (initialContentsOrNull != null)
-        SetCompleteLoadState();
-      else
-        SetIncompleteLoadState();
+      SetIncompleteLoadState();
     }
 
     public DomainObjectCollection Collection
@@ -280,10 +276,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, hasChanged);
     }
 
-    private ICollectionEndPointDataKeeper CreateDataKeeper (
-        ClientTransaction clientTransaction,
-        RelationEndPointID id,
-        IEnumerable<DomainObject> initialContents)
+    private ICollectionEndPointDataKeeper CreateDataKeeper (ClientTransaction clientTransaction, RelationEndPointID id)
     {
       var sortExpression = ((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression();
       // Only root transactions use the sort expression (if any)
@@ -291,7 +284,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, initialContents);
+      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer);
     }
 
     private void SetCompleteLoadState ()

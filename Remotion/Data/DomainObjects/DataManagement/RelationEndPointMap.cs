@@ -206,17 +206,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RemoveEndPoint (endPointID);
     }
 
-    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContentsOrNull)
+    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.Many, "RegisterCollectionEndPoint", "endPointID");
-
+      
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction, 
           endPointID, 
           _collectionEndPointChangeDetectionStrategy,
-          _lazyLoader,
-          initialContentsOrNull);
+          _lazyLoader);
       Add (collectionEndPoint);
 
       return collectionEndPoint;
@@ -254,7 +253,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
         else
         {
-          var endPoint = RegisterCollectionEndPoint (endPointID, null);
+          var endPoint = RegisterCollectionEndPoint (endPointID);
           endPoint.MarkDataComplete ();
         }
       }
@@ -356,7 +355,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
       else
       {
-        var endPoint = RegisterCollectionEndPoint (endPointID, null);
+        var endPoint = RegisterCollectionEndPoint (endPointID);
         endPoint.EnsureDataComplete ();
       }
 
@@ -565,7 +564,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private ICollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
-      return (ICollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID, null);
+      return (ICollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID);
     }
 
     // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it

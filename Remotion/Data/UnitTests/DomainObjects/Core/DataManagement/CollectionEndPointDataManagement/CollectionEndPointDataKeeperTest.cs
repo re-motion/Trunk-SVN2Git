@@ -61,15 +61,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1 });
+      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null);
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
 
-    public void Initialization_NonNullContents ()
+    public void Initialization ()
     {
-      var data = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1, _domainObject2 });
-      Assert.That (data.CollectionData, Is.EqualTo (new[] {_domainObject1, _domainObject2}));
+      var data = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null);
+      Assert.That (data.CollectionData, Is.Empty);
     }
 
     [Test]
@@ -188,8 +188,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var dataKeeper = new CollectionEndPointDataKeeper (
           _clientTransaction,
           _endPointID,
-          null,
-          new[] { _domainObject3, _domainObject1, _domainObject2 });
+          null);
+
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
 
       dataKeeper.SortCurrentAndOriginalData ();
 
@@ -203,8 +206,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var dataKeeper = new CollectionEndPointDataKeeper (
           _clientTransaction,
           _endPointID,
-          _comparer123,
-          new[] { _domainObject3, _domainObject1, _domainObject2 });
+          _comparer123);
+
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
       
       dataKeeper.SortCurrentAndOriginalData();
 
@@ -213,17 +219,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void DataStore ()
-    {
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-    }
-    
-    [Test]
-    public void OriginalData ()
+    public void OriginalCollectionData ()
     {
       var originalData = _dataKeeper.OriginalCollectionData;
 
-      Assert.That (originalData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (originalData.ToArray (), Is.Empty);
       Assert.That (originalData.IsReadOnly, Is.True);
     }
 
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void FlattenedSerializable ()
     {
       var comparer = Comparer<DomainObject>.Default;
-      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, new DomainObject[0]);
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer);
       var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
       data.RegisterOppositeEndPoint (endPointFake);
       
@@ -252,14 +252,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void CommitOriginalContents_UpdatesOriginalContents ()
     {
-      _dataKeeper.CollectionData.Insert (1, _domainObject2);
-      Assert.That (_dataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
+      _dataKeeper.CollectionData.Insert (0, _domainObject1);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
 
       _dataKeeper.CommitOriginalContents ();
 
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 , _domainObject2}));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
     }
 
     [Test]
@@ -288,6 +288,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void StateUpdates_RoutedToTransactionEventSink ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
+      _dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+
       _dataKeeper.CollectionData.Clear();
 
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));

@@ -17,6 +17,7 @@
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -25,6 +26,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public static void SetCollection (CollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection)
     {
       PrivateInvoke.SetPublicProperty (collectionEndPoint, "Collection", newCollection);
+    }
+
+    public static void RegisterOppositeEndPointForItem (CollectionEndPoint collectionEndPoint, DomainObject item)
+    {
+      IObjectEndPoint fakeEndPoint = GetFakeOppositeEndPoint(item);
+      collectionEndPoint.RegisterOppositeEndPoint (fakeEndPoint);
+    }
+
+    public static IObjectEndPoint GetFakeOppositeEndPoint (DomainObject item)
+    {
+      var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();
+      fakeEndPoint.Stub (stub => stub.ObjectID).Return (item.ID);
+      fakeEndPoint.Stub (stub => stub.GetDomainObject()).Return (item);
+      fakeEndPoint.Stub (stub => stub.GetDomainObjectReference()).Return (item);
+      return fakeEndPoint;
     }
   }
 }

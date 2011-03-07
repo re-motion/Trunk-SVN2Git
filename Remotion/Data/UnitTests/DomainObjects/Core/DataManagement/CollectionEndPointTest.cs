@@ -915,8 +915,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransactionMock,
           _customerEndPointID,
           MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> (),
-          MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
-          null);
+          MockRepository.GenerateStub<IRelationEndPointLazyLoader> ());
       PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
       return collectionEndPoint;
     }
