@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -22,6 +23,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -68,10 +71,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var data = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, new[] { _domainObject1, _domainObject2 });
       Assert.That (data.CollectionData, Is.EqualTo (new[] {_domainObject1, _domainObject2}));
     }
-    
+
     [Test]
     public void RegisterOppositeEndPoint ()
     {
+      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
+
       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
       endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       endPointMock.Expect (mock => mock.MarkSynchronized ());
@@ -86,25 +91,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointMock }));
     }
 
     [Test]
     public void UnregisterOppositeEndPoint ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+      endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      endPointMock.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
+      endPointMock.Stub (stub => stub.MarkSynchronized());
       endPointMock.Expect (mock => mock.MarkUnsynchronized ());
       endPointMock.Replay ();
 
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject1));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject1));
+      _dataKeeper.RegisterOppositeEndPoint (endPointMock);
+
+      Assert.That (_dataKeeper.OppositeEndPoints.Count, Is.EqualTo (1));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
       
       _dataKeeper.UnregisterOppositeEndPoint (endPointMock);
 
       endPointMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject1));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject1));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
     }
 
     [Test]
@@ -216,17 +228,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Serializable ()
+    public void FlattenedSerializable ()
     {
-      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, null, new[] { _domainObject1 });
+      var comparer = Comparer<DomainObject>.Default;
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, new DomainObject[0]);
+      var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
+      data.RegisterOppositeEndPoint (endPointFake);
       
-      var deserializedInstance = Serializer.SerializeAndDeserialize (data);
+      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+      Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
 
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OppositeEndPoints.Count, Is.EqualTo (1));
+      
+      var deserializedCollectionData = (ChangeCachingCollectionDataDecorator) deserializedInstance.CollectionData;
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedCollectionData, "_stateUpdateListener"), Is.SameAs (deserializedInstance));
     }
 
     [Test]

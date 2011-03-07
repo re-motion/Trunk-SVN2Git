@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -24,15 +25,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// <summary>
   /// Keeps the data of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
-  [Serializable]
   public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper, ICollectionDataStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
-
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
-    
+    private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
+
+    // TODO 3772: Remove ctor argument for initial contents
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
@@ -49,6 +50,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       var wrappedData = new DomainObjectCollectionData (initialContents);
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, this);
+      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
     }
 
     public ClientTransaction ClientTransaction
@@ -76,12 +78,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _collectionData.OriginalData; }
     }
 
+    public ICollection<IObjectEndPoint> OppositeEndPoints
+    {
+      get { return _oppositeEndPoints; }
+    }
+
     public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
       
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
+      _oppositeEndPoints.Add (oppositeEndPoint);
       oppositeEndPoint.MarkSynchronized ();
     }
 
@@ -91,6 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);
+      _oppositeEndPoints.Remove (oppositeEndPoint);
       oppositeEndPoint.MarkUnsynchronized ();
     }
 
@@ -120,5 +129,38 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       RaiseChangeStateNotification (newChangedState);
     }
+
+    #region Serialization
+
+    // ReSharper disable UnusedMember.Local
+    private CollectionEndPointDataKeeper (FlattenedDeserializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      _clientTransaction = info.GetValueForHandle<ClientTransaction>();
+      _endPointID = info.GetValue<RelationEndPointID>();
+      _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
+      
+      _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
+      _collectionData.SetStateUpdateListener (this);
+
+      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
+      info.FillCollection (_oppositeEndPoints);
+    }
+    // ReSharper restore UnusedMember.Local
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddHandle (_clientTransaction);
+      info.AddValue (_endPointID);
+      info.AddValue (_sortExpressionBasedComparer);
+      info.AddValue (_collectionData);
+      info.AddCollection (_oppositeEndPoints);
+    }
+
+    #endregion
+
   }
 }

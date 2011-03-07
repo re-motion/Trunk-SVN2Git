@@ -23,11 +23,13 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
-  [Serializable]
   public class SerializableObjectEndPointFake : IObjectEndPoint
   {
-    public SerializableObjectEndPointFake ()
+    private readonly DomainObject _owningObject;
+
+    public SerializableObjectEndPointFake (DomainObject owningObject)
     {
+      _owningObject = owningObject;
     }
 
     public SerializableObjectEndPointFake (FlattenedDeserializationInfo info)
@@ -55,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     public ObjectID ObjectID
     {
-      get { throw new NotImplementedException(); }
+      get { return _owningObject.ID; }
     }
 
     public IRelationEndPointDefinition Definition
@@ -85,12 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     public DomainObject GetDomainObject ()
     {
-      throw new NotImplementedException();
+      return _owningObject;
     }
 
     public DomainObject GetDomainObjectReference ()
     {
-      throw new NotImplementedException();
+      return _owningObject;
     }
 
     public void EnsureDataComplete ()
@@ -161,7 +163,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     public void MarkSynchronized ()
     {
-      throw new NotImplementedException();
     }
 
     public void MarkUnsynchronized ()

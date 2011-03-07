@@ -39,7 +39,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class ChangeCachingCollectionDataDecorator : ObservableCollectionDataDecorator
   {
     private readonly CopyOnWriteDomainObjectCollectionData _originalData;
-    private readonly ICollectionDataStateUpdateListener _stateUpdateListener;
+    
+    [NonSerialized]
+    private ICollectionDataStateUpdateListener _stateUpdateListener;
 
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
@@ -59,6 +61,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       get { return new ReadOnlyCollectionDataDecorator (_originalData, false); }
     }
+
+
 
     public bool IsCacheUpToDate
     {
@@ -227,6 +231,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private void RaiseStateUpdatedNotification (bool? newChangedState)
     {
       _stateUpdateListener.StateUpdated (newChangedState);
+    }
+
+    // TODO 3772: Find a better way to do this
+    internal void SetStateUpdateListener (ICollectionDataStateUpdateListener stateUpdateListener)
+    {
+      _stateUpdateListener = stateUpdateListener;
     }
   }
 }

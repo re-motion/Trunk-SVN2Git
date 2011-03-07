@@ -15,21 +15,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
-  [Serializable]
   public class SerializableCollectionEndPointDataKeeperFake : ICollectionEndPointDataKeeper
   {
+    public SerializableCollectionEndPointDataKeeperFake ()
+    {
+    }
+
     public IDomainObjectCollectionData CollectionData
     {
       get { throw new NotImplementedException(); }
     }
 
     public ReadOnlyCollectionDataDecorator OriginalCollectionData
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public ICollection<IObjectEndPoint> OppositeEndPoints
     {
       get { throw new NotImplementedException(); }
     }
@@ -57,6 +67,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void CommitOriginalContents ()
     {
       throw new NotImplementedException();
+    }
+
+    public SerializableCollectionEndPointDataKeeperFake (FlattenedDeserializationInfo info)
+    {
+
+    }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+     
     }
   }
 }
