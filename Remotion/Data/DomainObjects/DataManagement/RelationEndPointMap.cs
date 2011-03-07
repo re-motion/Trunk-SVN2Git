@@ -245,11 +245,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
         if (!endPointID.Definition.IsVirtual)
+        {
           RegisterRealObjectEndPoint (endPointID, dataContainer);
+        }
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
+        {
           RegisterVirtualObjectEndPoint (endPointID, null);
+        }
         else
-          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+        {
+          var endPoint = RegisterCollectionEndPoint (endPointID, null);
+          endPoint.MarkDataComplete ();
+        }
       }
     }
 
