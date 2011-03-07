@@ -85,9 +85,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _oppositeEndPoints.ToArray(); }
     }
 
+    public bool ContainsOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      return _oppositeEndPoints.Contains (oppositeEndPoint);
+    }
+
     public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (ContainsOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
@@ -98,6 +108,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (!ContainsOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);

@@ -43,6 +43,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
+    public bool ContainsOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      return false;
+    }
+
     public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();

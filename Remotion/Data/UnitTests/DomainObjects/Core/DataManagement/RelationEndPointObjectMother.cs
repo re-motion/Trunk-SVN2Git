@@ -56,9 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           lazyLoader);
       if (initialContents != null)
       {
+        var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
         foreach (var domainObject in initialContents)
         {
-          CollectionEndPointTestHelper.RegisterOppositeEndPointForItem (newCollectionEndPoint, domainObject);
+          var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPointID.Definition.GetOppositeEndPointDefinition());
+          var oppositeEndPoint = (IObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+          newCollectionEndPoint.RegisterOppositeEndPoint (oppositeEndPoint);
         }
         newCollectionEndPoint.MarkDataComplete();
       }

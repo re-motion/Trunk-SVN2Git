@@ -122,6 +122,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void CreateSetCommand_Null ()
+    {
+      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      using (_mockRepository.Ordered ())
+      {
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _endPointMock.Expect (mock => mock.CreateSetCommand (null)).Return (fakeCommand);
+      }
+      _lazyLoaderMock.Replay ();
+      _endPointMock.Replay ();
+
+      var result = _state.CreateSetCommand (_endPointMock, null, id => Assert.Fail ("should not be called."));
+
+      _lazyLoaderMock.VerifyAllExpectations ();
+      _endPointMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeCommand));
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var fakeLazyLoader = new SerializableRelationEndPointLazyLoaderFake();

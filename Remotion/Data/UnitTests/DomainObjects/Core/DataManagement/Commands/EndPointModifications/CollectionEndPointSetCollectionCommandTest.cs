@@ -99,8 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      CollectionEndPoint.Collection.Add (_order1); // will stay
-      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
+      // _order1 will stay, _orderWithoutOrderItem will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -133,8 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
-      CollectionEndPoint.Collection.Add (_order1); // will stay
-      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
+      // _order1 will stay, _orderWithoutOrderItem will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -163,8 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      CollectionEndPoint.Collection.Add (_order1); // will stay
-      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
+      // _order1 will stay, _orderWithoutOrderItem will be removed
       
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -194,8 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      CollectionEndPoint.Collection.Add (_order1); // will stay
-      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem); // will be removed
+      // _order1 will stay, _orderWithoutOrderItem will be removed
 
       _newCollection.Add (_order1); // same as existing
       _newCollection.Add (_order2); // new
@@ -287,8 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExpandToAllRelatedObjects ()
     {
-      CollectionEndPoint.Collection.Add (_order1);
-      CollectionEndPoint.Collection.Add (_orderWithoutOrderItem);
+      // _order1 will stay, _orderWithoutOrderItem will be removed
 
       Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));

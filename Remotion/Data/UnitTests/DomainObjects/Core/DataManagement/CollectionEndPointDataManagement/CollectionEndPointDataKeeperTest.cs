@@ -72,6 +72,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void ContainsOppositeEndPoint ()
+    {
+      var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint(_domainObject1);
+
+      Assert.That (_dataKeeper.ContainsOppositeEndPoint (oppositeEndPoint), Is.False);
+
+      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+
+      Assert.That (_dataKeeper.ContainsOppositeEndPoint (oppositeEndPoint), Is.True);
+    }
+
+    [Test]
     public void RegisterOppositeEndPoint ()
     {
       Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
@@ -91,6 +103,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointMock }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
+    public void RegisterOppositeEndPoint_AlreadyRegistered ()
+    {
+      var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
+      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
     }
 
     [Test]
@@ -116,6 +137,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
+    public void RegisterOppositeEndPoint_NotRegistered ()
+    {
+      var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
+      _dataKeeper.UnregisterOppositeEndPoint (oppositeEndPoint);
     }
 
     [Test]

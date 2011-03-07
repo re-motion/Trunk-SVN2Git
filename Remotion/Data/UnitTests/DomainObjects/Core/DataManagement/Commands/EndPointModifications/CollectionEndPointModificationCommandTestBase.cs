@@ -35,6 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private Customer _domainObject;
     private DomainObjectCollectionEventReceiver _collectionEventReceiver;
     private RelationEndPointID _relationEndPointID;
+    private Order _order1;
+    private Order _orderWithoutOrderItem;
 
     public CollectionEndPoint CollectionEndPoint
     {
@@ -67,8 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
+      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+
       _relationEndPointID = RelationEndPointID.Create(DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new DomainObject[0]);
+      _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new[] { _order1, _orderWithoutOrderItem });
       _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.Collection);
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();

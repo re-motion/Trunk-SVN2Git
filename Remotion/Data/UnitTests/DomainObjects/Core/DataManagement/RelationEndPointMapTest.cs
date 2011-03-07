@@ -450,18 +450,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      var itemReference = ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.OrderItem1);
-      Assert.That (itemReference, Is.Not.Null);
-      Assert.That (itemReference.State, Is.EqualTo (StateType.NotLoadedYet));
-
       var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
-      var dataKeeper = RelationEndPointTestHelper.GetCollectionEndPointDataKeeper (collectionEndPoint);
-      Assert.That (dataKeeper.CollectionData.ToArray(), List.Contains (itemReference));
 
       Assert.That (
           ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), 
-          Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)),
+          Is.TypeOf (typeof (UnknownObjectEndPointSyncState)),
           "Because collection's state is incomplete.");
     }
 

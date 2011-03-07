@@ -28,12 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PrivateInvoke.SetPublicProperty (collectionEndPoint, "Collection", newCollection);
     }
 
-    public static void RegisterOppositeEndPointForItem (CollectionEndPoint collectionEndPoint, DomainObject item)
-    {
-      IObjectEndPoint fakeEndPoint = GetFakeOppositeEndPoint(item);
-      collectionEndPoint.RegisterOppositeEndPoint (fakeEndPoint);
-    }
-
     public static IObjectEndPoint GetFakeOppositeEndPoint (DomainObject item)
     {
       var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();

@@ -89,6 +89,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void MarkDataComplete_RegistersOppositeEndPoints ()
+    {
+      bool stateSetterCalled = false;
+
+      var endPointStub1 = MockRepository.GenerateStub<IObjectEndPoint>();
+      var endPointStub2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub1)).Return (false);
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub2)).Return (false);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub1);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub2);
+
+      _collectionEndPointMock.Replay ();
+
+      using (_dataKeeperMock.GetMockRepository().Ordered())
+      {
+        _dataKeeperMock.Expect (mock => mock.RegisterOppositeEndPoint (endPointStub1));
+        _dataKeeperMock.Expect (mock => mock.RegisterOppositeEndPoint (endPointStub2));
+        _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());  
+      }
+      _dataKeeperMock.Replay ();
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _dataKeeperMock.VerifyAllExpectations ();
+
+      Assert.That (stateSetterCalled, Is.True);
+    }
+
+    [Test]
     public void MarkDataIncomplete_DoesNothing ()
     {
       _collectionEndPointMock.Replay ();
@@ -132,16 +162,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOppositeEndPoint (endPointStub));
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub)).Return (false);
       _dataKeeperMock.Replay ();
 
       _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      Assert.That (_loadState.OppositeEndPoints, Is.EqualTo(new[]{endPointStub}));
+      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOppositeEndPoint (endPointStub));
     }
 
     [Test]
-    public void UnregisterOppositeEndPoint ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end point has already been registered.")]
+    public void RegisterOppositeEndPoint_Twice ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub)).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end point has already been registered.")]
+    public void RegisterOppositeEndPoint_AlreadyInDataKeeper ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub)).Return (true);
+      _dataKeeperMock.Replay();
+
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+    }
+
+    [Test]
+    public void UnregisterOppositeEndPoint_RegisteredInLocalList ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+
+      _dataKeeperMock.Stub (stub => stub.ContainsOppositeEndPoint (endPointStub)).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _loadState.RegisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+      Assert.That (_loadState.OppositeEndPoints, List.Contains (endPointStub));
+
+      _loadState.UnregisterOppositeEndPoint (_collectionEndPointMock, endPointStub);
+
+      _dataKeeperMock.AssertWasNotCalled (mock => mock.UnregisterOppositeEndPoint (endPointStub));
+      Assert.That (_loadState.OppositeEndPoints, List.Not.Contains (endPointStub));
+    }
+
+    [Test]
+    public void UnregisterOppositeEndPoint_RegisteredInDataKeeper ()
     {
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
@@ -249,11 +322,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
       var state = new IncompleteCollectionEndPointLoadState (dataKeeper, lazyLoader);
 
+      var oppositeEndPoint = new SerializableObjectEndPointFake (_relatedObject);
+      state.RegisterOppositeEndPoint (_collectionEndPointMock, oppositeEndPoint);
+
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataKeeper, Is.Not.Null);
       Assert.That (result.LazyLoader, Is.Not.Null);
+      Assert.That (result.OppositeEndPoints.Length, Is.EqualTo (1));
     }
 
     private void CheckOperationDelegatesToCompleteState (
