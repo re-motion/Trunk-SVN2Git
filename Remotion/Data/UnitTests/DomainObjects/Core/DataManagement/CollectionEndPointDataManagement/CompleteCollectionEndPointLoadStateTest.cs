@@ -321,13 +321,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void CreateRemoveCommand ()
     {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _collectionEndPointMock.Stub (mock => mock.Definition).Return (_definition);
-
-      _endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (Arg<RelationEndPointID>.Is.Anything)).Return (_relatedEndPointStub);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
@@ -336,8 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
 
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointRemoveCommand) command).DataKeeper, Is.SameAs (_dataKeeperMock));
-      Assert.That (((CollectionEndPointRemoveCommand) command).RemovedEndPoint, Is.SameAs (_relatedEndPointStub));
+      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
     }
 
     [Test]
@@ -362,13 +361,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void CreateInsertCommand ()
     {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _collectionEndPointMock.Stub (mock => mock.Definition).Return (_definition);
-
-      _endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (Arg<RelationEndPointID>.Is.Anything)).Return (_relatedEndPointStub);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
@@ -376,9 +375,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointInsertCommand) command).DataKeeper, Is.SameAs (_dataKeeperMock));
-      Assert.That (((CollectionEndPointInsertCommand) command).InsertedEndPoint, Is.SameAs (_relatedEndPointStub));
     }
 
     [Test]
@@ -392,9 +390,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _collectionEndPointMock.Stub (mock => mock.Definition).Return (_definition);
-
-      _endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (Arg<RelationEndPointID>.Is.Anything)).Return (_relatedEndPointStub);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
@@ -402,9 +397,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointInsertCommand) command).DataKeeper, Is.SameAs (_dataKeeperMock));
-      Assert.That (((CollectionEndPointInsertCommand) command).InsertedEndPoint, Is.SameAs (_relatedEndPointStub));
     }
 
     [Test]

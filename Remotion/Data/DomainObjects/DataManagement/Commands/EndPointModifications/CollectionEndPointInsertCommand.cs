@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -27,36 +26,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   public class CollectionEndPointInsertCommand : RelationEndPointModificationCommand
   {
     private readonly int _index;
-    
-    private readonly ICollectionEndPointDataKeeper _dataKeeper;
+    private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly IRelationEndPointProvider _endPointProvider;
 
     private readonly DomainObjectCollection _modifiedCollection;
-    private readonly IObjectEndPoint _insertedEndPoint;
 
     public CollectionEndPointInsertCommand (
         ICollectionEndPoint modifiedEndPoint, 
         int index, 
         DomainObject insertedObject,
-        ICollectionEndPointDataKeeper dataKeeper,
+        IDomainObjectCollectionData collectionData,
         IRelationEndPointProvider endPointProvider)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
             ArgumentUtility.CheckNotNull ("insertedObject", insertedObject))
     {
+      ArgumentUtility.CheckNotNull ("collectionData", collectionData);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _index = index;
-
-      _dataKeeper = dataKeeper;
+      _modifiedCollectionData = collectionData;
       _endPointProvider = endPointProvider;
       _modifiedCollection = modifiedEndPoint.Collection;
-      
-      _insertedEndPoint = (IObjectEndPoint) GetOppositeEndPoint (modifiedEndPoint, insertedObject, endPointProvider);
     }
 
     public int Index
@@ -69,14 +64,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollection; }
     }
 
-    public ICollectionEndPointDataKeeper DataKeeper
+    public IDomainObjectCollectionData ModifiedCollectionData
     {
-      get { return _dataKeeper; }
-    }
-
-    public IObjectEndPoint InsertedEndPoint
-    {
-      get { return _insertedEndPoint; }
+      get { return _modifiedCollectionData; }
     }
 
     protected override void ScopedBegin ()
@@ -87,7 +77,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      DataKeeper.Insert (Index, _insertedEndPoint);
+      ModifiedCollectionData.Insert (Index, NewRelatedObject);
       ModifiedEndPoint.Touch();
     }
 
@@ -111,14 +101,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
+      var insertedObjectEndPoint = (IObjectEndPoint) GetOppositeEndPoint (ModifiedEndPoint, NewRelatedObject, _endPointProvider);
       // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfInsertedObject = _insertedEndPoint.GetOppositeObject (false);
+      var oldRelatedObjectOfInsertedObject = insertedObjectEndPoint.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation
-      var oldRelatedEndPointOfInsertedObject = GetOppositeEndPoint (_insertedEndPoint, oldRelatedObjectOfInsertedObject, _endPointProvider);
+      var oldRelatedEndPointOfInsertedObject = GetOppositeEndPoint (insertedObjectEndPoint, oldRelatedObjectOfInsertedObject, _endPointProvider);
 
       return new ExpandedCommand (
           // insertedOrder.Customer = customer (previously oldCustomer)
-          _insertedEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject()),
+          insertedObjectEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject ()),
           // customer.Orders.Insert (insertedOrder, index)
           this,
           // oldCustomer.Orders.Remove (insertedOrder)

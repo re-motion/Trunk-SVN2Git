@@ -83,6 +83,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void Clear ()
+    {
+      throw new NotImplementedException();
+    }
+
     public SerializableCollectionEndPointDataKeeperFake (FlattenedDeserializationInfo info)
     {
 

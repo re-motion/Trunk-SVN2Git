@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -31,8 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public abstract class CollectionEndPointModificationCommandTestBase : ClientTransactionBaseTest
   {
     private CollectionEndPoint _collectionEndPoint;
-    private IDomainObjectCollectionData _collectionDataMock; // TODO 3771: Check if this is still needed
-    private ICollectionEndPointDataKeeper _dataKeeperMock;
+    private IDomainObjectCollectionData _collectionDataMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private Customer _domainObject;
     private DomainObjectCollectionEventReceiver _collectionEventReceiver;
@@ -48,11 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public IDomainObjectCollectionData CollectionDataMock
     {
       get { return _collectionDataMock; }
-    }
-
-    public ICollectionEndPointDataKeeper DataKeeperMock
-    {
-      get { return _dataKeeperMock; }
     }
 
     public IRelationEndPointProvider EndPointProviderStub
@@ -92,9 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       CollectionDataMock.Replay ();
 
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-
-      _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper>();
-      _dataKeeperMock.Replay();
     }
 
     protected IList<RelationEndPointModificationCommand> GetAllCommands (ExpandedCommand bidirectionalModification)

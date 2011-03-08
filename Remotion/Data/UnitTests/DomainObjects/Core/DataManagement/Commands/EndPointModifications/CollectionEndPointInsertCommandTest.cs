@@ -28,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public class CollectionEndPointInsertCommandTest : CollectionEndPointModificationCommandTestBase
   {
     private Order _insertedRelatedObject;
-    private IObjectEndPoint _insertedEndPoint;
     private CollectionEndPointInsertCommand _command;
 
     public override void SetUp ()
@@ -37,13 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _insertedRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
 
-      var insertedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_insertedRelatedObject.ID, "Customer");
-      _insertedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[insertedEndPointID];
-      Assert.That (_insertedEndPoint, Is.Not.Null);
-
-      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (_insertedEndPoint.ID)).Return (_insertedEndPoint);
-
-      _command = new CollectionEndPointInsertCommand (CollectionEndPoint, 12, _insertedRelatedObject, DataKeeperMock, EndPointProviderStub);
+      _command = new CollectionEndPointInsertCommand (CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub);
     }
 
     [Test]
@@ -54,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_command.NewRelatedObject, Is.SameAs (_insertedRelatedObject));
       Assert.That (_command.Index, Is.EqualTo (12));
       Assert.That (_command.ModifiedCollection, Is.SameAs (CollectionEndPoint.Collection));
-      Assert.That (_command.DataKeeper, Is.SameAs (DataKeeperMock));
+      Assert.That (_command.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
     }
 
     [Test]
@@ -63,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, DataKeeperMock, EndPointProviderStub);
+      new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub);
     }
 
     [Test]
@@ -123,13 +116,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      DataKeeperMock.BackToRecord ();
-      DataKeeperMock.Expect (mock => mock.Insert (12, _insertedEndPoint));
-      DataKeeperMock.Replay ();
+      CollectionDataMock.BackToRecord ();
+      CollectionDataMock.Expect (mock => mock.Insert (12, _insertedRelatedObject));
+      CollectionDataMock.Replay ();
 
       _command.Perform ();
 
-      DataKeeperMock.VerifyAllExpectations ();
+      CollectionDataMock.VerifyAllExpectations ();
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
@@ -139,23 +132,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Perform_OnDiscardedObject ()
-    {
-      _insertedRelatedObject.Delete();
-      ClientTransactionMock.DataManager.Discard (_insertedRelatedObject.InternalDataContainer);
-
-      DataKeeperMock.BackToRecord ();
-      DataKeeperMock.Expect (mock => mock.Insert (12, _insertedEndPoint));
-      DataKeeperMock.Replay ();
-
-      _command.Perform ();
-
-      DataKeeperMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void ExpandToAllRelatedObjects ()
     {
+      var insertedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_insertedRelatedObject.ID, "Customer");
+      var insertedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[insertedEndPointID];
+      Assert.That (insertedEndPoint, Is.Not.Null);
+      
+      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (insertedEndPoint.ID)).Return (insertedEndPoint);
+      
       var oldCustomer = _insertedRelatedObject.Customer;
       var oldRelatedEndPointOfInsertedObject =
           ClientTransactionMock.DataManager.RelationEndPointMap[RelationEndPointID.Create (oldCustomer, c => c.Orders)];
@@ -171,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
       Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[0].ModifiedEndPoint, Is.SameAs (_insertedEndPoint));
+      Assert.That (steps[0].ModifiedEndPoint, Is.SameAs (insertedEndPoint));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (oldCustomer));
       Assert.That (steps[0].NewRelatedObject, Is.SameAs (DomainObject));
 

@@ -121,22 +121,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _collectionData.Commit ();
     }
 
-    public void Insert (int index, IObjectEndPoint insertedEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("insertedEndPoint", insertedEndPoint);
-
-      var domainObject = insertedEndPoint.GetDomainObjectReference();
-      _collectionData.Insert (index, domainObject);
-    }
-
-    public void Remove (IObjectEndPoint removedEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("removedEndPoint", removedEndPoint);
-
-      var domainObject = removedEndPoint.GetDomainObjectReference();
-      _collectionData.Remove (domainObject);
-    }
-
     #region Serialization
 
     // ReSharper disable UnusedMember.Local
