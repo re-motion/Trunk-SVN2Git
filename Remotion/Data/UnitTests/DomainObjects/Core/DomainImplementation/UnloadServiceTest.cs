@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void UnloadCollectionEndPoint ()
     {
-      EnsureEndPointLoaded (_endPointID);
+      EnsureEndPointLoadedAndComplete (_endPointID);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
 
@@ -61,13 +61,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void UnloadCollectionEndPoint_NotComplete ()
+    {
+      EnsureEndPointLoadedAndComplete (_endPointID);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadTransactionMode.ThisTransactionOnly);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.False);
+
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' does not denote a CollectionEndPoint.\r\nParameter name: endPointID")]
     public void UnloadCollectionEndPoint_ObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      EnsureEndPointLoaded (objectEndPointID);
+      EnsureEndPointLoadedAndComplete (objectEndPointID);
 
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, objectEndPointID, UnloadTransactionMode.ThisTransactionOnly);
     }
@@ -95,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var subDataManager = ClientTransactionTestHelper.GetDataManager (subTransaction);
       var parentDataManager = ClientTransactionMock.DataManager;
 
-      EnsureEndPointLoaded (subDataManager,_endPointID);
+      EnsureEndPointLoadedAndComplete (subDataManager,_endPointID);
 
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
@@ -114,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var subDataManager = ClientTransactionTestHelper.GetDataManager (subTransaction);
       var parentDataManager = ClientTransactionMock.DataManager;
 
-      EnsureEndPointLoaded (subDataManager, _endPointID);
+      EnsureEndPointLoadedAndComplete (subDataManager, _endPointID);
 
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
@@ -128,13 +142,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void TryUnloadCollectionEndPoint_Success ()
     {
-      EnsureEndPointLoaded (_endPointID);
+      EnsureEndPointLoadedAndComplete (_endPointID);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
 
       var result = UnloadService.TryUnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (result, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void TryUnloadCollectionEndPoint_NotComplete ()
+    {
+      EnsureEndPointLoadedAndComplete (_endPointID);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadTransactionMode.ThisTransactionOnly);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.False);
+
+      UnloadService.TryUnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadTransactionMode.ThisTransactionOnly);
+
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.False);
     }
@@ -166,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var subDataManager = ClientTransactionTestHelper.GetDataManager (subTransaction);
       var parentDataManager = ClientTransactionMock.DataManager;
 
-      EnsureEndPointLoaded (subDataManager, _endPointID);
+      EnsureEndPointLoadedAndComplete (subDataManager, _endPointID);
 
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataComplete, Is.True);
@@ -286,6 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+      EnsureEndPointLoadedAndComplete (orderItemsEndPoint.ID);
 
       var orderItem1 = orderItemsEndPoint.Collection[0];
       var orderItem2 = orderItemsEndPoint.Collection[1];
@@ -303,6 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      EnsureEndPointLoadedAndComplete (ordersEndPoint.ID);
 
       Assert.That (ordersEndPoint.Collection, Is.Empty);
 
@@ -319,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_ObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      EnsureEndPointLoaded (objectEndPointID);
+      EnsureEndPointLoadedAndComplete (objectEndPointID);
 
       UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID, UnloadTransactionMode.ThisTransactionOnly);
     }
@@ -389,12 +419,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+      EnsureEndPointLoadedAndComplete (parentOrderItemsEndPoint.ID);
 
       var orderItem1 = parentOrderItemsEndPoint.Collection[0];
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrderItemsEndPoint.ID);
+      EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrderItemsEndPoint.ID);
 
       UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
 
@@ -410,12 +442,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+      EnsureEndPointLoadedAndComplete (parentOrderItemsEndPoint.ID);
 
       var orderItem1 = parentOrderItemsEndPoint.Collection[0];
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrderItemsEndPoint.ID);
+      EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrderItemsEndPoint.ID);
 
       UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, UnloadTransactionMode.RecurseToRoot);
 
@@ -431,12 +465,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      EnsureEndPointLoadedAndComplete (parentOrdersEndPoint.ID);
 
       Assert.That (parentOrdersEndPoint.Collection, Is.Empty);
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
+      EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrdersEndPoint.ID);
 
       UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
 
@@ -449,12 +485,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      EnsureEndPointLoadedAndComplete (parentOrdersEndPoint.ID);
 
       Assert.That (parentOrdersEndPoint.Collection, Is.Empty);
 
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
+      EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrdersEndPoint.ID);
 
       UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadTransactionMode.RecurseToRoot);
 
@@ -467,6 +505,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+      EnsureEndPointLoadedAndComplete (orderItemsEndPoint.ID);
 
       var orderItem1 = orderItemsEndPoint.Collection[0];
       var orderItem2 = orderItemsEndPoint.Collection[1];
@@ -489,6 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      EnsureEndPointLoadedAndComplete (ordersEndPoint.ID);
 
       Assert.That (ordersEndPoint.Collection, Is.Empty);
 
@@ -509,7 +549,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void TryUnloadCollectionEndPointAndData_ObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      EnsureEndPointLoaded (objectEndPointID);
+      EnsureEndPointLoadedAndComplete (objectEndPointID);
 
       UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID, UnloadTransactionMode.ThisTransactionOnly);
     }
@@ -533,9 +573,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
-
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
-
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
@@ -594,6 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
+      EnsureEndPointLoadedAndComplete (parentOrdersEndPoint.ID);
 
       customer.Orders[0].MarkAsChanged ();
 
@@ -602,6 +641,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var subTransaction = ClientTransactionMock.CreateSubTransaction ();
       var subOrdersEndPoint = (ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
+      EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrdersEndPoint.ID);
 
       Assert.That (subOrdersEndPoint.Collection[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));
 
@@ -612,16 +652,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (parentOrdersEndPoint.IsDataComplete, Is.True);
     }
 
-    private void EnsureEndPointLoaded (RelationEndPointID endPointID)
+    private void EnsureEndPointLoadedAndComplete (RelationEndPointID endPointID)
     {
       var dataManager = ClientTransactionMock.DataManager;
-      EnsureEndPointLoaded (dataManager, endPointID);
+      EnsureEndPointLoadedAndComplete (dataManager, endPointID);
     }
 
-    private void EnsureEndPointLoaded (IDataManager dataManager, RelationEndPointID endPointID)
+    private void EnsureEndPointLoadedAndComplete (IDataManager dataManager, RelationEndPointID endPointID)
     {
       dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      dataManager.RelationEndPointMap[endPointID].EnsureDataComplete();
     }
   }
 }

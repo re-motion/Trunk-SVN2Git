@@ -121,15 +121,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void MarkDataIncomplete_DoesNothing ()
+    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
+    public void MarkDataIncomplete_ThrowsException ()
     {
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
-      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called."));
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
+       _loadState.MarkDataIncomplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called."));
     }
 
     [Test]

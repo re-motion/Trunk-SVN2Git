@@ -81,16 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void MarkDataComplete_DoesNothing ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
+    public void MarkDataComplete_ThrowsException ()
     {
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
       var items = new DomainObject[] { _relatedObject };
       _loadState.MarkDataComplete (_collectionEndPointMock, items, () => Assert.Fail ("Must not be called"));
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]

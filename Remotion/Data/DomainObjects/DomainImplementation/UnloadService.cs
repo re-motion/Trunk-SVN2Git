@@ -46,28 +46,19 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
     /// the transactions where it succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID, UnloadTransactionMode transactionMode)
+    public static void UnloadCollectionEndPoint (
+        ClientTransaction clientTransaction, 
+        RelationEndPointID endPointID, 
+        UnloadTransactionMode transactionMode)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var collectionEndPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (collectionEndPoint != null)
+      if (!TryUnloadCollectionEndPoint (clientTransaction, endPointID, transactionMode))
       {
-        if (!CanUnloadCollectionEndPoint (collectionEndPoint))
-        {
-          var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
-          throw new InvalidOperationException (message);
-        }
-
-        collectionEndPoint.MarkDataIncomplete();
+        var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
+        throw new InvalidOperationException (message);
       }
-
-      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
-      {
-        UnloadCollectionEndPoint (tx, endPointID, transactionMode);
-        return true;
-      });
     }
 
     /// <summary>
@@ -101,7 +92,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         if (!CanUnloadCollectionEndPoint (collectionEndPoint))
           return false;
 
-        collectionEndPoint.MarkDataIncomplete ();
+        if (collectionEndPoint.IsDataComplete)
+          collectionEndPoint.MarkDataIncomplete ();
       }
 
       return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadCollectionEndPoint (tx, endPointID, transactionMode));

@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      // Data is already complete
+      throw new InvalidOperationException ("The data is already complete.");
     }
 
     public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)

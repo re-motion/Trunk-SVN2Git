@@ -87,8 +87,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-      
-      // Data is already incomplete
+
+      throw new InvalidOperationException ("The data is already incomplete.");
     }
 
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
