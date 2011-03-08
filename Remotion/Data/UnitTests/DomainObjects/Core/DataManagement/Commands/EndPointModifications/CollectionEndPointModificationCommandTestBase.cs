@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private CollectionEndPoint _collectionEndPoint;
     private IDomainObjectCollectionData _collectionDataMock; // TODO 3771: Check if this is still needed
     private ICollectionEndPointDataKeeper _dataKeeperMock;
+    private IRelationEndPointProvider _endPointProviderStub;
     private Customer _domainObject;
     private DomainObjectCollectionEventReceiver _collectionEventReceiver;
     private RelationEndPointID _relationEndPointID;
@@ -52,6 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public ICollectionEndPointDataKeeper DataKeeperMock
     {
       get { return _dataKeeperMock; }
+    }
+
+    public IRelationEndPointProvider EndPointProviderStub
+    {
+      get { return _endPointProviderStub; }
     }
 
     public Customer DomainObject
@@ -84,6 +90,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();
       CollectionDataMock.Replay ();
+
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
 
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper>();
       _dataKeeperMock.Replay();

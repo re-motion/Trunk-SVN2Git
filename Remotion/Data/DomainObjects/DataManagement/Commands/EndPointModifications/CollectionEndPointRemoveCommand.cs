@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -25,25 +26,35 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class CollectionEndPointRemoveCommand : RelationEndPointModificationCommand
   {
-    private readonly IDomainObjectCollectionData _modifiedCollectionData;
-    private readonly DomainObjectCollection _modifiedCollection;
     private readonly int _index;
+
+    private readonly ICollectionEndPointDataKeeper _dataKeeper;
+
+    private readonly DomainObjectCollection _modifiedCollection;
+    private readonly IObjectEndPoint _removedEndPoint;
 
     public CollectionEndPointRemoveCommand (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObject removedObject, 
-        IDomainObjectCollectionData collectionData)
+        ICollectionEndPointDataKeeper dataKeeper,
+        IRelationEndPointProvider endPointProvider)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("removedObject", removedObject),
             null)
     {
+      ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-      _index = modifiedEndPoint.Collection.IndexOf (removedObject);
-      _modifiedCollectionData = collectionData;
+      _index = modifiedEndPoint.Collection.IndexOf (OldRelatedObject);
+
+      _dataKeeper = dataKeeper;
       _modifiedCollection = modifiedEndPoint.Collection;
+
+      _removedEndPoint = (IObjectEndPoint) GetOppositeEndPoint (modifiedEndPoint, removedObject, endPointProvider);
     }
 
     public DomainObjectCollection ModifiedCollection
@@ -51,9 +62,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollection; }
     }
 
-    public IDomainObjectCollectionData ModifiedCollectionData
+    public ICollectionEndPointDataKeeper DataKeeper
     {
-      get { return _modifiedCollectionData; }
+      get { return _dataKeeper; }
+    }
+
+    public IObjectEndPoint RemovedEndPoint
+    {
+      get { return _removedEndPoint; }
     }
 
     protected override void ScopedBegin ()
@@ -64,7 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Remove (OldRelatedObject);
+      DataKeeper.Remove (_removedEndPoint);
       ModifiedEndPoint.Touch ();
     }
 
@@ -86,9 +102,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// </remarks>
     public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      var removedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
       return new ExpandedCommand (
-          removedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject ()), 
+          _removedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject ()), 
           this);
     }
   }

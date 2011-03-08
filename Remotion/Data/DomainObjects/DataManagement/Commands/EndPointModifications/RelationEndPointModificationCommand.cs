@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -131,6 +132,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
       eventSink.RelationChanged (_modifiedEndPoint.ClientTransaction, _domainObject, _modifiedEndPoint.Definition);
+    }
+
+    protected IRelationEndPoint GetOppositeEndPoint (
+        IRelationEndPoint originatingEndPoint, 
+        DomainObject oppositeObject, 
+        IRelationEndPointProvider endPointProvider)
+    {
+      var oppositeEndPointDefinition = originatingEndPoint.Definition.GetMandatoryOppositeEndPointDefinition ();
+      var oppositeObjectID = oppositeObject != null ? oppositeObject.ID : null;
+      var oppositeEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
+      return endPointProvider.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
   }
 }

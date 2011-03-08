@@ -337,6 +337,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3, _domainObject1 }));
     }
 
+    [Test]
+    public void Remove ()
+    {
+      var relatedEndPointStub1 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      relatedEndPointStub1.Expect (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
+      _dataKeeper.Insert (0, relatedEndPointStub1);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+
+      _dataKeeper.Remove (relatedEndPointStub1);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray(), Is.Empty);
+    }
+
     private int Compare123 (DomainObject x, DomainObject y)
     {
       if (x == y)

@@ -24,5 +24,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void CommitOriginalContents ();
     
     void Insert (int index, IObjectEndPoint insertedEndPoint);
+    void Remove (IObjectEndPoint removedEndPoint);
   }
 }

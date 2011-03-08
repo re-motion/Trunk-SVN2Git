@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -30,7 +31,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   [Serializable]
-  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader
+  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader, IRelationEndPointProvider
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionEventSink;
@@ -293,6 +294,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("The opposite end-point has already been loaded.");
 
       oppositeEndPoint.EnsureDataComplete ();
+    }
+
+    public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      return _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+    }
+
+    public IRelationEndPoint GetOppositeRelationEndPointWithLazyLoad (IRelationEndPoint relationEndPoint, ObjectID oppositeObjectID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPoint", relationEndPoint);
+      ArgumentUtility.CheckNotNull ("oppositeObjectID", oppositeObjectID);
+
+      var oppositeEndPointDefinition = relationEndPoint.Definition.GetMandatoryOppositeEndPointDefinition ();
+      var removedEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
+      return GetRelationEndPointWithLazyLoad (removedEndPointID);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)

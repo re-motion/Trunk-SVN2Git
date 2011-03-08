@@ -32,22 +32,35 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class CompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
+    private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ClientTransaction _clientTransaction;
+
     private readonly List<IObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
-    public CompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, ClientTransaction clientTransaction)
+    public CompleteCollectionEndPointLoadState (
+        ICollectionEndPointDataKeeper dataKeeper, 
+        IRelationEndPointProvider endPointProvider, 
+        ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _dataKeeper = dataKeeper;
+      _endPointProvider = endPointProvider;
       _clientTransaction = clientTransaction;
+
       _unsynchronizedOppositeEndPoints = new List<IObjectEndPoint> ();
     }
 
     public ICollectionEndPointDataKeeper DataKeeper
     {
       get { return _dataKeeper; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
     }
 
     public ClientTransaction ClientTransaction
@@ -174,7 +187,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
       
-      return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, _dataKeeper.CollectionData);
+      return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, _dataKeeper, _endPointProvider);
     }
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
@@ -188,7 +201,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
 
-      return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, _dataKeeper);
+      return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, _dataKeeper, _endPointProvider);
     }
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
@@ -240,8 +253,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public CompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      
-      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
+
+      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper> ();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
       _unsynchronizedOppositeEndPoints = new List<IObjectEndPoint>();
        info.FillCollection (_unsynchronizedOppositeEndPoints);
@@ -250,8 +264,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      
+
       info.AddHandle (_dataKeeper);
+      info.AddHandle (_endPointProvider);
       info.AddHandle (_clientTransaction);
       info.AddCollection (_unsynchronizedOppositeEndPoints);
     }

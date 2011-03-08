@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _collection and the original data for rollback
 
     private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
@@ -64,6 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
+      _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3771: Inject via ctor
       
       SetIncompleteLoadState();
     }
@@ -290,7 +292,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void SetCompleteLoadState ()
     {
-      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper, ClientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper, _endPointProvider, ClientTransaction);
     }
 
     private void SetIncompleteLoadState ()
@@ -309,6 +311,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
 
       FixupDomainObjectCollection (_collection);
@@ -322,6 +325,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
+      info.AddHandle (_endPointProvider);
       info.AddValue (_loadState);
     }
 

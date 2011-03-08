@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -70,19 +71,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize ()
     {
-      Assert.That (_customerEndPoint.ID, Is.EqualTo (_customerEndPointID));
+      var changeDetectionStrategyStub = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
+      var endPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, changeDetectionStrategyStub, _lazyLoaderMock);
 
-      var loadState = GetLoadState (_customerEndPoint);
-      Assert.That (loadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
-      Assert.That (((CompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_customerEndPoint)));
-      Assert.That (((CompleteCollectionEndPointLoadState) loadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
 
-      Assert.That (_customerEndPoint.IsDataComplete, Is.True);
-      Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      var loadState = GetLoadState (endPoint);
+      Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
 
-      Assert.That (_customerEndPoint.OriginalCollection, Is.SameAs (_customerEndPoint.Collection));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.Not.SameAs (_customerEndPoint.Collection));
+      Assert.That (endPoint.IsDataComplete, Is.False);
+
+      var dataKeeper = GetEndPointDataKeeper (endPoint);
+      Assert.That (dataKeeper.CollectionData.ToArray(), Is.Empty);
     }
 
     [Test]
@@ -100,24 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialize_WithInvalidRelationEndPointID_Throws ()
     {
       RelationEndPointObjectMother.CreateCollectionEndPoint (null, new DomainObject[0]);
-    }
-
-    [Test]
-    public void Initialize_WithNullInitialContents ()
-    {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          _customerEndPointID,
-          new RootCollectionEndPointChangeDetectionStrategy(),
-          _lazyLoaderMock,
-          ClientTransactionMock,
-          null);
-
-      var loadState = GetLoadState (endPoint);
-      Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).LazyLoader, Is.SameAs (_lazyLoaderMock));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (endPoint)));
-
-      Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -383,7 +365,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
       stateSetter();
-      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
+      
+      var newLoadState = GetLoadState (_endPointWithLoadStateMock);
+      Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
+
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_endPointWithLoadStateMock)));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (ClientTransactionMock.DataManager));
     }
 
     [Test]
@@ -402,7 +390,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
       stateSetter ();
-      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
+      
+      var newLoadState = GetLoadState (_endPointWithLoadStateMock);
+      Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
+
+      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_endPointWithLoadStateMock)));
+      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).LazyLoader, Is.SameAs (GetEndPointLazyLoader (_endPointWithLoadStateMock)));
     }
 
     [Test]
@@ -903,6 +896,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private CollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
       return (CollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
+    }
+
+    private IRelationEndPointLazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)
+    {
+      return (IRelationEndPointLazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
     }
 
     private void AssertDidNotLoadData (CollectionEndPoint collectionEndPoint)

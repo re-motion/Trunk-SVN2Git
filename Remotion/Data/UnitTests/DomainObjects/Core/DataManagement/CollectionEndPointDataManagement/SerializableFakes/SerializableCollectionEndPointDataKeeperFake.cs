@@ -78,6 +78,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void Remove (IObjectEndPoint removedEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public SerializableCollectionEndPointDataKeeperFake (FlattenedDeserializationInfo info)
     {
 

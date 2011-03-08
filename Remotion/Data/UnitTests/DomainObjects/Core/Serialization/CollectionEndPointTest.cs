@@ -258,5 +258,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedLoadState = (CompleteCollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
       Assert.That (deserializedLoadState, Is.Not.Null);
     }
+
+    [Test]
+    public void Serialization_EndPointProvider ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          endPointID,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+          ClientTransaction.Current,
+          new DomainObject[0]);
+
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
+
+      var deserializedEndPointProvider = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_endPointProvider");
+      Assert.That (deserializedEndPointProvider, Is.Not.Null);
+    }
   }
 }

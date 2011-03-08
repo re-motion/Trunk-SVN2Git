@@ -125,7 +125,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("insertedEndPoint", insertedEndPoint);
 
-      _collectionData.Insert (index, insertedEndPoint.GetDomainObjectReference());
+      var domainObject = insertedEndPoint.GetDomainObjectReference();
+      _collectionData.Insert (index, domainObject);
+    }
+
+    public void Remove (IObjectEndPoint removedEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("removedEndPoint", removedEndPoint);
+
+      var domainObject = removedEndPoint.GetDomainObjectReference();
+      _collectionData.Remove (domainObject);
     }
 
     #region Serialization

@@ -1072,7 +1072,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.LoadOppositeEndPoint (objectEndPointStub);
     }
-    
+
+    [Test]
+    public void GetRelationEndPointWithLazyLoad ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+
+      var result = _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
+    }
+
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
