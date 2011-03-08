@@ -320,6 +320,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
     }
 
+    [Test]
+    public void Insert ()
+    {
+      var relatedEndPointStub1 = MockRepository.GenerateStub<IObjectEndPoint>();
+      relatedEndPointStub1.Expect (stub => stub.GetDomainObjectReference()).Return (_domainObject1);
+      var relatedEndPointStub2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      relatedEndPointStub2.Expect (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      var relatedEndPointStub3 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      relatedEndPointStub3.Expect (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
+
+      _dataKeeper.Insert (0, relatedEndPointStub1);
+      _dataKeeper.Insert (0, relatedEndPointStub2);
+      _dataKeeper.Insert (1, relatedEndPointStub3);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3, _domainObject1 }));
+    }
+
     private int Compare123 (DomainObject x, DomainObject y)
     {
       if (x == y)

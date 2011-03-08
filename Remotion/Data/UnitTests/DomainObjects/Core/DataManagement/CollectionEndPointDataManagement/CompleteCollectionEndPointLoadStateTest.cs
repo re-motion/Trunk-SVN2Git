@@ -356,9 +356,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void CreateInsertCommand ()
     {
-      var fakeCollectionData = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
@@ -370,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointInsertCommand) command).DataKeeper, Is.SameAs (_dataKeeperMock));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
     }
 
@@ -392,7 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
+      Assert.That (((CollectionEndPointInsertCommand) command).DataKeeper, Is.SameAs (_dataKeeperMock));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
     }
 

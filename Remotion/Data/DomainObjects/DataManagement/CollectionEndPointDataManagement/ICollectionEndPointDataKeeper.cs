@@ -22,5 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     void SortCurrentAndOriginalData ();
     void CommitOriginalContents ();
+    
+    void Insert (int index, IObjectEndPoint insertedEndPoint);
   }
 }

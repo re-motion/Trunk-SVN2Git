@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -26,14 +27,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   public class CollectionEndPointInsertCommand : RelationEndPointModificationCommand
   {
     private readonly int _index;
-    private readonly IDomainObjectCollectionData _modifiedCollectionData;
+    private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly DomainObjectCollection _modifiedCollection;
 
     public CollectionEndPointInsertCommand (
         ICollectionEndPoint modifiedEndPoint, 
         int index, 
         DomainObject insertedObject, 
-        IDomainObjectCollectionData collectionData)
+        ICollectionEndPointDataKeeper dataKeeper)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
@@ -43,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _index = index;
-      _modifiedCollectionData = collectionData;
+      _dataKeeper = dataKeeper;
       _modifiedCollection = modifiedEndPoint.Collection;
     }
 
@@ -57,9 +58,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollection; }
     }
 
-    public IDomainObjectCollectionData ModifiedCollectionData
+    public ICollectionEndPointDataKeeper DataKeeper
     {
-      get { return _modifiedCollectionData; }
+      get { return _dataKeeper; }
     }
 
     protected override void ScopedBegin ()
@@ -70,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Insert (Index, NewRelatedObject);
+      DataKeeper.Insert (Index, GetInsertedObjectEndPoint());
       ModifiedEndPoint.Touch();
     }
 
@@ -94,7 +95,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
-      var insertedObjectEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
+      var insertedObjectEndPoint = GetInsertedObjectEndPoint();
       // the object that was linked to the new related object before the operation
       var oldRelatedObjectOfInsertedObject = insertedObjectEndPoint.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation
@@ -107,6 +108,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
           this,
           // oldCustomer.Orders.Remove (insertedOrder)
           oldRelatedEndPointOfInsertedObject.CreateRemoveCommand (NewRelatedObject));
+    }
+
+    private IObjectEndPoint GetInsertedObjectEndPoint ()
+    {
+      return ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
     }
   }
 }

@@ -642,8 +642,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       Assert.That (_map[endPointID], Is.Not.Null);
 
-      var item = DomainObjectMother.CreateFakeObject<Order> ();
-      collectionEndPoint.CreateAddCommand (item).Perform (); // no bidirectional changes, no events - it's only a fake item
+      var item = Order.NewObject();
+      collectionEndPoint.Collection.Add (item);
       Assert.That (collectionEndPoint.HasChanged, Is.True);
 
       try

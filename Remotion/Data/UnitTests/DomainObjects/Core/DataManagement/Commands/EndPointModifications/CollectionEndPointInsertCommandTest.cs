@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -29,6 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public class CollectionEndPointInsertCommandTest : CollectionEndPointModificationCommandTestBase
   {
     private Order _insertedRelatedObject;
+    private IObjectEndPoint _insertedEndPoint;
     private CollectionEndPointInsertCommand _command;
 
     public override void SetUp ()
@@ -36,7 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp();
 
       _insertedRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
-      _command = new CollectionEndPointInsertCommand (CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock);
+      var insertedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_insertedRelatedObject.ID, "Customer");
+      _insertedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[insertedEndPointID];
+      Assert.That (_insertedEndPoint, Is.Not.Null);
+      _command = new CollectionEndPointInsertCommand (CollectionEndPoint, 12, _insertedRelatedObject, DataKeeperMock);
     }
 
     [Test]
@@ -47,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_command.NewRelatedObject, Is.SameAs (_insertedRelatedObject));
       Assert.That (_command.Index, Is.EqualTo (12));
       Assert.That (_command.ModifiedCollection, Is.SameAs (CollectionEndPoint.Collection));
-      Assert.That (_command.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
+      Assert.That (_command.DataKeeper, Is.SameAs (DataKeeperMock));
     }
 
     [Test]
@@ -56,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, CollectionDataMock);
+      new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, DataKeeperMock);
     }
 
     [Test]
@@ -116,13 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      CollectionDataMock.BackToRecord ();
-      CollectionDataMock.Expect (mock => mock.Insert (12, _insertedRelatedObject));
-      CollectionDataMock.Replay ();
+      DataKeeperMock.BackToRecord ();
+      DataKeeperMock.Expect (mock => mock.Insert (12, _insertedEndPoint));
+      DataKeeperMock.Replay ();
 
       _command.Perform ();
 
-      CollectionDataMock.VerifyAllExpectations ();
+      DataKeeperMock.VerifyAllExpectations ();
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
@@ -144,8 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
       Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[0].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_insertedRelatedObject.ID));
+      Assert.That (steps[0].ModifiedEndPoint, Is.SameAs (_insertedEndPoint));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (oldCustomer));
       Assert.That (steps[0].NewRelatedObject, Is.SameAs (DomainObject));
 
