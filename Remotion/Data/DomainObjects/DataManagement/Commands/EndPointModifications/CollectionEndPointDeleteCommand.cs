@@ -65,6 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
+      // TODO 3771: Add ICollectionEndPointDataKeeper.Clear and use here
       ModifiedCollectionData.Clear();
       ModifiedEndPoint.Touch ();
     }

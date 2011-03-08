@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -26,13 +25,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class CollectionEndPointReplaceSameCommand : RelationEndPointModificationCommand
   {
-    private readonly IDomainObjectCollectionData _modifiedCollectionData;
-    private readonly DomainObjectCollection _modifiedCollection;
-
     public CollectionEndPointReplaceSameCommand (
         ICollectionEndPoint modifiedEndPoint, 
-        DomainObject selfReplacedObject, 
-        IDomainObjectCollectionData collectionData)
+        DomainObject selfReplacedObject)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject),
@@ -40,19 +35,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
-
-      _modifiedCollectionData = collectionData;
-      _modifiedCollection = modifiedEndPoint.Collection;
-    }
-
-    public DomainObjectCollection ModifiedCollection
-    {
-      get { return _modifiedCollection; }
-    }
-
-    public IDomainObjectCollectionData ModifiedCollectionData
-    {
-      get { return _modifiedCollectionData; }
     }
 
     protected override void ScopedBegin ()

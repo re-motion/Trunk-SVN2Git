@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -38,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
 
-      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, CollectionDataMock);
+      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject);
     }
 
     [Test]
@@ -47,8 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_command.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
       Assert.That (_command.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
       Assert.That (_command.NewRelatedObject, Is.SameAs (_replacedRelatedObject));
-      Assert.That (_command.ModifiedCollection, Is.SameAs (CollectionEndPoint.Collection));
-      Assert.That (_command.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
     }
 
     [Test]
@@ -57,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject, CollectionDataMock);
+      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject);
     }
 
     [Test]

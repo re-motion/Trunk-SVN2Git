@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       var replacedObject = _dataKeeper.CollectionData.GetObject(index);
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject, _dataKeeper.CollectionData);
+        return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject);
       else
         return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
     }
@@ -227,6 +227,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
+      // TODO 3771: Replace with _dataKeeper.Clear + Add
       _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
 
       if (sourceEndPoint.HasBeenTouched || collectionEndPoint.HasChanged)
