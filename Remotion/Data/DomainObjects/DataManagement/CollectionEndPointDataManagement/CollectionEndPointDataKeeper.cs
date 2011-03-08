@@ -96,8 +96,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (ContainsOppositeEndPoint (oppositeEndPoint))
-        throw new InvalidOperationException ("The opposite end-point has already been registered.");
+      //if (ContainsOppositeEndPoint (oppositeEndPoint))
+      //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
@@ -109,8 +109,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (!ContainsOppositeEndPoint (oppositeEndPoint))
-        throw new InvalidOperationException ("The opposite end-point has not been registered.");
+      //if (!ContainsOppositeEndPoint (oppositeEndPoint))
+      //  throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);

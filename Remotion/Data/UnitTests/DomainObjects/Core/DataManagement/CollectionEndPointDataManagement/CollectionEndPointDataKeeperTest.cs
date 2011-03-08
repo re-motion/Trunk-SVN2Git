@@ -107,6 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
+    [Ignore ("TODO 3771")]
     public void RegisterOppositeEndPoint_AlreadyRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
@@ -141,7 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
-    public void RegisterOppositeEndPoint_NotRegistered ()
+    [Ignore ("TODO 3771")]
+    public void UnregisterOppositeEndPoint_NotRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
       _dataKeeper.UnregisterOppositeEndPoint (oppositeEndPoint);
