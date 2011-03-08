@@ -267,8 +267,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
-      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
       Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
 
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));

@@ -28,8 +28,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
   {
-    private readonly ClientTransaction _clientTransaction;
-    private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
 
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
@@ -44,25 +42,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      _clientTransaction = clientTransaction;
-      _endPointID = endPointID;
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
       var wrappedData = new DomainObjectCollectionData ();
-      var updateListener = new CollectionDataStateUpdateListener (_clientTransaction, _endPointID);
+      var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
       
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
-    }
-
-    public RelationEndPointID EndPointID
-    {
-      get { return _endPointID; }
     }
 
     public IComparer<DomainObject> SortExpressionBasedComparer
@@ -142,10 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      _clientTransaction = info.GetValueForHandle<ClientTransaction>();
-      _endPointID = info.GetValue<RelationEndPointID>();
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
-      
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
 
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
@@ -157,8 +140,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      info.AddHandle (_clientTransaction);
-      info.AddValue (_endPointID);
       info.AddValue (_sortExpressionBasedComparer);
       info.AddValue (_collectionData);
       info.AddCollection (_oppositeEndPoints);
