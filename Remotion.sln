@@ -178,7 +178,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles2", "_BuildFiles2", "{2EAD32A1-E37E-4EB8-89F0-7136AE3538A5}"
 	ProjectSection(SolutionItems) = preProject
-		build2\doc.public.ndoc = build2\doc.public.ndoc
+		build2\doc.public.xml = build2\doc.public.xml
 		build2\Remotion.AssembleBuildOutputTargets.include.build = build2\Remotion.AssembleBuildOutputTargets.include.build
 		build2\Remotion.build = build2\Remotion.build
 		build2\Remotion.BuildTargets.include.build = build2\Remotion.BuildTargets.include.build

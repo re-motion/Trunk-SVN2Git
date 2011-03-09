@@ -133,13 +133,69 @@
                                                   AssemblyConfiguration="$(_configuration)"/>
   </Target>
 
-  <Target Name="Doc">
+  <Target Name="GeneratePublicDocumentation">
     <ItemGroup>
-      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
-      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\NamespaceDoc.xml" />
+      <_documenters Include="doc.public.xml"/>
     </ItemGroup>
 
-    <Message Text="%(_namespaceSummaries.Identity)"/>
-    
+    <ItemGroup>
+      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
+      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\include\NamespaceDoc.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_assemblies Include="$(SolutionDirectory)Remotion\Core\Core\bin\debug\Remotion.dll" />
+      <_assemblies Include="$(SolutionDirectory)Remotion\Data\DomainObjects\bin\debug\Remotion.Data.DomainObjects.dll" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_documentationBaseDirectory>$(TempDirectory)doc\</_documentationBaseDirectory>
+      <_documentationFileName>Remotion.chm</_documentationFileName>
+      <_ndocProjectFile>$(_documentationBaseDirectory)doc.public.temp.ndoc</_ndocProjectFile>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(_documentationBaseDirectory)" />
+
+    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
+                                                         DocumenterFiles="@(_documenters)"
+                                                         Assemblies="@(_assemblies)"
+                                                         NamespaceSummaryFiles="@(_namespaceSummaries)" />
+
+    <!--<MSBuild.Community.Tasks.XmlUpdate
+                XmlFileName="$(_ndocProjectFile)"
+                XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
+                Value="$(_documentationFileName)"/>
+    <MSBuild.Community.Tasks.XmlUpdate
+                XmlFileName="$(_ndocProjectFile)"
+                XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='OutputDirectory']"
+                Value="$(_documentationBaseDirectory)"/>-->
+
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
+                                       File="$(_ndocProjectFile)"
+                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']"
+                                       Element="property"
+                                       Key="name"
+                                       Value="HtmlHelpName"/>
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
+                                       File="$(_ndocProjectFile)"
+                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
+                                       Key="value"
+                                       Value="$(_documentationFileName)"/>
+    <!--<MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
+                                       File="$(_ndocProjectFile)"
+                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
+                                       Key="value"
+                                       Value="$(_documentationFileName)"/>
+    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute" 
+                                       File="$(_ndocProjectFile)" 
+                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='OutputDirectory']" 
+                                       Key="value"
+                                       Value="$(_documentationBaseDirectory)"/>-->
+
+
+
+    <!--<MSBuild.Community.Tasks.NDoc Documenter="MSDN-CHM"
+                                  ProjectFilePath="$(_ndocProjectFile)"/>-->
+
   </Target>
 </Project>

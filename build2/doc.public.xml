@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<documenters>
+  <documenter name="MSDN-CHM">
+    <!-- Global -->
+    <!-- Build Options -->
+    <property name="UseAbbreviatedFileNames" value="True" />
+    <!-- Documentation Main Settings -->
+    <property name="ShowVisualBasic" value="False" />
+    <property name="RootPageTOCName" value="Getting Started" />
+    <property name="SdkLinksOnWeb" value="False" />
+    <!-- Extensibility -->
+    <!-- HTML Help Options -->
+    <!-- Show Attributes -->
+    <!-- Show Missing Documentation -->
+    <property name="ShowMissingParams" value="False" />
+    <property name="ShowMissingRemarks" value="False" />
+    <property name="ShowMissingReturns" value="False" />
+    <property name="ShowMissingSummaries" value="False" />
+    <property name="ShowMissingValues" value="False" />
+    <!-- Thread Safety -->
+    <property name="IncludeDefaultThreadSafety" value="False" />
+    <!-- Visibility -->
+    <property name="DocumentEmptyNamespaces" value="False" />
+    <property name="DocumentExplicitInterfaceImplementations" value="False" />
+    <property name="DocumentInternals" value="False" />
+    <property name="DocumentPrivates" value="False" />
+    <property name="DocumentSealedProtected" value="False" />
+    <!-- Other -->
+    <property name="AutoDocumentStaticClasses" value="False" />
+  </documenter>
+</documenters>
