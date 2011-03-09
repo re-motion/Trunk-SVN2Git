@@ -12,11 +12,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
     IObjectEndPoint[] OppositeEndPoints { get; }
     IObjectEndPoint[] OriginalOppositeEndPoints { get; }
+    DomainObject[] OriginalItemsWithoutEndPoints { get; }
 
     bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+
+    void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
 

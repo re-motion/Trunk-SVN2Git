@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
-      _domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
-      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
-      _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
+      _domainObject1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+      _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
 
       _domainObjectEndPoint1 = MockRepository.GenerateStub<IObjectEndPoint> ();
       _domainObjectEndPoint2 = MockRepository.GenerateStub<IObjectEndPoint> ();
@@ -177,6 +177,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
       _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+    }
+
+    [Test]
+    public void RegisterOriginalItemWithoutEndPoint ()
+    {
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), List.Not.Contains (_domainObject2));
+
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { _domainObject2 }));
+      Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
+    public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithoutEndPoint ()
+    {
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
+    public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithEndPoint ()
+    {
+      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference()).Return (_domainObject2);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
     }
 
     [Test]
@@ -356,13 +391,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, endPointProvider);
       var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);
+      data.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
-      Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
-      Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (2));
+      Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (2));
       Assert.That (deserializedInstance.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OriginalItemsWithoutEndPoints.Length, Is.EqualTo (1));
       Assert.That (CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (deserializedInstance), Is.Not.Null);
     }
 

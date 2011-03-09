@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
@@ -48,6 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { return new IObjectEndPoint[0]; }
     }
 
+    public DomainObject[] OriginalItemsWithoutEndPoints
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       return false;
@@ -59,6 +65,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
     {
       throw new NotImplementedException();
     }

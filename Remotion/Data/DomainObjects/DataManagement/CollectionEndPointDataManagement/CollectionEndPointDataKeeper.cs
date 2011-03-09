@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
+    private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -56,6 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _currentOppositeEndPointTracker = new EndPointTrackingCollectionDataDecorator (_collectionData, endPointProvider, oppositeEndPointDefinition);
       
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
+      _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
 
     public IComparer<DomainObject> SortExpressionBasedComparer
@@ -81,6 +83,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public IObjectEndPoint[] OriginalOppositeEndPoints
     {
       get { return _originalOppositeEndPoints.ToArray(); }
+    }
+
+    public DomainObject[] OriginalItemsWithoutEndPoints
+    {
+      get { return _originalItemsWithoutEndPoint.ToArray(); }
     }
 
     public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
@@ -112,6 +119,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
+    }
+
+    public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      //if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
+      //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
+
+      _collectionData.RegisterOriginalItem (domainObject);
+      _originalItemsWithoutEndPoint.Add (domainObject);
     }
 
     public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
@@ -147,6 +165,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       info.FillCollection (_originalOppositeEndPoints);
+
+      _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
+      info.FillCollection (_originalItemsWithoutEndPoint);
     }
     // ReSharper restore UnusedMember.Local
 
@@ -159,6 +180,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       info.AddValue (_currentOppositeEndPointTracker);
 
       info.AddCollection (_originalOppositeEndPoints);
+      info.AddCollection (_originalItemsWithoutEndPoint);
     }
 
     #endregion
