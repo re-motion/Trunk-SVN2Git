@@ -285,8 +285,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      // TODO 3774: ICollectionEndPointDataKeeperFactory.Create (id, sortExpressionBasedComparer)
-      // TODO 3774: CollectionEndPointDataKeeperFactory implementation with (clientTransaction, _endPointProvider) ctor
+      // TODO 3774: use injected CollectionEndPointDataKeeperFactory
       return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, _endPointProvider);
     }
 
