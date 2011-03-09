@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -13,6 +14,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IObjectEndPoint[] OppositeEndPoints { get; }
     IObjectEndPoint[] OriginalOppositeEndPoints { get; }
     DomainObject[] OriginalItemsWithoutEndPoints { get; }
+    IComparer<DomainObject> SortExpressionBasedComparer { get; }
+    RelationEndPointID EndPointID { get; }
 
     bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 

@@ -36,6 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
+    private readonly RelationEndPointID _endPointID;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -48,6 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
+      _endPointID = endPointID;
 
       var wrappedData = new DomainObjectCollectionData ();
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
@@ -60,13 +62,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
 
-    // TODO 3774: Interface
     public IComparer<DomainObject> SortExpressionBasedComparer
     {
       get { return _sortExpressionBasedComparer; }
     }
 
-    // TODO 3774: EndPointID property, serialize (AddHandle)
+    public RelationEndPointID EndPointID
+    {
+      get { return _endPointID; }
+    }
 
     public IDomainObjectCollectionData CollectionData
     {
@@ -160,6 +164,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
+      _endPointID = info.GetValueForHandle<RelationEndPointID>();
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
       _currentOppositeEndPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
 
@@ -176,6 +181,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddValue (_sortExpressionBasedComparer);
+      info.AddHandle (_endPointID);
       info.AddValue (_collectionData);
       info.AddValue (_currentOppositeEndPointTracker);
 

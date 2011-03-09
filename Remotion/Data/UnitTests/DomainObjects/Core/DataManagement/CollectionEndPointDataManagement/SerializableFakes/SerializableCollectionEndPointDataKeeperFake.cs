@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
@@ -50,6 +51,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     public DomainObject[] OriginalItemsWithoutEndPoints
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IComparer<DomainObject> SortExpressionBasedComparer
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public RelationEndPointID EndPointID
     {
       get { throw new NotImplementedException(); }
     }
