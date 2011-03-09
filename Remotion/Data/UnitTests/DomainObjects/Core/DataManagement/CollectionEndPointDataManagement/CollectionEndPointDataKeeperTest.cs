@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub);
       Assert.That (dataKeeper.CollectionData.ToArray(), Is.Empty);
-      Assert.That (dataKeeper.OppositeEndPoints, Is.Empty);
+      Assert.That (dataKeeper.OriginalOppositeEndPoints, Is.Empty);
 
       var endPointTracker = CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper);
       Assert.That (endPointTracker.GetOppositeEndPoints (), Is.Empty);
@@ -101,21 +101,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void ContainsOppositeEndPoint ()
+    public void ContainsOriginalOppositeEndPoint ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint(_domainObject1);
 
-      Assert.That (_dataKeeper.ContainsOppositeEndPoint (oppositeEndPoint), Is.False);
+      Assert.That (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint), Is.False);
 
-      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
 
-      Assert.That (_dataKeeper.ContainsOppositeEndPoint (oppositeEndPoint), Is.True);
+      Assert.That (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint), Is.True);
     }
 
     [Test]
-    public void RegisterOppositeEndPoint ()
+    public void RegisterOriginalOppositeEndPoint ()
     {
-      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);
 
       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
       endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
@@ -125,27 +125,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
 
-      _dataKeeper.RegisterOppositeEndPoint (endPointMock);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (endPointMock);
 
       endPointMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointMock }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointMock }));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
     [Ignore ("TODO 3771")]
-    public void RegisterOppositeEndPoint_AlreadyRegistered ()
+    public void RegisterOriginalOppositeEndPoint_AlreadyRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
-      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
-      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     [Test]
-    public void UnregisterOppositeEndPoint ()
+    public void UnregisterOriginalOppositeEndPoint ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
       endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
@@ -154,28 +154,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       endPointMock.Expect (mock => mock.MarkUnsynchronized ());
       endPointMock.Replay ();
 
-      _dataKeeper.RegisterOppositeEndPoint (endPointMock);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (endPointMock);
 
-      Assert.That (_dataKeeper.OppositeEndPoints.Length, Is.EqualTo (1));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
       
-      _dataKeeper.UnregisterOppositeEndPoint (endPointMock);
+      _dataKeeper.UnregisterOriginalOppositeEndPoint (endPointMock);
 
       endPointMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OppositeEndPoints.ToArray(), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
     [Ignore ("TODO 3771")]
-    public void UnregisterOppositeEndPoint_NotRegistered ()
+    public void UnregisterOriginalOppositeEndPoint_NotRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
-      _dataKeeper.UnregisterOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     [Test]
@@ -246,9 +246,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub);
 
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
 
       dataKeeper.SortCurrentAndOriginalData ();
 
@@ -261,9 +261,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _comparer123, _endPointProviderStub);
 
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
-      dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+      dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
       
       dataKeeper.SortCurrentAndOriginalData();
 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void StateUpdates_RoutedToTransactionEventSink ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
-      _dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
+      _dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
 
       _dataKeeper.CollectionData.Clear();
 
@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var comparer = Comparer<DomainObject>.Default;
       var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, _endPointProviderStub);
       var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
-      data.RegisterOppositeEndPoint (endPointFake);
+      data.RegisterOriginalOppositeEndPoint (endPointFake);
 
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
@@ -340,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
-      Assert.That (deserializedInstance.OppositeEndPoints.Length, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (deserializedInstance), Is.Not.Null);
     }
 

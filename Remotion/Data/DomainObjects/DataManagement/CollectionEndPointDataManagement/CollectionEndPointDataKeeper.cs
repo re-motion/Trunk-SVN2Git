@@ -31,10 +31,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
 
-    private readonly EndPointTrackingCollectionDataDecorator _endPointTracker;
+    private readonly EndPointTrackingCollectionDataDecorator _currentOppositeEndPointTracker;
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
 
-    private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
+    private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -53,9 +53,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       var oppositeEndPointDefinition = endPointID.Definition.GetMandatoryOppositeEndPointDefinition();
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
-      _endPointTracker = new EndPointTrackingCollectionDataDecorator (_collectionData, endPointProvider, oppositeEndPointDefinition);
+      _currentOppositeEndPointTracker = new EndPointTrackingCollectionDataDecorator (_collectionData, endPointProvider, oppositeEndPointDefinition);
       
-      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
+      _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
     }
 
     public IComparer<DomainObject> SortExpressionBasedComparer
@@ -73,43 +73,43 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _collectionData.OriginalData; }
     }
 
-    public IObjectEndPoint[] OppositeEndPoints
+    public IObjectEndPoint[] OriginalOppositeEndPoints
     {
-      get { return _oppositeEndPoints.ToArray(); }
+      get { return _originalOppositeEndPoints.ToArray(); }
     }
 
-    public bool ContainsOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      return _oppositeEndPoints.Contains (oppositeEndPoint);
+      return _originalOppositeEndPoints.Contains (oppositeEndPoint);
     }
 
-    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       // TODO 3771
-      //if (ContainsOppositeEndPoint (oppositeEndPoint))
+      //if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
       //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
-      _oppositeEndPoints.Add (oppositeEndPoint);
+      _originalOppositeEndPoints.Add (oppositeEndPoint);
       oppositeEndPoint.MarkSynchronized ();
     }
 
-    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       // TODO 3771
-      //if (!ContainsOppositeEndPoint (oppositeEndPoint))
+      //if (!ContainsOriginalOppositeEndPoint (oppositeEndPoint))
       //  throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);
-      _oppositeEndPoints.Remove (oppositeEndPoint);
+      _originalOppositeEndPoints.Remove (oppositeEndPoint);
       oppositeEndPoint.MarkUnsynchronized ();
     }
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void CommitOriginalContents ()
     {
       _collectionData.Commit ();
-      // TODO 3771: _oppositeEndPoints = _tracker.GetOppositeEndPoints();
+      // TODO 3771: _originalOppositeEndPoints = _tracker.GetOppositeEndPoints();
     }
 
     #region Serialization
@@ -140,10 +140,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
-      _endPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
+      _currentOppositeEndPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
 
-      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
-      info.FillCollection (_oppositeEndPoints);
+      _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
+      info.FillCollection (_originalOppositeEndPoints);
     }
     // ReSharper restore UnusedMember.Local
 
@@ -153,9 +153,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       info.AddValue (_sortExpressionBasedComparer);
       info.AddValue (_collectionData);
-      info.AddValue (_endPointTracker);
+      info.AddValue (_currentOppositeEndPointTracker);
 
-      info.AddCollection (_oppositeEndPoints);
+      info.AddCollection (_originalOppositeEndPoints);
     }
 
     #endregion

@@ -203,18 +203,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this));
     }
 
-    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _loadState.RegisterOppositeEndPoint (this, oppositeEndPoint);
+      _loadState.RegisterOriginalOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _loadState.UnregisterOppositeEndPoint (this, oppositeEndPoint);
+      _loadState.UnregisterOriginalOppositeEndPoint (this, oppositeEndPoint);
     }
 
     public override bool IsSynchronized

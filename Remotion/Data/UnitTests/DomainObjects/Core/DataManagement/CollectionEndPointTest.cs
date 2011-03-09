@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var dataKeeper = GetEndPointDataKeeper (endPoint);
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
-      Assert.That (dataKeeper.OppositeEndPoints.ToArray (), Is.Empty);
+      Assert.That (dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
       Assert.That (
           CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper).EndPointProvider, 
           Is.SameAs (ClientTransactionMock.DataManager));
@@ -565,27 +565,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterOppositeEndPoint ()
+    public void RegisterOriginalOppositeEndPoint ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _loadStateMock.Expect (mock => mock.RegisterOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.RegisterOppositeEndPoint(oppositeEndPointStub);
+      _endPointWithLoadStateMock.RegisterOriginalOppositeEndPoint(oppositeEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void UnregisterOppositeEndPoint ()
+    public void UnregisterOriginalOppositeEndPoint ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
 
-      _loadStateMock.Expect (mock => mock.UnregisterOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.UnregisterOppositeEndPoint (oppositeEndPointStub);
+      _endPointWithLoadStateMock.UnregisterOriginalOppositeEndPoint (oppositeEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
     }

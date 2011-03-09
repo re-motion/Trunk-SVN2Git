@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       stateSetter();
       
       foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints)
-        collectionEndPoint.RegisterOppositeEndPoint (oppositeEndPoint);
+        collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
              select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 
-    public void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -136,13 +136,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       oppositeEndPoint.MarkUnsynchronized();
     }
 
-    public void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       collectionEndPoint.MarkDataIncomplete ();
-      collectionEndPoint.UnregisterOppositeEndPoint (oppositeEndPoint);
+      collectionEndPoint.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         throw new InvalidOperationException (message);
       }
 
-      _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (

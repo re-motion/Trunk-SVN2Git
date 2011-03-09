@@ -38,22 +38,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public IObjectEndPoint[] OppositeEndPoints
+    public IObjectEndPoint[] OriginalOppositeEndPoints
     {
       get { throw new NotImplementedException(); }
     }
 
-    public bool ContainsOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       return false;
     }
 
-    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

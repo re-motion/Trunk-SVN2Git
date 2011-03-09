@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   {
     public static EndPointTrackingCollectionDataDecorator GetEndPointTracker (CollectionEndPointDataKeeper dataKeeper)
     {
-      return (EndPointTrackingCollectionDataDecorator) PrivateInvoke.GetNonPublicField (dataKeeper, "_endPointTracker");
+      return (EndPointTrackingCollectionDataDecorator) PrivateInvoke.GetNonPublicField (dataKeeper, "_currentOppositeEndPointTracker");
     }
   }
 }

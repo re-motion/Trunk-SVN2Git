@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       foreach (var oppositeEndPoint in _oppositeEndPoints)
-        _dataKeeper.RegisterOppositeEndPoint (oppositeEndPoint);
+        _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       
       _dataKeeper.SortCurrentAndOriginalData();
       stateSetter();
@@ -115,25 +115,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return collectionEndPoint.GetOppositeRelationEndPointIDs ();
     }
 
-    public void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       if (_oppositeEndPoints.Contains (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end point has already been registered.");
 
-      if (_dataKeeper.ContainsOppositeEndPoint (oppositeEndPoint))
+      if (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end point has already been registered.");
 
       _oppositeEndPoints.Add (oppositeEndPoint);
     }
 
-    public void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       if (!_oppositeEndPoints.Remove (oppositeEndPoint))
-        _dataKeeper.UnregisterOppositeEndPoint (oppositeEndPoint);
+        _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()

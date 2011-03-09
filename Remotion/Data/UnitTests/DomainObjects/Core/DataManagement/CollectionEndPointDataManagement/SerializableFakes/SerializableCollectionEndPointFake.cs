@@ -189,12 +189,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

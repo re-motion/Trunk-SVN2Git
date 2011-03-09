@@ -425,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       collectionEndPointMock.Stub (stub => stub.ID).Return (collectionEndPointID);
-      collectionEndPointMock.Expect (mock => mock.RegisterOppositeEndPoint (Arg<IObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
+      collectionEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
       collectionEndPointMock.Replay();
       
       RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
@@ -510,7 +510,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
       RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
-      oppositeEndPointMock.Expect (mock => mock.UnregisterOppositeEndPoint (realEndPoint));
+      oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
       oppositeEndPointMock.Replay();
 
       _map.UnregisterRealObjectEndPoint (id);

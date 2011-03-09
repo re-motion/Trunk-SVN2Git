@@ -533,7 +533,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-        oppositeEndPoint.RegisterOppositeEndPoint (realObjectEndPoint); // calls MarkSynchronized/MarkUnsynchronized
+        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint); // calls MarkSynchronized/MarkUnsynchronized
       }
     }
 
@@ -557,7 +557,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           if (oppositeEndPoint != null)
           {
             Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
-            oppositeEndPoint.UnregisterOppositeEndPoint (realObjectEndPoint);
+            oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
           }
         }
       }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -11,12 +10,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
-    IObjectEndPoint[] OppositeEndPoints { get; }
 
-    bool ContainsOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
-    void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
 

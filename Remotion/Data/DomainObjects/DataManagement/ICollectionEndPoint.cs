@@ -39,8 +39,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
-    void RegisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ();
   }

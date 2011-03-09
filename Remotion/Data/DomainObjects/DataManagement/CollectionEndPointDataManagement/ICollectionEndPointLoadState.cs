@@ -38,8 +38,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
     IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint);
 
-    void RegisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
-    void UnregisterOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
+    void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
 
     ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ();
     void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
