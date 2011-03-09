@@ -53,9 +53,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
-      // TODO 3653: Inject DataKeeper from the outside
-      _dataKeeper = CreateDataKeeper (clientTransaction, id);
-
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData();
       _collection = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
@@ -66,6 +63,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
       _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3771: Inject via ctor
+
+      // TODO 3653: Inject DataKeeper from the outside
+      _dataKeeper = CreateDataKeeper (clientTransaction, id);
       
       SetIncompleteLoadState();
     }
@@ -287,7 +287,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer);
+      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, _endPointProvider);
     }
 
     private void SetCompleteLoadState ()

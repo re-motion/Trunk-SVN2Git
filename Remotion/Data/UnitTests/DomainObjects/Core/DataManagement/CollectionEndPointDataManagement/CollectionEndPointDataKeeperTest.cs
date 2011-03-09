@@ -36,10 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   {
     private RelationEndPointID _endPointID;
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategyMock;
+    private IRelationEndPointProvider _endPointProviderStub;
     
     private DomainObject _domainObject1;
     private DomainObject _domainObject2;
     private DomainObject _domainObject3;
+
+    private IObjectEndPoint _domainObjectEndPoint1;
+    private IObjectEndPoint _domainObjectEndPoint2;
+    private IObjectEndPoint _domainObjectEndPoint3;
 
     private ClientTransaction _clientTransaction;
     
@@ -53,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _changeDetectionStrategyMock = MockRepository.GenerateStrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
@@ -60,15 +66,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null);
+      _domainObjectEndPoint1 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint3 = MockRepository.GenerateStub<IObjectEndPoint> ();
+
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject1.ID, typeof (Order), "Customer")))
+          .Return (_domainObjectEndPoint1);
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject2.ID, typeof (Order), "Customer")))
+          .Return (_domainObjectEndPoint2);
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject3.ID, typeof (Order), "Customer")))
+          .Return (_domainObjectEndPoint3);
+
+      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub);
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
 
+    [Test]
     public void Initialization ()
     {
-      var data = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null);
-      Assert.That (data.CollectionData, Is.Empty);
+      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub);
+      Assert.That (dataKeeper.CollectionData.ToArray(), Is.Empty);
+      Assert.That (dataKeeper.OppositeEndPoints, Is.Empty);
+
+      var endPointTracker = CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper);
+      Assert.That (endPointTracker.GetOppositeEndPoints (), Is.Empty);
+      Assert.That (endPointTracker.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (
+          endPointTracker.ObjectEndPointDefinition, 
+          Is.SameAs (Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".Customer")));
     }
 
     [Test]
@@ -215,10 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData_WithoutComparer ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (
-          _clientTransaction,
-          _endPointID,
-          null);
+      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub);
 
       dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
       dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
@@ -233,10 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData_WithComparer ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (
-          _clientTransaction,
-          _endPointID,
-          _comparer123);
+      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _comparer123, _endPointProviderStub);
 
       dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
       dataKeeper.RegisterOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
@@ -255,23 +278,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (originalData.ToArray (), Is.Empty);
       Assert.That (originalData.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    public void FlattenedSerializable ()
-    {
-      var comparer = Comparer<DomainObject>.Default;
-      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer);
-      var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
-      data.RegisterOppositeEndPoint (endPointFake);
-      
-      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
-
-      Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
-
-      Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
-      Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
-      Assert.That (deserializedInstance.OppositeEndPoints.Length, Is.EqualTo (1));
     }
 
     [Test]
@@ -320,6 +326,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
     }
 
+    [Test]
+    public void FlattenedSerializable ()
+    {
+      var comparer = Comparer<DomainObject>.Default;
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, _endPointProviderStub);
+      var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
+      data.RegisterOppositeEndPoint (endPointFake);
+
+      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
+
+      Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
+
+      Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OppositeEndPoints.Length, Is.EqualTo (1));
+      Assert.That (CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (deserializedInstance), Is.Not.Null);
+    }
+
     private int Compare123 (DomainObject x, DomainObject y)
     {
       if (x == y)
@@ -336,6 +360,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       return -1;
     }
-
   }
 }

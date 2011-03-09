@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -82,7 +83,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       var dataKeeper = GetEndPointDataKeeper (endPoint);
-      Assert.That (dataKeeper.CollectionData.ToArray(), Is.Empty);
+      Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
+      Assert.That (dataKeeper.OppositeEndPoints.ToArray (), Is.Empty);
+      Assert.That (
+          CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper).EndPointProvider, 
+          Is.SameAs (ClientTransactionMock.DataManager));
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -30,6 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
 
+    private readonly EndPointTrackingCollectionDataDecorator _endPointTracker;
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
 
     private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
@@ -37,16 +39,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        IComparer<DomainObject> sortExpressionBasedComparer)
+        IComparer<DomainObject> sortExpressionBasedComparer, 
+        IRelationEndPointProvider endPointProvider)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
 
       var wrappedData = new DomainObjectCollectionData ();
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
+
+      var oppositeEndPointDefinition = endPointID.Definition.GetMandatoryOppositeEndPointDefinition();
       _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
+      _endPointTracker = new EndPointTrackingCollectionDataDecorator (_collectionData, endPointProvider, oppositeEndPointDefinition);
       
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
     }
@@ -133,6 +140,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
       _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
+      _endPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
 
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
       info.FillCollection (_oppositeEndPoints);
@@ -145,6 +153,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       info.AddValue (_sortExpressionBasedComparer);
       info.AddValue (_collectionData);
+      info.AddValue (_endPointTracker);
+
       info.AddCollection (_oppositeEndPoints);
     }
 
