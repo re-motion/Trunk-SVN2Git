@@ -114,11 +114,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint))
-        throw new InvalidOperationException ("The opposite end point has already been registered.");
-
-      oppositeEndPoint.ResetSyncState ();
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      oppositeEndPoint.ResetSyncState ();
     }
 
     public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
