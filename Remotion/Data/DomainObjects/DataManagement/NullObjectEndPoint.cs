@@ -96,12 +96,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkSynchronized ()
     {
-      // do nothing
+      throw new InvalidOperationException ("It is not possible to call MarkSynchronized on a NullObjectEndPoint.");
     }
 
     public void MarkUnsynchronized ()
     {
       throw new InvalidOperationException ("It is not possible to call MarkUnsynchronized on a NullObjectEndPoint.");
+    }
+
+    public void ResetSyncState ()
+    {
+      throw new InvalidOperationException ("It is not possible to call ResetSyncState on a NullObjectEndPoint.");
     }
 
     public DomainObject GetOppositeObject (bool includeDeleted)

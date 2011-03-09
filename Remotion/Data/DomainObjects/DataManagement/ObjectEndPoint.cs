@@ -68,6 +68,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _syncState = new UnsynchronizedObjectEndPointSyncState();
     }
 
+    public void ResetSyncState ()
+    {
+      _syncState = new UnknownObjectEndPointSyncState (_lazyLoader);
+    }
+
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
       if (OppositeObjectID == null)

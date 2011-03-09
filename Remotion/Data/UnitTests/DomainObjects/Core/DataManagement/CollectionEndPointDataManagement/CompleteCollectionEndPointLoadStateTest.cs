@@ -254,18 +254,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SynchronizeOppositeEndPoint_InList ()
     {
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      endPointMock.Stub (mock => mock.MarkUnsynchronized ());
+      endPointMock.Expect (mock => mock.MarkSynchronized ());
+      endPointMock.Replay();
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointStub));
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       _dataKeeperMock.Replay ();
 
-      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointStub);
-      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Contains (endPointStub));
+      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointMock);
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Contains (endPointMock));
 
-      _loadState.SynchronizeOppositeEndPoint (endPointStub);
+      _loadState.SynchronizeOppositeEndPoint (endPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
-      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Not.Contains (endPointStub));
+      endPointMock.VerifyAllExpectations();
+      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints (), List.Not.Contains (endPointMock));
     }
 
     [Test]

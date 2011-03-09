@@ -101,8 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
 
       _endPoint.MarkSynchronized ();
+
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
-      Assert.That (_endPoint.IsSynchronized, Is.True);
     }
 
     [Test]
@@ -112,7 +112,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.MarkUnsynchronized ();
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
-      Assert.That (_endPoint.IsSynchronized, Is.False);
+    }
+
+    [Test]
+    public void ResetSyncState ()
+    {
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
+
+      _endPoint.ResetSyncState();
+
+      var syncState = ObjectEndPointTestHelper.GetSyncState (_endPoint);
+      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
     }
 
     [Test]

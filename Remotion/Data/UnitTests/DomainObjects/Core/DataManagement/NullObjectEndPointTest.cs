@@ -58,7 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkSynchronized_DoesNothing ()
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void MarkSynchronized_Throws ()
     {
       _nullEndPoint.MarkSynchronized();
     }
@@ -66,6 +67,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void MarkUnsynchronized_Throws ()
+    {
+      _nullEndPoint.MarkUnsynchronized ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void ResetSyncState_Throws ()
     {
       _nullEndPoint.MarkUnsynchronized ();
     }

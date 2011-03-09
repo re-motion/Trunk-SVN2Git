@@ -108,5 +108,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (deletedInstance.State, Is.EqualTo (StateType.Deleted));
       return deletedInstance;
     }
+
+    public static ObjectID CreateObjectAndSetRelationInOtherTransaction<TCreated, TRelated> (ObjectID relatedID, Action<TCreated, TRelated> setter)
+        where TCreated : DomainObject
+        where TRelated : DomainObject
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var domainObject = (TCreated) LifetimeService.NewObject (ClientTransaction.Current, typeof (TCreated), ParamList.Empty);
+        setter (domainObject, (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true));
+        ClientTransaction.Current.Commit ();
+
+        return domainObject.ID;
+      }
+    }
   }
 }

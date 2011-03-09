@@ -163,6 +163,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
 
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      oppositeEndPoint.MarkSynchronized();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (

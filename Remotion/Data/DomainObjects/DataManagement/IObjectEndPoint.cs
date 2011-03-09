@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     
     void MarkSynchronized ();
     void MarkUnsynchronized ();
+    void ResetSyncState ();
 
     DomainObject GetOppositeObject (bool includeDeleted);
     DomainObject GetOriginalOppositeObject ();

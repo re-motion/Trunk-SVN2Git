@@ -358,6 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
+      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
       stateSetter (dataKeeperStub);
       
       var newLoadState = GetLoadState (_endPointWithLoadStateMock);

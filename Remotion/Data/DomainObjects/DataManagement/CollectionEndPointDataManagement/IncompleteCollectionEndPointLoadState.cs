@@ -42,6 +42,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
       _oppositeEndPoints = new HashSet<IObjectEndPoint>();
+
+      foreach (var originalOppositeEndPoint in dataKeeper.OriginalOppositeEndPoints)
+        originalOppositeEndPoint.ResetSyncState ();
     }
 
     public ICollectionEndPointDataKeeper DataKeeper
@@ -77,8 +80,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       foreach (var oppositeEndPoint in _oppositeEndPoints)
+      {
         _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-      
+        oppositeEndPoint.MarkSynchronized();
+      }
+
+      foreach (var oppositeEndPoint in _dataKeeper.OriginalOppositeEndPoints)
+        oppositeEndPoint.MarkSynchronized();
+
       _dataKeeper.SortCurrentAndOriginalData();
       stateSetter (_dataKeeper);
     }
@@ -125,6 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end point has already been registered.");
 
+      oppositeEndPoint.ResetSyncState ();
       _oppositeEndPoints.Add (oppositeEndPoint);
     }
 

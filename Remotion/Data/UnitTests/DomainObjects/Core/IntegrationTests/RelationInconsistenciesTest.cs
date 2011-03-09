@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -272,14 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private ObjectID CreateComputerAndSetEmployeeInOtherTransaction (ObjectID employeeID)
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var computer = Computer.NewObject ();
-        computer.Employee = Employee.GetObject (employeeID);
-        ClientTransaction.Current.Commit ();
-
-        return computer.ID;
-      }
+      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employeeID, (c, e) => c.Employee = e);
     }
 
     private void SetEmployeeInOtherTransaction (ObjectID computerID, ObjectID employeeID)

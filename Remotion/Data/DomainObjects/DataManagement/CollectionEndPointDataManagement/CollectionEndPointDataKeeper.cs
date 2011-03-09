@@ -100,7 +100,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
       _originalOppositeEndPoints.Add (oppositeEndPoint);
-      oppositeEndPoint.MarkSynchronized ();
     }
 
     public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
@@ -113,7 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
-      oppositeEndPoint.MarkUnsynchronized ();
     }
 
     public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
