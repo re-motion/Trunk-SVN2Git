@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IRelationEndPointDefinition _objectEndPointDefinition;
-    private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
+    private readonly Dictionary<ObjectID, IObjectEndPoint> _oppositeEndPoints;
 
     public EndPointTrackingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _endPointProvider = endPointProvider;
       _objectEndPointDefinition = objectEndPointDefinition;
 
-      _oppositeEndPoints = new HashSet<IObjectEndPoint> (wrappedData.Select (d => GetEndPoint (d.ID)));
+      _oppositeEndPoints = wrappedData.ToDictionary (d => d.ID, d => GetEndPoint (d.ID));
     }
 
     public IRelationEndPointProvider EndPointProvider
@@ -59,14 +59,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _objectEndPointDefinition; }
     }
 
-    public HashSet<IObjectEndPoint> OppositeEndPoints
-    {
-      get { return _oppositeEndPoints; }
-    }
-
     public IObjectEndPoint[] GetOppositeEndPoints()
     {
-      return _oppositeEndPoints.ToArray();
+      return _oppositeEndPoints.Values.ToArray();
     }
 
     public override void Clear ()
@@ -80,10 +75,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      base.Insert (index, domainObject);
-
       var endPoint = GetEndPoint (domainObject.ID);
-      _oppositeEndPoints.Add (endPoint);
+
+      base.Insert (index, domainObject);
+      _oppositeEndPoints.Add (domainObject.ID, endPoint);
     }
 
     public override bool Remove (DomainObject domainObject)
@@ -91,9 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       base.Remove (domainObject);
-
-      var endPoint = GetEndPoint (domainObject.ID);
-      return _oppositeEndPoints.Remove (endPoint);
+      return _oppositeEndPoints.Remove (domainObject.ID);
     }
 
     public override bool Remove (ObjectID objectID)
@@ -101,9 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       base.Remove (objectID);
-
-      var endPoint = GetEndPoint (objectID);
-      return _oppositeEndPoints.Remove (endPoint);
+      return _oppositeEndPoints.Remove (objectID);
     }
 
     public override void Replace (int index, DomainObject value)
@@ -111,20 +102,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("value", value);
 
       var oldValue = GetObject (index);
+      var newEndPoint = GetEndPoint (value.ID);
 
       base.Replace (index, value);
 
-      var oldEndPoint = GetEndPoint (oldValue.ID);
-      var newEndPoint = GetEndPoint (value.ID);
-      _oppositeEndPoints.Remove (oldEndPoint);
-      _oppositeEndPoints.Add (newEndPoint);
+      _oppositeEndPoints.Remove (oldValue.ID);
+      _oppositeEndPoints.Add (value.ID, newEndPoint);
     }
     
     private IObjectEndPoint GetEndPoint (ObjectID domainObjectID)
     {
       var endPointID = RelationEndPointID.Create (domainObjectID, _objectEndPointDefinition);
-      // TODO 3771: Use GetRelationEndPointWithoutLoading, assert that an end-point is always returned
-      return (IObjectEndPoint) _endPointProvider.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (IObjectEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (endPointID);
+      if (endPoint == null)
+      {
+        var message = string.Format (
+            "EndPointTrackingCollectionDataDecorator can only work with collection items that have an associated end-point. "
+            + "Object '{0}' has no end-point.", 
+            domainObjectID);
+        throw new InvalidOperationException (message);
+      }
+      return endPoint;
     }
 
     #region Serialization
@@ -134,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _objectEndPointDefinition = info.GetValueForHandle<IRelationEndPointDefinition> ();
-      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
+      _oppositeEndPoints = new Dictionary<ObjectID, IObjectEndPoint>();
       info.FillCollection (_oppositeEndPoints);
     }
 

@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
@@ -64,13 +65,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _orderItemEndPoint3 = MockRepository.GenerateStub<IObjectEndPoint> ();
 
       _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (_orderItem1, oi => oi.Order)))
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_orderItem1, oi => oi.Order)))
           .Return (_orderItemEndPoint1);
       _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (_orderItem2, oi => oi.Order)))
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_orderItem2, oi => oi.Order)))
           .Return (_orderItemEndPoint2);
       _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (_orderItem3, oi => oi.Order)))
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_orderItem3, oi => oi.Order)))
           .Return (_orderItemEndPoint3);
 
       _wrappedData.Insert (0, _orderItem1);
@@ -80,9 +81,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Initialization_WithItemsInCollection ()
+    public void Initialization_WithItems ()
     {
       Assert.That (_decorator.GetOppositeEndPoints(), Is.EquivalentTo (new[] { _orderItemEndPoint1, _orderItemEndPoint2 }));
+    }
+
+    [Test]
+    public void Initialization_WithItemsWithoutEndPoints ()
+    {
+      CheckThrowsOnItemWithoutEndPoint (
+          invalidItem => 
+              new EndPointTrackingCollectionDataDecorator (new DomainObjectCollectionData (new[] { invalidItem }), _endPointProviderStub, _definition));
     }
 
     [Test]
@@ -101,6 +110,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _orderItem3, _orderItem1, _orderItem2 }));
       Assert.That (_decorator.GetOppositeEndPoints(), Is.EquivalentTo (new[] { _orderItemEndPoint3, _orderItemEndPoint1, _orderItemEndPoint2 }));
+    }
+
+    [Test]
+    public void Insert_ItemWithoutEndPoint ()
+    {
+      CheckThrowsOnItemWithoutEndPoint (invalidItem => _decorator.Insert (0, invalidItem));
+
+      Assert.That (_wrappedData.ToArray(), Is.EqualTo (new[] { _orderItem1, _orderItem2 }));
     }
 
     [Test]
@@ -139,11 +156,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void Replace_WithItemWithoutEndPoint ()
+    {
+      CheckThrowsOnItemWithoutEndPoint (invalidItem => _decorator.Replace (0, invalidItem));
+
+      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _orderItem1, _orderItem2 }));
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (_orderItem1, oi => oi.Order)))
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_orderItem1, oi => oi.Order)))
           .Return (new SerializableObjectEndPointFake (DomainObjectMother.CreateFakeObject<Order>()));
       _wrappedData.Clear();
       _wrappedData.Add (_orderItem1);
@@ -153,8 +178,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.ObjectEndPointDefinition, Is.Not.Null);
-      Assert.That (deserializedInstance.OppositeEndPoints.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.GetOppositeEndPoints().Length, Is.EqualTo (1));
       Assert.That (deserializedInstance.Count, Is.EqualTo (1));
+    }
+
+    private void CheckThrowsOnItemWithoutEndPoint (Action<DomainObject> item)
+    {
+      var invalidItem = DomainObjectMother.CreateFakeObject<OrderItem> (DomainObjectIDs.OrderItem5);
+      try
+      {
+        item (invalidItem);
+        Assert.Fail ("Exepcted InvalidOperationException.");
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex.Message,
+                     Is.EqualTo ("EndPointTrackingCollectionDataDecorator can only work with collection items that have an associated end-point. "
+                                 + "Object 'OrderItem|ea505094-770a-4505-82c1-5a4f94f56fe2|System.Guid' has no end-point."));
+      }
+      catch (Exception ex)
+      {
+        Assert.Fail ("Expected InvalidOperationException, got '{0}'. {1}", ex.GetType ().Name, ex.ToString ());
+      }
     }
   }
 }

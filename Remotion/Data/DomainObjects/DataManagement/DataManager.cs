@@ -302,6 +302,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
     }
 
+    public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      return _relationEndPointMap[endPointID];
+    }
+
     public IRelationEndPoint GetOppositeRelationEndPointWithLazyLoad (IRelationEndPoint relationEndPoint, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPoint", relationEndPoint);

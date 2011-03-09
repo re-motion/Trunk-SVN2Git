@@ -20,5 +20,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface IRelationEndPointProvider
   {
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);
+    IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID);
   }
 }

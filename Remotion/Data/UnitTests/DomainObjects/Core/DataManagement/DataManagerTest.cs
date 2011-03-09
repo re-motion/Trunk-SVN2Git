@@ -1084,6 +1084,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
     }
 
+    [Test]
+    public void GetRelationEndPointWithoutLoading_EndPointNotAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      var result = _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+
+      Assert.That (result, Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithoutLoading_EndPointAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      var result = _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
+    }
+
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
