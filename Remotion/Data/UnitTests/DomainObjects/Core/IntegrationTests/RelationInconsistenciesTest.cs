@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -22,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -101,6 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 3774")]
     public void VirtualEndPointQuery_OneMany_ObjectNotIncluded_ThatLocallyPointsToHere ()
     {
       SetDatabaseModifyable ();
@@ -113,12 +114,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
 
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      // Resolve virtual end point - the database says that company points to IndustrialSector2, but the transaction says it points to IndustrialSector1!
+      // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
       var companiesOfIndustrialSector = industrialSector.Companies;
       companiesOfIndustrialSector.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (companiesOfIndustrialSector, List.Contains (company));
+      Assert.That (companiesOfIndustrialSector, List.Not.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, false);
+      CheckSyncState (industrialSector, s => s.Companies, true);
+      CheckSyncState (companiesOfIndustrialSector[0], c => c.IndustrialSector, true);
+
+      CheckActionWorks (() => industrialSector.Companies.RemoveAt (0));
+      CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
+
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync with the opposite property");
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (company, c => c.IndustrialSector));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckActionWorks (() => company.IndustrialSector = null);
+      CheckActionWorks (() => industrialSector.Companies.Add (company));
     }
 
     [Test]
@@ -167,6 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 3774")]
     public void ObjectLoaded_WithInconsistentForeignKey_OneMany ()
     {
       SetDatabaseModifyable();
@@ -187,54 +205,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
       Assert.That (industrialSector.Companies, List.Not.Contains (newCompany));
 
-      Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (
-              ClientTransactionMock, RelationEndPointID.Create (industrialSector, sector => sector.Companies)),
-          Is.False);
-      Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (
-              ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
-          Is.False);
+      CheckSyncState (industrialSector, s => s.Companies, true);
+      CheckSyncState (newCompany, c => c.IndustrialSector, false);
 
-      try
-      {
-        newCompany.IndustrialSector = CreateNewIndustrialSector();
-        Assert.Fail ("Expected InvalidOperationException.");
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (ex.Message, Is.EqualTo (
-          "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector' of object '" + newCompany.ID + "' "
-          + "cannot be changed because it is out of sync with the opposite property "
-           + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies'. "
-          + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method."));
-      }
-    }
+      CheckSyncState (newCompany, c => c.IndustrialSector, false);
+      CheckSyncState (industrialSector, s => s.Companies, true);
+      CheckSyncState (industrialSector.Companies[0], c => c.IndustrialSector, true);
 
-    [Test]
-    [ExpectedException (
-        typeof (InvalidOperationException),
-        ExpectedMessage = "cannot be changed because it is out of sync with the opposite property",
-        MatchType = MessageMatch.Contains)]
-    public void ObjectLoaded_WithInconsistentForeignKey_OneMany_ProblemDetectedInAdd ()
-    {
-      SetDatabaseModifyable();
+      CheckActionWorks (() => industrialSector.Companies.RemoveAt (0));
+      CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
-      // setup new IndustrialSector object in database
-      var industrialSector = CreateNewIndustrialSector();
-      ClientTransactionMock.Commit();
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (newCompany), "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => newCompany.IndustrialSector = null, "out of sync with the opposite property");
 
-      // in parallel transaction, add a Company to the IndustrialSector
-      var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
-      // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
-      var newCompany = Company.GetObject (newCompanyID);
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (newCompany, c => c.IndustrialSector));
 
-      Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (
-              ClientTransactionMock, RelationEndPointID.Create (newCompany, company => company.IndustrialSector)),
-          Is.False);
-
-      industrialSector.Companies.Add (newCompany);
+      CheckSyncState (newCompany, c => c.IndustrialSector, true);
+      CheckActionWorks (() => newCompany.IndustrialSector = null);
+      CheckActionWorks (() => industrialSector.Companies.Add (newCompany));
     }
 
     private IndustrialSector CreateNewIndustrialSector ()
@@ -286,5 +274,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       }
     }
 
+    private void CheckSyncState<TOriginating, TRelated> (
+        TOriginating company,
+        Expression<Func<TOriginating, TRelated>> propertyAccessExpression,
+        bool expectedState)
+        where TOriginating: DomainObject
+    {
+      Assert.That (
+          BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, RelationEndPointID.Create (company, propertyAccessExpression)),
+          Is.EqualTo (expectedState));
+    }
+
+    private void CheckActionWorks (Action action)
+    {
+      action ();
+    }
+
+    private void CheckActionThrows<TException> (Action action, string expectedMessage) where TException : Exception
+    {
+      try
+      {
+        action ();
+      }
+      catch (Exception ex)
+      {
+        Assert.That (ex, Is.TypeOf (typeof (TException)));
+        Assert.That (
+            ex.Message, 
+            NUnit.Framework.SyntaxHelpers.Text.Contains (expectedMessage), 
+            "Expected: " + expectedMessage + Environment.NewLine + "Was: " + ex.Message);
+      }
+    }
   }
 }

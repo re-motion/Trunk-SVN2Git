@@ -125,9 +125,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      //if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
-      //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
-
       _collectionData.RegisterOriginalItem (domainObject);
       _originalItemsWithoutEndPoint.Add (domainObject);
     }
