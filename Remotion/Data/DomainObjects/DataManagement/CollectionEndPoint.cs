@@ -63,7 +63,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _lazyLoader = lazyLoader;
       _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3771: Inject via ctor
 
-      // TODO 3653: Inject DataKeeper from the outside
       var dataKeeper = CreateDataKeeper (clientTransaction, id);
       SetIncompleteLoadState (dataKeeper);
     }
