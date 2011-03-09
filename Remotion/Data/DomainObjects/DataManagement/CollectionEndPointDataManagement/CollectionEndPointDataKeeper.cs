@@ -119,6 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void CommitOriginalContents ()
     {
       _collectionData.Commit ();
+      // TODO 3771: _oppositeEndPoints = _tracker.GetOppositeEndPoints();
     }
 
     #region Serialization
