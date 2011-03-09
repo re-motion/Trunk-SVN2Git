@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CommitOriginalContents_UpdatesOriginalContentsAndEndPoints ()
+    public void Commit_UpdatesOriginalContentsAndEndPoints ()
     {
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
@@ -315,14 +315,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
 
-      _dataKeeper.CommitOriginalContents ();
+      _dataKeeper.Commit ();
 
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
     }
 
     [Test]
-    public void CommitOriginalContents_InvalidatesHasChangedCache ()
+    public void Commit_InvalidatesHasChangedCache ()
     {
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.True);
 
-      _dataKeeper.CommitOriginalContents ();
+      _dataKeeper.Commit ();
 
       Assert.That (_dataKeeper.HasDataChanged (_changeDetectionStrategyMock), Is.False);
     }

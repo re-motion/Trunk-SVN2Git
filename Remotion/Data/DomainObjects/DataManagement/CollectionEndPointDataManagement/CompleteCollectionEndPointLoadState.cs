@@ -248,6 +248,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
+    public bool HasChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
+
+      return _dataKeeper.HasDataChanged (changeDetectionStrategy);
+    }
+
+    public void Commit ()
+    {
+      _dataKeeper.Commit();
+    }
+
     #region Serialization
 
     public CompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)

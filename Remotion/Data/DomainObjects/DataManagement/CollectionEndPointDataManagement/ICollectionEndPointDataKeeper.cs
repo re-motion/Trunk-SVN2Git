@@ -19,6 +19,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
 
     void SortCurrentAndOriginalData ();
-    void CommitOriginalContents ();
+    void Commit ();
   }
 }

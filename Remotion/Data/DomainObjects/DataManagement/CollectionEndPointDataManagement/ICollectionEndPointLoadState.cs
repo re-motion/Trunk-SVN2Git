@@ -53,5 +53,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint);
     void CheckMandatory (ICollectionEndPoint collectionEndPoint);
+
+    bool HasChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
+    void Commit ();
   }
 }

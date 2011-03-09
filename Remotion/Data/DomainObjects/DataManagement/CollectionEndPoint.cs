@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool HasChanged
     {
-      get { return OriginalCollection != Collection || _dataKeeper.HasDataChanged (_changeDetectionStrategy); }
+      get { return OriginalCollection != Collection || _loadState.HasChanged (_changeDetectionStrategy); }
     }
 
     public override bool HasBeenTouched
@@ -153,7 +153,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        _dataKeeper.CommitOriginalContents();
+        _loadState.Commit();
         _originalCollection = _collection;
       }
 

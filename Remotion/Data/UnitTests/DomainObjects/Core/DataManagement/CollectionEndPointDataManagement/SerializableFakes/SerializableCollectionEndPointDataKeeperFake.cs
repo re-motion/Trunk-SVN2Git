@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void CommitOriginalContents ()
+    public void Commit ()
     {
       throw new NotImplementedException();
     }

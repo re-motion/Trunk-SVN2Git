@@ -165,81 +165,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void HasChanged_FastPathFalse ()
+    public void HasChanged_True_CollectionChanged ()
     {
-      var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
-      strategyMock.Replay ();
+      _loadStateMock.Replay();
+      CollectionEndPointTestHelper.SetCollection (_endPointWithLoadStateMock, new DomainObjectCollection());
 
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          _customerEndPointID, 
-          strategyMock, 
-          ClientTransactionMock.DataManager, 
-          ClientTransactionMock, 
-          new[] { _order1 });
+      var result = _endPointWithLoadStateMock.HasChanged;
 
-      var result = endPoint.HasChanged;
-
-      strategyMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (false));
+      _loadStateMock.AssertWasNotCalled (mock => mock.HasChanged (Arg<ICollectionEndPointChangeDetectionStrategy>.Is.Anything));
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void HasChanged_UsesStrategy_IfRequired ()
+    public void HasChanged_True_LoadState ()
     {
-      var strategyMock = new MockRepository ().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          _customerEndPointID,
-          strategyMock,
-          ClientTransactionMock.DataManager,
-          ClientTransactionMock,
-          new[] { _order1 });
+      _loadStateMock.Expect (mock => mock.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (true);
+      _loadStateMock.Replay ();
 
-      strategyMock
-          .Expect (mock => mock.HasDataChanged (
-              Arg<IDomainObjectCollectionData>.List.Equal (endPoint.Collection),
-              Arg<IDomainObjectCollectionData>.List.Equal (endPoint.GetCollectionWithOriginalData())))
-          .Return (true);
-      strategyMock.Replay ();
+      var result = _endPointWithLoadStateMock.HasChanged;
 
-      endPoint.Collection.Add (_order2);
-
-      var result = endPoint.HasChanged;
-
-      strategyMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (true));
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void HasChanged_TrueWithoutStrategy_WhenCollectionChanged ()
+    public void HasChanged_False ()
     {
-      var strategyMock = MockRepository.GenerateMock<ICollectionEndPointChangeDetectionStrategy> ();
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          _customerEndPointID,
-          strategyMock,
-          ClientTransactionMock.DataManager,
-          ClientTransactionMock,
-          new[] { _order1 });
+      _loadStateMock.Expect (mock => mock.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (false);
+      _loadStateMock.Replay ();
 
-      endPoint.CreateSetCollectionCommand (new OrderCollection { _order1 }).ExpandToAllRelatedObjects().NotifyAndPerform();
+      var result = _endPointWithLoadStateMock.HasChanged;
 
-      var result = endPoint.HasChanged;
-
-      strategyMock.AssertWasNotCalled (mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
-      Assert.That (result, Is.EqualTo (true));
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.False);
     }
-
-    [Test]
-    public void HasChanged_DoesNotLoadData ()
-    {
-      _customerEndPoint.MarkDataIncomplete ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-
-      var result = _customerEndPoint.HasChanged;
-      
-      Assert.That (result, Is.EqualTo (false));
-      AssertDidNotLoadData(_customerEndPoint);
-    }
-
+    
     [Test]
     public void Touch ()
     {
@@ -418,55 +378,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit ()
+    public void Commit_Unchanged ()
     {
-      var newOrder = Order.NewObject ();
-      _customerEndPoint.Collection.Add (newOrder);
+      _loadStateMock.Stub (stub => stub.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (false);
+      _loadStateMock.Replay ();
 
-      Assert.That (_customerEndPoint.HasChanged, Is.True);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-      Assert.That (_customerEndPoint.Collection.ContainsObject (newOrder), Is.True);
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData().ContainsObject (newOrder), Is.False);
+      _endPointWithLoadStateMock.Touch ();
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
+      Assert.That (_endPointWithLoadStateMock.HasChanged, Is.False);
 
-      var collectionBefore = _customerEndPoint.Collection;
+      _endPointWithLoadStateMock.Commit();
 
-      _customerEndPoint.Commit ();
-
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-      Assert.That (_customerEndPoint.Collection.ContainsObject (newOrder), Is.True);
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData().ContainsObject (newOrder), Is.True);
-
-      Assert.That (_customerEndPoint.Collection, Is.SameAs (collectionBefore));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (_customerEndPoint.Collection));
+      _loadStateMock.AssertWasNotCalled (mock => mock.Commit());
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
     }
 
     [Test]
-    public void Commit_TouchedUnchanged ()
+    public void Commit_Changed ()
     {
-      _customerEndPoint.Collection[0] = _customerEndPoint.Collection[0];
+      _loadStateMock.Expect (mock => mock.Commit ());
+      _loadStateMock.Replay ();
 
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+      _endPointWithLoadStateMock.Touch ();
+      var newCollection = new DomainObjectCollection ();
+      CollectionEndPointTestHelper.SetCollection (_endPointWithLoadStateMock, newCollection);
 
-      _customerEndPoint.Commit ();
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
+      Assert.That (_endPointWithLoadStateMock.OriginalCollection, Is.Not.SameAs (newCollection));
+      Assert.That (_endPointWithLoadStateMock.HasChanged, Is.True);
 
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-    }
+      _endPointWithLoadStateMock.Commit ();
 
-    [Test]
-    public void Commit_Unchanged_DoesNotLoadData ()
-    {
-      _customerEndPoint.Touch ();
-      _customerEndPoint.MarkDataIncomplete ();
-      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-
-      _customerEndPoint.Commit();
-
-      AssertDidNotLoadData (_customerEndPoint);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _loadStateMock.VerifyAllExpectations();
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
+      Assert.That (_endPointWithLoadStateMock.OriginalCollection, Is.SameAs (newCollection));
     }
 
     [Test]

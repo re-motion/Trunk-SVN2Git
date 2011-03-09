@@ -313,6 +313,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void HasChanged ()
+    {
+      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
+      _dataKeeperMock.Expect (mock => mock.HasDataChanged (changeDetectionStrategy)).Return (true);
+      _dataKeeperMock.Replay ();
+
+      var result = _loadState.HasChanged (changeDetectionStrategy);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void Commit ()
+    {
+      _dataKeeperMock.Expect (mock => mock.Commit ());
+      _dataKeeperMock.Replay ();
+
+      _loadState.Commit ();
+
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();

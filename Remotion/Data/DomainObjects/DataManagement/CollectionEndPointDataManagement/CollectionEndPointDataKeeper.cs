@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         _collectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
     }
 
-    public void CommitOriginalContents ()
+    public void Commit ()
     {
       _collectionData.Commit ();
       
