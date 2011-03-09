@@ -227,7 +227,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      // TODO 3771: Replace with _dataKeeper.Clear + Add
       _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
 
       if (sourceEndPoint.HasBeenTouched || collectionEndPoint.HasChanged)

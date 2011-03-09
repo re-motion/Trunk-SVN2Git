@@ -67,7 +67,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      // TODO 3771: Add ICollectionEndPointDataKeeper.Replace and use here
       ModifiedCollectionData.Replace (_index, NewRelatedObject);
       ModifiedEndPoint.Touch();
     }

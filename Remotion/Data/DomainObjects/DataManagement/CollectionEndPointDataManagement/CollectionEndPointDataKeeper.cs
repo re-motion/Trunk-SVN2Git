@@ -82,6 +82,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      // TODO 3771
       //if (ContainsOppositeEndPoint (oppositeEndPoint))
       //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
@@ -95,6 +96,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      // TODO 3771
       //if (!ContainsOppositeEndPoint (oppositeEndPoint))
       //  throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
