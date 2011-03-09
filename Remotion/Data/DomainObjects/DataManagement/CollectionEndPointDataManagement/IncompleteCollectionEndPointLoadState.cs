@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
@@ -32,7 +31,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
-    private readonly HashSet<IObjectEndPoint> _oppositeEndPoints;
 
     public IncompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader)
     {
@@ -41,7 +39,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
-      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
 
       foreach (var originalOppositeEndPoint in dataKeeper.OriginalOppositeEndPoints)
         originalOppositeEndPoint.ResetSyncState ();
@@ -55,11 +52,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public IRelationEndPointLazyLoader LazyLoader
     {
       get { return _lazyLoader; }
-    }
-
-    public IObjectEndPoint[] OppositeEndPoints
-    {
-      get { return _oppositeEndPoints.ToArray(); }
     }
 
     public bool IsDataComplete ()
@@ -78,12 +70,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-
-      foreach (var oppositeEndPoint in _oppositeEndPoints)
-      {
-        _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-        oppositeEndPoint.MarkSynchronized();
-      }
 
       foreach (var oppositeEndPoint in _dataKeeper.OriginalOppositeEndPoints)
         oppositeEndPoint.MarkSynchronized();
@@ -128,22 +114,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (_oppositeEndPoints.Contains (oppositeEndPoint))
-        throw new InvalidOperationException ("The opposite end point has already been registered.");
-
       if (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end point has already been registered.");
 
       oppositeEndPoint.ResetSyncState ();
-      _oppositeEndPoints.Add (oppositeEndPoint);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (!_oppositeEndPoints.Remove (oppositeEndPoint))
-        _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+      _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
@@ -250,9 +232,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
-      
-      _oppositeEndPoints = new HashSet<IObjectEndPoint>();
-      info.FillCollection (_oppositeEndPoints);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -260,7 +239,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_dataKeeper);
-      info.AddCollection (_oppositeEndPoints);
     }
 
     #endregion
