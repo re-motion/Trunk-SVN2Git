@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -39,7 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     public static T SerializeAndDeserialize<T> (T serializable) where T : IFlattenedSerializable
     {
-      return Deserialize<T> (Serialize (serializable));
+      var data = Serialize (serializable);
+      Serializer.SerializeAndDeserialize (data);
+      return Deserialize<T> (data);
     }
   }
 }

@@ -358,14 +358,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void FlattenedSerializable ()
     {
       var comparer = Comparer<DomainObject>.Default;
-      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, _endPointProviderStub);
+      var endPointProvider = new SerializableEndPointProvider();
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, endPointProvider);
       var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);
 
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
-
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
