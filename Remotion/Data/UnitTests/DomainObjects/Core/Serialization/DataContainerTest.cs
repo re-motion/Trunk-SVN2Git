@@ -61,9 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
 
       Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
-      Assert.AreSame (ClientTransactionMock, deserializedDataContainer.ClientTransaction);
+      Assert.IsNotNull (deserializedDataContainer.ClientTransaction);
       Assert.AreEqual (dataContainer.Timestamp, deserializedDataContainer.Timestamp);
-      Assert.AreSame (dataContainer.DomainObject, deserializedDataContainer.DomainObject);
+      Assert.IsNotNull (deserializedDataContainer.DomainObject);
+      Assert.AreEqual (dataContainer.DomainObject.ID, deserializedDataContainer.DomainObject.ID);
       Assert.AreEqual (StateType.Changed, deserializedDataContainer.State);
       Assert.AreEqual ("abc", deserializedDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")].Value);
       Assert.AreEqual (employee.ID, deserializedDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].Value);

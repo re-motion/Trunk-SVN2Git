@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (1, map.Count);
 
       DataContainerMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
-      Assert.AreEqual (ClientTransactionMock, PrivateInvoke.GetNonPublicField (deserializedMap, "_clientTransaction"));
+      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedMap, "_clientTransaction"));
       Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"));
       Assert.AreEqual (1, deserializedMap.Count);
     }

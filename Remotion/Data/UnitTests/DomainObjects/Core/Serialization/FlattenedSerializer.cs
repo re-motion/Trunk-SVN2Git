@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     public static T SerializeAndDeserialize<T> (T serializable) where T : IFlattenedSerializable
     {
-      var data = Serialize (serializable);
-      Serializer.SerializeAndDeserialize (data);
-      return Deserialize<T> (data);
+      var flattenedData = Serialize (serializable);
+      var deserializedFlattenedData = Serializer.SerializeAndDeserialize (flattenedData);
+      return Deserialize<T> (deserializedFlattenedData);
     }
   }
 }

@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void RelationEndPoint_Content ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-      Assert.AreSame (ClientTransactionMock, deserializedEndPoint.ClientTransaction);
+      Assert.IsNotNull (deserializedEndPoint.ClientTransaction);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.AreEqual (_endPoint.ID, deserializedEndPoint.ID);
     }
