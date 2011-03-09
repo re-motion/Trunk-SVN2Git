@@ -914,19 +914,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetNonUnregisterableEndPointsForDataContainer_OppositeCollectionEndPoint ()
     {
+      var oppositeCollectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      oppositeCollectionEndPointStub.Stub (stub => stub.ID).Return (oppositeCollectionEndPointID);
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeCollectionEndPointStub);
+      
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
       var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
 
-      var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeCollectionEndPoint = (ICollectionEndPoint) _map[oppositeCollectionEndPointID];
-      oppositeCollectionEndPoint.MarkDataComplete (new DomainObject[0]);
-
-      var item2 = DomainObjectMother.GetObjectReference<OrderItem> (ClientTransactionMock, DomainObjectIDs.OrderItem2);
-
-      oppositeCollectionEndPoint.CreateAddCommand (item2).Perform ();
-      Assert.That (realEndPoint.HasChanged, Is.False);
-      Assert.That (oppositeCollectionEndPoint.HasChanged, Is.True);
+      oppositeCollectionEndPointStub.Stub (stub => stub.HasChanged).Return (true);
 
       var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);
 

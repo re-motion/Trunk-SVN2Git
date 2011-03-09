@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
       var state = new IncompleteCollectionEndPointLoadState (dataKeeper, lazyLoader);
 
-      var oppositeEndPoint = new SerializableObjectEndPointFake (_relatedObject);
+      var oppositeEndPoint = new SerializableObjectEndPointFake (null, _relatedObject);
       state.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, oppositeEndPoint);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);

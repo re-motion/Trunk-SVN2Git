@@ -25,15 +25,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 {
   public class SerializableObjectEndPointFake : IObjectEndPoint
   {
+    private readonly RelationEndPointID _id;
     private readonly DomainObject _owningObject;
 
-    public SerializableObjectEndPointFake (DomainObject owningObject)
+    public SerializableObjectEndPointFake (RelationEndPointID id, DomainObject owningObject)
     {
+      _id = id;
       _owningObject = owningObject;
     }
 
     public SerializableObjectEndPointFake (FlattenedDeserializationInfo info)
     {
+      _owningObject = info.GetValue<DomainObject>();
     }
 
     public bool IsNull
@@ -43,11 +46,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
+      info.AddValue (_owningObject);
     }
 
     public RelationEndPointID ID
     {
-      get { throw new NotImplementedException(); }
+      get { return _id; }
     }
 
     public ClientTransaction ClientTransaction

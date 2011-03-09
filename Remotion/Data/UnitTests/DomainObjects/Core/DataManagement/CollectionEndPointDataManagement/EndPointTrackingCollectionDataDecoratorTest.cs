@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -166,20 +167,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void FlattenedSerializable ()
     {
-      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_orderItem1, oi => oi.Order)))
-          .Return (new SerializableObjectEndPointFake (DomainObjectMother.CreateFakeObject<Order>()));
+      var endPoint = new SerializableObjectEndPointFake (RelationEndPointID.Create (_orderItem1, oi => oi.Order), _orderItem1);
+      var endPointProvider = new SerializableEndPointProvider (endPoint);
       _wrappedData.Clear();
       _wrappedData.Add (_orderItem1);
-      var decorator = new EndPointTrackingCollectionDataDecorator (_wrappedData, endPointProviderStub, _definition);
+      var decorator = new EndPointTrackingCollectionDataDecorator (_wrappedData, endPointProvider, _definition);
       
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (decorator);
 
       Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.ObjectEndPointDefinition, Is.Not.Null);
-      Assert.That (deserializedInstance.GetOppositeEndPoints().Length, Is.EqualTo (1));
+      Assert.That (deserializedInstance.GetOppositeEndPoints ().Length, Is.EqualTo (1));
       Assert.That (deserializedInstance.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void FlattenedSerializable_OnlyWritesSerializableItems ()
+    {
+      var endPoint = new SerializableObjectEndPointFake (RelationEndPointID.Create (_orderItem1, oi => oi.Order), _orderItem1);
+      var endPointProvider = new SerializableEndPointProvider (endPoint);
+      _wrappedData.Clear ();
+      _wrappedData.Add (_orderItem1);
+      var decorator = new EndPointTrackingCollectionDataDecorator (_wrappedData, endPointProvider, _definition);
+
+      var data = FlattenedSerializer.Serialize (decorator);
+      Serializer.SerializeAndDeserialize (data);
     }
 
     private void CheckThrowsOnItemWithoutEndPoint (Action<DomainObject> item)

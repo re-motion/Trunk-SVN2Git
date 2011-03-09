@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
       
-      var data = ((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData;
+      var data = ((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData.GetDataStore();
       if (expectedDataStore != null)
         Assert.That (data, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }

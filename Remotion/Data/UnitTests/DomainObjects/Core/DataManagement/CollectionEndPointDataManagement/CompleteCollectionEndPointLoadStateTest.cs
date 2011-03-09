@@ -557,7 +557,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var endPointProvider = new SerializableRelationEndPointProviderFake();
       var state = new CompleteCollectionEndPointLoadState (dataKeeper, endPointProvider, _clientTransaction);
 
-      var oppositeEndPoint = new SerializableObjectEndPointFake (_relatedObject);
+      var oppositeEndPoint = new SerializableObjectEndPointFake (null, _relatedObject);
       PrivateInvoke.SetNonPublicField (state, "_unsynchronizedOppositeEndPoints", new List<IObjectEndPoint> (new[] { oppositeEndPoint }));
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);

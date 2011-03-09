@@ -65,7 +65,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData CollectionData
     {
-      get { return _collectionData; }
+      get { return _currentOppositeEndPointTracker; }
+    }
+
+    public IObjectEndPoint[] OppositeEndPoints
+    {
+      get { return _currentOppositeEndPointTracker.GetOppositeEndPoints(); }
     }
 
     public ReadOnlyCollectionDataDecorator OriginalCollectionData
@@ -89,9 +94,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      // TODO 3771
-      //if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
-      //  throw new InvalidOperationException ("The opposite end-point has already been registered.");
+      if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
       var item = oppositeEndPoint.GetDomainObjectReference();
       _collectionData.RegisterOriginalItem (item);
@@ -103,9 +107,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      // TODO 3771
-      //if (!ContainsOriginalOppositeEndPoint (oppositeEndPoint))
-      //  throw new InvalidOperationException ("The opposite end-point has not been registered.");
+      if (!ContainsOriginalOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       var itemID = oppositeEndPoint.ObjectID;
       _collectionData.UnregisterOriginalItem (itemID);
@@ -128,7 +131,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void CommitOriginalContents ()
     {
       _collectionData.Commit ();
-      // TODO 3771: _originalOppositeEndPoints = _tracker.GetOppositeEndPoints();
+      
+      _originalOppositeEndPoints.Clear();
+      _originalOppositeEndPoints.UnionWith (_currentOppositeEndPointTracker.GetOppositeEndPoints());
     }
 
     #region Serialization

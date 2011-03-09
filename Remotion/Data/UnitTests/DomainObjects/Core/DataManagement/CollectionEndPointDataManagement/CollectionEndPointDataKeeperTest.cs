@@ -101,6 +101,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void CollectionData_RepresentsDataAndEndPoints ()
+    {
+      _dataKeeper.CollectionData.Insert (0, _domainObject1);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+    }
+
+    [Test]
     public void ContainsOriginalOppositeEndPoint ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint(_domainObject1);
@@ -136,7 +145,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
-    [Ignore ("TODO 3771")]
     public void RegisterOriginalOppositeEndPoint_AlreadyRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
@@ -171,7 +179,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
-    [Ignore ("TODO 3771")]
     public void UnregisterOriginalOppositeEndPoint_NotRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
@@ -181,8 +188,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged ()
     {
+      var changeCachingCollectionData =
+          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
+            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
+          .Expect (mock => mock.HasDataChanged (
+              Arg.Is (changeCachingCollectionData), 
+              Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
 
@@ -197,8 +209,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged_Cached ()
     {
+      var changeCachingCollectionData =
+          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
+            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
       _changeDetectionStrategyMock
-          .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
+          .Expect (mock => mock.HasDataChanged (
+              Arg.Is (changeCachingCollectionData), 
+              Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true)
           .Repeat.Once();
       _changeDetectionStrategyMock.Replay ();
@@ -217,13 +234,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged_Cache_InvalidatedOnModifyingOperations ()
     {
+      var changeCachingCollectionData =
+          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
+            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
+
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
+            .Expect (mock => mock.HasDataChanged (
+                Arg.Is (changeCachingCollectionData), 
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (true);
         _changeDetectionStrategyMock
-            .Expect (mock => mock.HasDataChanged (Arg.Is (_dataKeeper.CollectionData), Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
+            .Expect (mock => mock.HasDataChanged (
+                Arg.Is (changeCachingCollectionData), 
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (false);
       }
       _changeDetectionStrategyMock.Replay ();
@@ -281,16 +306,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CommitOriginalContents_UpdatesOriginalContents ()
+    public void CommitOriginalContents_UpdatesOriginalContentsAndEndPoints ()
     {
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
 
       _dataKeeper.CommitOriginalContents ();
 
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
     }
 
     [Test]
@@ -331,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var comparer = Comparer<DomainObject>.Default;
       var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, _endPointProviderStub);
-      var endPointFake = new SerializableObjectEndPointFake (_domainObject1);
+      var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);
 
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);

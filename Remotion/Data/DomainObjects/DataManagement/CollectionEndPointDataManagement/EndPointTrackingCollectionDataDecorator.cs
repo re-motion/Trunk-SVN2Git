@@ -132,8 +132,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _objectEndPointDefinition = info.GetValueForHandle<IRelationEndPointDefinition> ();
-      _oppositeEndPoints = new Dictionary<ObjectID, IObjectEndPoint>();
-      info.FillCollection (_oppositeEndPoints);
+      
+      var oppositeEndPoints = new List<IObjectEndPoint> ();
+      info.FillCollection (oppositeEndPoints);
+      _oppositeEndPoints = oppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -141,7 +143,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       info.AddValue (WrappedData);
       info.AddHandle(_endPointProvider);
       info.AddHandle(_objectEndPointDefinition);
-      info.AddCollection (_oppositeEndPoints);
+      
+      info.AddCollection (_oppositeEndPoints.Values);
     }
     
     #endregion Serialization

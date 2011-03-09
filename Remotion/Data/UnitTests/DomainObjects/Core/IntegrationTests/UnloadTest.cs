@@ -380,6 +380,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    public void UnloadData_OrderItem_AfterCommit ()
+    {
+      SetDatabaseModifyable();
+
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order1.OrderItems;
+      var newOrderItem = OrderItem.NewObject();
+      orderItems.Add (newOrderItem);
+
+      ClientTransactionMock.Commit();
+
+      Assert.That (newOrderItem.Order, Is.SameAs (order1));
+      Assert.That (newOrderItem.State, Is.EqualTo (StateType.Unchanged));
+
+      UnloadService.UnloadData (ClientTransactionMock, newOrderItem.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      Assert.That (newOrderItem.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItems.IsDataComplete, Is.False);
+    }
+
+    [Test]
     public void UnloadData_OrderItem_ReloadRelation_OneToMany_FromRealSide ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
