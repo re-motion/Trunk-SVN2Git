@@ -122,6 +122,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void Replace ()
+    {
+      _decorator.Replace (0, _orderItem3);
+
+      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _orderItem3, _orderItem2 }));
+      Assert.That (_decorator.GetOppositeEndPoints (), Is.EquivalentTo (new[] { _orderItemEndPoint3, _orderItemEndPoint2 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentOutOfRangeException), ExpectedMessage = 
+        "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")]
+    public void Replace_ArgumentOutOfRange ()
+    {
+      _decorator.Replace (3, _orderItem3);
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();

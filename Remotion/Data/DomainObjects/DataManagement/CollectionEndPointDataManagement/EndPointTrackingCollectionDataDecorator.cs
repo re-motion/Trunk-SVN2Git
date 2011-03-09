@@ -108,8 +108,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public override void Replace (int index, DomainObject value)
     {
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      var oldValue = GetObject (index);
+
       base.Replace (index, value);
-      // TODO 3771: Remove end-point of old value, add end-point of new value
+
+      var oldEndPoint = GetEndPoint (oldValue.ID);
+      var newEndPoint = GetEndPoint (value.ID);
+      _oppositeEndPoints.Remove (oldEndPoint);
+      _oppositeEndPoints.Add (newEndPoint);
     }
     
     private IObjectEndPoint GetEndPoint (ObjectID domainObjectID)
