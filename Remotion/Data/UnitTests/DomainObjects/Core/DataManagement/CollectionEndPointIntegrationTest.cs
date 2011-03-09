@@ -113,12 +113,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint);
+
       // end point still holds on to the same old data store...
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint, originalDataStoreOfOldOpposites);
+      Assert.That (GetDomainObjectCollectionData (newOpposites).GetDataStore(), Is.SameAs (originalDataStoreOfOldOpposites));
 
       // but with the new data!
       Assert.That (originalDataStoreOfOldOpposites.ToArray (), Is.EqualTo (new[] { _orderWithoutOrderItem }));
-
     }
 
     [Test]
@@ -291,8 +292,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.Rollback ();
 
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint, oldCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
+
+      Assert.That (GetDomainObjectCollectionData (oldCollection).GetDataStore (), Is.SameAs (oldCollectionDataStore));
     }
 
     [Test]
@@ -364,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Commit ();
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (oldCollection, typeof (Order));
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint, null);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint);
     }
 
     [Test]

@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void MarkDataComplete_ThrowsException ()
     {
       var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => Assert.Fail ("Must not be called"));
+      _loadState.MarkDataComplete (_collectionEndPointMock, items, keeper => Assert.Fail ("Must not be called"));
     }
 
     [Test]
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
 
-      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => { });
+      _loadState.MarkDataIncomplete (_collectionEndPointMock, keeper => { });
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations ();
@@ -135,7 +135,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       endPointMock.Replay ();
       _dataKeeperMock.Replay ();
 
-      _loadState.MarkDataIncomplete (_collectionEndPointMock, () => { stateSetterCalled = true; });
+      _loadState.MarkDataIncomplete (
+          _collectionEndPointMock,
+          keeper =>
+          {
+            stateSetterCalled = true;
+            Assert.That (keeper, Is.SameAs (_dataKeeperMock));
+          });
 
       _collectionEndPointMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations ();

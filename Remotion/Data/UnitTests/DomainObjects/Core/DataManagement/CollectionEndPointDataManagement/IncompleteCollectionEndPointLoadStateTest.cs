@@ -71,26 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void MarkDataComplete_SortsData ()
-    {
-      bool stateSetterCalled = false;
-      
-      _collectionEndPointMock.Replay ();
-
-      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());
-      _dataKeeperMock.Replay ();
-
-      var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => { stateSetterCalled = true; });
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-
-      Assert.That (stateSetterCalled, Is.True);
-    }
-
-    [Test]
-    public void MarkDataComplete_RegistersOppositeEndPoints ()
+    public void MarkDataComplete ()
     {
       bool stateSetterCalled = false;
 
@@ -112,7 +93,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock.Replay ();
 
       var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, () => { stateSetterCalled = true; });
+      _loadState.MarkDataComplete (
+          _collectionEndPointMock,
+          items,
+          keeper =>
+          {
+            stateSetterCalled = true;
+            Assert.That (keeper, Is.SameAs (_dataKeeperMock));
+          });
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations ();
@@ -124,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
     public void MarkDataIncomplete_ThrowsException ()
     {
-       _loadState.MarkDataIncomplete (_collectionEndPointMock, () => Assert.Fail ("Must not be called."));
+       _loadState.MarkDataIncomplete (_collectionEndPointMock, keeper => Assert.Fail ("Must not be called."));
     }
 
     [Test]

@@ -35,8 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ICollectionEndPointDataKeeper _dataKeeper; // stores the data kept by _collection and the original data for rollback
-
+    
     private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollection; // keeps the original reference of the _collection for rollback
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
@@ -65,9 +64,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3771: Inject via ctor
 
       // TODO 3653: Inject DataKeeper from the outside
-      _dataKeeper = CreateDataKeeper (clientTransaction, id);
-      
-      SetIncompleteLoadState();
+      var dataKeeper = CreateDataKeeper (clientTransaction, id);
+      SetIncompleteLoadState (dataKeeper);
     }
 
     public DomainObjectCollection Collection
@@ -290,14 +288,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, _endPointProvider);
     }
 
-    private void SetCompleteLoadState ()
+    private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
     {
-      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeper, _endPointProvider, ClientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (dataKeeper, _endPointProvider, ClientTransaction);
     }
 
-    private void SetIncompleteLoadState ()
+    private void SetIncompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
     {
-      _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeper, _lazyLoader);
+      _loadState = new IncompleteCollectionEndPointLoadState (dataKeeper, _lazyLoader);
     }
 
     #region Serialization
@@ -308,7 +306,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
-      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
@@ -322,7 +319,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_collection);
       info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
-      info.AddHandle (_dataKeeper);
       info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);

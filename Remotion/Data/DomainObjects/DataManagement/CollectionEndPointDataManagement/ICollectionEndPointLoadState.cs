@@ -30,8 +30,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     bool IsDataComplete ();
     void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 
-    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action stateSetter);
-    void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter);
+    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter);
+    void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
     IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint);
 

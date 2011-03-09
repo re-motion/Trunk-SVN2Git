@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
     }
 
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action stateSetter)
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
@@ -80,10 +80,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       
       _dataKeeper.SortCurrentAndOriginalData();
-      stateSetter();
+      stateSetter (_dataKeeper);
     }
 
-    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
@@ -230,7 +230,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Commit ()
     {
-      _dataKeeper.Commit();
+      _dataKeeper.Commit ();
     }
 
     #region Serialization

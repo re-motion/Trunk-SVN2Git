@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       // Data is already complete
     }
 
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action stateSetter)
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
@@ -88,14 +88,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       throw new InvalidOperationException ("The data is already complete.");
     }
 
-    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action stateSetter)
+    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
 
-      stateSetter();
+      stateSetter (_dataKeeper);
       
       foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints)
         collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);

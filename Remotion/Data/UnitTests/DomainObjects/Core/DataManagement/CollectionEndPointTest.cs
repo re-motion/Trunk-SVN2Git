@@ -315,13 +315,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataComplete ()
     {
-      Action stateSetter = null;
+      Action<ICollectionEndPointDataKeeper> stateSetter = null;
 
       var items = new DomainObject[0];
 
       _loadStateMock
-          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPointWithLoadStateMock), Arg.Is (items), Arg<Action>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[2]; });
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPointWithLoadStateMock), Arg.Is (items), Arg<Action<ICollectionEndPointDataKeeper>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<ICollectionEndPointDataKeeper>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.MarkDataComplete (items);
@@ -329,12 +329,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.VerifyAllExpectations ();
 
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
-      stateSetter();
+
+      var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
+      stateSetter (dataKeeperStub);
       
       var newLoadState = GetLoadState (_endPointWithLoadStateMock);
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
 
-      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_endPointWithLoadStateMock)));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (ClientTransactionMock.DataManager));
     }
@@ -342,11 +344,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkDataIncomplete ()
     {
-      Action stateSetter = null;
+      Action<ICollectionEndPointDataKeeper> stateSetter = null;
 
       _loadStateMock
-          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPointWithLoadStateMock), Arg<Action>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[1]; });
+          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPointWithLoadStateMock), Arg<Action<ICollectionEndPointDataKeeper>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<ICollectionEndPointDataKeeper>) mi.Arguments[1]; });
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.MarkDataIncomplete ();
@@ -354,12 +356,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.VerifyAllExpectations ();
 
       Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
-      stateSetter ();
+
+      var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
+      stateSetter (dataKeeperStub);
       
       var newLoadState = GetLoadState (_endPointWithLoadStateMock);
       Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
 
-      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (GetEndPointDataKeeper (_endPointWithLoadStateMock)));
+      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
       Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).LazyLoader, Is.SameAs (GetEndPointLazyLoader (_endPointWithLoadStateMock)));
     }
 
@@ -845,7 +849,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     
     private CollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
     {
-      return (CollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (endPoint, "_dataKeeper");
+      var loadState = GetLoadState (endPoint);
+      return (CollectionEndPointDataKeeper) ((IncompleteCollectionEndPointLoadState) loadState).DataKeeper;
     }
 
     private IRelationEndPointLazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)

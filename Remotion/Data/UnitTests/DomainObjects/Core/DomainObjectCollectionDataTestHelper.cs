@@ -57,21 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
     }
 
-    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
-    {
-      // collection => checking checking decorator => end point data => actual data store
-
-      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
-      Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
-
-      var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
-      Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
-      
-      var data = ((ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (expectedEndPoint, "_dataKeeper")).CollectionData.GetDataStore();
-      if (expectedDataStore != null)
-        Assert.That (data, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
-    }
-
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)
     {
       // collection => checking decorator => event decorator => actual data store
