@@ -60,10 +60,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
 
+    // TODO 3774: Interface
     public IComparer<DomainObject> SortExpressionBasedComparer
     {
       get { return _sortExpressionBasedComparer; }
     }
+
+    // TODO 3774: EndPointID property, serialize (AddHandle)
 
     public IDomainObjectCollectionData CollectionData
     {

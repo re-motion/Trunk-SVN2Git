@@ -61,7 +61,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
-      _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3771: Inject via ctor
+      _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3774: Inject via ctor
+      // TODO 3774: Inject DataKeeperFactory via ctor, serialization
 
       var dataKeeper = CreateDataKeeper (clientTransaction, id);
       SetIncompleteLoadState (dataKeeper);
@@ -284,6 +285,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
+      // TODO 3774: ICollectionEndPointDataKeeperFactory.Create (id, sortExpressionBasedComparer)
+      // TODO 3774: CollectionEndPointDataKeeperFactory implementation with (clientTransaction, _endPointProvider) ctor
       return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, _endPointProvider);
     }
 

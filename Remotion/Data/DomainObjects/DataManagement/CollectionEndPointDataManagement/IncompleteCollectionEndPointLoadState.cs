@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
+    // TODO 3774: Pass factory in, serialization
     public IncompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader)
     {
       ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
