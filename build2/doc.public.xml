@@ -3,11 +3,12 @@
   <documenter name="MSDN-CHM">
     <!-- Global -->
     <!-- Build Options -->
-    <property name="UseAbbreviatedFileNames" value="True" />
+    <property name="UseAbbreviatedFileNames" value="False" />
     <!-- Documentation Main Settings -->
     <property name="ShowVisualBasic" value="False" />
     <property name="RootPageTOCName" value="Getting Started" />
     <property name="SdkLinksOnWeb" value="False" />
+    <property name="SdkDocVersion" value="SDK_v2_0"/>
     <!-- Extensibility -->
     <!-- HTML Help Options -->
     <!-- Show Attributes -->

@@ -135,10 +135,6 @@
 
   <Target Name="GeneratePublicDocumentation">
     <ItemGroup>
-      <_documenters Include="doc.public.xml"/>
-    </ItemGroup>
-
-    <ItemGroup>
       <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
       <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\include\NamespaceDoc.xml" />
     </ItemGroup>
@@ -149,49 +145,72 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <_documentationBaseDirectory>$(TempDirectory)doc\</_documentationBaseDirectory>
+      <_standardDocumenterPropertiesFileName>doc.public.xml</_standardDocumenterPropertiesFileName>
+      <_rootPageTemplateFile>$(SolutionDirectory)Remotion\Core\Core\doc\include\GettingStartedTemplate.html</_rootPageTemplateFile>
+      <_productName>re-motion core framework (www.re-motion.org)</_productName>
+      <_companyName>rubicon informationstechnologie gmbh</_companyName>
+      <_companyUrl>http://www.rubicon.eu</_companyUrl>
+      <_copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</_copyright>
+    </PropertyGroup>
+    <PropertyGroup>
       <_documentationFileName>Remotion.chm</_documentationFileName>
+      <_documentationBaseDirectory>$(TempDirectory)doc\</_documentationBaseDirectory>
+      <_documenterPropertiesFile>$(_documentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
+      <_rootPageFile>$(_documentationBaseDirectory)GettingStarted.html</_rootPageFile>
       <_ndocProjectFile>$(_documentationBaseDirectory)doc.public.temp.ndoc</_ndocProjectFile>
     </PropertyGroup>
 
     <MakeDir Directories="$(_documentationBaseDirectory)" />
+    <Copy SourceFiles="$(_standardDocumenterPropertiesFileName)" DestinationFiles="$(_documenterPropertiesFile)" />
+    <Copy SourceFiles="$(_rootPageTemplateFile)" DestinationFiles="$(_rootPageFile)" />
 
-    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
-                                                         DocumenterFiles="@(_documenters)"
-                                                         Assemblies="@(_assemblies)"
-                                                         NamespaceSummaryFiles="@(_namespaceSummaries)" />
-
-    <!--<MSBuild.Community.Tasks.XmlUpdate
-                XmlFileName="$(_ndocProjectFile)"
-                XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
-                Value="$(_documentationFileName)"/>
-    <MSBuild.Community.Tasks.XmlUpdate
-                XmlFileName="$(_ndocProjectFile)"
-                XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='OutputDirectory']"
-                Value="$(_documentationBaseDirectory)"/>-->
+    <ItemGroup>
+      <_documenterProperties Include="HtmlHelpName">
+        <Value>$(_documentationFileName)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="OutputDirectory">
+        <Value>$(_documentationBaseDirectory)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="FooterHtml">
+        <Value><![CDATA[<p><a href="$(_companyUrl)">$(_copyright)</a></p><p>Version: $(Version)</p>]]></Value>
+      </_documenterProperties>
+      <_documenterProperties Include="RootPageFileName">
+        <Value>$(_rootPageFile)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="RootPageTOCName">
+        <Value>Getting Started</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="Title">
+        <Value>$(_productName)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="CopyrightHref">
+        <Value>$(_companyUrl)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="CopyrightText">
+        <Value>$(_copyright)</Value>
+      </_documenterProperties>
+      <_documenterProperties Include="Version">
+        <Value>$(Version)</Value>
+      </_documenterProperties>
+    </ItemGroup>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
-                                       File="$(_ndocProjectFile)"
-                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']"
+                                       File="$(_documenterPropertiesFile)"
+                                       XPath="/documenters/documenter[@name='MSDN-CHM']"
                                        Element="property"
                                        Key="name"
-                                       Value="HtmlHelpName"/>
+                                       Value="%(_documenterProperties.Identity)"/>
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
-                                       File="$(_ndocProjectFile)"
-                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
+                                       File="$(_documenterPropertiesFile)"
+                                       XPath="/documenters/documenter[@name='MSDN-CHM']/property[@name='%(_documenterProperties.Identity)']"
                                        Key="value"
-                                       Value="$(_documentationFileName)"/>
-    <!--<MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
-                                       File="$(_ndocProjectFile)"
-                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='HtmlHelpName']"
-                                       Key="value"
-                                       Value="$(_documentationFileName)"/>
-    <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute" 
-                                       File="$(_ndocProjectFile)" 
-                                       XPath="/project/documenters/documenter[@name='MSDN-CHM']/property[@name='OutputDirectory']" 
-                                       Key="value"
-                                       Value="$(_documentationBaseDirectory)"/>-->
+                                       Value="%(_documenterProperties.Value)"/>
 
+
+    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
+                                                         DocumenterFiles="$(_documenterPropertiesFile)"
+                                                         Assemblies="@(_assemblies)"
+                                                         NamespaceSummaryFiles="@(_namespaceSummaries)" />
 
 
     <!--<MSBuild.Community.Tasks.NDoc Documenter="MSDN-CHM"
