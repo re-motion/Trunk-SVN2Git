@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3774")]
+    [Ignore ("TODO 3780")]
     public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse ()
     {
       SetDatabaseModifyable ();

@@ -34,30 +34,59 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// the individual OrderItems' relation properties should reflect the same relation data.
   /// </para>
   /// <para>
-  /// There is one scenario, however, under which re-store cannot keep that promise of consistency. When a 1:n bidirectional relation
-  /// is resolved from the underlying data source (eg., by accessing the <see cref="DomainObjectCollection"/> property), the 
-  /// <see cref="ClientTransaction"/> loads the contents of the respective relation and stores it for further use. Now consider that 
-  /// the data source is changed, and after that another item is loaded. If that item's relation property has a foreign key that would 
-  /// qualify the item as part of the same <see cref="DomainObjectCollection"/> that was already resolved before, re-store cannot keep 
-  /// up consistency between the foreign key property and the <see cref="DomainObjectCollection"/> without changing the existing collection's 
-  /// contents.
+  /// There are, however, scenarios under which re-store cannot keep that promise of consistency. Due to the nature of lazy loading, the two
+  /// sides of a bidirection relation can become out-of-sync when the underlying data source changes between the loading of the two sides of the
+  /// relation. This is most notable with 1:n relations, where the collection side is not fully loaded when only a single collection item
+  /// is loaded into memory.
   /// </para>
   /// <para>
-  /// Here is an example illustrating this scenario:
+  /// Here is an example: Consider that the collection side of a bidirectional relation property is resolved from the underlying data source 
+  /// (eg., by accessing the contents of the <see cref="DomainObjectCollection"/>). The <see cref="ClientTransaction"/> loads the contents of the 
+  /// relation by means of a query to the underlying data source and stores the result for further use (again, via the 
+  /// <see cref="DomainObjectCollection"/>). Now consider that the data source changes so that the foreign key property of another item gets set
+  /// in a way that would normally qualify it as a collection item. After that, the item is loaded into the same <see cref="ClientTransaction"/> that
+  /// already holds the <see cref="DomainObjectCollection"/>'s contents. That relation is now out-of-sync: the item's foreign key property points
+  /// to the owner of the <see cref="DomainObjectCollection"/>, but the collection does not contain the item.
+  /// </para>
+  /// <para>
+  /// Here is that same example in code:
   /// <code>
   /// var order = Order.GetObject (DomainObjectIDs.Order1);
   /// var orderItemsArray = order.OrderItems.ToArray(); // cause the full relation contents to be loaded and stored in-memory
   ///
-  /// // data source now changes: an additional OrderItem with ID NewOrderItem is added, which points back to DomainObjectIDs.Order1
+  /// // data source now changes: an additional OrderItem with ID NewOrderItem is added which points back to DomainObjectIDs.Order1
   /// 
+  /// // load that new item
   /// var newOrderItem = OrderItem.GetObject (DomainObjectIDs.NewOrderItem);
   /// 
   /// // prints "True" - the foreign key property points to DomainObjectIDs.Order1
   /// Console.WriteLine (newOrderItem.Order == order);
   ///
-  /// // prints "False" - the relation is out-of-sync
+  /// // prints "False" - the collection has still the same state as before; it does not contain the item
   /// Console.WriteLine (order.OrderItems.ContainsObject (newOrderItem));
   /// </code>
+  /// </para>
+  /// <para>
+  /// There are four scenarios where an out-of-sync state can happen:
+  /// <list type="bullet">
+  /// <item>
+  /// A collection is loaded that does not contain an item. Later, that item's data is loaded, and it points back to the collection owner.
+  /// The foreign key property is out-of-sync.
+  /// </item>
+  /// <item>
+  /// A collection is loaded that does contain an item. Later, that item's data is loaded, and it does not points back to the collection owner.
+  /// The collection is out-of-sync.
+  /// </item>
+  /// <item>
+  /// An item is loaded that does point to the owner of a collection. Later, that collection is loaded, and it does not contain the item.
+  /// The foreign key property is out-of-sync.
+  /// </item>
+  /// <item>
+  /// An item is loaded that does not point to the owner of a collection. Later, that collection is loaded, and it contains the item.
+  /// The collection is out-of-sync.
+  /// </item>
+  /// </list>
+  /// (No matter whether the item or the collection is loaded first, the same foreign key/collection situation causes the same out-of-sync state.)
   /// </para>
   /// <para>
   /// The <see cref="BidirectionalRelationSyncService"/> class allows users to check whether a relation is out-of-sync (<see cref="IsSynchronized"/>)
@@ -73,9 +102,16 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// // Prints "True" - the relation is now synchronized
   /// Console.WriteLine (BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, endPointID));
   /// 
-  /// // prints "True" - the relation is now synchronized
+  /// // prints "True" - the foreign key property points to DomainObjectIDs.Order1
+  /// Console.WriteLine (newOrderItem.Order == order);
+  ///
+  /// // prints "True" - the collection now contains the item
   /// Console.WriteLine (order.OrderItems.ContainsObject (newOrderItem));
   /// </code>
+  /// </para>
+  /// <para>
+  /// The <see cref="Synchronize"/> API always adjusts the collection so that the foreign keys in the <see cref="ClientTransaction"/> match. They
+  /// never adjust a foreign key property, as this would violate the integrity of the respective <see cref="DomainObject"/> (and its timestamp).
   /// </para>
   /// </remarks>
   public static class BidirectionalRelationSyncService
@@ -93,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     ///   <paramref name="endPointID"/> denotes a unidirectional (or anonymous) relation property.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    ///   The relation property denoted by <paramref name="endPointID"/> has not yet been loaded into the given <paramref name="clientTransaction"/>.
+    ///   The relation property denoted by <paramref name="endPointID"/> has not yet been fully loaded into the given <paramref name="clientTransaction"/>.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -121,14 +157,15 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     ///   <paramref name="endPointID"/> denotes a unidirectional (or anonymous) relation property.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    ///   The relation property denoted by <paramref name="endPointID"/> has not yet been loaded into the given <paramref name="clientTransaction"/>.
+    ///   The relation property denoted by <paramref name="endPointID"/> has not yet been fully loaded into the given <paramref name="clientTransaction"/>.
     /// </exception>
     /// <remarks>
     /// <para>
-    ///   If <paramref name="endPointID"/> denotes an object-valued end-point (eg., OrderItem.Order), only this one end-point is synchronized with
-    ///   the opposite end-point.
-    ///   If <paramref name="endPointID"/> denotes a collection-valued end-point (eg., Order.OrderItems), the end-point is synchronized with all 
-    ///   opposite end-points.
+    ///   If <paramref name="endPointID"/> denotes an object-valued end-point that is out-of-sync (eg., OrderItem.Order), the opposite collection 
+    ///   (eg., Order.OrderItems) is adjusted to match the foreign key value. This results in the item being added to the collection.
+    ///   If <paramref name="endPointID"/> denotes a collection-valued end-point that is out-of-sync (eg., Order.OrderItems), the collection is 
+    ///   synchronized with the opposite foreign key values. This results in all items being removed from the collection that do not have a foreign 
+    ///   key value pointing at the collection.
     /// </para>
     /// <para>
     ///   If the relation is already synchronized, this method does nothing.
@@ -162,24 +199,23 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       else
       {
         var collectionEndPoint = (ICollectionEndPoint) endPoint;
-        foreach (var unsynchronizedOppositeEndPoint in collectionEndPoint.GetUnsynchronizedOppositeEndPoints())
-          unsynchronizedOppositeEndPoint.Synchronize (collectionEndPoint);
+        collectionEndPoint.Synchronize();
       }
     }
 
     private static void CheckNotUnidirectional (RelationEndPointID endPointID, string paramName)
     {
       if (endPointID.Definition.RelationDefinition.RelationKind == RelationKindType.Unidirectional)
-        throw new ArgumentException ("BidirectionalSyncService cannot be used for unidirectional relation end-points.", paramName);
+        throw new ArgumentException ("BidirectionalRelationSyncService cannot be used with unidirectional relation end-points.", paramName);
     }
 
     private static IRelationEndPoint GetAndCheckLoadedEndPoint (RelationEndPointID endPointID, ClientTransaction clientTransaction)
     {
       var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
-      if (endPoint == null)
+      if (endPoint == null || !endPoint.IsDataComplete)
       {
         var message = String.Format (
-            "The relation property '{0}' of object '{1}' has not yet been loaded into the given ClientTransaction.",
+            "The relation property '{0}' of object '{1}' has not yet been fully loaded into the given ClientTransaction.",
             endPointID.Definition.PropertyName,
             endPointID.ObjectID);
         throw new InvalidOperationException (message);

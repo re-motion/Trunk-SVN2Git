@@ -78,27 +78,21 @@ namespace Remotion.Data.DomainObjects
   /// <para>
   /// When a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, the contents of the collection is lazily loaded.
   /// This means that the contents is usually not loaded together with the object owning the collection, but later, eg., when the collection's items
-  /// are first accessed. In a root transaction, the collection's contents is loaded by executing a query on the underlying data source. This causes
-  /// all items in the collection to be registered with the owning <see cref="ClientTransaction"/>, and the collection's contents is then
-  /// derived from the items in the <see cref="ClientTransaction"/>.
+  /// are first accessed. In a root transaction, the collection's contents is loaded by executing a query on the underlying data source.
   /// </para>
   /// <para>
-  /// Because the collection's contents is actually derived from the items in the <see cref="ClientTransaction"/>, keep the following in mind:
-  /// <list type="bullet">
-  /// <item>When an item in the local <see cref="ClientTransaction"/> does not hold a foreign key to the object owning the collection, the item is 
-  /// not included in the collection - even if the data source returns that item.</item>
-  /// <item>When an item in the local <see cref="ClientTransaction"/> does hold a foreign key to the object owning the collection, the item is 
-  /// included - even if the data source does not return that item.</item>
-  /// </list>
+  /// Due to lazy loading, it is possible (and common) to load items that are part of a collection and the full collection contents within different
+  /// database transactions. If the underlying data source changes between two lazy load operations involving the same relation, that relation can
+  /// get out-of-sync. See the <see cref="BidirectionalRelationSyncService"/> for details. To ensure consistency, use a database transaction or some 
+  /// similar concept so that the different read operations on the data source work on the same database state.
   /// </para>
   /// <para>
-  /// Due to lazy loading, a user of re-store cannot assume that a <see cref="DomainObjectCollection"/>'s contents matches exactly the respective set 
-  /// of objects in the data source at any time, unless a database transaction or some similar concept is used to ensure that different read 
-  /// operations on the data source always work in the scope of the same database state.
+  ///   Subclasses of <see cref="DomainObjectCollection"/> that keep state additional to that managed by re-store might need to take additional 
+  ///   considerations when the <see cref="BidirectionalRelationSyncService"/> is used.
   /// </para>
   /// <para>
-  /// If a calculation is made on the contents of a related object collection and it is important that the content does not change until the 
-  /// calculated value is committed, then:
+  /// To be notified on <see cref="ClientTransaction.Commit"/> when the contents of a <see cref="DomainObjectCollection"/> has changed while 
+  /// calculations were made in a <see cref="ClientTransaction"/>:
   /// <list type="bullet">
   ///   <item>the object owning the collection should be included in the commit set, and</item>
   ///   <item>the domain model should be programmed in such a way that all changes to the collection always cause that object to be included in the 
@@ -107,15 +101,6 @@ namespace Remotion.Data.DomainObjects
   /// This can be achieved by calling the <see cref="DomainObject.MarkAsChanged"/> method in the respective places. That way, a 
   /// <see cref="ConcurrencyViolationException"/> will be raised on <see cref="ClientTransaction.Commit"/> if the collection changes while the value 
   /// is being calculated.
-  /// </para>
-  /// <para>
-  /// When, after a bidirectional related objects collection is loaded, an object is loaded into the <see cref="ClientTransaction"/> that also holds 
-  /// a foreign key to the object owning the collection, the bidirectional relation goes out-of-sync. See 
-  /// <see cref="BidirectionalRelationSyncService"/> for more information.
-  /// </para>
-  /// <para>
-  ///   Subclasses of <see cref="DomainObjectCollection"/> that keep state additional to that managed by re-store might need to take additional 
-  ///   considerations when the <see cref="BidirectionalRelationSyncService"/> is used.
   /// </para>
   /// <para>
   /// If a <see cref="DomainObjectCollection"/> is used to model a bidirectional 1:n relation, consider the following about ordering:

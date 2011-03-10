@@ -171,8 +171,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public void Synchronize (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      
-      throw new InvalidOperationException ("Cannot synchronize a collection end-point in incomplete state.");
+
+      collectionEndPoint.EnsureDataComplete ();
+      collectionEndPoint.Synchronize();
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()

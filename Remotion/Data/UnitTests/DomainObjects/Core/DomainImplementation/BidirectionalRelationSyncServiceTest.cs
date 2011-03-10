@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
   public class BidirectionalRelationSyncServiceTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
-    private Order _order1;
     private RelationEndPointMap _map;
 
     public override void SetUp ()
@@ -39,87 +38,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       base.SetUp();
 
       _transaction = ClientTransaction.CreateRootTransaction();
-      _order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      
+
       var dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
       _map = DataManagerTestHelper.GetRelationEndPointMap (dataManager);
     }
     
     [Test]
-    public void IsSynchronized_True_OneMany ()
+    public void IsSynchronized ()
     {
-      _transaction.Execute (() => _order1.OrderItems.EnsureDataComplete());
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPointStub.Stub (stub => stub.IsDataComplete).Return (true);
+      endPointStub.Stub (stub => stub.IsSynchronized).Return (true).Repeat.Once();
+      endPointStub.Stub (stub => stub.IsSynchronized).Return (false).Repeat.Once ();
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointStub);
 
-      var orderItem = _transaction.Execute (() => _order1.OrderItems[0]);
-
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderItems)), Is.True);
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
-    }
-
-    [Test]
-    public void IsSynchronized_True_OneOne ()
-    {
-      var orderTicket = _transaction.Execute (() => _order1.OrderTicket);
-
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderTicket)), Is.True);
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderTicket, ot => ot.Order)), Is.True);
-    }
-
-    [Test]
-    public void IsSynchronized_False_OneMany_ObjectEndPoint ()
-    {
-      _transaction.Execute (() => _order1.OrderItems.EnsureDataComplete ());
-
-      var orderItem = _transaction.Execute (() => _order1.OrderItems[0]);
-
-      SetDatabaseModifyable ();
-
-      var newOrderItemID = CreateOrderItemAndSetOrderInOtherTransaction (_order1.ID);
-      var newOrderItem = _transaction.Execute (() => OrderItem.GetObject (newOrderItemID));
-
-      Assert.That (_transaction.Execute (() => newOrderItem.Order), Is.SameAs (_order1));
-      Assert.That (_transaction.Execute (() => _order1.OrderItems), List.Not.Contains (newOrderItem));
-
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (newOrderItem, oi => oi.Order)), Is.False);
-      
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderItems)), Is.True);
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
-    }
-
-    [Test]
-    public void IsSynchronized_False_OneMany_CollectionEndPoint ()
-    {
-      var orderItem1 = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      _transaction.Execute (() => orderItem1.Order.OrderItems.EnsureDataComplete());
-
-      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
-      Assert.That (_transaction.Execute (() => orderItem1.Order), Is.Not.SameAs (order2));
-
-      SetDatabaseModifyable ();
-
-      SetOrderInOtherTransaction (orderItem1.ID, order2.ID);
-      
-      _transaction.Execute (() => order2.OrderItems.EnsureDataComplete ());
-
-      Assert.That (_transaction.Execute (() => orderItem1.Order), Is.Not.SameAs (order2));
-      Assert.That (_transaction.Execute (() => order2.OrderItems), List.Contains (orderItem1));
-
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (order2, o => o.OrderItems)), Is.False);
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem1, oi => oi.Order)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, endPointID), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, endPointID), Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been loaded into the given ClientTransaction.")]
-    public void IsSynchronized_RelationNotLoaded ()
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
+    public void IsSynchronized_EndPointNotRegistered ()
     {
-      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderTicket));
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
+    public void IsSynchronized_EndPointIncomplete ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPointStub.Stub (stub => stub.IsDataComplete).Return (false);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointStub);
+
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, endPointID);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "BidirectionalSyncService cannot be used for unidirectional relation end-points.\r\nParameter name: endPointID")]
+        "BidirectionalRelationSyncService cannot be used with unidirectional relation end-points.\r\nParameter name: endPointID")]
     public void IsSynchronized_UnidirectionalRelationEndPoint ()
     {
       BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client"));
@@ -127,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "BidirectionalSyncService cannot be used for unidirectional relation end-points.\r\nParameter name: endPointID")]
+        "BidirectionalRelationSyncService cannot be used with unidirectional relation end-points.\r\nParameter name: endPointID")]
     public void IsSynchronized_AnonymousRelationEndPoint ()
     {
       var locationClientEndPoint = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
@@ -146,6 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
       objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
       objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
       objectEndPointMock.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointStub.ID);
       objectEndPointMock.Expect (mock => mock.Synchronize (oppositeEndPointStub));
       objectEndPointMock.Replay ();
@@ -163,33 +131,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
 
-      var oppositeEndPointMock1 = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      var oppositeEndPointMock2 = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-
-      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      collectionEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      collectionEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
-      collectionEndPointStub
-          .Stub (stub => stub.GetUnsynchronizedOppositeEndPoints ())
-          .Return (Array.AsReadOnly (new[] { oppositeEndPointMock1, oppositeEndPointMock2 }));
-
-      oppositeEndPointMock1.Expect (mock => mock.Synchronize (collectionEndPointStub));
-      oppositeEndPointMock1.Replay ();
-
-      oppositeEndPointMock2.Expect (mock => mock.Synchronize (collectionEndPointStub));
-      oppositeEndPointMock2.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointStub);
+      var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
+      collectionEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      collectionEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      collectionEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
+      collectionEndPointMock.Expect (mock => mock.Synchronize ());
+      collectionEndPointMock.Replay();
+      RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
 
       BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
 
-      oppositeEndPointMock1.VerifyAllExpectations ();
-      oppositeEndPointMock2.VerifyAllExpectations ();
+      collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-      "BidirectionalSyncService cannot be used for unidirectional relation end-points.\r\nParameter name: endPointID")]
+      "BidirectionalRelationSyncService cannot be used with unidirectional relation end-points.\r\nParameter name: endPointID")]
     public void Synchronize_UnidirectionalEndpoint ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
@@ -199,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "BidirectionalSyncService cannot be used for unidirectional relation end-points.\r\nParameter name: endPointID")]
+        "BidirectionalRelationSyncService cannot be used with unidirectional relation end-points.\r\nParameter name: endPointID")]
     public void Synchronize_AnonymousEndPoint ()
     {
       var locationClientEndPoint = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
@@ -211,21 +168,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' of object "
-        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' has not yet been loaded into the given ClientTransaction.")]
-    public void Synchronize_NonExistingEndPoint ()
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
+    public void Synchronize_EndPointNotRegistered ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
     }
 
-    private ObjectID CreateOrderItemAndSetOrderInOtherTransaction (ObjectID orderID)
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]
+    public void Synchronize_EndPointIncomplete ()
     {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (orderID, (oi, o) => oi.Order = o);
-    }
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPointStub.Stub (stub => stub.IsDataComplete).Return (false);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointStub);
 
-    private void SetOrderInOtherTransaction (ObjectID orderItemID, ObjectID orderID)
-    {
-      DomainObjectMother.SetRelationInOtherTransaction<OrderItem, Order> (orderItemID, orderID, (oi, o) => oi.Order = o);
+      BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
     }
   }
 }

@@ -291,10 +291,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot synchronize a collection end-point in incomplete state.")]
     public void Synchronize ()
     {
-      _loadState.Synchronize (_collectionEndPointMock);
+      CheckOperationDelegatesToCompleteState (
+         s => s.Synchronize (_collectionEndPointMock),
+         s => s.Synchronize());
     }
 
     [Test]
