@@ -139,8 +139,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint);
-      oppositeEndPoint.MarkUnsynchronized();
+      if (_dataKeeper.OriginalCollectionData.ContainsObjectID (oppositeEndPoint.ObjectID))
+      {
+        _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+        oppositeEndPoint.MarkSynchronized ();
+      }
+      else
+      {
+        _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint);
+        oppositeEndPoint.MarkUnsynchronized();
+      }
     }
 
     public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)

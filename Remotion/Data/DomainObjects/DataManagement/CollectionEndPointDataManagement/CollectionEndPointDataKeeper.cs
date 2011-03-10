@@ -121,7 +121,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         throw new InvalidOperationException ("The opposite end-point has already been registered.");
       
       var item = oppositeEndPoint.GetDomainObjectReference();
-      _collectionData.RegisterOriginalItem (item);
+
+      if (_originalItemsWithoutEndPoint.Contains (item))
+        _originalItemsWithoutEndPoint.Remove (item);
+      else
+        _collectionData.RegisterOriginalItem (item);
+
       _originalOppositeEndPoints.Add (oppositeEndPoint);
     }
 

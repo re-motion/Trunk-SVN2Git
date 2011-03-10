@@ -122,6 +122,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse_SolvableViaReload ()
+    {
+      SetDatabaseModifyable ();
+
+      var company = Company.NewObject ();
+      company.Ceo = Ceo.NewObject (); // mandatory
+      ClientTransactionMock.Commit ();
+
+      Assert.That (company.IndustrialSector, Is.Null);
+
+      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1); // virtual end point not yet resolved
+
+      SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
+
+      // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
+      var companiesOfIndustrialSector = industrialSector.Companies;
+      companiesOfIndustrialSector.EnsureDataComplete ();
+
+      Assert.That (company.IndustrialSector, Is.Null);
+      Assert.That (companiesOfIndustrialSector, List.Contains (company));
+      CheckSyncState (industrialSector, s => s.Companies, false);
+
+      UnloadService.UnloadData (ClientTransactionMock, company.ID, UnloadTransactionMode.ThisTransactionOnly);
+      company.EnsureDataAvailable();
+
+      CheckSyncState (industrialSector, s => s.Companies, true);
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (companiesOfIndustrialSector, List.Contains (company));
+
+      CheckActionWorks (() => industrialSector.Companies.Remove (company));
+    }
+
+    [Test]
     public void VirtualEndPointQuery_OneMany_ObjectNotIncluded_ThatLocallyPointsToHere ()
     {
       SetDatabaseModifyable ();

@@ -131,6 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
 
       _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
 
@@ -147,6 +148,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+    }
+
+    [Test]
+    public void RegisterOriginalOppositeEndPoint_AlreadyRegisteredWithoutEndPoint ()
+    {
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
+
+      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Contains (_domainObject2));
+
+      _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
+
+      Assert.That (_dataKeeper.HasDataChanged (), Is.False);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
     }
 
     [Test]
