@@ -162,7 +162,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (undefinedEnumValueAttribute == null)
         return null;
 
-      if (!UnderlyingType.IsInstanceOfType (undefinedEnumValueAttribute.Value))
+      if (!UnderlyingType.IsInstanceOfType (undefinedEnumValueAttribute.GetValue()))
       {
         throw new InvalidOperationException (
             string.Format (
@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 typeof (UndefinedEnumValueAttribute)));
       }
 
-      return undefinedEnumValueAttribute.Value;
+      return undefinedEnumValueAttribute.GetValue();
     }
   }
 }

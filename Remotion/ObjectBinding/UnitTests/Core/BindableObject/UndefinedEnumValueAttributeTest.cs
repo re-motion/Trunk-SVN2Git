@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       UndefinedEnumValueAttribute undefinedValueAttribute = new UndefinedEnumValueAttribute (TestEnum.Undefined);
     
-      Assert.AreEqual (TestEnum.Undefined, undefinedValueAttribute.Value);
+      Assert.AreEqual (TestEnum.Undefined, undefinedValueAttribute.GetValue());
     }
 
     [Test]

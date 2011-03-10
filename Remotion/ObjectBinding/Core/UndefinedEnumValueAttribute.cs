@@ -46,9 +46,11 @@ namespace Remotion.ObjectBinding
     /// <summary>
     /// Gets the undefined value of the enum.
     /// </summary>
-    public Enum Value
+    // Must be a method since there is an issue with GetCustomAttributeData:
+    // http://connect.microsoft.com/VisualStudio/feedback/details/296032/customattributedata-throws-when-attribute-has-a-public-enum-property 
+    public Enum GetValue ()
     {
-      get { return _value; }
+      return _value;
     }
   }
 }
