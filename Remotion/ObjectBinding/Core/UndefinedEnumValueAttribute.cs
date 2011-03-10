@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding
   [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false, Inherited = true)]
   public sealed class UndefinedEnumValueAttribute : Attribute
   {
-    private readonly Enum _value;
+    private readonly object _value;
 
     /// <summary>
     /// Initializes a new instance.
@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding
       ArgumentUtility.CheckNotNullAndType<Enum> ("value", value);
       ArgumentUtility.CheckValidEnumValue ("value", (Enum) value);
 
-      _value = (Enum) value;
+      _value = value;
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding
     // http://connect.microsoft.com/VisualStudio/feedback/details/296032/customattributedata-throws-when-attribute-has-a-public-enum-property 
     public Enum GetValue ()
     {
-      return _value;
+      return (Enum) _value;
     }
   }
 }
