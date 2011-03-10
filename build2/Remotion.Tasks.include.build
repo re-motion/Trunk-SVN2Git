@@ -9,8 +9,6 @@
 
   <!-- Use tasks of the MSBuild Community Tasks library -->
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.XmlUpdate" />
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.XmlMassUpdate" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NDoc" />
 
   <!-- Use tasks of the MSBuild ExtensionPack library -->
@@ -18,8 +16,9 @@
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.CodeQuality.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo" />
+  <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Xml.XmlFile" />
-  
+
   <!-- Use tasks of the re-motion BuildTools MSBuild Tasks library -->
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder" />
 

@@ -134,10 +134,17 @@
   </Target>
 
   <Target Name="GeneratePublicDocumentation">
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+    <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
     <ItemGroup>
       <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
       <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\include\NamespaceDoc.xml" />
     </ItemGroup>
+    <!--<include name="Remotion/Web/Core/Doc/include/NamespaceDoc.xml"/>
+    <include name="Remotion/ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
+    <include name="Remotion/ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>-->
 
     <ItemGroup>
       <_assemblies Include="$(SolutionDirectory)Remotion\Core\Core\bin\debug\Remotion.dll" />
@@ -153,7 +160,7 @@
       <_copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</_copyright>
     </PropertyGroup>
     <PropertyGroup>
-      <_documentationFileName>Remotion.chm</_documentationFileName>
+      <_documentationFileName>Remotion</_documentationFileName>
       <_documentationBaseDirectory>$(TempDirectory)doc\</_documentationBaseDirectory>
       <_documenterPropertiesFile>$(_documentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
       <_rootPageFile>$(_documentationBaseDirectory)GettingStarted.html</_rootPageFile>
@@ -194,6 +201,21 @@
       </_documenterProperties>
     </ItemGroup>
 
+    <ItemGroup>
+      <_rootPageFileReplacements Include="companyurl">
+        <Value>$(_companyUrl)</Value>
+      </_rootPageFileReplacements>
+      <_rootPageFileReplacements Include="copyright">
+        <Value>$(_copyright)</Value>
+      </_rootPageFileReplacements>
+      <_rootPageFileReplacements Include="productname">
+        <Value>$(_productName)</Value>
+      </_rootPageFileReplacements>
+      <_rootPageFileReplacements Include="versionnumber">
+        <Value>$(Version)</Value>
+      </_rootPageFileReplacements>
+    </ItemGroup>
+
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
                                        File="$(_documenterPropertiesFile)"
                                        XPath="/documenters/documenter[@name='MSDN-CHM']"
@@ -206,6 +228,12 @@
                                        Key="value"
                                        Value="%(_documenterProperties.Value)"/>
 
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace" 
+                                           Files="$(_rootPageFile)"
+                                           RegexPattern="@%(_rootPageFileReplacements.Identity)@" 
+                                           Replacement="%(_rootPageFileReplacements.Value)"/>
+
+
 
     <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
                                                          DocumenterFiles="$(_documenterPropertiesFile)"
@@ -213,8 +241,9 @@
                                                          NamespaceSummaryFiles="@(_namespaceSummaries)" />
 
 
-    <!--<MSBuild.Community.Tasks.NDoc Documenter="MSDN-CHM"
-                                  ProjectFilePath="$(_ndocProjectFile)"/>-->
+    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
+                                  Documenter="MSDN-CHM"
+                                  ProjectFilePath="$(_ndocProjectFile)"/>
 
   </Target>
 </Project>

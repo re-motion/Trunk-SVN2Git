@@ -4,6 +4,8 @@
     <!-- Global -->
     <!-- Build Options -->
     <property name="UseAbbreviatedFileNames" value="False" />
+    <property name="CleanIntermediates" value="False" />
+    <property name="IncrementalBuild" value="True" />
     <!-- Documentation Main Settings -->
     <property name="ShowVisualBasic" value="False" />
     <property name="RootPageTOCName" value="Getting Started" />

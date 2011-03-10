@@ -22,6 +22,7 @@
   
   <PropertyGroup>
     <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit 2.4.7\bin\</NUnitToolPath>
+    <NDocToolPath>$(SolutionDirectory)prereq\Tools\NDoc2\</NDocToolPath>
     <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>

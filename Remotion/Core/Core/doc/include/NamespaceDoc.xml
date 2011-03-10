@@ -16,6 +16,9 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <namespaces>
+  <namespace name="JetBrains.Annotations">
+    The <B>JetBrains.Annotations</B> namespace contains annotation attributes used for ReSharper intellisense support.
+  </namespace>
   <namespace name="Remotion.Data">
     The <B>Remotion.Data</B> namespace contains an interface for transaction handling in the re-motion libraries.
   </namespace>
