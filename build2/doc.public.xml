@@ -13,6 +13,7 @@
     <property name="SdkDocVersion" value="SDK_v2_0"/>
     <!-- Extensibility -->
     <!-- HTML Help Options -->
+    <property name="RootPageTOCName" value="Getting Started" />
     <!-- Show Attributes -->
     <!-- Show Missing Documentation -->
     <property name="ShowMissingParams" value="False" />

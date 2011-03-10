@@ -20,6 +20,24 @@
     </PropertyGroup>
   </Target>
 
+  <Target Name="CreateActivePackage">
+    <Error Text="The property 'PackageID' is not set." Condition="'$(PackageID)' == ''" />
+    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+
+    <ItemGroup>
+      <_activePackage Include="@(AllPackages)" Condition="%(AllPackages.Identity) == $(PackageID)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <ActivePackageCompanyName>%(_activePackage.CompanyName)</ActivePackageCompanyName>
+      <ActivePackageCompanyUrl>%(_activePackage.CompanyUrl)</ActivePackageCompanyUrl>
+      <ActivePackageCopyright>%(_activePackage.Copyright)</ActivePackageCopyright>
+      <ActivePackageProductName>%(_activePackage.ProductName)</ActivePackageProductName>
+      <ActivePackageProductNameShort>%(_activePackage.ProductNameShort)</ActivePackageProductNameShort>
+      <ActivePackageDocumentationRootPageTemplateFile>$(SolutionDirectory)%(_activePackage.DocumentationRootPageTemplateFile)</ActivePackageDocumentationRootPageTemplateFile>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="AddAdditionalMetadataToReleaseOutputFiles">
     <ItemGroup>
       <_projectFiles Remove="@(_projectFiles)" />
@@ -115,9 +133,12 @@
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <ItemGroup>
-      <_assemblyInfoFiles Remove="@(_assemblyInfoFiles)"/>
-      <_assemblyInfoFiles Include="$(SolutionDirectory)%(Packages.AssemblyInfoFile)">
-      </_assemblyInfoFiles>
+      <_assemblyInfos Remove="@(_assemblyInfoFiles)"/>
+      <_assemblyInfos Include="$(SolutionDirectory)%(AllPackages.AssemblyInfoFile)">
+        <Copyright>%(Copyright)</Copyright>
+        <CompanyName>%(CompanyName)</CompanyName>
+        <ProductName>%(ProductName)</ProductName>
+      </_assemblyInfos>
     </ItemGroup>
 
     <PropertyGroup>
@@ -128,10 +149,13 @@
     <Error Text="The version ($(Version) is not valid. It must be in the format 'Major.Minor.Build'."
            Condition="$([System.Version]::Parse ($(_fullVersion))) == $(fullVersion)"/>
     
-    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(_assemblyInfoFiles)"
+    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="%(_assemblyInfos.Identity)"
                                                   AssemblyVersion="$(_fullVersion)"
                                                   AssemblyFileVersion="$(_fullVersion)"
-                                                  AssemblyConfiguration="$(_configuration)"/>
+                                                  AssemblyConfiguration="$(_configuration)"
+                                                  AssemblyCopyright="%(_assemblyInfos.Copyright)"
+                                                  AssemblyCompany="%(_assemblyInfos.CompanyName)"
+                                                  AssemblyProduct="%(_assemblyInfos.ProductName)"/>
   </Target>
 
 </Project>

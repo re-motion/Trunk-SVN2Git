@@ -37,14 +37,14 @@
   </Target>
 
   <Target Name="PackageAll">
-    <MSBuild Projects="@(Packages)"
+    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
          BuildInParallel="false"
          Targets="CreatePackages"
          Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
 
   <Target Name="DeployAll">
-    <MSBuild Projects="@(Packages)"
+    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
          BuildInParallel="false"
          Targets="DeployPackages"
          Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>

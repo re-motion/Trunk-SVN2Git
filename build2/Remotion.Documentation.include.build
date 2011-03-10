@@ -4,32 +4,21 @@
   <Target Name="GeneratePublicDocumentation" DependsOnTargets="CreateActiveConfiguration;GeneratePublicDocumentationInternal;" />
   
   <Target Name="GeneratePublicDocumentationInternal" 
-          DependsOnTargets="BuildReleaseProjects;AddAdditionalMetadataToReleaseOutputFiles;" 
+          DependsOnTargets=";AddAdditionalMetadataToReleaseOutputFiles;CreateDocumentationProperties;CreateActivePackage;CreateDocumentationRootPage" 
           Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'">
 
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+    <Error Text="The property 'ActivePackageProductNameShort' is not set." Condition="'$(ActivePackageProductNameShort)' == ''" />
 
     <PropertyGroup>
-      <_productName>re-motion core framework (www.re-motion.org)</_productName>
-      <_companyName>rubicon informationstechnologie gmbh</_companyName>
-      <_companyUrl>http://www.rubicon.eu</_companyUrl>
-      <_copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</_copyright>
-      <_documentationFileName>re-motion</_documentationFileName>
-      <_rootPageTemplateFile>$(SolutionDirectory)Remotion\Core\Core\doc\include\GettingStartedTemplate.html</_rootPageTemplateFile>
-    </PropertyGroup>
-    <PropertyGroup>
-      <_documentationBaseDirectory>$(TempDirectory)doc\</_documentationBaseDirectory>
       <_standardDocumenterPropertiesFileName>doc.public.xml</_standardDocumenterPropertiesFileName>
       <_documenterPropertiesFile>$(_documentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
-      <_rootPageFile>$(_documentationBaseDirectory)GettingStarted.html</_rootPageFile>
-      <_ndocProjectFile>$(_documentationBaseDirectory)doc.public.temp.ndoc</_ndocProjectFile>
     </PropertyGroup>
 
-    <MakeDir Directories="$(_documentationBaseDirectory)" />
+    <MakeDir Directories="$(DocumentationBaseDirectory)" />
     <Copy SourceFiles="$(_standardDocumenterPropertiesFileName)" DestinationFiles="$(_documenterPropertiesFile)" />
-    <Copy SourceFiles="$(_rootPageTemplateFile)" DestinationFiles="$(_rootPageFile)" />
 
     <ItemGroup>
       <_namespaceSummaryFiles Remove="@(_namespaceSummaryFiles)"/>
@@ -39,47 +28,29 @@
     
     <ItemGroup>
       <_documenterProperties Include="HtmlHelpName">
-        <Value>$(_documentationFileName)</Value>
+        <Value>$(ActivePackageProductNameShort)</Value>
       </_documenterProperties>
       <_documenterProperties Include="OutputDirectory">
-        <Value>$(_documentationBaseDirectory)</Value>
+        <Value>$(DocumentationBaseDirectory)</Value>
       </_documenterProperties>
       <_documenterProperties Include="FooterHtml">
-        <Value><![CDATA[<p><a href="$(_companyUrl)">$(_copyright)</a></p><p>Version: $(Version)</p>]]></Value>
+        <Value><![CDATA[<p><a href="$(ActivePackageCompanyUrl)">$(ActivePackageCopyright)</a></p><p>Version: $(Version)</p>]]></Value>
       </_documenterProperties>
       <_documenterProperties Include="RootPageFileName">
-        <Value>$(_rootPageFile)</Value>
-      </_documenterProperties>
-      <_documenterProperties Include="RootPageTOCName">
-        <Value>Getting Started</Value>
+        <Value>$(DocumentationRootPageFile)</Value>
       </_documenterProperties>
       <_documenterProperties Include="Title">
-        <Value>$(_productName)</Value>
+        <Value>$(ActivePackageProductName)</Value>
       </_documenterProperties>
       <_documenterProperties Include="CopyrightHref">
-        <Value>$(_companyUrl)</Value>
+        <Value>$(ActivePackageCompanyUrl)</Value>
       </_documenterProperties>
       <_documenterProperties Include="CopyrightText">
-        <Value>$(_copyright)</Value>
+        <Value>$(ActivePackageCopyright)</Value>
       </_documenterProperties>
       <_documenterProperties Include="Version">
         <Value>$(Version)</Value>
       </_documenterProperties>
-    </ItemGroup>
-
-    <ItemGroup>
-      <_rootPageFileReplacements Include="companyurl">
-        <Value>$(_companyUrl)</Value>
-      </_rootPageFileReplacements>
-      <_rootPageFileReplacements Include="copyright">
-        <Value>$(_copyright)</Value>
-      </_rootPageFileReplacements>
-      <_rootPageFileReplacements Include="productname">
-        <Value>$(_productName)</Value>
-      </_rootPageFileReplacements>
-      <_rootPageFileReplacements Include="versionnumber">
-        <Value>$(Version)</Value>
-      </_rootPageFileReplacements>
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement"
@@ -95,21 +66,57 @@
                                        Key="value"
                                        Value="%(_documenterProperties.Value)"/>
 
-    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace" 
-                                           Files="$(_rootPageFile)"
-                                           RegexPattern="@%(_rootPageFileReplacements.Identity)@" 
-                                           Replacement="%(_rootPageFileReplacements.Value)"/>
-
-    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
+    <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(DocumentationNDocProjectFile)"
                                                          DocumenterFiles="$(_documenterPropertiesFile)"
                                                          Assemblies="@(ReleaseOutputFiles)"
                                                          NamespaceSummaryFiles="@(_namespaceSummaryFiles)" />
 
-    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
+    <!--<MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
                                   Documenter="MSDN-CHM"
-                                  ProjectFilePath="$(_ndocProjectFile)"/>
-
-    <Copy SourceFiles="$(_rootPageTemplateFile)" DestinationFiles="$(_rootPageFile)" />
+                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>-->
 
   </Target>
+
+  <Target Name="CreateDocumentationProperties">
+    <PropertyGroup>
+      <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
+      <DocumentationRootPageFile>$(DocumentationBaseDirectory)GettingStarted.html</DocumentationRootPageFile>
+      <DocumentationNDocProjectFile>$(DocumentationBaseDirectory)documentation.ndoc</DocumentationNDocProjectFile>
+    </PropertyGroup>
+  </Target>
+  
+  <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateActivePackage;CreateDocumentationProperties">
+    <Error Text="The property 'ActivePackageDocumentationRootPageTemplateFile' is not set." Condition="'$(ActivePackageDocumentationRootPageTemplateFile)' == ''" />
+    <Error Text="The property 'DocumentationRootPageFile' is not set." Condition="'$(DocumentationRootPageFile)' == ''" />
+    
+    <!-- TODO: Use CommunityTasks.TemplateFile -->
+    <ItemGroup>
+      <_fileReplacements Remove="@(_fileReplacements)" />
+      <_fileReplacements Include="companyurl">
+        <Value>$(ActivePackageCompanyUrl)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="copyright">
+        <Value>$(ActivePackageCopyright)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="productname">
+        <Value>$(ActivePackageProductName)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="productnameshort">
+        <Value>$(ActivePackageProductNameShort)</Value>
+      </_fileReplacements>
+      <_fileReplacements Include="versionnumber">
+        <Value>$(Version)</Value>
+      </_fileReplacements>
+    </ItemGroup>
+
+    <Copy SourceFiles="$(ActivePackageDocumentationRootPageTemplateFile)" DestinationFiles="$(DocumentationRootPageFile)" />
+
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace"
+                                           Files="$(DocumentationRootPageFile)"
+                                           RegexPattern="@%(_fileReplacements.Identity)@"
+                                           Replacement="%(_fileReplacements.Value)"/>
+  </Target>
+  
+  <!--<Target Name=""-->
+  
 </Project>

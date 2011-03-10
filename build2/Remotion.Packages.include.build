@@ -2,21 +2,56 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <Packages Include="Remotion.Packaging.Core.build">
+    <AllPackages Include="Core">
+      <PackageDeclaration>Remotion.Packaging.Core.build</PackageDeclaration>
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
-    </Packages>
-    <Packages Include="Remotion.Packaging.Relinq.build">
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-motion</ProductNameShort>
+      <DocumentationRootPageTemplateFile>Remotion\Core\Core\doc\include\GettingStartedTemplate.html</DocumentationRootPageTemplateFile>
+    </AllPackages>
+    
+    <AllPackages Include="Relinq">
+      <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
       <AssemblyInfoFile>Relinq\AssemblyInfoShared.cs</AssemblyInfoFile>
-    </Packages>
-    <Packages Include="Remotion.Packaging.Remix.build">
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-linq</ProductNameShort>
+    </AllPackages>
+    
+    <AllPackages Include="Remix">
+      <PackageDeclaration>Remotion.Packaging.Remix.build</PackageDeclaration>
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
-    </Packages>
-    <Packages Include="Remotion.Packaging.Dms.build">
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
+      <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-mix</ProductNameShort>
+    </AllPackages>
+    
+    <AllPackages Include="Dms">
+      <PackageDeclaration>Remotion.Packaging.Dms.build</PackageDeclaration>
       <AssemblyInfoFile>Dms\AssemblyInfoShared.cs</AssemblyInfoFile>
-    </Packages>
-    <Packages Include="Remotion.Packaging.SecurityManager.build">
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
+      <ProductName>re-vision (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-vision</ProductNameShort>
+    </AllPackages>
+    
+    <AllPackages Include="SecurityManager">
+      <PackageDeclaration>Remotion.Packaging.SecurityManager.build</PackageDeclaration>
       <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.cs</AssemblyInfoFile>
-    </Packages>
+      <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
+      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
+      <ProductName>re-strict (www.re-motion.org)</ProductName>
+      <ProductNameShort>re-strict</ProductNameShort>
+    </AllPackages>
   </ItemGroup>
 
 </Project>
