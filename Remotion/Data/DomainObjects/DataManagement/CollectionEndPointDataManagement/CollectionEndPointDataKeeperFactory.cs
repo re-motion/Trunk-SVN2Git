@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// <summary>
   /// The <see cref="CollectionEndPointDataKeeperFactory"/> is responsible to create a new <see cref="ICollectionEndPointDataKeeper"/> instance.
   /// </summary>
+  [Serializable]
   public class CollectionEndPointDataKeeperFactory : ICollectionEndPointDataKeeperFactory
   {
     private readonly ClientTransaction _clientTransaction;
@@ -35,6 +36,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _clientTransaction = clientTransaction;
       _endPointProvider = endPointProvider;
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
     }
 
     public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)

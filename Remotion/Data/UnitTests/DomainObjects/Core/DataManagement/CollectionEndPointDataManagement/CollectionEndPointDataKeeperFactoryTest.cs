@@ -15,43 +15,60 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
 {
   [TestFixture]
-  public class CollectionEndPointDataKeeperFactoryTest : ClientTransactionBaseTest
+  public class CollectionEndPointDataKeeperFactoryTest : StandardMappingTest
   {
+    private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _relationEndPointProvider;
+
     private CollectionEndPointDataKeeperFactory _factory;
 
     public override void SetUp ()
     {
       base.SetUp();
 
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
       _relationEndPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _factory = new CollectionEndPointDataKeeperFactory (ClientTransactionMock, _relationEndPointProvider);
-      
+      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _relationEndPointProvider);
     }
 
     [Test]
     public void Create ()
     {
       var relationEndPointID = RelationEndPointID.Create (
-          DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      var comparer = SortedPropertyComparer.CreateCompoundComparer (
-          ((VirtualRelationEndPointDefinition) relationEndPointID.Definition).GetSortExpression().SortedProperties, ClientTransactionMock.DataManager);
+          DomainObjectIDs.Customer1, 
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      var comparer = Comparer<DomainObject>.Default;
 
       var result = _factory.Create (relationEndPointID, comparer);
 
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
       Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs(relationEndPointID));
       Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.SameAs (comparer));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var serializableProvider = new SerializableRelationEndPointProviderFake();
+      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, serializableProvider);
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (factory);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
     }
   }
 }
