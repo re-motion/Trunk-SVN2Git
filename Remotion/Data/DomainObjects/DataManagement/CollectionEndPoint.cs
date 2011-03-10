@@ -305,8 +305,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                             ? null
                                             : SortedPropertyComparer.CreateCompoundComparer (
                                                 sortExpression.SortedProperties, clientTransaction.DataManager);
-      // TODO 3774: use injected CollectionEndPointDataKeeperFactory
-      return new CollectionEndPointDataKeeper (clientTransaction, id, sortExpressionBasedComparer, _endPointProvider);
+
+      return _dataKeeperFactory.Create (id, sortExpressionBasedComparer);
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)

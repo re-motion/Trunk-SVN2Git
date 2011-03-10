@@ -51,7 +51,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("sortExpressionBasedComparer", sortExpressionBasedComparer);
 
       return new CollectionEndPointDataKeeper (_clientTransaction, endPointID, sortExpressionBasedComparer, _endPointProvider);
     }

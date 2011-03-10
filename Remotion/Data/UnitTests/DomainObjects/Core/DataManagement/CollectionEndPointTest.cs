@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -23,12 +24,10 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -78,33 +77,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var changeDetectionStrategyStub = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
       var lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      var dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory> ();
+
+      var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
+      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+
+      var dataKeeperFactoryMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeperFactory> ();
+      dataKeeperFactoryMock
+          .Expect (mock => mock.Create (Arg.Is (_customerEndPointID), Arg<IComparer<DomainObject>>.Is.Anything))
+          .Return (dataKeeperStub);
+      dataKeeperFactoryMock.Replay();
 
       var endPoint = new CollectionEndPoint (
           ClientTransactionMock, 
           _customerEndPointID, 
           changeDetectionStrategyStub,
           lazyLoaderStub, 
-          endPointProviderStub, 
-          dataKeeperFactoryStub);
+          endPointProviderStub,
+          dataKeeperFactoryMock);
+
+      dataKeeperFactoryMock.VerifyAllExpectations();
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
       Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (changeDetectionStrategyStub));
       Assert.That (endPoint.LazyLoader, Is.SameAs (lazyLoaderStub));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (endPointProviderStub));
-      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
+      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
 
       var loadState = GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
 
       Assert.That (endPoint.IsDataComplete, Is.False);
 
-      var dataKeeper = GetEndPointDataKeeper (endPoint);
-      Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
-      Assert.That (dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
-      Assert.That (
-          CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper).EndPointProvider, 
-          Is.SameAs (endPointProviderStub));
+      var dataKeeper = ((IncompleteCollectionEndPointLoadState) GetLoadState (endPoint)).DataKeeper;
+      Assert.That (dataKeeper, Is.SameAs (dataKeeperStub));
     }
 
     [Test]

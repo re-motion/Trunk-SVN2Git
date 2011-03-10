@@ -60,6 +60,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void Create_WithNullComparer ()
+    {
+      var relationEndPointID = RelationEndPointID.Create (
+          DomainObjectIDs.Customer1,
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+
+      var result = _factory.Create (relationEndPointID, null);
+
+      Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
+      Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
+      Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.Null);
+    }
+
+    [Test]
     public void Serializable ()
     {
       var serializableProvider = new SerializableRelationEndPointProviderFake();
