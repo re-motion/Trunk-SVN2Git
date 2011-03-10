@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -37,7 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private ICollectionEndPointDataKeeperFactory _dataKeeperFactoryStub;
 
     private IncompleteCollectionEndPointLoadState _loadState;
+
     private Order _relatedObject;
+    private RelationEndPointID _endPointID;
+    private Comparer<DomainObject> _sortExpressionBasedComparer;
 
     [SetUp]
     public override void SetUp ()
@@ -48,12 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader> ();
 
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
-      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]).Repeat.Once(); // for ctor called below
 
       _dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory>();
 
       _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
+
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
+      _sortExpressionBasedComparer = Comparer<DomainObject>.Default;
     }
 
     [Test]
@@ -91,56 +98,108 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void MarkDataComplete_SortsDataAndSetsState ()
+    public void MarkDataComplete_CreatesNewDataKeeper_AndSortsDataKeeper ()
     {
       bool stateSetterCalled = false;
 
-      _collectionEndPointMock.Replay ();
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
+      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      _dataKeeperMock.Replay();
 
-      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());
-      _dataKeeperMock.Replay ();
+      var newKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
+      newKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData());
+      newKeeperMock.Replay();
 
-      var items = new DomainObject[] { _relatedObject };
+      _collectionEndPointMock.Replay();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperMock);
+
       _loadState.MarkDataComplete (
           _collectionEndPointMock,
-          items,
+          new DomainObject[0],
           keeper =>
           {
             stateSetterCalled = true;
-            Assert.That (keeper, Is.SameAs (_dataKeeperMock));
+            Assert.That (keeper, Is.SameAs (newKeeperMock));
           });
 
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-
       Assert.That (stateSetterCalled, Is.True);
+      newKeeperMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void MarkDataComplete_WithEndPointsInDataKeeper ()
+    public void MarkDataComplete_EndPointsWithoutItems_AreRegisteredAfterStateSetter ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
-      endPointMock.Expect (mock => mock.MarkSynchronized ());
-      endPointMock.Replay ();
+      bool stateSetterCalled = false;
 
-      _dataKeeperMock.BackToRecord();
-      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new[] { endPointMock });
+      var oppositeEndPointWithoutItem = MockRepository.GenerateStub<IObjectEndPoint>();
+      oppositeEndPointWithoutItem.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
-      _dataKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData ());
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
+      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new [] { oppositeEndPointWithoutItem });
       _dataKeeperMock.Replay ();
 
-      var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, keeper => { });
+      var newKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
 
-      _dataKeeperMock.VerifyAllExpectations ();
-      endPointMock.VerifyAllExpectations ();
+      // ReSharper disable AccessToModifiedClosure
+      _collectionEndPointMock
+          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem))
+          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
+      // ReSharper restore AccessToModifiedClosure
+      _collectionEndPointMock.Replay ();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperStub);
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[0], keeper => stateSetterCalled = true);
+
+      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
+    public void MarkDataComplete_Items_AreRegisteredInOrder_WithOrWithoutEndPoints ()
+    {
+      var item1 = DomainObjectMother.CreateFakeObject<Order> ();
+      var item2 = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var oppositeEndPointForItem1Mock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      oppositeEndPointForItem1Mock.Stub (stub => stub.ObjectID).Return (item1.ID);
+      oppositeEndPointForItem1Mock.Expect (mock => mock.MarkSynchronized());
+      oppositeEndPointForItem1Mock.Replay ();
+
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
+      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { oppositeEndPointForItem1Mock });
+      _dataKeeperMock.Replay ();
+
+      var newKeeperMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeper> ();
+      using (newKeeperMock.GetMockRepository ().Ordered ())
+      {
+        newKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointForItem1Mock));
+        newKeeperMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (item2));
+      }
+      newKeeperMock.Replay();
+
+      _collectionEndPointMock.Replay ();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperMock);
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[] { item1, item2 }, keeper => { });
+
+      newKeeperMock.VerifyAllExpectations();
+      oppositeEndPointForItem1Mock.VerifyAllExpectations();
+      _collectionEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IObjectEndPoint>.Is.Anything));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
     public void MarkDataIncomplete_ThrowsException ()
     {
-       _loadState.MarkDataIncomplete (_collectionEndPointMock, keeper => Assert.Fail ("Must not be called."));
+      _loadState.MarkDataIncomplete (_collectionEndPointMock, keeper => Assert.Fail ("Must not be called."));
     }
 
     [Test]

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -8,6 +9,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointDataKeeper : IFlattenedSerializable
   {
+    RelationEndPointID EndPointID { get; }
+    IComparer<DomainObject> SortExpressionBasedComparer { get; }
+
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
     IObjectEndPoint[] OppositeEndPoints { get; }

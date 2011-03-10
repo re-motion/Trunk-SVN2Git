@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -78,6 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 3774")]
     public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse ()
     {
       SetDatabaseModifyable ();
@@ -97,7 +99,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       companiesOfIndustrialSector.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.Null);
+      Assert.That (companiesOfIndustrialSector, List.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector, s => s.Companies, false);
+
+      var otherCompany = companiesOfIndustrialSector.FirstOrDefault (c => c != company);
+      CheckSyncState (otherCompany, c => c.IndustrialSector, true);
+
+      CheckActionWorks (() => industrialSector.Companies.Remove (otherCompany));
+      CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
+
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the opposite property");
+      CheckActionWorks (() => company.IndustrialSector = IndustrialSector.NewObject());
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector, s => s.Companies));
+
+      CheckSyncState (industrialSector, s => s.Companies, true);
       Assert.That (companiesOfIndustrialSector, List.Not.Contains (company));
+      
+      CheckActionWorks (() => industrialSector.Companies.Add (company));
     }
 
     [Test]
@@ -134,6 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (company, c => c.IndustrialSector));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
+      Assert.That (companiesOfIndustrialSector, List.Contains (company));
       CheckActionWorks (() => company.IndustrialSector = null);
       CheckActionWorks (() => industrialSector.Companies.Add (company));
     }
@@ -221,6 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (newCompany, c => c.IndustrialSector));
 
       CheckSyncState (newCompany, c => c.IndustrialSector, true);
+      Assert.That (industrialSector.Companies, List.Contains (newCompany));
       CheckActionWorks (() => newCompany.IndustrialSector = null);
       CheckActionWorks (() => industrialSector.Companies.Add (newCompany));
     }

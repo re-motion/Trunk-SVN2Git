@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
@@ -82,11 +83,33 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      foreach (var oppositeEndPoint in _dataKeeper.OriginalOppositeEndPoints)
-        oppositeEndPoint.MarkSynchronized();
+      Assertion.IsFalse (
+          _dataKeeper.HasDataChanged(), 
+          "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
 
-      _dataKeeper.SortCurrentAndOriginalData();
-      stateSetter (_dataKeeper);
+      var newDataKeeper = _dataKeeperFactory.Create (_dataKeeper.EndPointID, _dataKeeper.SortExpressionBasedComparer);
+      var originalOppositeEndPoints = _dataKeeper.OriginalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
+
+      foreach (var item in items)
+      {
+        IObjectEndPoint oppositeEndPoint;
+        if (originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
+        {
+          newDataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+          oppositeEndPoint.MarkSynchronized();
+          originalOppositeEndPoints.Remove (item.ID);
+        }
+        else
+        {
+          newDataKeeper.RegisterOriginalItemWithoutEndPoint (item);
+        }
+      }
+
+      newDataKeeper.SortCurrentAndOriginalData();
+      stateSetter (newDataKeeper);
+
+      foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)
+        collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem);
     }
 
     public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter)
