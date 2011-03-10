@@ -219,6 +219,7 @@
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\ComposedObjectTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
+    <Compile Include="Mixins\MixinTypeExtensionsTest.cs" />
     <Compile Include="Mixins\TestDomain\ClassDerivedFromComposedObject.cs" />
     <Compile Include="Mixins\TestDomain\ClassWithHasCompleteInterfaces.cs" />
     <Compile Include="Mixins\TestDomain\GeneratedTypes\MixinMixingClass_Mixed_Generated_WithEfficientMixinCreation.cs" />
