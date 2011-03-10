@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -46,6 +47,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
+    // TODO 3774: Serialization
+    private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly ICollectionEndPointDataKeeperFactory _collectionEndPointDataKeeperFactory;
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
@@ -54,17 +58,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ClientTransaction clientTransaction,
         ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
         IObjectLoader objectLoader,
-        IRelationEndPointLazyLoader lazyLoader)
+        IRelationEndPointLazyLoader lazyLoader,
+        IRelationEndPointProvider endPointProvider,
+        ICollectionEndPointDataKeeperFactory collectionEndPointDataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
 
       _clientTransaction = clientTransaction;
       _collectionEndPointChangeDetectionStrategy = collectionEndPointChangeDetectionStrategy;
       _objectLoader = objectLoader;
       _lazyLoader = lazyLoader;
+      _endPointProvider = endPointProvider;
+      _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
@@ -88,6 +98,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ICollectionEndPointChangeDetectionStrategy CollectionEndPointChangeDetectionStrategy
     {
       get { return _collectionEndPointChangeDetectionStrategy; }
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
+    }
+
+    public IObjectLoader ObjectLoader
+    {
+      get { return _objectLoader; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
+    public ICollectionEndPointDataKeeperFactory CollectionEndPointDataKeeperFactory
+    {
+      get { return _collectionEndPointDataKeeperFactory; }
     }
 
     public bool Contains (RelationEndPointID id)
@@ -215,7 +245,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
           _clientTransaction, 
           endPointID, 
           _collectionEndPointChangeDetectionStrategy,
-          _lazyLoader);
+          _lazyLoader,
+          _endPointProvider,
+          _collectionEndPointDataKeeperFactory);
       Add (collectionEndPoint);
 
       return collectionEndPoint;
@@ -611,7 +643,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
             info.GetValueForHandle<ClientTransaction>(),
             info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>(),
             info.GetValueForHandle<IObjectLoader>(),
-            info.GetValueForHandle<IRelationEndPointLazyLoader>())
+            info.GetValueForHandle<IRelationEndPointLazyLoader>(),
+            info.GetValueForHandle<IRelationEndPointProvider>(),
+            info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
@@ -629,6 +663,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_collectionEndPointChangeDetectionStrategy);
       info.AddHandle (_objectLoader);
       info.AddHandle (_lazyLoader);
+      info.AddHandle (_endPointProvider);
+      info.AddHandle (_collectionEndPointDataKeeperFactory);
+
       var endPointArray = new IRelationEndPoint[Count];
       _relationEndPoints.Values.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);

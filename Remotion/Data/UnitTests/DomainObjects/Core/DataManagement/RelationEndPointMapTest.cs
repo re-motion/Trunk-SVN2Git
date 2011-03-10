@@ -596,6 +596,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[endPointID], Is.SameAs (endPoint));
 
       Assert.That (endPoint.IsDataComplete, Is.False);
+      Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (endPoint.ID, Is.EqualTo (endPointID));
+      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
+      Assert.That (endPoint.LazyLoader, Is.SameAs (_map.LazyLoader));
+      Assert.That (endPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
+      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_map.CollectionEndPointDataKeeperFactory));
     }
 
     [Test]

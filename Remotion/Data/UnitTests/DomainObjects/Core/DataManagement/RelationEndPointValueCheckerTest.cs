@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransactionMock);
 
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
 
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
 
       CallCheckClientTransaction (endPointStub, null);
     }
@@ -57,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -74,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (bindingTransaction);
 
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -92,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (bindingTransaction);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
-      var endPointStub = CreateCollectionEndPointStub (bindingTransaction, owningObject);
+      var endPointStub = CreateRelationEndPointStub (bindingTransaction, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -111,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (bindingTransaction1);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (bindingTransaction2);
 
-      var endPointStub = CreateCollectionEndPointStub (bindingTransaction1, owningObject);
+      var endPointStub = CreateRelationEndPointStub (bindingTransaction1, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -124,16 +125,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Cannot xx DomainObject '{0}' from/to collection of property '{1}' of DomainObject '{2}'.");
     }
 
-    private IRelationEndPoint CreateCollectionEndPointStub (ClientTransaction transaction, Order owningObject)
+    private IRelationEndPoint CreateRelationEndPointStub (ClientTransaction transaction, Order owningObject)
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, "OrderItems");
-      return RelationEndPointObjectMother.CreateCollectionEndPoint (
-          id, 
-          new RootCollectionEndPointChangeDetectionStrategy(), 
-          ClientTransactionTestHelper.GetDataManager (transaction), 
-          transaction, 
-          new DomainObject[0]);
-    }
 
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (transaction);
+      endPointStub.Stub (stub => stub.ID).Return (id);
+      endPointStub.Stub (stub => stub.Definition).Return (id.Definition);
+      endPointStub.Stub (stub => stub.ObjectID).Return (owningObject.ID);
+      endPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (owningObject);
+      
+      return endPointStub;
+    }
   }
 }

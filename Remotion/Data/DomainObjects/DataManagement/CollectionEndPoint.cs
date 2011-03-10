@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
     
     private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollection; // keeps the original reference of the _collection for rollback
@@ -46,11 +47,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
-        IRelationEndPointLazyLoader lazyLoader)
+        IRelationEndPointLazyLoader lazyLoader,
+        IRelationEndPointProvider endPointProvider,
+        ICollectionEndPointDataKeeperFactory dataKeeperFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData();
@@ -61,8 +66,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
       _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
-      _endPointProvider = (IRelationEndPointProvider) ClientTransaction.DataManager; // TODO 3774: Inject via ctor
-      // TODO 3774: Inject DataKeeperFactory via ctor, serialization
+      _endPointProvider = endPointProvider;
+      _dataKeeperFactory = dataKeeperFactory;
 
       var dataKeeper = CreateDataKeeper (clientTransaction, id);
       SetIncompleteLoadState (dataKeeper);
@@ -82,6 +87,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
+    {
+      get { return _changeDetectionStrategy; }
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
+    public ICollectionEndPointDataKeeperFactory DataKeeperFactory
+    {
+      get { return _dataKeeperFactory; }
+    }
+
     public DomainObjectCollection OriginalCollection
     {
       get { return _originalCollection; }
@@ -95,11 +120,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       return _loadState.GetCollectionWithOriginalData(this);
-    }
-
-    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
-    {
-      get { return _changeDetectionStrategy; }
     }
 
     public override bool IsDataComplete
@@ -309,7 +329,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = info.GetBoolValue();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _dataKeeperFactory = info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
 
       FixupDomainObjectCollection (_collection);
@@ -323,6 +344,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
+      info.AddHandle (_dataKeeperFactory);
       info.AddValue (_loadState);
     }
 

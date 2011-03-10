@@ -57,13 +57,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
       _lazyLoaderMock = MockRepository.GenerateMock<IRelationEndPointLazyLoader> ();
-     
-      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+
+      _customerEndPoint = new CollectionEndPoint (
+          ClientTransactionMock,
           _customerEndPointID,
           new RootCollectionEndPointChangeDetectionStrategy(),
           _lazyLoaderMock,
-          ClientTransaction.Current,
-          new[] { _order1, _orderWithoutOrderItem });
+          ClientTransactionMock.DataManager,
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager));
+
+      CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (_customerEndPoint, new[] { _order1, _orderWithoutOrderItem });
 
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
       _endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (_loadStateMock);
@@ -72,10 +75,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize ()
     {
-      var changeDetectionStrategyStub = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
-      var endPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, changeDetectionStrategyStub, _lazyLoaderMock);
+      var changeDetectionStrategyStub = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
+      var lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
+      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      var dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory> ();
+
+      var endPoint = new CollectionEndPoint (
+          ClientTransactionMock, 
+          _customerEndPointID, 
+          changeDetectionStrategyStub,
+          lazyLoaderStub, 
+          endPointProviderStub, 
+          dataKeeperFactoryStub);
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
+      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (changeDetectionStrategyStub));
+      Assert.That (endPoint.LazyLoader, Is.SameAs (lazyLoaderStub));
+      Assert.That (endPoint.EndPointProvider, Is.SameAs (endPointProviderStub));
+      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
 
       var loadState = GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
@@ -87,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
       Assert.That (
           CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper).EndPointProvider, 
-          Is.SameAs (ClientTransactionMock.DataManager));
+          Is.SameAs (endPointProviderStub));
     }
 
     [Test]
@@ -135,12 +152,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).GetSortExpression (), Is.Not.Null);
       Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).SortExpressionText, Is.EqualTo ("OrderNumber asc"));
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var endPoint = new CollectionEndPoint (
+          subTransaction,  
           _customerEndPointID, 
           new SubCollectionEndPointChangeDetectionStrategy(), 
           ClientTransactionMock.DataManager, 
-          ClientTransactionMock.CreateSubTransaction(), 
-          null);
+          ClientTransactionMock.DataManager,
+          new CollectionEndPointDataKeeperFactory (subTransaction, ClientTransactionMock.DataManager));
       
       var dataKeeper = GetEndPointDataKeeper (endPoint);
       Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Null);
@@ -871,7 +890,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           ClientTransactionMock,
           _customerEndPointID,
           MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> (),
-          MockRepository.GenerateStub<IRelationEndPointLazyLoader> ());
+          MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
+          ClientTransactionMock.DataManager,
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager));
       PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
       return collectionEndPoint;
     }

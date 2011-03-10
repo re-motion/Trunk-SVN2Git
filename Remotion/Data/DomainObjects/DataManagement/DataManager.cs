@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -58,7 +59,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
-      _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy, objectLoader, this);
+
+      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, this);
+      _relationEndPointMap = new RelationEndPointMap (
+          clientTransaction, 
+          collectionEndPointChangeDetectionStrategy, 
+          objectLoader, 
+          this, 
+          this, 
+          collectionEndPointDataKeeperFactory);
+
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);

@@ -14,8 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -35,6 +38,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       fakeEndPoint.Stub (stub => stub.GetDomainObject()).Return (item);
       fakeEndPoint.Stub (stub => stub.GetDomainObjectReference()).Return (item);
       return fakeEndPoint;
+    }
+
+    public static void FillCollectionEndPointWithInitialContents (CollectionEndPoint endPoint, IEnumerable<DomainObject> initialContents)
+    {
+      var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
+      var domainObjects = initialContents.ToArray ();
+      foreach (var domainObject in domainObjects)
+      {
+        var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPoint.Definition.GetOppositeEndPointDefinition());
+        var oppositeEndPoint = (IObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+        endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      }
+      endPoint.MarkDataComplete (domainObjects);
     }
   }
 }

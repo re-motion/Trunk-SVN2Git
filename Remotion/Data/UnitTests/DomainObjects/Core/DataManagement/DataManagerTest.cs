@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -55,6 +56,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           new RootCollectionEndPointChangeDetectionStrategy (),
           new RootInvalidDomainObjectManager (),
           _objectLoaderMock);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction ();
+      var collectionEndPointChangeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+
+      var dataManager = new DataManager (clientTransaction, collectionEndPointChangeDetectionStrategy, invalidDomainObjectManager, objectLoader);
+
+      Assert.That (dataManager.RelationEndPointMap, Is.TypeOf (typeof (RelationEndPointMap)));
+      var map = (RelationEndPointMap) dataManager.RelationEndPointMap;
+
+      Assert.That (map.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (map.CollectionEndPointChangeDetectionStrategy, Is.SameAs (collectionEndPointChangeDetectionStrategy));
+      Assert.That (map.ObjectLoader, Is.SameAs (objectLoader));
+      Assert.That (map.EndPointProvider, Is.SameAs (dataManager));
+      Assert.That (map.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
+      Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).EndPointProvider, Is.SameAs (dataManager));
     }
 
     [Test]

@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void FlattenedSerializable ()
     {
       var endPoint = new SerializableObjectEndPointFake (RelationEndPointID.Create (_orderItem1, oi => oi.Order), _orderItem1);
-      var endPointProvider = new SerializableEndPointProvider (endPoint);
+      var endPointProvider = new SerializableEndPointProviderFake (endPoint);
       _wrappedData.Clear();
       _wrappedData.Add (_orderItem1);
       var decorator = new EndPointTrackingCollectionDataDecorator (_wrappedData, endPointProvider, _definition);

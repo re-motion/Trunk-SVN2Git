@@ -18,14 +18,13 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -35,39 +34,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointID endPointID,
         IEnumerable<DomainObject> initialContents)
     {
-      return CreateCollectionEndPoint (
+      var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
+      var collectionEndPoint = new CollectionEndPoint (
+          ClientTransaction.Current,
           endPointID,
           new RootCollectionEndPointChangeDetectionStrategy(),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
-          ClientTransaction.Current,
-          initialContents);
-    }
-
-    public static CollectionEndPoint CreateCollectionEndPoint (
-        RelationEndPointID endPointID,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
-        IRelationEndPointLazyLoader lazyLoader,
-        ClientTransaction transaction,
-        IEnumerable<DomainObject> initialContents)
-    {
-      var newCollectionEndPoint = new CollectionEndPoint (
-          transaction,
-          endPointID,
-          changeDetectionStrategy,
-          lazyLoader);
+          dataManager,
+          dataManager,
+          new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, dataManager));
+      
       if (initialContents != null)
-      {
-        var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
-        var domainObjects = initialContents.ToArray ();
-        foreach (var domainObject in domainObjects)
-        {
-          var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPointID.Definition.GetOppositeEndPointDefinition());
-          var oppositeEndPoint = (IObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
-          newCollectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-        }
-        newCollectionEndPoint.MarkDataComplete (domainObjects);
-      }
-      return newCollectionEndPoint;
+        CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (collectionEndPoint, initialContents);
+
+      return collectionEndPoint;
     }
 
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID)

@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void FlattenedSerializable ()
     {
       var comparer = Comparer<DomainObject>.Default;
-      var endPointProvider = new SerializableEndPointProvider();
+      var endPointProvider = new SerializableEndPointProviderFake();
       var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction (), _endPointID, comparer, endPointProvider);
       var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);

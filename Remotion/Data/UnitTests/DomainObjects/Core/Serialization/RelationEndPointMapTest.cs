@@ -65,15 +65,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedMap.ClientTransaction, Is.InstanceOfType (typeof (ClientTransactionMock)));
       Assert.That (deserializedMap.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
 
+      var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);
+
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"), 
           Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_objectLoader"),
-          Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_lazyLoader"),
-          Is.SameAs (ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction)));
-      
-      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.Not.Null);
-      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
+      Assert.That (deserializedMap.ObjectLoader, Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
+      Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
+      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.TypeOf (typeof (RootCollectionEndPointChangeDetectionStrategy)));
+      Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
+      Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointMap.CollectionEndPointDataKeeperFactory.GetType()));
 
       Assert.That (deserializedMap.Count, Is.EqualTo (7));
 

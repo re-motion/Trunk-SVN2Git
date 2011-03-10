@@ -21,9 +21,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -186,79 +185,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void Serialization_ChangeDetectionStrategy ()
+    public void Serialization_InjectedObjects ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var originalRootTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy(),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
+      var originalEndPoint = new CollectionEndPoint (
           ClientTransaction.Current,
-          new DomainObject[0]);
-      var originalSubTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
           endPointID,
-          new SubCollectionEndPointChangeDetectionStrategy(),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
-          ClientTransaction.Current,
-          new DomainObject[0]);
-
-      var deserializedRootTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalRootTxEndPoint);
-      var deserializedSubTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalSubTxEndPoint);
-
-      Assert.That (deserializedRootTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
-      Assert.That (deserializedSubTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
-    }
-
-    [Test]
-    public void Serialization_LazyLoader ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current), 
-          ClientTransaction.Current, 
-          new DomainObject[0]);
+          new SerializableCollectionEndPointChangeDetectionStrategyFake(),
+          new SerializableRelationEndPointLazyLoaderFake(),
+          new SerializableEndPointProviderFake(),
+          new SerializableDataKeeperFactoryFake());
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
 
-      Assert.That (
-          PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_lazyLoader"),
-          Is.Not.Null);
-    }
-
-    [Test]
-    public void Serialization_LoadState ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
-          ClientTransaction.Current,
-          new DomainObject[0]);
-
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
-
-      var deserializedLoadState = (CompleteCollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
+      var deserializedLoadState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
       Assert.That (deserializedLoadState, Is.Not.Null);
-    }
-
-    [Test]
-    public void Serialization_EndPointProvider ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var originalEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
-          endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current),
-          ClientTransaction.Current,
-          new DomainObject[0]);
-
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
-
-      var deserializedEndPointProvider = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_endPointProvider");
-      Assert.That (deserializedEndPointProvider, Is.Not.Null);
+      
+      Assert.That (deserializedEndPoint.ChangeDetectionStrategy, Is.Not.Null);
+      Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
+      Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedEndPoint.DataKeeperFactory, Is.Not.Null);
     }
   }
 }

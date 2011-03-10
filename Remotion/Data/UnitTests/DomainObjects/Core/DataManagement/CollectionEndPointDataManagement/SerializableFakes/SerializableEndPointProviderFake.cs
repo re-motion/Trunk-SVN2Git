@@ -23,12 +23,12 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableEndPointProvider : IRelationEndPointProvider
+  public class SerializableEndPointProviderFake : IRelationEndPointProvider
   {
     [NonSerialized]
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _endPoints;
 
-    public SerializableEndPointProvider ( params IRelationEndPoint[] endPoints)
+    public SerializableEndPointProviderFake ( params IRelationEndPoint[] endPoints)
     {
       _endPoints = endPoints.ToDictionary(ep => ep.ID);
     }
