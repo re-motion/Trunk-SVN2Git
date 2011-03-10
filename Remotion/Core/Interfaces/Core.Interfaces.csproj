@@ -119,7 +119,6 @@
     <Compile Include="Mixins\IgnoresMixinAttribute.cs" />
     <Compile Include="Mixins\BridgeInterfaces\IMixinImplementation.cs" />
     <Compile Include="Mixins\BridgeInterfaces\ITypeFactoryImplementation.cs" />
-    <Compile Include="Mixins\BridgeInterfaces\IMixinTypeUtilityImplementation.cs" />
     <Compile Include="Mixins\IHasCompleteInterface.cs" />
     <Compile Include="Mixins\IInitializableMixin.cs" />
     <Compile Include="Mixins\IOverrideAttribute.cs" />

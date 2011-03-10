@@ -282,7 +282,6 @@
     <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
     <Compile Include="Mixins\ObjectFactoryPerformanceTest.cs" />
     <Compile Include="Mixins\IMixinImplementationTest.cs" />
-    <Compile Include="Mixins\IMixinTypeUtilityImplementationTest.cs" />
     <Compile Include="Mixins\IObjectFactoryImplementationTest.cs" />
     <Compile Include="Mixins\ITypeFactoryImplementationTest.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />

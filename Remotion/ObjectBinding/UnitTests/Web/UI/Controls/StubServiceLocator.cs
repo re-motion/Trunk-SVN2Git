@@ -114,7 +114,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (ILogManagerImplementation), new LogManagerImplementation());
       _instances.Add (typeof (IBootstrapStorageProvider), new BootstrapStorageProvider());
       _instances.Add (typeof (ITypeDiscoveryServiceFactoryImplementation), new TypeDiscoveryServiceFactoryImplementation());
-      _instances.Add (typeof (IMixinTypeUtilityImplementation), new MixinTypeUtilityImplementation());
       _instances.Add (typeof (IAdapterRegistryImplementation), new AdapterRegistryImplementation());
     }
 
