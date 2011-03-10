@@ -196,6 +196,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
+    public void Synchronize ()
+    {
+      throw new InvalidOperationException ("Synchronize cannot be called on a NullCollectionEndPoint.");
+    }
+
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
     {
       return Array.AsReadOnly (new IObjectEndPoint[0]);

@@ -213,6 +213,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Synchronize ()
+    {
+      _nullEndPoint.Synchronize();
+    }
+
+    [Test]
     public void GetUnsynchronizedOppositeEndPoints ()
     {
       Assert.That (_nullEndPoint.GetUnsynchronizedOppositeEndPoints(), Is.Empty);

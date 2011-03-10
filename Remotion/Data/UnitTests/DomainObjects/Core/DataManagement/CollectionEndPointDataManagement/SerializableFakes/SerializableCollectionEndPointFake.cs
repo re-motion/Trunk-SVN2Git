@@ -199,6 +199,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void Synchronize ()
+    {
+      throw new NotImplementedException();
+    }
+
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
     {
       throw new NotImplementedException();

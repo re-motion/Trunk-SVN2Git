@@ -569,6 +569,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.True);
     }
+
+    [Test]
+    public void Synchronize ()
+    {
+      _loadStateMock.Expect (mock => mock.Synchronize (_endPointWithLoadStateMock));
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.Synchronize();
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
     
     [Test]
     public void GetUnsynchronizedOppositeEndPoints ()
