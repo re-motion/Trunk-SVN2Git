@@ -31,6 +31,89 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class RelationInconsistenciesTest : ClientTransactionBaseTest
   {
     [Test]
+    public void VirtualEndPointQuery_OneMany_Consistent_ObjectLoadedFirst ()
+    {
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.OrderItems.EnsureDataComplete();
+
+      Assert.That (orderItem1.Order, Is.SameAs (order1));
+      Assert.That (order1.OrderItems, List.Contains (orderItem1));
+
+      CheckSyncState (orderItem1, oi => oi.Order, true);
+      CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
+
+      // these do nothing
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+
+      CheckSyncState (orderItem1, oi => oi.Order, true);
+      CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneMany_Consistent_CollectionLoadedFirst ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.OrderItems.EnsureDataComplete ();
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+
+      Assert.That (orderItem1.Order, Is.SameAs (order1));
+      Assert.That (order1.OrderItems, List.Contains (orderItem1));
+
+      CheckSyncState (orderItem1, oi => oi.Order, true);
+      CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
+
+      // these do nothing
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+
+      CheckSyncState (orderItem1, oi => oi.Order, true);
+      CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneOne_Consistent_RealEndPointLoadedFirst ()
+    {
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+
+      Assert.That (orderTicket1.Order, Is.SameAs (order1));
+      Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
+
+      CheckSyncState (orderTicket1, oi => oi.Order, true);
+      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
+
+      // these do nothing
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+
+      CheckSyncState (orderTicket1, oi => oi.Order, true);
+      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneOne_Consistent_VirtualEndPointLoadedFirst ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.OrderTicket.EnsureDataAvailable();
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+
+      Assert.That (orderTicket1.Order, Is.SameAs (order1));
+      Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
+
+      CheckSyncState (orderTicket1, oi => oi.Order, true);
+      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
+
+      // these do nothing
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+
+      CheckSyncState (orderTicket1, oi => oi.Order, true);
+      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
+    }
+
+    [Test]
     [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
         "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
         + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
