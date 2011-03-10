@@ -122,7 +122,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3774")]
     public void VirtualEndPointQuery_OneMany_ObjectNotIncluded_ThatLocallyPointsToHere ()
     {
       SetDatabaseModifyable ();
@@ -206,7 +205,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3774")]
     public void ObjectLoaded_WithInconsistentForeignKey_OneMany ()
     {
       SetDatabaseModifyable();
@@ -259,7 +257,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
     {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) => c.IndustrialSector = s);
+      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
+      {
+        c.IndustrialSector = s;
+        c.Ceo = Ceo.NewObject();
+      });
     }
 
     private void SetIndustrialSectorInOtherTransaction (ObjectID companyID, ObjectID industrialSectorID)
