@@ -12,9 +12,8 @@
       <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
       <ActiveConfigurationRunTests>%(_activeConfiguration.RunTests)</ActiveConfigurationRunTests>
       <ActiveConfigurationGenerateDocumentation>%(_activeConfiguration.GenerateDocumentation)</ActiveConfigurationGenerateDocumentation>
-      <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) == ''">False</ActiveConfigurationHasBinariesDirectory>
-      <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) != ''">True</ActiveConfigurationHasBinariesDirectory>
-      <ActiveConfigurationBinariesDirectory Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'">$(BinariesDirectory)%(_activeConfiguration.BinariesDirectory)</ActiveConfigurationBinariesDirectory>
+      <ActiveConfigurationIncludeBinaries>%(_activeConfiguration.IncludeBinaries)</ActiveConfigurationIncludeBinaries>
+      <ActiveConfigurationOutputDirectory>$(BinariesDirectory)%(_activeConfiguration.OutputDirectory)</ActiveConfigurationOutputDirectory>
       <ActiveConfigurationFramework>%(_activeConfiguration.Framework)</ActiveConfigurationFramework>
       <ActiveConfigurationAssemblyRevision>%(_activeConfiguration.AssemblyRevision)</ActiveConfigurationAssemblyRevision>
     </PropertyGroup>
@@ -81,8 +80,6 @@
   <Target Name="LogConfiguration" DependsOnTargets="CreateActiveConfiguration">
     <Message Text="Current configuration: $(ConfigurationID)"/>
     <Message Text="* Name: $(ActiveConfigurationName)"/>
-    <Message Text="* Runs Tests" Condition="$(ActiveConfigurationRunTests) == 'True'"/>
-    <Message Text="* Destination Folder: $(ActiveConfigurationBinariesDirectory)" Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'"/>
   </Target>
 
   <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">

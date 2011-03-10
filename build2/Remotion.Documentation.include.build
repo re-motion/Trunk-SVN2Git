@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="GeneratePublicDocumentation" DependsOnTargets="CreateActiveConfiguration;GeneratePublicDocumentationInternal;" />
+  <Target Name="GeneratePublicDocumentation" DependsOnTargets="CreateActiveConfiguration;SetPackageForDocumentation;GeneratePublicDocumentationInternal;" />
+
+  <Target Name="SetPackageForDocumentation">
+    <PropertyGroup>
+      <PackageID>Core</PackageID>
+    </PropertyGroup>
+  </Target>
   
   <Target Name="GeneratePublicDocumentationInternal" 
-          DependsOnTargets=";AddAdditionalMetadataToReleaseOutputFiles;CreateDocumentationProperties;CreateActivePackage;CreateDocumentationRootPage" 
+          DependsOnTargets="CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile" 
           Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'">
 
-    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
+    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
+
+    <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
+                                  Documenter="MSDN-CHM"
+                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>
+  </Target>
+
+  <Target Name="CreateDocumentationProperties">
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
+
+    <PropertyGroup>
+      <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
+      <DocumentationRootPageFile>$(DocumentationBaseDirectory)GettingStarted.html</DocumentationRootPageFile>
+      <DocumentationNDocProjectFile>$(DocumentationBaseDirectory)documentation.ndoc</DocumentationNDocProjectFile>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CreateNDocProjectFile" DependsOnTargets="BuildReleaseProjects;CreateActivePackage;CreateDocumentationProperties">
+    <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
+    <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-    <Error Text="The property 'ActivePackageProductNameShort' is not set." Condition="'$(ActivePackageProductNameShort)' == ''" />
 
     <PropertyGroup>
       <_standardDocumenterPropertiesFileName>doc.public.xml</_standardDocumenterPropertiesFileName>
-      <_documenterPropertiesFile>$(_documentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
+      <_documenterPropertiesFile>$(DocumentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
     </PropertyGroup>
 
     <MakeDir Directories="$(DocumentationBaseDirectory)" />
@@ -25,8 +48,9 @@
       <_namespaceSummaryFiles Include="%(ReleaseProjectFiles.RootDir)%(ReleaseProjectFiles.Directory)%(ReleaseProjectFiles.NamespaceSummaryFile)"
                               Condition="%(ReleaseProjectFiles.NamespaceSummaryFile) != ''"/>
     </ItemGroup>
-    
+
     <ItemGroup>
+      <_documenterProperties Remove="@(_documenterProperties)" />
       <_documenterProperties Include="HtmlHelpName">
         <Value>$(ActivePackageProductNameShort)</Value>
       </_documenterProperties>
@@ -70,21 +94,8 @@
                                                          DocumenterFiles="$(_documenterPropertiesFile)"
                                                          Assemblies="@(ReleaseOutputFiles)"
                                                          NamespaceSummaryFiles="@(_namespaceSummaryFiles)" />
-
-    <!--<MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
-                                  Documenter="MSDN-CHM"
-                                  ProjectFilePath="$(DocumentationNDocProjectFile)"/>-->
-
   </Target>
 
-  <Target Name="CreateDocumentationProperties">
-    <PropertyGroup>
-      <DocumentationBaseDirectory>$(TempDirectory)doc\</DocumentationBaseDirectory>
-      <DocumentationRootPageFile>$(DocumentationBaseDirectory)GettingStarted.html</DocumentationRootPageFile>
-      <DocumentationNDocProjectFile>$(DocumentationBaseDirectory)documentation.ndoc</DocumentationNDocProjectFile>
-    </PropertyGroup>
-  </Target>
-  
   <Target Name="CreateDocumentationRootPage" DependsOnTargets="CreateActivePackage;CreateDocumentationProperties">
     <Error Text="The property 'ActivePackageDocumentationRootPageTemplateFile' is not set." Condition="'$(ActivePackageDocumentationRootPageTemplateFile)' == ''" />
     <Error Text="The property 'DocumentationRootPageFile' is not set." Condition="'$(DocumentationRootPageFile)' == ''" />
@@ -116,7 +127,5 @@
                                            RegexPattern="@%(_fileReplacements.Identity)@"
                                            Replacement="%(_fileReplacements.Value)"/>
   </Target>
-  
-  <!--<Target Name=""-->
   
 </Project>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Target Name="AssembleBuildOutput" 
+          DependsOnTargets="CopyReleaseProjectsToBinariesDirectory;CopyResourcesToBinariesDirectory;CopySchemasToBinariesDirectory;CopyDocFilesToBinariesDirectory;CopyChmFilesToBinariesDirectory" />
+
   <Target Name="CopyReleaseProjectsToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;BuildReleaseProjects;">
     <ItemGroup>
       <_completeOutputFiles Remove="@(_completeOutputFiles)" />
@@ -9,8 +12,8 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(_completeOutputFiles)"
-          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationBinariesDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
-          Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'"/>
+          DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationOutputDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
+          Condition="$(ActiveConfigurationIncludeBinaries) == 'True'"/>
   </Target>
 
   <Target Name="CopyResourcesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
@@ -62,6 +65,7 @@
   </Target>
 
   <Target Name="CopyDocFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;AddAdditionalMetadataToReleaseOutputFiles">
+
     <PropertyGroup>
       <_docFolder>doc\</_docFolder>
     </PropertyGroup>
@@ -86,6 +90,18 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="AssembleBuildOutput" DependsOnTargets="CopyReleaseProjectsToBinariesDirectory;CopyResourcesToBinariesDirectory;CopySchemasToBinariesDirectory;CopyDocFilesToBinariesDirectory" />
+  <Target Name="CopyChmFilesToBinariesDirectory" DependsOnTargets="CreateStandardExcludes;CreateActiveConfiguration;CreateDocumentationProperties">
+    <Error Text="The property 'DocumentationBaseDirectory' is not set." Condition="'$(DocumentationBaseDirectory)' == ''" />
+        
+    <ItemGroup>
+      <_completeOutputFiles Remove="@(_completeOutputFiles)" />
+      <_completeOutputFiles Include="$(DocumentationBaseDirectory)*.chm"
+                            Exclude="@(StandardExcludes)"/>
+    </ItemGroup>
 
-</Project>
+    <Copy SourceFiles="@(_completeOutputFiles)"
+      DestinationFiles="@(_completeOutputFiles->'$(ActiveConfigurationOutputDirectory)%(RecursiveDir)%(Filename)%(Extension)')"
+      Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'"/>
+  </Target>
+  
+  </Project>

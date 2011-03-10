@@ -6,7 +6,7 @@
       <PackageDeclaration>Remotion.Packaging.Core.build</PackageDeclaration>
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-motion</ProductNameShort>
@@ -17,7 +17,7 @@
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
       <AssemblyInfoFile>Relinq\AssemblyInfoShared.cs</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-linq</ProductNameShort>
@@ -27,7 +27,7 @@
       <PackageDeclaration>Remotion.Packaging.Remix.build</PackageDeclaration>
       <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-mix</ProductNameShort>
@@ -37,7 +37,7 @@
       <PackageDeclaration>Remotion.Packaging.Dms.build</PackageDeclaration>
       <AssemblyInfoFile>Dms\AssemblyInfoShared.cs</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
       <ProductName>re-vision (www.re-motion.org)</ProductName>
       <ProductNameShort>re-vision</ProductNameShort>
@@ -47,7 +47,7 @@
       <PackageDeclaration>Remotion.Packaging.SecurityManager.build</PackageDeclaration>
       <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.cs</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
-      <CompanyUrl>www.rubicon.eu</CompanyUrl>
+      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
       <ProductName>re-strict (www.re-motion.org)</ProductName>
       <ProductNameShort>re-strict</ProductNameShort>
