@@ -68,13 +68,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _clientTransaction; }
     }
 
-    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      return !_dataKeeper.OriginalItemsWithoutEndPoints.Any ();
-    }
-
     public bool IsDataComplete ()
     {
       return true;
@@ -158,6 +151,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       collectionEndPoint.MarkDataIncomplete ();
       collectionEndPoint.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+    }
+
+    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      return !_dataKeeper.OriginalItemsWithoutEndPoints.Any ();
+    }
+
+    public void Synchronize (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      foreach (var item in _dataKeeper.OriginalItemsWithoutEndPoints)
+        _dataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()

@@ -79,15 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void IsSynchronized ()
-    {
-      CheckOperationDelegatesToCompleteState (
-         s => s.IsSynchronized (_collectionEndPointMock),
-         s => s.IsSynchronized,
-         true);
-    }
-
-    [Test]
     public void IsDataComplete ()
     {
       Assert.That (_loadState.IsDataComplete (), Is.False);
@@ -291,6 +282,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void IsSynchronized ()
+    {
+      CheckOperationDelegatesToCompleteState (
+         s => s.IsSynchronized (_collectionEndPointMock),
+         s => s.IsSynchronized,
+         true);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot synchronize a collection end-point in incomplete state.")]
+    public void Synchronize ()
+    {
+      _loadState.Synchronize (_collectionEndPointMock);
+    }
+
+    [Test]
     public void GetUnsynchronizedOppositeEndPoints ()
     {
       Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints(), Is.Empty);
@@ -298,9 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot synchronize opposite end-point "
-        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - the "
-        + "end-point is not in the list of unsynchronized end-points.")]
+        "Cannot synchronize an opposite end-point with a collection end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()
     {
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();

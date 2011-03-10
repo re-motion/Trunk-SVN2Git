@@ -85,6 +85,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      throw new NotImplementedException();
+    }
+
     public bool HasDataChanged ()
     {
       throw new NotImplementedException();

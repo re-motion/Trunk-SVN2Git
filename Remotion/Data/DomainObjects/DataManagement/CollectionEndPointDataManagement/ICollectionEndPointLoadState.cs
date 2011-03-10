@@ -27,8 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointLoadState : IFlattenedSerializable
   {
-    bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
-
     bool IsDataComplete ();
     void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 
@@ -42,6 +40,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
+
+    bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
+    void Synchronize (ICollectionEndPoint collectionEndPoint);
 
     ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ();
     void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);

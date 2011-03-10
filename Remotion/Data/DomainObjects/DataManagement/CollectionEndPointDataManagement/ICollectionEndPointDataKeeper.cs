@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
+    void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject);
 
     bool HasDataChanged ();
 

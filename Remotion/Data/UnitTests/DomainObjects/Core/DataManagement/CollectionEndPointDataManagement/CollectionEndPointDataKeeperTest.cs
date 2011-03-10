@@ -230,9 +230,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
     public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithEndPoint ()
     {
-      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference()).Return (_domainObject2);
+      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
+      try
+      {
+        _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+      }
+      catch
+      {
+        Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
+        throw;
+      }
+    }
+
+    [Test]
+    public void UnregisterOriginalItemWithoutEndPoint ()
+    {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { _domainObject2 }));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.HasDataChanged (), Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point.")]
+    public void UnregisterOriginalItemWithoutEndPoint_ItemNotRegisteredWithoutEndPoint ()
+    {
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point.")]
+    public void UnregisterOriginalItemWithoutEndPoint_RegisteredWithEndPoint ()
+    {
+      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
+
+      try
+      {
+        _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
+      }
+      catch
+      {
+        Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+        throw;
+      }
     }
 
     [Test]

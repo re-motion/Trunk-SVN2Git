@@ -148,6 +148,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint.Add (domainObject);
     }
 
+    public void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      if (!_originalItemsWithoutEndPoint.Contains (domainObject))
+      {
+        var message = string.Format ("The domain object with ID '{0}' has not been registered as an item without end-point.", domainObject.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      _changeCachingCollectionData.UnregisterOriginalItem (domainObject.ID);
+      _originalItemsWithoutEndPoint.Remove (domainObject);
+    }
+
     public bool HasDataChanged ()
     {
       return _changeCachingCollectionData.HasChanged (_changeDetectionStrategy);

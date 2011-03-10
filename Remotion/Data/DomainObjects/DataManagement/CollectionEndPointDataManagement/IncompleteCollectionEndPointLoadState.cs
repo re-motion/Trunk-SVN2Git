@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
@@ -64,14 +65,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public ICollectionEndPointDataKeeperFactory DataKeeperFactory
     {
       get { return _dataKeeperFactory; }
-    }
-
-    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.IsSynchronized;
     }
 
     public bool IsDataComplete ()
@@ -167,6 +160,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
+    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      collectionEndPoint.EnsureDataComplete ();
+      return collectionEndPoint.IsSynchronized;
+    }
+
+    public void Synchronize (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      
+      throw new InvalidOperationException ("Cannot synchronize a collection end-point in incomplete state.");
+    }
+
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
     {
       return Array.AsReadOnly (new IObjectEndPoint[0]);
@@ -176,10 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      var message = string.Format (
-          "Cannot synchronize opposite end-point '{0}' - the end-point is not in the list of unsynchronized end-points.", 
-          oppositeEndPoint.ID);
-      throw new InvalidOperationException (message);
+      throw new InvalidOperationException ("Cannot synchronize an opposite end-point with a collection end-point in incomplete state.");
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
