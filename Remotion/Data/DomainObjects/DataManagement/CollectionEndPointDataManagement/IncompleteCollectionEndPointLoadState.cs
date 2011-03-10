@@ -33,7 +33,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
 
-    // TODO 3774: Pass factory in, serialization
     public IncompleteCollectionEndPointLoadState (
         ICollectionEndPointDataKeeper dataKeeper, 
         IRelationEndPointLazyLoader lazyLoader, 
@@ -222,11 +221,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.CheckMandatory ();
     }
 
-    public bool HasChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+    public bool HasChanged ()
     {
-      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-
-      return _dataKeeper.HasDataChanged (changeDetectionStrategy);
+      return _dataKeeper.HasDataChanged ();
     }
 
     public void Commit ()

@@ -57,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _lazyLoaderMock = MockRepository.GenerateMock<IRelationEndPointLazyLoader> ();
 
+      var changeDetectionStrategy = new RootCollectionEndPointChangeDetectionStrategy();
       _customerEndPoint = new CollectionEndPoint (
           ClientTransactionMock,
           _customerEndPointID,
-          new RootCollectionEndPointChangeDetectionStrategy(),
           _lazyLoaderMock,
           ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager));
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager, changeDetectionStrategy));
 
       CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (_customerEndPoint, new[] { _order1, _orderWithoutOrderItem });
 
@@ -74,7 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize ()
     {
-      var changeDetectionStrategyStub = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
       var lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
@@ -90,7 +89,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPoint = new CollectionEndPoint (
           ClientTransactionMock, 
           _customerEndPointID, 
-          changeDetectionStrategyStub,
           lazyLoaderStub, 
           endPointProviderStub,
           dataKeeperFactoryMock);
@@ -98,7 +96,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataKeeperFactoryMock.VerifyAllExpectations();
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
-      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (changeDetectionStrategyStub));
       Assert.That (endPoint.LazyLoader, Is.SameAs (lazyLoaderStub));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (endPointProviderStub));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
@@ -155,13 +152,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).GetSortExpression (), Is.Not.Null);
       Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).SortExpressionText, Is.EqualTo ("OrderNumber asc"));
       var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
       var endPoint = new CollectionEndPoint (
           subTransaction,  
           _customerEndPointID, 
-          new SubCollectionEndPointChangeDetectionStrategy(), 
           ClientTransactionMock.DataManager, 
           ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (subTransaction, ClientTransactionMock.DataManager));
+          new CollectionEndPointDataKeeperFactory (subTransaction, ClientTransactionMock.DataManager, changeDetectionStrategy));
       
       var dataKeeper = GetEndPointDataKeeper (endPoint);
       Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Null);
@@ -193,14 +190,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var result = _endPointWithLoadStateMock.HasChanged;
 
-      _loadStateMock.AssertWasNotCalled (mock => mock.HasChanged (Arg<ICollectionEndPointChangeDetectionStrategy>.Is.Anything));
+      _loadStateMock.AssertWasNotCalled (mock => mock.HasChanged ());
       Assert.That (result, Is.True);
     }
 
     [Test]
     public void HasChanged_True_LoadState ()
     {
-      _loadStateMock.Expect (mock => mock.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (true);
+      _loadStateMock.Expect (mock => mock.HasChanged ()).Return (true);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.HasChanged;
@@ -212,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_False ()
     {
-      _loadStateMock.Expect (mock => mock.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (false);
+      _loadStateMock.Expect (mock => mock.HasChanged ()).Return (false);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.HasChanged;
@@ -406,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Commit_Unchanged ()
     {
-      _loadStateMock.Stub (stub => stub.HasChanged (_endPointWithLoadStateMock.ChangeDetectionStrategy)).Return (false);
+      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.Touch ();
@@ -888,13 +885,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private CollectionEndPoint CreateEndPointWithLoadStateMock (ICollectionEndPointLoadState loadStateMock)
     {
+      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
       var collectionEndPoint = new CollectionEndPoint (
           ClientTransactionMock,
           _customerEndPointID,
-          MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> (),
           MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
           ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager));
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
       return collectionEndPoint;
     }

@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   {
     private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _relationEndPointProvider;
+    private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private CollectionEndPointDataKeeperFactory _factory;
 
@@ -41,7 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _relationEndPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _relationEndPointProvider);
+      _changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
+
+      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _relationEndPointProvider, _changeDetectionStrategy);
     }
 
     [Test]
@@ -55,8 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var result = _factory.Create (relationEndPointID, comparer);
 
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
-      Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs(relationEndPointID));
+      Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
       Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.SameAs (comparer));
+      Assert.That (((CollectionEndPointDataKeeper) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
     }
 
     [Test]
@@ -68,8 +72,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var result = _factory.Create (relationEndPointID, null);
 
-      Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
-      Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
       Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.Null);
     }
 
@@ -77,12 +79,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Serializable ()
     {
       var serializableProvider = new SerializableRelationEndPointProviderFake();
-      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, serializableProvider);
+      var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
+      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, serializableProvider, changeDetectionStrategy);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (factory);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
     }
   }
 }

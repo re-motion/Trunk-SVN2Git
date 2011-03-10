@@ -314,11 +314,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasChanged ()
     {
-      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
-      _dataKeeperMock.Expect (mock => mock.HasDataChanged (changeDetectionStrategy)).Return (true);
+      _dataKeeperMock.Expect (mock => mock.HasDataChanged ()).Return (true);
       _dataKeeperMock.Replay ();
 
-      var result = _loadState.HasChanged (changeDetectionStrategy);
+      var result = _loadState.HasChanged ();
 
       _dataKeeperMock.VerifyAllExpectations ();
       Assert.That (result, Is.True);

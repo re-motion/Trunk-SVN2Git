@@ -598,19 +598,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.IsDataComplete, Is.False);
       Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (endPoint.ID, Is.EqualTo (endPointID));
-      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_map.LazyLoader));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_map.CollectionEndPointDataKeeperFactory));
-    }
-
-    [Test]
-    public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-
-      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
     }
 
     [Test]

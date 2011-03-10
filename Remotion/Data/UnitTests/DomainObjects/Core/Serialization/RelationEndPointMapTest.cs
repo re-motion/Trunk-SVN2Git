@@ -19,7 +19,6 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -71,7 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
       Assert.That (deserializedMap.ObjectLoader, Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
       Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
-      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.TypeOf (typeof (RootCollectionEndPointChangeDetectionStrategy)));
       Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointMap.CollectionEndPointDataKeeperFactory.GetType()));
 

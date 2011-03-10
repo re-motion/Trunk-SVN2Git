@@ -44,10 +44,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     private readonly ClientTransaction _clientTransaction;
-    private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
-    // TODO 3774: Serialization
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointDataKeeperFactory _collectionEndPointDataKeeperFactory;
 
@@ -56,21 +54,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public RelationEndPointMap (
         ClientTransaction clientTransaction,
-        ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
         IObjectLoader objectLoader,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         ICollectionEndPointDataKeeperFactory collectionEndPointDataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
 
       _clientTransaction = clientTransaction;
-      _collectionEndPointChangeDetectionStrategy = collectionEndPointChangeDetectionStrategy;
       _objectLoader = objectLoader;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
@@ -93,11 +88,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
-    }
-
-    public ICollectionEndPointChangeDetectionStrategy CollectionEndPointChangeDetectionStrategy
-    {
-      get { return _collectionEndPointChangeDetectionStrategy; }
     }
 
     public IRelationEndPointLazyLoader LazyLoader
@@ -244,7 +234,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction, 
           endPointID, 
-          _collectionEndPointChangeDetectionStrategy,
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataKeeperFactory);
@@ -641,7 +630,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
         : this (
             info.GetValueForHandle<ClientTransaction>(),
-            info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>(),
             info.GetValueForHandle<IObjectLoader>(),
             info.GetValueForHandle<IRelationEndPointLazyLoader>(),
             info.GetValueForHandle<IRelationEndPointProvider>(),
@@ -660,7 +648,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_clientTransaction);
-      info.AddHandle (_collectionEndPointChangeDetectionStrategy);
       info.AddHandle (_objectLoader);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);

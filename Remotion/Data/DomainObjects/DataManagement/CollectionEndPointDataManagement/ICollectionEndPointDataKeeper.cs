@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -14,8 +13,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IObjectEndPoint[] OppositeEndPoints { get; }
     IObjectEndPoint[] OriginalOppositeEndPoints { get; }
     DomainObject[] OriginalItemsWithoutEndPoints { get; }
-    IComparer<DomainObject> SortExpressionBasedComparer { get; }
-    RelationEndPointID EndPointID { get; }
 
     bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
@@ -24,7 +21,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
 
-    bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);
+    bool HasDataChanged ();
 
     void SortCurrentAndOriginalData ();
     void Commit ();

@@ -28,14 +28,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
-    public CollectionEndPointDataKeeperFactory (ClientTransaction clientTransaction, IRelationEndPointProvider endPointProvider)
+    public CollectionEndPointDataKeeperFactory (
+        ClientTransaction clientTransaction, 
+        IRelationEndPointProvider endPointProvider, 
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
       _clientTransaction = clientTransaction;
       _endPointProvider = endPointProvider;
+      _changeDetectionStrategy = changeDetectionStrategy;
     }
 
     public ClientTransaction ClientTransaction
@@ -48,11 +54,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _endPointProvider; }
     }
 
+    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
+    {
+      get { return _changeDetectionStrategy; }
+    }
+
     public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return new CollectionEndPointDataKeeper (_clientTransaction, endPointID, sortExpressionBasedComparer, _endPointProvider);
+      return new CollectionEndPointDataKeeper (
+          _clientTransaction, 
+          endPointID, 
+          sortExpressionBasedComparer, 
+          _endPointProvider, 
+          _changeDetectionStrategy);
     }
   }
 }

@@ -32,7 +32,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
-    private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
@@ -46,13 +45,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         ICollectionEndPointDataKeeperFactory dataKeeperFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
-      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
@@ -64,7 +61,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _originalCollection = _collection;
 
       _hasBeenTouched = false;
-      _changeDetectionStrategy = changeDetectionStrategy;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
@@ -85,11 +81,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         RaiseStateUpdateNotification (HasChanged);
       }
-    }
-
-    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
-    {
-      get { return _changeDetectionStrategy; }
     }
 
     public IRelationEndPointLazyLoader LazyLoader
@@ -129,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool HasChanged
     {
-      get { return OriginalCollection != Collection || _loadState.HasChanged (_changeDetectionStrategy); }
+      get { return OriginalCollection != Collection || _loadState.HasChanged(); }
     }
 
     public override bool HasBeenTouched
@@ -327,7 +318,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
-      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ();
@@ -341,7 +331,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_collection);
       info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
-      info.AddHandle (_changeDetectionStrategy);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataKeeperFactory);

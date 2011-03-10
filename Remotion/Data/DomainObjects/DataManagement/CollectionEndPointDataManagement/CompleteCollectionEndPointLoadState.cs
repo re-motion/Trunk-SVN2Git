@@ -249,11 +249,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
-    public bool HasChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+    public bool HasChanged ()
     {
-      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-
-      return _dataKeeper.HasDataChanged (changeDetectionStrategy);
+      return _dataKeeper.HasDataChanged ();
     }
 
     public void Commit ()

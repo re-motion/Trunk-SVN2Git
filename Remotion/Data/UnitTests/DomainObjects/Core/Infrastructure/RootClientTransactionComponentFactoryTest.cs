@@ -17,6 +17,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Development.UnitTesting;
@@ -49,8 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var invalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var objectLoaderStub = MockRepository.GenerateStub<IObjectLoader> ();
       var dataManager = _factory.CreateDataManager (new ClientTransactionMock(), invalidDomainObjectManagerStub, objectLoaderStub);
-      
-      Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy,
+
+      var dataKeeperFactory = ((RelationEndPointMap) dataManager.RelationEndPointMap).CollectionEndPointDataKeeperFactory;
+      Assert.That (
+          ((CollectionEndPointDataKeeperFactory) dataKeeperFactory).ChangeDetectionStrategy,
           Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
       Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
       Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_objectLoader"), Is.SameAs (objectLoaderStub));

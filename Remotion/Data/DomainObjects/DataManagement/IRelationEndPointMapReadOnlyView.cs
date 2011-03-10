@@ -11,8 +11,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     int Count { get; }
     IRelationEndPoint this[RelationEndPointID endPointID] { get; }
 
-    ICollectionEndPointChangeDetectionStrategy CollectionEndPointChangeDetectionStrategy { get; }
-
     bool Contains (RelationEndPointID id);
 
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);

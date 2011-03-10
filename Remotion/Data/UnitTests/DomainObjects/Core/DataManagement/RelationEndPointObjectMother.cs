@@ -35,13 +35,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         IEnumerable<DomainObject> initialContents)
     {
       var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
+      var changeDetectionStrategy = new RootCollectionEndPointChangeDetectionStrategy();
       var collectionEndPoint = new CollectionEndPoint (
           ClientTransaction.Current,
           endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy(),
           dataManager,
           dataManager,
-          new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, dataManager));
+          new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, dataManager, changeDetectionStrategy));
       
       if (initialContents != null)
         CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (collectionEndPoint, initialContents);

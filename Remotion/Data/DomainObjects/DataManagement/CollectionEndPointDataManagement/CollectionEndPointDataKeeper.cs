@@ -29,27 +29,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
   {
+    private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
+    private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private readonly EndPointTrackingCollectionDataDecorator _currentOppositeEndPointTracker;
     private readonly ChangeCachingCollectionDataDecorator _collectionData;
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
-    private readonly RelationEndPointID _endPointID;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
         IComparer<DomainObject> sortExpressionBasedComparer, 
-        IRelationEndPointProvider endPointProvider)
+        IRelationEndPointProvider endPointProvider,
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
-      _sortExpressionBasedComparer = sortExpressionBasedComparer;
       _endPointID = endPointID;
+      _sortExpressionBasedComparer = sortExpressionBasedComparer;
+      _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData ();
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
@@ -62,14 +66,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
 
+    public RelationEndPointID EndPointID
+    {
+      get { return _endPointID; }
+    }
+
     public IComparer<DomainObject> SortExpressionBasedComparer
     {
       get { return _sortExpressionBasedComparer; }
     }
 
-    public RelationEndPointID EndPointID
+    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
     {
-      get { return _endPointID; }
+      get { return _changeDetectionStrategy; }
     }
 
     public IDomainObjectCollectionData CollectionData
@@ -136,10 +145,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint.Add (domainObject);
     }
 
-    public bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+    public bool HasDataChanged ()
     {
-      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-      return _collectionData.HasChanged (changeDetectionStrategy);
+      return _collectionData.HasChanged (_changeDetectionStrategy);
     }
 
     public void SortCurrentAndOriginalData()
@@ -163,9 +171,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>>();
-      _endPointID = info.GetValueForHandle<RelationEndPointID>();
-      _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
+      _endPointID = info.GetValueForHandle<RelationEndPointID> ();
+      _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>> ();
+      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
+
+      _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
       _currentOppositeEndPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
 
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
@@ -180,8 +190,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      info.AddValue (_sortExpressionBasedComparer);
       info.AddHandle (_endPointID);
+      info.AddValue (_sortExpressionBasedComparer);
+      info.AddHandle (_changeDetectionStrategy);
+
       info.AddValue (_collectionData);
       info.AddValue (_currentOppositeEndPointTracker);
 
