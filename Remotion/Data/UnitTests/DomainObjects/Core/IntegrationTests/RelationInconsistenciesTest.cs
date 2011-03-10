@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckActionWorks (() => industrialSector.Companies.Remove (otherCompany));
       CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
-      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync with the opposite property");
       CheckActionWorks (() => company.IndustrialSector = IndustrialSector.NewObject());
 
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector, s => s.Companies));
