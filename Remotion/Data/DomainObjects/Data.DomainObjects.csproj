@@ -176,7 +176,6 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\CollectionDataStateUpdateListener.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\CollectionEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadState.cs" />
-    <Compile Include="DataManagement\CollectionEndPointDataManagement\EndPointTrackingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\IncompleteCollectionEndPointLoadState.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\ICollectionEndPointLoadState.cs" />

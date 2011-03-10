@@ -31,10 +31,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly RelationEndPointID _endPointID;
     private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
+    private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
-    private readonly EndPointTrackingCollectionDataDecorator _currentOppositeEndPointTracker;
-    private readonly ChangeCachingCollectionDataDecorator _collectionData;
+    private readonly ChangeCachingCollectionDataDecorator _changeCachingCollectionData;
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
@@ -53,15 +53,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _endPointID = endPointID;
       _sortExpressionBasedComparer = sortExpressionBasedComparer;
+      _endPointProvider = endPointProvider;
       _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData ();
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
-
-      var oppositeEndPointDefinition = endPointID.Definition.GetMandatoryOppositeEndPointDefinition();
-      _collectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
-      _currentOppositeEndPointTracker = new EndPointTrackingCollectionDataDecorator (_collectionData, endPointProvider, oppositeEndPointDefinition);
-      
+      _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
+     
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
@@ -76,6 +74,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _sortExpressionBasedComparer; }
     }
 
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
     {
       get { return _changeDetectionStrategy; }
@@ -83,17 +86,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public IDomainObjectCollectionData CollectionData
     {
-      get { return _currentOppositeEndPointTracker; }
-    }
-
-    public IObjectEndPoint[] OppositeEndPoints
-    {
-      get { return _currentOppositeEndPointTracker.GetOppositeEndPoints(); }
+      get { return _changeCachingCollectionData; }
     }
 
     public ReadOnlyCollectionDataDecorator OriginalCollectionData
     {
-      get { return _collectionData.OriginalData; }
+      get { return _changeCachingCollectionData.OriginalData; }
     }
 
     public IObjectEndPoint[] OriginalOppositeEndPoints
@@ -125,7 +123,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_originalItemsWithoutEndPoint.Contains (item))
         _originalItemsWithoutEndPoint.Remove (item);
       else
-        _collectionData.RegisterOriginalItem (item);
+        _changeCachingCollectionData.RegisterOriginalItem (item);
 
       _originalOppositeEndPoints.Add (oppositeEndPoint);
     }
@@ -138,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       var itemID = oppositeEndPoint.ObjectID;
-      _collectionData.UnregisterOriginalItem (itemID);
+      _changeCachingCollectionData.UnregisterOriginalItem (itemID);
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
     }
 
@@ -146,27 +144,45 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      _collectionData.RegisterOriginalItem (domainObject);
+      _changeCachingCollectionData.RegisterOriginalItem (domainObject);
       _originalItemsWithoutEndPoint.Add (domainObject);
     }
 
     public bool HasDataChanged ()
     {
-      return _collectionData.HasChanged (_changeDetectionStrategy);
+      return _changeCachingCollectionData.HasChanged (_changeDetectionStrategy);
     }
 
     public void SortCurrentAndOriginalData()
     {
       if (_sortExpressionBasedComparer != null)
-        _collectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
+        _changeCachingCollectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
     }
 
     public void Commit ()
     {
-      _collectionData.Commit ();
+      _changeCachingCollectionData.Commit ();
       
       _originalOppositeEndPoints.Clear();
-      _originalOppositeEndPoints.UnionWith (_currentOppositeEndPointTracker.GetOppositeEndPoints());
+      _originalItemsWithoutEndPoint.Clear();
+
+      var oppositeEndPointDefinition = _endPointID.Definition.GetMandatoryOppositeEndPointDefinition ();
+      foreach (var item in OriginalCollectionData)
+      {
+        var endPoint = GetOppositeEndPoint (item.ID, oppositeEndPointDefinition);
+        if (endPoint != null)
+          _originalOppositeEndPoints.Add (endPoint);
+        else
+          _originalItemsWithoutEndPoint.Add (item);
+      }
+
+      Assertion.IsTrue (OriginalCollectionData.Count == _originalOppositeEndPoints.Count + _originalItemsWithoutEndPoint.Count);
+    }
+
+    private IObjectEndPoint GetOppositeEndPoint (ObjectID domainObjectID, IRelationEndPointDefinition oppositeEndPointDefinition)
+    {
+      var endPointID = RelationEndPointID.Create (domainObjectID, oppositeEndPointDefinition);
+      return (IObjectEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     #region Serialization
@@ -178,10 +194,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
       _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>> ();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
-      _collectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
-      _currentOppositeEndPointTracker = info.GetValue<EndPointTrackingCollectionDataDecorator>();
+      _changeCachingCollectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
 
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       info.FillCollection (_originalOppositeEndPoints);
@@ -197,10 +213,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       info.AddHandle (_endPointID);
       info.AddValue (_sortExpressionBasedComparer);
+      info.AddHandle (_endPointProvider);
       info.AddHandle (_changeDetectionStrategy);
-
-      info.AddValue (_collectionData);
-      info.AddValue (_currentOppositeEndPointTracker);
+      info.AddValue (_changeCachingCollectionData);
 
       info.AddCollection (_originalOppositeEndPoints);
       info.AddCollection (_originalItemsWithoutEndPoint);

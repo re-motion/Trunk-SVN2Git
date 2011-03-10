@@ -89,24 +89,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Initialization ()
     {
       var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, null, _endPointProviderStub, _changeDetectionStrategyMock);
-      Assert.That (dataKeeper.CollectionData.ToArray(), Is.Empty);
-      Assert.That (dataKeeper.OriginalOppositeEndPoints, Is.Empty);
 
-      var endPointTracker = CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (dataKeeper);
-      Assert.That (endPointTracker.GetOppositeEndPoints (), Is.Empty);
-      Assert.That (endPointTracker.EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (
-          endPointTracker.ObjectEndPointDefinition, 
-          Is.SameAs (Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".Customer")));
-    }
+      Assert.That (dataKeeper.EndPointProvider, Is.SameAs (_endPointProviderStub));
+
+      Assert.That (dataKeeper.CollectionData, Is.TypeOf (typeof (ChangeCachingCollectionDataDecorator)));
+      Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
+      Assert.That (dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+   }
 
     [Test]
-    public void CollectionData_RepresentsDataAndEndPoints ()
+    public void CollectionData ()
     {
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
 
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-      Assert.That (_dataKeeper.OppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
     }
 
     [Test]
@@ -242,12 +238,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged ()
     {
-      var changeCachingCollectionData =
-          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
-            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
       _changeDetectionStrategyMock
           .Expect (mock => mock.HasDataChanged (
-              Arg.Is (changeCachingCollectionData), 
+              Arg.Is (_dataKeeper.CollectionData), 
               Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
@@ -263,12 +256,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged_Cached ()
     {
-      var changeCachingCollectionData =
-          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
-            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
       _changeDetectionStrategyMock
           .Expect (mock => mock.HasDataChanged (
-              Arg.Is (changeCachingCollectionData), 
+              Arg.Is (_dataKeeper.CollectionData), 
               Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
           .Return (true)
           .Repeat.Once();
@@ -288,20 +278,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void HasDataChanged_Cache_InvalidatedOnModifyingOperations ()
     {
-      var changeCachingCollectionData =
-          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ChangeCachingCollectionDataDecorator> (
-            (EndPointTrackingCollectionDataDecorator) _dataKeeper.CollectionData);
-
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
             .Expect (mock => mock.HasDataChanged (
-                Arg.Is (changeCachingCollectionData), 
+                Arg.Is (_dataKeeper.CollectionData), 
                 Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (true);
         _changeDetectionStrategyMock
             .Expect (mock => mock.HasDataChanged (
-                Arg.Is (changeCachingCollectionData), 
+                Arg.Is (_dataKeeper.CollectionData), 
                 Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
             .Return (false);
       }
@@ -364,7 +350,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-      Assert.That (_dataKeeper.OppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
       
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
@@ -373,6 +358,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+    }
+
+    [Test]
+    public void Commit_ClearsEndPoints_IfNoLongerInCollection ()
+    {
+      _dataKeeper.CollectionData.Insert (0, _domainObject1);
+      _dataKeeper.Commit ();
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+
+      _dataKeeper.CollectionData.Clear();
+      _dataKeeper.Commit();
+
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void Commit_RegistersItemsWithoutEndPoint_IfProviderCantGetEndPoint ()
+    {
+      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order>();
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
+          .Return (null);
+      
+      _dataKeeper.CollectionData.Insert (0, itemWithoutEndPoint);
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
+
+      _dataKeeper.Commit ();
+
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+    }
+
+    [Test]
+    public void Commit_ClearsItemsWithoutEndPoint_IfNoLongerInCollection ()
+    {
+      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order> ();
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
+          .Return (null);
+      _dataKeeper.CollectionData.Insert (0, itemWithoutEndPoint);
+      _dataKeeper.Commit ();
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+
+      _dataKeeper.CollectionData.Clear();
+      _dataKeeper.Commit();
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
     }
 
     [Test]
@@ -428,12 +470,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (deserializedInstance.EndPointID, Is.Not.Null);
       Assert.That (deserializedInstance.SortExpressionBasedComparer, Is.Not.Null);
+      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (2));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (2));
       Assert.That (deserializedInstance.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalItemsWithoutEndPoints.Length, Is.EqualTo (1));
-      Assert.That (CollectionEndPointDataKeeperTestHelper.GetEndPointTracker (deserializedInstance), Is.Not.Null);
     }
 
     private int Compare123 (DomainObject x, DomainObject y)
