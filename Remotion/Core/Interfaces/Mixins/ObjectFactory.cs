@@ -58,6 +58,60 @@ namespace Remotion.Mixins
     #region Public construction
 
     /// <summary>
+    /// Creates a mixed instance of the given type <typeparamref name="T"/> with a public default constructor.
+    /// </summary>
+    /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
+    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+    /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
+    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
+    /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <para>
+    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class to instantiate.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
+    /// defined as a mixin for the target type in the current thread's mixin configuration.
+    /// </para>
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
+    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
+    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
+    /// generation.
+    /// </para>
+    /// <para>
+    /// The <see cref="Create(Type,ParamList,object[])"/> method supports the creation of instances from their complete interfaces:
+    /// <typeparamref name="T"/> can be an interface registered in the current mixin configuration. See also
+    /// <see cref="CompleteInterfaceAttribute"/>.
+    /// </para>
+    /// </remarks>
+    public static T Create<T> (params object[] preparedMixins)
+    {
+      return Create<T> (ParamList.Empty, preparedMixins);
+    }
+
+    /// <summary>
     /// Creates a mixed instance of the given type <typeparamref name="T"/> with a public constructor.
     /// </summary>
     /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
@@ -166,6 +220,65 @@ namespace Remotion.Mixins
     public static T Create<T> (ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
       return Create<T> (false, constructorParameters, generationPolicy, preparedMixins);
+    }
+
+    /// <summary>
+    /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public constructor.
+    /// </summary>
+    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
+    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
+    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
+    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
+    /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <para>
+    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
+    /// to instantiate.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
+    /// defined as a mixin for the target type in the current thread's mixin configuration.
+    /// </para>
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
+    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
+    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
+    /// generation.
+    /// </para>
+    /// <para>
+    /// This method supports the creation of instances from their complete interfaces:
+    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
+    /// <see cref="CompleteInterfaceAttribute"/>.
+    /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
+    /// </para>
+    /// </remarks>
+    public static object Create (Type targetOrConcreteType, params object[] preparedMixins)
+    {
+      return Create (false, targetOrConcreteType, ParamList.Empty, preparedMixins);
     }
 
     /// <summary>
