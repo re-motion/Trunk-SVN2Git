@@ -31,16 +31,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
 
     // TODO 3774: Pass factory in, serialization
-    public IncompleteCollectionEndPointLoadState (ICollectionEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader)
+    public IncompleteCollectionEndPointLoadState (
+        ICollectionEndPointDataKeeper dataKeeper, 
+        IRelationEndPointLazyLoader lazyLoader, 
+        ICollectionEndPointDataKeeperFactory dataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
       _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
-
+      _dataKeeperFactory = dataKeeperFactory;
+      
       foreach (var originalOppositeEndPoint in dataKeeper.OriginalOppositeEndPoints)
         originalOppositeEndPoint.ResetSyncState ();
     }
@@ -53,6 +59,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public IRelationEndPointLazyLoader LazyLoader
     {
       get { return _lazyLoader; }
+    }
+
+    public ICollectionEndPointDataKeeperFactory DataKeeperFactory
+    {
+      get { return _dataKeeperFactory; }
     }
 
     public bool IsDataComplete ()
@@ -229,7 +240,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
-      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
+      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper> ();
+      _dataKeeperFactory = info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -237,6 +249,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_dataKeeper);
+      info.AddHandle (_dataKeeperFactory);
     }
 
     #endregion

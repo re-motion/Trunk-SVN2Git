@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private ICollectionEndPoint _collectionEndPointMock;
     private IRelationEndPointLazyLoader _lazyLoaderMock;
     private ICollectionEndPointDataKeeper _dataKeeperMock;
+    private ICollectionEndPointDataKeeperFactory _dataKeeperFactoryStub;
 
     private IncompleteCollectionEndPointLoadState _loadState;
     private Order _relatedObject;
@@ -49,7 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
       _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
 
-      _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock);
+      _dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory>();
+
+      _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
     }
 
@@ -63,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
       dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new[] { endPointMock });
 
-      new IncompleteCollectionEndPointLoadState (dataKeeperStub, _lazyLoaderMock);
+      new IncompleteCollectionEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
 
       endPointMock.VerifyAllExpectations();
     }
@@ -337,13 +340,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();
       var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
-      var state = new IncompleteCollectionEndPointLoadState (dataKeeper, lazyLoader);
+      var dataKeeperFactory = new SerializableCollectionEndPointDataKeeperFactoryFake();
+
+      var state = new IncompleteCollectionEndPointLoadState (dataKeeper, lazyLoader, dataKeeperFactory);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataKeeper, Is.Not.Null);
       Assert.That (result.LazyLoader, Is.Not.Null);
+      Assert.That (result.DataKeeperFactory, Is.Not.Null);
     }
 
     private void CheckOperationDelegatesToCompleteState (

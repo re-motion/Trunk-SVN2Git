@@ -105,11 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var loadState = GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-
-      Assert.That (endPoint.IsDataComplete, Is.False);
-
-      var dataKeeper = ((IncompleteCollectionEndPointLoadState) GetLoadState (endPoint)).DataKeeper;
-      Assert.That (dataKeeper, Is.SameAs (dataKeeperStub));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (dataKeeperStub));
     }
 
     [Test]

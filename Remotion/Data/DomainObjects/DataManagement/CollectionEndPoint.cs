@@ -316,7 +316,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void SetIncompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
     {
-      _loadState = new IncompleteCollectionEndPointLoadState (dataKeeper, _lazyLoader);
+      _loadState = new IncompleteCollectionEndPointLoadState (dataKeeper, _lazyLoader, _dataKeeperFactory);
     }
 
     #region Serialization

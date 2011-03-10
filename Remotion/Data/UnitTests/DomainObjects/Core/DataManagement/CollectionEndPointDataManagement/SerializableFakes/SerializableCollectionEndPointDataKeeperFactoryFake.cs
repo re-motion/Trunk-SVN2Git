@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagemen
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableDataKeeperFactoryFake : ICollectionEndPointDataKeeperFactory
+  public class SerializableCollectionEndPointDataKeeperFactoryFake : ICollectionEndPointDataKeeperFactory
   {
     public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)
     {

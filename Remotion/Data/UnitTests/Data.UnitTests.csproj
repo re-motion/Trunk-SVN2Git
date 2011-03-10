@@ -219,7 +219,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointChangeDetectionStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableDataKeeperFactoryFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableObjectEndPointFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />

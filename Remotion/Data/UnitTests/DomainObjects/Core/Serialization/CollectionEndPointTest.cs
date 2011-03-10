@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           new SerializableCollectionEndPointChangeDetectionStrategyFake(),
           new SerializableRelationEndPointLazyLoaderFake(),
           new SerializableEndPointProviderFake(),
-          new SerializableDataKeeperFactoryFake());
+          new SerializableCollectionEndPointDataKeeperFactoryFake());
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
 
