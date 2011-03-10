@@ -11,6 +11,7 @@
     <PropertyGroup>
       <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
       <ActiveConfigurationRunTests>%(_activeConfiguration.RunTests)</ActiveConfigurationRunTests>
+      <ActiveConfigurationGenerateDocumentation>%(_activeConfiguration.GenerateDocumentation)</ActiveConfigurationGenerateDocumentation>
       <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) == ''">False</ActiveConfigurationHasBinariesDirectory>
       <ActiveConfigurationHasBinariesDirectory Condition="%(_activeConfiguration.BinariesDirectory) != ''">True</ActiveConfigurationHasBinariesDirectory>
       <ActiveConfigurationBinariesDirectory Condition="$(ActiveConfigurationHasBinariesDirectory) == 'True'">$(BinariesDirectory)%(_activeConfiguration.BinariesDirectory)</ActiveConfigurationBinariesDirectory>

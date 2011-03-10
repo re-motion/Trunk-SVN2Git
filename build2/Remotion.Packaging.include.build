@@ -186,7 +186,9 @@
 
   </Target>
 
-  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties" Condition="$(UploadToCodePlex) == 'True'">
+  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;UploadToCodePlexInternal" />
+  
+  <Target Name="UploadToCodePlexInternal" Condition="$(UploadToCodePlex) == 'True'">
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
     <Message Text="Stub: Uploaded to code plex"/>
     <!--<Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 

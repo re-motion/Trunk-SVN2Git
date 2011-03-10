@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="GeneratePublicDocumentation">
+  <Target Name="GeneratePublicDocumentation" DependsOnTargets="CreateActiveConfiguration;GeneratePublicDocumentationInternal;" />
+  
+  <Target Name="GeneratePublicDocumentationInternal" 
+          DependsOnTargets="BuildReleaseProjects;AddAdditionalMetadataToReleaseOutputFiles;" 
+          Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'">
+
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-
-    <ItemGroup>
-      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Core\Core\doc\include\NamespaceDoc.xml" />
-      <_namespaceSummaries Include="$(SolutionDirectory)Remotion\Data\DomainObjects\doc\include\NamespaceDoc.xml" />
-    </ItemGroup>
-    <!--<include name="Remotion/Web/Core/Doc/include/NamespaceDoc.xml"/>
-    <include name="Remotion/ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
-    <include name="Remotion/ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>-->
-
-    <ItemGroup>
-      <_assemblies Include="$(SolutionDirectory)Remotion\Core\Core\bin\debug\Remotion.dll" />
-      <_assemblies Include="$(SolutionDirectory)Remotion\Data\DomainObjects\bin\debug\Remotion.Data.DomainObjects.dll" />
-    </ItemGroup>
 
     <PropertyGroup>
       <_productName>re-motion core framework (www.re-motion.org)</_productName>
       <_companyName>rubicon informationstechnologie gmbh</_companyName>
       <_companyUrl>http://www.rubicon.eu</_companyUrl>
       <_copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</_copyright>
-      <_documentationFileName>Remotion</_documentationFileName>
+      <_documentationFileName>re-motion</_documentationFileName>
       <_rootPageTemplateFile>$(SolutionDirectory)Remotion\Core\Core\doc\include\GettingStartedTemplate.html</_rootPageTemplateFile>
     </PropertyGroup>
     <PropertyGroup>
@@ -39,6 +31,12 @@
     <Copy SourceFiles="$(_standardDocumenterPropertiesFileName)" DestinationFiles="$(_documenterPropertiesFile)" />
     <Copy SourceFiles="$(_rootPageTemplateFile)" DestinationFiles="$(_rootPageFile)" />
 
+    <ItemGroup>
+      <_namespaceSummaryFiles Remove="@(_namespaceSummaryFiles)"/>
+      <_namespaceSummaryFiles Include="%(ReleaseProjectFiles.RootDir)%(ReleaseProjectFiles.Directory)%(ReleaseProjectFiles.NamespaceSummaryFile)"
+                              Condition="%(ReleaseProjectFiles.NamespaceSummaryFile) != ''"/>
+    </ItemGroup>
+    
     <ItemGroup>
       <_documenterProperties Include="HtmlHelpName">
         <Value>$(_documentationFileName)</Value>
@@ -90,6 +88,7 @@
                                        Element="property"
                                        Key="name"
                                        Value="%(_documenterProperties.Identity)"/>
+
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute"
                                        File="$(_documenterPropertiesFile)"
                                        XPath="/documenters/documenter[@name='MSDN-CHM']/property[@name='%(_documenterProperties.Identity)']"
@@ -101,13 +100,10 @@
                                            RegexPattern="@%(_rootPageFileReplacements.Identity)@" 
                                            Replacement="%(_rootPageFileReplacements.Value)"/>
 
-
-
     <Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder ResultFile="$(_ndocProjectFile)"
                                                          DocumenterFiles="$(_documenterPropertiesFile)"
-                                                         Assemblies="@(_assemblies)"
-                                                         NamespaceSummaryFiles="@(_namespaceSummaries)" />
-
+                                                         Assemblies="@(ReleaseOutputFiles)"
+                                                         NamespaceSummaryFiles="@(_namespaceSummaryFiles)" />
 
     <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
                                   Documenter="MSDN-CHM"
