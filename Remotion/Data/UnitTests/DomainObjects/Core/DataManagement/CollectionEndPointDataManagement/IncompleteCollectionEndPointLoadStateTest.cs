@@ -79,6 +79,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void IsSynchronized ()
+    {
+      CheckOperationDelegatesToCompleteState (
+         s => s.IsSynchronized (_collectionEndPointMock),
+         s => s.IsSynchronized,
+         true);
+    }
+
+    [Test]
     public void IsDataComplete ()
     {
       Assert.That (_loadState.IsDataComplete (), Is.False);
@@ -441,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var result = operation (_loadState);
 
       _collectionEndPointMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.EqualTo (fakeResult));
     }
   }
 }

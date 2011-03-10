@@ -228,7 +228,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool IsSynchronized
     {
-      get { return !GetUnsynchronizedOppositeEndPoints().Any(); }
+      get { return _loadState.IsSynchronized (this); }
     }
 
     public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()

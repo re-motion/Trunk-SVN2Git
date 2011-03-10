@@ -68,6 +68,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _clientTransaction; }
     }
 
+    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      return !_dataKeeper.OriginalItemsWithoutEndPoints.Any ();
+    }
+
     public bool IsDataComplete ()
     {
       return true;

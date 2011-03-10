@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointLoadState : IFlattenedSerializable
   {
+    bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
+
     bool IsDataComplete ();
     void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 

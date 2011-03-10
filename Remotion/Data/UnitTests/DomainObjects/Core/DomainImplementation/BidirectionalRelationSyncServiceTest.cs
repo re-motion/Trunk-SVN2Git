@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
   public class BidirectionalRelationSyncServiceTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
-    private Order _order;
+    private Order _order1;
     private RelationEndPointMap _map;
 
     public override void SetUp ()
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       base.SetUp();
 
       _transaction = ClientTransaction.CreateRootTransaction();
-      _order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       
       var dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
       _map = DataManagerTestHelper.GetRelationEndPointMap (dataManager);
@@ -48,42 +48,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void IsSynchronized_True_OneMany ()
     {
-      _transaction.Execute (() => _order.OrderItems.EnsureDataComplete());
+      _transaction.Execute (() => _order1.OrderItems.EnsureDataComplete());
 
-      var orderItem = _transaction.Execute (() => _order.OrderItems[0]);
+      var orderItem = _transaction.Execute (() => _order1.OrderItems[0]);
 
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderItems)), Is.True);
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
     }
 
     [Test]
     public void IsSynchronized_True_OneOne ()
     {
-      var orderTicket = _transaction.Execute (() => _order.OrderTicket);
+      var orderTicket = _transaction.Execute (() => _order1.OrderTicket);
 
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket)), Is.True);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderTicket)), Is.True);
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderTicket, ot => ot.Order)), Is.True);
     }
 
     [Test]
-    public void IsSynchronized_False_OneMany ()
+    public void IsSynchronized_False_OneMany_ObjectEndPoint ()
     {
-      _transaction.Execute (() => _order.OrderItems.EnsureDataComplete ());
+      _transaction.Execute (() => _order1.OrderItems.EnsureDataComplete ());
 
-      var orderItem = _transaction.Execute (() => _order.OrderItems[0]);
+      var orderItem = _transaction.Execute (() => _order1.OrderItems[0]);
 
       SetDatabaseModifyable ();
 
-      var newOrderItemID = CreateOrderItemAndSetOrderInOtherTransaction (_order.ID);
+      var newOrderItemID = CreateOrderItemAndSetOrderInOtherTransaction (_order1.ID);
       var newOrderItem = _transaction.Execute (() => OrderItem.GetObject (newOrderItemID));
 
-      Assert.That (_transaction.Execute (() => newOrderItem.Order), Is.SameAs (_order));
-      Assert.That (_transaction.Execute (() => _order.OrderItems), List.Not.Contains (newOrderItem));
+      Assert.That (_transaction.Execute (() => newOrderItem.Order), Is.SameAs (_order1));
+      Assert.That (_transaction.Execute (() => _order1.OrderItems), List.Not.Contains (newOrderItem));
 
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (newOrderItem, oi => oi.Order)), Is.False);
-      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderItems)), Is.False);
       
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderItems)), Is.True);
       Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem, oi => oi.Order)), Is.True);
+    }
+
+    [Test]
+    public void IsSynchronized_False_OneMany_CollectionEndPoint ()
+    {
+      var orderItem1 = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      _transaction.Execute (() => orderItem1.Order.OrderItems.EnsureDataComplete());
+
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      Assert.That (_transaction.Execute (() => orderItem1.Order), Is.Not.SameAs (order2));
+
+      SetDatabaseModifyable ();
+
+      SetOrderInOtherTransaction (orderItem1.ID, order2.ID);
+      
+      _transaction.Execute (() => order2.OrderItems.EnsureDataComplete ());
+
+      Assert.That (_transaction.Execute (() => orderItem1.Order), Is.Not.SameAs (order2));
+      Assert.That (_transaction.Execute (() => order2.OrderItems), List.Contains (orderItem1));
+
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (order2, o => o.OrderItems)), Is.False);
+      Assert.That (BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (orderItem1, oi => oi.Order)), Is.True);
     }
 
     [Test]
@@ -92,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been loaded into the given ClientTransaction.")]
     public void IsSynchronized_RelationNotLoaded ()
     {
-      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order, o => o.OrderTicket));
+      BidirectionalRelationSyncService.IsSynchronized (_transaction, RelationEndPointID.Create (_order1, o => o.OrderTicket));
     }
 
     [Test]
@@ -198,14 +220,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
     private ObjectID CreateOrderItemAndSetOrderInOtherTransaction (ObjectID orderID)
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var newItem = OrderItem.NewObject();
-        var order = Order.GetObject (orderID);
-        order.OrderItems.Add (newItem);
-        ClientTransaction.Current.Commit ();
-        return newItem.ID;
-      }
+      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (orderID, (oi, o) => oi.Order = o);
+    }
+
+    private void SetOrderInOtherTransaction (ObjectID orderItemID, ObjectID orderID)
+    {
+      DomainObjectMother.SetRelationInOtherTransaction<OrderItem, Order> (orderItemID, orderID, (oi, o) => oi.Order = o);
     }
   }
 }

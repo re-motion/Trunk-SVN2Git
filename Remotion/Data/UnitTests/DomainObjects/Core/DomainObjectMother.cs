@@ -122,5 +122,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         return domainObject.ID;
       }
     }
+
+    public static ObjectID SetRelationInOtherTransaction<TOriginating, TRelated> (ObjectID originatingID, ObjectID relatedID, Action<TOriginating, TRelated> setter)
+      where TOriginating : DomainObject
+      where TRelated : DomainObject
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var domainObject = (TOriginating) LifetimeService.GetObject (ClientTransaction.Current, originatingID, true);
+        setter (domainObject, (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true));
+        ClientTransaction.Current.Commit ();
+
+        return domainObject.ID;
+      }
+    }
   }
 }

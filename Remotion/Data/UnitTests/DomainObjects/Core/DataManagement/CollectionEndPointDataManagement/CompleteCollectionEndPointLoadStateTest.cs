@@ -68,6 +68,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void IsSynchronized_True ()
+    {
+      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
+
+      _collectionEndPointMock.Replay ();
+
+      Assert.That (_loadState.IsSynchronized (_collectionEndPointMock), Is.True);
+    }
+
+    [Test]
+    public void IsSynchronized_False ()
+    {
+      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[] { _relatedObject });
+
+      _collectionEndPointMock.Replay ();
+
+      Assert.That (_loadState.IsSynchronized (_collectionEndPointMock), Is.False);
+    }
+
+    [Test]
     public void IsDataComplete ()
     {
       Assert.That (_loadState.IsDataComplete (), Is.True);

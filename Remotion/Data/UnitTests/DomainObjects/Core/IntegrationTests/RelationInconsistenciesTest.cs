@@ -259,27 +259,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
     {
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        var newCompany = Company.NewObject();
-        newCompany.Ceo = Ceo.NewObject();
-        
-        newCompany.IndustrialSector = IndustrialSector.GetObject (industrialSectorID);
-        
-        ClientTransaction.Current.Commit();
-        return newCompany.ID;
-      }
+      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) => c.IndustrialSector = s);
     }
 
     private void SetIndustrialSectorInOtherTransaction (ObjectID companyID, ObjectID industrialSectorID)
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var company = Company.GetObject (companyID);
-        company.IndustrialSector = IndustrialSector.GetObject (industrialSectorID);
-
-        ClientTransaction.Current.Commit ();
-      }
+      DomainObjectMother.SetRelationInOtherTransaction<Company, IndustrialSector> (companyID, industrialSectorID, (c, s) => c.IndustrialSector = s);
     }
 
     private ObjectID CreateComputerAndSetEmployeeInOtherTransaction (ObjectID employeeID)
@@ -289,12 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private void SetEmployeeInOtherTransaction (ObjectID computerID, ObjectID employeeID)
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var computer = Computer.GetObject (computerID);
-        computer.Employee = Employee.GetObject (employeeID);
-        ClientTransaction.Current.Commit ();
-      }
+      DomainObjectMother.SetRelationInOtherTransaction<Computer, Employee> (computerID, employeeID, (c, e) => c.Employee = e);
     }
 
     private void CheckSyncState<TOriginating, TRelated> (
