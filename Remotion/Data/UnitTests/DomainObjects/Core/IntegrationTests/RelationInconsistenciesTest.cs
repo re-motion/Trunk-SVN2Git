@@ -287,6 +287,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckActionWorks (() => company.IndustrialSector = null);
       CheckActionWorks (() => industrialSector.Companies.Add (company));
     }
+    [Test]
+    public void VirtualEndPointQuery_OneMany_ObjectIncludedInTwoCollections ()
+    {
+      SetDatabaseModifyable ();
+
+      var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
+      var company = Company.GetObject (companyID);
+
+      var industrialSector1 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      industrialSector1.Companies.EnsureDataComplete();
+
+      SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
+
+      var industrialSector2 = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
+      industrialSector2.Companies.EnsureDataComplete ();
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
+      Assert.That (industrialSector1.Companies, List.Contains (company));
+      Assert.That (industrialSector2.Companies, List.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector1, s => s.Companies, true);
+      CheckSyncState (industrialSector2, s => s.Companies, false);
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (industrialSector2, s => s.Companies));
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
+      Assert.That (industrialSector1.Companies, List.Contains (company));
+      Assert.That (industrialSector2.Companies, List.Not.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector1, s => s.Companies, true);
+      CheckSyncState (industrialSector2, s => s.Companies, true);
+    }
 
     [Test]
     [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
@@ -412,13 +446,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     private void CheckSyncState<TOriginating, TRelated> (
-        TOriginating company,
+        TOriginating originating,
         Expression<Func<TOriginating, TRelated>> propertyAccessExpression,
         bool expectedState)
         where TOriginating: DomainObject
     {
       Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, RelationEndPointID.Create (company, propertyAccessExpression)),
+          BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, RelationEndPointID.Create (originating, propertyAccessExpression)),
           Is.EqualTo (expectedState));
     }
 
