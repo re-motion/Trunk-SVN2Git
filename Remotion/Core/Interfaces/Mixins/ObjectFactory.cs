@@ -61,9 +61,6 @@ namespace Remotion.Mixins
     /// Creates a mixed instance of the given type <typeparamref name="T"/> with a public default constructor.
     /// </summary>
     /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
     /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
     /// <para>
@@ -85,13 +82,6 @@ namespace Remotion.Mixins
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class to instantiate.
     /// </para>
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
     /// </exception>
     /// <remarks>
     /// <para>
@@ -106,9 +96,9 @@ namespace Remotion.Mixins
     /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
-    public static T Create<T> (params object[] preparedMixins)
+    public static T Create<T> ()
     {
-      return Create<T> (ParamList.Empty, preparedMixins);
+      return Create<T> (ParamList.Empty);
     }
 
     /// <summary>
@@ -223,13 +213,9 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public constructor.
+    /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public default constructor.
     /// </summary>
     /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
     /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
     /// <para>
     /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
@@ -252,13 +238,6 @@ namespace Remotion.Mixins
     /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
     /// to instantiate.
     /// </para>
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
     /// </exception>
     /// <remarks>
     /// <para>
@@ -276,9 +255,9 @@ namespace Remotion.Mixins
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
     /// </para>
     /// </remarks>
-    public static object Create (Type targetOrConcreteType, params object[] preparedMixins)
+    public static object Create (Type targetOrConcreteType)
     {
-      return Create (false, targetOrConcreteType, ParamList.Empty, preparedMixins);
+      return Create (false, targetOrConcreteType, ParamList.Empty);
     }
 
     /// <summary>

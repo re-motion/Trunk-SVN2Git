@@ -71,16 +71,6 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void AcceptsInstanceOfGeneratedMixinType_OverloadWithoutParamlistParameter_OverriddenMixinMembers ()
-    {
-      Type generatedMixinType = CodeGenerationTypeMother.GetGeneratedMixinTypeInActiveConfiguration (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
-      object mixinInstance = Activator.CreateInstance (generatedMixinType);
-
-      var classInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (mixinInstance);
-      Assert.That (Mixin.Get<MixinWithAbstractMembers> (classInstance), Is.SameAs (mixinInstance));
-    }
-
-    [Test]
     public void AcceptsInstanceOfGeneratedMixinType_WrappedProtectedMixinMembers ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1>().Clear().AddMixins (typeof (MixinWithProtectedOverrider)).EnterScope())
@@ -111,17 +101,6 @@ namespace Remotion.UnitTests.Mixins
     public void CompleteFaceInterfaceAsTypeArgument ()
     {
       var complete = ObjectFactory.Create<ICBT6Mixin1> (ParamList.Empty);
-
-      Assert.That (complete, Is.Not.Null);
-      Assert.That (complete is BaseType6, Is.True);
-      Assert.That (complete is ICBT6Mixin2, Is.True);
-      Assert.That (complete is ICBT6Mixin3, Is.True);
-    }
-
-    [Test]
-    public void CompleteFaceInterfaceAsTypeArgument_ParameterlessOverload ()
-    {
-      var complete = ObjectFactory.Create<ICBT6Mixin1> ();
 
       Assert.That (complete, Is.Not.Null);
       Assert.That (complete is BaseType6, Is.True);
@@ -174,16 +153,6 @@ namespace Remotion.UnitTests.Mixins
 
       o = ObjectFactory.Create<object> (ParamList.Empty);
       Assert.That (o.GetType(), Is.EqualTo (typeof (object)));
-    }
-
-    [Test]
-    public void DefaultPolicyIsOnlyIfNecessary_OverloadWithoutParamListParameter ()
-    {
-      object o = ObjectFactory.Create (typeof (object));
-      Assert.That (o.GetType (), Is.EqualTo (typeof (object)));
-
-      o = ObjectFactory.Create<object> (ParamList.Empty);
-      Assert.That (o.GetType (), Is.EqualTo (typeof (object)));
     }
 
     [Test]
@@ -246,9 +215,29 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
+    public void MixedObjectsCanBeCreated_Parameterless ()
+    {
+      object o = ObjectFactory.Create<BaseType3> ();
+      Assert.That (o, Is.Not.Null);
+      Assert.That (o is BaseType3, Is.True);
+      Assert.That (o is IMixinTarget, Is.True);
+
+      Assert.That (((IMixinTarget) o).Mixins[0], Is.Not.Null);
+    }
+
+    [Test]
     public void MixedObjectsCanBeCreatedFromType ()
     {
       object o = ObjectFactory.Create (typeof (BaseType3), ParamList.Empty);
+      Assert.That (o, Is.Not.Null);
+      Assert.That (o is IMixinTarget, Is.True);
+      Assert.That (((IMixinTarget) o).Mixins[0], Is.Not.Null);
+    }
+
+    [Test]
+    public void MixedObjectsCanBeCreatedFromType_Parameterless ()
+    {
+      object o = ObjectFactory.Create (typeof (BaseType3));
       Assert.That (o, Is.Not.Null);
       Assert.That (o is IMixinTarget, Is.True);
       Assert.That (((IMixinTarget) o).Mixins[0], Is.Not.Null);
@@ -271,18 +260,6 @@ namespace Remotion.UnitTests.Mixins
     {
       var m1 = new BT1Mixin1();
       var bt1 = (BaseType1) ObjectFactory.Create (typeof (BaseType1), ParamList.Empty, m1);
-
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1), Is.Not.Null);
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1), Is.SameAs (m1));
-      Assert.That (Mixin.Get<BT1Mixin2> (bt1), Is.Not.Null);
-      Assert.That (Mixin.Get<BT1Mixin2> (bt1), Is.Not.SameAs (m1));
-    }
-
-    [Test]
-    public void MixedObjectsWithMixinInstancesCanBeCreatedFromType_OverloadWithoutParamListParameter ()
-    {
-      var m1 = new BT1Mixin1 ();
-      var bt1 = (BaseType1) ObjectFactory.Create (typeof (BaseType1), m1);
 
       Assert.That (Mixin.Get<BT1Mixin1> (bt1), Is.Not.Null);
       Assert.That (Mixin.Get<BT1Mixin1> (bt1), Is.SameAs (m1));
