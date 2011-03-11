@@ -13,11 +13,15 @@
           DependsOnTargets="CreateDocumentationProperties;CreateDocumentationRootPage;CreateNDocProjectFile" 
           Condition="$(ActiveConfigurationGenerateDocumentation) == 'True'">
 
+    <Message Text="Generating public documentation" Importance="High"/>
+
     <Error Text="The property 'DocumentationNDocProjectFile' is not set." Condition="'$(DocumentationNDocProjectFile)' == ''" />
 
     <MSBuild.Community.Tasks.NDoc ToolPath="$(NDocToolPath)"
                                   Documenter="MSDN-CHM"
                                   ProjectFilePath="$(DocumentationNDocProjectFile)"/>
+
+    <Message Text="Done generating public documentation" Importance="High"/>
   </Target>
 
   <Target Name="CreateDocumentationProperties">

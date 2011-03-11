@@ -34,12 +34,16 @@
   <!-- Source Package -->
   
   <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileProperty;CreateSourceFiles;CreateOutputDirectory;">
+    <Message Text="Creating source package, PackageName=$(PackageName)" Importance="High"/>
+
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
 
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" 
                                              ZipFileName="$(SourceZipFile)" 
                                              RemoveRoot="$(SolutionDirectory)" 
                                              CompressFiles="@(SourceFiles)" />
+
+    <Message Text="Done creating source package, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
   <Target Name="CreateSourceZipFileProperty" DependsOnTargets="CreatePackageProperties">
@@ -54,6 +58,8 @@
   <!-- Binary Package -->
 
   <Target Name="CreateBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateBinaryFiles;CreateLicenseFiles;CreateOutputDirectory;">
+    <Message Text="Creating binary package, PackageName=$(PackageName)" Importance="High"/>
+
     <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
 
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create"
@@ -77,6 +83,8 @@
                                              ZipFileName="$(BinaryZipFile)"
                                              RemoveRoot="$(_tempLicenseFilesDirectory)"
                                              CompressFiles="@(_tempLicenseFiles)" />
+
+    <Message Text="Done creating binary package, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
   <Target Name="CreateBinaryZipFileProperty" DependsOnTargets="CreatePackageProperties">
@@ -91,6 +99,8 @@
   <!-- Release Notes -->
 
   <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesDirectoryProperty">
+    <Message Text="Creating release notes, PackageName=$(PackageName)" Importance="High"/>
+
     <PropertyGroup>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) == ''"></_jiraComponent>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
@@ -98,6 +108,8 @@
 
     <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesDirectory) $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
+
+    <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
   </Target>
   
   <Target Name="AddReleaseNotesToBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateReleaseNotesDirectoryProperty">
@@ -159,6 +171,8 @@
   <!-- Publishing -->
 
   <Target Name="UploadToShares" DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty">
+    <Message Text="Uploading to shares, PackageName=$(PackageName)" Importance="High"/>
+
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
     <Error Text="The property 'WebShareDirectory' is not set." Condition="'$(WebShareDirectory)' == ''" />
 
@@ -185,6 +199,7 @@
 
     <Copy SourceFiles="%(_publishedFiles.Identity)" DestinationFiles="%(_publishedFiles.DestinationFile)"/>
 
+    <Message Text="Done uploading to shares, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
   <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;UploadToCodePlexInternal" />
@@ -192,7 +207,19 @@
   <Target Name="UploadToCodePlexInternal"
           DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty"
           Condition="$(UploadToCodePlex) == 'True'">
+
+    <Message Text="Uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
+
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
+
+    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:10.03.2010 /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
+          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+
+    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
+          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+
+    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
+          WorkingDirectory="$(CodeplexReleaseToolPath)" />
 
     <!--<ItemGroup>
       <_releaseFiles Remove="@(_releaseFiles)"/>
@@ -226,15 +253,8 @@
       Username="$(CodeplexUsername)"
       Password="$(CodeplexPassword)" >
     </UploadFiles>-->
-        
-    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:10.03.2010 /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
 
-    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
-    
-    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+    <Message Text="Done uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
   <!-- Shared Code -->

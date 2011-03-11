@@ -83,14 +83,20 @@
   </Target>
 
   <Target Name="CleanProjects" DependsOnTargets="CreateActiveConfiguration">
+    <Message Text="Cleaning projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
 
     <MSBuild Projects="@(ReleaseProjectFiles);@(UnitTestProjectFiles)"
              Targets="Clean"
              Properties="Configuration=$(ActiveConfigurationName);"/>
+
+    <Message Text="Done cleaning projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
   
   <Target Name="BuildReleaseProjects" DependsOnTargets="CreateActiveConfiguration;UpdateAssemblyInfos">
+    <Message Text="Building release projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
     <Error Text="The property 'SolutionKeyFile' is not set." Condition="'$(SolutionKeyFile)' == ''" />
 
@@ -99,9 +105,13 @@
              Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="ReleaseOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
+
+    <Message Text="Done building release projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
   <Target Name="BuildTestProjects" DependsOnTargets="CreateActiveConfiguration;UpdateAssemblyInfos">
+    <Message Text="Building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+
     <Error Text="The property 'ActiveConfigurationName' is not set." Condition="'$(ActiveConfigurationName)' == ''" />
 
     <MSBuild Projects ="@(UnitTestProjectFiles);@(IntegrationTestProjectFiles)"
@@ -109,9 +119,13 @@
              Properties="Configuration=$(ActiveConfigurationName);AssemblyOriginatorKeyFile=$(SolutionKeyFile);">
       <Output ItemName="TestOutputFiles" TaskParameter="TargetOutputs"/>
     </MSBuild>
+
+    <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
   <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
+    <Message Text="Running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
                                    OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
                                    ToolPath="$(NUnitToolPath)"
@@ -122,9 +136,13 @@
                                              Use32Bit="True"
                                              OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
                                              Condition="$(ActiveConfigurationRunTests) == 'True'"/>-->
+
+  <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
   <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration">
+    <Message Text="Updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'ConfigurationID' is not set." Condition="'$(ConfigurationID)' == ''" />
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
@@ -153,6 +171,8 @@
                                                   AssemblyCopyright="%(_assemblyInfos.Copyright)"
                                                   AssemblyCompany="%(_assemblyInfos.CompanyName)"
                                                   AssemblyProduct="%(_assemblyInfos.ProductName)"/>
+
+    <Message Text="Done updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
 </Project>
