@@ -11,6 +11,8 @@
   
   <PropertyGroup>
     <Version></Version>
+    <CodePlexUsername></CodePlexUsername>
+    <CodePlexPassword></CodePlexPassword>
     <SolutionDirectory>$([System.IO.Path]::GetFullPath('..\'))</SolutionDirectory>
     <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
