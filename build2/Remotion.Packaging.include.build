@@ -24,12 +24,13 @@
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
     <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
+    <CodeplexTasksPath>$(SolutionDirectory)prereq\Tools\Codeplex.MSBuildTasks\</CodeplexTasksPath>
   </PropertyGroup>
 
   <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
 
   <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex" />
-  
+    
   <!-- Source Package -->
   
   <Target Name="CreateSourcePackage" DependsOnTargets="CreateSourceZipFileProperty;CreateSourceFiles;CreateOutputDirectory;">
@@ -188,17 +189,52 @@
 
   <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;UploadToCodePlexInternal" />
   
-  <Target Name="UploadToCodePlexInternal" Condition="$(UploadToCodePlex) == 'True'">
+  <Target Name="UploadToCodePlexInternal"
+          DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty"
+          Condition="$(UploadToCodePlex) == 'True'">
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
-    <Message Text="Stub: Uploaded to code plex"/>
-    <!--<Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:$([System.DateTime]::Now.ToString('dd.MM.yyyy')) /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
+
+    <!--<ItemGroup>
+      <_releaseFiles Remove="@(_releaseFiles)"/>
+      <_releaseFiles Include="$(BinaryZipFile)">
+        <Name>$([System.IO.Path]::GetFileName($(BinaryZipFile)))</Name>
+        <FileType>RuntimeBinary</FileType>
+      </_releaseFiles>
+      <_releaseFiles Include="$(SourceZipFile)">
+        <Name>$([System.IO.Path]::GetFileName($(SourceZipFile)))</Name>
+        <FileType>SourceCode</FileType>
+      </_releaseFiles>
+    </ItemGroup>
+    
+    <CreateRelease
+      ProjectName="$(CodePlexProjectName)"  
+      ReleaseName="$(Version)"
+      Description="This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent]"
+      ReleaseDate="$([System.DateTime]::Now.ToString('dd.MM.yyyy'))"
+      ReleaseStatus="Released"
+      ShowToPublic="false"
+      IsDefaultRelease="false"
+      ShowOnHomepage="false"
+      Username="$(CodeplexUsername)"
+      Password="$(CodeplexPassword)" >
+    </CreateRelease>
+
+    <UploadFiles
+      ProjectName="$(CodePlexProjectName)"
+      ReleaseName="$(Version)"
+      ReleaseFiles="@(_releaseFiles)"
+      Username="$(CodeplexUsername)"
+      Password="$(CodeplexPassword)" >
+    </UploadFiles>-->
+        
+    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:10.03.2010 /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)" 
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
 
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
     
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />-->
+          WorkingDirectory="$(CodeplexReleaseToolPath)" />
   </Target>
 
   <!-- Shared Code -->

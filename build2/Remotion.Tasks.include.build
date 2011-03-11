@@ -22,4 +22,8 @@
   <!-- Use tasks of the re-motion BuildTools MSBuild Tasks library -->
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder" />
 
+  <!-- Use tasks of the Codeplex Tasks library-->
+  <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="CreateRelease" />
+  <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="UploadFiles" />
+
 </Project>
