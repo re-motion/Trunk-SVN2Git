@@ -148,8 +148,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      collectionEndPoint.MarkDataIncomplete ();
-      collectionEndPoint.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+      if (_unsynchronizedOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID))
+      {
+        _unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
+      }
+      else
+      {
+        collectionEndPoint.MarkDataIncomplete();
+        collectionEndPoint.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+      }
     }
 
     public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
@@ -200,8 +207,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_unsynchronizedOppositeEndPoints.Count != 0)
       {
         var message = string.Format (
-            "The collection of relation property '{0}' of domain object '{1}' cannot be replaced because the relation property is out of sync with "
-            + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
+            "The collection of relation property '{0}' of domain object '{1}' cannot be replaced because the opposite object property '{2}' of domain "
+            + "object '{3}' is out of sync. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
@@ -247,8 +254,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_unsynchronizedOppositeEndPoints.Count != 0)
       {
         var message = string.Format (
-            "The domain object '{0}' cannot be deleted because its collection property '{1}' is out of sync with "
-            + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
+            "The domain object '{0}' cannot be deleted because the opposite object property '{2}' of domain object '{3}' is out of sync with the "
+            + "collection property '{1}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
             _dataKeeper.EndPointID.ObjectID,
             _dataKeeper.EndPointID.Definition.PropertyName,
@@ -344,8 +351,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_unsynchronizedOppositeEndPoints.ContainsKey (domainObject.ID))
       {
         var message = string.Format (
-            "The domain object with ID '{0}' cannot be added to collection property '{1}' of object '{2}' because the property is "
-            + "out of sync with the opposite object property '{3}'. To make this change, synchronize the two properties by calling the "
+            "The domain object with ID '{0}' cannot be added to collection property '{1}' of object '{2}' because its object property "
+            + "'{3}' is out of sync with the collection property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,
@@ -373,8 +380,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (_unsynchronizedOppositeEndPoints.ContainsKey (domainObject.ID))
       {
         var message = string.Format (
-            "The domain object with ID '{0}' cannot be replaced or removed from collection property '{1}' of object '{2}' because the property is "
-            + "out of sync with the opposite object property '{3}'. To make this change, synchronize the two properties by calling the "
+            "The domain object with ID '{0}' cannot be replaced or removed from collection property '{1}' of object '{2}' because its object property "
+            + "'{3}' is out of sync with the collection property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,

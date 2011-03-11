@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         var domainObject = (TCreated) LifetimeService.NewObject (ClientTransaction.Current, typeof (TCreated), ParamList.Empty);
-        setter (domainObject, (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true));
+        setter (domainObject, relatedID != null ? (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true) : null);
         ClientTransaction.Current.Commit ();
 
         return domainObject.ID;
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         var domainObject = (TOriginating) LifetimeService.GetObject (ClientTransaction.Current, originatingID, true);
-        setter (domainObject, (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true));
+        setter (domainObject, relatedID != null ? (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true) : null);
         ClientTransaction.Current.Commit ();
 
         return domainObject.ID;
