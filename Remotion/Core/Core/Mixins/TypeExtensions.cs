@@ -20,11 +20,11 @@ using Remotion.Utilities;
 namespace Remotion.Mixins
 {
   /// <summary>
-  /// The <see cref="MixinTypeExtensions"/>-class provides extension-methods for type instances.
+  /// The <see cref="TypeExtensions"/> class provides extension methods for <see cref="Type"/> instances related to mixin functionality.
   /// </summary>
-  public static class MixinTypeExtensions
+  public static class TypeExtensions
   {
-    public static Type GetUnderlyingTargetType (this Type type)
+    public static Type GetUnderlyingMixedType (this Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 

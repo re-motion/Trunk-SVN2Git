@@ -133,7 +133,7 @@
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
-    <Compile Include="Mixins\MixinTypeExtensions.cs" />
+    <Compile Include="Mixins\TypeExtensions.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />

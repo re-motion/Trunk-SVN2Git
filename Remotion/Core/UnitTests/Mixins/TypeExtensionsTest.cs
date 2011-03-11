@@ -23,12 +23,14 @@ using Remotion.Mixins;
 namespace Remotion.UnitTests.Mixins
 {
   [TestFixture]
-  public class MixinTypeExtensionsTest
+  public class TypeExtensionsTest
   {
     [Test]
-    public void GetUnderlyingTargetType ()
+    public void GetUnderlyingMixedType ()
     {
-      Assert.That (typeof (BaseType1).GetUnderlyingTargetType(), Is.SameAs (typeof (BaseType1)));
+      var mixedType = TypeFactory.GetConcreteType (typeof (BaseType1));
+      Assert.That (mixedType, Is.Not.SameAs (typeof (BaseType1)));
+      Assert.That (mixedType.GetUnderlyingMixedType (), Is.SameAs (typeof (BaseType1)));
     }
   }
 }
