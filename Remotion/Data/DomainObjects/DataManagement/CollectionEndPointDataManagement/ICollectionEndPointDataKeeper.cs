@@ -22,6 +22,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
+    bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
+
     void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
     void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject);
 

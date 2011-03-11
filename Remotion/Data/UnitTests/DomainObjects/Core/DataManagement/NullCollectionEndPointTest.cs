@@ -220,12 +220,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetUnsynchronizedOppositeEndPoints ()
-    {
-      Assert.That (_nullEndPoint.GetUnsynchronizedOppositeEndPoints(), Is.Empty);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void SynchronizeOppositeEndPoint ()
     {

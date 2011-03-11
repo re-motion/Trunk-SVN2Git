@@ -176,11 +176,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.Synchronize();
     }
 
-    public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
-    {
-      return Array.AsReadOnly (new IObjectEndPoint[0]);
-    }
-
     public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);

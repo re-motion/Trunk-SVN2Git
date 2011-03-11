@@ -162,7 +162,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3780")]
     public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse ()
     {
       SetDatabaseModifyable ();
@@ -190,11 +189,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var otherCompany = companiesOfIndustrialSector.FirstOrDefault (c => c != company);
       CheckSyncState (otherCompany, c => c.IndustrialSector, true);
 
+      CheckActionWorks (company.Delete);
+      ClientTransactionMock.Rollback (); // required so that the remaining actions can be tried below
+
+      // sync states not changed by Rollback
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector, s => s.Companies, false);
+
       CheckActionWorks (() => industrialSector.Companies.Remove (otherCompany));
       CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
-      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync with the opposite property");
-      CheckActionWorks (() => company.IndustrialSector = IndustrialSector.NewObject());
+      var companyIndex = industrialSector.Companies.IndexOf (company);
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies[companyIndex] = Company.NewObject (), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies = new ObjectList<Company> (), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (industrialSector.Delete, "out of sync with the opposite object property");
+
+      CheckActionWorks (() => company.IndustrialSector = IndustrialSector.NewObject ());
 
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector, s => s.Companies));
 
@@ -251,26 +262,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
-      var companiesOfIndustrialSector = industrialSector.Companies;
-      companiesOfIndustrialSector.EnsureDataComplete ();
+      industrialSector.Companies.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (companiesOfIndustrialSector, List.Not.Contains (company));
+      Assert.That (industrialSector.Companies, List.Not.Contains (company));
 
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
-      CheckSyncState (companiesOfIndustrialSector[0], c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector.Companies[0], c => c.IndustrialSector, true);
+
+      CheckActionThrows<InvalidOperationException> (company.Delete, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (industrialSector.Delete, "out of sync with the opposite object property");
 
       CheckActionWorks (() => industrialSector.Companies.RemoveAt (0));
       CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
-      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the opposite property");
-      CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync with the opposite property ");
 
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (company, c => c.IndustrialSector));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
-      Assert.That (companiesOfIndustrialSector, List.Contains (company));
+      Assert.That (industrialSector.Companies, List.Contains (company));
       CheckActionWorks (() => company.IndustrialSector = null);
       CheckActionWorks (() => industrialSector.Companies.Add (company));
     }
@@ -338,8 +351,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompany = Company.GetObject (newCompanyID);
 
       Assert.That (newCompany.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
       Assert.That (industrialSector.Companies, List.Not.Contains (newCompany));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (1));
 
       CheckSyncState (industrialSector, s => s.Companies, true);
       CheckSyncState (newCompany, c => c.IndustrialSector, false);
@@ -348,11 +361,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (industrialSector, s => s.Companies, true);
       CheckSyncState (industrialSector.Companies[0], c => c.IndustrialSector, true);
 
+      CheckActionThrows<InvalidOperationException> (newCompany.Delete, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (industrialSector.Delete, "out of sync with the opposite object property");
+
       CheckActionWorks (() => industrialSector.Companies.RemoveAt (0));
       CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
-      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (newCompany), "out of sync with the opposite property");
-      CheckActionThrows<InvalidOperationException> (() => newCompany.IndustrialSector = null, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (newCompany), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => newCompany.IndustrialSector = null, "out of sync with the opposite property ");
 
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (newCompany, c => c.IndustrialSector));
 
@@ -413,18 +429,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private void CheckActionThrows<TException> (Action action, string expectedMessage) where TException : Exception
     {
+      var hadException = false;
       try
       {
         action ();
       }
       catch (Exception ex)
       {
+        hadException = true;
         Assert.That (ex, Is.TypeOf (typeof (TException)));
         Assert.That (
             ex.Message, 
             NUnit.Framework.SyntaxHelpers.Text.Contains (expectedMessage), 
             "Expected: " + expectedMessage + Environment.NewLine + "Was: " + ex.Message);
       }
+
+      if (!hadException)
+        Assert.Fail ("Expected " + typeof (TException).Name);
     }
   }
 }

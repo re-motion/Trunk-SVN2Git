@@ -45,7 +45,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      throw CreateInvalidOperationException(endPoint);
+      throw new InvalidOperationException (
+          string.Format (
+              "The domain object '{0}' cannot be deleted because its relation property '{1}' is out of sync with the opposite property '{2}'. "
+              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method "
+              + "on the '{1}' property.",
+              endPoint.ObjectID,
+              endPoint.Definition.PropertyName,
+              endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
     }
 
     public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -53,15 +60,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      throw CreateInvalidOperationException (endPoint);
-    }
-
-    private InvalidOperationException CreateInvalidOperationException (IObjectEndPoint endPoint)
-    {
-      return new InvalidOperationException (
+      throw new InvalidOperationException (
           string.Format (
               "The relation property '{0}' of object '{1}' cannot be changed because it is out of sync with the opposite property '{2}'. "
-              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method.",
+              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method "
+              + "on the '{0}' property.",
               endPoint.Definition.PropertyName,
               endPoint.ObjectID,
               endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));

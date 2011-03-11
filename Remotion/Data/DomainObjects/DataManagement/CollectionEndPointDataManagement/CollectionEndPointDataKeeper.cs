@@ -140,6 +140,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
     }
 
+    public bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      return _originalItemsWithoutEndPoint.Contains (domainObject);
+    }
+
     public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);

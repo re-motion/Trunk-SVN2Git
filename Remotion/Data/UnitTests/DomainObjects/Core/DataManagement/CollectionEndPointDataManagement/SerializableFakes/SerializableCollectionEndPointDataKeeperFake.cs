@@ -80,6 +80,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      throw new NotImplementedException();
+    }
+
     public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
     {
       throw new NotImplementedException();

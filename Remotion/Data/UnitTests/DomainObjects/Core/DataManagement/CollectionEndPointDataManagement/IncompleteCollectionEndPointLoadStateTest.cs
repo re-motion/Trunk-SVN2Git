@@ -299,12 +299,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetUnsynchronizedOppositeEndPoints ()
-    {
-      Assert.That (_loadState.GetUnsynchronizedOppositeEndPoints(), Is.Empty);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot synchronize an opposite end-point with a collection end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()

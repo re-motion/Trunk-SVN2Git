@@ -201,6 +201,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void ContainsOriginalItemWithoutEndPoint_True ()
+    {
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+      Assert.That (_dataKeeper.ContainsOriginalItemWithoutEndPoint (_domainObject2), Is.True);
+    }
+
+    [Test]
+    public void ContainsOriginalItemWithoutEndPoint_False ()
+    {
+      Assert.That (_dataKeeper.ContainsOriginalItemWithoutEndPoint (_domainObject2), Is.False);
+    }
+
+    [Test]
     public void RegisterOriginalItemWithoutEndPoint ()
     {
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -44,7 +43,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
     void Synchronize (ICollectionEndPoint collectionEndPoint);
 
-    ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ();
     void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter);

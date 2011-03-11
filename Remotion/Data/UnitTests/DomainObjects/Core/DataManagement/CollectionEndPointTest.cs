@@ -582,19 +582,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
     
     [Test]
-    public void GetUnsynchronizedOppositeEndPoints ()
-    {
-      var fakeEndPoints = Array.AsReadOnly (new IObjectEndPoint[0]);
-      _loadStateMock.Expect (mock => mock.GetUnsynchronizedOppositeEndPoints ()).Return(fakeEndPoints);
-      _loadStateMock.Replay ();
-
-      var result = _endPointWithLoadStateMock.GetUnsynchronizedOppositeEndPoints();
-
-      _loadStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeEndPoints));
-    }
-
-    [Test]
     public void SynchronizeOppositeEndPoint ()
     {
       var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();

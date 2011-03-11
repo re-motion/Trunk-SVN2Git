@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
@@ -234,11 +233,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Synchronize ()
     {
       _loadState.Synchronize (this);
-    }
-
-    public ReadOnlyCollection<IObjectEndPoint> GetUnsynchronizedOppositeEndPoints ()
-    {
-      return _loadState.GetUnsynchronizedOppositeEndPoints();
     }
 
     public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
