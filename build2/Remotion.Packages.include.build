@@ -4,7 +4,7 @@
   <ItemGroup>
     <AllPackages Include="Core">
       <PackageDeclaration>Remotion.Packaging.Core.build</PackageDeclaration>
-      <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
+      <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
@@ -15,7 +15,7 @@
     
     <AllPackages Include="Relinq">
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
-      <AssemblyInfoFile>Relinq\AssemblyInfoShared.cs</AssemblyInfoFile>
+      <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
@@ -25,7 +25,7 @@
     
     <AllPackages Include="Remix">
       <PackageDeclaration>Remotion.Packaging.Remix.build</PackageDeclaration>
-      <AssemblyInfoFile>Remotion\AssemblyInfoShared.cs</AssemblyInfoFile>
+      <AssemblyInfoFile>Remotion\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
@@ -35,7 +35,7 @@
     
     <AllPackages Include="Dms">
       <PackageDeclaration>Remotion.Packaging.Dms.build</PackageDeclaration>
-      <AssemblyInfoFile>Dms\AssemblyInfoShared.cs</AssemblyInfoFile>
+      <AssemblyInfoFile>Dms\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
@@ -45,7 +45,7 @@
     
     <AllPackages Include="SecurityManager">
       <PackageDeclaration>Remotion.Packaging.SecurityManager.build</PackageDeclaration>
-      <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.cs</AssemblyInfoFile>
+      <AssemblyInfoFile>SecurityManager\AssemblyInfoShared.*</AssemblyInfoFile>
       <CompanyName>rubicon informationstechnologie gmbh</CompanyName>
       <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
       <Copyright>(c) 2005 - 2011 rubicon informationstechnologie gmbh, www.rubicon.eu - Licensed under GNU AGPL 3.0</Copyright>
