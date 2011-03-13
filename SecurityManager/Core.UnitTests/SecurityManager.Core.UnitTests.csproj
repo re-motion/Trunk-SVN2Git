@@ -265,7 +265,6 @@
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="SecurityManager.Core.UnitTests.build" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Relinq\Core\Linq.Core.csproj">

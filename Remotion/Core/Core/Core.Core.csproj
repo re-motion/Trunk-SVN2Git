@@ -722,9 +722,6 @@
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
-    <Content Include="Core.Core.build">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="doc\include\GettingStartedTemplate.html" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />

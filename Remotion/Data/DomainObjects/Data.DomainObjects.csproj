@@ -850,9 +850,6 @@
       </SubType>
     </None>
     <Compile Include="DomainObjectCollection.Obsolete.cs" />
-    <None Include="Data.DomainObjects.build">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

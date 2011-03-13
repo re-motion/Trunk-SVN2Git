@@ -129,9 +129,6 @@
     <Compile Include="ExtendedVBCodeProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Development.CodeDom.build">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

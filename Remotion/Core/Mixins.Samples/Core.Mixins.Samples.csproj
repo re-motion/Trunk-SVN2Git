@@ -109,9 +109,6 @@
     <Compile Include="DynamicMixinBuilding\Core\InterfaceEmitter.cs" />
     <Compile Include="DynamicMixinBuilding\Core\LoadFunctionExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Core.Mixins.Samples.build">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

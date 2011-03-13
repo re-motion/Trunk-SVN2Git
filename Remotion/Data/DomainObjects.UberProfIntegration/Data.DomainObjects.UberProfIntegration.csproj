@@ -85,9 +85,6 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Data.DomainObjects.UberProfIntegration.build">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">

@@ -79,7 +79,6 @@
     </None>
     <None Include="Database\SecurityManagerSetupDB.sql">
     </None>
-    <None Include="SecurityManager.Core.build" />
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>

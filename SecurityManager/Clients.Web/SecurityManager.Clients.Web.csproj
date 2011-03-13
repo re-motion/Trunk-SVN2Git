@@ -81,7 +81,6 @@
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
     <Content Include="res\Html\EditPermissionsForm.js" />
     <Content Include="res\Themes\ClassicBlue\Image\CancelButton.gif" />
