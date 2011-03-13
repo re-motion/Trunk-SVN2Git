@@ -137,7 +137,7 @@
                                              OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
                                              Condition="$(ActiveConfigurationRunTests) == 'True'"/>-->
 
-  <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+    <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
   <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration">
