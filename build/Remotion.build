@@ -14,11 +14,11 @@
     <CodePlexUsername></CodePlexUsername>
     <CodePlexPassword></CodePlexPassword>
     <SolutionDirectory>$([System.IO.Path]::GetFullPath('..\'))</SolutionDirectory>
-    <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\$(Version)\</OutputDirectory>
+    <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
-    <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\BuildOutput\temp\</TempDirectory>
-    <ArchiveDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\Archive\</ArchiveDirectory>
-    <WebShareDirectory>$([System.IO.Path]::GetFullPath('..\'))build2\WebShare\</WebShareDirectory>
+    <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build\BuildOutput\temp\</TempDirectory>
+    <ArchiveDirectory>$([System.IO.Path]::GetFullPath('..\'))build\Archive\</ArchiveDirectory>
+    <WebShareDirectory>$([System.IO.Path]::GetFullPath('..\'))build\WebShare\</WebShareDirectory>
     <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
   </PropertyGroup>
