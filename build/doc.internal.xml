@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<documenters>
+  <documenter name="MSDN-CHM">
+    <!-- Global -->
+    <!-- Documentation Main Settings -->
+    <property name="ShowVisualBasic" value="False" />
+    <!-- Extensibility -->
+    <!-- HTML Help Options -->
+    <property name="RootPageTOCName" value="Getting Started" />
+    <property name="SdkLinksOnWeb" value="False" />
+    <!-- Show Attributes -->
+    <!-- Show Missing Documentation -->
+    <property name="ShowMissingParams" value="True" />
+    <property name="ShowMissingRemarks" value="True" />
+    <property name="ShowMissingReturns" value="True" />
+    <property name="ShowMissingSummaries" value="True" />
+    <property name="ShowMissingValues" value="True" />
+    <!-- Thread Safety -->
+    <property name="IncludeDefaultThreadSafety" value="False" />
+    <!-- Visibility -->
+    <!-- DocumentEmptyNamespaces = True results in hhc.exe crashing -->
+    <property name="DocumentEmptyNamespaces" value="False" />
+    <!-- DocumentExplicitInterfaceImplementations = True results in hhc.exe crashing -->
+    <property name="DocumentExplicitInterfaceImplementations" value="False" />
+    <property name="DocumentInternals" value="True" />
+    <!-- DocumentPrivates = True results in key not found error -->
+    <property name="DocumentPrivates" value="False" />
+    <property name="DocumentSealedProtected" value="True" />
+    <!-- Other -->
+    <property name="AutoDocumentStaticClasses" value="False" />
+  </documenter>
+</documenters>

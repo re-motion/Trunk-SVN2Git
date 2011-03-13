@@ -40,14 +40,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		Build-RemotionLocal.cmd = Build-RemotionLocal.cmd
 		Build-RemotionLocalDoc.cmd = Build-RemotionLocalDoc.cmd
 		buildall.cmd = buildall.cmd
-		build\buildversion.xml = build\buildversion.xml
+		build\doc.internal.xml = build\doc.internal.xml
+		build\doc.public.xml = build\doc.public.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
 		How to build.txt = How to build.txt
-		build\properties.include.build = build\properties.include.build
-		Remotion.build = Remotion.build
-		build\Remotion.Doc.include.build = build\Remotion.Doc.include.build
-		build\Remotion.include.build = build\Remotion.include.build
-		build\Remotion.ProjectTargets.include.build = build\Remotion.ProjectTargets.include.build
+		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
+		build\Remotion.build = build\Remotion.build
+		build\Remotion.BuildTargets.include.build = build\Remotion.BuildTargets.include.build
+		build\Remotion.Configurations.include.build = build\Remotion.Configurations.include.build
+		build\Remotion.Documentation.include.build = build\Remotion.Documentation.include.build
+		build\Remotion.Packages.include.build = build\Remotion.Packages.include.build
+		build\Remotion.Packaging.Core.build = build\Remotion.Packaging.Core.build
+		build\Remotion.Packaging.Dms.build = build\Remotion.Packaging.Dms.build
+		build\Remotion.Packaging.include.build = build\Remotion.Packaging.include.build
+		build\Remotion.Packaging.Relinq.build = build\Remotion.Packaging.Relinq.build
+		build\Remotion.Packaging.Remix.build = build\Remotion.Packaging.Remix.build
+		build\Remotion.Packaging.SecurityManager.build = build\Remotion.Packaging.SecurityManager.build
+		build\Remotion.Projects.include.build = build\Remotion.Projects.include.build
+		build\Remotion.Tasks.include.build = build\Remotion.Tasks.include.build
 	EndProjectSection
 	ProjectSection(FolderStartupServices) = postProject
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
@@ -175,25 +185,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.DocumentEventMonitor", "Dms\DocumentEventMonitor\Dms.DocumentEventMonitor.csproj", "{D8878C01-CE48-4CAE-BCCE-096A70744F65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProfIntegration", "Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj", "{81E5BEC0-B845-4470-BD19-9FCB121CB413}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles2", "_BuildFiles2", "{2EAD32A1-E37E-4EB8-89F0-7136AE3538A5}"
-	ProjectSection(SolutionItems) = preProject
-		build2\doc.public.xml = build2\doc.public.xml
-		build2\Remotion.AssembleBuildOutputTargets.include.build = build2\Remotion.AssembleBuildOutputTargets.include.build
-		build2\Remotion.build = build2\Remotion.build
-		build2\Remotion.BuildTargets.include.build = build2\Remotion.BuildTargets.include.build
-		build2\Remotion.Configurations.include.build = build2\Remotion.Configurations.include.build
-		build2\Remotion.Documentation.include.build = build2\Remotion.Documentation.include.build
-		build2\Remotion.Packages.include.build = build2\Remotion.Packages.include.build
-		build2\Remotion.Packaging.Core.build = build2\Remotion.Packaging.Core.build
-		build2\Remotion.Packaging.Dms.build = build2\Remotion.Packaging.Dms.build
-		build2\Remotion.Packaging.include.build = build2\Remotion.Packaging.include.build
-		build2\Remotion.Packaging.Relinq.build = build2\Remotion.Packaging.Relinq.build
-		build2\Remotion.Packaging.Remix.build = build2\Remotion.Packaging.Remix.build
-		build2\Remotion.Packaging.SecurityManager.build = build2\Remotion.Packaging.SecurityManager.build
-		build2\Remotion.Projects.include.build = build2\Remotion.Projects.include.build
-		build2\Remotion.Tasks.include.build = build2\Remotion.Tasks.include.build
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Relinq", "Relinq", "{955E99DD-2136-40BB-9EAF-24CED6006803}"
 EndProject
