@@ -44,6 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\doc.public.xml = build\doc.public.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
 		How to build.txt = How to build.txt
+		build\NUnitResult.xslt = build\NUnitResult.xslt
 		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
 		build\Remotion.build = build\Remotion.build
 		build\Remotion.BuildTargets.include.build = build\Remotion.BuildTargets.include.build
