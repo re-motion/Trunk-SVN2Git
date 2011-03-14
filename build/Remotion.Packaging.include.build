@@ -179,7 +179,7 @@
     <ItemGroup>
       <_temp Remove="@(_temp)"/>
       <_temp Include="$(SourceZipFile);$(BinaryZipFile)">
-        <DestinationFolder>$(ArchiveDirectory)$(PackageName)\builds\</DestinationFolder>
+        <DestinationFolder>$(ArchiveDirectory)$(PackageName)\build\</DestinationFolder>
       </_temp>
       <_temp Include="$(SourceZipFile);$(BinaryZipFile)" Condition="($(UploadToWebShare) == 'True')">
         <DestinationFolder>$(WebShareDirectory)</DestinationFolder>
