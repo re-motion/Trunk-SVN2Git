@@ -211,8 +211,13 @@
     <Message Text="Uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
 
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
+    <Error Text="The property 'CodePlexDescription' is not set." Condition="'$(CodePlexDescription)' == ''" />
 
-    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent] &quot; /releaseDate:10.03.2010 /status:Stable /showToPublic:- /isDefaultRelease:- /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
+    <PropertyGroup>
+      <_releaseDate>$([System.DateTime]::Now.ToString('dd.MM.yyyy'))</_releaseDate>
+    </PropertyGroup>
+
+    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;$(CodePlexDescription)&quot; /releaseDate:$(_releaseDate) /status:Stable /showToPublic:+ /isDefaultRelease:+ /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
 
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
@@ -236,8 +241,8 @@
     <CreateRelease
       ProjectName="$(CodePlexProjectName)"  
       ReleaseName="$(Version)"
-      Description="This is build $(Version) of re-linq. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D%22$(ReleaseNotesComponentName)%22+AND+issuetype+in+%28Bug%2C+%22New+Feature%22%2C+%22Breaking+Change%22%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D%22$(Version)%22++ORDER+BY+issuetype%2Ccomponent]"
-      ReleaseDate="$([System.DateTime]::Now.ToString('dd.MM.yyyy'))"
+      Description="$(CodePlexDescription)"
+      ReleaseDate="$(_releaseDate)"
       ReleaseStatus="Released"
       ShowToPublic="false"
       IsDefaultRelease="false"
