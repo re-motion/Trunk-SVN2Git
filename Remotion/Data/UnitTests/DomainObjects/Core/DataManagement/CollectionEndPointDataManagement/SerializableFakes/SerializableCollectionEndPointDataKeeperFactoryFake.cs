@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 
@@ -25,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   [Serializable]
   public class SerializableCollectionEndPointDataKeeperFactoryFake : ICollectionEndPointDataKeeperFactory
   {
-    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)
+    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID)
     {
       return new SerializableCollectionEndPointDataKeeperFake();
     }

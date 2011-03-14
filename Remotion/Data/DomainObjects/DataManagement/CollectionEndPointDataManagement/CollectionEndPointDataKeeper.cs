@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
   {
     private readonly RelationEndPointID _endPointID;
-    private readonly IComparer<DomainObject> _sortExpressionBasedComparer;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
@@ -42,7 +41,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        IComparer<DomainObject> sortExpressionBasedComparer, 
         IRelationEndPointProvider endPointProvider,
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
@@ -52,7 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
       _endPointID = endPointID;
-      _sortExpressionBasedComparer = sortExpressionBasedComparer;
       _endPointProvider = endPointProvider;
       _changeDetectionStrategy = changeDetectionStrategy;
 
@@ -67,11 +64,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public RelationEndPointID EndPointID
     {
       get { return _endPointID; }
-    }
-
-    public IComparer<DomainObject> SortExpressionBasedComparer
-    {
-      get { return _sortExpressionBasedComparer; }
     }
 
     public IRelationEndPointProvider EndPointProvider
@@ -173,10 +165,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _changeCachingCollectionData.HasChanged (_changeDetectionStrategy);
     }
 
-    public void SortCurrentAndOriginalData()
+    public void SortCurrentAndOriginalData(IComparer<DomainObject> comparer)
     {
-      if (_sortExpressionBasedComparer != null)
-        _changeCachingCollectionData.SortOriginalAndCurrent (_sortExpressionBasedComparer);
+      ArgumentUtility.CheckNotNull ("comparer", comparer);
+
+      _changeCachingCollectionData.SortOriginalAndCurrent (comparer);
     }
 
     public void Commit ()
@@ -213,7 +206,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
-      _sortExpressionBasedComparer = info.GetValue<IComparer<DomainObject>> ();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
@@ -232,7 +224,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddHandle (_endPointID);
-      info.AddValue (_sortExpressionBasedComparer);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_changeDetectionStrategy);
       info.AddValue (_changeCachingCollectionData);

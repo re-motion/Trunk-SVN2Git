@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
 
-      var dataKeeper = CreateDataKeeper (clientTransaction, id);
+      var dataKeeper = _dataKeeperFactory.Create (id);
       SetIncompleteLoadState (dataKeeper);
     }
 
@@ -285,18 +285,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void RaiseStateUpdateNotification (bool hasChanged)
     {
       ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, hasChanged);
-    }
-
-    private ICollectionEndPointDataKeeper CreateDataKeeper (ClientTransaction clientTransaction, RelationEndPointID id)
-    {
-      var sortExpression = ((VirtualRelationEndPointDefinition) id.Definition).GetSortExpression();
-      // Only root transactions use the sort expression (if any)
-      var sortExpressionBasedComparer = sortExpression == null || clientTransaction.ParentTransaction != null
-                                            ? null
-                                            : SortedPropertyComparer.CreateCompoundComparer (
-                                                sortExpression.SortedProperties, clientTransaction.DataManager);
-
-      return _dataKeeperFactory.Create (id, sortExpressionBasedComparer);
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)

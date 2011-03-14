@@ -59,14 +59,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _changeDetectionStrategy; }
     }
 
-    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer)
+    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       return new CollectionEndPointDataKeeper (
           _clientTransaction, 
           endPointID, 
-          sortExpressionBasedComparer, 
           _endPointProvider, 
           _changeDetectionStrategy);
     }

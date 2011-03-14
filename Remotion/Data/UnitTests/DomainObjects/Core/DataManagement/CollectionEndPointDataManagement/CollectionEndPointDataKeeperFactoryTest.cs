@@ -55,24 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       var comparer = Comparer<DomainObject>.Default;
 
-      var result = _factory.Create (relationEndPointID, comparer);
+      var result = _factory.Create (relationEndPointID);
 
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
       Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
-      Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.SameAs (comparer));
       Assert.That (((CollectionEndPointDataKeeper) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
-    }
-
-    [Test]
-    public void Create_WithNullComparer ()
-    {
-      var relationEndPointID = RelationEndPointID.Create (
-          DomainObjectIDs.Customer1,
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-
-      var result = _factory.Create (relationEndPointID, null);
-
-      Assert.That (((CollectionEndPointDataKeeper) result).SortExpressionBasedComparer, Is.Null);
     }
 
     [Test]

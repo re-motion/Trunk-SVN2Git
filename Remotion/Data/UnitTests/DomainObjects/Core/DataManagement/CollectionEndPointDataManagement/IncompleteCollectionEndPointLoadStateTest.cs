@@ -98,23 +98,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void MarkDataComplete_CreatesNewDataKeeper_AndSortsDataKeeper ()
+    public void MarkDataComplete_CreatesNewDataKeeper ()
     {
       bool stateSetterCalled = false;
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
-      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
       _dataKeeperMock.Replay();
 
       var newKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
-      newKeeperMock.Expect (mock => mock.SortCurrentAndOriginalData());
       newKeeperMock.Replay();
 
       _collectionEndPointMock.Replay();
 
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperMock);
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
 
       _loadState.MarkDataComplete (
           _collectionEndPointMock,
@@ -139,7 +137,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
-      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new [] { oppositeEndPointWithoutItem });
       _dataKeeperMock.Replay ();
 
@@ -152,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       // ReSharper restore AccessToModifiedClosure
       _collectionEndPointMock.Replay ();
 
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperStub);
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperStub);
 
       _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[0], keeper => stateSetterCalled = true);
 
@@ -172,7 +169,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
-      _dataKeeperMock.Stub (stub => stub.SortExpressionBasedComparer).Return (_sortExpressionBasedComparer);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { oppositeEndPointForItem1Mock });
       _dataKeeperMock.Replay ();
 
@@ -186,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _collectionEndPointMock.Replay ();
 
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID, _sortExpressionBasedComparer)).Return (newKeeperMock);
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
 
       _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[] { item1, item2 }, keeper => { });
 

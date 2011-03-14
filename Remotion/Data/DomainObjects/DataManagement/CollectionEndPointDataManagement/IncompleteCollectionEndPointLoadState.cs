@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
           _dataKeeper.HasDataChanged(), 
           "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
 
-      var newDataKeeper = _dataKeeperFactory.Create (_dataKeeper.EndPointID, _dataKeeper.SortExpressionBasedComparer);
+      var newDataKeeper = _dataKeeperFactory.Create (_dataKeeper.EndPointID);
       var originalOppositeEndPoints = _dataKeeper.OriginalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
 
       foreach (var item in items)
@@ -106,7 +106,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         }
       }
 
-      newDataKeeper.SortCurrentAndOriginalData();
       stateSetter (newDataKeeper);
 
       foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)

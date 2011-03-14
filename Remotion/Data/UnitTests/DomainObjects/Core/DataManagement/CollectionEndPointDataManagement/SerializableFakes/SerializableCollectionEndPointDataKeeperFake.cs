@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void SortCurrentAndOriginalData ()
+    public void SortCurrentAndOriginalData (IComparer<DomainObject> comparer)
     {
       throw new NotImplementedException();
     }

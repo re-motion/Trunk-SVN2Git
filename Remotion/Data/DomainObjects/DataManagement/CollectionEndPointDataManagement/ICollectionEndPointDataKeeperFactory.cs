@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public interface ICollectionEndPointDataKeeperFactory
   {
-    ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID, IComparer<DomainObject> sortExpressionBasedComparer);
+    ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID);
   }
 }

@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var dataKeeperFactoryMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeperFactory> ();
       dataKeeperFactoryMock
-          .Expect (mock => mock.Create (Arg.Is (_customerEndPointID), Arg<IComparer<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.Create (Arg.Is (_customerEndPointID)))
           .Return (dataKeeperStub);
       dataKeeperFactoryMock.Replay();
 
@@ -132,54 +132,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointID.Create(new ObjectID (classDefinition, Guid.NewGuid ()), 
                               typeof (DomainObjectWithCollectionMissingCtor) + ".OppositeObjects");
       RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, new DomainObject[0]);
-    }
-
-    [Test]
-    public void Initialize_DataKeeper_Comparer_Null_NoSortExpression ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "OrderItems");
-      Assert.That (((VirtualRelationEndPointDefinition) endPointID.Definition).GetSortExpression (), Is.Null);
-
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
-      var dataKeeper = GetEndPointDataKeeper (endPoint);
-
-      Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Null);
-    }
-
-    [Test]
-    public void Initialize_DataKeeper_Comparer_Null_NoRootTransaction ()
-    {
-      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).GetSortExpression (), Is.Not.Null);
-      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).SortExpressionText, Is.EqualTo ("OrderNumber asc"));
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
-      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
-      var endPoint = new CollectionEndPoint (
-          subTransaction,  
-          _customerEndPointID, 
-          ClientTransactionMock.DataManager, 
-          ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (subTransaction, ClientTransactionMock.DataManager, changeDetectionStrategy));
-      
-      var dataKeeper = GetEndPointDataKeeper (endPoint);
-      Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Null);
-    }
-
-    [Test]
-    public void Initialize_DataKeeper_Comparer_NotNull_AccessesPropertyValueWithoutNotifications ()
-    {
-      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).GetSortExpression (), Is.Not.Null);
-      Assert.That (((VirtualRelationEndPointDefinition) _customerEndPointID.Definition).SortExpressionText, Is.EqualTo ("OrderNumber asc"));
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
-      var dataKeeper = GetEndPointDataKeeper (endPoint);
-
-      Assert.That (dataKeeper.SortExpressionBasedComparer, Is.Not.Null);
-
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      // _order1 has OrderNumber 1, _order2 has 3
-      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order1, _order2), Is.EqualTo (-1));
-      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order1), Is.EqualTo (1));
-      Assert.That (dataKeeper.SortExpressionBasedComparer.Compare (_order2, _order2), Is.EqualTo (0));
     }
 
     [Test]

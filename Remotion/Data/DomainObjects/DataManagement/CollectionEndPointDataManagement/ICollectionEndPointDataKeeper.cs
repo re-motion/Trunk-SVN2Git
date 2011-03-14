@@ -10,8 +10,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public interface ICollectionEndPointDataKeeper : IFlattenedSerializable
   {
     RelationEndPointID EndPointID { get; }
-    IComparer<DomainObject> SortExpressionBasedComparer { get; }
-
+    
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
     IObjectEndPoint[] OriginalOppositeEndPoints { get; }
@@ -29,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     bool HasDataChanged ();
 
-    void SortCurrentAndOriginalData ();
+    void SortCurrentAndOriginalData (IComparer<DomainObject> comparer);
     void Commit ();
   }
 }
