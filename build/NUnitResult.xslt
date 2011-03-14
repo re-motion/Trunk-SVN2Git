@@ -43,7 +43,6 @@
   <xsl:value-of select="child::node()/message"/>
   <xsl:text disable-output-escaping='yes'>&#xD;&#xA;</xsl:text>
   <xsl:if test="failure">
-    <xsl:text>nunit : error F</xsl:text><xsl:number value="position()" format="0001"/><xsl:text> : </xsl:text>
     <xsl:value-of select="failure/stack-trace"/>
 <xsl:text>
 </xsl:text>
