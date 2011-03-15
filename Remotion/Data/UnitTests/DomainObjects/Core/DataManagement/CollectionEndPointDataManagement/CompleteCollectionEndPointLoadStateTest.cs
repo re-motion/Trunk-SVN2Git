@@ -162,7 +162,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var result = _loadState.GetCollectionData(_collectionEndPointMock);
 
-      Assert.That (result, Is.SameAs (collectionDataStub));
+      Assert.That (result, Is.TypeOf(typeof(ReadOnlyCollectionDataDecorator)));
+      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (result);
+      Assert.That (wrappedData, Is.SameAs (collectionDataStub));
     }
 
     [Test]

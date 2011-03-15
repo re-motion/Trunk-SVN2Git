@@ -731,7 +731,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private OrderCollection CreateAssociatedCollectionWithEndPointStub ()
     {
       var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      var endPointDataStub = new DomainObjectCollectionData ();
+      var endPointDataStub = new ReadOnlyCollectionDataDecorator(new DomainObjectCollectionData (), true);
 
       collectionEndPointStub.Stub (stub => stub.GetCollectionData()).Return (endPointDataStub);
 

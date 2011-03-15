@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       set { throw new NotImplementedException(); }
     }
 
-    public IDomainObjectCollectionData GetCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetCollectionData ()
     {
       throw new NotImplementedException();
     }

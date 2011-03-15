@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       throw new InvalidOperationException ("The data is already incomplete.");
     }
 
-    public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       

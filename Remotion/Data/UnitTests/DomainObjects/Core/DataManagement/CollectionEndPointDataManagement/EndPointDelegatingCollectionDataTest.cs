@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private ICollectionEndPoint _collectionEndPointMock;
     private IDomainObjectCollectionData _endPointDataStub;
+    private ReadOnlyCollectionDataDecorator _endPointDataDecorator;
     private IDataManagementCommand _nestedCommandMock;
     private ExpandedCommand _expandedCommandFake;
     private IDataManagementCommand _commandStub;
@@ -55,6 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       StubCollectionEndPoint (_collectionEndPointMock, ClientTransactionMock, _owningOrder);
 
       _endPointDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
+      _endPointDataDecorator = new ReadOnlyCollectionDataDecorator (_endPointDataStub, true);
 
       _commandStub = MockRepository.GenerateStub<IDataManagementCommand>();
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
@@ -79,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Count ()
     {
       _endPointDataStub.Stub (stub => stub.Count).Return (42);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay();
 
       Assert.That (_delegatingData.Count, Is.EqualTo (42));
@@ -131,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var dataStoreStub = new DomainObjectCollectionData ();
       _endPointDataStub.Stub (stub => stub.GetDataStore()).Return (dataStoreStub);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.GetDataStore(), Is.SameAs(dataStoreStub));
@@ -143,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void ContainsObjectID ()
     {
       _endPointDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.ContainsObjectID (_orderItem1.ID), Is.True);
@@ -155,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void GetObject_Index ()
     {
       _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem1);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.GetObject (1), Is.SameAs(_orderItem1));
@@ -167,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void GetObject_ID ()
     {
       _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (_orderItem1);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.GetObject (_orderItem1.ID), Is.SameAs (_orderItem1));
@@ -179,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void IndexOf ()
     {
       _endPointDataStub.Stub (stub => stub.IndexOf(_orderItem1.ID)).Return (3);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.IndexOf(_orderItem1.ID), Is.EqualTo(3));
@@ -192,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       var fakeEnumerator = MockRepository.GenerateStub<IEnumerator<DomainObject>>();
       _endPointDataStub.Stub (stub => stub.GetEnumerator ()).Return (fakeEnumerator);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Replay ();
 
       Assert.That (_delegatingData.GetEnumerator(), Is.SameAs(fakeEnumerator));
@@ -222,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem2);
       _endPointDataStub.Stub (stub => stub.GetObject (0)).Return (_orderItem1);
 
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub).Repeat.Any();
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator).Repeat.Any();
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
@@ -258,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Clear_WithoutItems ()
     {
       _endPointDataStub.Stub (stub => stub.Count).Return (0);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay();
 
@@ -293,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Remove ()
     {
       _endPointDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (_commandStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
@@ -312,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Remove_ObjectNotContained ()
     {
       _endPointDataStub.Stub (stub => stub.ContainsObjectID(_orderItem1.ID)).Return (false);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Expect(mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
 
@@ -335,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Remove_ID ()
     {
       _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (_orderItem1);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (_commandStub);
       _collectionEndPointMock.Expect (mock => mock.Touch());
       _collectionEndPointMock.Replay();
@@ -353,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Remove_ID_ObjectNotContained ()
     {
       _endPointDataStub.Stub (stub => stub.GetObject (_orderItem1.ID)).Return (null);
-      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataStub);
+      _collectionEndPointMock.Expect (mock => mock.GetCollectionData ()).Return (_endPointDataDecorator);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
 

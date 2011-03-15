@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { throw new InvalidOperationException ("It is not possible to get the OriginalCollection from a NullCollectionEndPoint."); }
     }
 
-    public IDomainObjectCollectionData GetCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetCollectionData ()
     {
       throw new InvalidOperationException ("It is not possible to call GetCollectionData on a NullCollectionEndPoint.");
     }

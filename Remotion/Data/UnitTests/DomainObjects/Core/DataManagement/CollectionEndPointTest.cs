@@ -744,7 +744,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetCollectionData ()
     {
-      var fakeResult = new DomainObjectCollectionData ();
+      var fakeResult = new ReadOnlyCollectionDataDecorator(new DomainObjectCollectionData (), true);
       _loadStateMock.Expect (mock => mock.GetCollectionData (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 

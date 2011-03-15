@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter);
     void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
-    IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint);
+    ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
 
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
     IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint);

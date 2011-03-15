@@ -104,10 +104,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
-    public IDomainObjectCollectionData GetCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      return _dataKeeper.CollectionData;
+      return new ReadOnlyCollectionDataDecorator(_dataKeeper.CollectionData, true);
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)

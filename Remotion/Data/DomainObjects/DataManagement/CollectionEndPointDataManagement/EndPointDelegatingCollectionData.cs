@@ -67,8 +67,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get 
       { 
         // Currently, the data backing a CollectionEndPoint is never read-only.
-        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().IsReadOnly) to avoid lazy loading for
-        // read-only checks.
+        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().IsReadOnly) because that always returns a read-only
+        // decorator.
         return false; 
       }
     }

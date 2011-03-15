@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -41,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private Order _relatedObject;
     private RelationEndPointID _endPointID;
-    private Comparer<DomainObject> _sortExpressionBasedComparer;
 
     [SetUp]
     public override void SetUp ()
@@ -60,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
-      _sortExpressionBasedComparer = Comparer<DomainObject>.Default;
     }
 
     [Test]
@@ -204,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       CheckOperationDelegatesToCompleteState (
           s => s.GetCollectionData (_collectionEndPointMock),
           s => s.GetCollectionData (),
-          new DomainObjectCollectionData ());
+          new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (), true));
     }
 
     [Test]

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
 
-    IDomainObjectCollectionData GetCollectionData ();
+    ReadOnlyCollectionDataDecorator GetCollectionData ();
     DomainObjectCollection GetCollectionWithOriginalData ();
 
     void MarkDataComplete (DomainObject[] items);

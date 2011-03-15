@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _originalCollection; }
     }
 
-    public IDomainObjectCollectionData GetCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetCollectionData ()
     {
       return _loadState.GetCollectionData (this);
     }
