@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -123,9 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var computer = Computer.NewObject ();
-      ClientTransactionMock.Commit ();
-
+      var computer = CreateObjectInDatabaseAndLoad<Computer> ();
       Assert.That (computer.Employee, Is.Null);
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
@@ -147,10 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var computer = Computer.NewObject ();
-      computer.Employee = Employee.GetObject (DomainObjectIDs.Employee2);
-      ClientTransactionMock.Commit ();
-
+      var computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2));
       Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
@@ -166,10 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var company = Company.NewObject ();
-      company.Ceo = Ceo.NewObject (); // mandatory
-      ClientTransactionMock.Commit ();
-
+      var company = CreateCompanyInDatabaseAndLoad ();
       Assert.That (company.IndustrialSector, Is.Null);
 
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1); // virtual end point not yet resolved
@@ -220,10 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
-      var company = Company.NewObject ();
-      company.Ceo = Ceo.NewObject (); // mandatory
-      ClientTransactionMock.Commit ();
-
+      var company = CreateCompanyInDatabaseAndLoad ();
       Assert.That (company.IndustrialSector, Is.Null);
 
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1); // virtual end point not yet resolved
@@ -334,9 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable();
 
-      var employee = Employee.NewObject();
-      ClientTransactionMock.Commit();
-
+      var employee = CreateObjectInDatabaseAndLoad<Employee> ();
       Assert.That (employee.Computer, Is.Null);
 
       ObjectID newComputerID = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID);
@@ -358,7 +346,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var originalComputer = Computer.GetObject (DomainObjectIDs.Computer1);
       var employee = originalComputer.Employee;
-      
       Assert.That (employee.Computer, Is.SameAs (originalComputer));
 
       ObjectID newComputerID = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID);
@@ -374,8 +361,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       SetDatabaseModifyable();
 
       // set up new IndustrialSector object in database with one company
-      var industrialSector = CreateNewIndustrialSector();
-      ClientTransactionMock.Commit();
+      var industrialSector = CreateIndustrialSectorInDatabaseAndLoad ();
+      industrialSector.Companies.EnsureDataComplete ();
 
       // in parallel transaction, add a second Company to the IndustrialSector
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
@@ -416,8 +403,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       SetDatabaseModifyable ();
 
       // set up new IndustrialSector object in database with one company
-      var industrialSector = CreateNewIndustrialSector ();
-      ClientTransactionMock.Commit ();
+      var industrialSector = CreateIndustrialSectorInDatabaseAndLoad ();
+      industrialSector.Companies.EnsureDataComplete ();
 
       // in parallel transaction, add a second Company to the IndustrialSector
       var newCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
@@ -446,13 +433,79 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (newCompany, c => c.IndustrialSector, true);
     }
 
-    private IndustrialSector CreateNewIndustrialSector ()
+    [Test]
+    [Ignore ("TODO 3804")]
+    public void Commit_DoesNotChangeInconsistentState_OneMany_ObjectIncluded ()
     {
-      IndustrialSector industrialSector = IndustrialSector.NewObject();
-      Company oldCompany = Company.NewObject();
-      oldCompany.Ceo = Ceo.NewObject();
-      industrialSector.Companies.Add (oldCompany);
-      return industrialSector;
+      SetDatabaseModifyable ();
+
+      var company = CreateCompanyInDatabaseAndLoad ();
+      Assert.That (company.IndustrialSector, Is.Null);
+
+      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
+
+      // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
+      industrialSector.Companies.EnsureDataComplete ();
+
+      Assert.That (company.IndustrialSector, Is.Null);
+      Assert.That (industrialSector.Companies, List.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector, s => s.Companies, false);
+
+      CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = industrialSector, "out of sync");
+      industrialSector.Companies.Insert (0, Company.GetObject (DomainObjectIDs.Company2));
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync");
+
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
+
+      ClientTransaction.Current.Commit ();
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector, s => s.Companies, false);
+
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (7));
+    }
+
+    [Test]
+    public void Commit_DoesNotChangeInconsistentState_OneMany_ObjectNotIncluded ()
+    {
+     SetDatabaseModifyable ();
+
+      var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
+      var company = Company.GetObject (companyID);
+
+      Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID (), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
+
+      SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
+
+      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+
+      // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
+      industrialSector.Companies.EnsureDataComplete ();
+
+      CheckSyncState (company, c => c.IndustrialSector, false);
+      CheckSyncState (industrialSector, s => s.Companies, true);
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (5));
+      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+
+      CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync");
+      industrialSector.Companies.Add (Company.GetObject (DomainObjectIDs.Company1));
+      CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync");
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (6));
+
+      ClientTransaction.Current.Commit();
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (industrialSector.Companies.Count, Is.EqualTo (6));
+
+      CheckSyncState (company, c => c.IndustrialSector, false);
+      CheckSyncState (industrialSector, s => s.Companies, true);
     }
 
     private ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
@@ -514,6 +567,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       if (!hadException)
         Assert.Fail ("Expected " + typeof (TException).Name);
+    }
+
+    private Company CreateCompanyInDatabaseAndLoad ()
+    {
+      ObjectID objectID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var company = Company.NewObject ();
+        company.Ceo = Ceo.NewObject ();
+        ClientTransaction.Current.Commit ();
+        objectID = company.ID;
+      }
+      return Company.GetObject (objectID);
+    }
+
+    private IndustrialSector CreateIndustrialSectorInDatabaseAndLoad ()
+    {
+      ObjectID objectID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        IndustrialSector industrialSector = IndustrialSector.NewObject ();
+        Company oldCompany = Company.NewObject ();
+        oldCompany.Ceo = Ceo.NewObject ();
+        industrialSector.Companies.Add (oldCompany);
+        objectID = industrialSector.ID;
+
+        ClientTransaction.Current.Commit ();
+      }
+      return IndustrialSector.GetObject (objectID);
+    }
+
+
+    private T CreateObjectInDatabaseAndLoad<T> () where T : DomainObject
+    {
+      ObjectID objectID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var domainObject = LifetimeService.NewObject (ClientTransaction.Current, typeof (T), ParamList.Empty);
+        ClientTransaction.Current.Commit ();
+        objectID = domainObject.ID;
+      }
+      return (T) LifetimeService.GetObject (ClientTransaction.Current, objectID, false);
     }
   }
 }
