@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Logging;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -31,6 +31,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public class IncompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
@@ -88,6 +90,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
           _dataKeeper.HasDataChanged(), 
           "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
 
+      if (s_log.IsInfoEnabled)
+        s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", collectionEndPoint.ID);
+      
       var newDataKeeper = _dataKeeperFactory.Create (_dataKeeper.EndPointID);
       var originalOppositeEndPoints = _dataKeeper.OriginalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
 
@@ -103,6 +108,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         else
         {
           newDataKeeper.RegisterOriginalItemWithoutEndPoint (item);
+
+          if (s_log.IsWarnEnabled)
+          {
+            s_log.WarnFormat ("CollectionEndPoint '{0}' contains an item without an opposite end-point: '{1}'. The CollectionEndPoint is out-of-sync.", 
+              collectionEndPoint.ID,
+              item.ID);
+          }
         }
       }
 

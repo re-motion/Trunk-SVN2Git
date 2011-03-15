@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -30,6 +32,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   /// </summary>
   public class CompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+
     private readonly ICollectionEndPointDataKeeper _dataKeeper;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ClientTransaction _clientTransaction;
@@ -37,8 +41,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly Dictionary<ObjectID, IObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
     public CompleteCollectionEndPointLoadState (
-        ICollectionEndPointDataKeeper dataKeeper, 
-        IRelationEndPointProvider endPointProvider, 
+        ICollectionEndPointDataKeeper dataKeeper,
+        IRelationEndPointProvider endPointProvider,
         ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
@@ -95,7 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, collectionEndPoint);
 
       stateSetter (_dataKeeper);
-      
+
       foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints.Values)
         collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
@@ -118,7 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 
-      var oppositeEndPointDefinition = collectionEndPoint.Definition.GetOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = collectionEndPoint.Definition.GetOppositeEndPointDefinition();
 
       Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
 
@@ -133,11 +137,29 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       if (_dataKeeper.OriginalCollectionData.ContainsObjectID (oppositeEndPoint.ObjectID))
       {
+        if (s_log.IsInfoEnabled)
+        {
+          s_log.InfoFormat (
+              "ObjectEndPoint '{0}' is registered for already loaded CollectionEndPoint '{1}'. "
+              + "The collection query result contained the item, so the ObjectEndPoint is marked as synchronzed.",
+              oppositeEndPoint.ID,
+              collectionEndPoint.ID);
+        }
+
         _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-        oppositeEndPoint.MarkSynchronized ();
+        oppositeEndPoint.MarkSynchronized();
       }
       else
       {
+        if (s_log.IsWarnEnabled)
+        {
+          s_log.WarnFormat (
+              "ObjectEndPoint '{0}' is registered for already loaded CollectionEndPoint '{1}'. "
+              + "The collection query result did not contain the item, so the ObjectEndPoint is out-of-sync.",
+              oppositeEndPoint.ID,
+              collectionEndPoint.ID);
+        }
+
         _unsynchronizedOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
         oppositeEndPoint.MarkUnsynchronized();
       }
@@ -150,10 +172,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       if (_unsynchronizedOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID))
       {
+        if (s_log.IsDebugEnabled)
+        {
+          s_log.DebugFormat (
+              "Unsynchronized ObjectEndPoint '{0}' is unregistered from CollectionEndPoint '{1}'.", 
+              oppositeEndPoint.ID, 
+              collectionEndPoint.ID);
+        }
+
         _unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
       }
       else
       {
+        if (s_log.IsInfoEnabled)
+        {
+          s_log.InfoFormat (
+              "ObjectEndPoint '{0}' is unregistered from CollectionEndPoint '{1}'. The CollectionEndPoint is transitioned to incomplete state.",
+              oppositeEndPoint.ID,
+              collectionEndPoint.ID);
+        }
+
         collectionEndPoint.MarkDataIncomplete();
         collectionEndPoint.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
       }
@@ -163,12 +201,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 
-      return !_dataKeeper.OriginalItemsWithoutEndPoints.Any ();
+      return !_dataKeeper.OriginalItemsWithoutEndPoints.Any();
     }
 
     public void Synchronize (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat ("CollectionEndPoint '{0}' is synchronized.", collectionEndPoint.ID);
+      }
 
       foreach (var item in _dataKeeper.OriginalItemsWithoutEndPoints)
         _dataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
@@ -183,6 +226,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("ObjectEndPoint '{0}' is marked as synchronized.", oppositeEndPoint.ID);
+      
       if (!_unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint.ObjectID))
       {
         var message = string.Format (
@@ -196,8 +242,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (
-        ICollectionEndPoint collectionEndPoint, 
-        DomainObjectCollection newCollection, 
+        ICollectionEndPoint collectionEndPoint,
+        DomainObjectCollection newCollection,
         Action<DomainObjectCollection> collectionSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
@@ -225,8 +271,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{0}' property.",
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
-            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
-            _dataKeeper.OriginalItemsWithoutEndPoints.First ().ID);
+            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            _dataKeeper.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }
 
@@ -259,8 +305,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
             _dataKeeper.EndPointID.ObjectID,
             _dataKeeper.EndPointID.Definition.PropertyName,
-            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
-            _unsynchronizedOppositeEndPoints.Values.First ().ObjectID);
+            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            _unsynchronizedOppositeEndPoints.Values.First().ObjectID);
         throw new InvalidOperationException (message);
       }
 
@@ -272,8 +318,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
             _dataKeeper.EndPointID.ObjectID,
             _dataKeeper.EndPointID.Definition.PropertyName,
-            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
-            _dataKeeper.OriginalItemsWithoutEndPoints.First ().ID);
+            _dataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            _dataKeeper.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }
 
@@ -303,22 +349,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       CheckAddedObject (replacementObject);
       CheckRemovedObject (_dataKeeper.CollectionData.GetObject (index));
 
-      var replacedObject = _dataKeeper.CollectionData.GetObject(index);
+      var replacedObject = _dataKeeper.CollectionData.GetObject (index);
       if (replacedObject == replacementObject)
         return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject);
       else
         return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, _dataKeeper.CollectionData);
     }
 
-   public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
+    public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
+      _dataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject>());
 
       if (sourceEndPoint.HasBeenTouched || collectionEndPoint.HasChanged)
-        collectionEndPoint.Touch ();
+        collectionEndPoint.Touch();
     }
 
     public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
@@ -327,7 +373,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       if (_dataKeeper.CollectionData.Count == 0)
       {
-        var objectReference = collectionEndPoint.GetDomainObjectReference ();
+        var objectReference = collectionEndPoint.GetDomainObjectReference();
         var message = String.Format (
             "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
             collectionEndPoint.Definition.PropertyName,
@@ -338,7 +384,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public bool HasChanged ()
     {
-      return _dataKeeper.HasDataChanged ();
+      return _dataKeeper.HasDataChanged();
     }
 
     public void Commit ()
@@ -357,7 +403,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
-            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
 
@@ -370,7 +416,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
-            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
     }
@@ -386,7 +432,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
-            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
 
@@ -399,7 +445,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
             domainObject.ID,
             _dataKeeper.EndPointID.Definition.PropertyName,
             _dataKeeper.EndPointID.ObjectID,
-            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            _dataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
     }
@@ -410,11 +456,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper> ();
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
-      var unsynchronizedOppositeEndPoints = new List<IObjectEndPoint> ();
-       info.FillCollection (unsynchronizedOppositeEndPoints);
+      var unsynchronizedOppositeEndPoints = new List<IObjectEndPoint>();
+      info.FillCollection (unsynchronizedOppositeEndPoints);
       _unsynchronizedOppositeEndPoints = unsynchronizedOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 

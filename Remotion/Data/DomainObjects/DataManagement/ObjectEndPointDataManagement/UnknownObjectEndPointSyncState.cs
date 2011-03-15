@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
@@ -27,6 +29,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// </summary>
   public class UnknownObjectEndPointSyncState : IObjectEndPointSyncState
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
     public UnknownObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
@@ -44,6 +48,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public bool IsSynchronized (IObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (s_log.IsWarnEnabled)
+      {
+        s_log.WarnFormat (
+            "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
+      }
 
       _lazyLoader.LoadOppositeEndPoint (endPoint);
 

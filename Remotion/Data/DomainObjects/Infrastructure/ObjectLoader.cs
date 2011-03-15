@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -37,6 +38,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _eventSink;
@@ -244,6 +247,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
       catch (InvalidOperationException ex)
       {
+        if (s_log.IsWarnEnabled)
+          s_log.Warn (ex.Message);
+
         throw new LoadConflictException (ex.Message, ex);
       }
 
@@ -261,6 +267,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         var existingOppositeEndPointID = RelationEndPointID.Create(existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
         var existingBackPointer = dataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
+
+        if (s_log.IsWarnEnabled)
+        {
+          s_log.WarnFormat ("Cannot load the related '{0}' of '{1}': The database returned related object '{2}', "
+            +"but that object already exists in the current ClientTransaction (and points to a different object '{3}')",
+            relationEndPointID.Definition.PropertyName,
+            relationEndPointID.ObjectID,
+            relatedDataContainer.ID,
+            existingBackPointer != null ? existingBackPointer.ID.ToString () : "null");
+        }
+
         var message = string.Format (
             "Cannot load the related '{0}' of '{1}': The database returned related object '{2}', but that object already exists in the current "
             + "ClientTransaction (and points to a different object '{3}').",
