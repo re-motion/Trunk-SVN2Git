@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _changeCachingCollectionData.HasChanged (_changeDetectionStrategy);
     }
 
-    public void SortCurrentAndOriginalData(IComparer<DomainObject> comparer)
+    public void SortCurrentAndOriginalData (IComparer<DomainObject> comparer)
     {
       ArgumentUtility.CheckNotNull ("comparer", comparer);
 

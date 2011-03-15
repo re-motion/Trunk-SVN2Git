@@ -369,7 +369,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         // which also registers the opposite virtual end point; see assertion below
         var relatedObject = _objectLoader.LoadRelatedObject (endPointID, ClientTransaction.DataManager);
         if (relatedObject == null)
-          RegisterVirtualObjectEndPoint (endPointID, null);
+          RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
 
         Assertion.IsTrue (
             _relationEndPoints.ContainsKey (endPointID), 
