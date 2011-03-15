@@ -77,6 +77,16 @@
     <MakeDir Directories="$(LogDirectory)" />
   </Target>
 
+  <Target Name="CheckVersion">
+    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Major) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Minor) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Build) == -1" />
+    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Revision) != -1" />
+
+  </Target>
+  
   <Target Name="LogConfiguration" DependsOnTargets="CreateActiveConfiguration">
     <Message Text="Current configuration: $(ConfigurationID)"/>
     <Message Text="* Name: $(ActiveConfigurationName)"/>
@@ -141,12 +151,11 @@
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
-  <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration">
+  <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration" Condition="$(Version) != ''">
     <Message Text="Updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>
 
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'ConfigurationID' is not set." Condition="'$(ConfigurationID)' == ''" />
-    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <ItemGroup>
       <_assemblyInfos Remove="@(_assemblyInfoFiles)"/>

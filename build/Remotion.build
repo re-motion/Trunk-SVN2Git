@@ -31,27 +31,34 @@
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
   
-  <Target Name="BuildAll" DependsOnTargets="CleanFolders">
+  <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
-         BuildInParallel="false"
-         Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"
-         Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;GeneratePublicDocumentation;AssembleBuildOutput;"/>
+             BuildInParallel="false"
+             Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"
+             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;GeneratePublicDocumentation;AssembleBuildOutput;"/>
   </Target>
 
   <Target Name="PackageAll">
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-         BuildInParallel="false"
-         Targets="CreatePackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
+             BuildInParallel="false"
+             Targets="CreatePackages"
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
   </Target>
 
   <Target Name="DeployAll">
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-         BuildInParallel="false"
-         Targets="DeployPackages"
-         Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
+             BuildInParallel="false"
+             Targets="DeployPackages"
+             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;PackageAll" />
+
+  <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"
+             Targets="CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"/>
+  </Target>
 
 </Project>

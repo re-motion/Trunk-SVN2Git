@@ -1,27 +1,15 @@
 @echo off
-set nant="prereq\Tools\NAnt\bin.net-2.0\nant.exe"
-
+set msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 if not exist remotion.snk goto nosnk
 
-echo Building re-motion without docs using %nant%...
+echo Building re-motion without docs using %msbuild%...
 echo.
 
-%nant% "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-t:net-3.5" "-l:Build.log" "-nologo" ^
-    "-D:build.update.assembly-info=false" ^
-    clean cleantemp ^
-    resources debug
+cd build
+
+%msbuild% Remotion.build /t:TestBuild
     
 if not %ERRORLEVEL%==0 goto build_failed
-
-echo Zipping up the build results...
-echo.
-
-%nant% "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-D:make-relinq-zips=true" "-t:net-3.5" "-nologo" ^
-    cleantemp ^
-    sourcezip zip ^
-    relinq-sourcezip relinq-zip ^
-    dms-sourcezip dms-zip ^
-    securityManager-sourcezip securityManager-zip
 
 if not %ERRORLEVEL%==0 goto zip_failed
 
@@ -33,13 +21,6 @@ echo Building re-motion has failed.
 pause
 
 exit /b 1
-
-:zip_failed
-echo.
-echo Zipping re-motion has failed.
-pause
-
-exit /b 3
 
 :build_succeeded
 echo.
