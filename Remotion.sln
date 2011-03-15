@@ -39,7 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 	ProjectSection(SolutionItems) = preProject
 		Build-RemotionLocal.cmd = Build-RemotionLocal.cmd
 		Build-RemotionLocalDoc.cmd = Build-RemotionLocalDoc.cmd
-		buildall.cmd = buildall.cmd
 		build\doc.internal.xml = build\doc.internal.xml
 		build\doc.public.xml = build\doc.public.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
