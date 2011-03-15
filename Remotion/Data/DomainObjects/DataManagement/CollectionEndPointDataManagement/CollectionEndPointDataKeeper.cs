@@ -53,10 +53,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _endPointProvider = endPointProvider;
       _changeDetectionStrategy = changeDetectionStrategy;
 
-      var wrappedData = new DomainObjectCollectionData ();
+      var wrappedData = new DomainObjectCollectionData();
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
       _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
-     
+
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
     }
@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       if (ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end-point has already been registered.");
-      
+
       var item = oppositeEndPoint.GetDomainObjectReference();
 
       if (_originalItemsWithoutEndPoint.Contains (item))
@@ -174,19 +174,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Commit ()
     {
-      _changeCachingCollectionData.Commit ();
-      
+      var oldItemsWithoutEndPoint = new HashSet<DomainObject> (_originalItemsWithoutEndPoint);
+
+      _changeCachingCollectionData.Commit();
+
       _originalOppositeEndPoints.Clear();
       _originalItemsWithoutEndPoint.Clear();
 
-      var oppositeEndPointDefinition = _endPointID.Definition.GetMandatoryOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = _endPointID.Definition.GetMandatoryOppositeEndPointDefinition();
       foreach (var item in OriginalCollectionData)
       {
-        var endPoint = GetOppositeEndPoint (item.ID, oppositeEndPointDefinition);
-        if (endPoint != null)
-          _originalOppositeEndPoints.Add (endPoint);
-        else
+        if (oldItemsWithoutEndPoint.Contains (item))
           _originalItemsWithoutEndPoint.Add (item);
+        else
+        {
+          var endPoint = GetOppositeEndPoint (item.ID, oppositeEndPointDefinition);
+          if (endPoint != null)
+            _originalOppositeEndPoints.Add (endPoint);
+          else
+            _originalItemsWithoutEndPoint.Add (item);
+        }
       }
 
       Assertion.IsTrue (OriginalCollectionData.Count == _originalOppositeEndPoints.Count + _originalItemsWithoutEndPoint.Count);
@@ -205,11 +212,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      _endPointID = info.GetValueForHandle<RelationEndPointID> ();
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
-      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
+      _endPointID = info.GetValueForHandle<RelationEndPointID>();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
+      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
 
-      _changeCachingCollectionData = info.GetValue<ChangeCachingCollectionDataDecorator> ();
+      _changeCachingCollectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
 
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       info.FillCollection (_originalOppositeEndPoints);
@@ -217,6 +224,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
       info.FillCollection (_originalItemsWithoutEndPoint);
     }
+
     // ReSharper restore UnusedMember.Local
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)

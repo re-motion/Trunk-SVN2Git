@@ -425,7 +425,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void Commit_RegistersItemsWithoutEndPoint_IfProviderCantGetEndPoint ()
+    public void Commit_RegistersItemWithoutEndPoint_IfPreviouslyItemWithoutEndPoint ()
+    {
+      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order> ();
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (itemWithoutEndPoint);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+
+      // Prepare end-point for item. Doesn't matter - the item still gets registered as item without end-point.
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
+          .Return (MockRepository.GenerateStub<IObjectEndPoint>());
+
+      _dataKeeper.Commit ();
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void Commit_RegistersItemWithoutEndPoint_IfProviderCantGetEndPoint ()
     {
       var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order>();
       _endPointProviderStub

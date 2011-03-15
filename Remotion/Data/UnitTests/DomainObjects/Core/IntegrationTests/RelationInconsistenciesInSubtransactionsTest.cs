@@ -730,7 +730,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3804")]
     public void Commit_InSubTransactionSubTransaction_InconsistentState_OneMany_ObjectIncluded ()
     {
       SetDatabaseModifyable ();
