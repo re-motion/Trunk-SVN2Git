@@ -60,6 +60,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void IsSynchronized_CalledFromSubTransaction_ThrowsNoException ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPointStub.Stub (stub => stub.IsDataComplete).Return (true);
+      endPointStub.Stub (stub => stub.IsSynchronized).Return (true).Repeat.Once ();
+      endPointStub.Stub (stub => stub.IsSynchronized).Return (false).Repeat.Once ();
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointStub);
+
+      var subTransaction = _transaction.CreateSubTransaction ();
+      using (subTransaction.EnterDiscardingScope())
+      {
+        Assert.That (BidirectionalRelationSyncService.IsSynchronized (subTransaction, endPointID), Is.True);
+        Assert.That (BidirectionalRelationSyncService.IsSynchronized (subTransaction, endPointID), Is.False);
+      }
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' has not yet been fully loaded into the given ClientTransaction.")]

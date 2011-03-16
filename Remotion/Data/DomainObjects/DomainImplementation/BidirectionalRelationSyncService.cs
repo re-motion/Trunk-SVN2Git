@@ -143,10 +143,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckNotUnidirectional (endPointID, "endPointID");
 
-      // TODO 3800
-      // Get end-point from clientTransaction.RootTransaction; test: load end-point in root transaction, create sub-transaction, call IsSynchronized on sub-tx => no exception
-
-      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
+      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction.RootTransaction);
       return endPoint.IsSynchronized;
     }
 
