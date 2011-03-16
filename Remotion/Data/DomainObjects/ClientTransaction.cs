@@ -148,6 +148,7 @@ public class ClientTransaction
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IObjectLoader _objectLoader;
+  private ClientTransaction _activeSubTransaction;
 
   private bool _isDiscarded;
 
@@ -155,7 +156,7 @@ public class ClientTransaction
   private QueryManager _queryManager;
 
   private readonly Guid _id = Guid.NewGuid ();
-
+  
   protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
   {
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
@@ -190,6 +191,11 @@ public class ClientTransaction
   public ClientTransaction ParentTransaction 
   { 
     get { return _persistenceStrategy.ParentTransaction; }
+  }
+
+  public ClientTransaction ActiveSubTransaction
+  {
+    get { return _activeSubTransaction; }
   }
 
   /// <summary>
@@ -336,7 +342,7 @@ public class ClientTransaction
     if (ParentTransaction != null)
     {
       ParentTransaction.IsReadOnly = false;
-      // TODO 3800: ParentTransaction._activeSubTransaction = null;
+      ParentTransaction._activeSubTransaction = null;
     }
 
     _isDiscarded = true;
@@ -1168,8 +1174,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("eventArgs", eventArgs);
 
-    // TODO 3804
-    // _activeSubTransaction = eventArgs.SubTransaction;
+    _activeSubTransaction = eventArgs.SubTransaction;
 
     using (EnterNonDiscardingScope ())
     {

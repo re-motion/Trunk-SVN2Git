@@ -65,6 +65,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void ActiveSubTransaction_NoSubTransaction ()
+    {
+      Assert.That (ClientTransaction.Current.ActiveSubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void ActiveSubTansaction_RootTransactionHasSubTransaction ()
+    {
+      var rootTransaction = ClientTransaction.Current;
+      var subTransaction = ClientTransaction.Current.CreateSubTransaction();
+      using (subTransaction.EnterDiscardingScope ())
+      {
+        Assert.That (rootTransaction.ActiveSubTransaction, Is.SameAs(subTransaction));
+      }
+      Assert.That (ClientTransaction.Current.ActiveSubTransaction, Is.Null);
+    }
+
+    [Test]
     public void DataContainerMapLookUp ()
     {
       DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
