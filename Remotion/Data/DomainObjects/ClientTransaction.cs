@@ -334,7 +334,10 @@ public class ClientTransaction
       TransactionEventSink.TransactionDiscarding (this);
 
     if (ParentTransaction != null)
+    {
       ParentTransaction.IsReadOnly = false;
+      // TODO 3800: ParentTransaction._activeSubTransaction = null;
+    }
 
     _isDiscarded = true;
     AddListener (new InvalidatedTransactionListener ());
@@ -1164,6 +1167,9 @@ public class ClientTransaction
   protected virtual void OnSubTransactionCreated (SubTransactionCreatedEventArgs eventArgs)
   {
     ArgumentUtility.CheckNotNull ("eventArgs", eventArgs);
+
+    // TODO 3804
+    // _activeSubTransaction = eventArgs.SubTransaction;
 
     using (EnterNonDiscardingScope ())
     {

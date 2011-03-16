@@ -143,6 +143,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckNotUnidirectional (endPointID, "endPointID");
 
+      // TODO 3800
+      // Get end-point from clientTransaction.RootTransaction; test: load end-point in root transaction, create sub-transaction, call IsSynchronized on sub-tx => no exception
+
       var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
       return endPoint.IsSynchronized;
     }
@@ -188,6 +191,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckNotUnidirectional (endPointID, "endPointID");
 
+      // TODO 3800
+      // Start with clientTransaction.RootTransaction
       var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
 
       if (endPoint.Definition.Cardinality == CardinalityType.One)
@@ -201,6 +206,13 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         var collectionEndPoint = (ICollectionEndPoint) endPoint;
         collectionEndPoint.Synchronize();
       }
+
+      // TODO 3800: loop over ActiveSubTransaction, check if end-point is loaded and complete; if yes, synchronize, otherwise stop
+      // TODO 3800: Tests:
+      // TODO 3800:   - create hierarchy, load end-point in root only, apply to root => root synchronized, no exception for sub; integration test: when end-point is then loaded into sub, it is synchronized
+      // TODO 3800:   - create hierarchy, load end-point in root only, apply to sub => root synchronized, no exception for sub: integration test: when end-point is then loaded into sub, it is synchronized
+      // TODO 3800:   - create hierarchy, load end-point in root and sub, apply to root => both synchronized
+      // TODO 3800:   - create hierarchy, load end-point in root and sub, apply to sub => both synchronized
     }
 
     private static void CheckNotUnidirectional (RelationEndPointID endPointID, string paramName)
@@ -211,8 +223,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
     private static IRelationEndPoint GetAndCheckLoadedEndPoint (RelationEndPointID endPointID, ClientTransaction clientTransaction)
     {
-      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
-      if (endPoint == null || !endPoint.IsDataComplete)
+      var endPoint = GetEndPoint (clientTransaction, endPointID);
+
+      if (endPoint == null)
       {
         var message = String.Format (
             "The relation property '{0}' of object '{1}' has not yet been fully loaded into the given ClientTransaction.",
@@ -221,6 +234,12 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         throw new InvalidOperationException (message);
       }
       return endPoint;
+    }
+
+    private static IRelationEndPoint GetEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    {
+      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      return endPoint != null && !endPoint.IsDataComplete ? null : endPoint;
     }
   }
 }
