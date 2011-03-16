@@ -56,7 +56,7 @@
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
     <PropertyGroup>
-      <_standardDocumenterPropertiesFileName>doc.public.xml</_standardDocumenterPropertiesFileName>
+      <_standardDocumenterPropertiesFileName>$(MSBuildProjectDirectory)\doc.public.xml</_standardDocumenterPropertiesFileName>
       <_documenterPropertiesFile>$(DocumentationBaseDirectory)documenterProperties.xml</_documenterPropertiesFile>
     </PropertyGroup>
 

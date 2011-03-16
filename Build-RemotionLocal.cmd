@@ -5,9 +5,7 @@ if not exist remotion.snk goto nosnk
 echo Building re-motion without docs using %msbuild%...
 echo.
 
-cd build
-
-%msbuild% Remotion.build /t:TestBuild
+%msbuild% build\Remotion.build /t:TestBuild
     
 if not %ERRORLEVEL%==0 goto build_failed
 

@@ -29,12 +29,12 @@
     <Version></Version>
     <CodePlexUsername></CodePlexUsername>
     <CodePlexPassword></CodePlexPassword>
-    <SolutionDirectory>$([System.IO.Path]::GetFullPath('..\'))</SolutionDirectory>
-    <OutputDirectory>$([System.IO.Path]::GetFullPath('..\'))build\BuildOutput\$(Version)\</OutputDirectory>
+    <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
+    <OutputDirectory>$(MSBuildProjectDirectory)\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
-    <TempDirectory>$([System.IO.Path]::GetFullPath('..\'))build\BuildOutput\temp\</TempDirectory>
-    <ArchiveDirectory>$([System.IO.Path]::GetFullPath('..\'))build\Archive\</ArchiveDirectory>
-    <WebShareDirectory>$([System.IO.Path]::GetFullPath('..\'))build\WebShare\</WebShareDirectory>
+    <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
+    <ArchiveDirectory>$(MSBuildProjectDirectory)\BuildOutput\Archive\</ArchiveDirectory>
+    <WebShareDirectory>$(MSBuildProjectDirectory)\BuildOutput\WebShare\</WebShareDirectory>
     <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
   </PropertyGroup>
