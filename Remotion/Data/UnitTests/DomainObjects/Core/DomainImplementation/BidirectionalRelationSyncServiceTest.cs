@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void IsSynchronized_CalledFromSubTransaction_ThrowsNoException ()
+    public void IsSynchronized_CalledFromSubTransaction_UsesRootTransaction ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
