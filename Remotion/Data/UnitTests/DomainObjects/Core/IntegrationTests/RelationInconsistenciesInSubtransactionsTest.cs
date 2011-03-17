@@ -227,7 +227,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void VirtualEndPointQuery_OneMany_ObjectIncluded_ThatLocallyPointsToSomewhereElse ()
     {
       Company company;
@@ -309,7 +308,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void VirtualEndPointQuery_OneMany_ObjectNotIncluded_ThatLocallyPointsToHere ()
     {
       Company company;
@@ -351,7 +349,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void VirtualEndPointQuery_OneMany_ObjectIncludedInTwoCollections ()
     {
       SetDatabaseModifyable();
@@ -610,7 +607,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void Synchronize_WithSubtransactions_LoadedInRootOnly_SyncedInRoot ()
     {
       Company company;
@@ -639,7 +635,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void Synchronize_WithSubtransactions_LoadedInRootOnly_SyncedInSub ()
     {
       Company company;
@@ -668,7 +663,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void Synchronize_WithSubtransactions_LoadedInRootAndSub_SyncedInRoot ()
     {
       Company company;
@@ -696,7 +690,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3800")]
     public void Synchronize_WithSubtransactions_LoadedInRootAndSub_SyncedInSub ()
     {
       Company company;

@@ -188,28 +188,26 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckNotUnidirectional (endPointID, "endPointID");
 
-      // TODO 3800
-      // Start with clientTransaction.RootTransaction
-      var endPoint = GetAndCheckLoadedEndPoint (endPointID, clientTransaction);
+      var currentTransaction = clientTransaction.RootTransaction;
+      var endPoint = GetAndCheckLoadedEndPoint (endPointID, currentTransaction);
 
-      if (endPoint.Definition.Cardinality == CardinalityType.One)
+      while (endPoint != null)
       {
-        var objectEndPoint = (IObjectEndPoint) endPoint;
-        var oppositeEndPoint = clientTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (objectEndPoint);
-        objectEndPoint.Synchronize (oppositeEndPoint);
-      }
-      else
-      {
-        var collectionEndPoint = (ICollectionEndPoint) endPoint;
-        collectionEndPoint.Synchronize();
-      }
+        if (endPoint.Definition.Cardinality == CardinalityType.One)
+        {
+          var objectEndPoint = (IObjectEndPoint) endPoint;
+          var oppositeEndPoint = currentTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (objectEndPoint);
+          objectEndPoint.Synchronize (oppositeEndPoint);
+        }
+        else
+        {
+          var collectionEndPoint = (ICollectionEndPoint) endPoint;
+          collectionEndPoint.Synchronize ();
+        }
 
-      // TODO 3800: loop over ActiveSubTransaction, check if end-point is loaded and complete; if yes, synchronize, otherwise stop
-      // TODO 3800: Tests:
-      // TODO 3800:   - create hierarchy, load end-point in root only, apply to root => root synchronized, no exception for sub; integration test: when end-point is then loaded into sub, it is synchronized
-      // TODO 3800:   - create hierarchy, load end-point in root only, apply to sub => root synchronized, no exception for sub: integration test: when end-point is then loaded into sub, it is synchronized
-      // TODO 3800:   - create hierarchy, load end-point in root and sub, apply to root => both synchronized
-      // TODO 3800:   - create hierarchy, load end-point in root and sub, apply to sub => both synchronized
+        currentTransaction = currentTransaction.ActiveSubTransaction;
+        endPoint = currentTransaction != null ? GetEndPoint (currentTransaction, endPointID) : null;
+      }
     }
 
     private static void CheckNotUnidirectional (RelationEndPointID endPointID, string paramName)
