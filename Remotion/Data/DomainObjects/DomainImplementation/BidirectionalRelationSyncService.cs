@@ -205,7 +205,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           collectionEndPoint.Synchronize ();
         }
 
-        currentTransaction = currentTransaction.ActiveSubTransaction;
+        currentTransaction = currentTransaction.SubTransaction;
         endPoint = currentTransaction != null ? GetEndPoint (currentTransaction, endPointID) : null;
       }
     }

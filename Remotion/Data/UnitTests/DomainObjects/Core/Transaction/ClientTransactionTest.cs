@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ActiveSubTransaction ()
     {
-      Assert.That (ClientTransaction.Current.ActiveSubTransaction, Is.Null);
+      Assert.That (ClientTransaction.Current.SubTransaction, Is.Null);
     }
 
     [Test]

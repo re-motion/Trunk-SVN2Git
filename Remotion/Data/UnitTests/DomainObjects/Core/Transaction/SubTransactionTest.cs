@@ -80,19 +80,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ActiveSubTansaction ()
     {
       ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
-      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.SameAs (subTransaction1));
+      Assert.That (ClientTransactionMock.SubTransaction, Is.SameAs (subTransaction1));
 
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
-      Assert.That (subTransaction1.ActiveSubTransaction, Is.SameAs (subTransaction2));
-      Assert.That (subTransaction2.ActiveSubTransaction, Is.Null);
+      Assert.That (subTransaction1.SubTransaction, Is.SameAs (subTransaction2));
+      Assert.That (subTransaction2.SubTransaction, Is.Null);
 
       subTransaction2.Discard();
 
-      Assert.That (subTransaction1.ActiveSubTransaction, Is.Null);
-      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.SameAs (subTransaction1));
+      Assert.That (subTransaction1.SubTransaction, Is.Null);
+      Assert.That (ClientTransactionMock.SubTransaction, Is.SameAs (subTransaction1));
 
       subTransaction1.Discard();
-      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.Null);
+      Assert.That (ClientTransactionMock.SubTransaction, Is.Null);
     }
 
     [Test]

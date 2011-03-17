@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
-      PrivateInvoke.SetNonPublicField (clientTransaction, "_activeSubTransaction", subTransaction);
+      PrivateInvoke.SetNonPublicField (clientTransaction, "_subTransaction", subTransaction);
     }
   }
 }

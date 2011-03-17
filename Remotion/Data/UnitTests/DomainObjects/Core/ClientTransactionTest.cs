@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void ActiveSubTransaction_Null ()
     {
-      Assert.That (_transactionWithMocks.ActiveSubTransaction, Is.Null);
+      Assert.That (_transactionWithMocks.SubTransaction, Is.Null);
     }
 
     [Test]
@@ -625,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (subTransaction, Is.TypeOf (typeof (ClientTransaction)));
       Assert.That (subTransaction.ParentTransaction, Is.SameAs (_transaction));
       Assert.That (_transaction.IsReadOnly, Is.True);
-      Assert.That (_transaction.ActiveSubTransaction, Is.SameAs (subTransaction));
+      Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
 
       Assert.That (subTransaction.Extensions, Is.SameAs (_transaction.Extensions));
       Assert.That (subTransaction.ApplicationData, Is.SameAs (_transaction.ApplicationData));
@@ -662,7 +662,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var subTransaction = _transaction.CreateSubTransaction (factoryMock);
 
       Assert.That (subTransaction, Is.SameAs (fakeSubTransaction));
-      Assert.That (_transaction.ActiveSubTransaction, Is.SameAs (subTransaction));
+      Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
     }
 
     [Test]
@@ -788,7 +788,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       PrivateInvoke.InvokeNonPublicMethod (_transactionWithMocks, "OnSubTransactionCreated", new SubTransactionCreatedEventArgs (fakeSubTransaction));
 
-      Assert.That (_transactionWithMocks.ActiveSubTransaction, Is.SameAs (fakeSubTransaction));
+      Assert.That (_transactionWithMocks.SubTransaction, Is.SameAs (fakeSubTransaction));
     }
 
     [Test]
@@ -826,13 +826,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.ReplayAll ();
 
       Assert.That (parentTransaction.IsReadOnly, Is.True);
-      Assert.That (parentTransaction.ActiveSubTransaction, Is.Not.Null);
+      Assert.That (parentTransaction.SubTransaction, Is.Not.Null);
 
       var result = _transactionWithMocks.Discard ();
 
       Assert.That (result, Is.True);
       Assert.That (parentTransaction.IsReadOnly, Is.False);
-      Assert.That (parentTransaction.ActiveSubTransaction, Is.Null);
+      Assert.That (parentTransaction.SubTransaction, Is.Null);
     }
 
     [Test]
@@ -859,7 +859,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       listenerMock.AssertWasNotCalled (mock => mock.TransactionDiscarding (_transactionWithMocks));
       Assert.That (parentTransaction.IsReadOnly, Is.True);
-      Assert.That (parentTransaction.ActiveSubTransaction, Is.SameAs (otherSubTransaction));
+      Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
   }
 }

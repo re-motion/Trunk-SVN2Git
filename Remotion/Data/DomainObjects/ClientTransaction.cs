@@ -148,7 +148,7 @@ public class ClientTransaction
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IObjectLoader _objectLoader;
-  private ClientTransaction _activeSubTransaction;
+  private ClientTransaction _subTransaction;
 
   private bool _isDiscarded;
 
@@ -194,13 +194,13 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the active sub-transaction of this <see cref="ClientTransaction"/>, or <see langword="null" /> if this transaction has no sub-transactions.
+  /// Gets the active sub-transaction of this <see cref="ClientTransaction"/>, or <see langword="null" /> if this transaction has no sub-transaction.
   /// </summary>
-  /// <value>The active sub-transaction, or <see langword="null" /> if this transaction has no sub-transactions.</value>
-  /// <remarks>When the <see cref="ActiveSubTransaction"/> is discarded, this property is automatically set to <see langword="null" />.</remarks>
-  public ClientTransaction ActiveSubTransaction
+  /// <value>The active sub-transaction, or <see langword="null" /> if this transaction has no sub-transaction.</value>
+  /// <remarks>When the <see cref="SubTransaction"/> is discarded, this property is automatically set to <see langword="null" />.</remarks>
+  public ClientTransaction SubTransaction
   {
-    get { return _activeSubTransaction; }
+    get { return _subTransaction; }
   }
 
   /// <summary>
@@ -222,7 +222,7 @@ public class ClientTransaction
 
   /// <summary>
   /// Gets the lowest sub-transaction of this <see cref="ClientTransaction"/>, that is, the bottom-most transaction in a row of sub-transactions.
-  /// If this <see cref="ClientTransaction"/> is itself the leaf transaction (i.e, it has no <see cref="ActiveSubTransaction"/>), it itself is 
+  /// If this <see cref="ClientTransaction"/> is itself the leaf transaction (i.e, it has no <see cref="SubTransaction"/>), it itself is 
   /// returned.
   /// </summary>
   /// <value>The leaf transaction of this <see cref="ClientTransaction"/>.</value>
@@ -231,8 +231,8 @@ public class ClientTransaction
     get
     {
       var current = this;
-      while (current.ActiveSubTransaction != null)
-        current = current.ActiveSubTransaction;
+      while (current.SubTransaction != null)
+        current = current.SubTransaction;
 
       return current;
     }
@@ -365,7 +365,7 @@ public class ClientTransaction
       if (ParentTransaction != null)
       {
         ParentTransaction.IsReadOnly = false;
-        ParentTransaction._activeSubTransaction = null;
+        ParentTransaction._subTransaction = null;
       }
 
       _isDiscarded = true;
@@ -1199,7 +1199,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("eventArgs", eventArgs);
 
-    _activeSubTransaction = eventArgs.SubTransaction;
+    _subTransaction = eventArgs.SubTransaction;
 
     using (EnterNonDiscardingScope ())
     {
