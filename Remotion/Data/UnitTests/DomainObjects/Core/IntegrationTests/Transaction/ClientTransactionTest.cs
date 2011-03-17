@@ -948,12 +948,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void DiscardReturnsFalse ()
-    {
-      Assert.That (ClientTransactionMock.Discard(), Is.False);
-    }
-
-    [Test]
     public void IsDiscardedReturnsFalse ()
     {
       Assert.That (ClientTransactionMock.IsDiscarded, Is.False);

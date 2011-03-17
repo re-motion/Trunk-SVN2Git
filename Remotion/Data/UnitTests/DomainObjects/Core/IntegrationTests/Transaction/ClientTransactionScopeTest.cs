@@ -396,7 +396,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           .Return (
           (ClientTransactionScope)
           PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), transactionMock, AutoRollbackBehavior.Discard));
-      transactionMock.Expect (mock => mock.Discard ()).Return (true);
+      transactionMock.Expect (mock => mock.Discard ());
 
       transactionMock.Replay();
 

@@ -340,7 +340,6 @@ public class ClientTransaction
   /// <summary>
   /// Discards this transaction (rendering it unusable) and, if this transaction is a subtransaction, returns control to the parent transaction.
   /// </summary>
-  /// <returns>True if control was returned to the parent transaction, false if this transaction has no parent transaction.</returns>
   /// <remarks>
   /// <para>
   /// When a subtransaction is created via <see cref="CreateSubTransaction()"/>, the parent transaction is made read-only and cannot be
@@ -356,7 +355,7 @@ public class ClientTransaction
   /// Use <see cref="EnterNonDiscardingScope"/> instead of <see cref="EnterDiscardingScope"/> to avoid this method being called at the end of a scope.
   /// </para>
   /// </remarks>
-  public virtual bool Discard ()
+  public virtual void Discard ()
   {
     if (!_isDiscarded)
     {
@@ -371,8 +370,6 @@ public class ClientTransaction
       _isDiscarded = true;
       AddListener (new InvalidatedTransactionListener());
     }
-
-    return ParentTransaction != null;
   }
 
   /// <summary>

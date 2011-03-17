@@ -806,12 +806,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var eventSink = ClientTransactionTestHelper.GetTransactionEventSink (_transactionWithMocks);
       Assert.That (eventSink.Listeners.OfType<InvalidatedTransactionListener> ().SingleOrDefault (), Is.Null);
 
-      var result = _transactionWithMocks.Discard();
+      _transactionWithMocks.Discard();
 
       _mockRepository.VerifyAll();
       Assert.That (_transactionWithMocks.IsDiscarded, Is.True);
       Assert.That (eventSink.Listeners.OfType<InvalidatedTransactionListener>().SingleOrDefault(), Is.Not.Null);
-      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -828,9 +827,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.Not.Null);
 
-      var result = _transactionWithMocks.Discard ();
+      _transactionWithMocks.Discard ();
 
-      Assert.That (result, Is.True);
       Assert.That (parentTransaction.IsReadOnly, Is.False);
       Assert.That (parentTransaction.SubTransaction, Is.Null);
     }

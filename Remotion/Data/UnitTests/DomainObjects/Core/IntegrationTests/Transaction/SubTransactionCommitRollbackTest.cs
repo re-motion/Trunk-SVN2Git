@@ -35,12 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void DiscardReturnsTrue ()
-    {
-      Assert.AreEqual (true, _subTransaction.Discard ());
-    }
-
-    [Test]
     public void DiscardMakesParentWriteable ()
     {
       Assert.IsTrue (_subTransaction.ParentTransaction.IsReadOnly);
