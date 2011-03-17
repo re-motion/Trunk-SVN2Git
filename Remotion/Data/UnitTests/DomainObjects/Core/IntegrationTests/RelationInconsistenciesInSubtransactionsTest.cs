@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         Assert.That (industrialSector.Companies, List.Contains (company));
         CheckSyncState (industrialSector, s => s.Companies, false);
 
-        UnloadService.UnloadData (ClientTransaction.Current, company.ID, UnloadTransactionMode.RecurseToRoot);
+        UnloadService.UnloadData (ClientTransaction.Current, company.ID);
         company.EnsureDataAvailable();
 
         CheckSyncState (industrialSector, s => s.Companies, true);

@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
 
-      UnloadService.UnloadData (_transaction, _existingOrder.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (_transaction, _existingOrder.ID);
       var stateAfterChange = _cachingListener.GetState (_existingOrder.ID);
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetState_Invalidated_AfterReload ()
     {
-      UnloadService.UnloadData (_transaction, _existingOrder.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (_transaction, _existingOrder.ID);
       var stateBeforeChange = _cachingListener.GetState (_existingOrder.ID);
       
       _transaction.EnsureDataAvailable (_existingOrder.ID);

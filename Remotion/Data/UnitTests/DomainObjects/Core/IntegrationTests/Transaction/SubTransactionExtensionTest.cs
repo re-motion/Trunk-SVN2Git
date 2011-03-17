@@ -1270,7 +1270,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       QueryResult<DomainObject> parentFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> (new[] { _order1 });
       QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
-      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.ThisTransactionOnly); // unload _order1 to force Load events
+      UnloadService.UnloadData (_subTransaction, _order1.ID); // unload _order1 to force Load events
+      ClientTransactionMock.IsReadOnly = false;
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1); // we only want Load events in the sub-transaction
+      ClientTransactionMock.IsReadOnly = true;
+
       _mockRepository.BackToRecordAll ();
 
       using (_mockRepository.Ordered())
@@ -1503,31 +1507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void UnloadData_ThisTransactionOnly ()
-    {
-      using (_mockRepository.Ordered ())
-      {
-        _extensionMock
-            .Expect (mock => mock.ObjectsUnloading (
-                        Arg.Is (_subTransaction),
-                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] != null));
-        _extensionMock
-            .Expect (mock => mock.ObjectsUnloaded (
-                        Arg.Is (_subTransaction),
-                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] == null));
-      }
-
-      _mockRepository.ReplayAll ();
-
-      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.ThisTransactionOnly);
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void UnloadData_Recursive ()
+    public void UnloadData ()
     {
       using (_mockRepository.Ordered ())
       {
@@ -1556,7 +1536,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (_subTransaction, _order1.ID);
 
       _mockRepository.VerifyAll ();
     }

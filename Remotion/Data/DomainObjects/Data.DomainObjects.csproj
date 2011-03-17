@@ -284,7 +284,6 @@
     <Compile Include="DataManagement\StateValueSet.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\VirtualObjectEndPoint.cs" />
     <Compile Include="DomainImplementation\RepositoryAccessor.cs" />
-    <Compile Include="DomainImplementation\UnloadTransactionMode.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
     <Compile Include="DataManagement\ICollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="DomainObjectCollection.IList.cs" />

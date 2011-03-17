@@ -1091,10 +1091,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order = Order.GetObject (DomainObjectIDs.Order1);
 
       // cause parent tx to require reload of data containers...
-      UnloadService.UnloadCollectionEndPointAndData (
-          ClientTransactionMock,
-          order.OrderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, order.OrderItems.AssociatedEndPointID);
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {

@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       _newOrderItem = OrderItem.NewObject();
       _orderWithUnloadedCollection = Order.GetObject (DomainObjectIDs.Order1);
       _originalOrderItemCount = _orderWithUnloadedCollection.OrderItems.Count;
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _orderWithUnloadedCollection.OrderItems.AssociatedEndPointID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _orderWithUnloadedCollection.OrderItems.AssociatedEndPointID);
     }
 
     [Test]

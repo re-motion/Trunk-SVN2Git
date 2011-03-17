@@ -16,6 +16,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
@@ -422,9 +423,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var endPointID = customer.Orders.AssociatedEndPointID;
+      customer.Orders.EnsureDataComplete();
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPointID, UnloadTransactionMode.ThisTransactionOnly);
+      ((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID)).MarkDataIncomplete();
     }
 
     [Test]
@@ -436,19 +438,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "ObjectsUnloading.")]
-    public void ThrowsOnUnloadData_WithoutEndPoints ()
-    {
-      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);
-
-      ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, UnloadTransactionMode.ThisTransactionOnly);
+      var command = ClientTransactionMock.DataManager.CreateUnloadCommand (DomainObjectIDs.Order1);
+      command.NotifyAndPerform ();
     }
   }
 }

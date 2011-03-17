@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (companiesOfIndustrialSector, List.Contains (company));
       CheckSyncState (industrialSector, s => s.Companies, false);
 
-      UnloadService.UnloadData (ClientTransactionMock, company.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, company.ID);
       company.EnsureDataAvailable();
 
       CheckSyncState (industrialSector, s => s.Companies, true);
@@ -420,7 +420,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (industrialSector, s => s.Companies, true);
       CheckSyncState (newCompany, c => c.IndustrialSector, false);
 
-      UnloadService.UnloadData (ClientTransactionMock, newCompany.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, newCompany.ID);
 
       Assert.That (industrialSector.Companies.IsDataComplete, Is.True);
 

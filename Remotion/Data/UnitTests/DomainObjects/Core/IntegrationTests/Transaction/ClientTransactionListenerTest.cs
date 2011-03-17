@@ -565,7 +565,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       _mockRepository.VerifyAll ();
     }
@@ -587,10 +587,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadCollectionEndPoint (
-          ClientTransactionMock, 
-          orderItemsEndPoint.ID, 
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItemsEndPoint.ID);
 
       _mockRepository.VerifyAll ();
     }

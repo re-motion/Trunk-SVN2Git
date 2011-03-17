@@ -32,29 +32,25 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified
     /// <see cref="ClientTransaction"/>. If the end point has not been loaded or has already been unloaded, this method does nothing.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <exception cref="InvalidOperationException">The given end point is not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static void UnloadCollectionEndPoint (
-        ClientTransaction clientTransaction, 
-        RelationEndPointID endPointID, 
-        UnloadTransactionMode transactionMode)
+    public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (!TryUnloadCollectionEndPoint (clientTransaction, endPointID, transactionMode))
+      if (!TryUnloadCollectionEndPoint (clientTransaction, endPointID))
       {
         var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
         throw new InvalidOperationException (message);
@@ -66,37 +62,40 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <see cref="ClientTransaction"/>, returning a value indicating whether the unload operation succeeded. If the end point has not been loaded or
     /// has already been unloaded, this method does nothing.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
     /// (in any transaction).</returns>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and return <see langword="false" />. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static bool TryUnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID, UnloadTransactionMode transactionMode)
+    public static bool TryUnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var collectionEndPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (collectionEndPoint != null)
-      {
-        if (!CanUnloadCollectionEndPoint (collectionEndPoint))
-          return false;
+      return ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var collectionEndPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
+            if (collectionEndPoint != null)
+            {
+              if (!CanUnloadCollectionEndPoint (collectionEndPoint))
+                return false;
 
-        if (collectionEndPoint.IsDataComplete)
-          collectionEndPoint.MarkDataIncomplete ();
-      }
-
-      return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadCollectionEndPoint (tx, endPointID, transactionMode));
+              if (collectionEndPoint.IsDataComplete)
+                collectionEndPoint.MarkDataIncomplete();
+            }
+            return true;
+          });
     }
 
     /// <summary>
@@ -105,10 +104,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if 
     /// it is in unchanged state and no relation end-points would remain inconsistent.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="objectID">The object ID.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state - or - the operation would affect an 
     /// opposite relation end-point that is not in unchanged state.</exception>
     /// <remarks>
@@ -120,25 +118,25 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// unloaded object to <see langword="null" />.
     /// </para>
     /// <para>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </para>
     /// </remarks>
-    public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID, UnloadTransactionMode transactionMode)
+    public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var command = clientTransaction.DataManager.CreateUnloadCommand (objectID);
-      command.NotifyAndPerform ();
-
-      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
-      {
-        UnloadData (tx, objectID, transactionMode);
-        return true;
-      });
+      ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var command = tx.DataManager.CreateUnloadCommand (objectID);
+            command.NotifyAndPerform();
+            return true;
+          });
     }
 
     /// <summary>
@@ -147,10 +145,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if
     /// it is in unchanged state and no relation end-points would remain inconsistent.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="objectID">The object ID.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
     /// (in any transaction).</returns>
     /// <remarks>
@@ -162,24 +159,28 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// unloaded object to <see langword="null"/>.
     /// </para>
     /// 	<para>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and throw an exception. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </para>
     /// </remarks>
-    public static bool TryUnloadData (ClientTransaction clientTransaction, ObjectID objectID, UnloadTransactionMode transactionMode)
+    public static bool TryUnloadData (ClientTransaction clientTransaction, ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var command = clientTransaction.DataManager.CreateUnloadCommand (objectID);
-      if (!command.CanUnload)
-        return false;
-      
-      command.NotifyAndPerform ();
+      return ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var command = tx.DataManager.CreateUnloadCommand (objectID);
+            if (!command.CanUnload)
+              return false;
 
-      return ProcessTransactionHierarchy (clientTransaction, transactionMode, tx => TryUnloadData (tx, objectID, transactionMode));
+            command.NotifyAndPerform();
+            return true;
+          });
     }
 
     /// <summary>
@@ -187,43 +188,41 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <see cref="ClientTransaction"/> as well as the data items stored by it. If the end point has not been loaded or has already been unloaded, 
     /// this method does nothing.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <exception cref="InvalidOperationException">The involved end points or one of the items it stores are not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and return <see langword="false" />. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static void UnloadCollectionEndPointAndData (
-        ClientTransaction clientTransaction, 
-        RelationEndPointID endPointID, 
-        UnloadTransactionMode transactionMode)
+    public static void UnloadCollectionEndPointAndData (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (endPoint != null && endPoint.IsDataComplete)
-      {
-        var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
-        var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
-        command.NotifyAndPerform ();
+      ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var endPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
+            if (endPoint != null && endPoint.IsDataComplete)
+            {
+              var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
+              var command = tx.DataManager.CreateUnloadCommand (unloadedIDs);
+              command.NotifyAndPerform();
 
-        UnloadCollectionEndPoint (clientTransaction, endPointID, UnloadTransactionMode.ThisTransactionOnly); // needed in case unloadedIDs is empty
-      }
-
-      ProcessTransactionHierarchy (clientTransaction, transactionMode, tx =>
-      {
-        UnloadCollectionEndPointAndData (tx, endPointID, transactionMode);
-        return true;
-      });
+              // Still unload the end point, in case the unloadedIDs is empty (if it isn't, the data unload will have unloaded the end point anyway)
+              if (endPoint.IsDataComplete)
+                endPoint.MarkDataIncomplete();
+            }
+            return true;
+          });
     }
 
     /// <summary>
@@ -231,49 +230,48 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <see cref="ClientTransaction"/> as well as the data items stored by it, returning a value indicating whether the unload operation succeeded. 
     /// If the end point has not been loaded or has already been unloaded, this method returns <see langword="true" /> and does nothing.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from.</param>
+    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
-    /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should
-    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
     /// (in any transaction).</returns>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
-    /// With <see cref="UnloadTransactionMode.RecurseToRoot"/>, the unload operation is not atomic over the transaction hierarchy. It will start at
-    /// the given transaction and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the
-    /// transactions, it will stop and return <see langword="false"/>. At this point of time, the operation's results will be visible in all
-    /// the transactions where it succeeded, but not in the one where it failed or those above.
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static bool TryUnloadCollectionEndPointAndData (
-        ClientTransaction clientTransaction,
-        RelationEndPointID endPointID,
-        UnloadTransactionMode transactionMode)
+    public static bool TryUnloadCollectionEndPointAndData (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
-      if (endPoint != null && endPoint.IsDataComplete)
-      {
-        if (!CanUnloadCollectionEndPoint (endPoint))
-          return false;
+      return ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var endPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
+            if (endPoint != null && endPoint.IsDataComplete)
+            {
+              if (!CanUnloadCollectionEndPoint (endPoint))
+                return false;
 
-        var unloadedIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
-        var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
-        if (!command.CanUnload)
-          return false;
+              var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
+              var command = tx.DataManager.CreateUnloadCommand (unloadedIDs);
+              if (!command.CanUnload)
+                return false;
 
-        command.NotifyAndPerform ();
-        
-        // Still unload the end point, in case the unloadedIDs is empty (if it isn't, the data unload will have unloaded the end point anyway)
-        var result = TryUnloadCollectionEndPoint (clientTransaction, endPointID, UnloadTransactionMode.ThisTransactionOnly);
-        Assertion.IsTrue (result, "We checked above...");
-      }
+              command.NotifyAndPerform();
 
-      return ProcessTransactionHierarchy (
-          clientTransaction, transactionMode, tx => TryUnloadCollectionEndPointAndData (tx, endPointID, transactionMode));
+              // Still unload the end point, in case the unloadedIDs is empty (if it isn't, the data unload will have unloaded the end point anyway)
+              if (endPoint.IsDataComplete)
+                endPoint.MarkDataIncomplete();
+            }
+            return true;
+          });
     }
 
     private static ICollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
@@ -292,22 +290,28 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       return !collectionEndPoint.HasChanged;
     }
 
-    private static bool ProcessTransactionHierarchy (
-        ClientTransaction clientTransaction,
-        UnloadTransactionMode transactionMode,
-        Func<ClientTransaction, bool> operation)
+    private static bool ApplyToTransactionHierarchy (ClientTransaction clientTransaction, Func<ClientTransaction, bool> operation)
     {
-      if (transactionMode == UnloadTransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      var currentTransaction = clientTransaction.LeafTransaction;
+      bool result = true;
+      while (currentTransaction != null && result)
       {
-        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        if (currentTransaction.IsReadOnly)
         {
-          return operation (clientTransaction.ParentTransaction);
+          using (TransactionUnlocker.MakeWriteable (currentTransaction))
+          {
+            result = operation (currentTransaction);
+          }
         }
+        else
+        {
+          result = operation (currentTransaction);
+        }
+
+        currentTransaction = currentTransaction.ParentTransaction;
       }
-      else
-      {
-        return true;
-      }
+
+      return result;
     }
   }
 }

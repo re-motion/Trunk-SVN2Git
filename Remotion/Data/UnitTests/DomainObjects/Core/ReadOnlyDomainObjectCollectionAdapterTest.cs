@@ -95,8 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
-          associatedCollection.AssociatedEndPointID, 
-          UnloadTransactionMode.ThisTransactionOnly);
+          associatedCollection.AssociatedEndPointID);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
       Assert.That (readOnlyAdapter.IsDataComplete, Is.False);
@@ -113,10 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void EnsureDataComplete ()
     {
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      UnloadService.UnloadCollectionEndPoint (
-          ClientTransactionMock,
-          associatedCollection.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, associatedCollection.AssociatedEndPointID);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
       Assert.That (associatedCollection.IsDataComplete, Is.False);

@@ -56,10 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (
-          _subTransaction, 
-          orderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (_subTransaction, order, true);
       CheckDataContainerExists (_subTransaction, orderItem1, true);
@@ -94,10 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (
-          _subTransaction,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", false);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", false);
@@ -124,10 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       try
       {
-        UnloadService.UnloadCollectionEndPoint (
-            _subTransaction,
-            orderItems.AssociatedEndPointID,
-            UnloadTransactionMode.RecurseToRoot);
+        UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException ex)
@@ -170,33 +161,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPoint (
-          _subTransaction, 
-          orderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
     }
     
-    [Test]
-    public void UnloadCollectionEndPoint_AlreadyUnloadedInSubTransaction_ButNotInParent ()
-    {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var endPointID = customer.Orders.AssociatedEndPointID;
-
-      UnloadService.UnloadCollectionEndPoint (_subTransaction, endPointID, UnloadTransactionMode.ThisTransactionOnly);
-
-      CheckCollectionEndPoint (_subTransaction, customer, "Orders", false);
-      CheckCollectionEndPoint (_subTransaction.ParentTransaction, customer, "Orders", true);
-
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_subTransaction);
-
-      UnloadService.UnloadCollectionEndPoint (_subTransaction, endPointID, UnloadTransactionMode.RecurseToRoot);
-
-      CheckCollectionEndPoint (_subTransaction, customer, "Orders", false);
-      CheckCollectionEndPoint (_subTransaction.ParentTransaction, customer, "Orders", false);
-    }
-
     [Test]
     public void UnloadData_Order ()
     {
@@ -217,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (customerOrders.IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (_subTransaction, order1.ID, UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (_subTransaction, order1.ID);
 
       CheckDataContainerExists (_subTransaction, order1, false);
       CheckDataContainerExists (_subTransaction, orderItemA, true);
@@ -277,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (order1.OrderNumber, Is.EqualTo (1));
 
-      UnloadService.UnloadData (_subTransaction, order1.ID, UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (_subTransaction, order1.ID);
 
       Assert.That (order1.OrderNumber, Is.EqualTo (4711));
     }
@@ -299,25 +268,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (DomainObjectIDs.Employee3)));
 
-      UnloadService.UnloadData (_subTransaction, computer1.ID, UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (_subTransaction, computer1.ID);
 
       Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (newEmployeeID)));
-    }
-
-    [Test]
-    public void UnloadData_AlreadyUnloaded_InSubTransaction_ButNotInParentTransaction ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (_subTransaction, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
-      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (order1.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Unchanged));
-     
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_subTransaction);
-
-      UnloadService.UnloadData (_subTransaction, order1.ID, UnloadTransactionMode.RecurseToRoot);
-
-      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (order1.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
@@ -332,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       try
       {
-        UnloadService.UnloadData (_subTransaction, DomainObjectIDs.Order1, UnloadTransactionMode.RecurseToRoot);
+        UnloadService.UnloadData (_subTransaction, DomainObjectIDs.Order1);
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException ex)
@@ -361,10 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          _subTransaction,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (_subTransaction, order, true);
       CheckDataContainerExists (_subTransaction, orderItem1, false);
@@ -418,10 +368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          _subTransaction,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
       Assert.That (orderItem1.Order, Is.SameAs (Order.GetObject (DomainObjectIDs.Order2)));
@@ -483,10 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       subListenerMock.Replay ();
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          _subTransaction, 
-          order1.OrderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, order1.OrderItems.AssociatedEndPointID);
 
       subListenerMock.VerifyAllExpectations ();
       subListenerMock.BackToRecord (); // For Discarding

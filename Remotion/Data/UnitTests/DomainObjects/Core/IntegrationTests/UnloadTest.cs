@@ -42,10 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (
-          ClientTransactionMock, 
-          orderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderItem1, true);
@@ -72,8 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+          orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems.IsDataComplete, Is.False);
 
@@ -99,8 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+          orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems.IsDataComplete, Is.False);
 
@@ -134,8 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
-          orderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.ThisTransactionOnly);
+          orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
     }
@@ -146,11 +140,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID);
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID);
     }
 
     [Test]
@@ -163,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckDataContainerExists (orderTicket1, false);
       CheckDataContainerExists (order, true);
@@ -185,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckDataContainerExists (orderTicket1, false);
       CheckDataContainerExists (order, true);
@@ -210,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
       CheckEndPointExists (order, "OrderTicket", false);
@@ -233,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
       CheckEndPointExists (order, "OrderTicket", false);
@@ -268,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (customerOrders.IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       CheckDataContainerExists (order1, false);
       CheckDataContainerExists (orderItemA, true);
@@ -300,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       CheckDataContainerExists (order1, false);
       CheckDataContainerExists (orderItemA, true);
@@ -329,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       CheckDataContainerExists (order1, false);
       CheckDataContainerExists (orderItemA, true);
@@ -363,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID);
 
       CheckDataContainerExists (order1, true);
       CheckDataContainerExists (orderItemA, false);
@@ -394,7 +388,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (newOrderItem.Order, Is.SameAs (order1));
       Assert.That (newOrderItem.State, Is.EqualTo (StateType.Unchanged));
 
-      UnloadService.UnloadData (ClientTransactionMock, newOrderItem.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, newOrderItem.ID);
 
       Assert.That (newOrderItem.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (orderItems.IsDataComplete, Is.False);
@@ -407,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
-      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID);
 
       CheckDataContainerExists (order1, true);
       CheckDataContainerExists (orderItemA, false);
@@ -435,7 +429,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
-      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, orderItemA.ID);
 
       CheckDataContainerExists (order1, true);
       CheckDataContainerExists (orderItemA, false);
@@ -471,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (order1.OrderNumber, Is.EqualTo (1));
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       Assert.That (order1.OrderNumber, Is.EqualTo (4711));
     }
@@ -493,7 +487,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (DomainObjectIDs.Employee3)));
 
-      UnloadService.UnloadData (ClientTransactionMock, computer1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, computer1.ID);
 
       Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (newEmployeeID)));
     }
@@ -502,13 +496,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void UnloadData_AlreadyUnloaded ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.SameAs (order1));
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
     }
@@ -518,7 +512,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1);
 
       Assert.That (ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.Null);
     }
@@ -530,7 +524,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void UnloadData_Changed ()
     {
       ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1);
     }
 
     [Test]
@@ -543,7 +537,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var domainObject = Order.GetObject (DomainObjectIDs.Order1);
       domainObject.OrderTicket = OrderTicket.NewObject ();
-      UnloadService.UnloadData (ClientTransactionMock, domainObject.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, domainObject.ID);
     }
 
     [Test]
@@ -563,7 +557,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (virtualEndPoint.HasChanged, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, domainObject.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, domainObject.ID);
     }
 
     [Test]
@@ -579,7 +573,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID].HasChanged, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1);
     }
 
     [Test]
@@ -592,10 +586,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          ClientTransactionMock,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderItem1, false);
@@ -622,10 +613,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          ClientTransactionMock,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItems.AssociatedEndPointID);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -673,10 +661,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          ClientTransactionMock,
-          orderItems.AssociatedEndPointID,
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
       Assert.That (orderItem1.Order, Is.SameAs (Order.GetObject (DomainObjectIDs.Order2)));
@@ -726,10 +711,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       listenerMock.Replay ();
 
-      UnloadService.UnloadCollectionEndPointAndData (
-          ClientTransactionMock, 
-          order1.OrderItems.AssociatedEndPointID, 
-          UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, order1.OrderItems.AssociatedEndPointID);
 
       listenerMock.VerifyAllExpectations ();
       listenerMock.BackToRecord(); // For Discarding
@@ -747,7 +729,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void ReadingValueProperties_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -762,7 +744,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void WritingValueProperties_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -777,7 +759,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void ReadingStateProperties_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       EnsureTransactionThrowsOnLoad ();
@@ -801,7 +783,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void ReadingTimestamp_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -816,7 +798,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void MarkAsChanged_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -831,7 +813,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void EnsureDataAvailable_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -846,7 +828,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void ReadingPropertyAccessor_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       EnsureTransactionThrowsOnLoad ();
@@ -864,7 +846,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void ReadingTransactionContext_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       EnsureTransactionThrowsOnLoad ();
@@ -882,7 +864,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       EnsureTransactionThrowsOnLoad ();
 
@@ -902,7 +884,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (customerOrders.IsDataComplete, Is.False);
@@ -927,7 +909,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemB = order1.OrderItems[1];
       var orderTicket = order1.OrderTicket;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       EnsureTransactionThrowsOnLoad ();
 
@@ -952,7 +934,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemB = order1.OrderItems[1];
       var orderTicket = order1.OrderTicket;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       EnsureTransactionThrowsOnLoad ();
 
@@ -976,7 +958,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemB = order1.OrderItems[1];
       var orderTicket = order1.OrderTicket;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       EnsureTransactionThrowsOnLoad ();
 
@@ -1001,7 +983,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderItemA = order1.OrderItems[0];
       var orderTicket = order1.OrderTicket;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       EnsureTransactionThrowsOnLoad ();
 
@@ -1018,7 +1000,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customer = order1.Customer;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -1034,7 +1016,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -1050,7 +1032,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customer = order1.Customer;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -1068,7 +1050,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = order1.Customer;
       Console.WriteLine (customer.State);
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
       Console.WriteLine (customer.State);
@@ -1085,7 +1067,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      UnloadService.UnloadData (ClientTransactionMock, order2.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order2.ID);
       Assert.That (order2.State, Is.EqualTo (StateType.NotLoadedYet));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
@@ -1102,7 +1084,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customerOrders = order1.Customer.Orders;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (customerOrders.IsDataComplete, Is.False);
@@ -1121,7 +1103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customerOrders = order1.Customer.Orders;
 
-      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (customerOrders.IsDataComplete, Is.False);
