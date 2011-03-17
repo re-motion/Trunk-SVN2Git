@@ -756,7 +756,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PersistenceModelLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\SqlProviderTestMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlStorageObjectFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\CountingObjectLoaderDecorator.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CountingObjectLoaderDecorator.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageObjectFactoryStub.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationConfiguration.cs" />
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs" />
@@ -827,7 +827,7 @@
     <Compile Include="DomainObjects\Core\DomainImplementation\UnloadServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\SubTransactionUnloadTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadInSubTransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
@@ -914,7 +914,7 @@
     <Compile Include="DomainObjects\Core\Tracing\TracingDbCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbConnectionTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithCustomITransaction.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTestHelper.cs" />
     <Compile Include="DomainObjects\Factories\ReflectionMappingHelper.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectDefaultValueStrategyTest.cs" />
@@ -971,7 +971,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommandTestBase.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\LifetimeServiceTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\MultiTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectInMultipleTransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ObjectListTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyIndexerTest.cs" />
@@ -1639,39 +1639,39 @@
     <Compile Include="DomainObjects\TestDomain\TestDomainBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Transaction\BindingClientTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWrapperTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionCollectionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionRelationChangesTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionWithQueryFiltering.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithIDMixin.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\InvertingClientTransactionMixin.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionMixinTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\BindingClientTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWrapperTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionRelationChangesTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionExtensionWithQueryFiltering.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWithIDMixin.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InvertingClientTransactionMixin.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionMixinTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Transaction\CommitEventsTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitEventsTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\EventReceiver\DomainObjectMockEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\PropertyValueCollectionMockEventReceiver.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionScopeTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\CompoundClientTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionStateTransitionBaseTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionExtensionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionCommitDataTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionCommitStateTransitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\InvalidatedTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ReadOnlyClientTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\RollbackEventsWithExistingObjectTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\RollbackEventsWithNewObjectTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionCommitRollbackTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionCreationStateTransitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionQueryTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionRollbackDataTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\SubTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionScopeTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CompoundClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionStateTransitionBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionExtensionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitDataTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitStateTransitionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InvalidatedTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyClientTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackEventsWithExistingObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackEventsWithNewObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitRollbackTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCreationStateTransitionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRollbackDataTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Transport\BinaryExportStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Transport\BinaryImportStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Transport\XmlSerializationStrings.cs" />

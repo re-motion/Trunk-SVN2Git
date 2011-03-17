@@ -21,7 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Core.Transaction;
+using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
