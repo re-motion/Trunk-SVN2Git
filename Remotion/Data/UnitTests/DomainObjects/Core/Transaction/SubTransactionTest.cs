@@ -56,14 +56,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CreateSubTransaction_SetsParentReadonly ()
     {
-      Assert.IsFalse (ClientTransactionMock.IsReadOnly);
+      Assert.That (ClientTransactionMock.IsReadOnly, Is.False);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsTrue (ClientTransactionMock.IsReadOnly);
-      Assert.IsFalse (subTransaction.IsReadOnly);
+      Assert.That (ClientTransactionMock.IsReadOnly, Is.True);
+      Assert.That (subTransaction.IsReadOnly, Is.False);
 
       ClientTransaction subTransaction2 = subTransaction.CreateSubTransaction();
-      Assert.IsTrue (subTransaction.IsReadOnly);
-      Assert.IsFalse (subTransaction2.IsReadOnly);
+      Assert.That (subTransaction.IsReadOnly, Is.True);
+      Assert.That (subTransaction2.IsReadOnly, Is.False);
     }
 
     [Test]
@@ -132,10 +132,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       subTransaction.Discard();
       ClientTransaction newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType();
-      Assert.AreSame (ClientTransactionMock, subTransaction.ParentTransaction);
-      Assert.AreSame (ClientTransactionMock, subTransaction.RootTransaction);
-      Assert.AreNotSame (subTransaction, newSubTransaction);
-      Assert.AreEqual (subTransaction.GetType(), newSubTransaction.GetType());
+      Assert.That (subTransaction.ParentTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (subTransaction.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (newSubTransaction, Is.Not.SameAs (subTransaction));
+      Assert.That (newSubTransaction.GetType(), Is.EqualTo (subTransaction.GetType()));
     }
 
     [Test]
@@ -144,13 +144,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var rootTransaction = ClientTransaction.CreateRootTransaction ();
       ClientTransaction newRootTransaction = rootTransaction.CreateEmptyTransactionOfSameType ();
       ClientTransaction subTransaction = rootTransaction.CreateSubTransaction ();
-      Assert.AreSame (rootTransaction, subTransaction.ParentTransaction);
-      Assert.AreSame (rootTransaction, subTransaction.RootTransaction);
-      Assert.AreNotSame (rootTransaction, newRootTransaction);
-      Assert.AreEqual (rootTransaction.GetType (), newRootTransaction.GetType ());
-      Assert.AreEqual (
-          ClientTransactionTestHelper.GetPersistenceStrategy (rootTransaction).GetType(),
-          ClientTransactionTestHelper.GetPersistenceStrategy (newRootTransaction).GetType ());
+      Assert.That (subTransaction.ParentTransaction, Is.SameAs (rootTransaction));
+      Assert.That (subTransaction.RootTransaction, Is.SameAs (rootTransaction));
+      Assert.That (newRootTransaction, Is.Not.SameAs (rootTransaction));
+      Assert.That (newRootTransaction.GetType(), Is.EqualTo (rootTransaction.GetType()));
+      Assert.That (
+          ClientTransactionTestHelper.GetPersistenceStrategy (newRootTransaction).GetType(),
+          Is.EqualTo (
+              ClientTransactionTestHelper.GetPersistenceStrategy (rootTransaction).GetType()));
     }
 
     [Test]
@@ -158,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (AutoRollbackBehavior.Discard, ClientTransactionScope.ActiveScope.AutoRollbackBehavior);
+        Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Discard));
       }
     }
 
@@ -166,14 +167,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void SubTransactionHasSameExtensions ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.AreSame (ClientTransactionMock.Extensions, subTransaction.Extensions);
+      Assert.That (subTransaction.Extensions, Is.SameAs (ClientTransactionMock.Extensions));
     }
 
     [Test]
     public void SubTransactionHasSameApplicationData ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.AreSame (ClientTransactionMock.ApplicationData, subTransaction.ApplicationData);
+      Assert.That (subTransaction.ApplicationData, Is.SameAs (ClientTransactionMock.ApplicationData));
     }
 
     [Test]
@@ -193,24 +194,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
       {
-        Assert.AreSame (subTransaction, ClientTransactionScope.CurrentTransaction);
+        Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (subTransaction));
         Order order = Order.NewObject();
-        Assert.IsTrue (subTransaction.IsEnlisted (order));
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
+        Assert.That (subTransaction.IsEnlisted (order), Is.True);
+        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
 
         order.OrderNumber = 4711;
-        Assert.AreEqual (4711, order.OrderNumber);
+        Assert.That (order.OrderNumber, Is.EqualTo (4711));
 
         OrderItem item = OrderItem.NewObject();
         order.OrderItems.Add (item);
-        Assert.IsTrue (order.OrderItems.Contains (item.ID));
+        Assert.That (order.OrderItems.Contains (item.ID), Is.True);
 
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-        Assert.IsNotNull (ceo);
-        Assert.IsTrue (subTransaction.IsEnlisted (ceo));
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (ceo));
+        Assert.That (ceo, Is.Not.Null);
+        Assert.That (subTransaction.IsEnlisted (ceo), Is.True);
+        Assert.That (ClientTransactionMock.IsEnlisted (ceo), Is.True);
 
-        Assert.AreSame (ceo.Company, Company.GetObject (DomainObjectIDs.Company1));
+        Assert.That (Company.GetObject (DomainObjectIDs.Company1), Is.SameAs (ceo.Company));
       }
     }
 
@@ -233,8 +234,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.NewObject();
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
-      Assert.IsTrue (subTransaction.IsEnlisted (order));
+      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (subTransaction.IsEnlisted (order), Is.True);
     }
 
     [Test]
@@ -242,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.NewObject ();
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      Assert.AreEqual (StateType.NotLoadedYet, order.TransactionContext[subTransaction].State);
+      Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
@@ -252,8 +253,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope())
       {
         Order order = Order.NewObject();
-        Assert.IsTrue (subTransaction.IsEnlisted (order));
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
+        Assert.That (subTransaction.IsEnlisted (order), Is.True);
+        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
       }
     }
 
@@ -264,8 +265,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject ();
-        Assert.AreEqual (StateType.New, order.TransactionContext[subTransaction].State);
-        Assert.AreEqual (StateType.Invalid, order.TransactionContext[ClientTransactionMock].State);
+        Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.New));
+        Assert.That (order.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Invalid));
       }
     }
 
@@ -276,10 +277,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         var instance = ClassWithAllDataTypes.NewObject ();
-        Assert.AreEqual (StateType.New, instance.TransactionContext[subTransaction].State);
-        Assert.AreEqual (StateType.Invalid, instance.TransactionContext[ClientTransactionMock].State);
+        Assert.That (instance.TransactionContext[subTransaction].State, Is.EqualTo (StateType.New));
+        Assert.That (instance.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Invalid));
         subTransaction.Commit ();
-        Assert.AreEqual (StateType.New, instance.TransactionContext[ClientTransactionMock].State);
+        Assert.That (instance.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.New));
       }
     }
 
@@ -288,8 +289,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
-      Assert.IsTrue (subTransaction.IsEnlisted (order));
+      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (subTransaction.IsEnlisted (order), Is.True);
     }
 
     [Test]
@@ -297,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      Assert.AreEqual (StateType.NotLoadedYet, order.TransactionContext[subTransaction].State);
+      Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
@@ -307,8 +308,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope())
       {
         Order order = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.IsTrue (subTransaction.IsEnlisted (order));
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
+        Assert.That (subTransaction.IsEnlisted (order), Is.True);
+        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
       }
     }
 
@@ -359,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
       }
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.That (order.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]
@@ -371,7 +372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
       }
-      Assert.AreSame (order, Order.GetObject (DomainObjectIDs.Order1));
+      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
     }
 
     [Test]
@@ -385,8 +386,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order = Order.GetObject (DomainObjectIDs.Order1);
         orderTicket = order.OrderTicket;
       }
-      Assert.AreSame (order, Order.GetObject (DomainObjectIDs.Order1));
-      Assert.AreSame (orderTicket, OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
+      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
+      Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), Is.SameAs (orderTicket));
     }
 
     [Test]
@@ -398,14 +399,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope())
       {
         computer = Computer.GetObject (DomainObjectIDs.Computer4);
-        Assert.IsNull (computer.Employee);
+        Assert.That (computer.Employee, Is.Null);
         employee = Employee.GetObject (DomainObjectIDs.Employee1);
-        Assert.IsNull (employee.Computer);
+        Assert.That (employee.Computer, Is.Null);
       }
-      Assert.IsNull (Computer.GetObject (DomainObjectIDs.Computer4).Employee);
-      Assert.IsNull (computer.Employee);
-      Assert.IsNull (Employee.GetObject (DomainObjectIDs.Employee1).Computer);
-      Assert.IsNull (employee.Computer);
+      Assert.That (Computer.GetObject (DomainObjectIDs.Computer4).Employee, Is.Null);
+      Assert.That (computer.Employee, Is.Null);
+      Assert.That (Employee.GetObject (DomainObjectIDs.Employee1).Computer, Is.Null);
+      Assert.That (employee.Computer, Is.Null);
     }
 
     [Test]
@@ -420,9 +421,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         orderItems.Add (order.OrderItems[0]);
         orderItems.Add (order.OrderItems[1]);
       }
-      Assert.AreSame (order, Order.GetObject (DomainObjectIDs.Order1));
-      Assert.IsTrue (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)));
-      Assert.IsTrue (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)));
+      Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (order));
+      Assert.That (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)), Is.True);
+      Assert.That (orderItems.Contains (OrderItem.GetObject (DomainObjectIDs.OrderItem1)), Is.True);
     }
 
     [Test]
@@ -431,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Client client = Client.GetObject (DomainObjectIDs.Client1);
       Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Assert.AreSame (client, location.Client);
+      Assert.That (location.Client, Is.SameAs (client));
 
       client.Delete();
 
@@ -535,16 +536,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order newOrder = Order.NewObject();
 
-      Assert.AreEqual (StateType.New, newOrder.State);
+      Assert.That (newOrder.State, Is.EqualTo (StateType.New));
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
         newOrder.OrderNumber = 7;
 
-        Assert.AreEqual (StateType.Changed, newOrder.State);
-        Assert.AreNotEqual (
-            newOrder.Properties[typeof (Order) + ".OrderNumber"].GetValue<int>(),
-            newOrder.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int>());
+        Assert.That (newOrder.State, Is.EqualTo (StateType.Changed));
+        Assert.That (
+            newOrder.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int>(),
+            Is.Not.EqualTo (
+                newOrder.Properties[typeof (Order) + ".OrderNumber"].GetValue<int>()));
       }
     }
 
@@ -565,13 +567,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreSame (loadedUnchangedOrder, Order.GetObject (DomainObjectIDs.Order1));
-        Assert.AreSame (loadedChangedOrder, Order.GetObject (DomainObjectIDs.Order2));
+        Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (loadedUnchangedOrder));
+        Assert.That (Order.GetObject (DomainObjectIDs.Order2), Is.SameAs (loadedChangedOrder));
 
-        Assert.AreEqual (newUnchangedOrderNumber, newUnchangedOrder.OrderNumber);
-        Assert.AreEqual (4711, newChangedOrder.OrderNumber);
-        Assert.AreEqual (loadedUnchangedOrderNumber, loadedUnchangedOrder.OrderNumber);
-        Assert.AreEqual (13, loadedChangedOrder.OrderNumber);
+        Assert.That (newUnchangedOrder.OrderNumber, Is.EqualTo (newUnchangedOrderNumber));
+        Assert.That (newChangedOrder.OrderNumber, Is.EqualTo (4711));
+        Assert.That (loadedUnchangedOrder.OrderNumber, Is.EqualTo (loadedUnchangedOrderNumber));
+        Assert.That (loadedChangedOrder.OrderNumber, Is.EqualTo (13));
       }
     }
 
@@ -592,13 +594,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreSame (loadedUnchangedOrderTicket, OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
-        Assert.AreSame (loadedChangedOrderTicket, OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
+        Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), Is.SameAs (loadedUnchangedOrderTicket));
+        Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket2), Is.SameAs (loadedChangedOrderTicket));
 
-        Assert.AreEqual (newUnchangedInt32TransactionProperty, newUnchangedOrderTicket.Int32TransactionProperty);
-        Assert.AreEqual (4711, newChangedOrderTicket.Int32TransactionProperty);
-        Assert.AreEqual (loadedUnchangedInt32TransactionProperty, loadedUnchangedOrderTicket.Int32TransactionProperty);
-        Assert.AreEqual (13, loadedChangedOrderTicket.Int32TransactionProperty);
+        Assert.That (newUnchangedOrderTicket.Int32TransactionProperty, Is.EqualTo (newUnchangedInt32TransactionProperty));
+        Assert.That (newChangedOrderTicket.Int32TransactionProperty, Is.EqualTo (4711));
+        Assert.That (loadedUnchangedOrderTicket.Int32TransactionProperty, Is.EqualTo (loadedUnchangedInt32TransactionProperty));
+        Assert.That (loadedChangedOrderTicket.Int32TransactionProperty, Is.EqualTo (13));
       }
     }
 
@@ -618,8 +620,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         using (ClientTransactionMock.EnterDiscardingScope())
         {
-          Assert.AreEqual (4711, newChangedOrder.OrderNumber);
-          Assert.AreEqual (13, loadedChangedOrder.OrderNumber);
+          Assert.That (newChangedOrder.OrderNumber, Is.EqualTo (4711));
+          Assert.That (loadedChangedOrder.OrderNumber, Is.EqualTo (13));
         }
       }
     }
@@ -630,7 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
       ObjectList<OrderItem> loadedItems = loadedOrder.OrderItems;
 
-      Assert.AreSame (loadedItems, loadedOrder.OrderItems);
+      Assert.That (loadedOrder.OrderItems, Is.SameAs (loadedItems));
 
       Dev.Null = loadedOrder.OrderItems[0];
       OrderItem loadedItem2 = loadedOrder.OrderItems[1];
@@ -650,25 +652,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreSame (loadedOrder, Order.GetObject (DomainObjectIDs.Order1));
-        Assert.AreNotSame (loadedItems, loadedOrder.OrderItems);
+        Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (loadedOrder));
+        Assert.That (loadedOrder.OrderItems, Is.Not.SameAs (loadedItems));
 
-        Assert.AreEqual (3, loadedOrder.OrderItems.Count);
+        Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (3));
 
-        Assert.AreSame (loadedItem2, loadedOrder.OrderItems[0]);
-        Assert.AreSame (newItem1, loadedOrder.OrderItems[1]);
-        Assert.AreSame (newItem2, loadedOrder.OrderItems[2]);
+        Assert.That (loadedOrder.OrderItems[0], Is.SameAs (loadedItem2));
+        Assert.That (loadedOrder.OrderItems[1], Is.SameAs (newItem1));
+        Assert.That (loadedOrder.OrderItems[2], Is.SameAs (newItem2));
 
-        Assert.AreSame (loadedOrder, loadedItem2.Order);
-        Assert.AreSame (loadedOrder, newItem1.Order);
-        Assert.AreSame (loadedOrder, newItem2.Order);
+        Assert.That (loadedItem2.Order, Is.SameAs (loadedOrder));
+        Assert.That (newItem1.Order, Is.SameAs (loadedOrder));
+        Assert.That (newItem2.Order, Is.SameAs (loadedOrder));
 
-        Assert.AreEqual ("Baz, buy two get three for free", loadedOrder.OrderItems[2].Product);
+        Assert.That (loadedOrder.OrderItems[2].Product, Is.EqualTo ("Baz, buy two get three for free"));
 
-        Assert.AreEqual (1, newOrder.OrderItems.Count);
-        Assert.AreSame (newItem3, newOrder.OrderItems[0]);
-        Assert.AreEqual ("FooBar, the energy bar with extra Foo", newOrder.OrderItems[0].Product);
-        Assert.AreSame (newOrder, newItem3.Order);
+        Assert.That (newOrder.OrderItems.Count, Is.EqualTo (1));
+        Assert.That (newOrder.OrderItems[0], Is.SameAs (newItem3));
+        Assert.That (newOrder.OrderItems[0].Product, Is.EqualTo ("FooBar, the energy bar with extra Foo"));
+        Assert.That (newItem3.Order, Is.SameAs (newOrder));
       }
     }
 
@@ -701,11 +703,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
         orderItem1.Delete();
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.IsTrue (orderItem1.IsInvalid);
+        Assert.That (orderItem1.IsInvalid, Is.True);
 
         ObjectList<OrderItem> orderItems = loadedOrder.OrderItems;
-        Assert.AreEqual (1, orderItems.Count);
-        Assert.AreEqual (DomainObjectIDs.OrderItem2, orderItems[0].ID);
+        Assert.That (orderItems.Count, Is.EqualTo (1));
+        Assert.That (orderItems[0].ID, Is.EqualTo (DomainObjectIDs.OrderItem2));
       }
     }
 
@@ -714,7 +716,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      Assert.AreEqual (2, loadedOrder.OrderItems.Count);
+      Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (2));
       OrderItem loadedItem1 = loadedOrder.OrderItems[0];
       OrderItem loadedItem2 = loadedOrder.OrderItems[1];
 
@@ -727,10 +729,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         using (ClientTransactionMock.EnterDiscardingScope())
         {
-          Assert.AreEqual (2, loadedOrder.OrderItems.Count);
-          Assert.AreSame (loadedItem1, loadedOrder.OrderItems[0]);
-          Assert.AreSame (loadedItem2, loadedOrder.OrderItems[1]);
-          Assert.AreEqual (0, newOrder.OrderItems.Count);
+          Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (2));
+          Assert.That (loadedOrder.OrderItems[0], Is.SameAs (loadedItem1));
+          Assert.That (loadedOrder.OrderItems[1], Is.SameAs (loadedItem2));
+          Assert.That (newOrder.OrderItems.Count, Is.EqualTo (0));
         }
       }
     }
@@ -740,11 +742,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
       Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
-      Assert.AreNotSame (loadedComputer.Employee, loadedEmployee);
+      Assert.That (loadedEmployee, Is.Not.SameAs (loadedComputer.Employee));
       loadedComputer.Employee = loadedEmployee;
 
-      Assert.AreSame (loadedEmployee, loadedComputer.Employee);
-      Assert.AreSame (loadedComputer, loadedEmployee.Computer);
+      Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));
+      Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
 
       Computer newComputer = Computer.NewObject();
       Employee newEmployee = Employee.NewObject();
@@ -752,14 +754,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreSame (loadedComputer, Computer.GetObject (DomainObjectIDs.Computer1));
-        Assert.AreSame (loadedEmployee, Employee.GetObject (DomainObjectIDs.Employee1));
+        Assert.That (Computer.GetObject (DomainObjectIDs.Computer1), Is.SameAs (loadedComputer));
+        Assert.That (Employee.GetObject (DomainObjectIDs.Employee1), Is.SameAs (loadedEmployee));
 
-        Assert.AreSame (loadedEmployee, loadedComputer.Employee);
-        Assert.AreSame (loadedComputer, loadedEmployee.Computer);
+        Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));
+        Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
 
-        Assert.AreSame (newComputer, newEmployee.Computer);
-        Assert.AreSame (newEmployee, newComputer.Employee);
+        Assert.That (newEmployee.Computer, Is.SameAs (newComputer));
+        Assert.That (newComputer.Employee, Is.SameAs (newEmployee));
       }
     }
 
@@ -783,11 +785,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         using (ClientTransactionMock.EnterDiscardingScope())
         {
-          Assert.AreSame (loadedComputer, loadedEmployee.Computer);
-          Assert.AreSame (loadedEmployee, loadedComputer.Employee);
+          Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
+          Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));
 
-          Assert.AreSame (newComputer, newEmployee.Computer);
-          Assert.AreSame (newEmployee, newComputer.Employee);
+          Assert.That (newEmployee.Computer, Is.SameAs (newComputer));
+          Assert.That (newComputer.Employee, Is.SameAs (newEmployee));
         }
       }
     }
@@ -799,15 +801,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.SubTransactionCreated += delegate (object sender, SubTransactionCreatedEventArgs args)
       {
-        Assert.AreSame (ClientTransactionMock, sender);
-        Assert.IsNotNull (args.SubTransaction);
+        Assert.That (sender, Is.SameAs (ClientTransactionMock));
+        Assert.That (args.SubTransaction, Is.Not.Null);
         subTransactionFromEvent = args.SubTransaction;
       };
 
-      Assert.IsNull (subTransactionFromEvent);
+      Assert.That (subTransactionFromEvent, Is.Null);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsNotNull (subTransactionFromEvent);
-      Assert.AreSame (subTransaction, subTransactionFromEvent);
+      Assert.That (subTransactionFromEvent, Is.Not.Null);
+      Assert.That (subTransactionFromEvent, Is.SameAs (subTransaction));
     }
 
     [Test]
@@ -872,7 +874,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
             DomainObjectIDs.Order2,
             DomainObjectIDs.OrderItem1);
 
-        Assert.AreEqual (1, eventReceiver.LoadedDomainObjects.Count);
+        Assert.That (eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
         Assert.That (eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
 
         listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
