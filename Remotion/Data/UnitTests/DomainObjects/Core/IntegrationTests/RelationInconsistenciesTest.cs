@@ -436,16 +436,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void Commit_DoesNotChangeInconsistentState_OneMany_ObjectIncluded ()
     {
-      SetDatabaseModifyable ();
-
-      var company = CreateCompanyInDatabaseAndLoad ();
-      Assert.That (company.IndustrialSector, Is.Null);
-
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
-
-      // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
-      industrialSector.Companies.EnsureDataComplete ();
+      Company company;
+      IndustrialSector industrialSector;
+      PrepareInconsistentState_OneMany_ObjectIncluded (out company, out industrialSector);
 
       Assert.That (company.IndustrialSector, Is.Null);
       Assert.That (industrialSector.Companies, List.Contains (company));
@@ -470,19 +463,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void Commit_DoesNotChangeInconsistentState_OneMany_ObjectNotIncluded ()
     {
-     SetDatabaseModifyable ();
-
-      var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-      var company = Company.GetObject (companyID);
-
-      Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID (), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
-
-      SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
-
-      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-
-      // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
-      industrialSector.Companies.EnsureDataComplete ();
+      Company company;
+      IndustrialSector industrialSector;
+      PrepareInconsistentState_OneMany_ObjectNotIncluded (out company, out industrialSector);
 
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
@@ -608,6 +591,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         objectID = domainObject.ID;
       }
       return (T) LifetimeService.GetObject (ClientTransaction.Current, objectID, false);
+    }
+
+    private void PrepareInconsistentState_OneMany_ObjectIncluded (out Company company, out IndustrialSector industrialSector)
+    {
+      SetDatabaseModifyable ();
+
+      company = CreateCompanyInDatabaseAndLoad ();
+      Assert.That (company.IndustrialSector, Is.Null);
+
+      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+
+      SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
+
+      // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
+      industrialSector.Companies.EnsureDataComplete ();
+
+      Assert.That (company.IndustrialSector, Is.Null);
+      Assert.That (industrialSector.Companies, List.Contains (company));
+
+      CheckSyncState (company, c => c.IndustrialSector, true);
+      CheckSyncState (industrialSector, s => s.Companies, false);
+    }
+
+    private void PrepareInconsistentState_OneMany_ObjectNotIncluded (out Company company, out IndustrialSector industrialSector)
+    {
+      SetDatabaseModifyable ();
+
+      var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
+      company = Company.GetObject (companyID);
+
+      Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID (), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
+
+      SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
+
+      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+
+      // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
+      industrialSector.Companies.EnsureDataComplete ();
+
+      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
+      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+      CheckSyncState (company, c => c.IndustrialSector, false);
+      CheckSyncState (industrialSector, s => s.Companies, true);
     }
   }
 }
