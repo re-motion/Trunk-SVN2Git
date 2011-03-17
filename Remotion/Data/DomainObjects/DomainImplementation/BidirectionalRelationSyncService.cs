@@ -24,8 +24,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 {
   /// <summary>
   /// Provides APIs for checking whether the opposite relation properties in a bidirectional relation are out-of-sync, and - if yes -
-  /// allows to synchronize them. Synchronization is performed only in the scope of a <see cref="ClientTransaction"/>, nothing is loaded from the
-  /// underlying data source.
+  /// allows to synchronize them. Synchronization is performed only in the scope of a <see cref="ClientTransaction"/>, not with the underlying data 
+  /// source. When applied to a sub-transaction or to a transaction with sub-transactions, the <see cref="BidirectionalRelationSyncService"/>
+  /// affects the whole transaction hierarchy.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -119,7 +120,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <summary>
     /// Determines whether the given relation property is in-sync with the opposite relation property/properties.
     /// </summary>
-    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to check the relation property in.</param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to check the relation property in. In a transaction hierarchy,
+    /// <see cref="IsSynchronized"/> returns the same result, no matter to which transaction (root or sub-transaction) in the hierarchy it is applied.</param>
     /// <param name="endPointID">The ID of the relation property to check. This contains the ID of the originating object and the
     /// relation property to check. The relation property must have been loaded into the given <paramref name="clientTransaction"/>.</param>
     /// <returns>
@@ -150,7 +152,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <summary>
     /// Synchronizes the given relation property with its opposite relation property/properties.
     /// </summary>
-    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to synchronize the relation property in.</param>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to synchronize the relation property in. In a transaction hierarchy,
+    /// <see cref="Synchronize"/> affects the whole hierarchy, no matter to which transaction (root or sub-transaction) it is applied. </param>
     /// <param name="endPointID">The ID of the relation property to synchronize. This contains the ID of the originating object and the
     /// relation property to check.</param>
     /// <exception cref="ArgumentException">
