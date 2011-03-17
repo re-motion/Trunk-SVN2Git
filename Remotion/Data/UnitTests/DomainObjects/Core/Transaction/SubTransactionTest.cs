@@ -38,36 +38,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
   public class SubTransactionTest : ClientTransactionBaseTest
   {
     [Test]
-    public void NullParentTransaction ()
-    {
-      Assert.IsNull (ClientTransactionMock.ParentTransaction);
-    }
-
-    [Test]
-    public void SameRootTransaction ()
-    {
-      Assert.AreSame (ClientTransactionMock, ClientTransactionMock.RootTransaction);
-    }
-
-    [Test]
     public void CreateSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.AreSame (ClientTransactionMock, subTransaction.ParentTransaction);
-      Assert.AreSame (ClientTransactionMock, subTransaction.RootTransaction);
+      Assert.That (subTransaction, Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction), Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
 
     [Test]
-    public void CreateSubTransactionInSubTransaction ()
+    public void CreateSubTransaction_OfSubTransaction ()
     {
       ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction();
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction();
-      Assert.AreSame (subTransaction1, subTransaction2.ParentTransaction);
-      Assert.AreSame (ClientTransactionMock, subTransaction2.RootTransaction);
+      Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction2), Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
 
     [Test]
-    public void CreatingSubTransactionSetsParentReadonly ()
+    public void CreateSubTransaction_SetsParentReadonly ()
     {
       Assert.IsFalse (ClientTransactionMock.IsReadOnly);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -77,6 +64,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction subTransaction2 = subTransaction.CreateSubTransaction();
       Assert.IsTrue (subTransaction.IsReadOnly);
       Assert.IsFalse (subTransaction2.IsReadOnly);
+    }
+
+    [Test]
+    public void ParentTransaction ()
+    {
+      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      Assert.That (subTransaction1.ParentTransaction, Is.SameAs (ClientTransactionMock));
+
+      ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
+      Assert.That (subTransaction2.ParentTransaction, Is.SameAs (subTransaction1));
+    }
+
+    [Test]
+    public void ActiveSubTansaction ()
+    {
+      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.SameAs (subTransaction1));
+
+      ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
+      Assert.That (subTransaction1.ActiveSubTransaction, Is.SameAs (subTransaction2));
+      Assert.That (subTransaction2.ActiveSubTransaction, Is.Null);
+
+      subTransaction2.Discard();
+
+      Assert.That (subTransaction1.ActiveSubTransaction, Is.Null);
+      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.SameAs (subTransaction1));
+
+      subTransaction1.Discard();
+      Assert.That (ClientTransactionMock.ActiveSubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void RootTransaction ()
+    {
+      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
+
+      Assert.That (ClientTransactionMock.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (subTransaction1.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (subTransaction2.RootTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void LeafTransaction ()
+    {
+      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
+
+      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (subTransaction2));
+      Assert.That (subTransaction1.LeafTransaction, Is.SameAs (subTransaction2));
+      Assert.That (subTransaction2.LeafTransaction, Is.SameAs (subTransaction2));
+
+      subTransaction2.Discard();
+
+      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (subTransaction1));
+      Assert.That (subTransaction1.LeafTransaction, Is.SameAs (subTransaction1));
+
+      subTransaction1.Discard ();
+
+      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (ClientTransactionMock));
     }
 
     [Test]

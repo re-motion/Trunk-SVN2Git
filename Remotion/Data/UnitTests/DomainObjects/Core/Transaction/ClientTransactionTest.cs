@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -30,7 +29,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -65,21 +63,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ActiveSubTransaction_NoSubTransaction ()
+    public void ParentTransaction ()
+    {
+      Assert.That (ClientTransaction.Current.ParentTransaction, Is.Null);
+    }
+
+    [Test]
+    public void ActiveSubTransaction ()
     {
       Assert.That (ClientTransaction.Current.ActiveSubTransaction, Is.Null);
     }
 
     [Test]
-    public void ActiveSubTansaction_RootTransactionHasSubTransaction ()
+    public void RootTransaction ()
     {
-      var rootTransaction = ClientTransaction.Current;
-      var subTransaction = ClientTransaction.Current.CreateSubTransaction();
-      using (subTransaction.EnterDiscardingScope ())
-      {
-        Assert.That (rootTransaction.ActiveSubTransaction, Is.SameAs(subTransaction));
-      }
-      Assert.That (ClientTransaction.Current.ActiveSubTransaction, Is.Null);
+      Assert.That (ClientTransactionMock.RootTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void LeafTransaction ()
+    {
+      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (ClientTransactionMock));
     }
 
     [Test]

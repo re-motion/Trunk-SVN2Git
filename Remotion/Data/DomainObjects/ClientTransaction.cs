@@ -185,32 +185,54 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the parent transaction for this <see cref="ClientTransaction"/>.
+  /// Gets the parent transaction for this <see cref="ClientTransaction"/>, or <see langword="null" /> if this transaction is a root transaction.
   /// </summary>
-  /// <value>The parent transaction.</value>
+  /// <value>The parent transaction, or <see langword="null" /> if this transaction is a root transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
     get { return _persistenceStrategy.ParentTransaction; }
   }
 
+  /// <summary>
+  /// Gets the active sub-transaction of this <see cref="ClientTransaction"/>, or <see langword="null" /> if this transaction has no sub-transactions.
+  /// </summary>
+  /// <value>The active sub-transaction, or <see langword="null" /> if this transaction has no sub-transactions.</value>
+  /// <remarks>When the <see cref="ActiveSubTransaction"/> is discarded, this property is automatically set to <see langword="null" />.</remarks>
   public ClientTransaction ActiveSubTransaction
   {
     get { return _activeSubTransaction; }
   }
 
   /// <summary>
-  /// Gets the root transaction of this <see cref="ClientTransaction"/>, i.e. the top-level parent transaction in a row of subtransactions.
+  /// Gets the root transaction of this <see cref="ClientTransaction"/>, that is, the top-level transaction in a row of sub-transactions.
+  /// If this <see cref="ClientTransaction"/> is itself a root transaction (i.e, it has no <see cref="ParentTransaction"/>), it is returned.
   /// </summary>
   /// <value>The root transaction of this <see cref="ClientTransaction"/>.</value>
-  /// <remarks>When this transaction is an instance of <see cref="RootPersistenceStrategy"/>, this property returns the transaction itself. If it
-  /// is an instance of <see cref="SubPersistenceStrategy"/>, it returns the parent's root transaction. </remarks>
   public ClientTransaction RootTransaction 
   { 
-    get 
-    { 
+    get
+    {
       var current = this;
       while (current.ParentTransaction != null)
         current = current.ParentTransaction;
+
+      return current;
+    }
+  }
+
+  /// <summary>
+  /// Gets the lowest sub-transaction of this <see cref="ClientTransaction"/>, that is, the bottom-most transaction in a row of sub-transactions.
+  /// If this <see cref="ClientTransaction"/> is itself the leaf transaction (i.e, it has no <see cref="ActiveSubTransaction"/>), it itself is 
+  /// returned.
+  /// </summary>
+  /// <value>The leaf transaction of this <see cref="ClientTransaction"/>.</value>
+  public ClientTransaction LeafTransaction
+  {
+    get
+    {
+      var current = this;
+      while (current.ActiveSubTransaction != null)
+        current = current.ActiveSubTransaction;
 
       return current;
     }
@@ -337,16 +359,19 @@ public class ClientTransaction
   public virtual bool Discard ()
   {
     if (!_isDiscarded)
+    {
       TransactionEventSink.TransactionDiscarding (this);
 
-    if (ParentTransaction != null)
-    {
-      ParentTransaction.IsReadOnly = false;
-      ParentTransaction._activeSubTransaction = null;
+      if (ParentTransaction != null)
+      {
+        ParentTransaction.IsReadOnly = false;
+        ParentTransaction._activeSubTransaction = null;
+      }
+
+      _isDiscarded = true;
+      AddListener (new InvalidatedTransactionListener());
     }
 
-    _isDiscarded = true;
-    AddListener (new InvalidatedTransactionListener ());
     return ParentTransaction != null;
   }
 

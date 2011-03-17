@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -49,5 +52,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);
     }
 
+    public static ClientTransaction Create (
+        Dictionary<Enum, object> applicationData,
+        Func<ClientTransaction, ClientTransaction> clineFactory,
+        IDataManager dataManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
+        ClientTransactionExtensionCollection extensions,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        CompoundClientTransactionListener[] listeners,
+        IObjectLoader objectLoader,
+        IPersistenceStrategy persistenceStrategy)
+    {
+      var componentFactoryStub = CreateComponentFactory (
+          applicationData,
+          clineFactory,
+          dataManager,
+          enlistedDomainObjectManager,
+          extensions,
+          invalidDomainObjectManager,
+          listeners,
+          objectLoader,
+          persistenceStrategy);
+
+      return Create<ClientTransaction> (componentFactoryStub);
+    }
+
+    public static IClientTransactionComponentFactory CreateComponentFactory (
+        Dictionary<Enum, object> applicationData,
+        Func<ClientTransaction, ClientTransaction> clineFactory,
+        IDataManager dataManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
+        ClientTransactionExtensionCollection extensions,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        CompoundClientTransactionListener[] listeners,
+        IObjectLoader objectLoader,
+        IPersistenceStrategy persistenceStrategy)
+    {
+      var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
+      componentFactoryStub.Stub (stub => stub.CreateApplicationData ()).Return (applicationData);
+      componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (clineFactory);
+      componentFactoryStub
+          .Stub (stub => stub.CreateDataManager(
+              Arg<ClientTransaction>.Is.Anything, 
+              Arg<IInvalidDomainObjectManager>.Is.Anything, 
+              Arg<IObjectLoader>.Is.Anything))
+          .Return (dataManager);
+      componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager ()).Return (enlistedDomainObjectManager);
+      componentFactoryStub.Stub (stub => stub.CreateExtensions ()).Return (extensions);
+      componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager ()).Return (invalidDomainObjectManager);
+      componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
+      componentFactoryStub
+          .Stub (stub => stub.CreateObjectLoader(
+              Arg<ClientTransaction>.Is.Anything, 
+              Arg<IPersistenceStrategy>.Is.Anything, 
+              Arg<IClientTransactionListener>.Is.Anything))
+          .Return (objectLoader);
+      componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<Guid>.Is.Anything)).Return (persistenceStrategy);
+      return componentFactoryStub;
+    }
   }
 }

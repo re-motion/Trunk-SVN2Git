@@ -111,5 +111,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var dataManager = GetDataManager (clientTransaction);
       dataManager.RegisterDataContainer (dataContainer);
     }
+
+    public static void SetIsReadOnly (ClientTransaction transaction, bool value)
+    {
+      PrivateInvoke.SetPublicProperty (transaction, "IsReadOnly", value);
+    }
+
+    public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    {
+      PrivateInvoke.SetNonPublicField (clientTransaction, "_activeSubTransaction", subTransaction);
+    }
   }
 }
