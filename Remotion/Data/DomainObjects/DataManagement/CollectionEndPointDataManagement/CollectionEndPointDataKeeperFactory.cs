@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
@@ -27,31 +26,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class CollectionEndPointDataKeeperFactory : ICollectionEndPointDataKeeperFactory
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     public CollectionEndPointDataKeeperFactory (
         ClientTransaction clientTransaction, 
-        IRelationEndPointProvider endPointProvider, 
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
       _clientTransaction = clientTransaction;
-      _endPointProvider = endPointProvider;
       _changeDetectionStrategy = changeDetectionStrategy;
     }
 
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
-    }
-
-    public IRelationEndPointProvider EndPointProvider
-    {
-      get { return _endPointProvider; }
     }
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
@@ -66,7 +56,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return new CollectionEndPointDataKeeper (
           _clientTransaction, 
           endPointID, 
-          _endPointProvider, 
           _changeDetectionStrategy);
     }
   }

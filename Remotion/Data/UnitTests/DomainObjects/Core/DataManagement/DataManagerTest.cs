@@ -76,7 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (map.EndPointProvider, Is.SameAs (dataManager));
       Assert.That (map.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
       Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).EndPointProvider, Is.SameAs (dataManager));
       Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ChangeDetectionStrategy, 
           Is.SameAs (collectionEndPointChangeDetectionStrategy));
     }

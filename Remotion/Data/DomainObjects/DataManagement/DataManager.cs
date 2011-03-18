@@ -60,10 +60,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _dataContainerMap = new DataContainerMap (clientTransaction);
 
-      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (
-          clientTransaction, 
-          this, 
-          collectionEndPointChangeDetectionStrategy);
+      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
       _relationEndPointMap = new RelationEndPointMap (
           clientTransaction, 
           objectLoader, 

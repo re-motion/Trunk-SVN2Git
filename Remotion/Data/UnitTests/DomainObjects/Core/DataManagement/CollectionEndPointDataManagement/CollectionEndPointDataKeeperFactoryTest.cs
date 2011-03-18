@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -31,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   public class CollectionEndPointDataKeeperFactoryTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
-    private IRelationEndPointProvider _relationEndPointProvider;
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private CollectionEndPointDataKeeperFactory _factory;
@@ -41,10 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       base.SetUp();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _relationEndPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
 
-      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _relationEndPointProvider, _changeDetectionStrategy);
+      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _changeDetectionStrategy);
     }
 
     [Test]
@@ -53,7 +50,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var relationEndPointID = RelationEndPointID.Create (
           DomainObjectIDs.Customer1, 
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      var comparer = Comparer<DomainObject>.Default;
 
       var result = _factory.Create (relationEndPointID);
 
@@ -65,14 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Serializable ()
     {
-      var serializableProvider = new SerializableRelationEndPointProviderFake();
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, serializableProvider, changeDetectionStrategy);
+      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, changeDetectionStrategy);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (factory);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
     }
   }

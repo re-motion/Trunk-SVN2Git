@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -36,11 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
   {
     private RelationEndPointID _endPointID;
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategyMock;
-    private IRelationEndPointProvider _endPointProviderStub;
     
     private DomainObject _domainObject1;
     private DomainObject _domainObject2;
     private DomainObject _domainObject3;
+    private DomainObject _domainObject4;
 
     private IObjectEndPoint _domainObjectEndPoint1;
     private IObjectEndPoint _domainObjectEndPoint2;
@@ -58,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _changeDetectionStrategyMock = MockRepository.GenerateStrictMock<ICollectionEndPointChangeDetectionStrategy> ();
-      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
+      _domainObject4 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order4);
 
       _domainObjectEndPoint1 = MockRepository.GenerateStub<IObjectEndPoint> ();
       _domainObjectEndPoint1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
@@ -78,17 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObjectEndPoint3.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
       _domainObjectEndPoint3.Stub (stub => stub.ObjectID).Return (_domainObject3.ID);
 
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject1.ID, typeof (Order), "Customer")))
-          .Return (_domainObjectEndPoint1);
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject2.ID, typeof (Order), "Customer")))
-          .Return (_domainObjectEndPoint2);
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject3.ID, typeof (Order), "Customer")))
-          .Return (_domainObjectEndPoint3);
-
-      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _endPointProviderStub, _changeDetectionStrategyMock);
+      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
@@ -96,9 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Initialization ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _endPointProviderStub, _changeDetectionStrategyMock);
-
-      Assert.That (dataKeeper.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
 
       Assert.That (dataKeeper.CollectionData, Is.TypeOf (typeof (ChangeCachingCollectionDataDecorator)));
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
@@ -433,7 +420,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _endPointProviderStub, _changeDetectionStrategyMock);
+      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
 
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
@@ -457,106 +444,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit_UpdatesOriginalContentsAndEndPoints ()
     {
-      _dataKeeper.CollectionData.Insert (0, _domainObject1);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-      
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 
-      _dataKeeper.Commit ();
+      _dataKeeper.CollectionData.Insert (0, _domainObject3);
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint3);
 
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
+      _dataKeeper.CollectionData.Insert (0, _domainObject4);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject4, _domainObject3, _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EquivalentTo(new[] { _domainObjectEndPoint1, _domainObjectEndPoint3 }));
+
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EqualTo(_dataKeeper.OriginalOppositeEndPoints));
-    }
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EquivalentTo (new[] { _domainObject2 }));
 
-    [Test]
-    public void Commit_ClearsEndPoints_IfNoLongerInCollection ()
-    {
-      _dataKeeper.CollectionData.Insert (0, _domainObject1);
-      _dataKeeper.Commit ();
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EqualTo(_dataKeeper.OriginalOppositeEndPoints));
-
-      _dataKeeper.CollectionData.Clear();
       _dataKeeper.Commit();
 
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-    }
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject4, _domainObject3, _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1, _domainObjectEndPoint3 }));
 
-    [Test]
-    public void Commit_RegistersItemWithoutEndPoint_IfPreviouslyItemWithoutEndPoint ()
-    {
-      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order> ();
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (itemWithoutEndPoint);
-
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-
-      // Prepare end-point for item. Doesn't matter - the item still gets registered as item without end-point.
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
-          .Return (MockRepository.GenerateStub<IObjectEndPoint>());
-
-      _dataKeeper.Commit ();
-
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-    }
-
-    [Test]
-    public void Commit_RegistersItemWithoutEndPoint_IfProviderCantGetEndPoint ()
-    {
-      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order>();
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
-          .Return (null);
-      
-      _dataKeeper.CollectionData.Insert (0, itemWithoutEndPoint);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-
-      _dataKeeper.Commit ();
-
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-    }
-
-    [Test]
-    public void Commit_ClearsItemsWithoutEndPoint_IfNoLongerInCollection ()
-    {
-      var itemWithoutEndPoint = DomainObjectMother.CreateFakeObject<Order> ();
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Matches (id => id.ObjectID == itemWithoutEndPoint.ID)))
-          .Return (null);
-      _dataKeeper.CollectionData.Insert (0, itemWithoutEndPoint);
-      _dataKeeper.Commit ();
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-
-      _dataKeeper.CollectionData.Clear();
-      _dataKeeper.Commit();
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject4, _domainObject3, _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1, _domainObjectEndPoint3 }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EquivalentTo (new[] { _domainObject2, _domainObject4 }));
     }
 
     [Test]
@@ -641,13 +551,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void FlattenedSerializable ()
     {
-      var endPointProvider = new SerializableEndPointProviderFake();
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var data = new CollectionEndPointDataKeeper (
-          ClientTransaction.CreateRootTransaction(),
-          _endPointID,
-          endPointProvider,
-          changeDetectionStrategy);
+      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction(), _endPointID, changeDetectionStrategy);
+
       var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);
       data.RegisterOriginalItemWithoutEndPoint (_domainObject2);
@@ -655,7 +561,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.EndPointID, Is.Not.Null);
-      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
       Assert.That (deserializedInstance.CollectionData.Count, Is.EqualTo (2));
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (2));

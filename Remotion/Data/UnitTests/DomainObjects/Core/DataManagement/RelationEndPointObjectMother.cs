@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           endPointID,
           dataManager,
           dataManager,
-          new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, dataManager, changeDetectionStrategy));
+          new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, changeDetectionStrategy));
       
       if (initialContents != null)
         CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (collectionEndPoint, initialContents);

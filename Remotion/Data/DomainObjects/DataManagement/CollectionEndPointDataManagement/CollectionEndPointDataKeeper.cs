@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Linq;
+using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
 {
@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
   {
     private readonly RelationEndPointID _endPointID;
-    private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private readonly ChangeCachingCollectionDataDecorator _changeCachingCollectionData;
@@ -42,16 +41,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        IRelationEndPointProvider endPointProvider,
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
       _endPointID = endPointID;
-      _endPointProvider = endPointProvider;
       _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData();
@@ -66,11 +62,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     public RelationEndPointID EndPointID
     {
       get { return _endPointID; }
-    }
-
-    public IRelationEndPointProvider EndPointProvider
-    {
-      get { return _endPointProvider; }
     }
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
@@ -214,29 +205,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Commit ()
     {
-      var oldItemsWithoutEndPoint = new HashSet<DomainObject> (_originalItemsWithoutEndPoint);
-
       _changeCachingCollectionData.Commit();
 
       _originalOppositeEndPoints.Clear();
       _originalItemsWithoutEndPoint.Clear();
 
-      var oppositeEndPointDefinition = _endPointID.Definition.GetMandatoryOppositeEndPointDefinition();
       foreach (var item in OriginalCollectionData)
       {
-        if (oldItemsWithoutEndPoint.Contains (item))
-          _originalItemsWithoutEndPoint.Add (item);
+        var oppositeEndPoint = _currentOppositeEndPoints.GetValueOrDefault (item.ID);
+        if (oppositeEndPoint != null)
+          _originalOppositeEndPoints.Add (oppositeEndPoint);
         else
-        {
-          var endPoint = GetOppositeEndPoint (item.ID, oppositeEndPointDefinition);
-          if (endPoint != null)
-            _originalOppositeEndPoints.Add (endPoint);
-          else
-            _originalItemsWithoutEndPoint.Add (item);
-        }
+          _originalItemsWithoutEndPoint.Add (item);
       }
-
-      _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
       
       Assertion.IsTrue (OriginalCollectionData.Count == _originalOppositeEndPoints.Count + _originalItemsWithoutEndPoint.Count);
     }
@@ -248,12 +229,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
-    private IObjectEndPoint GetOppositeEndPoint (ObjectID domainObjectID, IRelationEndPointDefinition oppositeEndPointDefinition)
-    {
-      var endPointID = RelationEndPointID.Create (domainObjectID, oppositeEndPointDefinition);
-      return (IObjectEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (endPointID);
-    }
-
     #region Serialization
 
     // ReSharper disable UnusedMember.Local
@@ -262,7 +237,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       _endPointID = info.GetValueForHandle<RelationEndPointID>();
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
       _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>();
 
       _changeCachingCollectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
@@ -285,7 +259,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddHandle (_endPointID);
-      info.AddHandle (_endPointProvider);
       info.AddHandle (_changeDetectionStrategy);
       info.AddValue (_changeCachingCollectionData);
 

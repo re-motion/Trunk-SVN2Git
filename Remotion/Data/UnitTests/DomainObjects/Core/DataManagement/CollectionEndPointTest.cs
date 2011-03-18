@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           _customerEndPointID,
           _lazyLoaderMock,
           ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager, changeDetectionStrategy));
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, changeDetectionStrategy));
 
       CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (_customerEndPoint, new[] { _order1, _orderWithoutOrderItem });
 
@@ -847,7 +847,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           _customerEndPointID,
           MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
           ClientTransactionMock.DataManager,
-          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager, changeDetectionStrategy));
+          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
       return collectionEndPoint;
     }
