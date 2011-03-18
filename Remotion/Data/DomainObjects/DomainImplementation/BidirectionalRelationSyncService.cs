@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </para>
   /// <para>
   /// There are, however, scenarios under which re-store cannot keep that promise of consistency. Due to the nature of lazy loading, the two
-  /// sides of a bidirection relation can become out-of-sync when the underlying data source changes between the loading of the two sides of the
+  /// sides of a bidirectional relation can become out-of-sync when the underlying data source changes between the loading of the two sides of the
   /// relation. This is most notable with 1:n relations, where the collection side is not fully loaded when only a single collection item
   /// is loaded into memory.
   /// </para>
