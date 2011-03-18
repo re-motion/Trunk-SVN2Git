@@ -51,11 +51,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
         ClientTransaction clientTransaction, 
         RelationEndPointID id,
         DataContainer foreignKeyDataContainer,
-        IRelationEndPointLazyLoader lazyLoader)
+        IRelationEndPointLazyLoader lazyLoader,
+        IRelationEndPointProvider endPointProvider)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
           ArgumentUtility.CheckNotNull ("id", id),
-          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader))
+          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
+          ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
       ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
 

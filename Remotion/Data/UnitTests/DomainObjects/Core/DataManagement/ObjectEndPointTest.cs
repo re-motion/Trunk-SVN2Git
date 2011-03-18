@@ -33,8 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private RelationEndPointID _endPointID;
     private IRelationEndPointLazyLoader _lazyLoaderStub;
+    private IRelationEndPointProvider _endPointProviderStub;
     private IObjectEndPointSyncState _syncStateMock;
-
     private ObjectEndPoint _endPoint;
 
     public override void SetUp ()
@@ -43,16 +43,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+
       _syncStateMock = MockRepository.GenerateStrictMock<IObjectEndPointSyncState> ();
 
-      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, DomainObjectIDs.OrderTicket1);
+      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, DomainObjectIDs.OrderTicket1);
       PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
     }
 
     [Test]
     public void Initialization_SyncState ()
     {
-      var endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, DomainObjectIDs.OrderTicket1);
+      var endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, DomainObjectIDs.OrderTicket1);
 
       var syncState = ObjectEndPointTestHelper.GetSyncState (endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));

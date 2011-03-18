@@ -27,17 +27,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   [TestFixture]
   public class VirtualObjectEndPointTest : ClientTransactionBaseTest
   {
-    private VirtualObjectEndPoint _endPoint;
-    private IRelationEndPointLazyLoader _lazyLoaderStub;
     private RelationEndPointID _endPointID;
-
+    private IRelationEndPointLazyLoader _lazyLoaderStub;
+    private IRelationEndPointProvider _endPointProviderStub;
+    private VirtualObjectEndPoint _endPoint;
+    
     public override void SetUp ()
     {
       base.SetUp ();
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
-      _endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, DomainObjectIDs.OrderTicket1, _lazyLoaderStub);
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, DomainObjectIDs.OrderTicket1, _lazyLoaderStub, _endPointProviderStub);
     }
 
     [Test]
@@ -46,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     public void Initialize_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (ClientTransactionMock, id, null, _lazyLoaderStub);
+      new VirtualObjectEndPoint (ClientTransactionMock, id, null, _lazyLoaderStub, _endPointProviderStub);
     }
 
     [Test]

@@ -43,11 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNullEndPoint_ObjectEndPoint ()
     {
-      var orderTicketDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var orderTicketDefinition =
+          Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       var objectEndPointID = RelationEndPointID.Create (null, orderTicketDefinition);
 
       var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, objectEndPointID);
-      
+
       Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullObjectEndPoint)));
       Assert.That (nullObjectEndPoint.ID, Is.EqualTo (objectEndPointID));
     }
@@ -55,7 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNullEndPoint_CollectionEndPoint ()
     {
-      var orderItemsDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      var orderItemsDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (
+          typeof (Order).FullName + ".OrderItems");
       var collectionEndPointID = RelationEndPointID.Create (null, orderItemsDefinition);
 
       var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, collectionEndPointID);
@@ -86,14 +88,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOriginalRelatedObjectsWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObjects (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      _map.GetOriginalRelatedObjects (RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
     [Test]
     public void GetOriginalRelatedObjectsWithLazyLoad ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       DomainObjectCollection originalOrderItems = _map.GetOriginalRelatedObjects (endPointID);
       DomainObjectCollection orderItems = _map.GetRelatedObjects (endPointID);
 
@@ -106,14 +108,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOriginalRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObject (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      _map.GetOriginalRelatedObject (RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]
     public void GetOriginalRelatedObjectWithLazyLoad ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject originalOrderTicket = _map.GetOriginalRelatedObject (endPointID);
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
@@ -124,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
       Assert.That (orderTicket, Is.Not.Null);
@@ -140,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       location.Client.Delete();
 
-      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       _map.GetRelatedObject (endPointID, false);
     }
 
@@ -151,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       location.Client.Delete();
 
-      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.That (client, Is.Not.Null);
       Assert.That (client.ID, Is.EqualTo (DomainObjectIDs.Client1));
@@ -164,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObjectsWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetRelatedObjects (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      _map.GetRelatedObjects (RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
     [Test]
@@ -175,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       location.Client = newClient;
       location.Client.Delete();
 
-      var endPointID = RelationEndPointID.Create(location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.That (client, Is.Not.Null);
       Assert.That (client, Is.SameAs (newClient));
@@ -188,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetRelatedObject (RelationEndPointID.Create(order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
+      _map.GetRelatedObject (RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
     }
 
     [Test]
@@ -216,19 +218,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "GetRelationEndPointWithLazyLoad cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
-      IRelationEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create(client.ID, parentClientEndPointDefinition));
+      IRelationEndPoint unidirectionalEndPoint =
+          _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (client.ID, parentClientEndPointDefinition));
 
       Client parentClient = client.ParentClient;
       Assert.That (parentClient, Is.Not.Null);
 
       var anonymousEndPointDefinition = unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition();
-      _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create(parentClient.ID, anonymousEndPointDefinition));
+      _map.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (parentClient.ID, anonymousEndPointDefinition));
     }
 
     [Test]
@@ -290,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1); // ensure opposite real end point is available
       Assert.That (_map[RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order")], Is.Not.Null);
       Assert.That (_map[RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order")].Definition.IsVirtual, Is.False);
-      
+
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (endPointID.Definition.IsVirtual, Is.True);
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
@@ -338,6 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
@@ -357,7 +361,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot remove end-point "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because it has "
+        +
+        "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because it has "
         + "changed. End-points can only be unregistered when they are unchanged.")]
     public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
     {
@@ -387,6 +392,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"]));
+      Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
+
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
@@ -427,7 +434,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       collectionEndPointMock.Stub (stub => stub.ID).Return (collectionEndPointID);
       collectionEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
       collectionEndPointMock.Replay();
-      
+
       RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
 
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
@@ -452,13 +459,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
 
       Assert.That (
-          ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), 
+          ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
           Is.TypeOf (typeof (UnknownObjectEndPointSyncState)),
           "Because collection's state is incomplete.");
     }
 
     [Test]
-    public void RegisterRealObjectEndPoint_WithOppositeAnonymousEndPoint()
+    public void RegisterRealObjectEndPoint_WithOppositeAnonymousEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
@@ -476,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       Assert.That (_map[id], Is.Not.Null);
-      
+
       _map.UnregisterRealObjectEndPoint (id);
 
       Assert.That (_map[id], Is.Null);
@@ -502,7 +509,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      var realEndPoint = new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager);
+      var realEndPoint = new RealObjectEndPoint (
+          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
       RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
 
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -541,7 +549,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      var oppositeEndPointID = RelationEndPointID.Create(DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition ());
+      var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition());
       Assert.That (_map[oppositeEndPointID], Is.Null);
 
       _map.UnregisterRealObjectEndPoint (id);
@@ -608,7 +616,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID);
-      
+
       Assert.That (_map[endPointID], Is.Not.Null);
 
       _map.UnregisterCollectionEndPoint (endPointID);
@@ -692,7 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var oppositeEndPointDefinition = endPointID.Definition.GetOppositeEndPointDefinition();
-      var expectedID = RelationEndPointID.Create(null, oppositeEndPointDefinition);
+      var expectedID = RelationEndPointID.Create (null, oppositeEndPointDefinition);
 
       Assert.That (_map[expectedID], Is.Null);
     }
@@ -871,7 +879,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot unregister the following relation end-points: "
         + "'RealObjectEndPoint: "
         + "OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. "
@@ -891,7 +899,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetNonUnregisterableEndPointsForDataContainer()
+    public void GetNonUnregisterableEndPointsForDataContainer ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
@@ -915,7 +923,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeCollectionEndPointStub.Stub (stub => stub.ID).Return (oppositeCollectionEndPointID);
 
       RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeCollectionEndPointStub);
-      
+
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order1);
       var realEndPoint = (ObjectEndPoint) _map.RegisterRealObjectEndPoint (realEndPointID, dataContainer);
@@ -956,7 +964,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order1);
-      
+
       _map.CheckForConflictingForeignKeys (dataContainer);
     }
 
@@ -984,7 +992,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
         + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
@@ -1067,7 +1075,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void MarkCollectionEndPointComplete_ChecksAnonymity ()
     {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
+      var endPointID = RelationEndPointID.Create (
+          DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
       _map.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
     }
 
@@ -1134,7 +1143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RemoveEndPoint (endPointID);
 
       listenerMock.VerifyAllExpectations();
-      listenerMock.BackToRecord (); // For Discard
+      listenerMock.BackToRecord(); // For Discard
     }
 
     [Test]
@@ -1153,12 +1162,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID()).Return (oppositeEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
 
-      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
       oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointStub.Stub (stub => stub.IsDataComplete).Return (false);
       RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointStub);
@@ -1172,11 +1181,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOppositeEndPoint_OppositeIsNull ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var oppositeEndPointID = RelationEndPointID.Create (null, endPointID.Definition.GetMandatoryOppositeEndPointDefinition ());
+      var oppositeEndPointID = RelationEndPointID.Create (null, endPointID.Definition.GetMandatoryOppositeEndPointDefinition());
 
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID()).Return (oppositeEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
 
       var result = _map.GetOppositeEndPoint (objectEndPointStub);
@@ -1186,23 +1195,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The end-point is not registered in this map.\r\nParameter name: objectEndPoint")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The end-point is not registered in this map.\r\nParameter name: objectEndPoint"
+        )]
     public void GetOppositeEndPoint_EndPointNotAdded_ThrowsException ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
 
       _map.GetOppositeEndPoint (objectEndPointStub);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The end-point is not part of a bidirectional relation.\r\nParameter name: objectEndPoint")]
     public void GetOppositeEndPoint_Unidirectional_ThrowsException ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
 

@@ -171,7 +171,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "RegisterRealObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, false, "RegisterRealObjectEndPoint", "endPointID");
       
-      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer, _lazyLoader);
+      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer, _lazyLoader, _endPointProvider);
       Add (objectEndPoint);
 
       RegisterOppositeForRealObjectEndPoint (objectEndPoint);
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
-      var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID, _lazyLoader);
+      var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID, _lazyLoader, _endPointProvider);
       Add (objectEndPoint);
 
       objectEndPoint.MarkSynchronized();

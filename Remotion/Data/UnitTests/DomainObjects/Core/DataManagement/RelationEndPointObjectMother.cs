@@ -60,14 +60,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var clientTransaction = dataContainer.ClientTransaction;
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader);
+      var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader, endPointProvider);
     }
 
     public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       var clientTransaction = ClientTransaction.Current;
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader);
+      var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader, endPointProvider);
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)

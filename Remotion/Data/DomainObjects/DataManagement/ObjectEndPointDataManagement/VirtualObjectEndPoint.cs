@@ -35,11 +35,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
         ClientTransaction clientTransaction, 
         RelationEndPointID id, 
         ObjectID oppositeObjectID, 
-        IRelationEndPointLazyLoader lazyLoader)
+        IRelationEndPointLazyLoader lazyLoader,
+        IRelationEndPointProvider endPointProvider)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
           ArgumentUtility.CheckNotNull ("id", id),
-          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader))
+          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
+          ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");

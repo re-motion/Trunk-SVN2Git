@@ -33,10 +33,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       return (IObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
     }
-
-    public static IRelationEndPointLazyLoader GetLazyLoader (ObjectEndPoint endPoint)
-    {
-      return (IRelationEndPointLazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
-    }
   }
 }

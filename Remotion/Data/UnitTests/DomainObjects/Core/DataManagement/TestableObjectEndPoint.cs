@@ -27,12 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
 
-    public TestableObjectEndPoint (
-        ClientTransaction clientTransaction,
-        RelationEndPointID id,
-        IRelationEndPointLazyLoader lazyLoader,
-        ObjectID originalOppositeObjectID)
-        : base (clientTransaction, id, lazyLoader)
+    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider, ObjectID originalOppositeObjectID)
+        : base (clientTransaction, id, lazyLoader, endPointProvider)
     {
       _originalOppositeObjectID = originalOppositeObjectID;
       _oppositeObjectID = originalOppositeObjectID;

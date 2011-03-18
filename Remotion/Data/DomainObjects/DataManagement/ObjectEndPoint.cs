@@ -28,14 +28,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
+    private readonly IRelationEndPointProvider _endPointProvider;
 
-    protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader)
+    protected ObjectEndPoint (
+        ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider)
         : base (clientTransaction, id)
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
       _lazyLoader = lazyLoader;
       _syncState = new UnknownObjectEndPointSyncState (_lazyLoader);
+      _endPointProvider = endPointProvider;
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
     }
 
     public abstract ObjectID OppositeObjectID { get; protected set; }
@@ -43,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool IsSynchronized
     {
-      get { return _syncState.IsSynchronized(this); }
+      get { return _syncState.IsSynchronized (this); }
     }
 
     public void Synchronize (IRelationEndPoint oppositeEndPoint)
@@ -55,7 +69,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+      throw new InvalidOperationException (
+          "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
     }
 
     public void MarkSynchronized ()
@@ -122,7 +137,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (removedRelatedObject.ID != OppositeObjectID)
       {
         string removedID = removedRelatedObject.ID.ToString();
-        string currentID = OppositeObjectID != null ? OppositeObjectID.ToString () : "<null>";
+        string currentID = OppositeObjectID != null ? OppositeObjectID.ToString() : "<null>";
 
         var message = string.Format (
             "Cannot remove object '{0}' from object end point '{1}' - it currently holds object '{2}'.",
@@ -168,7 +183,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public RelationEndPointID GetOppositeRelationEndPointID ()
     {
-      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition();
       if (oppositeEndPointDefinition.IsAnonymous)
         return null;
 
@@ -179,7 +194,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
       var oppositeEndPointID = GetOppositeRelationEndPointID();
-      
+
       if (oppositeEndPointID == null)
         return Enumerable.Empty<RelationEndPointID>();
       else
@@ -191,14 +206,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
-      _syncState = info.GetValueForHandle<IObjectEndPointSyncState> ();
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
+      _syncState = info.GetValueForHandle<IObjectEndPointSyncState>();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddHandle (_lazyLoader);
       info.AddHandle (_syncState);
+      info.AddHandle (_endPointProvider);
     }
 
     #endregion

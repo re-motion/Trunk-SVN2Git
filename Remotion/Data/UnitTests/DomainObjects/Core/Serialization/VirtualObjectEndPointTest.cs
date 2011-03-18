@@ -94,8 +94,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var lazyLoader = ObjectEndPointTestHelper.GetLazyLoader (deserializedEndPoint);
+      var lazyLoader = deserializedEndPoint.LazyLoader;
       Assert.That (lazyLoader, Is.Not.Null);
     }
+
+    [Test]
+    public void EndPointProvider ()
+    {
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var endPointProvider = deserializedEndPoint.EndPointProvider;
+      Assert.That (endPointProvider, Is.Not.Null);
+    }
+
   }
 }
