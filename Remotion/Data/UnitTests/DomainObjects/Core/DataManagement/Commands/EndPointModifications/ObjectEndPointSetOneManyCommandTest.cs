@@ -23,7 +23,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -32,24 +34,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   [TestFixture]
   public class ObjectEndPointSetOneManyCommandTest : ObjectEndPointSetCommandTestBase
   {
-    protected override DomainObject OldRelatedObject
+    private OrderItem _domainObject;
+    private Order _oldRelatedObject;
+    private Order _newRelatedObject;
+
+    private RelationEndPointID _endPointID;
+    private ObjectEndPoint _endPoint;
+
+    private Action<ObjectID> _oppositeObjectIDSetter;
+    
+    private ObjectEndPointSetCommand _command;
+
+    public override void SetUp ()
     {
-      get { return Order.GetObject (DomainObjectIDs.Order1); }
+      base.SetUp ();
+
+      _domainObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      _oldRelatedObject = _domainObject.Order;
+      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+
+      _endPointID = RelationEndPointID.Create (_domainObject, oi => oi.Order);
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
+
+      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
+
+      _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, _oppositeObjectIDSetter, EndPointProviderStub);
     }
 
-    protected override DomainObject NewRelatedObject
+    [Test]
+    public void Initialization ()
     {
-      get { return Order.GetObject (DomainObjectIDs.Order2); }
+      Assert.AreSame (_endPoint, _command.ModifiedEndPoint);
+      Assert.AreSame (_oldRelatedObject, _command.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, _command.NewRelatedObject);
     }
 
-    protected override RelationEndPointID GetRelationEndPointID ()
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModificationCommand is needed.\r\n"
+                                                                      + "Parameter name: modifiedEndPoint")]
+    public void Initialization_FromNullEndPoint ()
     {
-      return RelationEndPointID.Create(DomainObjectIDs.OrderItem1, typeof (OrderItem).FullName + ".Order");
-    }
-
-    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
-    {
-      return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, EndPointProviderStub);
+      var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
+      new ObjectEndPointSetOneManyCommand (endPoint, _newRelatedObject, _oppositeObjectIDSetter, EndPointProviderStub);
     }
 
     [Test]
@@ -59,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client))
           .GetMandatoryRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var relationEndPointID = RelationEndPointID.Create(Client.GetObject(DomainObjectIDs.Client1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create (Client.GetObject (DomainObjectIDs.Client1).ID, definition);
       var endPoint = (IObjectEndPoint)
           ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetOneManyCommand (endPoint, Client.NewObject (), mi => { }, EndPointProviderStub);
@@ -72,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      var relationEndPointID = RelationEndPointID.Create(OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
+      var relationEndPointID = RelationEndPointID.Create (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
       var endPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetOneManyCommand (endPoint, Order.NewObject (), mi => { }, EndPointProviderStub);
     }
@@ -83,53 +109,113 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         + "instead.\r\nParameter name: newRelatedObject")]
     public void Initialization_Same ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      new ObjectEndPointSetOneManyCommand (endPoint, OldRelatedObject, mi => { }, EndPointProviderStub);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
+      new ObjectEndPointSetOneManyCommand (endPoint, _oldRelatedObject, mi => { }, EndPointProviderStub);
+    }
+
+    [Test]
+    public virtual void Begin ()
+    {
+      DomainObject domainObject = ((IObjectEndPoint) _endPoint).GetDomainObject ();
+      var eventReceiver = new DomainObjectEventReceiver (domainObject);
+
+      _command.Begin();
+
+      Assert.IsTrue (eventReceiver.HasRelationChangingEventBeenCalled);
+      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
+    }
+
+    [Test]
+    public void Perform_InvokesPerformRelationChange ()
+    {
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
+      _command.Perform();
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
+    }
+
+    [Test]
+    public void Perform_TouchesEndPoint ()
+    {
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+      _command.Perform();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public virtual void End ()
+    {
+      DomainObject domainObject = ((IObjectEndPoint) _endPoint).GetDomainObject ();
+      var eventReceiver = new DomainObjectEventReceiver (domainObject);
+
+      _command.End();
+
+      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
+      Assert.IsTrue (eventReceiver.HasRelationChangedEventBeenCalled);
+    }
+
+    [Test]
+    public virtual void NotifyClientTransactionOfBegin ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _command.NotifyClientTransactionOfBegin();
+
+      listenerMock.AssertWasCalled(mock => mock.RelationChanging (
+          ClientTransactionMock, 
+          _endPoint.GetDomainObject (), 
+          _endPoint.Definition, 
+          _oldRelatedObject, 
+          _newRelatedObject));
+    }
+
+    [Test]
+    public virtual void NotifyClientTransactionOfEnd ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _command.NotifyClientTransactionOfEnd ();
+
+      listenerMock.AssertWasCalled (mock => mock.RelationChanged (
+          ClientTransactionMock, 
+          _endPoint.GetDomainObject (), 
+          _endPoint.Definition));
     }
 
     [Test]
     public void ExpandToAllRelatedObjects_SetDifferent_BidirectionalOneMany ()
     {
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
-      var relationEndPointID = RelationEndPointID.Create(orderItem.ID, orderEndPointDefinition);
-      var bidirectionalEndPoint = 
-          (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
-
       // orderItem.Order = newOrder;
-      var oldOrder = orderItem.Order;
-      var newOrder = Order.GetObject (DomainObjectIDs.Order2);
-      var setDifferentModification = new ObjectEndPointSetOneManyCommand (bidirectionalEndPoint, newOrder, mi => { }, EndPointProviderStub);
 
-      var oldRelatedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (oldOrder.ID, "OrderItems");
+      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
       var oldRelatedEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID);
 
-      var newRelatedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (newOrder.ID, "OrderItems");
+      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
       var newRelatedEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (newRelatedEndPointID);
 
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (oldRelatedEndPoint);
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (newRelatedEndPoint);
-      
-      var bidirectionalModification = setDifferentModification.ExpandToAllRelatedObjects ();
+
+      var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       var steps = GetAllCommands (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (3));
 
       // orderItem.Order = newOrder;
-      Assert.That (steps[0], Is.SameAs (setDifferentModification));
+      Assert.That (steps[0], Is.SameAs (_command));
 
       // newOrder.OrderItems.Add (orderItem);
       Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
       Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (newRelatedEndPoint));
       Assert.That (steps[1].OldRelatedObject, Is.Null);
-      Assert.That (steps[1].NewRelatedObject, Is.SameAs (orderItem));
+      Assert.That (steps[1].NewRelatedObject, Is.SameAs (_domainObject));
 
       // oldOrder.OrderItems.Remove (orderItem)
       Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
       Assert.That (steps[2].ModifiedEndPoint, Is.SameAs (oldRelatedEndPoint));
-      Assert.That (steps[2].OldRelatedObject, Is.SameAs (orderItem));
+      Assert.That (steps[2].OldRelatedObject, Is.SameAs (_domainObject));
       Assert.That (steps[2].NewRelatedObject, Is.Null);
     }
-
   }
 }
