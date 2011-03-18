@@ -273,6 +273,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      _dataKeeperMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub));
+      _dataKeeperMock.Replay ();
+
+      _loadState.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _dataKeeperMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
+      _dataKeeperMock.Replay ();
+
+      _loadState.UnregisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void IsSynchronized_True ()
     {
       _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);

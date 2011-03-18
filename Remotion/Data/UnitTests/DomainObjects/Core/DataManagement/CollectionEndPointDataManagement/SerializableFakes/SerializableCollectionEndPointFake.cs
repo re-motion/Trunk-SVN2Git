@@ -198,6 +198,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public void Synchronize ()
     {
       throw new NotImplementedException();

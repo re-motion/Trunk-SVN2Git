@@ -190,6 +190,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("UnregisterOriginalOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
 
+    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+    }
+
     public bool IsSynchronized
     {
       get { return true; }

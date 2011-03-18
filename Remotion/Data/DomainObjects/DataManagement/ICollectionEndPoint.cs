@@ -38,8 +38,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
+
     void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+
+    void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
     void Synchronize ();
   }

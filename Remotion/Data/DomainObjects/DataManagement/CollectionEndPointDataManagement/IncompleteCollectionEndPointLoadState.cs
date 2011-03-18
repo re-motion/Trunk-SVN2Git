@@ -171,6 +171,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
+    public void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      collectionEndPoint.EnsureDataComplete();
+      collectionEndPoint.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      collectionEndPoint.EnsureDataComplete();
+      collectionEndPoint.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
+    }
+
     public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

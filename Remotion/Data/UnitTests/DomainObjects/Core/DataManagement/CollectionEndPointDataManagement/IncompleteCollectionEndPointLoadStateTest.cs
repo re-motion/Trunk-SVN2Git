@@ -39,6 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private IncompleteCollectionEndPointLoadState _loadState;
 
     private Order _relatedObject;
+    private IObjectEndPoint _relatedEndPointStub;
+
     private RelationEndPointID _endPointID;
 
     [SetUp]
@@ -57,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
+      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
     }
 
@@ -129,19 +132,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       bool stateSetterCalled = false;
 
-      var oppositeEndPointWithoutItem = MockRepository.GenerateStub<IObjectEndPoint>();
-      oppositeEndPointWithoutItem.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
-      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new [] { oppositeEndPointWithoutItem });
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new [] { _relatedEndPointStub });
       _dataKeeperMock.Replay ();
 
       var newKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
 
       // ReSharper disable AccessToModifiedClosure
       _collectionEndPointMock
-          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem))
+          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub))
           .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
       // ReSharper restore AccessToModifiedClosure
       _collectionEndPointMock.Replay ();
@@ -264,14 +266,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void UnregisterOriginalOppositeEndPoint_RegisteredInDataKeeper ()
     {
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (endPointStub));
+      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub));
       _dataKeeperMock.Replay ();
 
-      _loadState.UnregisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointStub);
+      _loadState.UnregisterOriginalOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
 
       _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      CheckOperationDelegatesToCompleteState (
+         s => s.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub),
+         s => s.RegisterCurrentOppositeEndPoint(_relatedEndPointStub));
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      CheckOperationDelegatesToCompleteState (
+         s => s.UnregisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub),
+         s => s.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
     }
 
     [Test]
@@ -296,10 +312,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         "Cannot synchronize an opposite end-point with a collection end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()
     {
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
+      _relatedEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
 
-      _loadState.SynchronizeOppositeEndPoint (endPointStub);
+      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub);
     }
 
     [Test]

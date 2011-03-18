@@ -40,6 +40,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
 
+    void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint);
+
     bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
     void Synchronize (ICollectionEndPoint collectionEndPoint);
 

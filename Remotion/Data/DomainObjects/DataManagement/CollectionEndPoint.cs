@@ -225,6 +225,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.UnregisterOriginalOppositeEndPoint (this, oppositeEndPoint);
     }
 
+    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _loadState.RegisterCurrentOppositeEndPoint (this, oppositeEndPoint);
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _loadState.UnregisterCurrentOppositeEndPoint (this, oppositeEndPoint);
+    }
+
     public override bool IsSynchronized
     {
       get { return _loadState.IsSynchronized (this); }

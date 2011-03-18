@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private IRelationEndPointDefinition _definition;
     private NullCollectionEndPoint _nullEndPoint;
     private OrderItem _relatedObject;
+    private IObjectEndPoint _relatedEndPointStub;
 
     public override void SetUp ()
     {
@@ -42,6 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _nullEndPoint = new NullCollectionEndPoint (ClientTransactionMock, _definition);
       _relatedObject = OrderItem.NewObject();
+      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
     }
 
     [Test]
@@ -196,14 +198,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException))]
     public void RegisterOriginalOppositeEndPoint ()
     {
-      _nullEndPoint.RegisterOriginalOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint>());
+      _nullEndPoint.RegisterOriginalOppositeEndPoint (_relatedEndPointStub);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void UnregisterOriginalOppositeEndPoint ()
     {
-      _nullEndPoint.UnregisterOriginalOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint> ());
+      _nullEndPoint.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub);
+    }
+
+    [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      _nullEndPoint.RegisterCurrentOppositeEndPoint (_relatedEndPointStub);
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _nullEndPoint.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub);
     }
 
     [Test]
@@ -223,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException))]
     public void SynchronizeOppositeEndPoint ()
     {
-      _nullEndPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint>());
+      _nullEndPoint.SynchronizeOppositeEndPoint (_relatedEndPointStub);
     }
 
     [Test]

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -45,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private ICollectionEndPointLoadState _loadStateMock;
     private CollectionEndPoint _endPointWithLoadStateMock;
+    private IObjectEndPoint _relatedEndPointStub;
 
     public override void SetUp ()
     {
@@ -69,6 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
       _endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (_loadStateMock);
+      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
     }
 
     [Test]
@@ -487,12 +488,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-
-      _loadStateMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, _relatedEndPointStub));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.RegisterOriginalOppositeEndPoint(oppositeEndPointStub);
+      _endPointWithLoadStateMock.RegisterOriginalOppositeEndPoint(_relatedEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
     }
@@ -500,12 +499,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void UnregisterOriginalOppositeEndPoint ()
     {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
-
-      _loadStateMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_endPointWithLoadStateMock, _relatedEndPointStub));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.UnregisterOriginalOppositeEndPoint (oppositeEndPointStub);
+      _endPointWithLoadStateMock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      _loadStateMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPointWithLoadStateMock, _relatedEndPointStub));
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _loadStateMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPointWithLoadStateMock, _relatedEndPointStub));
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
     }
@@ -536,7 +555,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SynchronizeOppositeEndPoint ()
     {
-      var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();
+      var fakeEndPoint = _relatedEndPointStub;
       _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint(fakeEndPoint));
       _loadStateMock.Replay ();
 
@@ -800,12 +819,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointWithLoadStateMock.CheckMandatory ();
 
       _loadStateMock.VerifyAllExpectations ();
-    }
-    
-    private CollectionEndPointDataKeeper GetEndPointDataKeeper (CollectionEndPoint endPoint)
-    {
-      var loadState = GetLoadState (endPoint);
-      return (CollectionEndPointDataKeeper) ((IncompleteCollectionEndPointLoadState) loadState).DataKeeper;
     }
 
     private IRelationEndPointLazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)
