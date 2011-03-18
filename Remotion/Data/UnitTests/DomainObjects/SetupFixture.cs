@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Data.SqlClient;
+using log4net;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -36,6 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
       try
       {
         ServiceLocator.SetLocatorProvider (() => null);
+
+        LogManager.ResetConfiguration ();
+        Assert.That (LogManager.GetLogger (typeof (LoggingClientTransactionListener)).IsDebugEnabled, Is.False);
 
         StandardConfiguration.Initialize();
 

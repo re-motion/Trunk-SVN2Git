@@ -99,7 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void MarkDataIncomplete_RaisesEvent ()
     {
-      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
       _collectionEndPointMock
           .Stub (stub => stub.ID)
           .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
@@ -125,7 +124,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       bool stateSetterCalled = false;
 
-      // The following is stubbed for NAnt's NUnit task, which enables logging (and the LoggingClientTransactionListener needs ID to be stubbed).
       _collectionEndPointMock
           .Stub (stub => stub.ID)
           .Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
