@@ -13,8 +13,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
+
     IObjectEndPoint[] OriginalOppositeEndPoints { get; }
     DomainObject[] OriginalItemsWithoutEndPoints { get; }
+    IObjectEndPoint[] CurrentOppositeEndPoints { get; }
 
     bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 

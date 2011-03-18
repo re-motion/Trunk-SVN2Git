@@ -275,12 +275,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterCurrentOppositeEndPoint ()
     {
+      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (true);
+      
       _dataKeeperMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub));
       _dataKeeperMock.Replay ();
 
       _loadState.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
 
       _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot register end-points that are out-of-sync.")]
+    public void RegisterCurrentOppositeEndPoint_WithOutOfSyncEndPoint ()
+    {
+      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (false);
+
+      _loadState.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
     }
 
     [Test]
@@ -903,7 +914,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit ()
     {
-      _dataKeeperMock.Expect (mock => mock.Commit());
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      _dataKeeperMock.Expect (mock => mock.Commit ());
       _dataKeeperMock.Replay();
 
       _loadState.Commit();

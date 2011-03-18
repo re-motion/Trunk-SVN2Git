@@ -55,6 +55,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
+    public IObjectEndPoint[] CurrentOppositeEndPoints
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public IComparer<DomainObject> SortExpressionBasedComparer
     {
       get { throw new NotImplementedException(); }

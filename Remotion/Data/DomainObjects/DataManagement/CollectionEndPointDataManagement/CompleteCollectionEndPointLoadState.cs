@@ -202,6 +202,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      if (!oppositeEndPoint.IsSynchronized)
+        throw new InvalidOperationException ("Cannot register end-points that are out-of-sync.");
+      
       _dataKeeper.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
@@ -405,7 +408,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     public void Commit ()
     {
-      _dataKeeper.Commit();
+      Assertion.IsTrue (
+          _dataKeeper.CurrentOppositeEndPoints.All (ep => ep.IsSynchronized), 
+          "We assume that it is not possible to register opposite end-points that are out-of-sync.");
+      _dataKeeper.Commit ();
     }
 
     public void Rollback ()
