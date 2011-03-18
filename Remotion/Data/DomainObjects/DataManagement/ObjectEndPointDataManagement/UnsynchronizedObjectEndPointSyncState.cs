@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
+  /// <summary>
+  /// Represents the state of an <see cref="IObjectEndPoint"/> that is not synchronized with the opposite <see cref="IRelationEndPoint"/>.
+  /// </summary>
   public class UnsynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
   {
     public UnsynchronizedObjectEndPointSyncState ()

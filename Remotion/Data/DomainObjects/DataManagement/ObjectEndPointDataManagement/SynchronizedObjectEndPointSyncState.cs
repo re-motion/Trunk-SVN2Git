@@ -25,11 +25,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// <summary>
   /// Represents the state of an <see cref="IObjectEndPoint"/> that is synchronized with the opposite <see cref="IRelationEndPoint"/>.
   /// </summary>
-  [Serializable]
   public class SynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
   {
-    public SynchronizedObjectEndPointSyncState()
+    private readonly IRelationEndPointProvider _endPointProvider;
+
+    public SynchronizedObjectEndPointSyncState(IRelationEndPointProvider endPointProvider)
     {
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+
+      _endPointProvider = endPointProvider;
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
     }
 
     public bool IsSynchronized (IObjectEndPoint endPoint)
@@ -76,11 +85,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public SynchronizedObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddHandle (_endPointProvider);
     }
 
     #endregion

@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void MarkSynchronized ()
     {
-      _syncState = new SynchronizedObjectEndPointSyncState();
+      _syncState = new SynchronizedObjectEndPointSyncState(_endPointProvider);
     }
 
     public void MarkUnsynchronized ()

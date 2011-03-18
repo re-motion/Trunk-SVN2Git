@@ -105,6 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPoint.MarkSynchronized ();
 
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (_endPoint.EndPointProvider, Is.SameAs(_endPointProviderStub));
     }
 
     [Test]

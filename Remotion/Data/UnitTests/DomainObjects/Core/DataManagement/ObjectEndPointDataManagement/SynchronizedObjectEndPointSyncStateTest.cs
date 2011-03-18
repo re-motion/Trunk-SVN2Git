@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -41,6 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
     private IRelationEndPointDefinition _locationClientEndPointDefinition;
     private IRelationEndPointDefinition _orderCustomerEndPointDefinition;
+    private IRelationEndPointProvider _endPointProviderStub;
 
     private Action<ObjectID> _fakeSetter;
 
@@ -49,7 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       base.SetUp ();
       
       _endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint>();
-      _state = new SynchronizedObjectEndPointSyncState ();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+
+      _state = new SynchronizedObjectEndPointSyncState (_endPointProviderStub);
 
       _order = DomainObjectMother.CreateFakeObject<Order> ();
       _location = DomainObjectMother.CreateFakeObject<Location> ();
@@ -202,11 +206,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void FlattenedSerializable ()
     {
-      var state = new SynchronizedObjectEndPointSyncState ();
+      var state = new SynchronizedObjectEndPointSyncState (new SerializableEndPointProviderFake());
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
+      Assert.That (result.EndPointProvider, Is.Not.Null);
     }
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)
