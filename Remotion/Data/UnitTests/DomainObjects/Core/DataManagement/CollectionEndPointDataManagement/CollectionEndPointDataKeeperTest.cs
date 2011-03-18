@@ -124,7 +124,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
-
+      endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
+      
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
@@ -135,6 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointStub }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
     }
 
     [Test]
@@ -153,12 +155,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Contains (_domainObject2));
 
       _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
@@ -168,6 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray(), Is.EqualTo(new[]{endPointStub}));
     }
 
     [Test]
@@ -183,13 +188,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
-      
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
+
       _dataKeeper.UnregisterOriginalOppositeEndPoint (endPointStub);
 
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
       Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
 
     [Test]
@@ -200,6 +207,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
+    [Test]
+    public void ContainsCurrentOppositeEndPoint ()
+    {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+      Assert.That (_dataKeeper.ContainsCurrentOppositeEndPoint (_domainObjectEndPoint1), Is.False);
+
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+
+      Assert.That (_dataKeeper.ContainsCurrentOppositeEndPoint (_domainObjectEndPoint1), Is.True);
+    }
+
+    [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.Empty);
+
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { _domainObjectEndPoint1 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
+    public void RegisterCurrentOppositeEndPoint_AlreadyRegistered ()
+    {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), List.Contains (_domainObjectEndPoint1));
+
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray(), List.Not.Contains(_domainObjectEndPoint1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
+    public void UnregisterCurrentOppositeEndPoint_NotRegistered ()
+    {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+    }
+    
     [Test]
     public void ContainsOriginalItemWithoutEndPoint_True ()
     {
@@ -244,6 +306,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithEndPoint ()
     {
       _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
+
       _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
       try
       {
@@ -286,6 +350,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void UnregisterOriginalItemWithoutEndPoint_RegisteredWithEndPoint ()
     {
       _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
+
       _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
 
       try
@@ -546,6 +612,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (deserializedInstance.OriginalCollectionData.Count, Is.EqualTo (2));
       Assert.That (deserializedInstance.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
       Assert.That (deserializedInstance.OriginalItemsWithoutEndPoints.Length, Is.EqualTo (1));
+      Assert.That (deserializedInstance.CurrentOppositeEndPoints.Length, Is.EqualTo (1));
     }
 
     private int Compare123 (DomainObject x, DomainObject y)

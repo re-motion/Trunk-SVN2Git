@@ -80,6 +80,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject)
     {
       throw new NotImplementedException();

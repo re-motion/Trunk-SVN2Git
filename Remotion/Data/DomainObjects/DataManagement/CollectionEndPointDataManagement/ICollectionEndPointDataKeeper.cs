@@ -21,11 +21,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
 
+    bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+
+    void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+
     bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
 
     void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
     void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject);
-
+    
     bool HasDataChanged ();
 
     void SortCurrentAndOriginalData (IComparer<DomainObject> comparer);

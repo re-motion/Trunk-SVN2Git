@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
+    private readonly Dictionary<ObjectID, IObjectEndPoint> _currentOppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -59,6 +60,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
+      _currentOppositeEndPoints = new Dictionary<ObjectID, IObjectEndPoint>();
     }
 
     public RelationEndPointID EndPointID
@@ -91,6 +93,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _originalOppositeEndPoints.ToArray(); }
     }
 
+    public IObjectEndPoint[] CurrentOppositeEndPoints
+    {
+      get { return _currentOppositeEndPoints.Values.ToArray(); }
+    }
+
     public DomainObject[] OriginalItemsWithoutEndPoints
     {
       get { return _originalItemsWithoutEndPoint.ToArray(); }
@@ -117,6 +124,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       else
         _changeCachingCollectionData.RegisterOriginalItem (item);
 
+      _currentOppositeEndPoints[oppositeEndPoint.ObjectID] = oppositeEndPoint;
+
       _originalOppositeEndPoints.Add (oppositeEndPoint);
     }
 
@@ -127,9 +136,38 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (!ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
+      _currentOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
+
       var itemID = oppositeEndPoint.ObjectID;
       _changeCachingCollectionData.UnregisterOriginalItem (itemID);
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
+    }
+
+    public bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      return _currentOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID);
+    }
+
+    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (ContainsCurrentOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has already been registered.");
+
+      _currentOppositeEndPoints[oppositeEndPoint.ObjectID] = oppositeEndPoint;
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (!ContainsCurrentOppositeEndPoint (oppositeEndPoint))
+        throw new InvalidOperationException ("The opposite end-point has not been registered.");
+
+      _currentOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
     }
 
     public bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject)
@@ -223,6 +261,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
       info.FillCollection (_originalItemsWithoutEndPoint);
+
+      var currentOppositeEndPoints = new List<IObjectEndPoint>();
+      info.FillCollection (currentOppositeEndPoints);
+      _currentOppositeEndPoints = currentOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
     // ReSharper restore UnusedMember.Local
@@ -238,6 +280,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       info.AddCollection (_originalOppositeEndPoints);
       info.AddCollection (_originalItemsWithoutEndPoint);
+
+      info.AddCollection (_currentOppositeEndPoints.Values);
     }
 
     #endregion
