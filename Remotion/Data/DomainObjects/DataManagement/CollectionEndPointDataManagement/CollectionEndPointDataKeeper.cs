@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
-    private readonly Dictionary<ObjectID, IObjectEndPoint> _currentOppositeEndPoints;
+    private Dictionary<ObjectID, IObjectEndPoint> _currentOppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -234,6 +234,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         }
       }
 
+      _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
+      
       Assertion.IsTrue (OriginalCollectionData.Count == _originalOppositeEndPoints.Count + _originalItemsWithoutEndPoint.Count);
     }
 

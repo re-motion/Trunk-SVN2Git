@@ -463,6 +463,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit_UpdatesOriginalContentsAndEndPoints ()
     {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
       
@@ -473,21 +474,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EqualTo(_dataKeeper.OriginalOppositeEndPoints));
     }
 
     [Test]
     public void Commit_ClearsEndPoints_IfNoLongerInCollection ()
     {
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       _dataKeeper.Commit ();
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EqualTo(_dataKeeper.OriginalOppositeEndPoints));
 
       _dataKeeper.CollectionData.Clear();
       _dataKeeper.Commit();
 
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
 
     [Test]
@@ -500,6 +505,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
 
       // Prepare end-point for item. Doesn't matter - the item still gets registered as item without end-point.
       _endPointProviderStub
@@ -512,6 +518,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
 
     [Test]
@@ -528,12 +535,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
 
       _dataKeeper.Commit ();
 
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
 
     [Test]
@@ -546,19 +555,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _dataKeeper.CollectionData.Insert (0, itemWithoutEndPoint);
       _dataKeeper.Commit ();
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { itemWithoutEndPoint }));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { itemWithoutEndPoint }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
 
       _dataKeeper.CollectionData.Clear();
       _dataKeeper.Commit();
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.Empty);
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.Empty);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
 
     [Test]
     public void Commit_InvalidatesHasChangedCache ()
     {
+      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
