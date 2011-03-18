@@ -124,9 +124,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       else
         _changeCachingCollectionData.RegisterOriginalItem (item);
 
-      _currentOppositeEndPoints[oppositeEndPoint.ObjectID] = oppositeEndPoint;
-
+      // RegisterOriginalItem adds item to both original and current collection, so we must add end-points for both
       _originalOppositeEndPoints.Add (oppositeEndPoint);
+      _currentOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
+
     }
 
     public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
@@ -136,11 +137,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (!ContainsOriginalOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
-      _currentOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
-
       var itemID = oppositeEndPoint.ObjectID;
       _changeCachingCollectionData.UnregisterOriginalItem (itemID);
+
+      // UnregisterOriginalItem removes item from both original and current collection, so we must remove end-points for both
       _originalOppositeEndPoints.Remove (oppositeEndPoint);
+      _currentOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
     }
 
     public bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
@@ -157,7 +159,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       if (ContainsCurrentOppositeEndPoint (oppositeEndPoint))
         throw new InvalidOperationException ("The opposite end-point has already been registered.");
 
-      _currentOppositeEndPoints[oppositeEndPoint.ObjectID] = oppositeEndPoint;
+      _currentOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
     }
 
     public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
