@@ -59,6 +59,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void CheckMandatory (ICollectionEndPoint collectionEndPoint);
 
     bool HasChanged ();
+
     void Commit ();
+    void Rollback ();
   }
 }

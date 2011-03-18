@@ -125,6 +125,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public void Rollback ()
+    {
+      throw new NotImplementedException();
+    }
+
     public void Insert (int index, IObjectEndPoint insertedEndPoint)
     {
       throw new NotImplementedException();

@@ -89,6 +89,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       SetCachedHasChangedFlag (false);
     }
 
+    public void Rollback ()
+    {
+      this.ReplaceContents (_originalData);
+      _originalData.RevertToCopiedData ();
+      SetCachedHasChangedFlag (false);
+    }
+
     /// <summary>
     /// Registers the given <paramref name="domainObject"/> as an original item of this collection. This means the item is added to the 
     /// <see cref="OriginalData"/> collection, and it is also added to this <see cref="ChangeCachingCollectionDataDecorator"/> collection. If the 

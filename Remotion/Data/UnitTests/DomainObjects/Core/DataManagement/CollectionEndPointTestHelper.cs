@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -51,6 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       }
       endPoint.MarkDataComplete (domainObjects);
+    }
+
+    public static ICollectionEndPointLoadState GetLoadState (CollectionEndPoint collectionEndPoint)
+    {
+      return (ICollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_loadState");
     }
   }
 }

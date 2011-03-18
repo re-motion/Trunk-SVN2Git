@@ -34,6 +34,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     bool HasDataChanged ();
 
     void SortCurrentAndOriginalData (IComparer<DomainObject> comparer);
+
     void Commit ();
+    void Rollback ();
   }
 }

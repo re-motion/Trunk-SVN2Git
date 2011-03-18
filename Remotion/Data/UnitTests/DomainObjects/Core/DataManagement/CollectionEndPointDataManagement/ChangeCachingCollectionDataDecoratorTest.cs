@@ -360,12 +360,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void Rollback_RevertsCurrentObjects_ToOriginalObjects ()
+    {
+      var wrappedData = new DomainObjectCollectionData ();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      decorator.Add (_domainObject);
+
+      Assert.That (decorator.ToArray (), Is.Not.Empty);
+      Assert.That (decorator.OriginalData.ToArray (), Is.Empty);
+
+      decorator.Rollback ();
+
+      Assert.That (decorator.ToArray (), Is.Empty);
+      Assert.That (decorator.OriginalData.ToArray (), Is.Empty);
+      CheckOriginalDataNotCopied (decorator);
+    }
+
+    [Test]
+    public void Rollback_SetsFlagUnchanged ()
+    {
+      var wrappedData = new DomainObjectCollectionData ();
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      decorator.Add (_domainObject);
+      _strategyStrictMock.Replay ();
+
+      decorator.Rollback ();
+
+      Assert.That (decorator.HasChanged (_strategyStrictMock), Is.False);
+      _strategyStrictMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
+    }
+
+    [Test]
+    public void Rollback_RaisesNotification ()
+    {
+      _decoratorWithRealData.Rollback ();
+
+      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         @"The original collection already contains a domain object with ID 'Order\|.*'\.", MatchType = MessageMatch.Regex)]
     public void RegisterOriginalItem_ItemAlreadyExists_InOriginal ()
     {
       var underlyingOriginalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
-          (ReadOnlyCollectionDataDecorator) _decoratorWithRealData.OriginalData);
+          _decoratorWithRealData.OriginalData);
 
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       underlyingOriginalData.Add (domainObject);

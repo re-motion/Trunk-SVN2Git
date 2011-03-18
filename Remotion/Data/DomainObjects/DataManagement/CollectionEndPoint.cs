@@ -174,20 +174,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var oppositeObjectsReferenceBeforeRollback = _collection;
 
-        if (_originalCollection != _collection)
+        if (_collection != _originalCollection)
         {
           var command = CreateSetCollectionCommand (_originalCollection);
           command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
         }
 
-        _collection = _originalCollection;
-
+        Assertion.IsTrue (_collection == _originalCollection);
         Assertion.IsTrue (_collection.IsAssociatedWith (this));
         Assertion.IsTrue (
             _collection == oppositeObjectsReferenceBeforeRollback
             || !oppositeObjectsReferenceBeforeRollback.IsAssociatedWith (this));
 
         _collection.ReplaceItemsWithoutNotifications (GetCollectionWithOriginalData().Cast<DomainObject>());
+
+        _loadState.Rollback();
       }
 
       _hasBeenTouched = false;

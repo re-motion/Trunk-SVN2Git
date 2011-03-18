@@ -67,8 +67,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
 
       _domainObjectEndPoint1 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
+      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
+
       _domainObjectEndPoint2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
+
       _domainObjectEndPoint3 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint3.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
+      _domainObjectEndPoint3.Stub (stub => stub.ObjectID).Return (_domainObject3.ID);
 
       _endPointProviderStub
           .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (_domainObject1.ID, typeof (Order), "Customer")))
@@ -210,7 +218,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void ContainsCurrentOppositeEndPoint ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       Assert.That (_dataKeeper.ContainsCurrentOppositeEndPoint (_domainObjectEndPoint1), Is.False);
 
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
@@ -223,8 +230,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.Empty);
 
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
-
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
 
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { _domainObjectEndPoint1 }));
@@ -234,8 +239,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
     public void RegisterCurrentOppositeEndPoint_AlreadyRegistered ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
-
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
     }
@@ -243,7 +246,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void UnregisterCurrentOppositeEndPoint ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
 
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), List.Contains (_domainObjectEndPoint1));
@@ -257,8 +259,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
     public void UnregisterCurrentOppositeEndPoint_NotRegistered ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
-
       _dataKeeper.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
     }
     
@@ -305,9 +305,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
     public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithEndPoint ()
     {
-      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
-      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
-
       _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
       try
       {
@@ -349,9 +346,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point.")]
     public void UnregisterOriginalItemWithoutEndPoint_RegisteredWithEndPoint ()
     {
-      _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
-      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
-
       _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
 
       try
@@ -463,7 +457,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit_UpdatesOriginalContentsAndEndPoints ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
       
@@ -480,7 +473,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit_ClearsEndPoints_IfNoLongerInCollection ()
     {
-      _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
       _dataKeeper.CollectionData.Insert (0, _domainObject1);
       _dataKeeper.Commit ();
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
@@ -570,7 +562,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit_InvalidatesHasChangedCache ()
     {
-      _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
       using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
       {
         _changeDetectionStrategyMock
@@ -586,6 +577,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (_dataKeeper.HasDataChanged (), Is.True);
 
       _dataKeeper.Commit ();
+
+      Assert.That (_dataKeeper.HasDataChanged (), Is.False);
+    }
+
+    [Test]
+    public void Rollback_UpdatesCurrentContentsAndEndPoints ()
+    {
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+
+      _dataKeeper.CollectionData.Insert (0, _domainObject3);
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint3);
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject3, _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObjectEndPoint1, _domainObjectEndPoint3 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObject2 }));
+
+      _dataKeeper.Rollback();
+
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObjectEndPoint1 }));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), Is.EquivalentTo (new[] { _domainObject2 }));
+    }
+
+    [Test]
+    public void Rollback_InvalidatesHasChangedCache ()
+    {
+      using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
+      {
+        _changeDetectionStrategyMock
+            .Expect (mock => mock.HasDataChanged (
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.CollectionData),
+                Arg<IDomainObjectCollectionData>.List.Equal (_dataKeeper.OriginalCollectionData)))
+            .Return (true);
+      }
+      _changeDetectionStrategyMock.Replay ();
+
+      _dataKeeper.CollectionData.Add (_domainObject2); // require use of strategy
+
+      Assert.That (_dataKeeper.HasDataChanged (), Is.True);
+
+      _dataKeeper.Rollback();
 
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
     }

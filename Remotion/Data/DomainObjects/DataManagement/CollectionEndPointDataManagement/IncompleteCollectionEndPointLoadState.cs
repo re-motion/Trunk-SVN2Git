@@ -292,6 +292,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper.Commit ();
     }
 
+    public void Rollback ()
+    {
+      _dataKeeper.Rollback();
+    }
+
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)

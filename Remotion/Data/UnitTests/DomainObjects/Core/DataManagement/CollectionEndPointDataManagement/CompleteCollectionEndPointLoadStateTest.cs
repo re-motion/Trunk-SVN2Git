@@ -912,6 +912,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void Rollback ()
+    {
+      _dataKeeperMock.Expect (mock => mock.Rollback ());
+      _dataKeeperMock.Replay ();
+
+      _loadState.Rollback ();
+
+      _dataKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();

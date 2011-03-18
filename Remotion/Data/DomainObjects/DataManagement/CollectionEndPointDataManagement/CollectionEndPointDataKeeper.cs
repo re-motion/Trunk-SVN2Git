@@ -241,6 +241,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       Assertion.IsTrue (OriginalCollectionData.Count == _originalOppositeEndPoints.Count + _originalItemsWithoutEndPoint.Count);
     }
 
+    public void Rollback ()
+    {
+      _changeCachingCollectionData.Rollback();
+
+      _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
+    }
+
     private IObjectEndPoint GetOppositeEndPoint (ObjectID domainObjectID, IRelationEndPointDefinition oppositeEndPointDefinition)
     {
       var endPointID = RelationEndPointID.Create (domainObjectID, oppositeEndPointDefinition);

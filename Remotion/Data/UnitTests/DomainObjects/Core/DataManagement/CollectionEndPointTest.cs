@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.EndPointProvider, Is.SameAs (endPointProviderStub));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
 
-      var loadState = GetLoadState (endPoint);
+      var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (dataKeeperStub));
@@ -299,12 +300,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock.VerifyAllExpectations ();
 
-      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
+      Assert.That (CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
       stateSetter (dataKeeperStub);
       
-      var newLoadState = GetLoadState (_endPointWithLoadStateMock);
+      var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock);
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
 
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
@@ -326,13 +327,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock.VerifyAllExpectations ();
 
-      Assert.That (GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
+      Assert.That (CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
       dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
       stateSetter (dataKeeperStub);
       
-      var newLoadState = GetLoadState (_endPointWithLoadStateMock);
+      var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock);
       Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
 
       Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
@@ -393,28 +394,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback ()
     {
-      var newOrder = Order.NewObject ();
-      _customerEndPoint.Collection.Add (newOrder);
+      var fakeCurrentData = new DomainObjectCollectionData (new[] { _order1 });
+      var fakeCollectionWithOriginalData = new DomainObjectCollection (new[] { _order2 }, null);
 
-      Assert.That (_customerEndPoint.HasChanged, Is.True);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-      Assert.That (_customerEndPoint.Collection.ContainsObject (newOrder), Is.True);
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData().ContainsObject (newOrder), Is.False);
+      _loadStateMock.Stub (stub => stub.HasChanged()).Return (true);
+      _loadStateMock
+          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Return (new ReadOnlyCollectionDataDecorator (fakeCurrentData, true));
+      _loadStateMock
+          .Stub (stub => stub.GetCollectionWithOriginalData (_endPointWithLoadStateMock))
+          .Return (fakeCollectionWithOriginalData);
+      _loadStateMock.Expect (mock => mock.Rollback());
+      _loadStateMock.Replay ();
+
+      _endPointWithLoadStateMock.Touch();
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
 
       var collectionBefore = _customerEndPoint.Collection;
-      var originalCollectionBefore = _customerEndPoint.GetCollectionWithOriginalData();
 
-      _customerEndPoint.Rollback ();
+      _endPointWithLoadStateMock.Rollback ();
 
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-      Assert.That (_customerEndPoint.Collection.ContainsObject (newOrder), Is.False);
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData().ContainsObject (newOrder), Is.False);
+      _loadStateMock.VerifyAllExpectations();
+      Assert.That (fakeCurrentData.ToArray (), Is.EqualTo (new[] { _order2 }));
+      Assert.That (fakeCollectionWithOriginalData, Is.EqualTo (new[] { _order2 }));
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (collectionBefore));
-      Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (originalCollectionBefore));
     }
-
+    
     [Test]
     public void Rollback_TouchedUnchanged ()
     {
@@ -430,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_RestoresCollectionStrategies_AfterReplace ()
+    public void Rollback_AfterSetCollection ()
     {
       var oldCollection = _customerEndPoint.Collection;
 
@@ -843,11 +850,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           new CollectionEndPointDataKeeperFactory (ClientTransactionMock, ClientTransactionMock.DataManager, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadStateMock);
       return collectionEndPoint;
-    }
-
-    private ICollectionEndPointLoadState GetLoadState (CollectionEndPoint collectionEndPoint)
-    {
-      return (ICollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_loadState");
     }
   }
 }

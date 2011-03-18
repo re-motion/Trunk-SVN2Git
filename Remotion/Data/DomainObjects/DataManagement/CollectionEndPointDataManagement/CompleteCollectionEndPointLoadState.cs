@@ -408,6 +408,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper.Commit();
     }
 
+    public void Rollback ()
+    {
+      _dataKeeper.Rollback();
+    }
+
     private void CheckAddedObject (DomainObject domainObject)
     {
       if (_unsynchronizedOppositeEndPoints.ContainsKey (domainObject.ID))

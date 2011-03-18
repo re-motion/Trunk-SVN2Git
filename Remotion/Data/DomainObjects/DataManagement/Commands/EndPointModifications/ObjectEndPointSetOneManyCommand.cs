@@ -74,6 +74,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _endPointProvider; }
     }
 
+    public override void Perform ()
+    {
+      base.Perform ();
+
+      _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint ((IObjectEndPoint) ModifiedEndPoint);
+      _newRelatedEndPoint.RegisterCurrentOppositeEndPoint ((IObjectEndPoint) ModifiedEndPoint);
+    }
+
     /// <summary>
     /// Creates all commands needed to perform a bidirectional 1:n set operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
     /// this command, the other steps are the opposite commands on the new/old related objects.

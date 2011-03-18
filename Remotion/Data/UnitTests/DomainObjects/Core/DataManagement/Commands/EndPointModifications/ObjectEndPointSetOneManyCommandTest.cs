@@ -137,18 +137,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Perform_InvokesPerformRelationChange ()
+    public void Perform ()
     {
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
-      _command.Perform();
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
-    }
+      _oldRelatedEndPointMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPoint));
+      _oldRelatedEndPointMock.Replay();
 
-    [Test]
-    public void Perform_TouchesEndPoint ()
-    {
+      _newRelatedEndPointMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPoint));
+      _newRelatedEndPointMock.Replay();
+
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-      _command.Perform();
+
+      _command.Perform ();
+
+      _oldRelatedEndPointMock.VerifyAllExpectations ();
+      _newRelatedEndPointMock.VerifyAllExpectations ();
+
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
