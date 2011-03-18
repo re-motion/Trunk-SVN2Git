@@ -44,6 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       return bidirectionalModification.GetNestedCommands ().Cast<RelationEndPointModificationCommand> ().ToList ();
     }
-  
+ 
   }
 }

@@ -44,6 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private Action<ObjectID> _oppositeObjectIDSetter;
     
     private ObjectEndPointSetCommand _command;
+    private ICollectionEndPoint _oldRelatedEndPointMock;
+    private ICollectionEndPoint _newRelatedEndPointMock;
 
     public override void SetUp ()
     {
@@ -57,6 +59,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
       _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
+
+      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
+      _oldRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
+
+      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
+      _newRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
+
+      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (_oldRelatedEndPointMock);
+      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (_newRelatedEndPointMock);
 
       _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, _oppositeObjectIDSetter, EndPointProviderStub);
     }
@@ -184,38 +195,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExpandToAllRelatedObjects_SetDifferent_BidirectionalOneMany ()
+    public void ExpandToAllRelatedObjects ()
     {
-      // orderItem.Order = newOrder;
+      // Scenario: orderItem.Order = newOrder;
 
-      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
-      var oldRelatedEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID);
+      // oldOrder.OrderItems.Remove (orderItem)
+      var fakeRemoveCommand = MockRepository.GenerateStub<IDataManagementCommand>();
+      _oldRelatedEndPointMock.Expect (mock => mock.CreateRemoveCommand (_domainObject)).Return (fakeRemoveCommand);
+      _oldRelatedEndPointMock.Replay();
 
-      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
-      var newRelatedEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (newRelatedEndPointID);
-
-      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (oldRelatedEndPoint);
-      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (newRelatedEndPoint);
+      // newOrder.OrderItems.Add (orderItem);
+      var fakeAddCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      _newRelatedEndPointMock.Expect (mock => mock.CreateAddCommand (_domainObject)).Return (fakeAddCommand);
+      _newRelatedEndPointMock.Replay ();
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
-      var steps = GetAllCommands (bidirectionalModification);
+      _oldRelatedEndPointMock.VerifyAllExpectations ();
+      _newRelatedEndPointMock.VerifyAllExpectations ();
+
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (3));
 
       // orderItem.Order = newOrder;
       Assert.That (steps[0], Is.SameAs (_command));
 
       // newOrder.OrderItems.Add (orderItem);
-      Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
-      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (newRelatedEndPoint));
-      Assert.That (steps[1].OldRelatedObject, Is.Null);
-      Assert.That (steps[1].NewRelatedObject, Is.SameAs (_domainObject));
+      Assert.That (steps[1], Is.SameAs (fakeAddCommand));
 
       // oldOrder.OrderItems.Remove (orderItem)
-      Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
-      Assert.That (steps[2].ModifiedEndPoint, Is.SameAs (oldRelatedEndPoint));
-      Assert.That (steps[2].OldRelatedObject, Is.SameAs (_domainObject));
-      Assert.That (steps[2].NewRelatedObject, Is.Null);
+      Assert.That (steps[2], Is.SameAs (fakeRemoveCommand));
     }
   }
 }
