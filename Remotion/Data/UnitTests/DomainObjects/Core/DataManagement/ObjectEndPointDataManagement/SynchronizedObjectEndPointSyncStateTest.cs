@@ -196,10 +196,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
 
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
+
       Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
+      Assert.That (((ObjectEndPointSetOneManyCommand) command).EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
     }
 

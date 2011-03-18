@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -36,15 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private Action<ObjectID> _oppositeObjectIDSetter;
 
     private ObjectEndPointSetCommand _command;
+    private IRelationEndPointProvider _endPointProviderStub;
 
-    public override void SetUp ()
+    public IRelationEndPointProvider EndPointProviderStub
     {
-      base.SetUp();
-
-      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
-
-      _command = CreateCommand (_endPoint, NewRelatedObject, _oppositeObjectIDSetter);
+      get { return _endPointProviderStub; }
     }
 
     protected abstract DomainObject OldRelatedObject { get; }
@@ -62,6 +57,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public IObjectEndPoint EndPoint
     {
       get { return _endPoint; }
+    }
+
+    public override void SetUp ()
+    {
+      base.SetUp();
+
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
+      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
+
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+
+      _command = CreateCommand (_endPoint, NewRelatedObject, _oppositeObjectIDSetter);
     }
 
     [Test]
