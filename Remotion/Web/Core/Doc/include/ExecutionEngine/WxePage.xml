@@ -109,7 +109,14 @@
         resubmits to a page in a meaningful manner. If the execution engine detects an out-of-sequence postback, it 
         will set the <see cref="IsOutOfSequencePostBack"/> flag on the page.
       </para>
-      
+      <note type="caution">
+        Disabling page state management will likely affect the way user input is handled. For instance, it is possible 
+        that controls of type <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl" /> do not
+        register as dirty when saving the values. To resolve this issue, the control's
+        <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.IsDirty" /> flag must be set explictly before calling
+        <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.SaveValue" />
+      </note>
+
       <h4 class="dtH4">General Usage Notes</h4>
       <para>
         The <b>WxePage</b> also provides access to the <see cref="CurrentPageStep"/>, the <see cref="CurrentFunction"/>
