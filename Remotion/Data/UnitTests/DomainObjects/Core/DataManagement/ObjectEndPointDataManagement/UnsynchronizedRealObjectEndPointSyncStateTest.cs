@@ -28,10 +28,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
 {
   [TestFixture]
-  public class UnsynchronizedObjectEndPointSyncStateTest : StandardMappingTest
+  public class UnsynchronizedRealObjectEndPointSyncStateTest : StandardMappingTest
   {
     private IRealObjectEndPoint _endPointStub;
-    private UnsynchronizedObjectEndPointSyncState _state;
+    private UnsynchronizedRealObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
     private Action<ObjectID> _fakeSetter;
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
-      _state = new UnsynchronizedObjectEndPointSyncState ();
+      _state = new UnsynchronizedRealObjectEndPointSyncState ();
       _fakeSetter = id => { };
     }
 
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void FlattenedSerializable ()
     {
-      var state = new UnsynchronizedObjectEndPointSyncState ();
+      var state = new UnsynchronizedRealObjectEndPointSyncState ();
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 

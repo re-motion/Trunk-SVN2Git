@@ -23,12 +23,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// Represents the synchronization state of an <see cref="IObjectEndPoint"/> with the opposite <see cref="IRelationEndPoint"/>, and implements 
   /// accessor methods for that end-point.
   /// </summary>
-  public interface IObjectEndPointSyncState : IFlattenedSerializable
+  public interface IRealObjectEndPointSyncState : IFlattenedSerializable
   {
-    bool IsSynchronized (IObjectEndPoint endPoint);
+    bool IsSynchronized (IRealObjectEndPoint endPoint);
     void Synchronize (IRealObjectEndPoint endPoint, IRelationEndPoint oppositeEndPoint);
 
-    IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter);
-    IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter);
+    IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter);
+    IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter);
   }
 }

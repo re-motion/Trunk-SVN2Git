@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     private readonly DataContainer _foreignKeyDataContainer;
     private readonly PropertyValue _foreignKeyProperty;
 
-    private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
+    private IRealObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
 
     public RealObjectEndPoint (
         ClientTransaction clientTransaction, 
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
       _foreignKeyDataContainer = foreignKeyDataContainer;
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
-      _syncState = new UnknownObjectEndPointSyncState (LazyLoader);
+      _syncState = new UnknownRealObjectEndPointSyncState (LazyLoader);
     }
 
     public DataContainer ForeignKeyDataContainer
@@ -116,17 +116,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
     public void MarkSynchronized ()
     {
-      _syncState = new SynchronizedObjectEndPointSyncState (EndPointProvider);
+      _syncState = new SynchronizedRealObjectEndPointSyncState (EndPointProvider);
     }
 
     public void MarkUnsynchronized ()
     {
-      _syncState = new UnsynchronizedObjectEndPointSyncState ();
+      _syncState = new UnsynchronizedRealObjectEndPointSyncState ();
     }
 
     public void ResetSyncState ()
     {
-      _syncState = new UnknownObjectEndPointSyncState (LazyLoader);
+      _syncState = new UnknownRealObjectEndPointSyncState (LazyLoader);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
       _foreignKeyDataContainer = info.GetValueForHandle<DataContainer> ();
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
-      _syncState = info.GetValueForHandle<IObjectEndPointSyncState> ();
+      _syncState = info.GetValueForHandle<IRealObjectEndPointSyncState> ();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)

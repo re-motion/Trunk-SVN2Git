@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PrivateInvoke.SetPublicProperty (objectEndPoint, "OppositeObjectID", newID);
     }
 
-    public static IObjectEndPointSyncState GetSyncState (RealObjectEndPoint objectEndPoint)
+    public static IRealObjectEndPointSyncState GetSyncState (RealObjectEndPoint objectEndPoint)
     {
-      return (IObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
+      return (IRealObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
     }
   }
 }

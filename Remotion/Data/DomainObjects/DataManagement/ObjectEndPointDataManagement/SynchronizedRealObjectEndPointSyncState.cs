@@ -25,11 +25,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// <summary>
   /// Represents the state of an <see cref="IObjectEndPoint"/> that is synchronized with the opposite <see cref="IRelationEndPoint"/>.
   /// </summary>
-  public class SynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
+  public class SynchronizedRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
     private readonly IRelationEndPointProvider _endPointProvider;
 
-    public SynchronizedObjectEndPointSyncState(IRelationEndPointProvider endPointProvider)
+    public SynchronizedRealObjectEndPointSyncState(IRelationEndPointProvider endPointProvider)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return _endPointProvider; }
     }
 
-    public bool IsSynchronized (IObjectEndPoint endPoint)
+    public bool IsSynchronized (IRealObjectEndPoint endPoint)
     {
       return true;
     }
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       // nothing to do here - the end-point is already syncrhonized
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
     }
 
-    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -77,12 +77,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
         return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
       else
-        return new ObjectEndPointSetOneManyCommand ((IRealObjectEndPoint) endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
+        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
     }
 
     #region Serialization
 
-    public SynchronizedObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    public SynchronizedRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
 

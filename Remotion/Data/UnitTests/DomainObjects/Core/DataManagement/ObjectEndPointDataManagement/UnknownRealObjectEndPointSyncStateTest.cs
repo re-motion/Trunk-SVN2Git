@@ -27,10 +27,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
 {
   [TestFixture]
-  public class UnknownObjectEndPointSyncStateTest : StandardMappingTest
+  public class UnknownRealObjectEndPointSyncStateTest : StandardMappingTest
   {
     private IRelationEndPointLazyLoader _lazyLoaderMock;
-    private UnknownObjectEndPointSyncState _state;
+    private UnknownRealObjectEndPointSyncState _state;
     private IRealObjectEndPoint _endPointMock;
     private MockRepository _mockRepository;
     private IRelationEndPoint _oppositeEndPointStub;
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock = _mockRepository.StrictMock<IRealObjectEndPoint> ();
       _oppositeEndPointStub = _mockRepository.Stub<IRelationEndPoint>();
       _lazyLoaderMock = _mockRepository.StrictMock<IRelationEndPointLazyLoader> ();
-      _state = new UnknownObjectEndPointSyncState(_lazyLoaderMock);
+      _state = new UnknownRealObjectEndPointSyncState(_lazyLoaderMock);
     }
 
     [Test]
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     public void FlattenedSerializable ()
     {
       var fakeLazyLoader = new SerializableRelationEndPointLazyLoaderFake();
-      var state = new UnknownObjectEndPointSyncState (fakeLazyLoader);
+      var state = new UnknownRealObjectEndPointSyncState (fakeLazyLoader);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 

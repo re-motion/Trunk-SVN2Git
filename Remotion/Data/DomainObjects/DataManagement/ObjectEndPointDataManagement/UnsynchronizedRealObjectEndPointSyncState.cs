@@ -24,13 +24,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// <summary>
   /// Represents the state of an <see cref="IObjectEndPoint"/> that is not synchronized with the opposite <see cref="IRelationEndPoint"/>.
   /// </summary>
-  public class UnsynchronizedObjectEndPointSyncState : IObjectEndPointSyncState
+  public class UnsynchronizedRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
-    public UnsynchronizedObjectEndPointSyncState ()
+    public UnsynchronizedRealObjectEndPointSyncState ()
     {
     }
 
-    public bool IsSynchronized (IObjectEndPoint endPoint)
+    public bool IsSynchronized (IRealObjectEndPoint endPoint)
     {
       return false;
     }
@@ -40,10 +40,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      oppositeEndPoint.SynchronizeOppositeEndPoint ((IRealObjectEndPoint) endPoint);
+      oppositeEndPoint.SynchronizeOppositeEndPoint (endPoint);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
               endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
     }
 
-    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
     #region Serialization
 
-    public UnsynchronizedObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    public UnsynchronizedRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
     }

@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     private DataContainer _foreignKeyDataContainer;
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProvider;
-    private IObjectEndPointSyncState _syncStateMock;
+    private IRealObjectEndPointSyncState _syncStateMock;
 
     private RealObjectEndPoint _endPoint;
     private RelationEndPointID _endPointID;
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _foreignKeyDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _syncStateMock = MockRepository.GenerateStrictMock<IObjectEndPointSyncState> ();
+      _syncStateMock = MockRepository.GenerateStrictMock<IRealObjectEndPointSyncState> ();
     
       _endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
       PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
@@ -78,8 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       var endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
 
       var syncState = ObjectEndPointTestHelper.GetSyncState (endPoint);
-      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
-      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+      Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
     }
 
     [Test]
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
       _endPoint.MarkSynchronized ();
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
       Assert.That (_endPoint.EndPointProvider, Is.SameAs (_endPointProvider));
     }
 
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
 
       _endPoint.MarkUnsynchronized ();
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -208,8 +208,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPoint.ResetSyncState ();
 
       var syncState = ObjectEndPointTestHelper.GetSyncState (_endPoint);
-      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
-      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+      Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
     }
 
     [Test]

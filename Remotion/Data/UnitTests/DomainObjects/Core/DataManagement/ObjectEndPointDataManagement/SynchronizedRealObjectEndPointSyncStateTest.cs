@@ -31,10 +31,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
 {
   [TestFixture]
-  public class SynchronizedObjectEndPointSyncStateTest : StandardMappingTest
+  public class SynchronizedRealObjectEndPointSyncStateTest : StandardMappingTest
   {
     private IRealObjectEndPoint _endPointMock;
-    private SynchronizedObjectEndPointSyncState _state;
+    private SynchronizedRealObjectEndPointSyncState _state;
 
     private Order _order;
     private Location _location;
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
 
-      _state = new SynchronizedObjectEndPointSyncState (_endPointProviderStub);
+      _state = new SynchronizedRealObjectEndPointSyncState (_endPointProviderStub);
 
       _order = DomainObjectMother.CreateFakeObject<Order> ();
       _location = DomainObjectMother.CreateFakeObject<Location> ();
@@ -208,7 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void FlattenedSerializable ()
     {
-      var state = new SynchronizedObjectEndPointSyncState (new SerializableEndPointProviderFake());
+      var state = new SynchronizedRealObjectEndPointSyncState (new SerializableEndPointProviderFake());
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 

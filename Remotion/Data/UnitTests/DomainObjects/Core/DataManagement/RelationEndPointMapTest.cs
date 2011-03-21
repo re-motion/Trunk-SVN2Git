@@ -408,7 +408,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oppositeEndPoint, Is.Not.Null);
       Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -419,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -440,7 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       collectionEndPointMock.VerifyAllExpectations();
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -458,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (
           ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
-          Is.TypeOf (typeof (UnknownObjectEndPointSyncState)),
+          Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)),
           "Because collection's state is incomplete.");
     }
 
@@ -470,7 +470,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]

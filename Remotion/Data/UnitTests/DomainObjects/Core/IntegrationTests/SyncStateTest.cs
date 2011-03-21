@@ -36,15 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
 
       orderItem.Order.OrderItems.EnsureDataComplete();
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
 
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -61,15 +61,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnsynchronizedRealObjectEndPointSyncState)));
 
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
 
       order.OrderItems.EnsureDataComplete();
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
   }
 }

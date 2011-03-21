@@ -27,13 +27,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// In this case, the synchronization state is unknown until the opposite end-point is loaded. Any access to the sync state will cause the
   /// opposite end-point to be loaded.
   /// </summary>
-  public class UnknownObjectEndPointSyncState : IObjectEndPointSyncState
+  public class UnknownRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
 
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
-    public UnknownObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
+    public UnknownRealObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return _lazyLoader; }
     }
 
-    public bool IsSynchronized (IObjectEndPoint endPoint)
+    public bool IsSynchronized (IRealObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       endPoint.Synchronize (oppositeEndPoint);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return endPoint.CreateDeleteCommand();
     }
 
-    public IDataManagementCommand CreateSetCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
     #region Serialization
 
-    public UnknownObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    public UnknownRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
