@@ -20,7 +20,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -77,16 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
       Assert.AreEqual (DomainObjectIDs.Computer2, _endPoint.OppositeObjectID);
       Assert.AreEqual (DomainObjectIDs.Computer1, _endPoint.OriginalOppositeObjectID);
-    }
-
-    [Test]
-    public void SyncState ()
-    {
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-
-      var syncState = ObjectEndPointTestHelper.GetSyncState (deserializedEndPoint);
-      Assert.That (syncState, Is.Not.Null);
-      Assert.That (syncState.GetType(), Is.SameAs (ObjectEndPointTestHelper.GetSyncState (_endPoint).GetType()));
     }
 
     [Test]

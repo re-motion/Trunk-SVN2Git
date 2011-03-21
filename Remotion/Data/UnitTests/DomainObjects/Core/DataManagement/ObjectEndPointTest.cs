@@ -19,11 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -34,8 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private RelationEndPointID _endPointID;
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
-    private IObjectEndPointSyncState _syncStateMock;
-    private ObjectEndPoint _endPoint;
+    private TestableObjectEndPoint _endPoint;
 
     public override void SetUp ()
     {
@@ -44,35 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-
-      _syncStateMock = MockRepository.GenerateStrictMock<IObjectEndPointSyncState> ();
-
+      
       _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, DomainObjectIDs.OrderTicket1);
-      PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
-    }
-
-    [Test]
-    public void Initialization_SyncState ()
-    {
-      var endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, DomainObjectIDs.OrderTicket1);
-
-      var syncState = ObjectEndPointTestHelper.GetSyncState (endPoint);
-      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
-      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
-    }
-
-    [Test]
-    public void IsSynchronized ()
-    {
-      _syncStateMock
-          .Expect (mock => mock.IsSynchronized (_endPoint))
-          .Return (true);
-      _syncStateMock.Replay ();
-
-      var result = _endPoint.IsSynchronized;
-
-      _syncStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -128,7 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeObject_Invalid_IncludeDeleted ()
     {
-      MarkSynchronized (_endPoint);
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -143,7 +112,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectInvalidException))]
     public void GetOppositeObject_Invalid_ExcludeDeleted ()
     {
-      MarkSynchronized(_endPoint);
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -157,23 +125,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalOppositeObject ()
     {
-      MarkSynchronized (_endPoint);
-      var originalOppositeObject = _endPoint.GetOppositeObject (true);
-      _endPoint.CreateSetCommand (Order.NewObject ()).Perform ();
+      _endPoint.SetOppositeObjectID (DomainObjectIDs.OrderTicket4);
 
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1)));
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject_Null ()
+    {
+      var endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, null);
+
+      Assert.That (endPoint.GetOriginalOppositeObject (), Is.Null);
     }
 
     [Test]
     public void GetOriginalOppositeObject_Deleted ()
     {
-      MarkSynchronized (_endPoint);
       var originalOppositeObject = (OrderTicket) _endPoint.GetOppositeObject (true);
-      _endPoint.CreateSetCommand (OrderTicket.NewObject ()).ExpandToAllRelatedObjects ().Perform ();
       originalOppositeObject.Delete ();
 
       Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
-
       Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
     }
 
@@ -271,54 +242,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.SetValueFrom (source);
     }
-
-    [Test]
-    public void CreateSetCommand ()
-    {
-      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
-      var relatedObject = DomainObjectMother.CreateFakeObject<Order>();
-
-      Action<ObjectID> oppositeObjectIDSetter = null;
-
-      _syncStateMock
-          .Expect (mock => mock.CreateSetCommand (Arg.Is (_endPoint), Arg.Is (relatedObject), Arg<Action<ObjectID>>.Is.Anything))
-          .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[2]; });
-      _syncStateMock.Replay ();
-
-      var result = _endPoint.CreateSetCommand (relatedObject);
-
-      _syncStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
-
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      oppositeObjectIDSetter (DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
-    }
-
-
+    
     [Test]
     public void CreateRemoveCommand ()
     {
-      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> (_endPoint.OppositeObjectID);
+      var result = (TestableObjectEndPoint.TestSetCommand) _endPoint.CreateRemoveCommand (relatedObject);
 
-      Action<ObjectID> oppositeObjectIDSetter = null;
-
-      _syncStateMock
-          .Expect (mock => mock.CreateSetCommand (Arg.Is (_endPoint), Arg.Is<DomainObject> (null), Arg<Action<ObjectID>>.Is.Anything))
-          .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[2]; });
-      _syncStateMock.Replay ();
-
-      var result = _endPoint.CreateRemoveCommand (relatedObject);
-
-      _syncStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
-
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.Null);
-      oppositeObjectIDSetter (null);
-      Assert.That (_endPoint.OppositeObjectID, Is.Null);
+      Assert.That (result.NewRelatedObject, Is.Null);
     }
 
     [Test]
@@ -330,28 +261,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket4);
       _endPoint.CreateRemoveCommand (orderTicket);
-    }
-
-    [Test]
-    public void CreateDeleteCommand ()
-    {
-      var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
-
-      Action<ObjectID> oppositeObjectIDSetter = null;
-      _syncStateMock
-          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPoint), Arg<Action<ObjectID>>.Is.Anything))
-          .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[1]; });
-      _syncStateMock.Replay ();
-
-      var result = _endPoint.CreateDeleteCommand();
-
-      _syncStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
-
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      oppositeObjectIDSetter (DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
@@ -407,11 +316,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       Assert.That (oppositeEndPointIDs, Is.EqualTo (new[] { expectedID }));
     }
-
-    // TODO 3794: Remove
-    private void MarkSynchronized (ObjectEndPoint endPoint)
-    {
-      PrivateInvoke.SetNonPublicField (endPoint, "_syncState", new SynchronizedObjectEndPointSyncState (_endPointProviderStub));
-    }
+    
   }
 }

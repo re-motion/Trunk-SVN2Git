@@ -17,6 +17,8 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -50,6 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { return _hasBeenTouched; }
     }
 
+    public override bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public override void Touch ()
     {
       _hasBeenTouched = true;
@@ -65,6 +72,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       throw new NotImplementedException();
     }
 
+    public override IDataManagementCommand CreateDeleteCommand ()
+    {
+      throw new NotImplementedException();
+    }
+
     public override ObjectID OppositeObjectID
     {
       get { return _oppositeObjectID; }
@@ -75,9 +87,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
     }
 
+    public void SetOppositeObjectID (ObjectID objectID)
+    {
+      OppositeObjectID = objectID;
+    }
+
     public override ObjectID OriginalOppositeObjectID
     {
       get { return _originalOppositeObjectID; }
+    }
+
+    public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
+    {
+      return new TestSetCommand (this, newRelatedObject, id => { throw new NotImplementedException (); });
+    }
+
+    public class TestSetCommand : ObjectEndPointSetCommand
+    {
+      public TestSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+          : base(modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
+      {
+      }
+
+      public override ExpandedCommand ExpandToAllRelatedObjects ()
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

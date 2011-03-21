@@ -47,6 +47,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     private readonly DataContainer _foreignKeyDataContainer;
     private readonly PropertyValue _foreignKeyProperty;
 
+    private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
+
     public RealObjectEndPoint (
         ClientTransaction clientTransaction, 
         RelationEndPointID id,
@@ -66,6 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
       _foreignKeyDataContainer = foreignKeyDataContainer;
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+      _syncState = new UnknownObjectEndPointSyncState (LazyLoader);
     }
 
     public DataContainer ForeignKeyDataContainer
@@ -99,6 +102,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return ForeignKeyProperty.HasBeenTouched; }
     }
 
+    public override bool IsSynchronized
+    {
+      get { return _syncState.IsSynchronized (this); }
+    }
+
     public void Synchronize (IRelationEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -119,6 +127,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public void ResetSyncState ()
     {
       _syncState = new UnknownObjectEndPointSyncState (LazyLoader);
+    }
+
+    public override IDataManagementCommand CreateDeleteCommand ()
+    {
+      return _syncState.CreateDeleteCommand (this, id => OppositeObjectID = id);
+    }
+
+    public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
+    {
+      return _syncState.CreateSetCommand (this, newRelatedObject, id => OppositeObjectID = id);
     }
 
     public override void Touch ()
@@ -147,14 +165,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
       _foreignKeyDataContainer = info.GetValueForHandle<DataContainer> ();
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+      _syncState = info.GetValueForHandle<IObjectEndPointSyncState> ();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       base.SerializeIntoFlatStructure (info);
       info.AddHandle (_foreignKeyDataContainer);
+      info.AddHandle (_syncState);
     }
     #endregion
-
   }
 }

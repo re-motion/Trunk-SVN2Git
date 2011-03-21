@@ -67,7 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       Assert.That (endPoint.OppositeObjectID, Is.Null);
     }
 
-
     [Test]
     public void OppositeObjectID_Get ()
     {
@@ -120,8 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
-
-
+    
     [Test]
     public void HasChanged_WithOriginalAndCurrentNull ()
     {
@@ -145,6 +143,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
 
       Assert.That (_endPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void IsSynchronized ()
+    {
+      Assert.That (_endPoint.IsSynchronized, Is.True);
     }
 
     [Test]

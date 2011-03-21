@@ -50,9 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       _oppositeObjectID = oppositeObjectID;
       _originalOppositeObjectID = oppositeObjectID;
       _hasBeenTouched = false;
-
-      // TODO 3794: Remove
-      _syncState = new SynchronizedObjectEndPointSyncState (EndPointProvider);
     }
 
     public override ObjectID OppositeObjectID
@@ -80,6 +77,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
+    }
+
+    public override bool IsSynchronized
+    {
+      get { return true; }
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)

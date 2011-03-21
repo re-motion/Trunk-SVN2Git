@@ -326,8 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
-
+      
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
@@ -340,7 +339,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (objectEndPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
       Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));

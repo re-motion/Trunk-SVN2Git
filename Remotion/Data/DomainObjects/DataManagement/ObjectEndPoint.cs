@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -27,8 +26,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
     private readonly IRelationEndPointLazyLoader _lazyLoader;
-    [CLSCompliant(false)]
-    protected IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
     private readonly IRelationEndPointProvider _endPointProvider;
 
     protected ObjectEndPoint (
@@ -39,7 +36,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
       _lazyLoader = lazyLoader;
-      _syncState = new UnknownObjectEndPointSyncState (_lazyLoader);
       _endPointProvider = endPointProvider;
     }
 
@@ -56,10 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; protected set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
-    public override bool IsSynchronized
-    {
-      get { return _syncState.IsSynchronized (this); }
-    }
+    public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
 
     public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
@@ -129,16 +122,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetCommand (null);
     }
 
-    public override IDataManagementCommand CreateDeleteCommand ()
-    {
-      return _syncState.CreateDeleteCommand (this, id => OppositeObjectID = id);
-    }
-
-    public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
-    {
-      return _syncState.CreateSetCommand (this, newRelatedObject, id => OppositeObjectID = id);
-    }
-
     public override void SetValueFrom (IRelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
@@ -186,14 +169,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         : base (info)
     {
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
-      _syncState = info.GetValueForHandle<IObjectEndPointSyncState>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddHandle (_lazyLoader);
-      info.AddHandle (_syncState);
       info.AddHandle (_endPointProvider);
     }
 
