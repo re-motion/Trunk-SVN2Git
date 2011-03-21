@@ -317,7 +317,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
-    // TODO 3815: Test
     public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
