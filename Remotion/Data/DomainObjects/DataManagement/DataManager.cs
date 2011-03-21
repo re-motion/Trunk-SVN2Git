@@ -317,7 +317,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
-    public IVirtualEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
+    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
       return (IVirtualEndPoint) _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);

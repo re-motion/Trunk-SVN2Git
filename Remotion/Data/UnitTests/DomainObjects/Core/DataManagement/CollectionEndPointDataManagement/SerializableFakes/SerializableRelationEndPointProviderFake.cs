@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       return _endPoints.GetValueOrDefault (endPointID);
     }
 
-    public IVirtualEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
+    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       throw new NotImplementedException();
     }
