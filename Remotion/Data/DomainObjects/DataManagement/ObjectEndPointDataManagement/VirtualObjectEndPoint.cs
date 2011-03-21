@@ -49,6 +49,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       _oppositeObjectID = oppositeObjectID;
       _originalOppositeObjectID = oppositeObjectID;
       _hasBeenTouched = false;
+
+      // TODO 3794: Remove
+      _syncState = new SynchronizedObjectEndPointSyncState (EndPointProvider);
     }
 
     public override ObjectID OppositeObjectID

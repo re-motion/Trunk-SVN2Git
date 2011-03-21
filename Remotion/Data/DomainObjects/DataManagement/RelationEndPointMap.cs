@@ -210,9 +210,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID, _lazyLoader, _endPointProvider);
       Add (objectEndPoint);
-
-      objectEndPoint.MarkSynchronized();
-
+      
       return objectEndPoint;
     }
 

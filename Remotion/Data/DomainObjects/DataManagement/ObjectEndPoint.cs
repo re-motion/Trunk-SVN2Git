@@ -27,7 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
     private readonly IRelationEndPointLazyLoader _lazyLoader;
-    private IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
+    [CLSCompliant(false)]
+    protected IObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
     private readonly IRelationEndPointProvider _endPointProvider;
 
     protected ObjectEndPoint (
@@ -60,32 +61,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _syncState.IsSynchronized (this); }
     }
 
-    public void Synchronize (IRelationEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      _syncState.Synchronize (this, oppositeEndPoint);
-    }
-
     public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException (
           "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
-    }
-
-    public void MarkSynchronized ()
-    {
-      _syncState = new SynchronizedObjectEndPointSyncState(_endPointProvider);
-    }
-
-    public void MarkUnsynchronized ()
-    {
-      _syncState = new UnsynchronizedObjectEndPointSyncState();
-    }
-
-    public void ResetSyncState ()
-    {
-      _syncState = new UnknownObjectEndPointSyncState (_lazyLoader);
     }
 
     public DomainObject GetOppositeObject (bool includeDeleted)

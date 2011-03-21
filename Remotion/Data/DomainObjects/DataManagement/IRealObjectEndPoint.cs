@@ -23,5 +23,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IRealObjectEndPoint : IObjectEndPoint
   {
+    void Synchronize (IRelationEndPoint oppositeEndPoint);
+
+    void MarkSynchronized ();
+    void MarkUnsynchronized ();
+    void ResetSyncState ();
   }
 }

@@ -99,6 +99,28 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return ForeignKeyProperty.HasBeenTouched; }
     }
 
+    public void Synchronize (IRelationEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      _syncState.Synchronize (this, oppositeEndPoint);
+    }
+
+    public void MarkSynchronized ()
+    {
+      _syncState = new SynchronizedObjectEndPointSyncState (EndPointProvider);
+    }
+
+    public void MarkUnsynchronized ()
+    {
+      _syncState = new UnsynchronizedObjectEndPointSyncState ();
+    }
+
+    public void ResetSyncState ()
+    {
+      _syncState = new UnknownObjectEndPointSyncState (LazyLoader);
+    }
+
     public override void Touch ()
     {
       ForeignKeyProperty.Touch ();

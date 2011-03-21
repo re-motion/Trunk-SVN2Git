@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   {
     private IRelationEndPointLazyLoader _lazyLoaderMock;
     private UnknownObjectEndPointSyncState _state;
-    private IObjectEndPoint _endPointMock;
+    private IRealObjectEndPoint _endPointMock;
     private MockRepository _mockRepository;
     private IRelationEndPoint _oppositeEndPointStub;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _endPointMock = _mockRepository.StrictMock<IObjectEndPoint> ();
+      _endPointMock = _mockRepository.StrictMock<IRealObjectEndPoint> ();
       _oppositeEndPointStub = _mockRepository.Stub<IRelationEndPoint>();
       _lazyLoaderMock = _mockRepository.StrictMock<IRelationEndPointLazyLoader> ();
       _state = new UnknownObjectEndPointSyncState(_lazyLoaderMock);

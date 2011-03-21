@@ -196,16 +196,17 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       while (endPoint != null)
       {
-        if (endPoint.Definition.Cardinality == CardinalityType.One)
+        var realEndPoint = endPoint as IRealObjectEndPoint;
+        if (realEndPoint != null)
         {
-          var objectEndPoint = (IObjectEndPoint) endPoint;
-          var oppositeEndPoint = currentTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (objectEndPoint);
-          objectEndPoint.Synchronize (oppositeEndPoint);
+          var oppositeEndPoint = currentTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (realEndPoint);
+          realEndPoint.Synchronize (oppositeEndPoint);
         }
         else
         {
-          var collectionEndPoint = (ICollectionEndPoint) endPoint;
-          collectionEndPoint.Synchronize ();
+          var collectionEndPoint = endPoint as ICollectionEndPoint;
+          if (collectionEndPoint != null)
+            collectionEndPoint.Synchronize ();
         }
 
         currentTransaction = currentTransaction.SubTransaction;

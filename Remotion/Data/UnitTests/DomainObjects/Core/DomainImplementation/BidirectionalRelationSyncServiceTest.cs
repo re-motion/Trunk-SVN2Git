@@ -123,14 +123,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void Synchronize_WithObjectEndPoint ()
+    public void Synchronize_WithRealObjectEndPoint ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
 
       var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
       oppositeEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems"));
 
-      var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var objectEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
       objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       objectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
@@ -141,6 +141,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointMock);
       RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointStub);
 
+      BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
+
+      objectEndPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Synchronize_WithVirtualObjectEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+
+      var objectEndPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      objectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
+      objectEndPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointMock);
+      
       BidirectionalRelationSyncService.Synchronize (_transaction, endPointID);
 
       objectEndPointMock.VerifyAllExpectations ();

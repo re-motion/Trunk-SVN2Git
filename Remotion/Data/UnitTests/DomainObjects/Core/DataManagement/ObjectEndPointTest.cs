@@ -76,57 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Synchronize ()
-    {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
-
-      _syncStateMock
-          .Expect (mock => mock.Synchronize (_endPoint, oppositeEndPointStub));
-      _syncStateMock.Replay ();
-
-      _endPoint.Synchronize (oppositeEndPointStub);
-
-      _syncStateMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
     public void SynchronizeOppositeEndPoint ()
     {
-      _endPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint>());
-    }
-
-    [Test]
-    public void MarkSynchronized ()
-    {
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
-
-      _endPoint.MarkSynchronized ();
-
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
-      Assert.That (_endPoint.EndPointProvider, Is.SameAs(_endPointProviderStub));
-    }
-
-    [Test]
-    public void MarkUnsynchronized ()
-    {
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
-
-      _endPoint.MarkUnsynchronized ();
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void ResetSyncState ()
-    {
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
-
-      _endPoint.ResetSyncState();
-
-      var syncState = ObjectEndPointTestHelper.GetSyncState (_endPoint);
-      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
-      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+      _endPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
     }
 
     [Test]
@@ -174,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeObject_Invalid_IncludeDeleted ()
     {
-      _endPoint.MarkSynchronized ();
+      MarkSynchronized (_endPoint);
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -189,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectInvalidException))]
     public void GetOppositeObject_Invalid_ExcludeDeleted ()
     {
-      _endPoint.MarkSynchronized();
+      MarkSynchronized(_endPoint);
       var oppositeObject = Order.NewObject ();
 
       oppositeObject.Delete ();
@@ -203,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalOppositeObject ()
     {
-      _endPoint.MarkSynchronized ();
+      MarkSynchronized (_endPoint);
       var originalOppositeObject = _endPoint.GetOppositeObject (true);
       _endPoint.CreateSetCommand (Order.NewObject ()).Perform ();
 
@@ -213,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalOppositeObject_Deleted ()
     {
-      _endPoint.MarkSynchronized ();
+      MarkSynchronized (_endPoint);
       var originalOppositeObject = (OrderTicket) _endPoint.GetOppositeObject (true);
       _endPoint.CreateSetCommand (OrderTicket.NewObject ()).ExpandToAllRelatedObjects ().Perform ();
       originalOppositeObject.Delete ();
@@ -452,6 +406,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       Assert.That (oppositeEndPointIDs, Is.EqualTo (new[] { expectedID }));
+    }
+
+    // TODO 3794: Remove
+    private void MarkSynchronized (ObjectEndPoint endPoint)
+    {
+      PrivateInvoke.SetNonPublicField (endPoint, "_syncState", new SynchronizedObjectEndPointSyncState (_endPointProviderStub));
     }
   }
 }

@@ -27,12 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     ObjectID OppositeObjectID { get; }
     ObjectID OriginalOppositeObjectID { get; }
 
-    void Synchronize (IRelationEndPoint oppositeEndPoint);
-    
-    void MarkSynchronized ();
-    void MarkUnsynchronized ();
-    void ResetSyncState ();
-
     DomainObject GetOppositeObject (bool includeDeleted);
     DomainObject GetOriginalOppositeObject ();
 

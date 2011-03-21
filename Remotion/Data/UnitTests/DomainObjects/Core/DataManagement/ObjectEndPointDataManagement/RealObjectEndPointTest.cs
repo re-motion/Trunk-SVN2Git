@@ -29,18 +29,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   [TestFixture]
   public class RealObjectEndPointTest : ClientTransactionBaseTest
   {
-    private RealObjectEndPoint _endPoint;
+    private DataContainer _foreignKeyDataContainer;
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProvider;
+    private IObjectEndPointSyncState _syncStateMock;
+
+    private RealObjectEndPoint _endPoint;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      _endPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (endPointID);
+      _foreignKeyDataContainer = DataContainer.CreateForExisting (endPointID.ObjectID, null, pd => pd.DefaultValue);
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _syncStateMock = MockRepository.GenerateStrictMock<IObjectEndPointSyncState> ();
+    
+      _endPoint = new RealObjectEndPoint (ClientTransactionMock, endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
+      PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
     }
 
     [Test]
@@ -134,6 +141,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void Synchronize ()
+    {
+      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+
+      _syncStateMock
+          .Expect (mock => mock.Synchronize (_endPoint, oppositeEndPointStub));
+      _syncStateMock.Replay ();
+
+      _endPoint.Synchronize (oppositeEndPointStub);
+
+      _syncStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void MarkSynchronized ()
+    {
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
+
+      _endPoint.MarkSynchronized ();
+
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedObjectEndPointSyncState)));
+      Assert.That (_endPoint.EndPointProvider, Is.SameAs (_endPointProvider));
+    }
+
+    [Test]
+    public void MarkUnsynchronized ()
+    {
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
+
+      _endPoint.MarkUnsynchronized ();
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (UnsynchronizedObjectEndPointSyncState)));
+    }
+
+    [Test]
+    public void ResetSyncState ()
+    {
+      Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.SameAs (_syncStateMock));
+
+      _endPoint.ResetSyncState ();
+
+      var syncState = ObjectEndPointTestHelper.GetSyncState (_endPoint);
+      Assert.That (syncState, Is.TypeOf (typeof (UnknownObjectEndPointSyncState)));
+      Assert.That (((UnknownObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+    }
+
+    [Test]
     public void Touch_ToProperty ()
     {
       Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.False);
@@ -146,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void Commit_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
 
       _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
@@ -160,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void Rollback_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
 
       _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
@@ -168,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPoint.Rollback ();
 
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.False);
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
     }
   }
 }
