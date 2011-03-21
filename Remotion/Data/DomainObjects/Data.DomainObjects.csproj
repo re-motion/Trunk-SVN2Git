@@ -185,6 +185,7 @@
     <Compile Include="DataManagement\IRealObjectEndPoint.cs" />
     <Compile Include="DataManagement\IRelationEndPointLazyLoader.cs" />
     <Compile Include="DataManagement\IRelationEndPointProvider.cs" />
+    <Compile Include="DataManagement\IVirtualEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\IRealObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\UnknownRealObjectEndPointSyncState.cs" />

@@ -35,6 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public IRelationEndPoint GetOppositeRelationEndPointWithLazyLoad (IRelationEndPoint relationEndPoint, ObjectID oppositeObjectID)
     {
       throw new NotImplementedException();

@@ -107,10 +107,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return _syncState.IsSynchronized (this); }
     }
 
-    public void Synchronize (IRelationEndPoint oppositeEndPoint)
+    public override void Synchronize ()
     {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
+      var oppositeEndPoint = EndPointProvider.GetOppositeEndPoint (this);
       _syncState.Synchronize (this, oppositeEndPoint);
     }
 

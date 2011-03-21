@@ -245,7 +245,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _loadState.IsSynchronized (this); }
     }
 
-    public void Synchronize ()
+    public override void Synchronize ()
     {
       _loadState.Synchronize (this);
     }

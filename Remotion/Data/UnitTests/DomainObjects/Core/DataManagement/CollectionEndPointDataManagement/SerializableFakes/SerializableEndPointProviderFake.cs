@@ -42,5 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       return _endPoints.GetValueOrDefault (endPointID);
     }
+
+    public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

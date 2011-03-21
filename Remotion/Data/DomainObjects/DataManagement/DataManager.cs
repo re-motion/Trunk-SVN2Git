@@ -317,14 +317,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
-    public IRelationEndPoint GetOppositeRelationEndPointWithLazyLoad (IRelationEndPoint relationEndPoint, ObjectID oppositeObjectID)
+    // TODO 3815: Test
+    public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("relationEndPoint", relationEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectID", oppositeObjectID);
-
-      var oppositeEndPointDefinition = relationEndPoint.Definition.GetMandatoryOppositeEndPointDefinition ();
-      var removedEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
-      return GetRelationEndPointWithLazyLoad (removedEndPointID);
+      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
+      return _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)

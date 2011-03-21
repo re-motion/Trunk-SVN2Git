@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   {
     private DataContainer _foreignKeyDataContainer;
     private IRelationEndPointLazyLoader _lazyLoaderStub;
-    private IRelationEndPointProvider _endPointProvider;
+    private IRelationEndPointProvider _endPointProviderStub;
     private IRealObjectEndPointSyncState _syncStateMock;
 
     private RealObjectEndPoint _endPoint;
@@ -45,10 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       _foreignKeyDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
-      _endPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _syncStateMock = MockRepository.GenerateStrictMock<IRealObjectEndPointSyncState> ();
     
-      _endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
+      _endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
       PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
     }
 
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
     }
 
     [Test]
@@ -69,13 +69,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
     }
 
     [Test]
     public void Initialization_SyncState ()
     {
-      var endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProvider);
+      var endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
 
       var syncState = ObjectEndPointTestHelper.GetSyncState (endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
@@ -170,12 +170,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     public void Synchronize ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      _endPointProviderStub
+          .Stub (stub => stub.GetOppositeEndPoint (_endPoint))
+          .Return (oppositeEndPointStub);
 
       _syncStateMock
           .Expect (mock => mock.Synchronize (_endPoint, oppositeEndPointStub));
       _syncStateMock.Replay ();
 
-      _endPoint.Synchronize (oppositeEndPointStub);
+      _endPoint.Synchronize ();
 
       _syncStateMock.VerifyAllExpectations ();
     }
@@ -188,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPoint.MarkSynchronized ();
 
       Assert.That (ObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
-      Assert.That (_endPoint.EndPointProvider, Is.SameAs (_endPointProvider));
+      Assert.That (_endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]

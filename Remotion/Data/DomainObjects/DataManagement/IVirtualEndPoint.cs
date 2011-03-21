@@ -19,12 +19,15 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// <see cref="IRealObjectEndPoint"/> represents an <see cref="IObjectEndPoint"/> that holds the foreign key in a relation.
+  /// Represents the relation property that does not hold the foreign key in a bidirectional relation.
   /// </summary>
-  public interface IRealObjectEndPoint : IObjectEndPoint
+  public interface IVirtualEndPoint : IRelationEndPoint
   {
-    void MarkSynchronized ();
-    void MarkUnsynchronized ();
-    void ResetSyncState ();
+    void MarkDataIncomplete ();
+
+    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
   }
 }

@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
       _lazyLoader.LoadOppositeEndPoint (endPoint);
 
-      endPoint.Synchronize (oppositeEndPoint);
+      endPoint.Synchronize();
     }
 
     public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)

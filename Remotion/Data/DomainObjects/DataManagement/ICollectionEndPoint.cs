@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Represents an <see cref="IRelationEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
   /// </summary>
-  public interface ICollectionEndPoint : IRelationEndPoint
+  public interface ICollectionEndPoint : IVirtualEndPoint
   {
     DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObjectCollection GetCollectionWithOriginalData ();
 
     void MarkDataComplete (DomainObject[] items);
-    void MarkDataIncomplete ();
 
     IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection);
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
@@ -38,13 +37,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
-
-    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void Synchronize ();
   }
 }

@@ -196,18 +196,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       while (endPoint != null)
       {
-        var realEndPoint = endPoint as IRealObjectEndPoint;
-        if (realEndPoint != null)
-        {
-          var oppositeEndPoint = currentTransaction.DataManager.RelationEndPointMap.GetOppositeEndPoint (realEndPoint);
-          realEndPoint.Synchronize (oppositeEndPoint);
-        }
-        else
-        {
-          var collectionEndPoint = endPoint as ICollectionEndPoint;
-          if (collectionEndPoint != null)
-            collectionEndPoint.Synchronize ();
-        }
+        endPoint.Synchronize();
 
         currentTransaction = currentTransaction.SubTransaction;
         endPoint = currentTransaction != null ? GetEndPoint (currentTransaction, endPointID) : null;

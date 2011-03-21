@@ -84,14 +84,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    public void Synchronize (IRelationEndPoint oppositeEndPoint)
+    public void Synchronize ()
     {
       // do nothing
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+      throw new InvalidOperationException ("A NullObjectEndPoint cannot be used to synchronize an opposite end-point.");
     }
 
     public void MarkSynchronized ()

@@ -71,8 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       using (_mockRepository.Ordered ())
       {
         _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
-        _endPointMock.Expect (mock => mock.Synchronize(_oppositeEndPointStub));
+        _endPointMock.Expect (mock => mock.Synchronize ());
       }
+
       _lazyLoaderMock.Replay ();
       _endPointMock.Replay ();
 

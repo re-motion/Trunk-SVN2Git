@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// constructed by the <see cref="RelationEndPointMap"/> as an in-memory representation of the opposite of the <see cref="RealObjectEndPoint"/> 
   /// holding the foreign key.
   /// </summary>
-  public class VirtualObjectEndPoint : ObjectEndPoint
+  public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualEndPoint
   {
     private ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
@@ -82,6 +82,41 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public override bool IsSynchronized
     {
       get { return true; }
+    }
+
+    public void MarkDataIncomplete ()
+    {
+      // TODO 3792
+      throw new NotImplementedException ();
+    }
+
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      // TODO 3792
+      throw new NotImplementedException ();
+    }
+
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      // TODO 3792
+      throw new NotImplementedException ();
+    }
+
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      // TODO 3792
+      throw new NotImplementedException ();
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      // TODO 3792
+      throw new NotImplementedException ();
+    }
+
+    public override void Synchronize ()
+    {
+      // TODO 3792
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
