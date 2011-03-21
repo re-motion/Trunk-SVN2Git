@@ -29,5 +29,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
     void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
     void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+
+    /// <summary>
+    /// Synchronizes the opposite end point with this end-point. Must only be called if the oppositeEndPoint is out-of-sync with this end-point.
+    /// </summary>
+    void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
   }
 }

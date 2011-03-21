@@ -53,37 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void MarkSynchronized_Throws ()
-    {
-      _nullEndPoint.MarkSynchronized();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void MarkUnsynchronized_Throws ()
-    {
-      _nullEndPoint.MarkUnsynchronized ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void ResetSyncState_Throws ()
-    {
-      _nullEndPoint.MarkUnsynchronized ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "A NullObjectEndPoint cannot be used to synchronize an opposite end-point.")]
-    public void SynchronizeOppositeEndPoint ()
-    {
-      var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-
-      _nullEndPoint.SynchronizeOppositeEndPoint (objectEndPointStub);
-    }
-
-    [Test]
     public void Definition ()
     {
       Assert.That (_nullEndPoint.Definition, Is.SameAs (_definition));

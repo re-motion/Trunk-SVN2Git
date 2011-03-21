@@ -46,14 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
-    public void SynchronizeOppositeEndPoint ()
-    {
-      _endPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
-    }
-
-    [Test]
     public void GetOppositeObject ()
     {
       var oppositeObject = _endPoint.GetOppositeObject (true);

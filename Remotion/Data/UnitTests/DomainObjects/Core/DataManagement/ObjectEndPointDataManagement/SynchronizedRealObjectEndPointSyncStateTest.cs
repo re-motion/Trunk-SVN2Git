@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void Synchronize ()
     {
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint>();
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
       oppositeEndPointMock.Replay();
       
       _state.Synchronize (_endPointMock, oppositeEndPointMock);

@@ -152,6 +152,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
+    public void SynchronizeOppositeEndPoint ()
+    {
+      _endPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
+    }
+
+    [Test]
     public void CreateSetCommand_Same ()
     {
       var relatedObject = OrderTicket.GetObject(DomainObjectIDs.OrderTicket1);

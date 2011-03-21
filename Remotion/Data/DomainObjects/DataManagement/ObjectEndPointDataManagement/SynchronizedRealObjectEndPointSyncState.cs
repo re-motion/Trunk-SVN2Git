@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return true;
     }
 
-    public void Synchronize (IRealObjectEndPoint endPoint, IRelationEndPoint oppositeEndPoint)
+    public void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);

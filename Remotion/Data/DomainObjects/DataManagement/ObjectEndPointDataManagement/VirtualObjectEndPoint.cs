@@ -84,6 +84,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       get { return true; }
     }
 
+    public override void Synchronize ()
+    {
+      // TODO 3792
+    }
+
+    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException (
+          "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
+    }
+
     public void MarkDataIncomplete ()
     {
       // TODO 3792
@@ -112,11 +123,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     {
       // TODO 3792
       throw new NotImplementedException ();
-    }
-
-    public override void Synchronize ()
-    {
-      // TODO 3792
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)

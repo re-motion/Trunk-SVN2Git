@@ -89,26 +89,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // do nothing
     }
 
-    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new InvalidOperationException ("A NullObjectEndPoint cannot be used to synchronize an opposite end-point.");
-    }
-
-    public void MarkSynchronized ()
-    {
-      throw new InvalidOperationException ("It is not possible to call MarkSynchronized on a NullObjectEndPoint.");
-    }
-
-    public void MarkUnsynchronized ()
-    {
-      throw new InvalidOperationException ("It is not possible to call MarkUnsynchronized on a NullObjectEndPoint.");
-    }
-
-    public void ResetSyncState ()
-    {
-      throw new InvalidOperationException ("It is not possible to call ResetSyncState on a NullObjectEndPoint.");
-    }
-
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
       return null;

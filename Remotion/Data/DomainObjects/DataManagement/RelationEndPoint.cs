@@ -48,8 +48,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract bool IsSynchronized { get; }
     public abstract void Synchronize ();
 
-    public abstract void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
     public abstract void Touch ();
     public abstract IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ();
 

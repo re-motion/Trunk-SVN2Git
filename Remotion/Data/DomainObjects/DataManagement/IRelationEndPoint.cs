@@ -45,11 +45,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     bool IsSynchronized { get; }
     void Synchronize ();
 
-    /// <summary>
-    /// Synchronizes the opposite end point with this end-point. Must only be called if the oppositeEndPoint is out-of-sync with this end-point.
-    /// </summary>
-    void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
     void Touch ();
     void Commit ();
     void Rollback ();
