@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
@@ -32,16 +33,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     private bool _hasBeenTouched;
 
     public VirtualObjectEndPoint (
-        ClientTransaction clientTransaction, 
-        RelationEndPointID id, 
-        ObjectID oppositeObjectID, 
+        ClientTransaction clientTransaction,
+        RelationEndPointID id,
+        ObjectID oppositeObjectID,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider)
-      : base (
-          ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
-          ArgumentUtility.CheckNotNull ("id", id),
-          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
-          ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
+        : base (
+            ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
+            ArgumentUtility.CheckNotNull ("id", id),
+            ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
+            ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
@@ -61,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       {
         _oppositeObjectID = value;
         _hasBeenTouched = true;
-        
+
         RaiseStateUpdateNotification (HasChanged);
       }
     }
@@ -79,6 +80,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
+    }
+
+    public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
+    {
+      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
+      if (OppositeObjectID == newRelatedObjectID)
+        return new ObjectEndPointSetSameCommand (this, id => OppositeObjectID = id);
+      else
+        return new ObjectEndPointSetOneOneCommand (this, newRelatedObject, id => OppositeObjectID = id);
+    }
+
+    public override IDataManagementCommand CreateDeleteCommand ()
+    {
+      return new ObjectEndPointDeleteCommand (this, id => OppositeObjectID = id);
     }
 
     public override void Touch ()
@@ -108,12 +123,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     }
 
     #region Serialization
+
     protected VirtualObjectEndPoint (FlattenedDeserializationInfo info)
-      : base (info)
+        : base (info)
     {
-      _hasBeenTouched = info.GetBoolValue ();
-      _oppositeObjectID = info.GetValueForHandle<ObjectID> ();
-      _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID> () : _oppositeObjectID;
+      _hasBeenTouched = info.GetBoolValue();
+      _oppositeObjectID = info.GetValueForHandle<ObjectID>();
+      _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID>() : _oppositeObjectID;
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -125,7 +141,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       if (_hasBeenTouched)
         info.AddHandle (_originalOppositeObjectID);
     }
-    #endregion
 
+    #endregion
   }
 }

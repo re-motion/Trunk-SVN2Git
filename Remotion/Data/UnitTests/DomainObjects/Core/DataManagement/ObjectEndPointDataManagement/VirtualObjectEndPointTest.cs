@@ -19,7 +19,10 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
@@ -28,15 +31,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   public class VirtualObjectEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
+    private Order _domainObject;
+
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
     private VirtualObjectEndPoint _endPoint;
-    
+
     public override void SetUp ()
     {
       base.SetUp ();
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _domainObject = Order.GetObject (_endPointID.ObjectID);
+    
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, DomainObjectIDs.OrderTicket1, _lazyLoaderStub, _endPointProviderStub);
@@ -141,6 +148,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void CreateSetCommand_Same ()
+    {
+      var relatedObject = OrderTicket.GetObject(DomainObjectIDs.OrderTicket1);
+
+      var command = (RelationEndPointModificationCommand) _endPoint.CreateSetCommand(relatedObject);
+
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
+      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (command.OldRelatedObject, Is.SameAs (relatedObject));
+      Assert.That (command.NewRelatedObject, Is.SameAs (relatedObject));
+      CheckOppositeObjectIDSetter (command, _endPoint);
+    }
+
+    [Test]
+    public void CreateSetCommand_Same_Null ()
+    {
+      var endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, null, _lazyLoaderStub, _endPointProviderStub);
+
+     var command = (RelationEndPointModificationCommand) endPoint.CreateSetCommand (null);
+
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
+      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
+      Assert.That (command.OldRelatedObject, Is.Null);
+      Assert.That (command.NewRelatedObject, Is.Null);
+      CheckOppositeObjectIDSetter (command, endPoint);
+    }
+
+    [Test]
+    public void CreateSetCommand_OneOne ()
+    {
+      var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+
+      var command = (RelationEndPointModificationCommand) _endPoint.CreateSetCommand (newRelatedObject);
+
+      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
+      Assert.That (command.OldRelatedObject, Is.SameAs (OrderTicket.GetObject(DomainObjectIDs.OrderTicket1)));
+      CheckOppositeObjectIDSetter (command, _endPoint);
+    }
+
+    [Test]
+    public void CreateDeleteCommand ()
+    {
+      var command = (RelationEndPointModificationCommand) _endPoint.CreateDeleteCommand ();
+
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
+      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
+      
+      CheckOppositeObjectIDSetter(command, _endPoint);
+    }
+
+    [Test]
     public void Touch ()
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);
@@ -220,6 +283,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       _endPoint.Rollback ();
 
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
+    }
+
+    private void CheckOppositeObjectIDSetter (RelationEndPointModificationCommand command, VirtualObjectEndPoint endPoint)
+    {
+      var oppositeObjectIDSetter = GetOppositeObjectIDSetter (command);
+
+      Assert.That (endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket3));
+      oppositeObjectIDSetter (DomainObjectIDs.OrderTicket3);
+      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
+    }
+
+    private Action<ObjectID> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    {
+      return (Action<ObjectID>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
     }
   }
 }
