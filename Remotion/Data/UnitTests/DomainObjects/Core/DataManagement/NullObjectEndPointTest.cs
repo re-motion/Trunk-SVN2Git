@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _nullEndPoint.Synchronize (oppositeEndPointMock);
 
-      oppositeEndPointMock.AssertWasNotCalled (mock => mock.SynchronizeOppositeEndPoint (_nullEndPoint));
+      oppositeEndPointMock.AssertWasNotCalled (mock => mock.SynchronizeOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
     public void SynchronizeOppositeEndPoint ()
     {
-      _nullEndPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IObjectEndPoint> ());
+      _nullEndPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
     }
 
     [Test]

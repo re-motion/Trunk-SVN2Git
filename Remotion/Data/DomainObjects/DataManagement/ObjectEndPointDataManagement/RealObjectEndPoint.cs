@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// Represents an <see cref="ObjectEndPoint"/> that holds the foreign key in a relation. The foreign key is actually held by a 
   /// <see cref="PropertyValue"/> object, this end point implementation just delegates to the <see cref="PropertyValue"/>.
   /// </summary>
-  public class RealObjectEndPoint : ObjectEndPoint
+  public class RealObjectEndPoint : ObjectEndPoint, IRealObjectEndPoint
   {
     private static PropertyValue GetForeignKeyProperty (DataContainer foreignKeyDataContainer, string propertyName)
     {

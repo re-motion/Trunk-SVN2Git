@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private IRelationEndPointDefinition _definition;
     private NullCollectionEndPoint _nullEndPoint;
     private OrderItem _relatedObject;
-    private IObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub;
 
     public override void SetUp ()
     {
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _nullEndPoint = new NullCollectionEndPoint (ClientTransactionMock, _definition);
       _relatedObject = OrderItem.NewObject();
-      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
     }
 
     [Test]

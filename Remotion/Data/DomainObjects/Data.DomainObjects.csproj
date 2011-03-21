@@ -182,6 +182,7 @@
     <Compile Include="DataManagement\CollectionEndPointDataManagement\SortedPropertyComparer.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommand.cs" />
+    <Compile Include="DataManagement\IRealObjectEndPoint.cs" />
     <Compile Include="DataManagement\IRelationEndPointLazyLoader.cs" />
     <Compile Include="DataManagement\IRelationEndPointProvider.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\IObjectEndPointSyncState.cs" />

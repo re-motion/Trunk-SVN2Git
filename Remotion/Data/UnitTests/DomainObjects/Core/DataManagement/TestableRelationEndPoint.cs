@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { throw new NotImplementedException(); }
     }
 
-    public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   [TestFixture]
   public class SynchronizedObjectEndPointSyncStateTest : StandardMappingTest
   {
-    private IObjectEndPoint _endPointMock;
+    private IRealObjectEndPoint _endPointMock;
     private SynchronizedObjectEndPointSyncState _state;
 
     private Order _order;
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     {
       base.SetUp ();
       
-      _endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint>();
+      _endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
 
       _state = new SynchronizedObjectEndPointSyncState (_endPointProviderStub);

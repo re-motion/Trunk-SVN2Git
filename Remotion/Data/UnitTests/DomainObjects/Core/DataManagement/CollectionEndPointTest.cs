@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private ICollectionEndPointLoadState _loadStateMock;
     private CollectionEndPoint _endPointWithLoadStateMock;
-    private IObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub;
 
     public override void SetUp ()
     {
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
       _endPointWithLoadStateMock = CreateEndPointWithLoadStateMock (_loadStateMock);
-      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
     }
 
     [Test]

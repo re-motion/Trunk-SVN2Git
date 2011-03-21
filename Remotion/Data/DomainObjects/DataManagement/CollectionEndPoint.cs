@@ -250,7 +250,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.Synchronize (this);
     }
 
-    public override void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 

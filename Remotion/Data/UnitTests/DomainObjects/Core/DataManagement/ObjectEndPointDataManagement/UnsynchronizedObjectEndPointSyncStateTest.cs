@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   [TestFixture]
   public class UnsynchronizedObjectEndPointSyncStateTest : StandardMappingTest
   {
-    private IObjectEndPoint _endPointStub;
+    private IRealObjectEndPoint _endPointStub;
     private UnsynchronizedObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
       _orderOrderTicketEndPointDefinition = GetRelationEndPointDefinition (typeof (Order), "OrderTicket");
       
-      _endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _endPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       

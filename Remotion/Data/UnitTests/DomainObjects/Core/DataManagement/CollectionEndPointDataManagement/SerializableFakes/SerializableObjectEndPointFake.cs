@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

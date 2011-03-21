@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("Synchronize cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("SynchronizeOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
