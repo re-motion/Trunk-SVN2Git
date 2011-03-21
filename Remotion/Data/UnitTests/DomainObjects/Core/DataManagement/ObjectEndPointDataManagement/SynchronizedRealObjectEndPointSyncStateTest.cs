@@ -208,7 +208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void FlattenedSerializable ()
     {
-      var state = new SynchronizedRealObjectEndPointSyncState (new SerializableEndPointProviderFake());
+      var state = new SynchronizedRealObjectEndPointSyncState (new SerializableRelationEndPointProviderFake());
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 

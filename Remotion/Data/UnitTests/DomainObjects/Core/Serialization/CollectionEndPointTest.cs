@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           ClientTransaction.Current,
           endPointID,
           new SerializableRelationEndPointLazyLoaderFake(),
-          new SerializableEndPointProviderFake(),
+          new SerializableRelationEndPointProviderFake(),
           new SerializableCollectionEndPointDataKeeperFactoryFake());
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);

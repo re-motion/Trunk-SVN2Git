@@ -218,14 +218,14 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFactoryFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableEndPointProviderFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRealObjectEndPointFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\SerializableFakes\SerializableRelationEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\NullVirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnknownRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnsynchronizedRealObjectEndPointSyncStateTest.cs" />

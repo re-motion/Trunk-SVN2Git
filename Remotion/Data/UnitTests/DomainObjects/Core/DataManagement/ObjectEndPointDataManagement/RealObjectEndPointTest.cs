@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     [Test]
     public void Synchronize ()
     {
-      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       _endPointProviderStub
           .Stub (stub => stub.GetOppositeEndPoint (_endPoint))
           .Return (oppositeEndPointStub);

@@ -15,32 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Development.UnitTesting;
+using Remotion.Collections;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
   [Serializable]
   public class SerializableRelationEndPointProviderFake : IRelationEndPointProvider
   {
+    [NonSerialized]
+    private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _endPoints;
+
+    public SerializableRelationEndPointProviderFake (params IRelationEndPoint[] endPoints)
+    {
+      _endPoints = endPoints.ToDictionary(ep => ep.ID);
+    }
+
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
-      throw new NotImplementedException();
+      return _endPoints[endPointID];
     }
 
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
     {
-      throw new NotImplementedException();
+      return _endPoints.GetValueOrDefault (endPointID);
     }
 
-    public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public IRelationEndPoint GetOppositeRelationEndPointWithLazyLoad (IRelationEndPoint relationEndPoint, ObjectID oppositeObjectID)
+    public IVirtualEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       throw new NotImplementedException();
     }

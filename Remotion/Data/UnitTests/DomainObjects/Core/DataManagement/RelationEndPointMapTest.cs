@@ -41,15 +41,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateNullEndPoint_ObjectEndPoint ()
+    public void CreateNullEndPoint_RealObjectEndPoint ()
+    {
+      var orderTicketDefinition =
+          Configuration.ClassDefinitions[typeof (OrderTicket)].GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+
+      var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
+
+      Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullObjectEndPoint)));
+      var objectEndPointID = RelationEndPointID.Create (null, orderTicketDefinition);
+      Assert.That (nullObjectEndPoint.ID, Is.EqualTo (objectEndPointID));
+    }
+
+    [Test]
+    public void CreateNullEndPoint_VirtualObjectEndPoint ()
     {
       var orderTicketDefinition =
           Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+
+      var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
+
+      Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullVirtualObjectEndPoint)));
       var objectEndPointID = RelationEndPointID.Create (null, orderTicketDefinition);
-
-      var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, objectEndPointID);
-
-      Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullObjectEndPoint)));
       Assert.That (nullObjectEndPoint.ID, Is.EqualTo (objectEndPointID));
     }
 
@@ -58,11 +71,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var orderItemsDefinition = Configuration.ClassDefinitions[typeof (Order)].GetRelationEndPointDefinition (
           typeof (Order).FullName + ".OrderItems");
-      var collectionEndPointID = RelationEndPointID.Create (null, orderItemsDefinition);
 
-      var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, collectionEndPointID);
+      var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderItemsDefinition);
 
       Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullCollectionEndPoint)));
+      var collectionEndPointID = RelationEndPointID.Create (null, orderItemsDefinition);
       Assert.That (nullObjectEndPoint.ID, Is.EqualTo (collectionEndPointID));
     }
 
@@ -201,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var result = _map.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
-      Assert.That (result, Is.TypeOf (typeof (NullObjectEndPoint)));
+      Assert.That (result, Is.TypeOf (typeof (NullVirtualObjectEndPoint)));
       Assert.That (result.Definition, Is.EqualTo (endPointDefinition));
     }
 

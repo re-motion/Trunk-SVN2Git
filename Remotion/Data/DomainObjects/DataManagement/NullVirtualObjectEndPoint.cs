@@ -1,0 +1,57 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using Remotion.Data.DomainObjects.Mapping;
+
+namespace Remotion.Data.DomainObjects.DataManagement
+{
+  /// <summary>
+  /// Represents a <see cref="NullObjectEndPoint"/> for a virtual relation property.
+  /// </summary>
+  public class NullVirtualObjectEndPoint : NullObjectEndPoint, IVirtualEndPoint
+  {
+    public NullVirtualObjectEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
+        : base(clientTransaction, definition)
+    {
+    }
+
+    public void MarkDataIncomplete ()
+    {
+      throw new InvalidOperationException ("MarkDataIncomplete cannot be called on a NullVirtualObjectEndPoint.");
+    }
+
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("RegisterOriginalOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+    }
+
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("UnregisterOriginalOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+    }
+
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("RegisterCurrentOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new InvalidOperationException ("UnregisterCurrentOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+    }
+  }
+}

@@ -32,15 +32,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
-    public static IRelationEndPoint CreateNullEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static IRelationEndPoint CreateNullEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
 
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-        return new NullObjectEndPoint (clientTransaction, endPointID.Definition);
+      if (endPointDefinition.Cardinality == CardinalityType.Many)
+        return new NullCollectionEndPoint (clientTransaction, endPointDefinition);
+      else if (endPointDefinition.IsVirtual)
+        return new NullVirtualObjectEndPoint (clientTransaction, endPointDefinition);
       else
-        return new NullCollectionEndPoint (clientTransaction, endPointID.Definition);
+        return new NullObjectEndPoint (clientTransaction, endPointDefinition);
     }
 
     private readonly ClientTransaction _clientTransaction;
@@ -348,7 +350,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
       if (endPointID.ObjectID == null)
-        return CreateNullEndPoint(ClientTransaction, endPointID);
+        return CreateNullEndPoint(ClientTransaction, endPointID.Definition);
 
       if (!endPointID.Definition.IsVirtual)
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
@@ -427,7 +429,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException ("The end-point is not part of a bidirectional relation.", "objectEndPoint");
 
       if (oppositeRelationEndPointID.ObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, oppositeRelationEndPointID);
+        return CreateNullEndPoint (_clientTransaction, oppositeRelationEndPointID.Definition);
 
       var oppositeEndPoint = this[oppositeRelationEndPointID];
       Assertion.IsNotNull (

@@ -317,10 +317,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
-    public IRelationEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
+    public IVirtualEndPoint GetOppositeEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
-      return _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
+      return (IVirtualEndPoint) _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
