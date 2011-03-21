@@ -18,6 +18,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// <see cref="IRealObjectEndPoint"/> represents an <see cref="IObjectEndPoint"/> that holds the foreign key in a relation.
+  /// </summary>
   public interface IRealObjectEndPoint : IObjectEndPoint
   {
   }

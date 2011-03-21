@@ -93,9 +93,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
-      var endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
+      var endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IRealObjectEndPoint> (NewRelatedObject);
       // the end point that was linked to the collection end point before the operation
-      var endPointOfOldObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
+      var endPointOfOldObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IRealObjectEndPoint> (OldRelatedObject);
       // the object that was linked to the new related object before the operation
       var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation

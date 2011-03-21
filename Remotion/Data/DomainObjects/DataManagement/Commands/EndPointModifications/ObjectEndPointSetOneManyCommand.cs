@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly ICollectionEndPoint _oldRelatedEndPoint;
 
     public ObjectEndPointSetOneManyCommand (
-        IObjectEndPoint modifiedEndPoint,
+        IRealObjectEndPoint modifiedEndPoint,
         DomainObject newRelatedObject,
         Action<ObjectID> oppositeObjectIDSetter,
         IRelationEndPointProvider endPointProvider)
@@ -78,8 +78,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       base.Perform ();
 
-      _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint ((IObjectEndPoint) ModifiedEndPoint);
-      _newRelatedEndPoint.RegisterCurrentOppositeEndPoint ((IObjectEndPoint) ModifiedEndPoint);
+      _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
+      _newRelatedEndPoint.RegisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
     }
 
     /// <summary>

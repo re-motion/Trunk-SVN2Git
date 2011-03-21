@@ -180,21 +180,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("RegisterOriginalOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("UnregisterOriginalOppositeEndPoint cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
     }
 
-    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
     }
 

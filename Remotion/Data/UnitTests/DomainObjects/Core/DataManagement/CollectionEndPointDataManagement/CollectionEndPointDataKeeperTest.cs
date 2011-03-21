@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private DomainObject _domainObject3;
     private DomainObject _domainObject4;
 
-    private IObjectEndPoint _domainObjectEndPoint1;
-    private IObjectEndPoint _domainObjectEndPoint2;
-    private IObjectEndPoint _domainObjectEndPoint3;
+    private IRealObjectEndPoint _domainObjectEndPoint1;
+    private IRealObjectEndPoint _domainObjectEndPoint2;
+    private IRealObjectEndPoint _domainObjectEndPoint3;
 
     private ClientTransaction _clientTransaction;
     
@@ -65,15 +65,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
       _domainObject4 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order4);
 
-      _domainObjectEndPoint1 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint1 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _domainObjectEndPoint1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
       _domainObjectEndPoint1.Stub (stub => stub.ObjectID).Return (_domainObject1.ID);
 
-      _domainObjectEndPoint2 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _domainObjectEndPoint2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       _domainObjectEndPoint2.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
 
-      _domainObjectEndPoint3 = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _domainObjectEndPoint3 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _domainObjectEndPoint3.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
       _domainObjectEndPoint3.Stub (stub => stub.ObjectID).Return (_domainObject3.ID);
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);
 
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
       
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     {
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
 
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
 
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void UnregisterOriginalOppositeEndPoint ()
     {
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
       endPointStub.Stub (stub => stub.MarkSynchronized());
@@ -554,7 +554,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
       var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction(), _endPointID, changeDetectionStrategy);
 
-      var endPointFake = new SerializableObjectEndPointFake (null, _domainObject1);
+      var endPointFake = new SerializableRealObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);
       data.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 

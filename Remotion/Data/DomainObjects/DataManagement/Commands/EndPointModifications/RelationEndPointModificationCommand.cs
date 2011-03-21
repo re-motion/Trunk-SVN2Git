@@ -34,12 +34,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
-    protected RelationEndPointModificationCommand (IRelationEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    protected RelationEndPointModificationCommand (IRelationEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified);
+      ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint);
 
-      _modifiedEndPoint = endPointBeingModified;
-      _domainObject = endPointBeingModified.GetDomainObject ();
+      _modifiedEndPoint = modifiedEndPoint;
+      _domainObject = modifiedEndPoint.GetDomainObject ();
 
       _oldRelatedObject = oldRelatedObject;
       _newRelatedObject = newRelatedObject;

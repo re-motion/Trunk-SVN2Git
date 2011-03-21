@@ -23,18 +23,18 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement.SerializableFakes
 {
-  public class SerializableObjectEndPointFake : IObjectEndPoint
+  public class SerializableRealObjectEndPointFake : IRealObjectEndPoint
   {
     private readonly RelationEndPointID _id;
     private readonly DomainObject _owningObject;
 
-    public SerializableObjectEndPointFake (RelationEndPointID id, DomainObject owningObject)
+    public SerializableRealObjectEndPointFake (RelationEndPointID id, DomainObject owningObject)
     {
       _id = id;
       _owningObject = owningObject;
     }
 
-    public SerializableObjectEndPointFake (FlattenedDeserializationInfo info)
+    public SerializableRealObjectEndPointFake (FlattenedDeserializationInfo info)
     {
       _owningObject = info.GetValue<DomainObject>();
     }

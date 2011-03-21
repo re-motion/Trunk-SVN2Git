@@ -32,9 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PrivateInvoke.SetPublicProperty (collectionEndPoint, "Collection", newCollection);
     }
 
-    public static IObjectEndPoint GetFakeOppositeEndPoint (DomainObject item)
+    public static IRealObjectEndPoint GetFakeOppositeEndPoint (DomainObject item)
     {
-      var fakeEndPoint = MockRepository.GenerateStub<IObjectEndPoint>();
+      var fakeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
       fakeEndPoint.Stub (stub => stub.ObjectID).Return (item.ID);
       fakeEndPoint.Stub (stub => stub.GetDomainObject()).Return (item);
       fakeEndPoint.Stub (stub => stub.GetDomainObjectReference()).Return (item);
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       foreach (var domainObject in domainObjects)
       {
         var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPoint.Definition.GetOppositeEndPointDefinition());
-        var oppositeEndPoint = (IObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+        var oppositeEndPoint = (IRealObjectEndPoint) dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       }
       endPoint.MarkDataComplete (domainObjects);

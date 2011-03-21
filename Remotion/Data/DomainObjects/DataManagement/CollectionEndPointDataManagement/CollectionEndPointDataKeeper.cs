@@ -34,9 +34,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     private readonly ChangeCachingCollectionDataDecorator _changeCachingCollectionData;
 
-    private readonly HashSet<IObjectEndPoint> _originalOppositeEndPoints;
+    private readonly HashSet<IRealObjectEndPoint> _originalOppositeEndPoints;
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
-    private Dictionary<ObjectID, IObjectEndPoint> _currentOppositeEndPoints;
+    private Dictionary<ObjectID, IRealObjectEndPoint> _currentOppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
         ClientTransaction clientTransaction,
@@ -54,9 +54,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
       _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
 
-      _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
+      _originalOppositeEndPoints = new HashSet<IRealObjectEndPoint>();
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
-      _currentOppositeEndPoints = new Dictionary<ObjectID, IObjectEndPoint>();
+      _currentOppositeEndPoints = new Dictionary<ObjectID, IRealObjectEndPoint>();
     }
 
     public RelationEndPointID EndPointID
@@ -79,12 +79,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _changeCachingCollectionData.OriginalData; }
     }
 
-    public IObjectEndPoint[] OriginalOppositeEndPoints
+    public IRealObjectEndPoint[] OriginalOppositeEndPoints
     {
       get { return _originalOppositeEndPoints.ToArray(); }
     }
 
-    public IObjectEndPoint[] CurrentOppositeEndPoints
+    public IRealObjectEndPoint[] CurrentOppositeEndPoints
     {
       get { return _currentOppositeEndPoints.Values.ToArray(); }
     }
@@ -94,14 +94,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _originalItemsWithoutEndPoint.ToArray(); }
     }
 
-    public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       return _originalOppositeEndPoints.Contains (oppositeEndPoint);
     }
 
-    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     }
 
-    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -136,14 +136,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _currentOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
     }
 
-    public bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       return _currentOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID);
     }
 
-    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -153,7 +153,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _currentOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
     }
 
-    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -241,13 +241,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       _changeCachingCollectionData = info.GetValue<ChangeCachingCollectionDataDecorator>();
 
-      _originalOppositeEndPoints = new HashSet<IObjectEndPoint>();
+      _originalOppositeEndPoints = new HashSet<IRealObjectEndPoint>();
       info.FillCollection (_originalOppositeEndPoints);
 
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();
       info.FillCollection (_originalItemsWithoutEndPoint);
 
-      var currentOppositeEndPoints = new List<IObjectEndPoint>();
+      var currentOppositeEndPoints = new List<IRealObjectEndPoint>();
       info.FillCollection (currentOppositeEndPoints);
       _currentOppositeEndPoints = currentOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }

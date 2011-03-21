@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private IncompleteCollectionEndPointLoadState _loadState;
 
     private Order _relatedObject;
-    private IObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub;
 
     private RelationEndPointID _endPointID;
 
@@ -52,21 +52,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader> ();
 
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
-      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]).Repeat.Once(); // for ctor called below
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]).Repeat.Once(); // for ctor called below
 
       _dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory>();
 
       _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint>();
+      _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
     }
 
     [Test]
     public void Initialization_WithOriginalEndPoints ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint>();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
       endPointMock.Expect (mock => mock.ResetSyncState());
       endPointMock.Replay();
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
-      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
       _dataKeeperMock.Replay();
 
       var newKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var item1 = DomainObjectMother.CreateFakeObject<Order> ();
       var item2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      var oppositeEndPointForItem1Mock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var oppositeEndPointForItem1Mock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       oppositeEndPointForItem1Mock.Stub (stub => stub.ObjectID).Return (item1.ID);
       oppositeEndPointForItem1Mock.Expect (mock => mock.MarkSynchronized());
       oppositeEndPointForItem1Mock.Replay ();
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
       newKeeperMock.VerifyAllExpectations();
       oppositeEndPointForItem1Mock.VerifyAllExpectations();
-      _collectionEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IObjectEndPoint>.Is.Anything));
+      _collectionEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
 
     [Test]
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Expect (mock => mock.ResetSyncState());
       endPointMock.Replay();
 
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOriginalOppositeEndPoint_DataKeeperThrows ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Replay ();
 
       var exception = new Exception ("Test");

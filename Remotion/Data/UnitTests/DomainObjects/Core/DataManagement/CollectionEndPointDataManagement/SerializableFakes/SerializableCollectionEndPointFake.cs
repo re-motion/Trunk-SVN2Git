@@ -188,22 +188,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
-    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
 
       var dataKeeperFactoryMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeperFactory> ();
       dataKeeperFactoryMock
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock), Is.SameAs (_loadStateMock));
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
       stateSetter (dataKeeperStub);
       
       var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock);

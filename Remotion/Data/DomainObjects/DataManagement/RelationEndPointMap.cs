@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
 
-      var objectEndPoint = (IObjectEndPoint) this[endPointID];
+      var objectEndPoint = (IRealObjectEndPoint) this[endPointID];
       if (objectEndPoint == null)
         throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
 
@@ -534,7 +534,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return true;
     }
 
-    private void RegisterOppositeForRealObjectEndPoint (IObjectEndPoint realObjectEndPoint)
+    private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
       var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
       Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
@@ -558,7 +558,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void UnregisterOppositeForRealObjectEndPoint (IObjectEndPoint realObjectEndPoint)
+    private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
       Assertion.IsFalse (realObjectEndPoint.HasChanged, "Deregistration currently only works for unchanged end-points");
 

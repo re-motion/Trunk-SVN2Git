@@ -45,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public IObjectEndPoint[] OriginalOppositeEndPoints
+    public IRealObjectEndPoint[] OriginalOppositeEndPoints
     {
-      get { return new IObjectEndPoint[0]; }
+      get { return new IRealObjectEndPoint[0]; }
     }
 
     public DomainObject[] OriginalItemsWithoutEndPoints
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public IObjectEndPoint[] CurrentOppositeEndPoints
+    public IRealObjectEndPoint[] CurrentOppositeEndPoints
     {
       get { throw new NotImplementedException(); }
     }
@@ -70,32 +70,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       get { throw new NotImplementedException(); }
     }
 
-    public bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       return false;
     }
 
-    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public bool ContainsCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }

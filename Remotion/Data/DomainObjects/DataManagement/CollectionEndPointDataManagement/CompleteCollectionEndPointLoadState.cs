@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ClientTransaction _clientTransaction;
 
-    private readonly Dictionary<ObjectID, IObjectEndPoint> _unsynchronizedOppositeEndPoints;
+    private readonly Dictionary<ObjectID, IRealObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
     public CompleteCollectionEndPointLoadState (
         ICollectionEndPointDataKeeper dataKeeper,
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _endPointProvider = endPointProvider;
       _clientTransaction = clientTransaction;
 
-      _unsynchronizedOppositeEndPoints = new Dictionary<ObjectID, IObjectEndPoint>();
+      _unsynchronizedOppositeEndPoints = new Dictionary<ObjectID, IRealObjectEndPoint>();
     }
 
     public ICollectionEndPointDataKeeper DataKeeper
@@ -130,7 +130,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
              select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 
-    public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
-    public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -197,7 +197,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       }
     }
 
-    public void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
-    public void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -236,12 +236,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         _dataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
-    public IObjectEndPoint[] UnsynchronizedOppositeEndPoints
+    public IRealObjectEndPoint[] UnsynchronizedOppositeEndPoints
     {
       get { return _unsynchronizedOppositeEndPoints.Values.ToArray(); }
     }
 
-    public void SynchronizeOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -486,7 +486,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
-      var unsynchronizedOppositeEndPoints = new List<IObjectEndPoint>();
+      var unsynchronizedOppositeEndPoints = new List<IRealObjectEndPoint>();
       info.FillCollection (unsynchronizedOppositeEndPoints);
       _unsynchronizedOppositeEndPoints = unsynchronizedOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }

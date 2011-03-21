@@ -212,28 +212,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this));
     }
 
-    public void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.RegisterOriginalOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.UnregisterOriginalOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.RegisterCurrentOppositeEndPoint (this, oppositeEndPoint);
     }
 
-    public void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 

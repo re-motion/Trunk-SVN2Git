@@ -14,19 +14,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
 
-    IObjectEndPoint[] OriginalOppositeEndPoints { get; }
+    IRealObjectEndPoint[] OriginalOppositeEndPoints { get; }
     DomainObject[] OriginalItemsWithoutEndPoints { get; }
-    IObjectEndPoint[] CurrentOppositeEndPoints { get; }
+    IRealObjectEndPoint[] CurrentOppositeEndPoints { get; }
 
-    bool ContainsOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    bool ContainsCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    bool ContainsCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
     bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
 

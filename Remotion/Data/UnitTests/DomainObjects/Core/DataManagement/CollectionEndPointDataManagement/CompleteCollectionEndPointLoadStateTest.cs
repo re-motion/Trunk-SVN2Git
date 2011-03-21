@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
 
     private IRelationEndPointDefinition _definition;
     private Order _relatedObject;
-    private IObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub;
     private Customer _owningObject;
 
     [SetUp]
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock, _endPointProviderStub, _clientTransaction);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      _relatedEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
       _owningObject = DomainObjectMother.CreateFakeObject<Customer>();
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void MarkDataIncomplete_ExecutesStateSetter_AndSynchronizesOppositeEndPoints ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       AddUnsynchronizedOppositeEndPoint (_loadState, endPointMock);
 
@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOriginalOppositeEndPoint_WithoutExistingItem ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointMock.Expect (mock => mock.MarkUnsynchronized());
       endPointMock.Replay();
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void RegisterOriginalOppositeEndPoint_WithExistingItem ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointMock.Expect (mock => mock.MarkSynchronized());
       endPointMock.Replay ();
@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SynchronizeOppositeEndPoint_InList ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IObjectEndPoint> ();
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
       endPointMock.Stub (mock => mock.MarkUnsynchronized ());
       endPointMock.Expect (mock => mock.MarkSynchronized ());
@@ -377,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
         + "end-point is not in the list of unsynchronized end-points.")]
     public void SynchronizeOppositeEndPoint_NotInList ()
     {
-      var endPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       endPointStub
           .Stub (stub => stub.ID)
           .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
@@ -914,7 +914,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Commit ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IObjectEndPoint[0]);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
       _dataKeeperMock.Expect (mock => mock.Commit ());
       _dataKeeperMock.Replay();
 
@@ -941,7 +941,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var endPointProvider = new SerializableRelationEndPointProviderFake();
       var state = new CompleteCollectionEndPointLoadState (dataKeeper, endPointProvider, _clientTransaction);
 
-      var oppositeEndPoint = new SerializableObjectEndPointFake (null, _relatedObject);
+      var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
@@ -953,9 +953,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (result.UnsynchronizedOppositeEndPoints.Length, Is.EqualTo (1));
     }
 
-    private void AddUnsynchronizedOppositeEndPoint (CompleteCollectionEndPointLoadState loadState, IObjectEndPoint oppositeEndPoint)
+    private void AddUnsynchronizedOppositeEndPoint (CompleteCollectionEndPointLoadState loadState, IRealObjectEndPoint oppositeEndPoint)
     {
-      var dictionary = (Dictionary<ObjectID, IObjectEndPoint>) PrivateInvoke.GetNonPublicField (loadState, "_unsynchronizedOppositeEndPoints");
+      var dictionary = (Dictionary<ObjectID, IRealObjectEndPoint>) PrivateInvoke.GetNonPublicField (loadState, "_unsynchronizedOppositeEndPoints");
       dictionary.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
     }
   }

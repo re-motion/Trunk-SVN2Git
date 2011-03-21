@@ -39,11 +39,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
 
-    void RegisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    void RegisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IObjectEndPoint oppositeEndPoint);
+    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
     void Synchronize ();
   }
