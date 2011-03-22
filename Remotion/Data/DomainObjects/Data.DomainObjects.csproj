@@ -174,7 +174,9 @@
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\IVirtualObjectEndPointDataKeeper.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\IVirtualObjectEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\ObjectEndPointDataManagement\VirtualObjectEndPointDataKeeper.cs" />
+    <Compile Include="DataManagement\ObjectEndPointDataManagement\VirtualObjectEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\VirtualEndPointStateUpdateListener.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\CollectionEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadState.cs" />
