@@ -39,19 +39,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     private Dictionary<ObjectID, IRealObjectEndPoint> _currentOppositeEndPoints;
 
     public CollectionEndPointDataKeeper (
-        ClientTransaction clientTransaction,
         RelationEndPointID endPointID,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
+        IVirtualEndPointStateUpdateListener updateListener)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
+      ArgumentUtility.CheckNotNull ("updateListener", updateListener);
 
       _endPointID = endPointID;
       _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData();
-      var updateListener = new VirtualEndPointStateUpdateListener (clientTransaction, endPointID);
       _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
 
       _originalOppositeEndPoints = new HashSet<IRealObjectEndPoint>();

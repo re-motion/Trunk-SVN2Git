@@ -50,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     private CollectionEndPointDataKeeper _dataKeeper;
 
     private DelegateBasedComparer<DomainObject> _comparer123;
+    private VirtualEndPointStateUpdateListener _stateUpdateListener;
 
     public override void SetUp ()
     {
@@ -77,7 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _domainObjectEndPoint3.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
       _domainObjectEndPoint3.Stub (stub => stub.ObjectID).Return (_domainObject3.ID);
 
-      _dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
+      _stateUpdateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, _endPointID);
+      _dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListener);
 
       _comparer123 = new DelegateBasedComparer<DomainObject> (Compare123);
     }
@@ -85,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void Initialization ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
+      var dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListener);
 
       Assert.That (dataKeeper.CollectionData, Is.TypeOf (typeof (ChangeCachingCollectionDataDecorator)));
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
@@ -420,7 +422,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     [Test]
     public void SortCurrentAndOriginalData ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (_clientTransaction, _endPointID, _changeDetectionStrategyMock);
+      var dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListener);
 
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
       dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
@@ -552,7 +554,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void FlattenedSerializable ()
     {
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var data = new CollectionEndPointDataKeeper (ClientTransaction.CreateRootTransaction(), _endPointID, changeDetectionStrategy);
+      var updateListener = new VirtualEndPointStateUpdateListener (ClientTransaction.CreateRootTransaction(), _endPointID);
+      var data = new CollectionEndPointDataKeeper (_endPointID, changeDetectionStrategy, updateListener);
 
       var endPointFake = new SerializableRealObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);

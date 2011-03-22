@@ -54,9 +54,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       return new CollectionEndPointDataKeeper (
-          _clientTransaction, 
           endPointID, 
-          _changeDetectionStrategy);
+          _changeDetectionStrategy,
+          new VirtualEndPointStateUpdateListener(_clientTransaction, endPointID));
     }
   }
 }
