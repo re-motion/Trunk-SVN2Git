@@ -210,6 +210,7 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\VirtualObjectEndPointDataKeeperTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPointStateUpdateListenerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\CollectionEndPointDataKeeperFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointDataManagement\CompleteCollectionEndPointLoadStateTest.cs" />
