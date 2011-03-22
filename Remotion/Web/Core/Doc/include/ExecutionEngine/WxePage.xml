@@ -111,10 +111,10 @@
       </para>
       <note type="caution">
         Disabling page state management will likely affect the way user input is handled. For instance, it is possible 
-        that controls of type <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl" /> do not
+        that controls of type <see cref="T:Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl" /> do not
         register as dirty when saving the values. To resolve this issue, the control's
-        <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.IsDirty" /> flag must be set explictly before calling
-        <see cref="Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.SaveValue" />
+        <see cref="P:Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.IsDirty" /> flag must be set explictly before calling
+        <see cref="M:Remotion.ObjectBinding.Web.UI.IBusinessObjectBoundEditableWebControl.SaveValue" />
       </note>
 
       <h4 class="dtH4">General Usage Notes</h4>
