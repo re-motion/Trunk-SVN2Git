@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,16 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement
 {
-  [Serializable]
-  public class FakeCollectionDataStateUpdateListener : ICollectionDataStateUpdateListener
+  /// <summary>
+  /// Used by <see cref="ChangeCachingCollectionDataDecorator"/> to signal when the cached state value is updated.
+  /// </summary>
+  public interface IVirtualEndPointStateUpdateListener
   {
-    public void StateUpdated (bool? newChangedState)
-    {
-    }
+    void StateUpdated (bool? newChangedState);
   }
 }

@@ -15,21 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
-namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Implements the <see cref="ICollectionDataStateUpdateListener"/> interface by passing information about state updates on to a 
+  /// Implements the <see cref="IVirtualEndPointStateUpdateListener"/> interface by passing information about state updates on to a 
   /// <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class CollectionDataStateUpdateListener : ICollectionDataStateUpdateListener
+  public class VirtualEndPointStateUpdateListener : IVirtualEndPointStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
 
-    public CollectionDataStateUpdateListener (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public VirtualEndPointStateUpdateListener (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;

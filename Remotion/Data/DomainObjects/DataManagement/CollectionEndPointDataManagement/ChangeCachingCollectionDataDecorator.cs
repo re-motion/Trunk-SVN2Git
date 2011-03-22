@@ -40,14 +40,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
   {
     private readonly CopyOnWriteDomainObjectCollectionData _originalData;
     
-    private readonly ICollectionDataStateUpdateListener _stateUpdateListener;
+    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
 
     public ChangeCachingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
-        ICollectionDataStateUpdateListener stateUpdateListener)
+        IVirtualEndPointStateUpdateListener stateUpdateListener)
       : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
     {
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);

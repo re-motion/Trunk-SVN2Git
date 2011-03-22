@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData();
-      var updateListener = new CollectionDataStateUpdateListener (clientTransaction, endPointID);
+      var updateListener = new VirtualEndPointStateUpdateListener (clientTransaction, endPointID);
       _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
 
       _originalOppositeEndPoints = new HashSet<IRealObjectEndPoint>();

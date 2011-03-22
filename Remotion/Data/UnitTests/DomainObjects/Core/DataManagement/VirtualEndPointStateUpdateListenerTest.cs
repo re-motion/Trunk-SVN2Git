@@ -14,26 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEndPointDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class CollectionDataStateUpdateListenerTest : StandardMappingTest
+  public class VirtualEndPointStateUpdateListenerTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionListenerMock;
     private RelationEndPointID _endPointID;
 
-    private CollectionDataStateUpdateListener _stateUpdateListener;
+    private VirtualEndPointStateUpdateListener _stateUpdateListener;
 
     [SetUp]
     public override void SetUp ()
@@ -44,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       _transactionListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      _stateUpdateListener = new CollectionDataStateUpdateListener (_clientTransaction, _endPointID);
+      _stateUpdateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, _endPointID);
     }
 
     [Test]
@@ -75,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     public void Serializable ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      var stateUpdateListener = new CollectionDataStateUpdateListener (clientTransaction, _endPointID);
+      var stateUpdateListener = new VirtualEndPointStateUpdateListener (clientTransaction, _endPointID);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (stateUpdateListener);
 
