@@ -128,6 +128,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       _currentOppositeEndPoint = null;
       _currentOppositeObjectID = null;
       _originalOppositeObjectID = null;
+
+      _updateListener.StateUpdated (false);
     }
 
     public void RegisterOriginalItemWithoutEndPoint (ObjectID objectID)

@@ -177,10 +177,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
-    public void UnregisterOriginalOppositeEndPoint ()
+    public void UnregisterOriginalOppositeEndPoint()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.Null);
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Replay ();
 
       _dataKeeper.UnregisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
@@ -188,6 +192,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
