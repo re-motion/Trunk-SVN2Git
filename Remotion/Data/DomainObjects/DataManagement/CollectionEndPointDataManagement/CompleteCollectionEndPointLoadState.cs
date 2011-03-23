@@ -115,6 +115,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return new ReadOnlyCollectionDataDecorator(_dataKeeper.CollectionData, true);
     }
 
+    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      return _dataKeeper.OriginalCollectionData;
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

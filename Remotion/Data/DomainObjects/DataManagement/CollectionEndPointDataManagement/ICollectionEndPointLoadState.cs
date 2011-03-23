@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
     ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
+    ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint);
     // TODO 3816: Refactor to match GetCollectionData
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
 

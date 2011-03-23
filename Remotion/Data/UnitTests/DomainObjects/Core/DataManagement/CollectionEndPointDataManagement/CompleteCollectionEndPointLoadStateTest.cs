@@ -158,11 +158,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetCollectionData(_collectionEndPointMock);
+      var result = _loadState.GetCollectionData (_collectionEndPointMock);
 
-      Assert.That (result, Is.TypeOf(typeof(ReadOnlyCollectionDataDecorator)));
+      Assert.That (result, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
       var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (result);
       Assert.That (wrappedData, Is.SameAs (collectionDataStub));
+    }
+
+    [Test]
+    public void GetOriginalCollectionData ()
+    {
+      var collectionDataStub = new ReadOnlyCollectionDataDecorator (MockRepository.GenerateStub<IDomainObjectCollectionData> (), false);
+      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
+
+      var result = _loadState.GetOriginalCollectionData (_collectionEndPointMock);
+
+      Assert.That (result, Is.SameAs (collectionDataStub));
     }
 
     [Test]

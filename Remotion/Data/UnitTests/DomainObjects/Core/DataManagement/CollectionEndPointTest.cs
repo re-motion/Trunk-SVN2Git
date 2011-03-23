@@ -781,6 +781,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetOriginalCollectionData ()
+    {
+      var fakeResult = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData(), false);
+      _loadStateMock.Expect (mock => mock.GetOriginalCollectionData (_endPointWithLoadStateMock)).Return (fakeResult);
+      _loadStateMock.Replay ();
+
+      var result = _endPointWithLoadStateMock.GetOriginalCollectionData ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
     public void GetCollectionWithOriginalData ()
     {
       var fakeResult = new DomainObjectCollection ();

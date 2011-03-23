@@ -148,6 +148,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       throw new NotImplementedException();
     }
 
+    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData ()
+    {
+      throw new NotImplementedException();
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       throw new NotImplementedException();

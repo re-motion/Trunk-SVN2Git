@@ -89,6 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
+    public void GetOriginalCollectionData ()
+    {
+      Dev.Null = _nullEndPoint.GetOriginalCollectionData ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void GetCollectionWithOriginalData ()
     {
       Dev.Null = _nullEndPoint.GetCollectionWithOriginalData ();

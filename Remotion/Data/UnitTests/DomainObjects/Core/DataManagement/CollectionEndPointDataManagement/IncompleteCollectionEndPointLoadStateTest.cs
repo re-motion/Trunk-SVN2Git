@@ -207,6 +207,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
+    public void GetOriginalCollectionData ()
+    {
+      CheckOperationDelegatesToCompleteState (
+          s => s.GetOriginalCollectionData (_collectionEndPointMock),
+          s => s.GetOriginalCollectionData (),
+          new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (), true));
+    }
+
+    [Test]
     public void GetCollectionWithOriginalData ()
     {
       CheckOperationDelegatesToCompleteState (
