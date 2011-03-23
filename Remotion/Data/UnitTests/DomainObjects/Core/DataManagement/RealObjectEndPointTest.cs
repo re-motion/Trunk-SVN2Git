@@ -25,7 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
   public class RealObjectEndPointTest : ClientTransactionBaseTest

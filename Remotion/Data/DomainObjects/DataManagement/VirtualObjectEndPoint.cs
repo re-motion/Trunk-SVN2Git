@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
   /// Represents an <see cref="ObjectEndPoint"/> that does not hold the foreign key in a relation. The <see cref="VirtualObjectEndPoint"/> is

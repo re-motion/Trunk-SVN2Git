@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = 
-      "Type 'Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement.RealObjectEndPoint' in Assembly "
+      "Type 'Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoint' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void RealObjectEndPoint_IsNotSerializable ()
     {

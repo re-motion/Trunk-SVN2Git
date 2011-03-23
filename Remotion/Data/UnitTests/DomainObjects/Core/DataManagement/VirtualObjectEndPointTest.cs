@@ -20,12 +20,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
   public class VirtualObjectEndPointTest : ClientTransactionBaseTest
