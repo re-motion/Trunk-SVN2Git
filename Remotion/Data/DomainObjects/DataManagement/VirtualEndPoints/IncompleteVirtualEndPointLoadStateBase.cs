@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       where TEndPoint : IVirtualEndPoint
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
 
     private readonly TDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
@@ -47,6 +47,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
     protected abstract void ResetSyncStateForAllOriginalOppositeEndPoints ();
+
+    public static ILog Log
+    {
+      get { return s_log; }
+    }
 
     public TDataKeeper DataKeeper
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -19,7 +18,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       where TEndPoint : IVirtualEndPoint
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
 
     private readonly TDataKeeper _dataKeeper;
     private readonly IRelationEndPointProvider _endPointProvider;
@@ -49,6 +48,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     protected abstract void UnregisterAllOriginalItemsWithoutEndPoint ();
     protected abstract bool HasUnsynchronizedCurrentOppositeEndPoints ();
+
+    public static ILog Log
+    {
+      get { return s_log; }
+    }
 
     public TDataKeeper DataKeeper
     {

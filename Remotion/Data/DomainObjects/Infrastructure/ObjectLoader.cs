@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ObjectLoader));
 
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ClientTransaction _clientTransaction;

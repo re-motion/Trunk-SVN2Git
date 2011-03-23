@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
   /// </summary>
   public class UnknownRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (UnknownRealObjectEndPointSyncState));
 
     private readonly IRelationEndPointLazyLoader _lazyLoader;
 
