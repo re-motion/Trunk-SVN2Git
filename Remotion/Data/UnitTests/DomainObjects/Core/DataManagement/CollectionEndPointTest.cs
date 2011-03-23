@@ -395,15 +395,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback ()
     {
       var fakeCurrentData = new DomainObjectCollectionData (new[] { _order1 });
-      var fakeCollectionWithOriginalData = new DomainObjectCollection (new[] { _order2 }, null);
+      var fakeCollectionWithOriginalData = new DomainObjectCollectionData();
 
       _loadStateMock.Stub (stub => stub.HasChanged()).Return (true);
       _loadStateMock
           .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
           .Return (new ReadOnlyCollectionDataDecorator (fakeCurrentData, true));
       _loadStateMock
-          .Stub (stub => stub.GetCollectionWithOriginalData (_endPointWithLoadStateMock))
-          .Return (fakeCollectionWithOriginalData);
+          .Stub (stub => stub.GetOriginalCollectionData (_endPointWithLoadStateMock))
+          .Return (new ReadOnlyCollectionDataDecorator (fakeCollectionWithOriginalData, true));
       _loadStateMock.Expect (mock => mock.Rollback());
       _loadStateMock.Replay ();
 
@@ -415,10 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointWithLoadStateMock.Rollback ();
 
       _loadStateMock.VerifyAllExpectations();
-      Assert.That (fakeCurrentData.ToArray (), Is.EqualTo (new[] { _order2 }));
-      Assert.That (fakeCollectionWithOriginalData, Is.EqualTo (new[] { _order2 }));
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
-
       Assert.That (_customerEndPoint.Collection, Is.SameAs (collectionBefore));
     }
     
@@ -794,7 +791,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 3816 - Move implementation of CompleteCEPLoadState.GetCollectionWithOriginalData to CollectionEndPoint.GetCollectionWithOriginalData")]
     public void GetCollectionWithOriginalData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
@@ -811,20 +807,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (actualCollectionData, Is.SameAs (readOnlyCollectionDataDecorator));
     }
 
-    // TODO 3816: Remove
-    [Test]
-    public void GetCollectionWithOriginalData2 ()
-    {
-      var fakeResult = new DomainObjectCollection ();
-      _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData (_endPointWithLoadStateMock)).Return (fakeResult);
-      _loadStateMock.Replay ();
-
-      var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData ();
-
-      _loadStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
-    }
-    
     [Test]
     public void GetOppositeRelationEndPointIDs ()
     {

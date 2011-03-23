@@ -121,14 +121,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       return _dataKeeper.OriginalCollectionData;
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      var collectionType = collectionEndPoint.Definition.PropertyType;
-      return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _dataKeeper.OriginalCollectionData);
-    }
-
     public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

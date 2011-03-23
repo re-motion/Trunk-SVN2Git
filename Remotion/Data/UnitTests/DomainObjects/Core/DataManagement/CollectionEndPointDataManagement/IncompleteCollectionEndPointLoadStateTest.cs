@@ -216,15 +216,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetCollectionWithOriginalData ()
-    {
-      CheckOperationDelegatesToCompleteState (
-          s => s.GetCollectionWithOriginalData (_collectionEndPointMock), 
-          s => s.GetCollectionWithOriginalData(), 
-          new DomainObjectCollection ());
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();

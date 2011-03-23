@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      return _loadState.GetCollectionWithOriginalData(this);
+      return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyType, _loadState.GetOriginalCollectionData (this));
     }
 
     public override bool IsDataComplete

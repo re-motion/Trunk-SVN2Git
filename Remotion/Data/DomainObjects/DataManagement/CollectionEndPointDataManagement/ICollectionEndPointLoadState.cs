@@ -33,9 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
     ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
     ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint);
-    // TODO 3816: Remove from interface, implementation, and tests
-    DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
-
+    
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
 
