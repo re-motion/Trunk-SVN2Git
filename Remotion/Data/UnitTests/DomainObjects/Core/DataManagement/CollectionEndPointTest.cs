@@ -794,7 +794,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [Ignore ("TODO 3816 - Move implementation of CompleteCEPLoadState.GetCollectionWithOriginalData to CollectionEndPoint.GetCollectionWithOriginalData")]
     public void GetCollectionWithOriginalData ()
+    {
+      var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
+      collectionDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
+      var readOnlyCollectionDataDecorator = new ReadOnlyCollectionDataDecorator (collectionDataStub, false);
+
+      _loadStateMock.Stub (stub => stub.GetOriginalCollectionData (_endPointWithLoadStateMock)).Return (readOnlyCollectionDataDecorator);
+      _loadStateMock.Replay();
+
+      var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData();
+
+      Assert.That (result, Is.TypeOf (typeof (OrderCollection)));
+      var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result);
+      Assert.That (actualCollectionData, Is.SameAs (readOnlyCollectionDataDecorator));
+    }
+
+    // TODO 3816: Remove
+    [Test]
+    public void GetCollectionWithOriginalData2 ()
     {
       var fakeResult = new DomainObjectCollection ();
       _loadStateMock.Expect (mock => mock.GetCollectionWithOriginalData (_endPointWithLoadStateMock)).Return (fakeResult);
