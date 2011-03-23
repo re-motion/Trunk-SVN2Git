@@ -374,21 +374,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
         collectionEndPoint.Touch();
     }
 
-    public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      if (_dataKeeper.CollectionData.Count == 0)
-      {
-        var objectReference = collectionEndPoint.GetDomainObjectReference();
-        var message = String.Format (
-            "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
-            collectionEndPoint.Definition.PropertyName,
-            objectReference.ID);
-        throw new MandatoryRelationNotSetException (objectReference, collectionEndPoint.Definition.PropertyName, message);
-      }
-    }
-
     public bool HasChanged ()
     {
       return _dataKeeper.HasDataChanged();

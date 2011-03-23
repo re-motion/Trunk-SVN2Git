@@ -265,14 +265,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       collectionEndPoint.SetValueFrom (sourceEndPoint);
     }
 
-    public void CheckMandatory (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      collectionEndPoint.CheckMandatory ();
-    }
-
     public bool HasChanged ()
     {
       return _dataKeeper.HasDataChanged ();

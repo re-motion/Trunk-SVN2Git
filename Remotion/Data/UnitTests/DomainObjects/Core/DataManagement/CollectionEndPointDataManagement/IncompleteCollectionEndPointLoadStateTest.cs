@@ -373,12 +373,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CheckMandatory ()
-    {
-      CheckOperationDelegatesToCompleteState (s => s.CheckMandatory (_collectionEndPointMock), s => s.CheckMandatory ());
-    }
-
-    [Test]
     public void HasChanged ()
     {
       _dataKeeperMock.Expect (mock => mock.HasDataChanged ()).Return (true);

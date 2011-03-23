@@ -821,14 +821,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CheckMandatory ()
+    public void CheckMandatory_WithItems_Succeeds ()
     {
-      _loadStateMock.Expect (mock => mock.CheckMandatory(_endPointWithLoadStateMock));
+      var domainObjectCollectionData = new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () });
+      _loadStateMock
+          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
+      _loadStateMock.Replay();
+
+      _endPointWithLoadStateMock.CheckMandatory ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
+        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of domain object "
+        + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' contains no items.")]
+    public void CheckMandatory_WithNoItems_Throws ()
+    {
+      var domainObjectCollectionData = new DomainObjectCollectionData ();
+      _loadStateMock
+          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.CheckMandatory ();
-
-      _loadStateMock.VerifyAllExpectations ();
     }
 
     private IRelationEndPointLazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)

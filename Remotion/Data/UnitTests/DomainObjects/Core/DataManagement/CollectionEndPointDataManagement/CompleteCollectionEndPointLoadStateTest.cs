@@ -854,35 +854,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void CheckMandatory_WithItems_Succeeds ()
-    {
-      _dataKeeperMock
-          .Stub (stub => stub.CollectionData)
-          .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order>() }));
-
-      _loadState.CheckMandatory(_collectionEndPointMock);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage =
-        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of domain object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' contains no items.")]
-    public void CheckMandatory_WithNoItems_Throws ()
-    {
-      _dataKeeperMock
-          .Stub (stub => stub.CollectionData)
-          .Return (new DomainObjectCollectionData());
-      _collectionEndPointMock
-          .Stub (stub => stub.Definition)
-          .Return (_definition);
-      _collectionEndPointMock
-          .Stub (stub => stub.GetDomainObjectReference())
-          .Return (DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
-
-      _loadState.CheckMandatory(_collectionEndPointMock);
-    }
-
-    [Test]
     public void HasChanged ()
     {
       _dataKeeperMock.Expect (mock => mock.HasDataChanged ()).Return (true);
