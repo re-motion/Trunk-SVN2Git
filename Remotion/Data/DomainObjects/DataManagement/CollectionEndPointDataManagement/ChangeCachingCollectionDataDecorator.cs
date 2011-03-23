@@ -56,6 +56,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       _stateUpdateListener = stateUpdateListener;
     }
 
+    public IVirtualEndPointStateUpdateListener StateUpdateListener
+    {
+      get { return _stateUpdateListener; }
+    }
+
     public ReadOnlyCollectionDataDecorator OriginalData
     {
       get { return new ReadOnlyCollectionDataDecorator (_originalData, false); }

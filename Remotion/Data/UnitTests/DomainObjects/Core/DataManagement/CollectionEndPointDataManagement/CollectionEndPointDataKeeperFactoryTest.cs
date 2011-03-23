@@ -56,6 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
       Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
       Assert.That (((CollectionEndPointDataKeeper) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
+
+      var updateListener = ((ChangeCachingCollectionDataDecorator) ((CollectionEndPointDataKeeper) result).CollectionData).StateUpdateListener;
+      Assert.That (updateListener, Is.TypeOf (typeof (VirtualEndPointStateUpdateListener)));
+      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).ClientTransaction, Is.SameAs (_clientTransaction));
+      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).EndPointID, Is.SameAs (relationEndPointID));
     }
 
     [Test]

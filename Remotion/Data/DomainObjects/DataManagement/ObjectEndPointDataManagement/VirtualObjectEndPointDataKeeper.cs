@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
 {
   /// <summary>
-  /// Keeps the data of a <see cref="VirtualObjectEndPoint"/>.
+  /// Keeps the data of a <see cref="VirtualObjectEndPoint"/>, managing current and original values as well as opposite end-points.
   /// </summary>
   public class VirtualObjectEndPointDataKeeper : IVirtualObjectEndPointDataKeeper
   {
@@ -56,7 +56,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
     public ObjectID CurrentOppositeObjectID
     {
       get { return _currentOppositeObjectID; }
-      set { 
+      set
+      {
         _currentOppositeObjectID = value;
         _updateListener.StateUpdated (HasDataChanged());
       }
@@ -82,23 +83,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       return !Equals (CurrentOppositeObjectID, OriginalOppositeObjectID);
     }
 
-    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      _currentOppositeEndPoint = oppositeEndPoint;
-    }
-
-    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      if (_currentOppositeEndPoint !=oppositeEndPoint)
-        throw new InvalidOperationException ("The opposite end-point has not been registered.");
-
-      _currentOppositeEndPoint = null;
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -106,6 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       if (_originalOppositeEndPoint != null)
         throw new InvalidOperationException ("The original opposite end-point has already been registered.");
 
+      // Only set current end-point/value if they haven't already been set to a different value
       if (!HasDataChanged ())
       {
         _currentOppositeEndPoint = oppositeEndPoint;
@@ -125,9 +110,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
         throw new InvalidOperationException ("The original opposite end-point has not been registered.");
 
       _originalOppositeEndPoint = null;
+      _originalOppositeObjectID = null;
+
       _currentOppositeEndPoint = null;
       _currentOppositeObjectID = null;
-      _originalOppositeObjectID = null;
 
       _updateListener.StateUpdated (false);
     }
@@ -137,11 +123,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       if (_originalOppositeEndPoint != null)
         throw new InvalidOperationException ("An original opposite end-point has already been registered.");
 
-      if (!HasDataChanged ())
+      // Only set current value if it hasn't already been set to a different value
+      if (!HasDataChanged())
         _currentOppositeObjectID = objectID;
 
       _originalOppositeObjectID = objectID;
       _updateListener.StateUpdated (HasDataChanged());
+    }
+
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (_currentOppositeEndPoint != null)
+        throw new InvalidOperationException ("An opposite end-point has already been registered.");
+
+      _currentOppositeEndPoint = oppositeEndPoint;
+    }
+
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (_currentOppositeEndPoint != oppositeEndPoint)
+        throw new InvalidOperationException ("The opposite end-point has not been registered.");
+
+      _currentOppositeEndPoint = null;
     }
 
     public void Commit ()

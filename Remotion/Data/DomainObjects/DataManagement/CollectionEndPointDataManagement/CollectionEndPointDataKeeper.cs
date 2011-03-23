@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     {
       get { return _changeDetectionStrategy; }
     }
-
+    
     public IDomainObjectCollectionData CollectionData
     {
       get { return _changeCachingCollectionData; }

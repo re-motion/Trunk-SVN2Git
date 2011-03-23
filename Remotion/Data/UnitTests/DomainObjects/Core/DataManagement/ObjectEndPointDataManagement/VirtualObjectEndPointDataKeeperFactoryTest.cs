@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
 using Rhino.Mocks;
@@ -26,14 +27,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
   [TestFixture]
   public class VirtualObjectEndPointDataKeeperFactoryTest : StandardMappingTest
   {
-    private IVirtualEndPointStateUpdateListener _updateListener;
+    private ClientTransaction _clientTransaction;
     private VirtualObjectEndPointDataKeeperFactory _factory;
     private RelationEndPointID _endPointID;
 
     public override void SetUp ()
     {
-      _updateListener = MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener>();
-      _factory = new VirtualObjectEndPointDataKeeperFactory (_updateListener);
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
+      _factory = new VirtualObjectEndPointDataKeeperFactory (_clientTransaction);
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
     }
 
@@ -44,6 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
 
       Assert.That (result, Is.TypeOf (typeof (VirtualObjectEndPointDataKeeper)));
       Assert.That (((VirtualObjectEndPointDataKeeper) result).EndPointID, Is.SameAs (_endPointID));
+      
+      var updateListener = ((VirtualObjectEndPointDataKeeper) result).UpdateListener;
+      Assert.That (updateListener, Is.TypeOf (typeof (VirtualEndPointStateUpdateListener)));
+      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).ClientTransaction, Is.SameAs (_clientTransaction));
+      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).EndPointID, Is.SameAs (_endPointID));
     }
   }
 }

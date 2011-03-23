@@ -24,20 +24,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
   /// </summary>
   public class VirtualObjectEndPointDataKeeperFactory : IVirtualObjectEndPointDataKeeperFactory
   {
-    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
+    private readonly ClientTransaction _clientTransaction;
 
-    public VirtualObjectEndPointDataKeeperFactory (IVirtualEndPointStateUpdateListener stateUpdateListener)
+    public VirtualObjectEndPointDataKeeperFactory (ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
-
-      _stateUpdateListener = stateUpdateListener;
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      _clientTransaction = clientTransaction;
     }
 
     public IVirtualObjectEndPointDataKeeper Create (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return new VirtualObjectEndPointDataKeeper (endPointID, _stateUpdateListener);
+      var updateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID);
+      return new VirtualObjectEndPointDataKeeper (endPointID, updateListener);
     }
   }
 }

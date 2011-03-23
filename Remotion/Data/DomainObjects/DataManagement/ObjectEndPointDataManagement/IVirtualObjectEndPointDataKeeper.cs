@@ -34,13 +34,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
 
     bool HasDataChanged ();
 
-    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
     void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
     void RegisterOriginalItemWithoutEndPoint (ObjectID opppositeEndPoint);
+
+    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
     void Commit ();
     void Rollback ();

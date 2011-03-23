@@ -92,49 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
-    public void RegisterCurrentOppositeEndPoint ()
-    {
-      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-    }
-
-    [Test]
-    public void RegisterCurrentOppositeEndPoint_AlreadyRegistered ()
-    {
-      _dataKeeper.RegisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint>());
-      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-    }
-
-    [Test]
-    public void UnregisterCurrentOppositeEndPoint ()
-    {
-      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Not.Null);
-
-      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
-    public void UnregisterCurrentOppositeEndPoint_NotRegistered ()
-    {
-      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
-    public void UnregisterCurrentOppositeEndPoint_DifferentRegistered ()
-    {
-      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-      _dataKeeper.UnregisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint>());
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
@@ -269,6 +226,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
     }
 
     [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An opposite end-point has already been registered.")]
+    public void RegisterCurrentOppositeEndPoint_AlreadyRegistered ()
+    {
+      _dataKeeper.RegisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Not.Null);
+
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
+    public void UnregisterCurrentOppositeEndPoint_NotRegistered ()
+    {
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
+    public void UnregisterCurrentOppositeEndPoint_DifferentRegistered ()
+    {
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
+    }
+
+    [Test]
     public void Commit ()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
@@ -278,6 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
 
       var newOppositeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
       _dataKeeper.RegisterCurrentOppositeEndPoint (newOppositeEndPoint);
       _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3;
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.SameAs (newOppositeEndPoint));
@@ -306,7 +306,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.ObjectEndPoi
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
 
-      _dataKeeper.RegisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint>());
+      _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+      _dataKeeper.RegisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
       _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3;
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Not.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo(DomainObjectIDs.OrderTicket1));
