@@ -109,13 +109,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
         collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
-    public ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       return new ReadOnlyCollectionDataDecorator(_dataKeeper.CollectionData, true);
     }
 
-    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       return _dataKeeper.OriginalCollectionData;

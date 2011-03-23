@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       throw new InvalidOperationException ("The data is already incomplete.");
     }
 
-    public ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return collectionEndPoint.GetCollectionData();
     }
 
-    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint)
+    public ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 

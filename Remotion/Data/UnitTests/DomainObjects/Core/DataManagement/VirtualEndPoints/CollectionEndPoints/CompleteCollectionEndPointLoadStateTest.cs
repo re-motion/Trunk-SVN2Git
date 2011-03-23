@@ -153,12 +153,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void GetCollectionData ()
+    public void GetData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetCollectionData (_collectionEndPointMock);
+      var result = _loadState.GetData (_collectionEndPointMock);
 
       Assert.That (result, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
       var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (result);
@@ -166,12 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void GetOriginalCollectionData ()
+    public void GetCollectionData ()
     {
       var collectionDataStub = new ReadOnlyCollectionDataDecorator (MockRepository.GenerateStub<IDomainObjectCollectionData> (), false);
       _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
 
-      var result = _loadState.GetOriginalCollectionData (_collectionEndPointMock);
+      var result = _loadState.GetOriginalData (_collectionEndPointMock);
 
       Assert.That (result, Is.SameAs (collectionDataStub));
     }

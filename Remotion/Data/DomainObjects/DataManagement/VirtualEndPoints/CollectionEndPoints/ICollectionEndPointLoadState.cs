@@ -31,8 +31,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter);
     void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
-    ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
-    ReadOnlyCollectionDataDecorator GetOriginalCollectionData (ICollectionEndPoint collectionEndPoint);
+    ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint);
+    ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint);
     
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);

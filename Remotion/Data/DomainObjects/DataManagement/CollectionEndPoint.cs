@@ -104,17 +104,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public ReadOnlyCollectionDataDecorator GetCollectionData ()
     {
-      return _loadState.GetCollectionData (this);
+      return _loadState.GetData (this);
     }
 
     public ReadOnlyCollectionDataDecorator GetOriginalCollectionData ()
     {
-      return _loadState.GetOriginalCollectionData (this);
+      return _loadState.GetOriginalData (this);
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
-      return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyType, _loadState.GetOriginalCollectionData (this));
+      return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyType, _loadState.GetOriginalData (this));
     }
 
     public override bool IsDataComplete
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
       // checked. (DataManager will not check incomplete end-points, as it also ignores not-yet-loaded end-points.)
 
-      if (_loadState.GetCollectionData (this).Count == 0)
+      if (_loadState.GetData (this).Count == 0)
       {
         var objectReference = GetDomainObjectReference ();
         var message = String.Format (
@@ -312,7 +312,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
 
-      return from oppositeDomainObject in _loadState.GetCollectionData (this)
+      return from oppositeDomainObject in _loadState.GetData (this)
              select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 

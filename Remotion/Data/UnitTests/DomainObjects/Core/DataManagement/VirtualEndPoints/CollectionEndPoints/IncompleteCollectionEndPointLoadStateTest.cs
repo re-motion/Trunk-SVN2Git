@@ -198,19 +198,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void GetCollectionData ()
+    public void GetData ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.GetCollectionData (_collectionEndPointMock),
+          s => s.GetData (_collectionEndPointMock),
           s => s.GetCollectionData (),
           new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (), true));
     }
 
     [Test]
-    public void GetOriginalCollectionData ()
+    public void GetOriginalData ()
     {
       CheckOperationDelegatesToCompleteState (
-          s => s.GetOriginalCollectionData (_collectionEndPointMock),
+          s => s.GetOriginalData (_collectionEndPointMock),
           s => s.GetOriginalCollectionData (),
           new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (), true));
     }

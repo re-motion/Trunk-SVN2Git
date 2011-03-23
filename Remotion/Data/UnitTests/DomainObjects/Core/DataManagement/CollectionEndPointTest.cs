@@ -399,10 +399,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock.Stub (stub => stub.HasChanged()).Return (true);
       _loadStateMock
-          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Stub (stub => stub.GetData (_endPointWithLoadStateMock))
           .Return (new ReadOnlyCollectionDataDecorator (fakeCurrentData, true));
       _loadStateMock
-          .Stub (stub => stub.GetOriginalCollectionData (_endPointWithLoadStateMock))
+          .Stub (stub => stub.GetOriginalData (_endPointWithLoadStateMock))
           .Return (new ReadOnlyCollectionDataDecorator (fakeCollectionWithOriginalData, true));
       _loadStateMock.Expect (mock => mock.Rollback());
       _loadStateMock.Replay ();
@@ -768,7 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetCollectionData ()
     {
       var fakeResult = new ReadOnlyCollectionDataDecorator(new DomainObjectCollectionData (), true);
-      _loadStateMock.Expect (mock => mock.GetCollectionData (_endPointWithLoadStateMock)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetData (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.GetCollectionData ();
@@ -781,7 +781,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOriginalCollectionData ()
     {
       var fakeResult = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData(), false);
-      _loadStateMock.Expect (mock => mock.GetOriginalCollectionData (_endPointWithLoadStateMock)).Return (fakeResult);
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPointWithLoadStateMock)).Return (fakeResult);
       _loadStateMock.Replay ();
 
       var result = _endPointWithLoadStateMock.GetOriginalCollectionData ();
@@ -797,7 +797,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       collectionDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
       var readOnlyCollectionDataDecorator = new ReadOnlyCollectionDataDecorator (collectionDataStub, false);
 
-      _loadStateMock.Stub (stub => stub.GetOriginalCollectionData (_endPointWithLoadStateMock)).Return (readOnlyCollectionDataDecorator);
+      _loadStateMock.Stub (stub => stub.GetOriginalData (_endPointWithLoadStateMock)).Return (readOnlyCollectionDataDecorator);
       _loadStateMock.Replay();
 
       var result = _endPointWithLoadStateMock.GetCollectionWithOriginalData();
@@ -814,7 +814,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var relatedObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       var collectionData = new DomainObjectCollectionData (new[] { relatedObject1, relatedObject2 });
 
-      _loadStateMock.Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock)).Return (new ReadOnlyCollectionDataDecorator (collectionData, false));
+      _loadStateMock.Stub (stub => stub.GetData (_endPointWithLoadStateMock)).Return (new ReadOnlyCollectionDataDecorator (collectionData, false));
       _loadStateMock.Replay();
 
       var oppositeEndPoints = _endPointWithLoadStateMock.GetOppositeRelationEndPointIDs ().ToArray ();
@@ -839,7 +839,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var domainObjectCollectionData = new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () });
       _loadStateMock
-          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Stub (stub => stub.GetData (_endPointWithLoadStateMock))
           .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
       _loadStateMock.Replay();
 
@@ -854,7 +854,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var domainObjectCollectionData = new DomainObjectCollectionData ();
       _loadStateMock
-          .Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock))
+          .Stub (stub => stub.GetData (_endPointWithLoadStateMock))
           .Return (new ReadOnlyCollectionDataDecorator (domainObjectCollectionData, false));
       _loadStateMock.Replay ();
 
