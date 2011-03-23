@@ -293,7 +293,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.MarkCollectionEndPointComplete (virtualEndPoint.ID, domainObjects);
     }
 
-    public void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint)
+    public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
 

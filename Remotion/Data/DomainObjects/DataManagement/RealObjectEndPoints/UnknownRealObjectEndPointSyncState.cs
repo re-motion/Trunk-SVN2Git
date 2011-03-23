@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
             "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
       }
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
+      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
 
       return endPoint.IsSynchronized;
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
+      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
 
       endPoint.Synchronize();
     }
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
+      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
 
       return endPoint.CreateDeleteCommand();
     }
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
+      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
 
       return endPoint.CreateSetCommand (newRelatedObject);
     }

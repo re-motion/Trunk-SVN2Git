@@ -48,24 +48,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       get { return _endPointID; }
     }
 
-    public bool ContainsOriginalObjectID (ObjectID objectID)
-    {
-      // TODO 3816
-      throw new NotImplementedException ();
-    }
-
-    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      // TODO 3816
-      throw new NotImplementedException ();
-    }
-
-    public bool ContainsOriginalItemsWithoutEndPoints ()
-    {
-      // TODO 3816
-      throw new NotImplementedException ();
-    }
-
     public IVirtualEndPointStateUpdateListener UpdateListener
     {
       get { return _updateListener; }
@@ -96,9 +78,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       get { return _originalOppositeEndPoint; }
     }
 
-    public bool HasDataChanged ()
+    public bool ContainsOriginalObjectID (ObjectID objectID)
     {
-      return !Equals (CurrentOppositeObjectID, OriginalOppositeObjectID);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      return Equals (_originalOppositeObjectID, objectID);
+    }
+
+    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      return _originalOppositeEndPoint == oppositeEndPoint;
+    }
+
+    public bool ContainsOriginalItemsWithoutEndPoints ()
+    {
+      return _originalOppositeObjectID != null && _originalOppositeEndPoint == null;
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -136,22 +132,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       _updateListener.StateUpdated (false);
     }
 
-    public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
-    {
-      // TODO 3816
-      throw new NotImplementedException();
-    }
-
-    public void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
-    {
-      // TODO 3816
-      throw new NotImplementedException ();
-    }
-
     public void RegisterOriginalItemWithoutEndPoint (ObjectID objectID)
     {
-      if (_originalOppositeEndPoint != null)
-        throw new InvalidOperationException ("An original opposite end-point has already been registered.");
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (_originalOppositeObjectID != null)
+        throw new InvalidOperationException ("An original opposite item has already been registered.");
 
       // Only set current value if it hasn't already been set to a different value
       if (!HasDataChanged())
@@ -161,6 +147,38 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       _updateListener.StateUpdated (HasDataChanged());
     }
 
+    void IVirtualEndPointDataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      RegisterOriginalItemWithoutEndPoint (domainObject.ID);
+    }
+
+    public void UnregisterOriginalItemWithoutEndPoint (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (objectID != _originalOppositeObjectID)
+        throw new InvalidOperationException ("Cannot unregister original item, it has not been registered.");
+
+      if (_originalOppositeEndPoint != null)
+        throw new InvalidOperationException ("Cannot unregister original item, an end-point has been registered for it.");
+
+      // Only set current value if it hasn't already been set to a different value
+      if (!HasDataChanged ())
+        _currentOppositeObjectID = null;
+
+      _originalOppositeObjectID = null;
+      _updateListener.StateUpdated (HasDataChanged ());
+    }
+    
+    void IVirtualEndPointDataKeeper.UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      UnregisterOriginalItemWithoutEndPoint (domainObject.ID);
+    }
+    
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -179,6 +197,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         throw new InvalidOperationException ("The opposite end-point has not been registered.");
 
       _currentOppositeEndPoint = null;
+    }
+
+    public bool HasDataChanged ()
+    {
+      return !Equals (CurrentOppositeObjectID, OriginalOppositeObjectID);
     }
 
     public void Commit ()

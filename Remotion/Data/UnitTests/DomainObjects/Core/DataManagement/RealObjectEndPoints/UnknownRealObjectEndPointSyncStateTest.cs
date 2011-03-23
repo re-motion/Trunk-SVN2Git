@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     {
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
         _endPointMock.Expect (mock => mock.IsSynchronized).Return (true);
       }
       _lazyLoaderMock.Replay ();
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     {
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
         _endPointMock.Expect (mock => mock.Synchronize ());
       }
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
         _endPointMock.Expect (mock => mock.CreateDeleteCommand ()).Return(fakeCommand);
       }
       _lazyLoaderMock.Replay ();
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
         _endPointMock.Expect (mock => mock.CreateSetCommand (newRelatedObject)).Return (fakeCommand);
       }
       _lazyLoaderMock.Replay ();
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeEndPoint (_endPointMock));
+        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
         _endPointMock.Expect (mock => mock.CreateSetCommand (null)).Return (fakeCommand);
       }
       _lazyLoaderMock.Replay ();

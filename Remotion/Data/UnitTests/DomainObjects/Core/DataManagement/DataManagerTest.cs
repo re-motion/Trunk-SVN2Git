@@ -1037,12 +1037,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void LoadOppositeEndPoint ()
+    public void LoadOppositeVirtualEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
       objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
@@ -1055,7 +1055,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeEndPointMock.Replay ();
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, oppositeEndPointMock);
 
-      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+      _dataManager.LoadOppositeVirtualEndPoint (objectEndPointStub);
 
       oppositeEndPointMock.VerifyAllExpectations ();
     }
@@ -1063,17 +1063,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The end-point's opposite object is null, so no opposite end-point can be loaded.")]
-    public void LoadOppositeEndPoint_OppositeIsNull ()
+    public void LoadOppositeVirtualEndPoint_OppositeIsNull ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var oppositeEndPointID = RelationEndPointID.Create (null, endPointID.Definition.GetMandatoryOppositeEndPointDefinition ());
 
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
       objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
-      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+      _dataManager.LoadOppositeVirtualEndPoint (objectEndPointStub);
     }
 
     [Test]
@@ -1083,7 +1083,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      var objectEndPointStub = MockRepository.GenerateStub<IObjectEndPoint> ();
+      var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
       objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
@@ -1094,7 +1094,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeEndPointStub.Stub (stub => stub.IsDataComplete).Return (true);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, oppositeEndPointStub);
 
-      _dataManager.LoadOppositeEndPoint (objectEndPointStub);
+      _dataManager.LoadOppositeVirtualEndPoint (objectEndPointStub);
     }
 
     [Test]

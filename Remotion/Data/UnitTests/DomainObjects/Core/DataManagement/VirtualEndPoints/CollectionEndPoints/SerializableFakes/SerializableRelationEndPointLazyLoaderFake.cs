@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       throw new NotImplementedException();
     }
 
-    public void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint)
+    public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
     {
       throw new NotImplementedException();
     }
