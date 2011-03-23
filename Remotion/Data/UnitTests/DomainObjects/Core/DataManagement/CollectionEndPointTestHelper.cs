@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
