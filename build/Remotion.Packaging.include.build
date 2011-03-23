@@ -294,7 +294,7 @@
       <StandardExcludes Include="$(SolutionDirectory)**\_svn\**"/>
 
       <StandardExcludes Include="$(SolutionDirectory)**\*.log" />
-      <StandardExcludes Include="$(SolutionDirectory)**\*.snk" />
+      <StandardExcludes Include="$(SolutionDirectory)**\Remotion.snk" />
       <StandardExcludes Include="$(SolutionDirectory)**\*.suo" />
       <StandardExcludes Include="$(SolutionDirectory)**\*.user" />
     </ItemGroup>

@@ -38,8 +38,7 @@
       <SourceFiles Include="$(SolutionDirectory)prereq\**" Exclude="@(StandardExcludes)" />
       <!--<SourceFiles Include="$(SolutionDirectory)build\*.*" Exclude="@(StandardExcludes)" />-->
       <SourceFiles Include="$(SolutionDirectory)SecurityManager\**"
-                   Exclude="$(SolutionDirectory)SecurityManager\**\bin\**;$(SolutionDirectory)SecurityManager\**\obj\**;@(StandardExcludes)">
-      </SourceFiles>
+                   Exclude="$(SolutionDirectory)SecurityManager\**\bin\**;$(SolutionDirectory)SecurityManager\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
   </Target>
 

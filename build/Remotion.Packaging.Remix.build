@@ -35,12 +35,19 @@
     <ItemGroup>
       <SourceFiles Remove="@(SourceFiles)"/>
       <SourceFiles Include="$(SolutionDirectory)Remotion-Mixins.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Castle.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\log4net.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Microsoft.Practices.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Rhino.Mocks*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\nunit*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\ThirdPartyDependencies.txt" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Tools\FuncGen\**" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Generate-Snk.cmd" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\*.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
-                   Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)">
-      </SourceFiles>
+                   Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
+                   Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
   </Target>
 
