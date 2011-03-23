@@ -988,7 +988,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void LoadLazyCollectionEndPoint ()
+    public void LoadLazyVirtualEndPoint_CollectionEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
@@ -996,6 +996,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
       endPointMock.Stub(stub => stub.IsDataComplete).Return(false);
       endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
@@ -1006,7 +1007,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
-      _dataManagerWitLoaderMock.LoadLazyCollectionEndPoint (endPointMock);
+      _dataManagerWitLoaderMock.LoadLazyVirtualEndPoint (endPointMock);
 
       _objectLoaderMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
@@ -1014,13 +1015,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The given end-point is not managed by this DataManager.\r\nParameter name: collectionEndPoint")]
+        "The given end-point is not managed by this DataManager.\r\nParameter name: virtualEndPoint")]
     public void LoadLazyCollectionEndPoint_NotRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
       
-      _dataManager.LoadLazyCollectionEndPoint (endPoint);
+      _dataManager.LoadLazyVirtualEndPoint (endPoint);
     }
 
     [Test]
@@ -1032,7 +1033,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPoint.MarkDataComplete (new DomainObject[0]);
       Assert.That (endPoint.IsDataComplete, Is.True);
 
-      _dataManager. LoadLazyCollectionEndPoint (endPoint);
+      _dataManager. LoadLazyVirtualEndPoint (endPoint);
     }
 
     [Test]

@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     private ICollectionEndPoint _collectionEndPointMock;
     private IRelationEndPointLazyLoader _lazyLoaderMock;
     private ICollectionEndPointDataKeeper _dataKeeperMock;
-    private ICollectionEndPointDataKeeperFactory _dataKeeperFactoryStub;
+    private IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactoryStub;
 
     private IncompleteCollectionEndPointLoadState _loadState;
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
       _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]).Repeat.Once(); // for ctor called below
 
-      _dataKeeperFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeperFactory>();
+      _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
 
       _loadState = new IncompleteCollectionEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
 
@@ -87,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void EnsureDataComplete ()
     {
-      _lazyLoaderMock.Expect (mock => mock.LoadLazyCollectionEndPoint (_collectionEndPointMock));
+      _lazyLoaderMock.Expect (mock => mock.LoadLazyVirtualEndPoint (_collectionEndPointMock));
       _lazyLoaderMock.Replay();
       _collectionEndPointMock.Replay();
       
@@ -103,14 +104,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       bool stateSetterCalled = false;
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
-      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
       _dataKeeperMock.Replay();
 
       var newKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
       newKeeperMock.Replay();
 
-      _collectionEndPointMock.Replay();
+      _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _collectionEndPointMock.Replay ();
 
       _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
 
@@ -135,12 +136,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
-      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new [] { _relatedEndPointStub });
       _dataKeeperMock.Replay ();
 
       var newKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
 
+      _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       // ReSharper disable AccessToModifiedClosure
       _collectionEndPointMock
           .Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub))
@@ -167,7 +168,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       oppositeEndPointForItem1Mock.Replay ();
 
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
-      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (_endPointID);
       _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { oppositeEndPointForItem1Mock });
       _dataKeeperMock.Replay ();
 
@@ -179,6 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       }
       newKeeperMock.Replay();
 
+      _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _collectionEndPointMock.Replay ();
 
       _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);

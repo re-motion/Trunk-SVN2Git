@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -48,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly IObjectLoader _objectLoader;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ICollectionEndPointDataKeeperFactory _collectionEndPointDataKeeperFactory;
+    private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
@@ -58,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         IObjectLoader objectLoader,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        ICollectionEndPointDataKeeperFactory collectionEndPointDataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
@@ -106,7 +107,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _endPointProvider; }
     }
 
-    public ICollectionEndPointDataKeeperFactory CollectionEndPointDataKeeperFactory
+    public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> CollectionEndPointDataKeeperFactory
     {
       get { return _collectionEndPointDataKeeperFactory; }
     }
@@ -632,7 +633,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
             info.GetValueForHandle<IObjectLoader>(),
             info.GetValueForHandle<IRelationEndPointLazyLoader>(),
             info.GetValueForHandle<IRelationEndPointProvider>(),
-            info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ())
+            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())

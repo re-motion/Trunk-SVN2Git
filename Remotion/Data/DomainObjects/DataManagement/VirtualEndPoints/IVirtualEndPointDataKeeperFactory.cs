@@ -14,13 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints
+namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 {
   /// <summary>
-  /// <see cref="IVirtualObjectEndPointDataKeeperFactory"/> defines the API for all virtual data keeper factories.
+  /// 	<see cref="IVirtualEndPointDataKeeperFactory{TDataKeeper}"/> defines the API for factories for implementations of 
+  ///   <see cref="IVirtualEndPointDataKeeper"/>.
   /// </summary>
-  public interface IVirtualObjectEndPointDataKeeperFactory
+  /// <typeparam name="TDataKeeper">The type of data keeper to create.</typeparam>
+  public interface IVirtualEndPointDataKeeperFactory<TDataKeeper>
+      where TDataKeeper : IVirtualEndPointDataKeeper
   {
-    IVirtualObjectEndPointDataKeeper Create (RelationEndPointID endPointID);
+    TDataKeeper Create (RelationEndPointID endPointID);
   }
 }

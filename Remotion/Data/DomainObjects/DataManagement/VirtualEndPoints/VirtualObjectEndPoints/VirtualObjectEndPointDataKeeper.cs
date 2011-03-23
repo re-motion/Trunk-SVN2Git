@@ -48,6 +48,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       get { return _endPointID; }
     }
 
+    public bool ContainsOriginalObjectID (ObjectID objectID)
+    {
+      // TODO 3816
+      throw new NotImplementedException ();
+    }
+
+    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      // TODO 3816
+      throw new NotImplementedException ();
+    }
+
+    public bool ContainsOriginalItemsWithoutEndPoints ()
+    {
+      // TODO 3816
+      throw new NotImplementedException ();
+    }
+
     public IVirtualEndPointStateUpdateListener UpdateListener
     {
       get { return _updateListener; }
@@ -116,6 +134,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       _currentOppositeObjectID = null;
 
       _updateListener.StateUpdated (false);
+    }
+
+    public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      // TODO 3816
+      throw new NotImplementedException();
+    }
+
+    public void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
+    {
+      // TODO 3816
+      throw new NotImplementedException ();
     }
 
     public void RegisterOriginalItemWithoutEndPoint (ObjectID objectID)

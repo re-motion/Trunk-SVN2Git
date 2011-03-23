@@ -15,49 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
   /// Represents the lazy-loading state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
-  public interface ICollectionEndPointLoadState : IFlattenedSerializable
+  public interface ICollectionEndPointLoadState : 
+      IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>
   {
-    bool IsDataComplete ();
-    void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
-
-    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter);
-    void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
-
-    ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint);
-    ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint);
-    
-    void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
-
-    void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
-
-    bool IsSynchronized (ICollectionEndPoint collectionEndPoint);
-    void Synchronize (ICollectionEndPoint collectionEndPoint);
-
-    void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
     IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter);
     IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject);
     IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint);
     IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index);
     IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject);
     IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject);
-
-    void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint);
-
-    bool HasChanged ();
-
-    void Commit ();
-    void Rollback ();
   }
 }

@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
   /// The <see cref="CollectionEndPointDataKeeperFactory"/> is responsible to create a new <see cref="ICollectionEndPointDataKeeper"/> instance.
   /// </summary>
   [Serializable]
-  public class CollectionEndPointDataKeeperFactory : ICollectionEndPointDataKeeperFactory
+  public class CollectionEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;

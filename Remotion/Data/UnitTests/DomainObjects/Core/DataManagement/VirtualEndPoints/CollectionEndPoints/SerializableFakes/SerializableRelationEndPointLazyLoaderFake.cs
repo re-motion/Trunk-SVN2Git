@@ -27,6 +27,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       throw new NotImplementedException();
     }
 
+    public void LoadLazyVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
     public void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint)
     {
       throw new NotImplementedException();

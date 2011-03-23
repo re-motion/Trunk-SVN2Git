@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
       dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
 
-      var dataKeeperFactoryMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeperFactory> ();
+      var dataKeeperFactoryMock = MockRepository.GenerateMock<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
       dataKeeperFactoryMock
           .Expect (mock => mock.Create (Arg.Is (_customerEndPointID)))
           .Return (dataKeeperStub);
@@ -866,10 +867,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return (IRelationEndPointLazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
     }
 
-    private void AssertDidNotLoadData (CollectionEndPoint collectionEndPoint)
+    private void AssertDidNotLoadData (IVirtualEndPoint virtualEndPoint)
     {
-      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (collectionEndPoint));
-      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
+      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyVirtualEndPoint (virtualEndPoint));
+      Assert.That (virtualEndPoint.IsDataComplete, Is.False);
     }
 
     private CollectionEndPoint CreateEndPointWithLoadStateMock (ICollectionEndPointLoadState loadStateMock)

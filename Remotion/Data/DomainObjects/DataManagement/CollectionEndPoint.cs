@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -33,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
+    private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
     
     private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollection; // keeps the original reference of the _collection for rollback
@@ -46,7 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         RelationEndPointID id,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        ICollectionEndPointDataKeeperFactory dataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
@@ -92,7 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _endPointProvider; }
     }
 
-    public ICollectionEndPointDataKeeperFactory DataKeeperFactory
+    public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> DataKeeperFactory
     {
       get { return _dataKeeperFactory; }
     }
@@ -341,7 +342,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = info.GetBoolValue();
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
-      _dataKeeperFactory = info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ();
+      _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
 
       FixupDomainObjectCollection (_collection);

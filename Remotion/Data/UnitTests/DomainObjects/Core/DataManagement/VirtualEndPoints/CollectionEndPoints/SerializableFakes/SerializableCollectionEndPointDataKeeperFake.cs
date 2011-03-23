@@ -70,9 +70,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       get { throw new NotImplementedException(); }
     }
 
+    public bool ContainsOriginalObjectID (ObjectID objectID)
+    {
+      throw new NotImplementedException();
+    }
+
     public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       return false;
+    }
+
+    public bool ContainsOriginalItemsWithoutEndPoints ()
+    {
+      throw new NotImplementedException();
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)

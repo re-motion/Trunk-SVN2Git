@@ -16,12 +16,13 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes
 {
   [Serializable]
-  public class SerializableCollectionEndPointDataKeeperFactoryFake : ICollectionEndPointDataKeeperFactory
+  public class SerializableCollectionEndPointDataKeeperFactoryFake : IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>
   {
     public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID)
     {

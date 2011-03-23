@@ -14,34 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints
 {
   /// <summary>
   /// Defines an interface for classes storing the data for a <see cref="VirtualObjectEndPoint"/>.
   /// </summary>
-  public interface IVirtualObjectEndPointDataKeeper : IFlattenedSerializable
+  public interface IVirtualObjectEndPointDataKeeper : IVirtualEndPointDataKeeper
   {
-    RelationEndPointID EndPointID { get; }
-
     ObjectID CurrentOppositeObjectID { get; set; }
     ObjectID OriginalOppositeObjectID { get; }
 
     IRealObjectEndPoint CurrentOppositeEndPoint { get; }
     IRealObjectEndPoint OriginalOppositeEndPoint { get; }
-
-    bool HasDataChanged ();
-
-    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void RegisterOriginalItemWithoutEndPoint (ObjectID opppositeEndPoint);
-
-    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void Commit ();
-    void Rollback ();
   }
 }

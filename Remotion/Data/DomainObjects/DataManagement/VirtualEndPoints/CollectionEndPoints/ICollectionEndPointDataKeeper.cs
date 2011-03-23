@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
   /// Defines an interface for classes storing the data for a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public interface ICollectionEndPointDataKeeper : IFlattenedSerializable
+  public interface ICollectionEndPointDataKeeper : IVirtualEndPointDataKeeper
   {
-    RelationEndPointID EndPointID { get; }
-    
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
 
@@ -18,26 +15,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     DomainObject[] OriginalItemsWithoutEndPoints { get; }
     IRealObjectEndPoint[] CurrentOppositeEndPoints { get; }
 
-    bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    bool ContainsCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
-    void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-    void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
-
     bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject);
 
-    void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject);
-    void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject);
-    
-    bool HasDataChanged ();
-
     void SortCurrentAndOriginalData (IComparer<DomainObject> comparer);
-
-    void Commit ();
-    void Rollback ();
   }
 }

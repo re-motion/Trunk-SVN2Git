@@ -17,11 +17,8 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Logging;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints
 {
@@ -29,179 +26,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
   /// Represents the state of a <see cref="CollectionEndPoint"/> where not all of its data is available (ie., the end-point has not been (lazily) 
   /// loaded, or it has been unloaded).
   /// </summary>
-  public class IncompleteCollectionEndPointLoadState : ICollectionEndPointLoadState
+  public class IncompleteCollectionEndPointLoadState 
+      : IncompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>,
+        ICollectionEndPointLoadState
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
-
-    private readonly ICollectionEndPointDataKeeper _dataKeeper;
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
-    private readonly ICollectionEndPointDataKeeperFactory _dataKeeperFactory;
-
     public IncompleteCollectionEndPointLoadState (
         ICollectionEndPointDataKeeper dataKeeper, 
         IRelationEndPointLazyLoader lazyLoader, 
-        ICollectionEndPointDataKeeperFactory dataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
+        : base(dataKeeper, lazyLoader, dataKeeperFactory)
     {
-      ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
-      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
-
-      _dataKeeper = dataKeeper;
-      _lazyLoader = lazyLoader;
-      _dataKeeperFactory = dataKeeperFactory;
-      
-      foreach (var originalOppositeEndPoint in dataKeeper.OriginalOppositeEndPoints)
-        originalOppositeEndPoint.ResetSyncState ();
-    }
-
-    public ICollectionEndPointDataKeeper DataKeeper
-    {
-      get { return _dataKeeper; }
-    }
-
-    public IRelationEndPointLazyLoader LazyLoader
-    {
-      get { return _lazyLoader; }
-    }
-
-    public ICollectionEndPointDataKeeperFactory DataKeeperFactory
-    {
-      get { return _dataKeeperFactory; }
-    }
-
-    public bool IsDataComplete ()
-    {
-      return false;
-    }
-
-    public void EnsureDataComplete (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      _lazyLoader.LoadLazyCollectionEndPoint (collectionEndPoint);
-    }
-
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("items", items);
-      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-
-      Assertion.IsFalse (
-          _dataKeeper.HasDataChanged(), 
-          "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
-
-      if (s_log.IsInfoEnabled)
-        s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", collectionEndPoint.ID);
-      
-      var newDataKeeper = _dataKeeperFactory.Create (_dataKeeper.EndPointID);
-      var originalOppositeEndPoints = _dataKeeper.OriginalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
-
-      foreach (var item in items)
-      {
-        IRealObjectEndPoint oppositeEndPoint;
-        if (originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
-        {
-          newDataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-          oppositeEndPoint.MarkSynchronized();
-          originalOppositeEndPoints.Remove (item.ID);
-        }
-        else
-        {
-          newDataKeeper.RegisterOriginalItemWithoutEndPoint (item);
-
-          if (s_log.IsWarnEnabled)
-          {
-            s_log.WarnFormat ("CollectionEndPoint '{0}' contains an item without an opposite end-point: '{1}'. The CollectionEndPoint is out-of-sync.", 
-              collectionEndPoint.ID,
-              item.ID);
-          }
-        }
-      }
-
-      stateSetter (newDataKeeper);
-
-      foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)
-        collectionEndPoint.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem);
-    }
-
-    public void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-
-      throw new InvalidOperationException ("The data is already incomplete.");
-    }
-
-    public ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.GetCollectionData();
-    }
-
-    public ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.GetOriginalCollectionData ();
-    }
-
-    public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-      oppositeEndPoint.ResetSyncState ();
-    }
-
-    public void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
-    }
-
-    public void RegisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      collectionEndPoint.EnsureDataComplete();
-      collectionEndPoint.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
-    }
-
-    public void UnregisterCurrentOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      collectionEndPoint.EnsureDataComplete();
-      collectionEndPoint.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
-    }
-
-    public bool IsSynchronized (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.IsSynchronized;
-    }
-
-    public void Synchronize (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      collectionEndPoint.Synchronize();
-    }
-
-    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      throw new InvalidOperationException ("Cannot synchronize an opposite end-point with a collection end-point in incomplete state.");
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
@@ -257,46 +91,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
 
-    public void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
+    protected override void ResetSyncStateForAllOriginalOppositeEndPoints ()
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
-
-      collectionEndPoint.EnsureDataComplete ();
-      collectionEndPoint.SetValueFrom (sourceEndPoint);
+      foreach (var originalOppositeEndPoint in DataKeeper.OriginalOppositeEndPoints)
+        originalOppositeEndPoint.ResetSyncState ();
     }
 
-    public bool HasChanged ()
+    protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
-      return _dataKeeper.HasDataChanged ();
+      return DataKeeper.OriginalOppositeEndPoints;
     }
 
-    public void Commit ()
+    protected override ReadOnlyCollectionDataDecorator GetOriginalDataFromEndPoint (ICollectionEndPoint collectionEndPoint)
     {
-      _dataKeeper.Commit ();
+      return collectionEndPoint.GetOriginalCollectionData ();
     }
 
-    public void Rollback ()
+    protected override ReadOnlyCollectionDataDecorator GetDataFromEndPoint (ICollectionEndPoint collectionEndPoint)
     {
-      _dataKeeper.Rollback();
+      return collectionEndPoint.GetCollectionData ();
     }
 
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
+        : base (info)
     {
-      ArgumentUtility.CheckNotNull ("info", info);
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
-      _dataKeeper = info.GetValueForHandle<ICollectionEndPointDataKeeper> ();
-      _dataKeeperFactory = info.GetValueForHandle<ICollectionEndPointDataKeeperFactory> ();
-    }
-
-    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_lazyLoader);
-      info.AddHandle (_dataKeeper);
-      info.AddHandle (_dataKeeperFactory);
     }
 
     #endregion

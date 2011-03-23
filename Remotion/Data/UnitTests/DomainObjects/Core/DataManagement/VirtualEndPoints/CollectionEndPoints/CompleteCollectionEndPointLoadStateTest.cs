@@ -184,8 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointMock.Expect (mock => mock.MarkUnsynchronized());
       endPointMock.Replay();
 
-      var existingItems = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (new ReadOnlyCollectionDataDecorator (existingItems, false));
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
       _dataKeeperMock.Replay();
 
       _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointMock);
@@ -205,8 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointMock.Expect (mock => mock.MarkSynchronized());
       endPointMock.Replay ();
 
-      var existingItems = new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1) });
-      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (new ReadOnlyCollectionDataDecorator (existingItems, false));
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (true);
       _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       _dataKeeperMock.Replay ();
 
@@ -285,21 +283,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void IsSynchronized_True ()
     {
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
-
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints ()).Return (false);
       _collectionEndPointMock.Replay ();
 
-      Assert.That (_loadState.IsSynchronized (_collectionEndPointMock), Is.True);
+      var result = _loadState.IsSynchronized (_collectionEndPointMock);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
     public void IsSynchronized_False ()
     {
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[] { _relatedObject });
-
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints()).Return (true);
       _collectionEndPointMock.Replay ();
 
-      Assert.That (_loadState.IsSynchronized (_collectionEndPointMock), Is.False);
+      var result = _loadState.IsSynchronized (_collectionEndPointMock);
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointMock.Expect (mock => mock.MarkSynchronized ());
       endPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData(), false));
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
       _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       _dataKeeperMock.Replay ();
 
@@ -898,7 +898,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (result.DataKeeper, Is.Not.Null);
       Assert.That (result.ClientTransaction, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
-      Assert.That (result.UnsynchronizedOppositeEndPoints.Length, Is.EqualTo (1));
+      Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }
 
     private void AddUnsynchronizedOppositeEndPoint (CompleteCollectionEndPointLoadState loadState, IRealObjectEndPoint oppositeEndPoint)

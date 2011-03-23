@@ -93,11 +93,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       get { return _originalItemsWithoutEndPoint.ToArray(); }
     }
 
+    public bool ContainsOriginalObjectID (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      return OriginalCollectionData.ContainsObjectID (objectID);
+    }
+
     public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       return _originalOppositeEndPoints.Contains (oppositeEndPoint);
+    }
+
+    public bool ContainsOriginalItemsWithoutEndPoints ()
+    {
+      return _originalItemsWithoutEndPoint.Any();
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)

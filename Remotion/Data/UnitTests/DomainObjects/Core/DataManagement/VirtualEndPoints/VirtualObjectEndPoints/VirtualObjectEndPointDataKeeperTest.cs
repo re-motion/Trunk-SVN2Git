@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.Null);
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.Null);
 
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (null);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint ((ObjectID) null);
 
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);

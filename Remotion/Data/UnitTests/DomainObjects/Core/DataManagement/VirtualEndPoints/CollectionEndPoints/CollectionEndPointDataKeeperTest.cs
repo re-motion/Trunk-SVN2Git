@@ -103,6 +103,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void ContainsOriginalObjectID ()
+    {
+      Assert.That (_dataKeeper.ContainsOriginalObjectID (_domainObject1.ID), Is.False);
+
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject1);
+
+      Assert.That (_dataKeeper.ContainsOriginalObjectID (_domainObject1.ID), Is.True);
+    }
+
+    [Test]
     public void ContainsOriginalOppositeEndPoint ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint(_domainObject1);
@@ -112,6 +122,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
 
       Assert.That (_dataKeeper.ContainsOriginalOppositeEndPoint (oppositeEndPoint), Is.True);
+    }
+
+    [Test]
+    public void ContainsOriginalItemsWithoutEndPoints ()
+    {
+      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints(), Is.False);
+
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject1);
+
+      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints (), Is.True);
+
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject1);
+
+      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints (), Is.False);
     }
 
     [Test]

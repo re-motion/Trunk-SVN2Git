@@ -277,19 +277,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return DataContainerMap[id];
     }
 
-    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
+   public void LoadLazyVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("virtualEndPoint", virtualEndPoint);
 
-      if (collectionEndPoint != _relationEndPointMap[collectionEndPoint.ID])
-        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
+      Assertion.IsTrue (virtualEndPoint.Definition.Cardinality == CardinalityType.Many);
 
-      if (collectionEndPoint.IsDataComplete)
+      if (virtualEndPoint != _relationEndPointMap[virtualEndPoint.ID])
+        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "virtualEndPoint");
+
+      if (virtualEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObjects = _objectLoader.LoadRelatedObjects (collectionEndPoint.ID, this);
-      _relationEndPointMap.MarkCollectionEndPointComplete (collectionEndPoint.ID, domainObjects);
-
+      var domainObjects = _objectLoader.LoadRelatedObjects (virtualEndPoint.ID, this);
+      _relationEndPointMap.MarkCollectionEndPointComplete (virtualEndPoint.ID, domainObjects);
     }
 
     public void LoadOppositeEndPoint (IObjectEndPoint objectEndPoint)
