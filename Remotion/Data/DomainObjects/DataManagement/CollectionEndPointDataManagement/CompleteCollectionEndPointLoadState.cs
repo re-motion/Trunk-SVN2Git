@@ -71,6 +71,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       get { return _clientTransaction; }
     }
 
+    public IRealObjectEndPoint[] UnsynchronizedOppositeEndPoints
+    {
+      get { return _unsynchronizedOppositeEndPoints.Values.ToArray (); }
+    }
+
     public bool IsDataComplete ()
     {
       return true;
@@ -234,11 +239,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
 
       foreach (var item in _dataKeeper.OriginalItemsWithoutEndPoints)
         _dataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
-    }
-
-    public IRealObjectEndPoint[] UnsynchronizedOppositeEndPoints
-    {
-      get { return _unsynchronizedOppositeEndPoints.Values.ToArray(); }
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)

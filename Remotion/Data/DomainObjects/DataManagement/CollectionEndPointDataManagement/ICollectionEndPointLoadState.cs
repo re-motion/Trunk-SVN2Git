@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
 
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
+    // TODO 3816: Move implementation to CollectionEndPoint (from CompleteCollectionEndPointLoadState, use GetCollectionData instead of DataKeeper)
     IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint);
 
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
@@ -56,6 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject);
 
     void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint);
+    // TODO 3816: Move implementation to CollectionEndPoint (from CompleteCollectionEndPointLoadState, use GetCollectionData instead of DataKeeper)
     void CheckMandatory (ICollectionEndPoint collectionEndPoint);
 
     bool HasChanged ();
