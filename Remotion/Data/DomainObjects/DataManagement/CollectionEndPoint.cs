@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;

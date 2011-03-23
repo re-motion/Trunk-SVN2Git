@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;

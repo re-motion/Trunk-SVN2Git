@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [Serializable]
   public class FakeVirtualEndPointStateUpdateListener : IVirtualEndPointStateUpdateListener

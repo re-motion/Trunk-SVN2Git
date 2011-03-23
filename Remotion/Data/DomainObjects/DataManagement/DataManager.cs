@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;

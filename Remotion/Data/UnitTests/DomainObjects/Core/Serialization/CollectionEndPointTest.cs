@@ -22,7 +22,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;

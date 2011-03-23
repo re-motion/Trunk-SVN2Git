@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Development.UnitTesting;

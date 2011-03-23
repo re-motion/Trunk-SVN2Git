@@ -16,7 +16,7 @@
 // 
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.CollectionEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
