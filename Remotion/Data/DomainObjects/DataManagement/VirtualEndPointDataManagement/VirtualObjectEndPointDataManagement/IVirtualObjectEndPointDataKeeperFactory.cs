@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.VirtualObjectEndPointDataManagement
 {
   /// <summary>
   /// <see cref="IVirtualObjectEndPointDataKeeperFactory"/> defines the API for all virtual data keeper factories.

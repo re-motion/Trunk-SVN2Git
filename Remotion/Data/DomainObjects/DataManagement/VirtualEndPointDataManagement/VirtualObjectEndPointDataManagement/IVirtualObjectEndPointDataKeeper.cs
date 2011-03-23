@@ -16,7 +16,7 @@
 // 
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
-namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPointDataManagement.VirtualObjectEndPointDataManagement
 {
   /// <summary>
   /// Defines an interface for classes storing the data for a <see cref="VirtualObjectEndPoint"/>.

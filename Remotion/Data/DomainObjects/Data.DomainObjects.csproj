@@ -173,8 +173,8 @@
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\CopyOnWriteDomainObjectCollectionData.cs" />
-    <Compile Include="DataManagement\VirtualEndPointDataManagement\IVirtualObjectEndPointDataKeeper.cs" />
-    <Compile Include="DataManagement\VirtualEndPointDataManagement\IVirtualObjectEndPointDataKeeperFactory.cs" />
+    <Compile Include="DataManagement\VirtualEndPointDataManagement\VirtualObjectEndPointDataManagement\IVirtualObjectEndPointDataKeeper.cs" />
+    <Compile Include="DataManagement\VirtualEndPointDataManagement\VirtualObjectEndPointDataManagement\IVirtualObjectEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\VirtualEndPointDataManagement\VirtualObjectEndPointDataManagement\VirtualObjectEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\VirtualEndPointDataManagement\VirtualObjectEndPointDataManagement\VirtualObjectEndPointDataKeeperFactory.cs" />
     <Compile Include="DataManagement\VirtualEndPointStateUpdateListener.cs" />
