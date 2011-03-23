@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RealObjectEndPointDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 

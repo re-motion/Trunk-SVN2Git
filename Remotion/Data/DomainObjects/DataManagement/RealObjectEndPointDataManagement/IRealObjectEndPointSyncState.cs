@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
-namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPointDataManagement
 {
   /// <summary>
   /// Represents the synchronization state of an <see cref="IObjectEndPoint"/> with the opposite <see cref="IRelationEndPoint"/>, and implements 

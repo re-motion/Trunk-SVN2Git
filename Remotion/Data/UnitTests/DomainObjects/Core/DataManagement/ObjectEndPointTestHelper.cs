@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RealObjectEndPointDataManagement;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement

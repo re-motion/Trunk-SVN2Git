@@ -228,9 +228,9 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\MandatoryRelationNotSetExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullVirtualObjectEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncStateTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnknownRealObjectEndPointSyncStateTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointDataManagement\UnsynchronizedRealObjectEndPointSyncStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointDataManagement\UnknownRealObjectEndPointSyncStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointDataManagement\UnsynchronizedRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointMapTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableObjectEndPoint.cs" />

@@ -191,10 +191,10 @@
     <Compile Include="DataManagement\IRelationEndPointProvider.cs" />
     <Compile Include="DataManagement\IVirtualEndPoint.cs" />
     <Compile Include="DataManagement\NullVirtualObjectEndPoint.cs" />
-    <Compile Include="DataManagement\ObjectEndPointDataManagement\IRealObjectEndPointSyncState.cs" />
-    <Compile Include="DataManagement\ObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncState.cs" />
-    <Compile Include="DataManagement\ObjectEndPointDataManagement\UnknownRealObjectEndPointSyncState.cs" />
-    <Compile Include="DataManagement\ObjectEndPointDataManagement\UnsynchronizedRealObjectEndPointSyncState.cs" />
+    <Compile Include="DataManagement\RealObjectEndPointDataManagement\IRealObjectEndPointSyncState.cs" />
+    <Compile Include="DataManagement\RealObjectEndPointDataManagement\SynchronizedRealObjectEndPointSyncState.cs" />
+    <Compile Include="DataManagement\RealObjectEndPointDataManagement\UnknownRealObjectEndPointSyncState.cs" />
+    <Compile Include="DataManagement\RealObjectEndPointDataManagement\UnsynchronizedRealObjectEndPointSyncState.cs" />
     <Compile Include="DomainImplementation\BidirectionalRelationSyncService.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />

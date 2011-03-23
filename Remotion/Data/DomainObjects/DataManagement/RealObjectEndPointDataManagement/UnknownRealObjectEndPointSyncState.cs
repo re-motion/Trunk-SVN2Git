@@ -15,24 +15,49 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Logging;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPointDataManagement
 {
   /// <summary>
-  /// Represents the state of an <see cref="IObjectEndPoint"/> that is not synchronized with the opposite <see cref="IRelationEndPoint"/>.
+  /// Represents the synchronization state of an <see cref="ObjectEndPoint"/> whose opposite end-point is not loaded/complete yet.
+  /// In this case, the synchronization state is unknown until the opposite end-point is loaded. Any access to the sync state will cause the
+  /// opposite end-point to be loaded.
   /// </summary>
-  public class UnsynchronizedRealObjectEndPointSyncState : IRealObjectEndPointSyncState
+  public class UnknownRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
-    public UnsynchronizedRealObjectEndPointSyncState ()
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+
+    private readonly IRelationEndPointLazyLoader _lazyLoader;
+
+    public UnknownRealObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
     {
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+
+      _lazyLoader = lazyLoader;
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
     }
 
     public bool IsSynchronized (IRealObjectEndPoint endPoint)
     {
-      return false;
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (s_log.IsWarnEnabled)
+      {
+        s_log.WarnFormat (
+            "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
+      }
+
+      _lazyLoader.LoadOppositeEndPoint (endPoint);
+
+      return endPoint.IsSynchronized;
     }
 
     public void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint)
@@ -40,7 +65,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      oppositeEndPoint.SynchronizeOppositeEndPoint (endPoint);
+      _lazyLoader.LoadOppositeEndPoint (endPoint);
+
+      endPoint.Synchronize();
     }
 
     public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
@@ -48,14 +75,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      throw new InvalidOperationException (
-          string.Format (
-              "The domain object '{0}' cannot be deleted because its relation property '{1}' is out of sync with the opposite property '{2}'. "
-              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method "
-              + "on the '{1}' property.",
-              endPoint.ObjectID,
-              endPoint.Definition.PropertyName,
-              endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
+      _lazyLoader.LoadOppositeEndPoint (endPoint);
+
+      return endPoint.CreateDeleteCommand();
     }
 
     public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -63,28 +85,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      throw new InvalidOperationException (
-          string.Format (
-              "The relation property '{0}' of object '{1}' cannot be changed because it is out of sync with the opposite property '{2}'. "
-              + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method "
-              + "on the '{0}' property.",
-              endPoint.Definition.PropertyName,
-              endPoint.ObjectID,
-              endPoint.Definition.GetOppositeEndPointDefinition ().PropertyName));
+      _lazyLoader.LoadOppositeEndPoint (endPoint);
+
+      return endPoint.CreateSetCommand (newRelatedObject);
     }
 
     #region Serialization
 
-    public UnsynchronizedRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    public UnknownRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      info.AddHandle (_lazyLoader);
     }
 
-    #endregion Serialization
+    #endregion
   }
 }

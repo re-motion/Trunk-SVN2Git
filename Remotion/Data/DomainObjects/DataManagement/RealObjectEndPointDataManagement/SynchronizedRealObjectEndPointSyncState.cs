@@ -15,49 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Logging;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPointDataManagement
 {
   /// <summary>
-  /// Represents the synchronization state of an <see cref="ObjectEndPoint"/> whose opposite end-point is not loaded/complete yet.
-  /// In this case, the synchronization state is unknown until the opposite end-point is loaded. Any access to the sync state will cause the
-  /// opposite end-point to be loaded.
+  /// Represents the state of an <see cref="IObjectEndPoint"/> that is synchronized with the opposite <see cref="IRelationEndPoint"/>.
   /// </summary>
-  public class UnknownRealObjectEndPointSyncState : IRealObjectEndPointSyncState
+  public class SynchronizedRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
+    private readonly IRelationEndPointProvider _endPointProvider;
 
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
-
-    public UnknownRealObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
+    public SynchronizedRealObjectEndPointSyncState(IRelationEndPointProvider endPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
-      _lazyLoader = lazyLoader;
+      _endPointProvider = endPointProvider;
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public IRelationEndPointProvider EndPointProvider
     {
-      get { return _lazyLoader; }
+      get { return _endPointProvider; }
     }
 
     public bool IsSynchronized (IRealObjectEndPoint endPoint)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (s_log.IsWarnEnabled)
-      {
-        s_log.WarnFormat (
-            "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
-      }
-
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
-
-      return endPoint.IsSynchronized;
+      return true;
     }
 
     public void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint)
@@ -65,9 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
-
-      endPoint.Synchronize();
+      // nothing to do here - the end-point is already syncrhonized
     }
 
     public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
@@ -75,9 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
-
-      return endPoint.CreateDeleteCommand();
+      return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
     }
 
     public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -85,23 +67,33 @@ namespace Remotion.Data.DomainObjects.DataManagement.ObjectEndPointDataManagemen
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      _lazyLoader.LoadOppositeEndPoint (endPoint);
+      var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      return endPoint.CreateSetCommand (newRelatedObject);
+      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
+      if (endPoint.OppositeObjectID == newRelatedObjectID)
+        return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectIDSetter);
+      else if (oppositeEndPointDefinition.IsAnonymous)
+        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
+      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
+        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
+      else
+        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
     }
 
     #region Serialization
 
-    public UnknownRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
+    public SynchronizedRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
+
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_lazyLoader);
+
+      info.AddHandle (_endPointProvider);
     }
 
     #endregion
