@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       // Data is already complete
     }
 
-    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter)
+    public void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);

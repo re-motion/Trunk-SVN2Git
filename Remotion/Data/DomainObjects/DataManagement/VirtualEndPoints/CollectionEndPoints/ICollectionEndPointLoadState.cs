@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     bool IsDataComplete ();
     void EnsureDataComplete (ICollectionEndPoint collectionEndPoint);
 
-    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, DomainObject[] items, Action<ICollectionEndPointDataKeeper> stateSetter);
+    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter);
     void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
     ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint);
