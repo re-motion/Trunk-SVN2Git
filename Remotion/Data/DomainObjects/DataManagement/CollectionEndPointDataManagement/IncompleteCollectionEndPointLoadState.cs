@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -146,14 +145,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
       
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.GetCollectionWithOriginalData();
-    }
-
-    public IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.GetOppositeRelationEndPointIDs ();
     }
 
     public void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint)

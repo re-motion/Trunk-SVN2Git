@@ -794,17 +794,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
     
     [Test]
-    public void GetOppositeRelationEndPointsIDs ()
+    public void GetOppositeRelationEndPointIDs ()
     {
-      var fakeResult = new RelationEndPointID[0];
+      var relatedObject1 = DomainObjectMother.CreateFakeObject<Order> ();
+      var relatedObject2 = DomainObjectMother.CreateFakeObject<Order> ();
+      var collectionData = new DomainObjectCollectionData (new[] { relatedObject1, relatedObject2 });
 
-      _loadStateMock.Expect (mock => mock.GetOppositeRelationEndPointIDs (_endPointWithLoadStateMock)).Return (fakeResult);
-      _loadStateMock.Replay ();
+      _loadStateMock.Stub (stub => stub.GetCollectionData (_endPointWithLoadStateMock)).Return (new ReadOnlyCollectionDataDecorator (collectionData, false));
+      _loadStateMock.Replay();
 
-      var result = _endPointWithLoadStateMock.GetOppositeRelationEndPointIDs ();
+      var oppositeEndPoints = _endPointWithLoadStateMock.GetOppositeRelationEndPointIDs ().ToArray ();
 
-      _loadStateMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeResult));
+      var expectedOppositeEndPointID1 = RelationEndPointID.Create (relatedObject1.ID, typeof (Order).FullName + ".Customer");
+      var expectedOppositeEndPointID2 = RelationEndPointID.Create (relatedObject2.ID, typeof (Order).FullName + ".Customer");
+      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedOppositeEndPointID1, expectedOppositeEndPointID2 }));
     }
     
     [Test]

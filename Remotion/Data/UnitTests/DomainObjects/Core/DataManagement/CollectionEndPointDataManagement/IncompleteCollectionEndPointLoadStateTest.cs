@@ -216,15 +216,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOppositeRelationEndPointIDs ()
-    {
-      CheckOperationDelegatesToCompleteState(
-          s => s.GetOppositeRelationEndPointIDs (_collectionEndPointMock),
-          s => s.GetOppositeRelationEndPointIDs (),
-          new RelationEndPointID[0]);
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();

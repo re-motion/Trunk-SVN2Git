@@ -183,23 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionEn
     }
 
     [Test]
-    public void GetOppositeRelationEndPointIDs ()
-    {
-      var relatedObject1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var relatedObject2 = DomainObjectMother.CreateFakeObject<Order> ();
-      var collectionData = new DomainObjectCollectionData (new[] { relatedObject1, relatedObject2 });
-
-      _collectionEndPointMock.Stub (stub => stub.Definition).Return (_definition);
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionData);
-
-      var oppositeEndPoints = _loadState.GetOppositeRelationEndPointIDs (_collectionEndPointMock).ToArray ();
-
-      var expectedOppositeEndPointID1 = RelationEndPointID.Create (relatedObject1.ID, typeof (Order).FullName + ".Customer");
-      var expectedOppositeEndPointID2 = RelationEndPointID.Create (relatedObject2.ID, typeof (Order).FullName + ".Customer");
-      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expectedOppositeEndPointID1, expectedOppositeEndPointID2 }));
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint_WithoutExistingItem ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();

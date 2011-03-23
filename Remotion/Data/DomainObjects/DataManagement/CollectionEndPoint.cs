@@ -294,7 +294,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
     {
-      return _loadState.GetOppositeRelationEndPointIDs (this);
+      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
+
+      Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
+
+      return from oppositeDomainObject in _loadState.GetCollectionData (this)
+             select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 
     private void RaiseStateUpdateNotification (bool hasChanged)

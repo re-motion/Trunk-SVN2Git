@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -33,10 +32,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionEndPointDataManag
     void MarkDataIncomplete (ICollectionEndPoint collectionEndPoint, Action<ICollectionEndPointDataKeeper> stateSetter);
 
     ReadOnlyCollectionDataDecorator GetCollectionData (ICollectionEndPoint collectionEndPoint);
-
+    // TODO 3816: Refactor to match GetCollectionData
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint collectionEndPoint);
-    // TODO 3816: Move implementation to CollectionEndPoint (from CompleteCollectionEndPointLoadState, use GetCollectionData instead of DataKeeper)
-    IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs (ICollectionEndPoint collectionEndPoint);
 
     void RegisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (ICollectionEndPoint collectionEndPoint, IRealObjectEndPoint oppositeEndPoint);
