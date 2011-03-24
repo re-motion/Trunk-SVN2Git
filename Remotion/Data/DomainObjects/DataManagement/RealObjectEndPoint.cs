@@ -159,6 +159,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (HasChanged);
     }
 
+    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
+
+      OppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+    }
+
     #region Serialization
     protected RealObjectEndPoint (FlattenedDeserializationInfo info)
       : base (info)
@@ -175,5 +182,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_syncState);
     }
     #endregion
+
   }
 }

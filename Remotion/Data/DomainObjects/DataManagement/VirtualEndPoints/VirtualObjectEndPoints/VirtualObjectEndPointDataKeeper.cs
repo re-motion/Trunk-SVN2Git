@@ -78,6 +78,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       get { return _originalOppositeEndPoint; }
     }
 
+    public DomainObject OriginalItemWithoutEndPoint
+    {
+      get { throw new NotImplementedException("TODO 3817"); }
+    }
+
     public bool ContainsOriginalObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -90,11 +95,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       return _originalOppositeEndPoint == oppositeEndPoint;
-    }
-
-    public bool ContainsOriginalItemsWithoutEndPoints ()
-    {
-      return _originalOppositeObjectID != null && _originalOppositeEndPoint == null;
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)

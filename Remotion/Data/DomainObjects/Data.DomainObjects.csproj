@@ -178,6 +178,7 @@
     <Compile Include="DataManagement\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\CompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\IVirtualEndPointDataKeeper.cs" />
+    <Compile Include="DataManagement\VirtualEndPoints\VirtualObjectEndPoints\CompleteVirtualObjectEndPointLoadState.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointLoadState.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\VirtualObjectEndPoints\VirtualObjectEndPointDataKeeper.cs" />

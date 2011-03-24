@@ -155,16 +155,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
     
     [Test]
-    public void SetValueFrom_SetsOppositeObjectID ()
+    public void SetValueFrom_SetsOppositeObjectID_IfIDsDiffer ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
-      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket2);
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
+
+      _endPoint.ExpectSetOppositeObjectIDValueFrom();
 
       _endPoint.SetValueFrom (source);
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
       Assert.That (_endPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void SetValueFrom_LeavesOppositeObjectID_IfIDsEqual ()
+    {
+      var sourceID = RelationEndPointID.Create (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket1);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+
+      _endPoint.ExpectNotSetOppositeObjectIDValueFrom ();
+      
+      _endPoint.SetValueFrom (source);
+
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (_endPoint.HasChanged, Is.False);
     }
 
     [Test]
@@ -204,6 +221,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
       Assert.That (source.HasBeenTouched, Is.False);
+
+      _endPoint.ExpectSetOppositeObjectIDValueFrom ();
 
       _endPoint.SetValueFrom (source);
 

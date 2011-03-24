@@ -52,26 +52,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return DataKeeper.OriginalCollectionData;
     }
 
-    public override void Synchronize (ICollectionEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (Log.IsDebugEnabled)
-        Log.DebugFormat ("End-point '{0}' is synchronized.", endPoint.ID);
-
-      foreach (var item in DataKeeper.OriginalItemsWithoutEndPoints)
-        DataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
-    }
-
     public override void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
       DataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
-
-      if (sourceEndPoint.HasBeenTouched || collectionEndPoint.HasChanged)
-        collectionEndPoint.Touch ();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (
@@ -192,6 +178,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
       return DataKeeper.OriginalOppositeEndPoints;
+    }
+
+    protected override IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ()
+    {
+      return DataKeeper.OriginalItemsWithoutEndPoints;
     }
 
     protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()

@@ -52,6 +52,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; protected set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
+    protected abstract void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint);
+
     public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
 
     public DomainObject GetOppositeObject (bool includeDeleted)
@@ -116,7 +118,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetCommand (null);
     }
 
-    public override void SetValueFrom (IRelationEndPoint source)
+    public override sealed void SetValueFrom (IRelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
 
@@ -128,15 +130,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      // ReSharper disable RedundantCheckBeforeAssignment
       if (OppositeObjectID != sourceObjectEndPoint.OppositeObjectID)
-        OppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
-      // ReSharper restore RedundantCheckBeforeAssignment
+        SetOppositeObjectIDValueFrom (sourceObjectEndPoint);
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch();
     }
-
+    
     public RelationEndPointID GetOppositeRelationEndPointID ()
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition();

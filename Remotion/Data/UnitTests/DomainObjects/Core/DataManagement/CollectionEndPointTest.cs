@@ -469,12 +469,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
+      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Expect (mock => mock.SetValueFrom (_endPointWithLoadStateMock, source));
       _loadStateMock.Replay ();
 
       _endPointWithLoadStateMock.SetValueFrom (source);
 
       _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void SetValueFrom_TouchesEndPoint_WhenSourceHasBeenTouched ()
+    {
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      sourceEndPointStub.Stub (stub => stub.Definition).Return (_customerEndPointID.Definition);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
+
+      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.SetValueFrom (_endPointWithLoadStateMock, sourceEndPointStub));
+      _loadStateMock.Replay ();
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
+
+      _endPointWithLoadStateMock.SetValueFrom (sourceEndPointStub);
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void SetValueFrom_TouchesEndPoint_WhenTargetHasChanged ()
+    {
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      sourceEndPointStub.Stub (stub => stub.Definition).Return (_customerEndPointID.Definition);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
+
+      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
+      _loadStateMock.Stub (stub => stub.SetValueFrom (_endPointWithLoadStateMock, sourceEndPointStub));
+      _loadStateMock.Replay ();
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
+
+      _endPointWithLoadStateMock.SetValueFrom (sourceEndPointStub);
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void SetValueFrom_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
+    {
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      sourceEndPointStub.Stub (stub => stub.Definition).Return (_customerEndPointID.Definition);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
+
+      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.SetValueFrom (_endPointWithLoadStateMock, sourceEndPointStub));
+      _loadStateMock.Replay();
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
+
+      _endPointWithLoadStateMock.SetValueFrom (sourceEndPointStub);
+
+      Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
     }
 
     [Test]

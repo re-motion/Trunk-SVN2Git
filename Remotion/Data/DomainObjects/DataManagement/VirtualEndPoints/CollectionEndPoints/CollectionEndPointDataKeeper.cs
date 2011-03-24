@@ -107,11 +107,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return _originalOppositeEndPoints.Contains (oppositeEndPoint);
     }
 
-    public bool ContainsOriginalItemsWithoutEndPoints ()
-    {
-      return _originalItemsWithoutEndPoint.Any();
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);

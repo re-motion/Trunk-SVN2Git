@@ -298,5 +298,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.False);
       Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
     }
+
+    [Test]
+    public void SetOppositeObjectIDValueFrom ()
+    {
+      var source = MockRepository.GenerateStub<IObjectEndPoint>();
+      source.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Order2);
+
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", source);
+
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.HasChanged, Is.True);
+    }
   }
 }

@@ -26,6 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
   public class TestableCompleteVirtualEndPointLoadState : CompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>
   {
     private IRealObjectEndPoint[] _stubbedOriginalOppositeEndPoints;
+    private DomainObject[] _stubbedOriginalItemsWithoutEndPoints;
 
     public TestableCompleteVirtualEndPointLoadState (IVirtualEndPointDataKeeper dataKeeper, IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
         : base(dataKeeper, endPointProvider, clientTransaction)
@@ -52,14 +53,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _stubbedOriginalOppositeEndPoints = originalOppositeEndPoints;
     }
 
-    public override void Synchronize (IVirtualEndPoint<object> endPoint)
+    public void StubOriginalItemsWithoutEndPoints (DomainObject[] items)
     {
-      throw new NotImplementedException();
+      _stubbedOriginalItemsWithoutEndPoints = items;
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
       return _stubbedOriginalOppositeEndPoints;
+    }
+
+    protected override IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ()
+    {
+      return _stubbedOriginalItemsWithoutEndPoints;
     }
 
     protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()
@@ -75,6 +81,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     #endregion
-
   }
 }

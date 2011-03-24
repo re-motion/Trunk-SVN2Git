@@ -310,6 +310,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
 
+    [Test]
+    public void SetOppositeObjectIDValueFrom ()
+    {
+      var sourceID = RelationEndPointID.Create (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", source);
+
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.HasChanged, Is.True);
+    }
+
     private void CheckOppositeObjectIDSetter (RelationEndPointModificationCommand command, VirtualObjectEndPoint endPoint)
     {
       var oppositeObjectIDSetter = GetOppositeObjectIDSetter (command);

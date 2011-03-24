@@ -12,8 +12,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     bool ContainsOriginalObjectID (ObjectID objectID);
     bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    bool ContainsOriginalItemsWithoutEndPoints ();
-
     void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
     void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 

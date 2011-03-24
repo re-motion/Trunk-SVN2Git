@@ -170,6 +170,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
+    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
+      _oppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+    }
+
     private void RaiseStateUpdateNotification (bool newChangedState)
     {
       ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, newChangedState);

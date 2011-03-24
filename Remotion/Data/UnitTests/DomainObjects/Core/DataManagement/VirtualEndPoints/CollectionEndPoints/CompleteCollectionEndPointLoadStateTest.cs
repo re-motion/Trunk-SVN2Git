@@ -95,20 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void Synchronize_UnregistersItemsWithoutEndPoints ()
-    {
-      _dataKeeperMock
-          .Stub (stub => stub.OriginalItemsWithoutEndPoints)
-          .Return (new[] { _relatedObject });
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject));
-      _dataKeeperMock.Replay();
-
-      _loadState.Synchronize (_collectionEndPointMock);
-
-      _dataKeeperMock.VerifyAllExpectations();
-    }
-
-    [Test]
     public void SetValueFrom_ReplacesCollectionData ()
     {
       var sourceItem1 = DomainObjectMother.CreateFakeObject<Order>();
@@ -126,66 +112,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
 
       Assert.That (targetCollectionData.ToArray(), Is.EqualTo (new[] { sourceItem1, sourceItem2 }));
-    }
-
-    [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenSourceHasBeenTouched ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      _collectionEndPointMock.Expect (mock => mock.Touch());
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenTargetHasChanged ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (true);
-      _collectionEndPointMock.Expect (mock => mock.Touch());
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void SetValueFrom_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.AssertWasNotCalled (mock => mock.Touch());
-      _collectionEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -590,6 +516,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void GetOriginalOppositeEndPoints ()
+    {
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { _relatedEndPointStub });
+      _dataKeeperMock.Replay ();
+
+      var result = (IEnumerable<IRealObjectEndPoint>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalOppositeEndPoints");
+
+      Assert.That (result, Is.EqualTo (new[] { _relatedEndPointStub }));
+    }
+
+    [Test]
+    public void GetOriginalItemsWithoutEndPoints ()
+    {
+      _dataKeeperMock.Stub (mock => mock.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+      _dataKeeperMock.Replay ();
+
+      var result = (IEnumerable<DomainObject>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalItemsWithoutEndPoints");
+
+      Assert.That (result, Is.EqualTo (new[] { _relatedObject }));
+    }
+
+    [Test]
     public void HasUnsynchronizedCurrentOppositeEndPoints_False_NoEndPoint ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
@@ -611,17 +559,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
 
       Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void GetOriginalOppositeEndPoints ()
-    {
-      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { _relatedEndPointStub });
-      _dataKeeperMock.Replay ();
-
-      var result = (IEnumerable<IRealObjectEndPoint>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalOppositeEndPoints");
-
-      Assert.That (result, Is.EqualTo (new[] { _relatedEndPointStub }));
     }
 
     [Test]

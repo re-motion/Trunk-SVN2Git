@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
@@ -25,9 +27,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   public class TestableObjectEndPoint : ObjectEndPoint
   {
-    private ObjectID _originalOppositeObjectID;
+    private readonly ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
+    private bool _isSetOppositeObjectIDValueFromExpected;
 
     public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider, ObjectID originalOppositeObjectID)
         : base (clientTransaction, id, lazyLoader, endPointProvider)
@@ -102,21 +105,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { return _originalOppositeObjectID; }
     }
 
+    public void ExpectSetOppositeObjectIDValueFrom()
+    {
+      _isSetOppositeObjectIDValueFromExpected = true;
+    }
+
+    public void ExpectNotSetOppositeObjectIDValueFrom ()
+    {
+      _isSetOppositeObjectIDValueFromExpected = false;
+    }
+
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       return new TestSetCommand (this, newRelatedObject, id => { throw new NotImplementedException (); });
     }
 
+    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    {
+      Assert.That (_isSetOppositeObjectIDValueFromExpected, Is.True);
+      _oppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+    }
+
     public class TestSetCommand : ObjectEndPointSetCommand
     {
       public TestSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
-          : base(modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
+        : base (modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
       {
       }
 
       public override ExpandedCommand ExpandToAllRelatedObjects ()
       {
-        throw new NotImplementedException();
+        throw new NotImplementedException ();
       }
     }
   }

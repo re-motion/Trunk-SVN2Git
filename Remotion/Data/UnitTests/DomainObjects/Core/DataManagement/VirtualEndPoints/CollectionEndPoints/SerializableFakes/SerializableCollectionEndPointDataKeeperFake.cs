@@ -80,11 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       return false;
     }
 
-    public bool ContainsOriginalItemsWithoutEndPoints ()
-    {
-      throw new NotImplementedException();
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();

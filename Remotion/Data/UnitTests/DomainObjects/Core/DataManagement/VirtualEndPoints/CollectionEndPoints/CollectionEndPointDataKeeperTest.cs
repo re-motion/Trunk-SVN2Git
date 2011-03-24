@@ -125,20 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void ContainsOriginalItemsWithoutEndPoints ()
-    {
-      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints(), Is.False);
-
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject1);
-
-      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints (), Is.True);
-
-      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject1);
-
-      Assert.That (_dataKeeper.ContainsOriginalItemsWithoutEndPoints (), Is.False);
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);

@@ -161,6 +161,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       _loadState.SetValueFrom (this, sourceCollectionEndPoint);
+
+      if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
+        Touch ();
     }
 
     public override void Commit ()

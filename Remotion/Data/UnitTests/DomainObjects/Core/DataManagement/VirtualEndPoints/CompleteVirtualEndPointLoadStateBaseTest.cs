@@ -264,8 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void IsSynchronized_True ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints()).Return (false);
-      _virtualEndPointMock.Replay();
+      _loadState.StubOriginalItemsWithoutEndPoints (new DomainObject[0]);
 
       var result = _loadState.IsSynchronized (_virtualEndPointMock);
 
@@ -275,12 +274,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void IsSynchronized_False ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints()).Return (true);
-      _virtualEndPointMock.Replay();
+      _loadState.StubOriginalItemsWithoutEndPoints (new DomainObject[] { _relatedObject });
 
       var result = _loadState.IsSynchronized (_virtualEndPointMock);
 
       Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void Synchronize ()
+    {
+      _loadState.StubOriginalItemsWithoutEndPoints (new[] { _relatedObject });
+
+      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject));
+      _dataKeeperMock.Replay ();
+
+      _loadState.Synchronize (_virtualEndPointMock);
+
+      _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]

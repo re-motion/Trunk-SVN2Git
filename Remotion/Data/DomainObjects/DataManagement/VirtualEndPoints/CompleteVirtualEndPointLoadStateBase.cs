@@ -44,10 +44,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     public abstract TData GetData (TEndPoint endPoint);
     public abstract TData GetOriginalData (TEndPoint endPoint);
-    public abstract void Synchronize (TEndPoint endPoint);
     public abstract void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint);
 
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
+    protected abstract IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ();
     protected abstract bool HasUnsynchronizedCurrentOppositeEndPoints ();
 
     public static ILog Log
@@ -201,7 +201,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return !_dataKeeper.ContainsOriginalItemsWithoutEndPoints ();
+      return !GetOriginalItemsWithoutEndPoints ().Any();
+    }
+
+    public virtual void Synchronize (TEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (Log.IsDebugEnabled)
+        Log.DebugFormat ("End-point '{0}' is synchronized.", endPoint.ID);
+
+      foreach (var item in GetOriginalItemsWithoutEndPoints ())
+        DataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
