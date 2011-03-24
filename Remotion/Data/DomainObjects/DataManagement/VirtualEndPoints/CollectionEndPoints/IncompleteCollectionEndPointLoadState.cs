@@ -91,25 +91,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
 
-    protected override void ResetSyncStateForAllOriginalOppositeEndPoints ()
-    {
-      foreach (var originalOppositeEndPoint in DataKeeper.OriginalOppositeEndPoints)
-        originalOppositeEndPoint.ResetSyncState ();
-    }
-
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
       return DataKeeper.OriginalOppositeEndPoints;
-    }
-
-    protected override ReadOnlyCollectionDataDecorator GetOriginalDataFromEndPoint (ICollectionEndPoint collectionEndPoint)
-    {
-      return collectionEndPoint.GetOriginalCollectionData ();
-    }
-
-    protected override ReadOnlyCollectionDataDecorator GetDataFromEndPoint (ICollectionEndPoint collectionEndPoint)
-    {
-      return collectionEndPoint.GetCollectionData ();
     }
 
     #region Serialization

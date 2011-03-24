@@ -82,16 +82,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void GetCollectionData ()
+    public void GetData ()
     {
-      Dev.Null = _nullEndPoint.GetCollectionData ();
+      Dev.Null = _nullEndPoint.GetData ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void GetOriginalCollectionData ()
+    public void GetCollectionData ()
     {
-      Dev.Null = _nullEndPoint.GetOriginalCollectionData ();
+      Dev.Null = _nullEndPoint.GetOriginalData ();
     }
 
     [Test]

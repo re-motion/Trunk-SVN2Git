@@ -103,12 +103,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _originalCollection; }
     }
 
-    public ReadOnlyCollectionDataDecorator GetCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetData ()
     {
       return _loadState.GetData (this);
     }
 
-    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetOriginalData ()
     {
       return _loadState.GetOriginalData (this);
     }

@@ -11,7 +11,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
   /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataKeeper"/>.</typeparam>
   /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
   public interface IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> : IFlattenedSerializable
-      where TEndPoint : IVirtualEndPoint
+      where TEndPoint : IVirtualEndPoint<TData>
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
     bool IsDataComplete ();

@@ -16,65 +16,34 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints
 {
-  public class TestableCompleteVirtualEndPointLoadState : CompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>
+  public class TestableIncompleteVirtualEndPointLoadState : IncompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>
   {
     private IRealObjectEndPoint[] _stubbedOriginalOppositeEndPoints;
 
-    public TestableCompleteVirtualEndPointLoadState (IVirtualEndPointDataKeeper dataKeeper, IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
-        : base(dataKeeper, endPointProvider, clientTransaction)
+    public TestableIncompleteVirtualEndPointLoadState (IVirtualEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader, IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
+        : base(dataKeeper, lazyLoader, dataKeeperFactory)
     {
     }
 
-    public override object GetData (IVirtualEndPoint<object> endPoint)
+    public TestableIncompleteVirtualEndPointLoadState (FlattenedDeserializationInfo info)
+        : base(info)
     {
-      throw new NotImplementedException();
-    }
-
-    public override object GetOriginalData (IVirtualEndPoint<object> endPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void SetValueFrom (IVirtualEndPoint<object> endPoint, IVirtualEndPoint<object> sourceEndPoint)
-    {
-      throw new NotImplementedException();
     }
 
     public void StubOriginalOppositeEndPoints (IRealObjectEndPoint[] originalOppositeEndPoints)
     {
       _stubbedOriginalOppositeEndPoints = originalOppositeEndPoints;
     }
-
-    public override void Synchronize (IVirtualEndPoint<object> endPoint)
-    {
-      throw new NotImplementedException();
-    }
-
+    
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
       return _stubbedOriginalOppositeEndPoints;
     }
-
-    protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()
-    {
-      return false;
-    }
-
-    #region Serialization
-
-    public TestableCompleteVirtualEndPointLoadState (FlattenedDeserializationInfo info)
-      : base (info)
-    {
-    }
-
-    #endregion
-
   }
 }

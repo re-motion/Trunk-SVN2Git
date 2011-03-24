@@ -143,12 +143,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       set { throw new NotImplementedException(); }
     }
 
-    public ReadOnlyCollectionDataDecorator GetCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetData ()
     {
       throw new NotImplementedException();
     }
 
-    public ReadOnlyCollectionDataDecorator GetOriginalCollectionData ()
+    public ReadOnlyCollectionDataDecorator GetOriginalData ()
     {
       throw new NotImplementedException();
     }

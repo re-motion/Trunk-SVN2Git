@@ -189,18 +189,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void Commit ()
-    {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      _dataKeeperMock.Expect (mock => mock.Commit ());
-      _dataKeeperMock.Replay();
-
-      _loadState.Commit();
-
-      _dataKeeperMock.VerifyAllExpectations();
-    }
-
-    [Test]
     public void CreateSetCollectionCommand ()
     {
       _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
@@ -599,6 +587,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () }));
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
+    }
+
+    [Test]
+    public void HasUnsynchronizedCurrentOppositeEndPoints_False_NoEndPoint ()
+    {
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
+      _dataKeeperMock.Replay ();
+
+      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void HasUnsynchronizedCurrentOppositeEndPoints_False_OnlySynchronizedEndPoints ()
+    {
+      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (true);
+
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new[] { _relatedEndPointStub });
+      _dataKeeperMock.Replay ();
+
+      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void GetOriginalOppositeEndPoints ()
+    {
+      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { _relatedEndPointStub });
+      _dataKeeperMock.Replay ();
+
+      var result = (IEnumerable<IRealObjectEndPoint>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalOppositeEndPoints");
+
+      Assert.That (result, Is.EqualTo (new[] { _relatedEndPointStub }));
+    }
+
+    [Test]
+    public void HasUnsynchronizedCurrentOppositeEndPoints_True ()
+    {
+      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (false);
+
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new[] { _relatedEndPointStub });
+      _dataKeeperMock.Replay ();
+
+      var result = (bool) PrivateInvoke.InvokeNonPublicMethod (_loadState, "HasUnsynchronizedCurrentOppositeEndPoints");
+
+      Assert.That (result, Is.True);
     }
 
     [Test]

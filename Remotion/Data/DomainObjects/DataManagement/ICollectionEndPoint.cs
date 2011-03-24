@@ -21,13 +21,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Represents an <see cref="IRelationEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
   /// </summary>
-  public interface ICollectionEndPoint : IVirtualEndPoint
+  public interface ICollectionEndPoint : IVirtualEndPoint<ReadOnlyCollectionDataDecorator>
   {
     DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
-
-    ReadOnlyCollectionDataDecorator GetCollectionData ();
-    ReadOnlyCollectionDataDecorator GetOriginalCollectionData ();
 
     DomainObjectCollection GetCollectionWithOriginalData ();
 

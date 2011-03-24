@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -72,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       if (sourceEndPoint.HasBeenTouched || collectionEndPoint.HasChanged)
         collectionEndPoint.Touch ();
     }
-    
+
     public IDataManagementCommand CreateSetCollectionCommand (
         ICollectionEndPoint collectionEndPoint,
         DomainObjectCollection newCollection,
@@ -186,6 +187,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
         return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject);
       else
         return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, DataKeeper.CollectionData);
+    }
+
+    protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
+    {
+      return DataKeeper.OriginalOppositeEndPoints;
     }
 
     protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()

@@ -15,7 +15,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
   /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
   public abstract class IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper> 
       : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
-      where TEndPoint : IVirtualEndPoint
+      where TEndPoint : IVirtualEndPoint<TData>
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
@@ -36,16 +36,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
-
-      // TODO 3816: Consider moving to CompleteVirtualEndPointStateBase.MarkDataIncomplete
-      ResetSyncStateForAllOriginalOppositeEndPoints();
     }
 
-    protected abstract TData GetDataFromEndPoint (TEndPoint endPoint);
-    protected abstract TData GetOriginalDataFromEndPoint (TEndPoint endPoint);
-
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
-    protected abstract void ResetSyncStateForAllOriginalOppositeEndPoints ();
 
     public static ILog Log
     {
@@ -135,7 +128,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       endPoint.EnsureDataComplete ();
-      return GetDataFromEndPoint (endPoint);
+      return endPoint.GetData();
     }
 
     public virtual TData GetOriginalData (TEndPoint endPoint)
@@ -143,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       endPoint.EnsureDataComplete ();
-      return GetOriginalDataFromEndPoint (endPoint);
+      return endPoint.GetOriginalData();
     }
  
     public void RegisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -245,5 +238,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     }
 
     #endregion
+
+    protected virtual void ResetSyncStateForAllOriginalOppositeEndPoints ()
+    {
+      foreach (var originalOppositeEndPoint in GetOriginalOppositeEndPoints())
+        originalOppositeEndPoint.ResetSyncState ();
+    }
   }
 }

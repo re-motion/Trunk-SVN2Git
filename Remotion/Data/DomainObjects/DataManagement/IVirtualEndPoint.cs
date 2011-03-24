@@ -35,4 +35,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// </summary>
     void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
   }
+
+  /// <summary>
+  /// Represents the relation property that does not hold the foreign key in a bidirectional relation. Adds the <see cref="GetData"/> and
+  /// <see cref="GetOriginalData"/> members to <see cref="IVirtualEndPoint"/>.
+  /// </summary>
+  public interface IVirtualEndPoint<TData> : IVirtualEndPoint
+  {
+    TData GetData ();
+    TData GetOriginalData ();
+  }
 }

@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       get
       {
-        var data = _associatedEndPoint.GetCollectionData();
+        var data = _associatedEndPoint.GetData();
         return data.Count;
       }
     }
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       get 
       {
         // Currently, the data backing a CollectionEndPoint does not check the item type.
-        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().RequiredItemType) to avoid lazy loading for
+        // This is hard-coded (rather than delegating to _associatedEndPoint.GetData().RequiredItemType) to avoid lazy loading for
         // item type checks.
         return null; 
       }
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       get 
       { 
         // Currently, the data backing a CollectionEndPoint is never read-only.
-        // This is hard-coded (rather than delegating to _associatedEndPoint.GetCollectionData().IsReadOnly) because that always returns a read-only
+        // This is hard-coded (rather than delegating to _associatedEndPoint.GetData().IsReadOnly) because that always returns a read-only
         // decorator.
         return false; 
       }
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     public IDomainObjectCollectionData GetDataStore ()
     {
       // This will usually return the ChangeCachingDomainObjectCollectionData
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.GetDataStore();
     }
 
@@ -99,13 +99,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.GetObject (index);
     }
 
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.GetObject (objectID);
     }
 
@@ -121,13 +121,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.IndexOf(objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      var data = _associatedEndPoint.GetCollectionData ();
+      var data = _associatedEndPoint.GetData ();
       return data.GetEnumerator ();
     }
 

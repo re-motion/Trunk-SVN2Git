@@ -15,7 +15,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
   /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
   public abstract class CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper> 
       : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
-      where TEndPoint : IVirtualEndPoint
+      where TEndPoint : IVirtualEndPoint<TData>
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
@@ -47,6 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     public abstract void Synchronize (TEndPoint endPoint);
     public abstract void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint);
 
+    protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
     protected abstract bool HasUnsynchronizedCurrentOppositeEndPoints ();
 
     public static ILog Log
@@ -100,6 +101,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, endPoint);
+
+      foreach (var originalOppositeEndPoint in GetOriginalOppositeEndPoints ())
+        originalOppositeEndPoint.ResetSyncState ();
 
       stateSetter (_dataKeeper);
 
