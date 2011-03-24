@@ -212,12 +212,14 @@
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualObjectEndPointDataKeeperFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualObjectEndPointDataKeeperFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\CompleteVirtualEndPointLoadStateBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\TestableCompleteVirtualEndPointLoadState.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\TestableIncompleteVirtualEndPointLoadState.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\VirtualObjectEndPoints\CompleteVirtualObjectEndPointLoadStateTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\VirtualObjectEndPoints\IncompleteVirtualObjectEndPointLoadStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\VirtualObjectEndPoints\VirtualObjectEndPointDataKeeperFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPoints\VirtualObjectEndPoints\VirtualObjectEndPointDataKeeperTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualEndPointStateUpdateListenerTest.cs" />
