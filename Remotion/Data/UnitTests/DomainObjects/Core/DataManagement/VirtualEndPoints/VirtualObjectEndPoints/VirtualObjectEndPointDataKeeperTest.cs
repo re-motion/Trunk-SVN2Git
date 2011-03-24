@@ -31,8 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
   public class VirtualObjectEndPointDataKeeperTest : StandardMappingTest
   {
     private RelationEndPointID _endPointID;
+    
     private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private VirtualObjectEndPointDataKeeper _dataKeeper;
+
+    private OrderTicket _oppositeObject;
     private IRealObjectEndPoint _oppositeEndPointStub;
 
     public override void SetUp ()
@@ -42,8 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
       _dataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, _stateUpdateListenerMock);
 
-      _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      _oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.OrderTicket1);
+      _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
+      _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (_oppositeObject.ID);
     }
 
     [Test]
@@ -86,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void ContainsOriginalObjectID_True ()
     {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
       Assert.That (_dataKeeper.ContainsOriginalObjectID (DomainObjectIDs.OrderTicket1), Is.True);
     }
@@ -171,13 +175,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void RegisterOriginalItemWithoutEndPoint ()
     {
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
 
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket2);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
     }
 
     [Test]
@@ -192,9 +202,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
       _stateUpdateListenerMock.Replay();
 
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket3);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
@@ -207,8 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An original opposite item has already been registered.")]
     public void RegisterOriginalItemWithoutEndPoint_WithOriginalOppositeObjectID ()
     {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
     }
 
     [Test]
@@ -217,49 +228,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket2);
-    }
-
-    [Test]
-    public void RegisterOriginalItemWithoutEndPoint_DomainObject ()
-    {
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-
-      ((IVirtualObjectEndPointDataKeeper) _dataKeeper).RegisterOriginalItemWithoutEndPoint (
-          DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2));
-
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
     }
 
     [Test]
     public void UnregisterOriginalItemWithoutEndPoint ()
     {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.Null);
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Not.Null);
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.Null);
 
-      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
 
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
     }
 
     [Test]
     public void UnregisterOriginalItemWithoutEndPoint_CurrentValueAlreadySet ()
     {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
       _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket2;
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
       _stateUpdateListenerMock.Replay();
 
-      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
 
       _stateUpdateListenerMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
     }
 
@@ -268,9 +269,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         "Cannot unregister original item, it has not been registered.")]
     public void UnregisterOriginalItemWithoutEndPoint_InvalidID ()
     {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket2);
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2));
     }
 
     [Test]
@@ -280,21 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
-      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeEndPointStub.ObjectID);
-    }
-
-    [Test]
-    public void UnregisterOriginalItemWithoutEndPoint_DomainObject ()
-    {
-      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectIDs.OrderTicket1);
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.Null);
-
-      ((IVirtualObjectEndPointDataKeeper) _dataKeeper).UnregisterOriginalItemWithoutEndPoint (
-          DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1));
-
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
+      _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
     }
 
     [Test]
@@ -366,6 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
       _dataKeeper.RegisterCurrentOppositeEndPoint (newOppositeEndPoint);
       _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3;
+
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.SameAs (newOppositeEndPoint));
       Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket3));
 
@@ -381,6 +369,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (newOppositeEndPoint));
 
       _stateUpdateListenerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Commit_ClearsItemWithoutEndPoint ()
+    {
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectMother.CreateFakeObject<OrderTicket>());
+      _dataKeeper.CurrentOppositeObjectID = _oppositeObject.ID;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      _dataKeeper.Commit ();
+
+      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [Ignore ("TODO 3825")]
+    public void Commit_SetsItemWithoutEndPoint ()
+    {
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectMother.CreateFakeObject<OrderTicket> ());
+      _dataKeeper.CurrentOppositeObjectID = _oppositeObject.ID;
+
+      _dataKeeper.Commit ();
+
+      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
