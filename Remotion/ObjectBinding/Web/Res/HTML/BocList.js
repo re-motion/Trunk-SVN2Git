@@ -105,7 +105,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
 
   var tableBlock = $(bocList).children().filter('.bocListTableBlock');
   var hasDimensions = false;
-  if ($.browser.msie)
+  if ($.browser.msie && ($.browser.version == "7.0" || $.browser.version == "8.0"))
   {
     if ($(bocList).css('height') != 'auto' || $(bocList).css('width') != 'auto')
     {
