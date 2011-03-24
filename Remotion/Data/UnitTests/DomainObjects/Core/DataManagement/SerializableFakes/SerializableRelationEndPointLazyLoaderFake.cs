@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
   public class SerializableRelationEndPointLazyLoaderFake : IRelationEndPointLazyLoader

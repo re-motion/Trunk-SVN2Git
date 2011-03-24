@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Collections;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
   public class SerializableRelationEndPointProviderFake : IRelationEndPointProvider

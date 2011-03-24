@@ -18,15 +18,27 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints.SerializableFakes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  [Serializable]
-  public class SerializableCollectionEndPointFake : ICollectionEndPoint
+  public class SerializableRealObjectEndPointFake : IRealObjectEndPoint
   {
+    private readonly RelationEndPointID _id;
+    private readonly DomainObject _owningObject;
+
+    public SerializableRealObjectEndPointFake (RelationEndPointID id, DomainObject owningObject)
+    {
+      _id = id;
+      _owningObject = owningObject;
+    }
+
+    public SerializableRealObjectEndPointFake (FlattenedDeserializationInfo info)
+    {
+      _owningObject = info.GetValue<DomainObject>();
+    }
+
     public bool IsNull
     {
       get { throw new NotImplementedException(); }
@@ -34,12 +46,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      throw new NotImplementedException();
+      info.AddValue (_owningObject);
     }
 
     public RelationEndPointID ID
     {
-      get { throw new NotImplementedException(); }
+      get { return _id; }
     }
 
     public ClientTransaction ClientTransaction
@@ -49,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     public ObjectID ObjectID
     {
-      get { throw new NotImplementedException(); }
+      get { return _owningObject.ID; }
     }
 
     public IRelationEndPointDefinition Definition
@@ -79,12 +91,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     public DomainObject GetDomainObject ()
     {
-      throw new NotImplementedException();
+      return _owningObject;
     }
 
     public DomainObject GetDomainObjectReference ()
     {
-      throw new NotImplementedException();
+      return _owningObject;
     }
 
     public void EnsureDataComplete ()
@@ -92,9 +104,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       throw new NotImplementedException();
     }
 
-    public bool IsSynchronized
+    public void Synchronize ()
     {
-      get { throw new NotImplementedException(); }
+      throw new NotImplementedException();
+    }
+
+    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
     }
 
     public void Touch ()
@@ -137,93 +154,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       throw new NotImplementedException();
     }
 
-    public DomainObjectCollection Collection
+    public ObjectID OppositeObjectID
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
-    public ReadOnlyCollectionDataDecorator GetData ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public ReadOnlyCollectionDataDecorator GetOriginalData ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public DomainObjectCollection GetCollectionWithOriginalData ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void MarkDataComplete (DomainObject[] items)
-    {
-      throw new NotImplementedException();
-    }
-
-    public DomainObjectCollection OriginalCollection
+    public ObjectID OriginalOppositeObjectID
     {
       get { throw new NotImplementedException(); }
     }
 
-    public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public void MarkSynchronized ()
+    {
+    }
+
+    public void MarkUnsynchronized ()
     {
       throw new NotImplementedException();
     }
 
-    public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
+    public void ResetSyncState ()
+    {
+   }
+
+    public void Synchronize (IRelationEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
+    public DomainObject GetOppositeObject (bool includeDeleted)
     {
       throw new NotImplementedException();
     }
 
-    public IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
+    public DomainObject GetOriginalOppositeObject ()
     {
       throw new NotImplementedException();
     }
 
-    public IDomainObjectCollectionData CreateDelegatingCollectionData ()
+    public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       throw new NotImplementedException();
     }
 
-    public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Synchronize ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void MarkDataIncomplete ()
+    public RelationEndPointID GetOppositeRelationEndPointID ()
     {
       throw new NotImplementedException();
     }
