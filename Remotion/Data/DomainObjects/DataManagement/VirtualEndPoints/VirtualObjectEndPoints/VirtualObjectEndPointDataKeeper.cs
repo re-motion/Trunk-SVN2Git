@@ -90,13 +90,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       return Equals (_originalOppositeObjectID, objectID);
     }
 
-    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-
-      return _originalOppositeEndPoint == oppositeEndPoint;
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);

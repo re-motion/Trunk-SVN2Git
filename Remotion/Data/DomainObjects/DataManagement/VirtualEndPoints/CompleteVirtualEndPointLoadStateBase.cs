@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
         {
           s_log.InfoFormat (
               "RealObjectEndPoint '{0}' is registered for already loaded virtual end-point '{1}'. "
-              + "The collection query result contained the item, so the ObjectEndPoint is marked as synchronzed.",
+              + "The query result contained the item, so the ObjectEndPoint is marked as synchronzed.",
               oppositeEndPoint.ID,
               endPoint.ID);
         }
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
         {
           s_log.WarnFormat (
               "ObjectEndPoint '{0}' is registered for already loaded virtual end-point '{1}'. "
-              + "The collection query result did not contain the item, so the ObjectEndPoint is out-of-sync.",
+              + "The query result did not contain the item, so the ObjectEndPoint is out-of-sync.",
               oppositeEndPoint.ID,
               endPoint.ID);
         }

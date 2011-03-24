@@ -92,20 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void ContainsOriginalOppositeEndPoint_False ()
-    {
-      Assert.That (_dataKeeper.ContainsOriginalOppositeEndPoint (_oppositeEndPointStub), Is.False);
-    }
-
-    [Test]
-    public void ContainsOriginalOppositeEndPoint_True ()
-    {
-      _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
-
-      Assert.That (_dataKeeper.ContainsOriginalOppositeEndPoint (_oppositeEndPointStub), Is.True);
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
