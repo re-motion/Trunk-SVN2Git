@@ -109,6 +109,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetData ()
+    {
+      Assert.That (((IVirtualEndPoint<ObjectID>) _endPoint).GetData(), Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
+    public void GetOriginalData ()
+    {
+      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+
+      Assert.That (((IVirtualEndPoint<ObjectID>) _endPoint).GetOriginalData (), Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
     public void HasChanged ()
     {
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// constructed by the <see cref="RelationEndPointMap"/> as an in-memory representation of the opposite of the <see cref="RealObjectEndPoint"/> 
   /// holding the foreign key.
   /// </summary>
-  public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualEndPoint
+  public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualObjectEndPoint
   {
     private ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
@@ -64,9 +64,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    ObjectID IVirtualEndPoint<ObjectID>.GetData ()
+    {
+      return OppositeObjectID;
+    }
+
     public override ObjectID OriginalOppositeObjectID
     {
       get { return _originalOppositeObjectID; }
+    }
+
+    ObjectID IVirtualEndPoint<ObjectID>.GetOriginalData ()
+    {
+      return OriginalOppositeObjectID;
     }
 
     public override bool HasChanged
