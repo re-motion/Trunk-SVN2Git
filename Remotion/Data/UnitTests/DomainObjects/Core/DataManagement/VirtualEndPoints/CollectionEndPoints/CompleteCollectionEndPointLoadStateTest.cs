@@ -71,88 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void IsDataComplete ()
-    {
-      Assert.That (_loadState.IsDataComplete (), Is.True);
-    }
-
-    [Test]
-    public void EnsureDataComplete_DoesNothing ()
-    {
-      _collectionEndPointMock.Replay();
-      _dataKeeperMock.Replay();
-
-      _loadState.EnsureDataComplete(_collectionEndPointMock);
-
-      _collectionEndPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
-    public void MarkDataComplete_ThrowsException ()
-    {
-      var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, keeper => Assert.Fail ("Must not be called"));
-    }
-
-    [Test]
-    public void MarkDataIncomplete_RaisesEvent ()
-    {
-      _collectionEndPointMock
-          .Stub (stub => stub.ID)
-          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
-
-      _loadState.MarkDataIncomplete (_collectionEndPointMock, keeper => { });
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _collectionEndPointMock));
-    }
-
-    [Test]
-    public void MarkDataIncomplete_ExecutesStateSetter_AndSynchronizesOppositeEndPoints ()
-    {
-      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      AddUnsynchronizedOppositeEndPoint (_loadState, endPointMock);
-
-      bool stateSetterCalled = false;
-
-      _collectionEndPointMock
-          .Stub (stub => stub.ID)
-          .Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
-      _collectionEndPointMock
-          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock))
-// ReSharper disable AccessToModifiedClosure
-          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
-// ReSharper restore AccessToModifiedClosure
-      _collectionEndPointMock.Replay ();
-
-      endPointMock.Replay ();
-      _dataKeeperMock.Replay ();
-
-      _loadState.MarkDataIncomplete (
-          _collectionEndPointMock,
-          keeper =>
-          {
-            stateSetterCalled = true;
-            Assert.That (keeper, Is.SameAs (_dataKeeperMock));
-          });
-
-      _collectionEndPointMock.VerifyAllExpectations ();
-      endPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-
-      Assert.That (stateSetterCalled, Is.True);
-    }
-
-    [Test]
     public void GetData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
@@ -177,132 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void RegisterOriginalOppositeEndPoint_WithoutExistingItem ()
-    {
-      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      endPointMock.Expect (mock => mock.MarkUnsynchronized());
-      endPointMock.Replay();
-
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
-      _dataKeeperMock.Replay();
-
-      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointMock);
-
-      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      endPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
-
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Contains (endPointMock));
-    }
-
-    [Test]
-    public void RegisterOriginalOppositeEndPoint_WithExistingItem ()
-    {
-      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      endPointMock.Expect (mock => mock.MarkSynchronized());
-      endPointMock.Replay ();
-
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (true);
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      _dataKeeperMock.Replay ();
-
-      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointMock);
-
-      endPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations ();
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (endPointMock));
-    }
-
-    [Test]
-    public void UnregisterOriginalOppositeEndPoint ()
-    {
-      using (_collectionEndPointMock.GetMockRepository ().Ordered ())
-      {
-        _collectionEndPointMock.Expect (mock => mock.MarkDataIncomplete());
-        _collectionEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub));
-      }
-      _collectionEndPointMock.Replay();
-
-      _loadState.UnregisterOriginalOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
-
-      _dataKeeperMock.VerifyAllExpectations ();
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-    
-    [Test]
-    public void UnregisterOriginalOppositeEndPoint_InUnsyncedList ()
-    {
-      AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
-
-      _collectionEndPointMock.Replay ();
-      _dataKeeperMock.Replay();
-
-      _loadState.UnregisterOriginalOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
-
-      _dataKeeperMock.VerifyAllExpectations ();
-      _collectionEndPointMock.AssertWasNotCalled (mock => mock.MarkDataIncomplete ());
-      _collectionEndPointMock.AssertWasNotCalled (mock => mock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub));
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (_relatedEndPointStub));
-    }
-
-    [Test]
-    public void RegisterCurrentOppositeEndPoint ()
-    {
-      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (true);
-      
-      _dataKeeperMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub));
-      _dataKeeperMock.Replay ();
-
-      _loadState.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
-
-      _dataKeeperMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot register end-points that are out-of-sync.")]
-    public void RegisterCurrentOppositeEndPoint_WithOutOfSyncEndPoint ()
-    {
-      _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (false);
-
-      _loadState.RegisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
-    }
-
-    [Test]
-    public void UnregisterCurrentOppositeEndPoint ()
-    {
-      _dataKeeperMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
-      _dataKeeperMock.Replay ();
-
-      _loadState.UnregisterCurrentOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
-
-      _dataKeeperMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void IsSynchronized_True ()
-    {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints ()).Return (false);
-      _collectionEndPointMock.Replay ();
-
-      var result = _loadState.IsSynchronized (_collectionEndPointMock);
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void IsSynchronized_False ()
-    {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemsWithoutEndPoints()).Return (true);
-      _collectionEndPointMock.Replay ();
-
-      var result = _loadState.IsSynchronized (_collectionEndPointMock);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
     public void Synchronize_UnregistersItemsWithoutEndPoints ()
     {
       _dataKeeperMock
@@ -317,52 +109,95 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void GetUnsynchronizedOppositeEndPoints_Empty ()
+    public void SetValueFrom_ReplacesCollectionData ()
     {
-      var result = _loadState.UnsynchronizedOppositeEndPoints;
+      var sourceItem1 = DomainObjectMother.CreateFakeObject<Order>();
+      var sourceItem2 = DomainObjectMother.CreateFakeObject<Order>();
 
-      Assert.That (result, Is.Empty);
+      var sourceCollection = new DomainObjectCollection (new DomainObject[] { sourceItem1, sourceItem2 }, null);
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
+
+      var targetItem1 = DomainObjectMother.CreateFakeObject<Order>();
+      var targetCollectionData = new DomainObjectCollectionData (new DomainObject[] { targetItem1 });
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
+      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
+
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
+
+      Assert.That (targetCollectionData.ToArray(), Is.EqualTo (new[] { sourceItem1, sourceItem2 }));
     }
 
     [Test]
-    public void SynchronizeOppositeEndPoint_InList ()
+    public void SetValueFrom_TouchesEndPoint_WhenSourceHasBeenTouched ()
     {
-      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      endPointMock.Stub (mock => mock.MarkUnsynchronized ());
-      endPointMock.Expect (mock => mock.MarkSynchronized ());
-      endPointMock.Replay();
+      var sourceCollection = new DomainObjectCollection();
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
 
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      _dataKeeperMock.Replay ();
+      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
+      _collectionEndPointMock.Expect (mock => mock.Touch());
+      _collectionEndPointMock.Replay();
 
-      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, endPointMock);
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Contains (endPointMock));
+      var targetCollectionData = new DomainObjectCollectionData();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
 
-      _loadState.SynchronizeOppositeEndPoint (endPointMock);
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
+
+      _collectionEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void SetValueFrom_TouchesEndPoint_WhenTargetHasChanged ()
+    {
+      var sourceCollection = new DomainObjectCollection();
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
+
+      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (true);
+      _collectionEndPointMock.Expect (mock => mock.Touch());
+      _collectionEndPointMock.Replay();
+
+      var targetCollectionData = new DomainObjectCollectionData();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
+
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
+
+      _collectionEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void SetValueFrom_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
+    {
+      var sourceCollection = new DomainObjectCollection();
+      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
+      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
+
+      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
+      _collectionEndPointMock.Replay();
+
+      var targetCollectionData = new DomainObjectCollectionData();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
+
+      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
+
+      _collectionEndPointMock.AssertWasNotCalled (mock => mock.Touch());
+      _collectionEndPointMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Commit ()
+    {
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
+      _dataKeeperMock.Expect (mock => mock.Commit ());
+      _dataKeeperMock.Replay();
+
+      _loadState.Commit();
 
       _dataKeeperMock.VerifyAllExpectations();
-      endPointMock.VerifyAllExpectations();
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (endPointMock));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot synchronize opposite end-point "
-        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - the "
-        + "end-point is not in the list of unsynchronized end-points.")]
-    public void SynchronizeOppositeEndPoint_NotInList ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub
-          .Stub (stub => stub.ID)
-          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
-      endPointStub
-          .Stub (stub => stub.ObjectID)
-          .Return (DomainObjectIDs.OrderItem1);
-
-      _loadState.SynchronizeOppositeEndPoint (endPointStub);
     }
 
     [Test]
@@ -388,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (((CollectionEndPointSetCollectionCommand) command).OldCollectionTransformer, Is.SameAs (fakeCollection));
       Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
-    
+
     [Test]
     public void CreateSetCollectionCommand_SelfReplace ()
     {
@@ -399,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
       _collectionEndPointMock.Replay ();
-      
+
       Action<DomainObjectCollection> fakeSetter = collection => { };
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, fakeCollection, fakeSetter);
@@ -422,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void CreateSetCollectionCommand_WithUnsyncedOpposites ()
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
-      
+
       Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
@@ -527,7 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void CreateDeleteCommand_WithUnsyncedOpposites ()
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
-      
+
       _loadState.CreateDeleteCommand (_collectionEndPointMock);
     }
 
@@ -558,7 +393,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
-      
+
       Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
@@ -631,7 +466,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void CreateAddCommand_ItemWithUnsyncedOpposite ()
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData());
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData ());
       _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
     }
 
@@ -694,7 +529,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The domain object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be replaced or removed from collection property "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of object 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' "
         + "because its object property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' is out of sync with the collection property. "
@@ -709,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeperMock
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { _relatedObject }));
-      
+
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, newRelatedObject);
     }
 
@@ -748,8 +583,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () }));
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
     }
-
-
+    
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The domain object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be added to collection property "
@@ -765,121 +599,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () }));
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
-    }
-
-    [Test]
-    public void SetValueFrom_ReplacesCollectionData ()
-    {
-      var sourceItem1 = DomainObjectMother.CreateFakeObject<Order>();
-      var sourceItem2 = DomainObjectMother.CreateFakeObject<Order>();
-
-      var sourceCollection = new DomainObjectCollection (new DomainObject[] { sourceItem1, sourceItem2 }, null);
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-
-      var targetItem1 = DomainObjectMother.CreateFakeObject<Order>();
-      var targetCollectionData = new DomainObjectCollectionData (new DomainObject[] { targetItem1 });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      Assert.That (targetCollectionData.ToArray(), Is.EqualTo (new[] { sourceItem1, sourceItem2 }));
-    }
-
-    [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenSourceHasBeenTouched ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (true);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      _collectionEndPointMock.Expect (mock => mock.Touch());
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenTargetHasChanged ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (true);
-      _collectionEndPointMock.Expect (mock => mock.Touch());
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void SetValueFrom_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
-    {
-      var sourceCollection = new DomainObjectCollection();
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
-      sourceEndPointStub.Stub (stub => stub.HasBeenTouched).Return (false);
-
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      _collectionEndPointMock.Replay();
-
-      var targetCollectionData = new DomainObjectCollectionData();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      _collectionEndPointMock.AssertWasNotCalled (mock => mock.Touch());
-      _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void HasChanged ()
-    {
-      _dataKeeperMock.Expect (mock => mock.HasDataChanged ()).Return (true);
-      _dataKeeperMock.Replay ();
-
-      var result = _loadState.HasChanged ();
-
-      _dataKeeperMock.VerifyAllExpectations ();
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void Commit ()
-    {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      _dataKeeperMock.Expect (mock => mock.Commit ());
-      _dataKeeperMock.Replay();
-
-      _loadState.Commit();
-
-      _dataKeeperMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void Rollback ()
-    {
-      _dataKeeperMock.Expect (mock => mock.Rollback ());
-      _dataKeeperMock.Replay ();
-
-      _loadState.Rollback ();
-
-      _dataKeeperMock.VerifyAllExpectations ();
     }
 
     [Test]
