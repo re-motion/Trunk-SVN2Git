@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     public static void SetOppositeObjectID (RealObjectEndPoint objectEndPoint, ObjectID newID)
     {
-      PrivateInvoke.SetPublicProperty (objectEndPoint, "OppositeObjectID", newID);
+      PrivateInvoke.InvokeNonPublicMethod (objectEndPoint, "SetOppositeObjectID", newID);
     }
 
     public static IRealObjectEndPointSyncState GetSyncState (RealObjectEndPoint objectEndPoint)

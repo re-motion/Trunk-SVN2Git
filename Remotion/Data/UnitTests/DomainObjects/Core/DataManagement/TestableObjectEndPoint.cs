@@ -88,16 +88,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public override ObjectID OppositeObjectID
     {
       get { return _oppositeObjectID; }
-      protected set 
-      { 
-        _oppositeObjectID = value;
-        Touch();
-      }
     }
 
     public void SetOppositeObjectID (ObjectID objectID)
     {
-      OppositeObjectID = objectID;
+      _oppositeObjectID = objectID;
     }
 
     public override ObjectID OriginalOppositeObjectID

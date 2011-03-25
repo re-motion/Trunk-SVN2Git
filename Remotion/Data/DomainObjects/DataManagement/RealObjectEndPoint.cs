@@ -85,7 +85,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override ObjectID OppositeObjectID
     {
       get { return (ObjectID) ForeignKeyProperty.GetValueWithoutEvents (ValueAccess.Current); }
-      protected set { _foreignKeyProperty.Value = value; } // TODO 1925: This is with events, which is a little inconsistent
     }
 
     public override ObjectID OriginalOppositeObjectID
@@ -131,12 +130,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _syncState.CreateDeleteCommand (this, id => OppositeObjectID = id);
+      return _syncState.CreateDeleteCommand (this, SetOppositeObjectID);
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return _syncState.CreateSetCommand (this, newRelatedObject, id => OppositeObjectID = id);
+      return _syncState.CreateSetCommand (this, newRelatedObject, SetOppositeObjectID);
     }
 
     public override void Touch ()
@@ -163,8 +162,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
 
-      OppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+      SetOppositeObjectID (sourceObjectEndPoint.OppositeObjectID);
     }
+
+    private void SetOppositeObjectID (ObjectID value)
+    {
+      _foreignKeyProperty.Value = value; // TODO 1925: This is with events, which is a little inconsistent to OppositeObjectID
+    }
+
 
     #region Serialization
     protected RealObjectEndPoint (FlattenedDeserializationInfo info)

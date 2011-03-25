@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _endPointProvider; }
     }
 
-    public abstract ObjectID OppositeObjectID { get; protected set; }
+    public abstract ObjectID OppositeObjectID { get; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
     protected abstract void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint);

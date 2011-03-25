@@ -68,11 +68,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override ObjectID OppositeObjectID
     {
       get { return _oppositeObjectID; }
-      protected set
-      {
-        _oppositeObjectID = value;
-        RaiseStateUpdateNotification (HasChanged);
-      }
     }
 
     ObjectID IVirtualEndPoint<ObjectID>.GetData ()
@@ -155,14 +150,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (this, id => OppositeObjectID = id);
+        return new ObjectEndPointSetSameCommand (this, SetOppositeObjectID);
       else
-        return new ObjectEndPointSetOneOneCommand (this, newRelatedObject, id => OppositeObjectID = id);
+        return new ObjectEndPointSetOneOneCommand (this, newRelatedObject, SetOppositeObjectID);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return new ObjectEndPointDeleteCommand (this, id => OppositeObjectID = id);
+      return new ObjectEndPointDeleteCommand (this, SetOppositeObjectID);
     }
 
     public override void Touch ()
@@ -195,6 +190,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void RaiseStateUpdateNotification (bool newChangedState)
     {
       ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, newChangedState);
+    }
+
+    // TODO 3818: Remove
+    private void SetOppositeObjectID (ObjectID value)
+    {
+      _oppositeObjectID = value;
+      RaiseStateUpdateNotification (HasChanged);
     }
 
     #region Serialization
