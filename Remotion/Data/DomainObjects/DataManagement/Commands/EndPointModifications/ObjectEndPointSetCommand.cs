@@ -41,6 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
       _oppositeObjectIDSetter(id);
+      ModifiedEndPoint.Touch();
     }
   }
 }

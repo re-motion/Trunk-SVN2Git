@@ -71,8 +71,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       protected set
       {
         _oppositeObjectID = value;
-        _hasBeenTouched = true;
-
         RaiseStateUpdateNotification (HasChanged);
       }
     }

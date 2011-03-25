@@ -41,8 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _endPointID;
     private RealObjectEndPoint _endPoint;
 
-    private Action<ObjectID> _oppositeObjectIDSetter;
-    
     private ObjectEndPointSetCommand _command;
     private ICollectionEndPoint _oldRelatedEndPointMock;
     private ICollectionEndPoint _newRelatedEndPointMock;
@@ -58,8 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, oi => oi.Order);
       _endPoint = (RealObjectEndPoint) RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
-      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
-
       var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
       _oldRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
 
@@ -69,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (_oldRelatedEndPointMock);
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (_newRelatedEndPointMock);
 
-      _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, _oppositeObjectIDSetter, EndPointProviderStub);
+      _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, OppositeObjectIDSetter, EndPointProviderStub);
     }
 
     [Test]
@@ -88,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
       endPoint.Stub (stub => stub.IsNull).Return (true);
 
-      new ObjectEndPointSetOneManyCommand (endPoint, _newRelatedObject, _oppositeObjectIDSetter, EndPointProviderStub);
+      new ObjectEndPointSetOneManyCommand (endPoint, _newRelatedObject, OppositeObjectIDSetter, EndPointProviderStub);
     }
 
     [Test]
@@ -147,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newRelatedEndPointMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPoint));
       _newRelatedEndPointMock.Replay();
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
+      Assert.That (OppositeObjectIDSetterCalled, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _command.Perform ();
@@ -155,7 +151,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldRelatedEndPointMock.VerifyAllExpectations ();
       _newRelatedEndPointMock.VerifyAllExpectations ();
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
+      Assert.That (OppositeObjectIDSetterCalled, Is.True);
+      Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_newRelatedObject.ID));
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 

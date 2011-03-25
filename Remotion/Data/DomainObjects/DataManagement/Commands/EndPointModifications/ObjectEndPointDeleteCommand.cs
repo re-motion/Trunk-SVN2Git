@@ -50,6 +50,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override void Perform ()
     {
       _oppositeObjectIDSetter (null);
+      ModifiedEndPoint.Touch();
     }
 
     protected override void ScopedEnd ()

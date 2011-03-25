@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -27,10 +28,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
     private IRelationEndPointProvider _endPointProviderStub;
+    private bool _oppositeObjectIDSetterCalled;
+    private ObjectID _oppositeObjectIDSetterID;
+    private Action<ObjectID> _oppositeObjectIDSetter;
 
     protected IRelationEndPointProvider EndPointProviderStub
     {
       get { return _endPointProviderStub; }
+    }
+
+    public bool OppositeObjectIDSetterCalled
+    {
+      get { return _oppositeObjectIDSetterCalled; }
+    }
+
+    public ObjectID OppositeObjectIDSetterID
+    {
+      get { return _oppositeObjectIDSetterID; }
+    }
+
+    public Action<ObjectID> OppositeObjectIDSetter
+    {
+      get { return _oppositeObjectIDSetter; }
     }
 
     public override void SetUp ()
@@ -38,6 +57,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp ();
 
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _oppositeObjectIDSetterCalled = false;
+      _oppositeObjectIDSetter = id =>
+      {
+        _oppositeObjectIDSetterCalled = true;
+        _oppositeObjectIDSetterID = id;
+      };
     }
 
     protected IList<RelationEndPointModificationCommand> GetAllCommands (ExpandedCommand bidirectionalModification)

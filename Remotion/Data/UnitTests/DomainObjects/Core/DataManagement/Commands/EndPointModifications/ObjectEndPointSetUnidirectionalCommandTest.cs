@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -38,8 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
     
-    private Action<ObjectID> _oppositeObjectIDSetter;
-    
     private ObjectEndPointSetCommand _command;
 
     public override void SetUp ()
@@ -53,9 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, c => c.ParentClient);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
-      _oppositeObjectIDSetter = id => ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, id);
-
-      _command = new ObjectEndPointSetUnidirectionalCommand (_endPoint, _newRelatedObject, _oppositeObjectIDSetter);
+      _command = new ObjectEndPointSetUnidirectionalCommand (_endPoint, _newRelatedObject, OppositeObjectIDSetter);
     }
 
     [Test]
@@ -72,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointSetUnidirectionalCommand (endPoint, _newRelatedObject, _oppositeObjectIDSetter);
+      new ObjectEndPointSetUnidirectionalCommand (endPoint, _newRelatedObject, OppositeObjectIDSetter);
     }
 
     [Test]
@@ -125,16 +120,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform_InvokesPerformRelationChange ()
     {
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
-      _command.Perform();
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
+      Assert.That (OppositeObjectIDSetterCalled, Is.False);
+
+      _command.Perform ();
+
+      Assert.That (OppositeObjectIDSetterCalled, Is.True);
+      Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_newRelatedObject.ID));
     }
 
     [Test]
     public void Perform_TouchesEndPoint ()
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);
+
       _command.Perform();
+
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 

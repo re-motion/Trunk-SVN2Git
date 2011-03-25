@@ -100,14 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void OppositeObjectID_Set_TouchesEndPoint ()
-    {
-      Assert.That (_endPoint.HasBeenTouched, Is.False);
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, _endPoint.OppositeObjectID);
-      Assert.That (_endPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
     public void OppositeObjectID_Set_RaisesStateNotification_Changed ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
