@@ -58,6 +58,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
 
       _dataKeeperFactory = dataKeeperFactory;
+
+      // TODO 3818: Initialize with incomplete load state
     }
 
     public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> DataKeeperFactory
@@ -65,6 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _dataKeeperFactory; }
     }
 
+    // TODO 3818: Delegate to load-state
     public override ObjectID OppositeObjectID
     {
       get { return _oppositeObjectID; }
@@ -75,6 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return OppositeObjectID;
     }
 
+    // TODO 3818: Delegate to load-state
     public override ObjectID OriginalOppositeObjectID
     {
       get { return _originalOppositeObjectID; }
@@ -85,6 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return OriginalOppositeObjectID;
     }
 
+    // TODO 3818: Delegate to load-state
     public override bool HasChanged
     {
       get { return !Equals (_oppositeObjectID, _originalOppositeObjectID); }
@@ -95,57 +100,67 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
+    // TODO 3818: Delegate to load-state
     public override bool IsSynchronized
     {
       get { return true; }
     }
 
+    // TODO 3818: Delegate to load-state
     public override void Synchronize ()
     {
       // TODO 3818
     }
 
+    // TODO 3818: Delegate to load-state
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException (
           "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
     }
 
+    // TODO 3818: Delegate to load-state
     public void MarkDataComplete (DomainObject item)
     {
       // TODO 3818
     }
 
+    // TODO 3818: Delegate to load-state
     public void MarkDataIncomplete ()
     {
       // TODO 3818
       throw new NotImplementedException ();
     }
 
+    // TODO 3818: Delegate to load-state
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       // TODO 3818
       throw new NotImplementedException ();
     }
 
+    // TODO 3818: Delegate to load-state
     public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       // TODO 3818
       throw new NotImplementedException ();
     }
 
+    // TODO 3818: Delegate to load-state
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       // TODO 3818
       throw new NotImplementedException ();
     }
 
+    // TODO 3818: Delegate to load-state
     public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       // TODO 3818
       throw new NotImplementedException ();
     }
 
+    // TODO 3818: Delegate to load-state
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
@@ -155,6 +170,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new ObjectEndPointSetOneOneCommand (this, newRelatedObject, SetOppositeObjectID);
     }
 
+    // TODO 3818: Delegate to load-state
     public override IDataManagementCommand CreateDeleteCommand ()
     {
       return new ObjectEndPointDeleteCommand (this, SetOppositeObjectID);
@@ -167,6 +183,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Commit ()
     {
+      // TODO 3818: Delegate these two lines to load-state
       _originalOppositeObjectID = _oppositeObjectID;
       RaiseStateUpdateNotification (false);
 
@@ -175,12 +192,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Rollback ()
     {
+      // TODO 3818: Delegate these two lines to load-state
       _oppositeObjectID = _originalOppositeObjectID;
       RaiseStateUpdateNotification (false);
 
       _hasBeenTouched = false;
     }
 
+    // TODO 3818: Delegate to load-state
     protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);

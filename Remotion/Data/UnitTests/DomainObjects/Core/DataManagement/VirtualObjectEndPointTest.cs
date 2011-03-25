@@ -59,6 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           _lazyLoaderStub, 
           _endPointProviderStub,
           _dataKeeperFactoryStub);
+
+      // TODO 3818: 1) Implement LoadState in VirtualObjectEndPoint; call MarkDataComplete (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1))
+      // TODO 3818: 2) Use PrivateInvoke to set a load state mock; adapt all tests to expect mock calls
+      // TODO 3818: 3) Add tests for members currently not tested
     }
 
     [Test]
