@@ -218,15 +218,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return RegisterVirtualObjectEndPoint (endPointID, null);
     }
 
-    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, DomainObject oppositeObject)
     {
       var objectEndPoint = new VirtualObjectEndPoint (
           _clientTransaction,
           endPointID,
-          oppositeObjectID,
+          oppositeObject != null ? oppositeObject.ID : null,
           _lazyLoader,
           _endPointProvider,
           _virtualObjectEndPointDataKeeperFactory);
+      // TODO: objectEndPoint.MarkDataComplete (oppositeObject);
       Add (objectEndPoint);
       
       return objectEndPoint;
@@ -286,7 +287,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
         {
-          RegisterVirtualObjectEndPoint (endPointID, null);
+          RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
         }
         else
         {
@@ -564,7 +565,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
       if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
       {
-        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
+        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.GetDomainObjectReference());
         realObjectEndPoint.MarkSynchronized();
       }
       else
