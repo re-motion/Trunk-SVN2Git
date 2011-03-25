@@ -159,8 +159,10 @@ table.accessControlEntriesTable th.titleCellVertical
 
 table.accessControlEntriesTable th.titleCellVertical div
 {
-  writing-mode: tb-rl; 
-  filter: FlipV() FlipH();
+  writing-mode: tb-rl;
+  background-color: white;
+  zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
   padding-top: 0.25em;
   display: inline-block;
   display: -moz-inline-box;
