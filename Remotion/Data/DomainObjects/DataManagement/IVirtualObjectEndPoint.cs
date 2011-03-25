@@ -6,5 +6,6 @@
   /// </summary>
   public interface IVirtualObjectEndPoint : IVirtualEndPoint<ObjectID>, IObjectEndPoint
   {
+    void MarkDataComplete (DomainObject item);
   }
 }

@@ -79,6 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
+    // TODO 3818: Make abstract
     public override void EnsureDataComplete ()
     {
       // nothing to do, ObjectEndPoints' data is always complete

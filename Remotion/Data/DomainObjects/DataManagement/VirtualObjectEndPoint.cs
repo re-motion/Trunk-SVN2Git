@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Synchronize ()
     {
-      // TODO 3792
+      // TODO 3818
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -105,33 +105,38 @@ namespace Remotion.Data.DomainObjects.DataManagement
           "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.");
     }
 
+    public void MarkDataComplete (DomainObject item)
+    {
+      // TODO 3818
+    }
+
     public void MarkDataIncomplete ()
     {
-      // TODO 3792
+      // TODO 3818
       throw new NotImplementedException ();
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      // TODO 3792
+      // TODO 3818
       throw new NotImplementedException ();
     }
 
     public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      // TODO 3792
+      // TODO 3818
       throw new NotImplementedException ();
     }
 
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      // TODO 3792
+      // TODO 3818
       throw new NotImplementedException ();
     }
 
     public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      // TODO 3792
+      // TODO 3818
       throw new NotImplementedException ();
     }
 

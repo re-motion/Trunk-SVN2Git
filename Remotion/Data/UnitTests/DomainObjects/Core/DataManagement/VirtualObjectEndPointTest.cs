@@ -173,6 +173,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [Ignore ("TODO 3818")]
+    public void MarkDataComplete ()
+    {
+      Assert.Fail ("TODO");
+    }
+
+    [Test]
+    [Ignore ("TODO 3818")]
+    public void MarkDataComplete_Null ()
+    {
+      Assert.Fail ("TODO");
+    }
+
+    [Test]
     public void CreateSetCommand_Same ()
     {
       var relatedObject = OrderTicket.GetObject(DomainObjectIDs.OrderTicket1);
