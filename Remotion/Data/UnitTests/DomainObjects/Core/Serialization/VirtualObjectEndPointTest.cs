@@ -95,5 +95,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (endPointProvider, Is.Not.Null);
     }
 
+    [Test]
+    public void DataKeeperFactory ()
+    {
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var dataKeeperFactory = deserializedEndPoint.DataKeeperFactory;
+      Assert.That (dataKeeperFactory, Is.Not.Null);
+    }
+
   }
 }

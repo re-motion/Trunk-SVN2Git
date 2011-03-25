@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
@@ -78,6 +79,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
       Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ChangeDetectionStrategy, 
           Is.SameAs (collectionEndPointChangeDetectionStrategy));
+      Assert.That (map.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (typeof (VirtualObjectEndPointDataKeeperFactory)));
+      Assert.That (((VirtualObjectEndPointDataKeeperFactory) map.VirtualObjectEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
     }
 
     [Test]

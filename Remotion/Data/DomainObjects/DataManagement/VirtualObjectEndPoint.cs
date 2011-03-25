@@ -16,6 +16,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
@@ -30,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
+    private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
     private bool _hasBeenTouched;
 
     public VirtualObjectEndPoint (
@@ -37,19 +40,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
         RelationEndPointID id,
         ObjectID oppositeObjectID,
         IRelationEndPointLazyLoader lazyLoader,
-        IRelationEndPointProvider endPointProvider)
+        IRelationEndPointProvider endPointProvider,
+        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
             ArgumentUtility.CheckNotNull ("id", id),
             ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
             ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
+      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
+
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
       _oppositeObjectID = oppositeObjectID;
       _originalOppositeObjectID = oppositeObjectID;
       _hasBeenTouched = false;
+
+      _dataKeeperFactory = dataKeeperFactory;
+    }
+
+    public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> DataKeeperFactory
+    {
+      get { return _dataKeeperFactory; }
     }
 
     public override ObjectID OppositeObjectID
@@ -194,6 +207,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = info.GetBoolValue();
       _oppositeObjectID = info.GetValueForHandle<ObjectID>();
       _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID>() : _oppositeObjectID;
+      _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -204,6 +218,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeObjectID);
       if (_hasBeenTouched)
         info.AddHandle (_originalOppositeObjectID);
+      info.AddHandle (_dataKeeperFactory);
     }
 
     #endregion

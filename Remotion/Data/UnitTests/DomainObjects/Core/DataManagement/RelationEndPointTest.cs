@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      _endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      _endPoint = new TestableRelationEndPoint(ClientTransactionMock, _endPointID);
       _endPointWithNullObject = new TestableRelationEndPoint (ClientTransactionMock, RelationEndPointID.Create(null, _endPointID.Definition));
       _endPointWithInvalidObject = new TestableRelationEndPoint (ClientTransactionMock, RelationEndPointID.Create(_invalidObject.ID, _endPointID.Definition));
     }

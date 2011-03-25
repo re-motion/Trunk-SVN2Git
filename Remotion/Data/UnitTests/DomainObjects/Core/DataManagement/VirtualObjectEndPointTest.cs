@@ -20,6 +20,8 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -34,7 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
+    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
+    
     private VirtualObjectEndPoint _endPoint;
+    
 
     public override void SetUp ()
     {
@@ -45,7 +50,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, DomainObjectIDs.OrderTicket1, _lazyLoaderStub, _endPointProviderStub);
+      _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>();
+
+      _endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current, 
+          _endPointID, 
+          DomainObjectIDs.OrderTicket1, 
+          _lazyLoaderStub, 
+          _endPointProviderStub,
+          _dataKeeperFactoryStub);
     }
 
     [Test]
@@ -54,13 +67,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialize_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (ClientTransactionMock, id, null, _lazyLoaderStub, _endPointProviderStub);
+      new VirtualObjectEndPoint (ClientTransactionMock, id, null, _lazyLoaderStub, _endPointProviderStub, _dataKeeperFactoryStub);
     }
 
     [Test]
     public void InitializeWithNullObjectID ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current,
+          _endPointID,
+          null,
+          _lazyLoaderStub,
+          _endPointProviderStub,
+          _dataKeeperFactoryStub);
 
       Assert.That (endPoint.OriginalOppositeObjectID, Is.Null);
       Assert.That (endPoint.OppositeObjectID, Is.Null);
@@ -136,7 +155,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_WithOriginalAndCurrentNull ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current,
+          _endPointID,
+          null,
+          _lazyLoaderStub,
+          _endPointProviderStub,
+          _dataKeeperFactoryStub);
 
       Assert.That (endPoint.HasChanged, Is.False);
     }
@@ -144,7 +169,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChanged_WithOriginalNull_CurrentNotNull ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, null);
+      var endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current,
+          _endPointID,
+          null,
+          _lazyLoaderStub,
+          _endPointProviderStub,
+          _dataKeeperFactoryStub);
       ObjectEndPointTestHelper.SetOppositeObjectID (endPoint, new ObjectID ("Order", Guid.NewGuid ()));
 
       Assert.That (endPoint.HasChanged, Is.True);
@@ -204,7 +235,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateSetCommand_Same_Null ()
     {
-      var endPoint = new VirtualObjectEndPoint (ClientTransaction.Current, _endPointID, null, _lazyLoaderStub, _endPointProviderStub);
+      var endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current,
+          _endPointID,
+          null,
+          _lazyLoaderStub,
+          _endPointProviderStub,
+          _dataKeeperFactoryStub);
 
      var command = (RelationEndPointModificationCommand) endPoint.CreateSetCommand (null);
 

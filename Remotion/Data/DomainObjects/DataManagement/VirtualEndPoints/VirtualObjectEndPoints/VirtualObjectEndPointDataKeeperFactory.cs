@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints
@@ -22,6 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   /// <summary>
   /// The <see cref="VirtualObjectEndPointDataKeeperFactory"/> is responsible to create a new <see cref="IVirtualObjectEndPointDataKeeper"/> instance.
   /// </summary>
+  [Serializable]
   public class VirtualObjectEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>
   {
     private readonly ClientTransaction _clientTransaction;
@@ -30,6 +31,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       _clientTransaction = clientTransaction;
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
     }
 
     public IVirtualObjectEndPointDataKeeper Create (RelationEndPointID endPointID)

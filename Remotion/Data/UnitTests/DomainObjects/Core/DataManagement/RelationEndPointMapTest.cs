@@ -353,6 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
+      Assert.That (objectEndPoint.DataKeeperFactory, Is.SameAs (_map.VirtualObjectEndPointDataKeeperFactory));
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }

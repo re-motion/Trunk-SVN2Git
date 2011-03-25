@@ -19,6 +19,7 @@ using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -50,6 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
+    private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
@@ -59,19 +61,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
         IObjectLoader objectLoader,
         IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory,
+        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
 
       _clientTransaction = clientTransaction;
       _objectLoader = objectLoader;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
+      _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
@@ -110,6 +115,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> CollectionEndPointDataKeeperFactory
     {
       get { return _collectionEndPointDataKeeperFactory; }
+    }
+
+    public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> VirtualObjectEndPointDataKeeperFactory
+    {
+      get { return _virtualObjectEndPointDataKeeperFactory; }
     }
 
     public bool Contains (RelationEndPointID id)
@@ -210,7 +220,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
-      var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID, _lazyLoader, _endPointProvider);
+      var objectEndPoint = new VirtualObjectEndPoint (
+          _clientTransaction,
+          endPointID,
+          oppositeObjectID,
+          _lazyLoader,
+          _endPointProvider,
+          _virtualObjectEndPointDataKeeperFactory);
       Add (objectEndPoint);
       
       return objectEndPoint;
@@ -633,7 +649,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
             info.GetValueForHandle<IObjectLoader>(),
             info.GetValueForHandle<IRelationEndPointLazyLoader>(),
             info.GetValueForHandle<IRelationEndPointProvider>(),
-            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ())
+            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
+            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
@@ -652,6 +669,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_collectionEndPointDataKeeperFactory);
+      info.AddHandle (_virtualObjectEndPointDataKeeperFactory);
 
       var endPointArray = new IRelationEndPoint[Count];
       _relationEndPoints.Values.CopyTo (endPointArray, 0);

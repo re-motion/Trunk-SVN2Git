@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -63,18 +64,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader, endPointProvider);
     }
 
-    public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
-    {
-      var clientTransaction = ClientTransaction.Current;
-      var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader, endPointProvider);
-    }
-
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       if (endPointID.Definition.IsVirtual)
-        return CreateVirtualObjectEndPoint (endPointID, oppositeObjectID);
+      {
+        var clientTransaction = ClientTransaction.Current;
+        var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+        var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+        var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+        return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader, endPointProvider, dataKeeperFactory);
+      }
       else
       {
         var endPoint = CreateRealObjectEndPoint (endPointID);

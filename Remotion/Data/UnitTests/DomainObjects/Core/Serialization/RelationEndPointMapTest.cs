@@ -71,7 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedMap.ObjectLoader, Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
       Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
-      Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointMap.CollectionEndPointDataKeeperFactory.GetType()));
+      Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointMap.CollectionEndPointDataKeeperFactory.GetType ()));
+      Assert.That (deserializedMap.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointMap.VirtualObjectEndPointDataKeeperFactory.GetType ()));
 
       Assert.That (deserializedMap.Count, Is.EqualTo (7));
 

@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -61,12 +62,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataContainerMap = new DataContainerMap (clientTransaction);
 
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
+      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
       _relationEndPointMap = new RelationEndPointMap (
           clientTransaction, 
           objectLoader, 
           this, 
           this, 
-          collectionEndPointDataKeeperFactory);
+          collectionEndPointDataKeeperFactory,
+          virtualObjectEndPointDataKeeperFactory);
 
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
