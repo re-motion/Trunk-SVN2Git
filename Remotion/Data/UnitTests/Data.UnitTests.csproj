@@ -241,7 +241,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPoints\SynchronizedRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPoints\UnknownRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPoints\UnsynchronizedRealObjectEndPointSyncStateTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointMapTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableObjectEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />

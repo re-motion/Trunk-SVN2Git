@@ -22,9 +22,9 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public static class ObjectEndPointTestHelper
+  public static class RealObjectEndPointTestHelper
   {
-    public static void SetOppositeObjectID (ObjectEndPoint objectEndPoint, ObjectID newID)
+    public static void SetOppositeObjectID (RealObjectEndPoint objectEndPoint, ObjectID newID)
     {
       PrivateInvoke.SetPublicProperty (objectEndPoint, "OppositeObjectID", newID);
     }

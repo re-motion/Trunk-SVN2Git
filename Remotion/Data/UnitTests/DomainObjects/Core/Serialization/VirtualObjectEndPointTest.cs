@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void TouchedContent ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Computer2);
+      _endPoint.CreateSetCommand (Computer.GetObject (DomainObjectIDs.Computer2)).Perform ();
       _endPoint.Touch();
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);

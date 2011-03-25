@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeObject_Null ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
+      _endPoint.SetOppositeObjectID (null);
 
       var oppositeObject = _endPoint.GetOppositeObject (false);
       Assert.That (oppositeObject, Is.Null);
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       order1.Delete ();
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
+      _endPoint.SetOppositeObjectID (order1.ID);
 
       Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       order1.Delete ();
       Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
+      _endPoint.SetOppositeObjectID (order1.ID);
 
       _endPoint.GetOppositeObject (false);
     }
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeObject.Delete ();
       Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
+      _endPoint.SetOppositeObjectID (oppositeObject.ID);
 
       Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
     }
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       oppositeObject.Delete ();
       Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
+      _endPoint.SetOppositeObjectID (oppositeObject.ID);
       
       _endPoint.GetOppositeObject (false);
     }
@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPointID_NullEndPoint ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
+      _endPoint.SetOppositeObjectID (null);
 
       var oppositeEndPointID = _endPoint.GetOppositeRelationEndPointID ();
 

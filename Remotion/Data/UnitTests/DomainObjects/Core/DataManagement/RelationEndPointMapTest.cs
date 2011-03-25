@@ -398,20 +398,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, oppositeObject);
-      Assert.That (_map[id], Is.Not.Null);
+      var virtualObjectEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
+      virtualObjectEndPointStub.Stub (stub => stub.ID).Return (id);
+      virtualObjectEndPointStub.Stub (stub => stub.HasChanged).Return (true);
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
-      Assert.That (objectEndPoint.HasChanged, Is.True);
-
+      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointStub);
+      
       try
       {
         CallUnregisterVirtualObjectEndPoint (_map, id);
       }
       finally
       {
-        Assert.That (_map[id], Is.SameAs (objectEndPoint));
+        Assert.That (_map[id], Is.SameAs (virtualObjectEndPointStub));
       }
     }
 
@@ -442,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oppositeEndPoint, Is.Not.Null);
       Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -453,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -474,7 +473,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       collectionEndPointMock.VerifyAllExpectations();
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -491,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
 
       Assert.That (
-          ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
+          RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
           Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)),
           "Because collection's state is incomplete.");
     }
@@ -504,7 +503,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      Assert.That (ObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
     }
 
     [Test]
@@ -613,7 +612,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[id], Is.Not.Null);
 
       Assert.That (objectEndPoint.OppositeObjectID, Is.Not.Null);
-      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       try
@@ -847,10 +846,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      var oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket>();
-      var virtualEndPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID, oppositeObject);
+
+      var virtualObjectEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
+      virtualObjectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      virtualObjectEndPointStub.Stub (stub => stub.OriginalOppositeObjectID).Return (DomainObjectIDs.OrderTicket1);
       // the current value is ignored, only the original value is relevant
-      ObjectEndPointTestHelper.SetOppositeObjectID (virtualEndPoint, null);
+      virtualObjectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (null);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointStub);
+
       Assert.That (_map[endPointID], Is.Not.Null);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -923,9 +926,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
-      var objectEndPoint = (ObjectEndPoint) _map[endPointID];
+      var objectEndPoint = (RealObjectEndPoint) _map[endPointID];
       Assert.That (objectEndPoint, Is.Not.Null);
-      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
@@ -938,9 +941,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
 
-      var objectEndPoint = (ObjectEndPoint) _map[endPointID];
+      var objectEndPoint = (RealObjectEndPoint) _map[endPointID];
       Assert.That (objectEndPoint, Is.Not.Null);
-      ObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, DomainObjectIDs.Order1);
       Assert.That (objectEndPoint.HasChanged, Is.True);
 
       var result = _map.GetNonUnregisterableEndPointsForDataContainer (dataContainer);

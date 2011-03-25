@@ -92,19 +92,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void OppositeObjectID_Set ()
-    {
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-    }
-
-    [Test]
     public void OppositeObjectID_Set_RaisesStateNotification_Changed ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
 
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, true));
     }
@@ -114,7 +107,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, _endPoint.OppositeObjectID);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (_endPoint.OppositeObjectID)).Perform ();
 
       listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
@@ -128,7 +122,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOriginalData ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
 
       Assert.That (((IVirtualEndPoint<ObjectID>) _endPoint).GetOriginalData (), Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
@@ -139,7 +134,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
       Assert.That (_endPoint.HasChanged, Is.False);
 
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
@@ -168,7 +164,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           _lazyLoaderStub,
           _endPointProviderStub,
           _dataKeeperFactoryStub);
-      ObjectEndPointTestHelper.SetOppositeObjectID (endPoint, new ObjectID ("Order", Guid.NewGuid ()));
+      // TODO 3818: Must be removed
+      endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> ()).Perform ();
 
       Assert.That (endPoint.HasChanged, Is.True);
     }
@@ -176,7 +173,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChangedWith_OriginalNonNull_CurrentNotNull ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (null).Perform();
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
@@ -286,7 +284,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform();
 
       _endPoint.Commit ();
 
@@ -308,7 +307,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Commit_RaisesStateNotification ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
 
@@ -321,7 +321,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback ()
     {
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket1));
 
       _endPoint.Rollback ();
@@ -344,7 +345,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback_RaisesStateNotification ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.OrderTicket2);
+      // TODO 3818: Must be removed
+      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
 

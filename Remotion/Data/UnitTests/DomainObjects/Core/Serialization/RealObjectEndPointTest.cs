@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void TouchedContent ()
     {
-      ObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Employee1);
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Employee1);
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
@@ -116,9 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var syncState = ObjectEndPointTestHelper.GetSyncState (deserializedEndPoint);
+      var syncState = RealObjectEndPointTestHelper.GetSyncState (deserializedEndPoint);
       Assert.That (syncState, Is.Not.Null);
-      Assert.That (syncState.GetType (), Is.SameAs (ObjectEndPointTestHelper.GetSyncState (_endPoint).GetType ()));
+      Assert.That (syncState.GetType (), Is.SameAs (RealObjectEndPointTestHelper.GetSyncState (_endPoint).GetType ()));
     }
 
     [Test]

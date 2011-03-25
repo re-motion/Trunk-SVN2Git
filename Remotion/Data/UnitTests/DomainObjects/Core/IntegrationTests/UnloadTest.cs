@@ -553,7 +553,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (domainObject.ID, "Computer");
       var virtualEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
       Assert.That (virtualEndPoint.OppositeObjectID, Is.Not.Null);
-      ObjectEndPointTestHelper.SetOppositeObjectID (virtualEndPoint, null);
+
+      virtualEndPoint.CreateSetCommand (null).Perform ();
 
       Assert.That (virtualEndPoint.HasChanged, Is.True);
 

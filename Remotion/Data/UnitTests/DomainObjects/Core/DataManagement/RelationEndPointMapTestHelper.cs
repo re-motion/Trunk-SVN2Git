@@ -25,5 +25,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PrivateInvoke.InvokeNonPublicMethod (endPointMap, "Add", endPoint);
     }
+
+    public static void ReplaceEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
+    {
+      endPointMap.RemoveEndPoint (endPoint.ID);
+      AddEndPoint (endPointMap, endPoint);
+    }
   }
 }

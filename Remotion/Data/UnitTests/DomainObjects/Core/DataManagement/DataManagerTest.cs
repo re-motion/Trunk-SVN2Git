@@ -846,8 +846,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
-      var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      ObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
+      var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
       Assert.That (endPoint.HasChanged, Is.True);
 
       var result = _dataManager.HasRelationChanged (dataContainer);
@@ -873,8 +873,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
-      var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      ObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
+      var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Official1);
       Assert.That (endPoint.HasChanged, Is.True);
 
       DataManagerTestHelper.RemoveEndPoint (_dataManager, endPointID);
