@@ -34,8 +34,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
         ICollectionEndPointDataKeeper dataKeeper, 
         IRelationEndPointLazyLoader lazyLoader, 
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
-        : base(dataKeeper, lazyLoader, dataKeeperFactory)
+      : base (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoints, lazyLoader, dataKeeperFactory)
     {
+      if (dataKeeper.HasDataChanged ())
+        throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
     public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
@@ -99,12 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       collectionEndPoint.EnsureDataComplete ();
       return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
     }
-
-    protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
-    {
-      return DataKeeper.OriginalOppositeEndPoints;
-    }
-
+    
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)

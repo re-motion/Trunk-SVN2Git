@@ -22,17 +22,21 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints
 {
-  public class TestableIncompleteVirtualEndPointLoadState : IncompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>
+  public class TestableIncompleteVirtualEndPointLoadState
+      : IncompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>
   {
     private IRealObjectEndPoint[] _stubbedOriginalOppositeEndPoints;
 
-    public TestableIncompleteVirtualEndPointLoadState (IVirtualEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader, IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
-        : base(dataKeeper, lazyLoader, dataKeeperFactory)
+    public TestableIncompleteVirtualEndPointLoadState (
+        IEnumerable<IRealObjectEndPoint> originalOppositeEndPoints,
+        IRelationEndPointLazyLoader lazyLoader,
+        IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
+        : base (originalOppositeEndPoints, lazyLoader, dataKeeperFactory)
     {
     }
 
     public TestableIncompleteVirtualEndPointLoadState (FlattenedDeserializationInfo info)
-        : base(info)
+        : base (info)
     {
     }
 
@@ -40,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _stubbedOriginalOppositeEndPoints = originalOppositeEndPoints;
     }
-    
-    protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
+
+    protected IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
       return _stubbedOriginalOppositeEndPoints;
     }

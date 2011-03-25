@@ -20,38 +20,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
 
-    private readonly TDataKeeper _dataKeeper;
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<TDataKeeper> _dataKeeperFactory;
+    private readonly Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints;
 
     protected IncompleteVirtualEndPointLoadStateBase (
-        TDataKeeper dataKeeper,
+        IEnumerable<IRealObjectEndPoint> originalOppositeEndPoints,
         IRelationEndPointLazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<TDataKeeper> dataKeeperFactory)
     {
-      ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
+      ArgumentUtility.CheckNotNull ("originalOppositeEndPoints", originalOppositeEndPoints);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
-      // TODO 3818: Throw if dataKeeper.HasDataChanged => incomplete state with changed data is currently not supported
-
-      // TODO 3818: Remove _dataKeeper field, replace with Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints
-      _dataKeeper = dataKeeper;
+      _originalOppositeEndPoints = originalOppositeEndPoints.ToDictionary(ep=>ep.ObjectID);
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
     }
-
-    // TODO 3818: Remove, use _originalOppositeEndPoints instead
-    protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
 
     public static ILog Log
     {
       get { return s_log; }
     }
 
-    public TDataKeeper DataKeeper
+    public ICollection<IRealObjectEndPoint> OriginalOppositeEndPoints
     {
-      get { return _dataKeeper; }
+      get { return _originalOppositeEndPoints.Values; }
     }
 
     public IRelationEndPointLazyLoader LazyLoader
@@ -103,8 +97,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      // TODO 3818: add to _originalOppositeEndPoints
-      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      _originalOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
+
       oppositeEndPoint.ResetSyncState ();
     }
 
@@ -112,8 +106,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      // TODO 3818: remove from _originalOppositeEndPoints; throw if not found
-      _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+      if (!_originalOppositeEndPoints.ContainsKey (oppositeEndPoint.ObjectID))
+        throw new InvalidOperationException ("The opposite end-point has not been registered.");
+
+      _originalOppositeEndPoints.Remove (oppositeEndPoint.ObjectID);
     }
 
     public void RegisterCurrentOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -168,20 +164,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     public bool HasChanged ()
     {
-      // TODO 3818: Return false
-      return _dataKeeper.HasDataChanged ();
+      return false; 
     }
 
     public void Commit ()
     {
-      // TODO 3818: nop
-      _dataKeeper.Commit ();
+      Assertion.IsTrue (!HasChanged());
     }
 
     public void Rollback ()
     {
-      // TODO 3818: nop
-      _dataKeeper.Rollback ();
+      Assertion.IsTrue (!HasChanged ());
     }
 
     protected void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> items, Action<TDataKeeper> stateSetter)
@@ -190,24 +183,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("items", items);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      Assertion.IsFalse (
-          _dataKeeper.HasDataChanged (),
-          "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
-
       if (s_log.IsInfoEnabled)
         s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", endPoint.ID);
 
       var newDataKeeper = _dataKeeperFactory.Create (endPoint.ID);
-      var originalOppositeEndPoints = GetOriginalOppositeEndPoints ().ToDictionary (ep => ep.ObjectID);
-
+      
       foreach (var item in items)
       {
         IRealObjectEndPoint oppositeEndPoint;
-        if (originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
+        if (_originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
         {
           newDataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
           oppositeEndPoint.MarkSynchronized ();
-          originalOppositeEndPoints.Remove (item.ID);
+          _originalOppositeEndPoints.Remove (item.ID);
         }
         else
         {
@@ -224,7 +212,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
       stateSetter (newDataKeeper);
 
-      foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)
+      foreach (var oppositeEndPointWithoutItem in _originalOppositeEndPoints.Values)
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem);
     }
 
@@ -234,8 +222,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
-      // TODO 3818: serialize _originalOppositeEndPoints instead of _dataKeeper
-      _dataKeeper = info.GetValueForHandle<TDataKeeper> ();
+
+      var realObjectEndPoints = new List<IRealObjectEndPoint>();
+      info.FillCollection (realObjectEndPoints);
+      _originalOppositeEndPoints = realObjectEndPoints.ToDictionary (ep => ep.ObjectID);
+      
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<TDataKeeper>> ();
     }
 
@@ -243,8 +234,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_lazyLoader);
-      // TODO 3818: serialize _originalOppositeEndPoints instead of _dataKeeper
-      info.AddHandle (_dataKeeper);
+      info.AddCollection(_originalOppositeEndPoints.Values);
       info.AddHandle (_dataKeeperFactory);
     }
 

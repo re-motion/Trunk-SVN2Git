@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
 
     public bool HasDataChanged ()
     {
-      throw new NotImplementedException();
+      return false;
     }
 
     public void SortCurrentAndOriginalData (IComparer<DomainObject> comparer)

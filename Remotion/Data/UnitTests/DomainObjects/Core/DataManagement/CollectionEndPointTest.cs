@@ -106,7 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (dataKeeperFactoryMock));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeper, Is.SameAs (dataKeeperStub));
     }
 
     [Test]
@@ -337,7 +336,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPointWithLoadStateMock);
       Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
 
-      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
       Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).LazyLoader, Is.SameAs (GetEndPointLazyLoader (_endPointWithLoadStateMock)));
     }
 

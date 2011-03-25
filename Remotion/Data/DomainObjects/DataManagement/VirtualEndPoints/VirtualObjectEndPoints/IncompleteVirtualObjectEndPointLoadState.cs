@@ -25,12 +25,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   /// Represents the state of a <see cref="VirtualObjectEndPoint"/> where not all of its data is available (ie., the end-point has not been (lazily) 
   /// loaded, or it has been unloaded).
   /// </summary>
-  public class IncompleteVirtualObjectEndPointLoadState 
+  public class IncompleteVirtualObjectEndPointLoadState
       : IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, ObjectID, IVirtualObjectEndPointDataKeeper>, IVirtualObjectEndPointLoadState
   {
-    public IncompleteVirtualObjectEndPointLoadState (IVirtualObjectEndPointDataKeeper dataKeeper, IRelationEndPointLazyLoader lazyLoader, IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
-        : base(dataKeeper, lazyLoader, dataKeeperFactory)
+    private static IEnumerable<IRealObjectEndPoint> CreateEndPointSequence (IRealObjectEndPoint endPoint)
     {
+      return endPoint == null ? new IRealObjectEndPoint[0] : new[] { endPoint };
+    }
+
+    public IncompleteVirtualObjectEndPointLoadState (
+        IVirtualObjectEndPointDataKeeper dataKeeper,
+        IRelationEndPointLazyLoader lazyLoader,
+        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
+        : base (
+            CreateEndPointSequence (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoint), lazyLoader, dataKeeperFactory)
+    {
+      if (dataKeeper.HasDataChanged())
+        throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
     public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter)
@@ -42,7 +53,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       MarkDataComplete (endPoint, items, stateSetter);
     }
 
-    public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (
+        IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
@@ -58,11 +70,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
 
       virtualObjectEndPoint.EnsureDataComplete();
       return virtualObjectEndPoint.CreateDeleteCommand();
-    }
-
-    protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
-    {
-      return DataKeeper.OriginalOppositeEndPoint == null ? new IRealObjectEndPoint[0] : new[] { DataKeeper.OriginalOppositeEndPoint };
     }
 
     #region Serialization
