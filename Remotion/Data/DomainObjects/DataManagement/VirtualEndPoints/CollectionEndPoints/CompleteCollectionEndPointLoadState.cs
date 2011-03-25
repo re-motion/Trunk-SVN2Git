@@ -60,6 +60,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       DataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
     }
 
+    public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("items", items);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      base.MarkDataComplete (endPoint, items, stateSetter);
+    }
+
     public IDataManagementCommand CreateSetCollectionCommand (
         ICollectionEndPoint collectionEndPoint,
         DomainObjectCollection newCollection,

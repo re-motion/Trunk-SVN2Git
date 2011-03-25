@@ -33,7 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
   [TestFixture]
   public class IncompleteVirtualObjectEndPointLoadStateTest : StandardMappingTest
   {
+    private RelationEndPointID _endPointID;
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
+
     private IRelationEndPointLazyLoader _lazyLoaderMock;
     private IVirtualObjectEndPointDataKeeper _dataKeeperMock;
     private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
@@ -42,23 +44,153 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     private OrderTicket _relatedObject;
     private IRealObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub2;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp ();
 
+      _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       _virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+    
       _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader> ();
-
       _dataKeeperMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataKeeper> ();
-
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
 
       _loadState = new IncompleteVirtualObjectEndPointLoadState (_dataKeeperMock, _lazyLoaderMock, _dataKeeperFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+    }
+
+    [Test]
+    public void MarkDataComplete_CreatesNewDataKeeper ()
+    {
+      bool stateSetterCalled = false;
+
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _virtualObjectEndPointMock.Replay ();
+
+      var newKeeperMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataKeeper> ();
+      newKeeperMock.Replay ();
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+
+      _loadState.MarkDataComplete (
+          _virtualObjectEndPointMock,
+          null,
+          keeper =>
+          {
+            stateSetterCalled = true;
+            Assert.That (keeper, Is.SameAs (newKeeperMock));
+          });
+
+      Assert.That (stateSetterCalled, Is.True);
+      newKeeperMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [Ignore ("TODO 3818")]
+    public void MarkDataComplete_EndPointsWithoutItem_IsRegisteredAfterStateSetter ()
+    {
+      bool stateSetterCalled = false;
+      
+      _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.OrderTicket1);
+      _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.OrderTicket2);
+
+      // TODO 3818: Call _loadState.RegisterOriginalOppositeEndPoint instead
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (_relatedEndPointStub);
+      Assert.Fail ("cannot register a second end-point");
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      // ReSharper disable AccessToModifiedClosure
+      _virtualObjectEndPointMock
+          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub))
+          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
+      _virtualObjectEndPointMock
+          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub2))
+          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
+      // ReSharper restore AccessToModifiedClosure
+      _virtualObjectEndPointMock.Replay ();
+
+      var newKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperStub);
+
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => stateSetterCalled = true);
+
+      _virtualObjectEndPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void MarkDataComplete_ItemWithoutEndPoint ()
+    {
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      // TODO 3818: Remove
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
+
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _virtualObjectEndPointMock.Replay ();
+
+      var newKeeperMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataKeeper> ();
+      using (newKeeperMock.GetMockRepository ().Ordered ())
+      {
+        newKeeperMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (item));
+      }
+      newKeeperMock.Replay ();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, keeper => { });
+
+      newKeeperMock.VerifyAllExpectations ();
+      _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
+    }
+
+
+    [Test]
+    public void MarkDataComplete_ItemWithEndPoint ()
+    {
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
+      oppositeEndPointMock.Stub (stub => stub.ObjectID).Return (item.ID);
+      oppositeEndPointMock.Expect (mock => mock.MarkSynchronized ());
+      oppositeEndPointMock.Replay ();
+
+      // TODO 3818: Call _loadState.RegisterOriginalOppositeEndPoint instead
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (oppositeEndPointMock);
+
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
+
+      _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _virtualObjectEndPointMock.Replay ();
+
+      var newKeeperMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataKeeper> ();
+      using (newKeeperMock.GetMockRepository ().Ordered ())
+      {
+        newKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointMock));
+      }
+      newKeeperMock.Replay ();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, keeper => { });
+
+      newKeeperMock.VerifyAllExpectations ();
+      oppositeEndPointMock.VerifyAllExpectations ();
+      _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
 
     [Test]

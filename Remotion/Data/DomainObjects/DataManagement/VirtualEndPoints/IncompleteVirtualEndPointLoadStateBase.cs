@@ -33,11 +33,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
+      // TODO 3818: Throw if dataKeeper.HasDataChanged => incomplete state with changed data is currently not supported
+
+      // TODO 3818: Remove _dataKeeper field, replace with Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints
       _dataKeeper = dataKeeper;
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
     }
 
+    // TODO 3818: Remove, use _originalOppositeEndPoints instead
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
 
     public static ILog Log
@@ -71,50 +75,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       _lazyLoader.LoadLazyVirtualEndPoint (endPoint);
     }
 
-    public void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataKeeper> stateSetter)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("data", data);
-      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-
-      Assertion.IsFalse (
-          _dataKeeper.HasDataChanged (),
-          "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
-
-      if (s_log.IsInfoEnabled)
-        s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", endPoint.ID);
-
-      var newDataKeeper = _dataKeeperFactory.Create (endPoint.ID);
-      var originalOppositeEndPoints = GetOriginalOppositeEndPoints().ToDictionary (ep => ep.ObjectID);
-
-      foreach (var item in data)
-      {
-        IRealObjectEndPoint oppositeEndPoint;
-        if (originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
-        {
-          newDataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-          oppositeEndPoint.MarkSynchronized ();
-          originalOppositeEndPoints.Remove (item.ID);
-        }
-        else
-        {
-          newDataKeeper.RegisterOriginalItemWithoutEndPoint (item);
-
-          if (s_log.IsWarnEnabled)
-          {
-            s_log.WarnFormat ("CollectionEndPoint '{0}' contains an item without an opposite end-point: '{1}'. The CollectionEndPoint is out-of-sync.",
-                              endPoint.ID,
-                              item.ID);
-          }
-        }
-      }
-
-      stateSetter (newDataKeeper);
-
-      foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)
-        endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem);
-    }
-
     public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
@@ -143,6 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      // TODO 3818: add to _originalOppositeEndPoints
       _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       oppositeEndPoint.ResetSyncState ();
     }
@@ -151,6 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
+      // TODO 3818: remove from _originalOppositeEndPoints; throw if not found
       _dataKeeper.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
@@ -206,17 +168,64 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     public bool HasChanged ()
     {
+      // TODO 3818: Return false
       return _dataKeeper.HasDataChanged ();
     }
 
     public void Commit ()
     {
+      // TODO 3818: nop
       _dataKeeper.Commit ();
     }
 
     public void Rollback ()
     {
+      // TODO 3818: nop
       _dataKeeper.Rollback ();
+    }
+
+    protected void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> items, Action<TDataKeeper> stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("items", items);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      Assertion.IsFalse (
+          _dataKeeper.HasDataChanged (),
+          "When it is allowed to have a changed collection in incomplete state, this algorithm must be rewritten.");
+
+      if (s_log.IsInfoEnabled)
+        s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", endPoint.ID);
+
+      var newDataKeeper = _dataKeeperFactory.Create (endPoint.ID);
+      var originalOppositeEndPoints = GetOriginalOppositeEndPoints ().ToDictionary (ep => ep.ObjectID);
+
+      foreach (var item in items)
+      {
+        IRealObjectEndPoint oppositeEndPoint;
+        if (originalOppositeEndPoints.TryGetValue (item.ID, out oppositeEndPoint))
+        {
+          newDataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+          oppositeEndPoint.MarkSynchronized ();
+          originalOppositeEndPoints.Remove (item.ID);
+        }
+        else
+        {
+          newDataKeeper.RegisterOriginalItemWithoutEndPoint (item);
+
+          if (s_log.IsWarnEnabled)
+          {
+            s_log.WarnFormat ("CollectionEndPoint '{0}' contains an item without an opposite end-point: '{1}'. The CollectionEndPoint is out-of-sync.",
+                              endPoint.ID,
+                              item.ID);
+          }
+        }
+      }
+
+      stateSetter (newDataKeeper);
+
+      foreach (var oppositeEndPointWithoutItem in originalOppositeEndPoints.Values)
+        endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPointWithoutItem);
     }
 
     #region Serialization
@@ -225,6 +234,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("info", info);
       _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
+      // TODO 3818: serialize _originalOppositeEndPoints instead of _dataKeeper
       _dataKeeper = info.GetValueForHandle<TDataKeeper> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<TDataKeeper>> ();
     }
@@ -233,16 +243,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_lazyLoader);
+      // TODO 3818: serialize _originalOppositeEndPoints instead of _dataKeeper
       info.AddHandle (_dataKeeper);
       info.AddHandle (_dataKeeperFactory);
     }
 
     #endregion
-
-    protected virtual void ResetSyncStateForAllOriginalOppositeEndPoints ()
-    {
-      foreach (var originalOppositeEndPoint in GetOriginalOppositeEndPoints())
-        originalOppositeEndPoint.ResetSyncState ();
-    }
   }
 }

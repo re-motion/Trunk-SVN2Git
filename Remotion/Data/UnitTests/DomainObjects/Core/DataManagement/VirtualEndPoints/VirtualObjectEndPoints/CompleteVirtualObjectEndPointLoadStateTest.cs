@@ -105,6 +105,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
+    public void MarkDataComplete_ThrowsException ()
+    {
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => Assert.Fail ("Must not be called"));
+    }
+
+    [Test]
     public void CreateSetCommand_Same ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);

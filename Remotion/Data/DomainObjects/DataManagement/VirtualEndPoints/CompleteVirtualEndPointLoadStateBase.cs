@@ -86,15 +86,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       // Data is already complete
     }
 
-    public void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataKeeper> stateSetter)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("data", data);
-      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
-
-      throw new InvalidOperationException ("The data is already complete.");
-    }
-
     public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
@@ -250,6 +241,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     public void Rollback ()
     {
       _dataKeeper.Rollback ();
+    }
+
+    protected void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataKeeper> stateSetter)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("data", data);
+      ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      throw new InvalidOperationException ("The data is already complete.");
     }
 
     protected bool ContainsUnsynchronizedOppositeEndPoint (ObjectID objectID)

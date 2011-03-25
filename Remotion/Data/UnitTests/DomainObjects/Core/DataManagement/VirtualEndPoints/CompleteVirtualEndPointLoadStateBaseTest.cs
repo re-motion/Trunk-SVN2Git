@@ -84,14 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
-    public void MarkDataComplete_ThrowsException ()
-    {
-      var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_virtualEndPointMock, items, keeper => Assert.Fail ("Must not be called"));
-    }
-
-    [Test]
     public void MarkDataIncomplete_RaisesEvent ()
     {
       _virtualEndPointMock

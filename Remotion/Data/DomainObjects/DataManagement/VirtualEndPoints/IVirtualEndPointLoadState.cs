@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
@@ -17,7 +16,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     bool IsDataComplete ();
     void EnsureDataComplete (TEndPoint endPoint);
 
-    void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataKeeper> stateSetter);
     void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter);
 
     TData GetData (TEndPoint endPoint);
