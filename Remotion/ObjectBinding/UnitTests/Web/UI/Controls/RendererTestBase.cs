@@ -22,7 +22,6 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
-  [TestFixture]
   public class RendererTestBase
   {
     protected HttpContextBase HttpContext { get; private set; }
