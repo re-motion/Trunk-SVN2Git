@@ -25,7 +25,7 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
-  public class BocTextValueRendererTestBase<T> : RendererTestBase
+  public abstract class BocTextValueRendererTestBase<T> : RendererTestBase
       where T: class, IBocTextValueBase
   {
     protected const string c_firstLineText = "This is my test text.";
