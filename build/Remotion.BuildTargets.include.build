@@ -154,10 +154,10 @@
 
     <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
                                    OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
-                                   XsltTransformFile="$(MSBuildProjectDirectory)\NUnitResult.xslt"
                                    ToolPath="$(NUnitToolPath)"
                                    Condition="$(ActiveConfigurationRunTests) == 'True'"/>
     
+    <!--Does not output test results to console-->
     <!--<MSBuild.ExtensionPack.CodeQuality.NUnit ToolPath="$(NUnitToolPath)"
                                              Assemblies="%(TestOutputFiles.FullPath)"
                                              Use32Bit="True"

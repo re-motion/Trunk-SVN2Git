@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <!-- Use tasks of the MSBuild Community Tasks library -->
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NDoc" />
 
   <!-- Use tasks of the MSBuild ExtensionPack library -->
