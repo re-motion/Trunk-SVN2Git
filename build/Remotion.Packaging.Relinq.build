@@ -38,7 +38,7 @@
       <SourceFiles Include="$(SolutionDirectory)Remotion-Linq.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)How to build re-linq.txt" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Rhino.Mocks*" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\nunit*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\nunit 2.5\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\ThirdPartyDependencies.txt" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Generate-Snk.cmd" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Relinq\**"
