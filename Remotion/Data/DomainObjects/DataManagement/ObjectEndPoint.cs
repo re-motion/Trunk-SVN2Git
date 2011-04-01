@@ -74,18 +74,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
     }
 
-    public override bool IsDataComplete
-    {
-      get { return true; }
-    }
-
-    // TODO 3818: Make abstract
-    public override void EnsureDataComplete ()
-    {
-      // nothing to do, ObjectEndPoints' data is always complete
-      Assertion.IsTrue (IsDataComplete);
-    }
-
     public override void CheckMandatory ()
     {
       if (OppositeObjectID == null)

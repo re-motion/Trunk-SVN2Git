@@ -265,13 +265,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var existingDataContainer = dataManager.GetDataContainerWithoutLoading (relatedDataContainer.ID);
       if (existingDataContainer != null)
       {
-        var existingOppositeEndPointID = RelationEndPointID.Create(existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
+        var existingOppositeEndPointID = RelationEndPointID.Create (existingDataContainer.ID, relationEndPointID.Definition.GetOppositeEndPointDefinition ());
         var existingBackPointer = dataManager.RelationEndPointMap.GetRelatedObject (existingOppositeEndPointID, true);
 
         if (s_log.IsWarnEnabled)
         {
           s_log.WarnFormat ("Cannot load the related '{0}' of '{1}': The database returned related object '{2}', "
-            +"but that object already exists in the current ClientTransaction (and points to a different object '{3}')",
+            + "but that object already exists in the current ClientTransaction (and points to a different object '{3}')",
             relationEndPointID.Definition.PropertyName,
             relationEndPointID.ObjectID,
             relatedDataContainer.ID,

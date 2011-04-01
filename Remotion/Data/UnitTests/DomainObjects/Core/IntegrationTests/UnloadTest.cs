@@ -550,14 +550,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var domainObject = Employee.GetObject (DomainObjectIDs.Employee3);
 
-      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (domainObject.ID, "Computer");
-      var virtualEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
-      Assert.That (virtualEndPoint.OppositeObjectID, Is.Not.Null);
-
-      virtualEndPoint.CreateSetCommand (null).Perform ();
-
-      Assert.That (virtualEndPoint.HasChanged, Is.True);
-
+      domainObject.Computer = null;
+      
       UnloadService.UnloadData (ClientTransactionMock, domainObject.ID);
     }
 

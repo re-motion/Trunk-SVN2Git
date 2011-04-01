@@ -45,6 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     private IRelationEndPointProvider _endPointProviderStub;
 
     private Action<ObjectID> _fakeSetter;
+    private bool _fakeSetterCalled;
+    private ObjectID _fakeSetterCallID;
 
     public override void SetUp ()
     {
@@ -62,7 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _locationClientEndPointDefinition = GetRelationEndPointDefinition (typeof (Location), "Client");
       _orderCustomerEndPointDefinition = GetRelationEndPointDefinition (typeof (Order), "Customer");
 
-      _fakeSetter = id => { };
+      _fakeSetter = id => { _fakeSetterCalled = true; _fakeSetterCallID = id; };
+      _fakeSetterCalled = false;
+      _fakeSetterCallID = null;
     }
 
     [Test]
@@ -83,10 +87,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     }
 
     [Test]
-    public void CreateDeleteCommand ()
+    public void CreateDeleteCommand_NonVirtualOpposite ()
     {
+      var virtualDefinition = RelationEndPointObjectMother.GetEndPointDefinition (typeof (Order), "OrderTicket");
+
       _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
+      _endPointMock.Stub (stub => stub.Definition).Return (virtualDefinition);
+      _endPointMock.Replay();
 
       var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
 
@@ -94,6 +102,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       Assert.That (command.DomainObject, Is.SameAs (_order));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+    }
+
+    [Test]
+    public void CreateDeleteCommand_VirtualOpposite ()
+    {
+      var realDefinition = RelationEndPointObjectMother.GetEndPointDefinition (typeof (OrderTicket), "Order");
+
+      _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);
+      _endPointMock.Stub (stub => stub.IsNull).Return (false);
+      _endPointMock.Stub (stub => stub.Definition).Return (realDefinition);
+      _endPointMock.Replay ();
+
+      var oldOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint>();
+      oldOppositeEndPointMock.Replay();
+      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPoint (_endPointMock)).Return (oldOppositeEndPointMock);
+
+      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
+
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
+      Assert.That (command.DomainObject, Is.SameAs (_order));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
+      
+      var objectIDSetter = GetOppositeObjectIDSetter (command);
+      Assert.That (objectIDSetter, Is.Not.SameAs (_fakeSetter));
+
+      oldOppositeEndPointMock.BackToRecord();
+      oldOppositeEndPointMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPointMock));
+      oldOppositeEndPointMock.Replay();
+
+      Assert.That (_fakeSetterCalled, Is.False);
+      
+      objectIDSetter (DomainObjectIDs.OrderTicket1);
+
+      oldOppositeEndPointMock.VerifyAllExpectations();
+      Assert.That (_fakeSetterCalled, Is.True);
+      Assert.That (_fakeSetterCallID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
@@ -173,13 +217,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
 
+      var oldOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
+      oldOppositeEndPointMock.Replay ();
+      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPoint (_endPointMock)).Return (oldOppositeEndPointMock);
+
+      var newOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
+      newOppositeEndPointMock.Replay ();
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (newRelatedObject.ID, typeof (OrderTicket), "Order")))
+          .Return (newOppositeEndPointMock);
+
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
 
       Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+
+      var oppositeObjectIDSetter = GetOppositeObjectIDSetter (command);
+      Assert.That (oppositeObjectIDSetter, Is.Not.SameAs (_fakeSetter));
+
+      oldOppositeEndPointMock.BackToRecord();
+      oldOppositeEndPointMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPointMock));
+      oldOppositeEndPointMock.Replay();
+
+      newOppositeEndPointMock.BackToRecord();
+      newOppositeEndPointMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPointMock));
+      newOppositeEndPointMock.Replay();
+
+      Assert.That (_fakeSetterCalled, Is.False);
+      
+      oppositeObjectIDSetter (DomainObjectIDs.OrderTicket1);
+
+      oldOppositeEndPointMock.VerifyAllExpectations ();
+      newOppositeEndPointMock.VerifyAllExpectations ();
+
+      Assert.That (_fakeSetterCalled, Is.True);
+      Assert.That (_fakeSetterCallID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
@@ -221,9 +295,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       return Configuration.ClassDefinitions.GetMandatory (classType).GetRelationEndPointDefinition (classType.FullName + "." + shortPropertyName);
     }
 
-    private object GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    private Action<ObjectID> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
     {
-      return PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
+      return (Action<ObjectID>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
     }
 
   }

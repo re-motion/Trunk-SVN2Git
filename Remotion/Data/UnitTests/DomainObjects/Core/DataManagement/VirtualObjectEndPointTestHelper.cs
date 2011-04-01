@@ -14,12 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Development.UnitTesting;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public interface IRelationEndPointLazyLoader
+  public static class VirtualObjectEndPointTestHelper
   {
-    void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint);
-    void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint);
-    void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint);
+    public static IVirtualObjectEndPointLoadState GetLoadState (VirtualObjectEndPoint endPoint)
+    {
+      return (IVirtualObjectEndPointLoadState) PrivateInvoke.GetNonPublicField (endPoint, "_loadState");
+    }
   }
 }

@@ -96,6 +96,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void EnsureDataComplete ()
+    {
+      _lazyLoaderMock.Expect (mock => mock.LoadLazyCollectionEndPoint (_collectionEndPointMock));
+      _lazyLoaderMock.Replay ();
+      _collectionEndPointMock.Replay ();
+
+      _loadState.EnsureDataComplete (_collectionEndPointMock);
+
+      _lazyLoaderMock.VerifyAllExpectations ();
+      _collectionEndPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void MarkDataComplete_CreatesNewDataKeeper ()
     {
       bool stateSetterCalled = false;

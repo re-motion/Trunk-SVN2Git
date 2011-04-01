@@ -78,6 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       base.Perform ();
 
+      // TODO 3818: Refactor: Move to oppositeObjectIDSetter?
       _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
       _newRelatedEndPoint.RegisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
     }

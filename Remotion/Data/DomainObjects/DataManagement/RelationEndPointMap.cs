@@ -215,19 +215,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
       CheckVirtuality (endPointID, true, "RegisterVirtualObjectEndPoint", "endPointID");
 
-      return RegisterVirtualObjectEndPoint (endPointID, null);
+      var endPoint = RegisterVirtualObjectEndPoint (endPointID);
+      endPoint.MarkDataComplete (null);
+      return endPoint;
     }
 
-    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, DomainObject oppositeObject)
+    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       var objectEndPoint = new VirtualObjectEndPoint (
           _clientTransaction,
           endPointID,
-          oppositeObject != null ? oppositeObject.ID : null,
           _lazyLoader,
           _endPointProvider,
           _virtualObjectEndPointDataKeeperFactory);
-      // TODO: objectEndPoint.MarkDataComplete (oppositeObject);
+      
       Add (objectEndPoint);
       
       return objectEndPoint;
@@ -359,7 +360,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
       endPoint.MarkDataComplete (items);
     }
-    
+
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -380,23 +381,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
           "EnsureDataAvailable should guarantee that the DataContainer is registered, which in turn guarantees that all non-virtual end points are "
           + "registered in the map");
 
+      // TODO 3818: RegisterVirtualEndPoint
+      IVirtualEndPoint endPoint;
       if (endPointID.Definition.Cardinality == CardinalityType.One)
-      {
-        // loading the related object will automatically register the related's real end points via RegisterEndPointsForExistingDataContainer, 
-        // which also registers the opposite virtual end point; see assertion below
-        var relatedObject = _objectLoader.LoadRelatedObject (endPointID, ClientTransaction.DataManager);
-        if (relatedObject == null)
-          RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
-
-        Assertion.IsTrue (
-            _relationEndPoints.ContainsKey (endPointID), 
-            "Loading related object should have indirectly registered this end point because that object holds the foreign key");
-      }
+        endPoint = RegisterVirtualObjectEndPoint (endPointID);
       else
-      {
-        var endPoint = RegisterCollectionEndPoint (endPointID);
-        endPoint.EnsureDataComplete ();
-      }
+        endPoint = RegisterCollectionEndPoint (endPointID);
+
+      endPoint.EnsureDataComplete ();
 
       Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
       return _relationEndPoints[endPointID];
@@ -468,8 +460,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
         {
           var loadedVirtualObjectEndPoint = (IObjectEndPoint) this[endPointID];
-          if (loadedVirtualObjectEndPoint != null && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
+          if (loadedVirtualObjectEndPoint != null
+              && loadedVirtualObjectEndPoint.IsDataComplete
+              && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
+          {
             yield return endPointID;
+          }
         }
       }
     }
@@ -562,16 +558,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
       }
 
-      var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+      var oppositeVirtualEndPointID = RelationEndPointID.Create (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
       if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
       {
-        RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.GetDomainObjectReference());
-        realObjectEndPoint.MarkSynchronized();
+        var oppositeEndPoint = GetVirtualObjectEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
+        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
+        // TODO 3818: Move this to IncompleteVirtualObjectEndPoint.RegisterOriginalOppositeEndPoint
+        if (!oppositeEndPoint.IsDataComplete)
+          oppositeEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference());
       }
       else
       {
         var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint); // calls MarkSynchronized/MarkUnsynchronized
+        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
       }
     }
 
@@ -606,6 +605,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return (ICollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID);
     }
 
+    private IVirtualObjectEndPoint GetVirtualObjectEndPointOrRegisterEmpty (RelationEndPointID endPointID)
+    {
+      return (IVirtualObjectEndPoint) this[endPointID] ?? RegisterVirtualObjectEndPoint (endPointID);
+    }
+
     // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it
     // is non-null and points to an object that already points back to another object.
     private void CheckForConflictingForeignKey (
@@ -625,7 +629,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var oppositeVirtualEndPointID = RelationEndPointID.Create(foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
       var existingOppositeVirtualEndPoint = (IObjectEndPoint) this[oppositeVirtualEndPointID];
-      if (existingOppositeVirtualEndPoint == null) // if the opposite end point does not exist, this is not a conflicting foreign key value
+      
+      // if the opposite end point does not exist - or is incomplete -, this is not a conflicting foreign key value
+      if (existingOppositeVirtualEndPoint == null || !existingOppositeVirtualEndPoint.IsDataComplete) 
         return;
 
       var existingConflictingObjectID = existingOppositeVirtualEndPoint.OriginalOppositeObjectID;

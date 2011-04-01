@@ -20,6 +20,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -257,6 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPoint = _map.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
       Assert.That (endPoint, Is.Not.Null);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (_map[orderItemsEndPointID], Is.SameAs (endPoint));
     }
 
@@ -270,6 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPoint = _map.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
       Assert.That (endPoint, Is.Not.Null);
+      Assert.That (endPoint.IsDataComplete, Is.True);
       Assert.That (_map[orderTicketEndPointID], Is.SameAs (endPoint));
     }
 
@@ -338,7 +343,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var objectEndPoint = _map.RegisterVirtualObjectEndPointWithNullOpposite (id);
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
+      Assert.That (objectEndPoint.IsDataComplete, Is.True);
       Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
+      Assert.That (objectEndPoint.OriginalOppositeObjectID, Is.Null);
       
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
@@ -348,28 +355,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket>();
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, oppositeObject);
+      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id);
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
-      Assert.That (objectEndPoint.IsDataComplete, Is.True);
-      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (oppositeObject.ID));
-      Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
-      Assert.That (objectEndPoint.DataKeeperFactory, Is.SameAs (_map.VirtualObjectEndPointDataKeeperFactory));
-
-      Assert.That (_map[id], Is.SameAs (objectEndPoint));
-    }
-
-    [Test]
-    public void RegisterVirtualObjectEndPoint_Null ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id, null);
-
-      Assert.That (objectEndPoint.ID, Is.EqualTo (id));
-      Assert.That (objectEndPoint.IsDataComplete, Is.True);
-      Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
+      Assert.That (objectEndPoint.IsDataComplete, Is.False);
       Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
       Assert.That (objectEndPoint.DataKeeperFactory, Is.SameAs (_map.VirtualObjectEndPointDataKeeperFactory));
 
@@ -380,8 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void UnregisterVirtualObjectEndPoint_RemovesEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
-      CallRegisterVirtualObjectEndPoint (_map, id, oppositeObject);
+      CallRegisterVirtualObjectEndPoint (_map, id);
       Assert.That (_map[id], Is.Not.Null);
 
       CallUnregisterVirtualObjectEndPoint (_map, id);
@@ -456,6 +444,75 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualEndPointAlreadyRegistered_NotComplete ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+
+      var domainObjectReference = LifetimeService.GetObjectReference (ClientTransactionMock, id.ObjectID);
+
+      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
+      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
+      virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
+      virtualObjectEndPointMock.Expect (mock => mock.MarkDataComplete (domainObjectReference));
+      virtualObjectEndPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointMock);
+
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      virtualObjectEndPointMock.VerifyAllExpectations ();
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
+    }
+
+    [Test]
+    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualEndPointAlreadyRegistered_AlreadyComplete ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+
+      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
+      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
+      virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
+      virtualObjectEndPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointMock);
+
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      virtualObjectEndPointMock.VerifyAllExpectations ();
+      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
+    }
+
+    [Test]
+    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualObjectNotRegisteredYet ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+
+      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+
+      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var virtualObjectEndPoint = (VirtualObjectEndPoint) _map[virtualObjectEndPointID];
+      Assert.That (virtualObjectEndPoint.IsDataComplete, Is.True);
+      Assert.That (
+          ((CompleteVirtualObjectEndPointLoadState) VirtualObjectEndPointTestHelper.GetLoadState (virtualObjectEndPoint)).DataKeeper.
+              CurrentOppositeEndPoint,
+          Is.SameAs (realObjectEndPoint));
+
+      Assert.That (
+          RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
+          Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)),
+          "Because real end-point was registered with virtual end-point.");
+    }
+
+    [Test]
     public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionAlreadyRegistered ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
@@ -488,6 +545,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
       Assert.That (collectionEndPoint.IsDataComplete, Is.False);
+
+      Assert.That (
+          ((IncompleteCollectionEndPointLoadState) CollectionEndPointTestHelper.GetLoadState (collectionEndPoint)).OriginalOppositeEndPoints,
+          List.Contains (realObjectEndPoint));
 
       Assert.That (
           RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
@@ -867,12 +928,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
       _map.RegisterEndPointsForDataContainer (dataContainer);
-      CallRegisterVirtualObjectEndPoint (_map, endPointID, null);
+      _map.RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
       Assert.That (_map[endPointID], Is.Not.Null);
+      Assert.That (_map[endPointID].IsDataComplete, Is.True);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
 
       Assert.That (_map[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void UnregisterEndPointsForDataContainer_Existing_IgnoresUnloadedVirtualObjectEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+      var endPoint = _map.RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
+      endPoint.MarkDataIncomplete();
+
+      Assert.That (_map[endPointID], Is.Not.Null);
+      Assert.That (_map[endPointID].IsDataComplete, Is.False);
+
+      _map.UnregisterEndPointsForDataContainer (dataContainer);
+
+      Assert.That (_map[endPointID], Is.Not.Null);
     }
 
     [Test]
@@ -1015,6 +1094,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CheckForConflictingForeignKeys_NoConflicts_WithExistingOppositeVirtualObjectEndPointIncomplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order1);
+
+      var oppositeEndPoint = (IVirtualObjectEndPoint) CallRegisterVirtualObjectEndPoint (_map, RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket"));
+      Assert.That (oppositeEndPoint, Is.Not.Null);
+      Assert.That (oppositeEndPoint.IsDataComplete, Is.False);
+
+      _map.CheckForConflictingForeignKeys (dataContainer);
+
+      Assert.That (oppositeEndPoint.IsDataComplete, Is.False);    
+    }
+
+    [Test]
     public void CheckForConflictingForeignKeys_NoConflicts_Nulls ()
     {
       var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -1054,7 +1148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CheckForConflictingForeignKeys_Conflict_WithNull ()
     {
       var endPointID1 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      CallRegisterVirtualObjectEndPoint (_map, endPointID1, null);
+      _map.RegisterVirtualObjectEndPointWithNullOpposite (endPointID1);
 
       var endPointID2 = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket2, "Order");
       var dataContainer2 = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID2, DomainObjectIDs.Order1);
@@ -1255,12 +1349,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.GetOppositeEndPoint (objectEndPointStub);
     }
 
-    private VirtualObjectEndPoint CallRegisterVirtualObjectEndPoint (
-        RelationEndPointMap relationEndPointMap,
-        RelationEndPointID id,
-        DomainObject oppositeObject)
+    private VirtualObjectEndPoint CallRegisterVirtualObjectEndPoint (RelationEndPointMap relationEndPointMap, RelationEndPointID id)
     {
-      return (VirtualObjectEndPoint) PrivateInvoke.InvokeNonPublicMethod (relationEndPointMap, "RegisterVirtualObjectEndPoint", id, oppositeObject);
+      return (VirtualObjectEndPoint) PrivateInvoke.InvokeNonPublicMethod (relationEndPointMap, "RegisterVirtualObjectEndPoint", id);
     }
 
     private void CallUnregisterVirtualObjectEndPoint (

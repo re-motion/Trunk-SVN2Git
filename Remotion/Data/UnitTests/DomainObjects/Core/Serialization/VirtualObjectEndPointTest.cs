@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void TouchedContent ()
+    public void TouchedChangedContent ()
     {
       _endPoint.CreateSetCommand (Computer.GetObject (DomainObjectIDs.Computer2)).Perform ();
       _endPoint.Touch();
@@ -80,31 +80,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void LazyLoader ()
+    public void Internals ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var lazyLoader = deserializedEndPoint.LazyLoader;
-      Assert.That (lazyLoader, Is.Not.Null);
+      Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
+      Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedEndPoint.DataKeeperFactory, Is.Not.Null);
+
+      var loadState = VirtualObjectEndPointTestHelper.GetLoadState(deserializedEndPoint);
+      Assert.That (loadState, Is.Not.Null);
     }
-
-    [Test]
-    public void EndPointProvider ()
-    {
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-
-      var endPointProvider = deserializedEndPoint.EndPointProvider;
-      Assert.That (endPointProvider, Is.Not.Null);
-    }
-
-    [Test]
-    public void DataKeeperFactory ()
-    {
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-
-      var dataKeeperFactory = deserializedEndPoint.DataKeeperFactory;
-      Assert.That (dataKeeperFactory, Is.Not.Null);
-    }
-
   }
 }

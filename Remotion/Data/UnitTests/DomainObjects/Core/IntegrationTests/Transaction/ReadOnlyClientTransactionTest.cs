@@ -17,7 +17,6 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -314,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-       + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
+       + "ClientTransaction is read-only. Offending transaction modification: RelationEndPointMapRegistering.")]
     public void ThrowsOnGetRelatedObject1To1VirtualSideIfNotLoaded ()
     {
       Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee3);

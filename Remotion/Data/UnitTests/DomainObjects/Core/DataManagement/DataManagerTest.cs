@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -550,28 +549,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
-      var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order1)).Perform ();
+      var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      RealObjectEndPointTestHelper.SetOppositeObjectID (endPoint, DomainObjectIDs.Order1);
 
       _dataManager.Discard (dataContainer);
     }
 
     [Test]
-    public void Commit_CommitsRelationEndPointMap ()
+    public void Commit_CommitsRelationEndPoints ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderTicket1, typeof (OrderTicket).FullName + ".Order");
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint>();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.Commit());
+      endPointMock.Replay();
 
-      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
-      var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order2)).Perform();
+      RelationEndPointMapTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
 
-      Assert.That (endPoint.HasChanged, Is.True);
-
-      _dataManager.Commit ();
-
-      Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      endPointMock.Replay();
     }
 
     [Test]
@@ -654,19 +649,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback_RollsBackRelationEndPointStates ()
     {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderTicket1, typeof (OrderTicket).FullName + ".Order");
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.Rollback ());
+      endPointMock.Replay ();
 
-      var endPointID = RelationEndPointID.Create(dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
-      var endPoint = (IObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
-      endPoint.CreateSetCommand (LifetimeService.GetObjectReference (_dataManager.ClientTransaction, DomainObjectIDs.Order2)).Perform ();
+      RelationEndPointMapTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
 
-      Assert.That (endPoint.HasChanged, Is.True);
+      endPointMock.Replay ();
 
-      _dataManager.Rollback ();
+      _dataManager.Rollback();
 
-      Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.OppositeObjectID, Is.Null);
+      endPointMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -991,7 +986,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void LoadLazyVirtualEndPoint_CollectionEndPoint ()
+    public void LoadLazyCollectionEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
@@ -1010,7 +1005,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Return (loaderResult);
       _objectLoaderMock.Replay ();
 
-      _dataManagerWitLoaderMock.LoadLazyVirtualEndPoint (endPointMock);
+      _dataManagerWitLoaderMock.LoadLazyCollectionEndPoint (endPointMock);
 
       _objectLoaderMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
@@ -1018,13 +1013,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The given end-point is not managed by this DataManager.\r\nParameter name: virtualEndPoint")]
+        "The given end-point is not managed by this DataManager.\r\nParameter name: collectionEndPoint")]
     public void LoadLazyCollectionEndPoint_NotRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
       
-      _dataManager.LoadLazyVirtualEndPoint (endPoint);
+      _dataManager.LoadLazyCollectionEndPoint (endPoint);
     }
 
     [Test]
@@ -1036,7 +1031,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPoint.MarkDataComplete (new DomainObject[0]);
       Assert.That (endPoint.IsDataComplete, Is.True);
 
-      _dataManager. LoadLazyVirtualEndPoint (endPoint);
+      _dataManager. LoadLazyCollectionEndPoint (endPoint);
+    }
+
+    [Test]
+    public void LoadLazyVirtualObjectEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var loaderResult = DomainObjectMother.CreateFakeObject<OrderTicket>();
+
+      var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
+      endPointMock.Stub (stub => stub.IsDataComplete).Return (false);
+      endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
+      endPointMock.Replay ();
+
+      _objectLoaderMock
+          .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWitLoaderMock))
+          .Return (loaderResult);
+      _objectLoaderMock.Replay ();
+
+      _dataManagerWitLoaderMock.LoadLazyVirtualObjectEndPoint (endPointMock);
+
+      _objectLoaderMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end-point is not managed by this DataManager.\r\nParameter name: virtualObjectEndPoint")]
+    public void LoadLazyVirtualObjectEndPoint_NotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (endPointID, ClientTransaction.Current);
+
+      _dataManager.LoadLazyVirtualObjectEndPoint (endPoint);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The given end-point cannot be loaded, its data is already complete.")]
+    public void LoadLazyVirtualObjectEndPoint_AlreadyLoaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPoint = (IVirtualObjectEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (endPoint.IsDataComplete, Is.True);
+
+      _dataManager.LoadLazyVirtualObjectEndPoint (endPoint);
     }
 
     [Test]

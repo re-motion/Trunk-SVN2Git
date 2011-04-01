@@ -40,6 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
     }
 
+    public override void EnsureDataComplete (IVirtualEndPoint<object> endPoint)
+    {
+      throw new NotImplementedException ();
+    }
+
     public void StubOriginalOppositeEndPoints (IRealObjectEndPoint[] originalOppositeEndPoints)
     {
       _stubbedOriginalOppositeEndPoints = originalOppositeEndPoints;

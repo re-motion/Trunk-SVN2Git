@@ -102,9 +102,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return ForeignKeyProperty.HasBeenTouched; }
     }
 
+    public override bool IsDataComplete
+    {
+      get { return true; }
+    }
+
     public override bool IsSynchronized
     {
       get { return _syncState.IsSynchronized (this); }
+    }
+
+    public override void EnsureDataComplete ()
+    {
+      Assertion.IsTrue (IsDataComplete);
     }
 
     public override void Synchronize ()

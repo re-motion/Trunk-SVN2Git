@@ -245,8 +245,10 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointMapTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableObjectEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\CollectionEndPointOppositeTrackingTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\VirtualObjectEndPointOppositeTrackingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\RelationInconsistenciesInSubtransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\SyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\UnloadedCollectionRelationTest.cs" />

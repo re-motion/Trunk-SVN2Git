@@ -40,6 +40,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
         throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
+    public override void EnsureDataComplete (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      LazyLoader.LoadLazyCollectionEndPoint (endPoint);
+    }
+
     public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract bool HasBeenTouched { get; }
 
     public abstract bool IsDataComplete { get; }
-    public abstract void EnsureDataComplete ();
-
     public abstract bool IsSynchronized { get; }
+
+    public abstract void EnsureDataComplete ();
     public abstract void Synchronize ();
 
     public abstract void Touch ();

@@ -74,19 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void EnsureDataComplete ()
-    {
-      _lazyLoaderMock.Expect (mock => mock.LoadLazyVirtualEndPoint (_virtualEndPointMock));
-      _lazyLoaderMock.Replay();
-      _virtualEndPointMock.Replay();
-      
-      _loadState.EnsureDataComplete (_virtualEndPointMock);
-
-      _lazyLoaderMock.VerifyAllExpectations();
-      _virtualEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
     public void MarkDataIncomplete_ThrowsException ()
     {

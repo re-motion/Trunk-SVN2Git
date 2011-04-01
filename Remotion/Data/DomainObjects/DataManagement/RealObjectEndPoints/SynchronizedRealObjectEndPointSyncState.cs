@@ -59,7 +59,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
+      var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
+
+      // TODO 3818: Consider moving to a new RealObjectEndPointDeleteCommand
+      if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
+      {
+        var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPoint (endPoint);
+        return new ObjectEndPointDeleteCommand (endPoint, id =>
+        {
+          oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (endPoint);
+          oppositeObjectIDSetter (id);
+        });
+      }
+      else
+      {
+        return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
+      }
     }
 
     public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
@@ -75,7 +90,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       else if (oppositeEndPointDefinition.IsAnonymous)
         return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
       else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
+      {
+        // TODO 3818: GetOppositeVirtualEndPoint is too restricted - cannot be used to get original opposite end-point. Either add GetOriginalOppositeEndPoint, or remove and inline usages.
+        var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPoint (endPoint);
+
+        var newRelatedEndPointID = RelationEndPointID.Create (newRelatedObjectID, oppositeEndPointDefinition);
+        var newRelatedEndPoint = (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithLazyLoad (newRelatedEndPointID);
+
+        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, id =>
+        {
+          oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (endPoint);
+          oppositeObjectIDSetter (id);
+          newRelatedEndPoint.RegisterCurrentOppositeEndPoint (endPoint);
+        });
+      }
       else
         return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
     }

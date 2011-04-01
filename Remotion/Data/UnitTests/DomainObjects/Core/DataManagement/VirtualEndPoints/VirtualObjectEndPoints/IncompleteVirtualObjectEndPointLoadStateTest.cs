@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
@@ -101,6 +100,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
 
       new IncompleteVirtualObjectEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
+    }
+
+    [Test]
+    public void EnsureDataComplete ()
+    {
+      _lazyLoaderMock.Expect (mock => mock.LoadLazyVirtualObjectEndPoint (_virtualObjectEndPointMock));
+      _lazyLoaderMock.Replay ();
+      _virtualObjectEndPointMock.Replay ();
+
+      _loadState.EnsureDataComplete (_virtualObjectEndPointMock);
+
+      _lazyLoaderMock.VerifyAllExpectations ();
+      _virtualObjectEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -214,9 +226,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateSetCommand ()
     {
-      Action<ObjectID> fakeSetter = collection => { };
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject, fakeSetter),
+          s => s.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject),
           s => s.CreateSetCommand (_relatedObject),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -224,9 +235,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateSetCommand_Null ()
     {
-      Action<ObjectID> fakeSetter = collection => { };
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetCommand (_virtualObjectEndPointMock, null, fakeSetter),
+          s => s.CreateSetCommand (_virtualObjectEndPointMock, null),
           s => s.CreateSetCommand (null),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
@@ -234,9 +244,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateDeleteCommand ()
     {
-      Action<ObjectID> fakeSetter = collection => { };
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateDeleteCommand (_virtualObjectEndPointMock, fakeSetter),
+          s => s.CreateDeleteCommand (_virtualObjectEndPointMock),
           s => s.CreateDeleteCommand (),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }

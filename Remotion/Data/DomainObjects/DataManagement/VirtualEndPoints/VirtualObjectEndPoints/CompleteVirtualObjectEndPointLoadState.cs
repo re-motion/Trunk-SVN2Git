@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
@@ -64,27 +63,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      MarkDataComplete (endPoint, new[] { item }, stateSetter);
+      // TODO 3818: Check that item matches current data; if so, don't call MarkDataComplete => second half of optimization in Incomplete...RegisterOriginalOppositeEndPoint
+      Assertion.IsTrue ((item == null && DataKeeper.CurrentOppositeObjectID == null) || item.ID == DataKeeper.CurrentOppositeObjectID);
+      // MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 
-    public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (DataKeeper.CurrentOppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, oppositeObjectIDSetter);
+        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
       else
-        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, oppositeObjectIDSetter);
+        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, id => DataKeeper.CurrentOppositeObjectID = id);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, oppositeObjectIDSetter);
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()

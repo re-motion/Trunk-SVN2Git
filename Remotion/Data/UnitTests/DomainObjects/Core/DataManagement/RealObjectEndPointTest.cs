@@ -83,6 +83,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void IsDataComplete_True ()
+    {
+      Assert.That (_endPoint.IsDataComplete, Is.True);
+    }
+
+    [Test]
     public void IsSynchronized ()
     {
       _syncStateMock
@@ -164,6 +170,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPoint.ForeignKeyProperty.Touch();
 
       Assert.That (_endPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void EnsureDataComplete_DoesNothing ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      _endPoint.EnsureDataComplete ();
     }
 
     [Test]

@@ -105,6 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    [Ignore ("TODO 3818")]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
     public void MarkDataComplete_ThrowsException ()
     {
@@ -122,16 +123,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
-      Action<ObjectID> fakeObjectIDSetter = id => { };
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject, fakeObjectIDSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (fakeObjectIDSetter));
+      CheckOppositeObjectIDSetter (command);
     }
 
     [Test]
@@ -145,16 +144,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
-      Action<ObjectID> fakeObjectIDSetter = id => { };
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, null, fakeObjectIDSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, null);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.OldRelatedObject, Is.Null);
       Assert.That (command.NewRelatedObject, Is.Null);
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (fakeObjectIDSetter));
+
+      CheckOppositeObjectIDSetter (command);
     }
 
     [Test]
@@ -169,17 +167,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _virtualObjectEndPointMock.Stub (mock => mock.Definition).Return (_definition);
       _virtualObjectEndPointMock.Replay ();
 
-      Action<ObjectID> fakeObjectIDSetter = id => { };
-
       var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, newRelatedObject, fakeObjectIDSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, newRelatedObject);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetOneOneCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (fakeObjectIDSetter));
+
+      CheckOppositeObjectIDSetter (command);
     }
 
     [Test]
@@ -189,15 +186,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
-      Action<ObjectID> fakeObjectIDSetter = id => { };
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand (_virtualObjectEndPointMock, fakeObjectIDSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand (_virtualObjectEndPointMock);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
 
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (fakeObjectIDSetter));
+      CheckOppositeObjectIDSetter (command);
     }
 
     [Test]
@@ -309,6 +304,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       var dictionary = (Dictionary<ObjectID, IRealObjectEndPoint>) PrivateInvoke.GetNonPublicField (loadState, "_unsynchronizedOppositeEndPoints");
       dictionary.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
+    }
+
+    private void CheckOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    {
+      var setter = GetOppositeObjectIDSetter (command);
+
+      _dataKeeperMock.BackToRecord ();
+      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket5);
+      _dataKeeperMock.Replay ();
+
+      setter (DomainObjectIDs.OrderTicket5);
+
+      _dataKeeperMock.VerifyAllExpectations ();
     }
   }
 }

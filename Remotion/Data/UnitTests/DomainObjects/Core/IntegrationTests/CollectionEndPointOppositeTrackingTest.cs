@@ -242,6 +242,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckCurrentData (_fileSystemItem3);
       CheckCurrentOppositeEndPoints (_fileSystemItem3EndPoint);
     }
+
+    [Test]
+    public void Delete_FKSide ()
+    {
+      _fileSystemItem1.Delete();
+
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem2);
+      CheckCurrentOppositeEndPoints (_fileSystemItem2EndPoint);
+
+      ClientTransaction.Current.Rollback ();
+
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem1, _fileSystemItem2);
+      CheckCurrentOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      _fileSystemItem1.Delete();
+
+      ClientTransaction.Current.Commit ();
+
+      CheckOriginalData (_fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem2);
+      CheckCurrentOppositeEndPoints (_fileSystemItem2EndPoint);
+    }
+
+    [Test]
+    public void Delete_CollectionSide ()
+    {
+      _folder1.Delete ();
+
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData ();
+      CheckCurrentOppositeEndPoints ();
+
+      ClientTransaction.Current.Rollback ();
+
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem1, _fileSystemItem2);
+      CheckCurrentOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      _folder1.Delete ();
+
+      ClientTransaction.Current.Commit ();
+
+      CheckOriginalOppositeEndPoints ();
+      CheckCurrentOppositeEndPoints ();
+    }
     
     private T GetEndPoint<T> (RelationEndPointID endPointID) where T : IRelationEndPoint
     {

@@ -55,9 +55,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { return _hasBeenTouched; }
     }
 
+    public override bool IsDataComplete
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public override bool IsSynchronized
     {
       get { throw new NotImplementedException(); }
+    }
+
+    public override void EnsureDataComplete ()
+    {
+      throw new NotImplementedException ();
     }
 
     public override void Synchronize ()

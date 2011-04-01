@@ -920,9 +920,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return (IRelationEndPointLazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
     }
 
-    private void AssertDidNotLoadData (IVirtualEndPoint virtualEndPoint)
+    private void AssertDidNotLoadData (ICollectionEndPoint virtualEndPoint)
     {
-      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyVirtualEndPoint (virtualEndPoint));
+      _lazyLoaderMock.AssertWasNotCalled (mock => mock.LoadLazyCollectionEndPoint (virtualEndPoint));
       Assert.That (virtualEndPoint.IsDataComplete, Is.False);
     }
 

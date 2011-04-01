@@ -72,13 +72,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void RegisterCurrentOppositeEndPoint ()
     {
       _nullEndPoint.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
     }
+
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void UnregisterCurrentOppositeEndPoint ()
     {
       _nullEndPoint.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);

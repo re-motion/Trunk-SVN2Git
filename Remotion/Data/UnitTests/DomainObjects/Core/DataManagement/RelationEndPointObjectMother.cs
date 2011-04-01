@@ -16,10 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -64,15 +67,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader, endPointProvider);
     }
 
+    public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ClientTransaction clientTransaction)
+    {
+      var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
+      var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+      return new VirtualObjectEndPoint (clientTransaction, endPointID, lazyLoader, endPointProvider, dataKeeperFactory);
+    }
+
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       if (endPointID.Definition.IsVirtual)
       {
         var clientTransaction = ClientTransaction.Current;
-        var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-        var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-        var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
-        return new VirtualObjectEndPoint (clientTransaction, endPointID, oppositeObjectID, lazyLoader, endPointProvider, dataKeeperFactory);
+        VirtualObjectEndPoint endPoint = CreateVirtualObjectEndPoint (endPointID, clientTransaction);
+        endPoint.MarkDataComplete (LifetimeService.GetObjectReference (clientTransaction, oppositeObjectID));
+        return endPoint;
       }
       else
       {
@@ -86,6 +96,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
       return RelationEndPointID.Create (objectID, objectID.ClassDefinition.ClassType, shortPropertyName);
+    }
+
+    public static IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (declaringType);
+      var propertyAccessorData = classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (declaringType, shortPropertyName);
+      Assert.That (propertyAccessorData, Is.Not.Null);
+      return propertyAccessorData.RelationEndPointDefinition;
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint_Customer1_Orders (params Order[] initialContents)

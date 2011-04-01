@@ -26,7 +26,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   {
     private readonly Action<ObjectID> _oppositeObjectIDSetter;
 
-    protected ObjectEndPointSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    protected ObjectEndPointSetCommand (
+        IObjectEndPoint modifiedEndPoint, 
+        DomainObject newRelatedObject, 
+        Action<ObjectID> oppositeObjectIDSetter)
       : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);

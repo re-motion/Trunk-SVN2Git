@@ -25,8 +25,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   {
     void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter);
 
-    IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter);
-    IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint, Action<ObjectID> oppositeObjectIDSetter);
+    IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject);
+    IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint);
 
   }
 }

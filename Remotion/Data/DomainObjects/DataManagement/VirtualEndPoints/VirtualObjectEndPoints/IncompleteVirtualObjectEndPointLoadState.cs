@@ -44,6 +44,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
+    public override void EnsureDataComplete (IVirtualObjectEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      LazyLoader.LoadLazyVirtualObjectEndPoint (endPoint);
+    }
+
     public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
@@ -54,19 +61,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     }
 
     public IDataManagementCommand CreateSetCommand (
-        IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+        IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
       virtualObjectEndPoint.EnsureDataComplete();
       return virtualObjectEndPoint.CreateSetCommand (newRelatedObject);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
       virtualObjectEndPoint.EnsureDataComplete();
       return virtualObjectEndPoint.CreateDeleteCommand();

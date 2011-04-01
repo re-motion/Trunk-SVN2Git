@@ -24,10 +24,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class ObjectEndPointSetOneOneCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetOneOneCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public ObjectEndPointSetOneOneCommand (
+        IObjectEndPoint modifiedEndPoint,
+        DomainObject newRelatedObject,
+        Action<ObjectID> oppositeObjectIDSetter)
       : base (modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
     {
-      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
+      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition ().IsAnonymous)
       {
         var message = string.Format ("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
@@ -70,15 +73,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
       var oldRelatedEndPointOfNewRelatedEndPoint = newRelatedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject);
 
+      // Order is important - removing oldOrderOfNewTicket from NewRelatedObject must occur before set command so that end-point tracking works 
+      // correctly because VirtualObjectEndPointDataKeeper only supports one opposite end-point at a time
+
       var bidirectionalModification = new ExpandedCommand (
-        // => order.OrderTicket = newTicket
-        this,
-        // => oldTicket.Order = null (remove)
-        oldRelatedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject ()),
-        // => newTicket.Order = order
-        newRelatedEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject ()),
-        // => oldOrderOfNewTicket.OrderTicket = null (remove)
-        oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveCommand (NewRelatedObject));
+          // => oldTicket.Order = null (remove)
+          oldRelatedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject()),
+          // => oldOrderOfNewTicket.OrderTicket = null (remove)
+          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveCommand (NewRelatedObject),
+          // => order.OrderTicket = newTicket
+          this,
+          // => newTicket.Order = order
+          newRelatedEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject()));
 
       return bidirectionalModification;
     }

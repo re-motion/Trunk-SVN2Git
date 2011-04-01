@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndP
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -193,6 +192,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
     }
 
+    // TODO 3818: Remove somehow
     public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -280,20 +280,32 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return DataContainerMap[id];
     }
 
-   public void LoadLazyVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
+    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("virtualEndPoint", virtualEndPoint);
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 
-      Assertion.IsTrue (virtualEndPoint.Definition.Cardinality == CardinalityType.Many);
+      if (collectionEndPoint != _relationEndPointMap[collectionEndPoint.ID])
+        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
 
-      if (virtualEndPoint != _relationEndPointMap[virtualEndPoint.ID])
-        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "virtualEndPoint");
-
-      if (virtualEndPoint.IsDataComplete)
+      if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObjects = _objectLoader.LoadRelatedObjects (virtualEndPoint.ID, this);
-      _relationEndPointMap.MarkCollectionEndPointComplete (virtualEndPoint.ID, domainObjects);
+      var domainObjects = _objectLoader.LoadRelatedObjects (collectionEndPoint.ID, this);
+      collectionEndPoint.MarkDataComplete (domainObjects);
+    }
+
+    public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
+
+      if (virtualObjectEndPoint != _relationEndPointMap[virtualObjectEndPoint.ID])
+        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "virtualObjectEndPoint");
+
+      if (virtualObjectEndPoint.IsDataComplete)
+        throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
+
+      var domainObject = _objectLoader.LoadRelatedObject (virtualObjectEndPoint.ID, this);
+      virtualObjectEndPoint.MarkDataComplete (domainObject);
     }
 
     public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)

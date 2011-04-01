@@ -51,12 +51,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("RegisterCurrentOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+      // Ignore
     }
 
     public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("UnregisterCurrentOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+      // Ignore
     }
   }
 }

@@ -141,20 +141,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void IsDataComplete_True ()
-    {
-      Assert.That (_endPoint.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void EnsureDataComplete_DoesNothing ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _endPoint.EnsureDataComplete ();
-    }
-    
-    [Test]
     public void SetValueFrom_SetsOppositeObjectID_IfIDsDiffer ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);

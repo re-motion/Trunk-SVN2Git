@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -32,245 +31,333 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class VirtualObjectEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
-    private Order _domainObject;
 
     private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
-    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
+    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
+    private IVirtualObjectEndPointLoadState _loadStateMock;
     
     private VirtualObjectEndPoint _endPoint;
-    
+
+    private IRealObjectEndPoint _oppositeEndPointStub;
+    private OrderTicket _oppositeObject;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _domainObject = Order.GetObject (_endPointID.ObjectID);
     
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>();
+      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (ClientTransactionMock);
+      _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
       _endPoint = new VirtualObjectEndPoint (
           ClientTransaction.Current, 
           _endPointID, 
-          DomainObjectIDs.OrderTicket1, 
           _lazyLoaderStub, 
           _endPointProviderStub,
-          _dataKeeperFactoryStub);
+          _dataKeeperFactory);
+      PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
 
-      // TODO 3818: 1) Implement LoadState in VirtualObjectEndPoint; call MarkDataComplete (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1))
-      // TODO 3818: 2) Use PrivateInvoke to set a load state mock; adapt all tests to expect mock calls
-      // TODO 3818: 3) Add tests for members currently not tested
+      _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
+      _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket>();
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      var endPoint = new VirtualObjectEndPoint (
+          ClientTransaction.Current,
+          _endPointID,
+          _lazyLoaderStub,
+          _endPointProviderStub,
+          _dataKeeperFactory);
+
+      Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
+      Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderStub));
+      Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (endPoint.HasBeenTouched, Is.False);
+      Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "End point ID must refer to a virtual end point.\r\nParameter name: id")]
-    public void Initialize_NonVirtualDefinition ()
+    public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (ClientTransactionMock, id, null, _lazyLoaderStub, _endPointProviderStub, _dataKeeperFactoryStub);
+      new VirtualObjectEndPoint (ClientTransactionMock, id, _lazyLoaderStub, _endPointProviderStub, _dataKeeperFactory);
     }
 
     [Test]
-    public void InitializeWithNullObjectID ()
+    public void OppositeObjectID ()
     {
-      var endPoint = new VirtualObjectEndPoint (
-          ClientTransaction.Current,
-          _endPointID,
-          null,
-          _lazyLoaderStub,
-          _endPointProviderStub,
-          _dataKeeperFactoryStub);
+      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (DomainObjectIDs.OrderTicket1);
+      _loadStateMock.Replay();
 
-      Assert.That (endPoint.OriginalOppositeObjectID, Is.Null);
-      Assert.That (endPoint.OppositeObjectID, Is.Null);
-    }
+      var result = _endPoint.OppositeObjectID;
+      _loadStateMock.VerifyAllExpectations ();
 
-    [Test]
-    public void OppositeObjectID_Get ()
-    {
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-    }
-
-    [Test]
-    public void OppositeObjectID_Set_RaisesStateNotification_Changed ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
-
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, true));
-    }
-
-    [Test]
-    public void OppositeObjectID_Set_RaisesStateNotification_Unchanged ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
-
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (_endPoint.OppositeObjectID)).Perform ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
+      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
     public void GetData ()
     {
-      Assert.That (((IVirtualEndPoint<ObjectID>) _endPoint).GetData(), Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (DomainObjectIDs.OrderTicket1);
+      _loadStateMock.Replay ();
+
+      var result = ((IVirtualEndPoint<ObjectID>) _endPoint).GetData ();
+      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
+    public void OriginalOppositeObjectID ()
+    {
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (DomainObjectIDs.OrderTicket2);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.OriginalOppositeObjectID;
+      _loadStateMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket2));
     }
 
     [Test]
     public void GetOriginalData ()
     {
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (DomainObjectIDs.OrderTicket2);
+      _loadStateMock.Replay ();
 
-      Assert.That (((IVirtualEndPoint<ObjectID>) _endPoint).GetOriginalData (), Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      var result = ((IVirtualEndPoint<ObjectID>) _endPoint).GetOriginalData ();
+      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket2));
     }
 
     [Test]
     public void HasChanged ()
     {
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_endPoint.HasChanged, Is.False);
+      _loadStateMock.Expect (mock => mock.HasChanged()).Return (true);
+      _loadStateMock.Replay ();
 
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
+      var result = _endPoint.HasChanged;
 
-      Assert.That (_endPoint.HasChanged, Is.True);
+      _loadStateMock.VerifyAllExpectations();
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsDataComplete ()
+    {
+      _loadStateMock.Expect (mock => mock.IsDataComplete()).Return (true);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.IsDataComplete;
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
     }
     
     [Test]
-    public void HasChanged_WithOriginalAndCurrentNull ()
-    {
-      var endPoint = new VirtualObjectEndPoint (
-          ClientTransaction.Current,
-          _endPointID,
-          null,
-          _lazyLoaderStub,
-          _endPointProviderStub,
-          _dataKeeperFactoryStub);
-
-      Assert.That (endPoint.HasChanged, Is.False);
-    }
-
-    [Test]
-    public void HasChanged_WithOriginalNull_CurrentNotNull ()
-    {
-      var endPoint = new VirtualObjectEndPoint (
-          ClientTransaction.Current,
-          _endPointID,
-          null,
-          _lazyLoaderStub,
-          _endPointProviderStub,
-          _dataKeeperFactoryStub);
-      // TODO 3818: Must be removed
-      endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> ()).Perform ();
-
-      Assert.That (endPoint.HasChanged, Is.True);
-    }
-
-    [Test]
-    public void HasChangedWith_OriginalNonNull_CurrentNotNull ()
-    {
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (null).Perform();
-
-      Assert.That (_endPoint.HasChanged, Is.True);
-    }
-
-    [Test]
     public void IsSynchronized ()
     {
-      Assert.That (_endPoint.IsSynchronized, Is.True);
+      _loadStateMock.Expect (mock => mock.IsSynchronized (_endPoint)).Return (true);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.IsSynchronized;
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "In the current implementation, ObjectEndPoints in a 1:1 relation should always be in-sync with each other.")]
+    public void EnsureDataComplete ()
+    {
+      _loadStateMock.Expect (mock => mock.EnsureDataComplete (_endPoint));
+      _loadStateMock.Replay();
+
+      _endPoint.EnsureDataComplete();
+
+      _loadStateMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Synchronize ()
+    {
+      _loadStateMock.Expect (mock => mock.Synchronize (_endPoint));
+      _loadStateMock.Replay ();
+
+      _endPoint.Synchronize();
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void SynchronizeOppositeEndPoint ()
     {
-      _endPoint.SynchronizeOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint> ());
+      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_oppositeEndPointStub));
+      _loadStateMock.Replay ();
+
+      _endPoint.SynchronizeOppositeEndPoint (_oppositeEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
-    [Ignore ("TODO 3818")]
     public void MarkDataComplete ()
     {
-      Assert.Fail ("TODO");
+      Action<IVirtualObjectEndPointDataKeeper> stateSetter = null;
+
+      _loadStateMock
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPoint), Arg.Is (_oppositeObject), Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<IVirtualObjectEndPointDataKeeper>) mi.Arguments[2]; });
+      _loadStateMock.Replay ();
+
+      _endPoint.MarkDataComplete (_oppositeObject);
+
+      _loadStateMock.VerifyAllExpectations ();
+
+      Assert.That (VirtualObjectEndPointTestHelper.GetLoadState (_endPoint), Is.SameAs (_loadStateMock));
+
+      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper>();
+      stateSetter (dataKeeperStub);
+      
+      var newLoadState = VirtualObjectEndPointTestHelper.GetLoadState (_endPoint);
+      Assert.That (newLoadState, Is.Not.SameAs (_loadStateMock));
+      Assert.That (newLoadState, Is.TypeOf (typeof (CompleteVirtualObjectEndPointLoadState)));
+
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]
-    [Ignore ("TODO 3818")]
     public void MarkDataComplete_Null ()
     {
-      Assert.Fail ("TODO");
+      _loadStateMock
+          .Expect (
+              mock => mock.MarkDataComplete (
+                  Arg.Is (_endPoint),
+                  Arg.Is ((DomainObject) null),
+                  Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything));
+      _loadStateMock.Replay ();
+
+      _endPoint.MarkDataComplete (null);
+
+      _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void CreateSetCommand_Same ()
+    public void MarkDataIncomplete ()
     {
-      var relatedObject = OrderTicket.GetObject(DomainObjectIDs.OrderTicket1);
+      Action<IVirtualObjectEndPointDataKeeper> stateSetter = null;
 
-      var command = (RelationEndPointModificationCommand) _endPoint.CreateSetCommand(relatedObject);
+      _loadStateMock
+          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPoint), Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<IVirtualObjectEndPointDataKeeper>) mi.Arguments[1]; });
+      _loadStateMock.Replay ();
 
-      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
-      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (command.OldRelatedObject, Is.SameAs (relatedObject));
-      Assert.That (command.NewRelatedObject, Is.SameAs (relatedObject));
-      CheckOppositeObjectIDSetter (command, _endPoint);
+      _endPoint.MarkDataIncomplete ();
+
+      _loadStateMock.VerifyAllExpectations ();
+
+      Assert.That (VirtualObjectEndPointTestHelper.GetLoadState (_endPoint), Is.SameAs (_loadStateMock));
+
+      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
+      stateSetter (dataKeeperStub);
+
+      var newLoadState = VirtualObjectEndPointTestHelper.GetLoadState (_endPoint);
+      Assert.That (newLoadState, Is.Not.SameAs (_loadStateMock));
+      Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteVirtualObjectEndPointLoadState)));
+
+      Assert.That (((IncompleteVirtualObjectEndPointLoadState) newLoadState).DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (((IncompleteVirtualObjectEndPointLoadState) newLoadState).LazyLoader, Is.SameAs (_lazyLoaderStub));
     }
 
     [Test]
-    public void CreateSetCommand_Same_Null ()
+    public void RegisterOriginalOppositeEndPoint ()
     {
-      var endPoint = new VirtualObjectEndPoint (
-          ClientTransaction.Current,
-          _endPointID,
-          null,
-          _lazyLoaderStub,
-          _endPointProviderStub,
-          _dataKeeperFactoryStub);
+      _loadStateMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_endPoint, _oppositeEndPointStub));
+      _loadStateMock.Replay();
 
-     var command = (RelationEndPointModificationCommand) endPoint.CreateSetCommand (null);
+      _endPoint.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
-      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
-      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
-      Assert.That (command.OldRelatedObject, Is.Null);
-      Assert.That (command.NewRelatedObject, Is.Null);
-      CheckOppositeObjectIDSetter (command, endPoint);
+      _loadStateMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void CreateSetCommand_OneOne ()
+    public void UnregisterOriginalOppositeEndPoint ()
     {
-      var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      _loadStateMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (_endPoint, _oppositeEndPointStub));
+      _loadStateMock.Replay ();
 
-      var command = (RelationEndPointModificationCommand) _endPoint.CreateSetCommand (newRelatedObject);
+      _endPoint.UnregisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
-      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
-      Assert.That (command.OldRelatedObject, Is.SameAs (OrderTicket.GetObject(DomainObjectIDs.OrderTicket1)));
-      CheckOppositeObjectIDSetter (command, _endPoint);
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void RegisterCurrentOppositeEndPoint ()
+    {
+      _loadStateMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPoint, _oppositeEndPointStub));
+      _loadStateMock.Replay ();
+
+      _endPoint.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UnregisterCurrentOppositeEndPoint ()
+    {
+      _loadStateMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPoint, _oppositeEndPointStub));
+      _loadStateMock.Replay ();
+
+      _endPoint.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      _loadStateMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CreateSetCommand ()
+    {
+      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand>();
+      _loadStateMock.Expect (mock => mock.CreateSetCommand (_endPoint, _oppositeObject)).Return (fakeCommand);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.CreateSetCommand (_oppositeObject);
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeCommand));
+    }
+
+    [Test]
+    public void CreateSetCommand_Null ()
+    {
+      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      _loadStateMock.Expect (mock => mock.CreateSetCommand (_endPoint, null)).Return (fakeCommand);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.CreateSetCommand (null);
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
     public void CreateDeleteCommand ()
     {
-      var command = (RelationEndPointModificationCommand) _endPoint.CreateDeleteCommand ();
+      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      _loadStateMock.Expect (mock => mock.CreateDeleteCommand (_endPoint)).Return (fakeCommand);
+      _loadStateMock.Replay ();
 
-      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
-      Assert.That (command.DomainObject, Is.SameAs (_domainObject));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
-      
-      CheckOppositeObjectIDSetter(command, _endPoint);
+      var result = _endPoint.CreateDeleteCommand ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
@@ -286,104 +373,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Commit ()
     {
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform();
-
-      _endPoint.Commit ();
-
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
-    }
-
-    [Test]
-    public void Commit_ClearsTouchedFlag ()
-    {
       _endPoint.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
+      _loadStateMock.Expect (mock => mock.Commit());
+      _loadStateMock.Replay ();
+      
       _endPoint.Commit ();
 
+      _loadStateMock.VerifyAllExpectations ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-    }
-
-    [Test]
-    public void Commit_RaisesStateNotification ()
-    {
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
-
-      _endPoint.Commit ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
 
     [Test]
     public void Rollback ()
     {
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket1));
-
-      _endPoint.Rollback ();
-
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-    }
-
-    [Test]
-    public void Rollback_ClearsTouchedFlag ()
-    {
       _endPoint.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
+      _loadStateMock.Expect (mock => mock.Rollback ());
+      _loadStateMock.Replay ();
+
       _endPoint.Rollback ();
 
+      _loadStateMock.VerifyAllExpectations ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-    }
-
-    [Test]
-    public void Rollback_RaisesStateNotification ()
-    {
-      // TODO 3818: Must be removed
-      _endPoint.CreateSetCommand (DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2)).Perform ();
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
-
-      _endPoint.Rollback ();
-
-      listenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, false));
     }
 
     [Test]
     public void SetOppositeObjectIDValueFrom ()
     {
-      var sourceID = RelationEndPointID.Create (DomainObjectIDs.OrderItem2, _endPointID.Definition);
-      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
 
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", source);
+      _loadStateMock.Expect (mock => mock.SetValueFrom (_endPoint, oppositeEndPointStub));
+      _loadStateMock.Replay();
 
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
-      Assert.That (_endPoint.HasChanged, Is.True);
-    }
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", oppositeEndPointStub);
 
-    private void CheckOppositeObjectIDSetter (RelationEndPointModificationCommand command, VirtualObjectEndPoint endPoint)
-    {
-      var oppositeObjectIDSetter = GetOppositeObjectIDSetter (command);
-
-      Assert.That (endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket3));
-      oppositeObjectIDSetter (DomainObjectIDs.OrderTicket3);
-      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
-    }
-
-    private Action<ObjectID> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
-    {
-      return (Action<ObjectID>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
+      _loadStateMock.VerifyAllExpectations ();
     }
   }
 }

@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetNullFromNonNullableValueType()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-			classWithAllDataTypes.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = null;
+      classWithAllDataTypes.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = null;
       Dev.Null = classWithAllDataTypes.BooleanProperty;
     }
 

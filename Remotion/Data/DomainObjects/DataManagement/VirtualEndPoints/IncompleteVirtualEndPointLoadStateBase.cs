@@ -20,6 +20,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
 
+    public static ILog Log
+    {
+      get { return s_log; }
+    }
+
     private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<TDataKeeper> _dataKeeperFactory;
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints;
@@ -38,10 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       _dataKeeperFactory = dataKeeperFactory;
     }
 
-    public static ILog Log
-    {
-      get { return s_log; }
-    }
+    public abstract void EnsureDataComplete (TEndPoint endPoint);
 
     public ICollection<IRealObjectEndPoint> OriginalOppositeEndPoints
     {
@@ -61,12 +63,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     public bool IsDataComplete ()
     {
       return false;
-    }
-
-    public void EnsureDataComplete (TEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      _lazyLoader.LoadLazyVirtualEndPoint (endPoint);
     }
 
     public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
