@@ -173,6 +173,7 @@
     <Compile Include="DataManagement\CollectionData\ObservableCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionData\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionData\CopyOnWriteDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\Commands\EndPointModifications\RealObjectEndPointRegistrationCommandDecorator.cs" />
     <Compile Include="DataManagement\IVirtualObjectEndPoint.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
