@@ -61,19 +61,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
+      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
+
       // TODO 3818: Consider moving to a new RealObjectEndPointDeleteCommand
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {
         var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
-        return new ObjectEndPointDeleteCommand (endPoint, id =>
-        {
-          oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (endPoint);
-          oppositeObjectIDSetter (id);
-        });
+        var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, null);
+        return new RealObjectEndPointRegistrationCommandDecorator (objectEndPointDeleteCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);
       }
       else
       {
-        return new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
+        return objectEndPointDeleteCommand;
       }
     }
 
@@ -93,13 +92,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       {
         var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
         var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, newRelatedObjectID);
-
-        return new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, id =>
-        {
-          oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (endPoint);
-          oppositeObjectIDSetter (id);
-          newRelatedEndPoint.RegisterCurrentOppositeEndPoint (endPoint);
-        });
+        var setCommand = new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
+        return new RealObjectEndPointRegistrationCommandDecorator (setCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);
       }
       else
         return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
