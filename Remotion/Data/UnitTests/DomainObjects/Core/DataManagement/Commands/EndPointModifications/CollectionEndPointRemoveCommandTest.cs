@@ -143,14 +143,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       // DomainObject.Orders.Remove (_removedRelatedObject)
-      var steps = GetAllCommands (bidirectionalModification);
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       // _removedRelatedObject.Customer = null
-      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[0].ModifiedEndPoint, Is.SameAs (removedEndPoint));
-      Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
-      Assert.That (steps[0].NewRelatedObject, Is.Null);
+      Assert.That (steps[0], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      var setCustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[0]).DecoratedCommand);
+      Assert.That (setCustomerCommand.ModifiedEndPoint, Is.SameAs (removedEndPoint));
+      Assert.That (setCustomerCommand.OldRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (setCustomerCommand.NewRelatedObject, Is.Null);
 
       // DomainObject.Orders.Remove (_removedRelatedObject)
       Assert.That (steps[1], Is.SameAs (_command));

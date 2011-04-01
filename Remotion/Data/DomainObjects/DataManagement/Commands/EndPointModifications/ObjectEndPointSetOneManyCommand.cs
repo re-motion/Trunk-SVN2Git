@@ -26,8 +26,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   public class ObjectEndPointSetOneManyCommand : ObjectEndPointSetCommand
   {
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ICollectionEndPoint _newRelatedEndPoint;
-    private readonly ICollectionEndPoint _oldRelatedEndPoint;
 
     public ObjectEndPointSetOneManyCommand (
         IRealObjectEndPoint modifiedEndPoint,
@@ -64,23 +62,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
 
       _endPointProvider = endPointProvider;
-
-      _newRelatedEndPoint = (ICollectionEndPoint) GetOppositeEndPoint (ModifiedEndPoint, NewRelatedObject, _endPointProvider);
-      _oldRelatedEndPoint = (ICollectionEndPoint) GetOppositeEndPoint (ModifiedEndPoint, OldRelatedObject, _endPointProvider);
     }
 
     public IRelationEndPointProvider EndPointProvider
     {
       get { return _endPointProvider; }
-    }
-
-    public override void Perform ()
-    {
-      base.Perform ();
-
-      // TODO 3818: Refactor: Move to oppositeObjectIDSetter?
-      _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
-      _newRelatedEndPoint.RegisterCurrentOppositeEndPoint ((IRealObjectEndPoint) ModifiedEndPoint);
     }
 
     /// <summary>
@@ -97,13 +83,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// </remarks>
     public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
+      var newRelatedEndPoint = (ICollectionEndPoint) GetOppositeEndPoint (ModifiedEndPoint, NewRelatedObject, _endPointProvider);
+      var oldRelatedEndPoint = (ICollectionEndPoint) GetOppositeEndPoint (ModifiedEndPoint, OldRelatedObject, _endPointProvider);
+
       var bidirectionalModification = new ExpandedCommand (
           // => order.Customer = newCustomer
           this,
           // => newCustomer.Orders.Add (order)
-          _newRelatedEndPoint.CreateAddCommand (ModifiedEndPoint.GetDomainObject()),
+          newRelatedEndPoint.CreateAddCommand (ModifiedEndPoint.GetDomainObject()),
           // => oldCustomer.Orders.Remove (order) (remove)
-          _oldRelatedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject()));
+          oldRelatedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject()));
       return bidirectionalModification;
     }
   }

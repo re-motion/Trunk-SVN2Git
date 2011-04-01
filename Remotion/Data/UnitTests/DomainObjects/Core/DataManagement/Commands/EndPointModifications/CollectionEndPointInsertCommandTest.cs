@@ -150,23 +150,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
-      var steps = GetAllCommands (bidirectionalModification);
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (3));
 
       // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
-      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[0].ModifiedEndPoint, Is.SameAs (insertedEndPoint));
-      Assert.That (steps[0].OldRelatedObject, Is.SameAs (oldCustomer));
-      Assert.That (steps[0].NewRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (steps[0], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      var setCustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[0]).DecoratedCommand);
+      Assert.That (setCustomerCommand.ModifiedEndPoint, Is.SameAs (insertedEndPoint));
+      Assert.That (setCustomerCommand.OldRelatedObject, Is.SameAs (oldCustomer));
+      Assert.That (setCustomerCommand.NewRelatedObject, Is.SameAs (DomainObject));
 
       // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
       Assert.That (steps[1], Is.SameAs (_command));
 
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
       Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
-      Assert.That (steps[2].ModifiedEndPoint, Is.SameAs (oldRelatedEndPointOfInsertedObject));
-      Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
-      Assert.That (steps[2].OldRelatedObject, Is.SameAs (_insertedRelatedObject));
+      var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) steps[2]);
+      Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint, Is.SameAs (oldRelatedEndPointOfInsertedObject));
+      Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
+      Assert.That (oldCustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_insertedRelatedObject));
     }
   }
 }

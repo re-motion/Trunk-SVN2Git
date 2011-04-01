@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
-      var steps = GetAllCommands (bidirectionalModification);
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (1));
       Assert.That (steps[0], Is.SameAs (_command));
 

@@ -63,7 +63,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
 
       var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
 
-      // TODO 3818: Consider moving to a new RealObjectEndPointDeleteCommand
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {
         var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
@@ -88,15 +87,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
         return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectIDSetter);
       else if (oppositeEndPointDefinition.IsAnonymous)
         return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
-      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
+      else
       {
+        var setCommand = oppositeEndPointDefinition.Cardinality == CardinalityType.One
+                             ? (IDataManagementCommand) new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter)
+                             : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
         var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
         var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, newRelatedObjectID);
-        var setCommand = new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
         return new RealObjectEndPointRegistrationCommandDecorator (setCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);
       }
-      else
-        return new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
     }
 
     #region Serialization

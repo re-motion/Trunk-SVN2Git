@@ -86,10 +86,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
     }
-
-    protected IList<RelationEndPointModificationCommand> GetAllCommands (ExpandedCommand bidirectionalModification)
-    {
-      return bidirectionalModification.GetNestedCommands ().Cast<RelationEndPointModificationCommand> ().ToList ();
-    }
   }
 }

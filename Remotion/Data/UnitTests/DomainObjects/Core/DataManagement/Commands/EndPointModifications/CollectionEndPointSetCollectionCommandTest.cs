@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // DomainObject.Orders = _newCollection
 
-      var steps = GetAllCommands (bidirectionalModification);
+      var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (4));
 
       // orderWithoutOrderItem.Customer = null;
@@ -307,25 +307,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       // DomainObject.Orders = _newCollection
 
       // orderWithoutOrderItem.Customer = null;
-      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[0].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_orderWithoutOrderItem.ID));
-      Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
-      Assert.That (steps[0].NewRelatedObject, Is.Null);
+      Assert.That (steps[0], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      var setOrderWithoutOrderItemCustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[0]).DecoratedCommand);
+      Assert.That (setOrderWithoutOrderItemCustomerCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (setOrderWithoutOrderItemCustomerCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_orderWithoutOrderItem.ID));
+      Assert.That (setOrderWithoutOrderItemCustomerCommand.OldRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (setOrderWithoutOrderItemCustomerCommand.NewRelatedObject, Is.Null);
 
       // order2.Customer.Orders.Remove (order2);
       Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
-      Assert.That (steps[1].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
-      Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (customer3.ID));
-      Assert.That (steps[1].OldRelatedObject, Is.SameAs (_order2));
-      Assert.That (steps[1].NewRelatedObject, Is.Null);
+      var order2CustomerOrdersRemoveCommand = (CollectionEndPointRemoveCommand) steps[1];
+      Assert.That (order2CustomerOrdersRemoveCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
+      Assert.That (order2CustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (customer3.ID));
+      Assert.That (order2CustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_order2));
+      Assert.That (order2CustomerOrdersRemoveCommand.NewRelatedObject, Is.Null);
 
       // order2.Customer = DomainObject
-      Assert.That (steps[2], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
-      Assert.That (steps[2].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_order2.ID));
-      Assert.That (steps[2].OldRelatedObject, Is.SameAs (customer3));
-      Assert.That (steps[2].NewRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (steps[2], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      var setOrder2CustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[2]).DecoratedCommand);
+      Assert.That (setOrder2CustomerCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (setOrder2CustomerCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_order2.ID));
+      Assert.That (setOrder2CustomerCommand.OldRelatedObject, Is.SameAs (customer3));
+      Assert.That (setOrder2CustomerCommand.NewRelatedObject, Is.SameAs (DomainObject));
 
       // DomainObject.Orders = _newCollection
       Assert.That (steps[3], Is.SameAs (_command));

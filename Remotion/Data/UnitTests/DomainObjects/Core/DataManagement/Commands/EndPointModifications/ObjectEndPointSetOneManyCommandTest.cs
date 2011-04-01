@@ -42,8 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RealObjectEndPoint _endPoint;
 
     private ObjectEndPointSetCommand _command;
-    private ICollectionEndPoint _oldRelatedEndPointMock;
-    private ICollectionEndPoint _newRelatedEndPointMock;
 
     public override void SetUp ()
     {
@@ -55,15 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointID = RelationEndPointID.Create (_domainObject, oi => oi.Order);
       _endPoint = (RealObjectEndPoint) RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
-
-      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
-      _oldRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
-
-      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
-      _newRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
-
-      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (_oldRelatedEndPointMock);
-      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (_newRelatedEndPointMock);
 
       _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, OppositeObjectIDSetter, EndPointProviderStub);
     }
@@ -137,19 +126,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform ()
     {
-      _oldRelatedEndPointMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_endPoint));
-      _oldRelatedEndPointMock.Replay();
-
-      _newRelatedEndPointMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_endPoint));
-      _newRelatedEndPointMock.Replay();
-
       Assert.That (OppositeObjectIDSetterCalled, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _command.Perform ();
-
-      _oldRelatedEndPointMock.VerifyAllExpectations ();
-      _newRelatedEndPointMock.VerifyAllExpectations ();
 
       Assert.That (OppositeObjectIDSetterCalled, Is.True);
       Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_newRelatedObject.ID));
@@ -203,20 +183,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       // Scenario: orderItem.Order = newOrder;
 
+      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
+      var oldRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
+
+      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
+      var newRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
+
+      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (oldRelatedEndPointMock);
+      EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (newRelatedEndPointID)).Return (newRelatedEndPointMock);
+
+
       // oldOrder.OrderItems.Remove (orderItem)
       var fakeRemoveCommand = MockRepository.GenerateStub<IDataManagementCommand>();
-      _oldRelatedEndPointMock.Expect (mock => mock.CreateRemoveCommand (_domainObject)).Return (fakeRemoveCommand);
-      _oldRelatedEndPointMock.Replay();
+      oldRelatedEndPointMock.Expect (mock => mock.CreateRemoveCommand (_domainObject)).Return (fakeRemoveCommand);
+      oldRelatedEndPointMock.Replay();
 
       // newOrder.OrderItems.Add (orderItem);
       var fakeAddCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
-      _newRelatedEndPointMock.Expect (mock => mock.CreateAddCommand (_domainObject)).Return (fakeAddCommand);
-      _newRelatedEndPointMock.Replay ();
+      newRelatedEndPointMock.Expect (mock => mock.CreateAddCommand (_domainObject)).Return (fakeAddCommand);
+      newRelatedEndPointMock.Replay ();
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
-      _oldRelatedEndPointMock.VerifyAllExpectations ();
-      _newRelatedEndPointMock.VerifyAllExpectations ();
+      oldRelatedEndPointMock.VerifyAllExpectations ();
+      newRelatedEndPointMock.VerifyAllExpectations ();
 
       var steps = bidirectionalModification.GetNestedCommands();
       Assert.That (steps.Count, Is.EqualTo (3));

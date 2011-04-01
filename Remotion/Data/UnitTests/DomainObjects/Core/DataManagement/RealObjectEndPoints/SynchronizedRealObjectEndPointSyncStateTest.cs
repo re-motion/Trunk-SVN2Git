@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       var decorator = (RealObjectEndPointRegistrationCommandDecorator) command;
       Assert.That (decorator.RealObjectEndPoint, Is.SameAs (_endPointMock));
       Assert.That (decorator.OldRelatedEndPoint, Is.SameAs (oldOppositeEndPointStub));
-      Assert.That (decorator.OldRelatedEndPoint, Is.SameAs (oldOppositeEndPointStub));
+      Assert.That (decorator.NewRelatedEndPoint, Is.SameAs (newOppositeEndPointStub));
 
       Assert.That (decorator.DecoratedCommand, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       var decoratedCommand = (ObjectEndPointDeleteCommand) decorator.DecoratedCommand;
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       var decorator = (RealObjectEndPointRegistrationCommandDecorator) command;
       Assert.That (decorator.RealObjectEndPoint, Is.SameAs (_endPointMock));
       Assert.That (decorator.OldRelatedEndPoint, Is.SameAs (oldOppositeEndPointStub));
-      Assert.That (decorator.OldRelatedEndPoint, Is.SameAs (oldOppositeEndPointStub));
+      Assert.That (decorator.NewRelatedEndPoint, Is.SameAs (newOppositeEndPointStub));
 
       Assert.That (decorator.DecoratedCommand, Is.TypeOf (typeof (ObjectEndPointSetOneOneCommand)));
       var decoratedCommand = (ObjectEndPointSetOneOneCommand) decorator.DecoratedCommand;
@@ -253,14 +253,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
       _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
 
-      var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
+      var oldOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      var newOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
 
-      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
-      Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
-      Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
-      Assert.That (((ObjectEndPointSetOneManyCommand) command).EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+      _endPointProviderStub
+          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, oldRelatedObject.ID))
+          .Return (oldOppositeEndPointStub);
+      _endPointProviderStub
+          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, newRelatedObject.ID))
+          .Return (newOppositeEndPointStub);
+
+      var command = _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
+
+      Assert.That (command, Is.TypeOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      var decorator = (RealObjectEndPointRegistrationCommandDecorator) command;
+      Assert.That (decorator.RealObjectEndPoint, Is.SameAs (_endPointMock));
+      Assert.That (decorator.OldRelatedEndPoint, Is.SameAs (oldOppositeEndPointStub));
+      Assert.That (decorator.NewRelatedEndPoint, Is.SameAs (newOppositeEndPointStub));
+
+      Assert.That (decorator.DecoratedCommand, Is.TypeOf (typeof (ObjectEndPointSetOneManyCommand)));
+      var decoratedCommand = (ObjectEndPointSetOneManyCommand) decorator.DecoratedCommand;
+
+      Assert.That (decoratedCommand, Is.TypeOf (typeof (ObjectEndPointSetOneManyCommand)));
+      Assert.That (decoratedCommand.ModifiedEndPoint, Is.SameAs (_endPointMock));
+      Assert.That (decoratedCommand.NewRelatedObject, Is.SameAs (newRelatedObject));
+      Assert.That (decoratedCommand.OldRelatedObject, Is.SameAs (oldRelatedObject));
+      Assert.That (decoratedCommand.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (GetOppositeObjectIDSetter (decoratedCommand), Is.SameAs (_fakeSetter));
     }
 
     [Test]
