@@ -426,26 +426,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return GetEnumerator ();
     }
 
-    public IRelationEndPoint GetOppositeEndPoint (IObjectEndPoint objectEndPoint)
+    public IRelationEndPoint GetOppositeEndPointWithLazyLoad (IObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
 
       if (this[objectEndPoint.ID] != objectEndPoint)
         throw new ArgumentException ("The end-point is not registered in this map.", "objectEndPoint");
 
-      var oppositeRelationEndPointID = objectEndPoint.GetOppositeRelationEndPointID ();
-      if (oppositeRelationEndPointID == null)
+      var oppositeEndPointDefinition = objectEndPoint.Definition.GetMandatoryOppositeEndPointDefinition();
+      if (oppositeEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("The end-point is not part of a bidirectional relation.", "objectEndPoint");
 
-      if (oppositeRelationEndPointID.ObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, oppositeRelationEndPointID.Definition);
+      var oppositeEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
+      if (oppositeEndPointID.ObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, oppositeEndPointID.Definition);
 
-      var oppositeEndPoint = this[oppositeRelationEndPointID];
-      Assertion.IsNotNull (
-          oppositeEndPoint,
-          "The implementation of RelationEndPointMap guarantees that when an object end-point is registered, the opposite is registered, too.");
-
-      return oppositeEndPoint;
+      return GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)

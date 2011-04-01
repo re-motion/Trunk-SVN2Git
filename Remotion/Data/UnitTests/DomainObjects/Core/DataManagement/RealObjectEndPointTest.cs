@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPoint (_endPoint))
+          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPoint, _endPoint.OppositeObjectID))
           .Return (oppositeEndPointStub);
 
       _syncStateMock

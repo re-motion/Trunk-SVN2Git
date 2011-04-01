@@ -312,7 +312,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
 
-      var oppositeEndPoint = _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
+      var oppositeEndPoint = _relationEndPointMap.GetOppositeEndPointWithLazyLoad (objectEndPoint, objectEndPoint.OppositeObjectID);
       if (oppositeEndPoint.ObjectID == null)
         throw new InvalidOperationException ("The end-point's opposite object is null, so no opposite end-point can be loaded.");
       if (oppositeEndPoint.IsDataComplete)
@@ -333,10 +333,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
-    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
+    public IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
-      return (IVirtualEndPoint) _relationEndPointMap.GetOppositeEndPoint (objectEndPoint);
+      return (IVirtualEndPoint) _relationEndPointMap.GetOppositeEndPointWithLazyLoad (objectEndPoint, oppositeObjectID);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)

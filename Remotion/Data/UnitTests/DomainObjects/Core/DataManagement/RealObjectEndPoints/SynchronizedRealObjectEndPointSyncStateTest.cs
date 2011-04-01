@@ -112,11 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _endPointMock.Stub (stub => stub.GetDomainObject ()).Return (_order);
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
       _endPointMock.Stub (stub => stub.Definition).Return (realDefinition);
+      _endPointMock.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Order1);
       _endPointMock.Replay ();
 
       var oldOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint>();
       oldOppositeEndPointMock.Replay();
-      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPoint (_endPointMock)).Return (oldOppositeEndPointMock);
+      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, DomainObjectIDs.Order1)).Return (oldOppositeEndPointMock);
 
       var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
 
@@ -219,13 +220,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
 
       var oldOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
       oldOppositeEndPointMock.Replay ();
-      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPoint (_endPointMock)).Return (oldOppositeEndPointMock);
 
       var newOppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
       newOppositeEndPointMock.Replay ();
-      _endPointProviderStub
-          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (RelationEndPointID.Create (newRelatedObject.ID, typeof (OrderTicket), "Order")))
-          .Return (newOppositeEndPointMock);
+
+      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, oldRelatedObject.ID)).Return (oldOppositeEndPointMock);
+      _endPointProviderStub.Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, newRelatedObject.ID)).Return (newOppositeEndPointMock);
 
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
 

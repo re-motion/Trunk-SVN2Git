@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Synchronize ()
     {
-      var oppositeEndPoint = EndPointProvider.GetOppositeVirtualEndPoint (this);
+      var oppositeEndPoint = EndPointProvider.GetOppositeVirtualEndPointWithLazyLoad (this, OppositeObjectID);
       _syncState.Synchronize (this, oppositeEndPoint);
     }
 

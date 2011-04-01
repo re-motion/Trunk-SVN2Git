@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Collections;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       return _endPoints.GetValueOrDefault (endPointID);
     }
 
-    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
+    public IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
     {
       throw new NotImplementedException();
     }

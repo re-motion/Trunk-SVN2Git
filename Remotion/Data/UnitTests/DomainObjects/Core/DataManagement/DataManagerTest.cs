@@ -1090,7 +1090,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (oppositeEndPointID.ObjectID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
       var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
@@ -1116,7 +1117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (oppositeEndPointID.ObjectID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
       _dataManager.LoadOppositeVirtualEndPoint (objectEndPointStub);
@@ -1124,14 +1126,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been loaded.")]
-    public void LoadOppositeEndPoint_AlreadLoaded ()
+    public void LoadOppositeVirtualEndPoint_AlreadLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
       var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
-      objectEndPointStub.Stub (stub => stub.GetOppositeRelationEndPointID ()).Return (oppositeEndPointID);
+      objectEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (oppositeEndPointID.ObjectID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
       var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
@@ -1180,7 +1183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetOppositeVirtualEndPoint ()
+    public void GetOppositeVirtualEndPointWithLazyLoad ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
       var originatingEndPoint = (IRealObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
@@ -1188,13 +1191,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeEndPoint = _dataManager.GetRelationEndPointWithoutLoading (oppositeEndPointID);
       Assert.That (oppositeEndPoint, Is.Not.Null);
 
-      var result = _dataManager.GetOppositeVirtualEndPoint (originatingEndPoint);
+      var result = _dataManager.GetOppositeVirtualEndPointWithLazyLoad (originatingEndPoint, oppositeEndPointID.ObjectID);
 
       Assert.That (result, Is.SameAs (oppositeEndPoint));
     }
 
     [Test]
-    public void GetOppositeVirtualEndPoint_NullEndPoint ()
+    public void GetOppositeVirtualEndPointWithLazyLoad_NullEndPoint ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
       dataContainer.SetDomainObject (DomainObjectMother.CreateFakeObject<OrderTicket> (dataContainer.ID));
@@ -1204,7 +1207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var originatingEndPoint = (IRealObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (originatingEndPoint.OppositeObjectID, Is.Null);
 
-      var result = _dataManager.GetOppositeVirtualEndPoint (originatingEndPoint);
+      var result = _dataManager.GetOppositeVirtualEndPointWithLazyLoad (originatingEndPoint, null);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.TypeOf (typeof (NullVirtualObjectEndPoint)));
