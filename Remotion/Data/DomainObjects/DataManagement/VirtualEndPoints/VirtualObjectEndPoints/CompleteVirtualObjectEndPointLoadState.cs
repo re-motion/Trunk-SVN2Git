@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      // TODO 3818: Check that item matches current data; if so, don't call MarkDataComplete => second half of optimization in Incomplete...RegisterOriginalOppositeEndPoint
+      // TODO 3837: Check that item matches current data; if so, don't call MarkDataComplete => second half of optimization in Incomplete...RegisterOriginalOppositeEndPoint
       Assertion.IsTrue ((item == null && DataKeeper.CurrentOppositeObjectID == null) || item.ID == DataKeeper.CurrentOppositeObjectID);
       // MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }

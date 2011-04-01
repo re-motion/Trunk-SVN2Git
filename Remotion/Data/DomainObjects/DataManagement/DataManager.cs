@@ -192,7 +192,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
     }
 
-    // TODO 3818: Remove somehow
     public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);

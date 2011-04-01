@@ -114,30 +114,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointMock.VerifyAllExpectations();
     }
 
-    //TODO 3818: move ?
-    //[Test]
-    //public void RegisterOriginalOppositeEndPoint_DataKeeperThrows ()
-    //{
-    //  var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-    //  endPointMock.Replay ();
-
-    //  var exception = new Exception ("Test");
-    //  _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock)).Throw (exception);
-    //  _dataKeeperMock.Replay ();
-
-    //  try
-    //  {
-    //    _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
-    //  }
-    //  catch (Exception ex)
-    //  {
-    //    Assert.That (ex, Is.SameAs (exception));
-    //  }
-
-    //  endPointMock.AssertWasNotCalled (mock => mock.ResetSyncState ());
-    //  _dataKeeperMock.VerifyAllExpectations ();
-    //}
-
     [Test]
     public void UnregisterOriginalOppositeEndPoint_RegisteredInDataKeeper ()
     {

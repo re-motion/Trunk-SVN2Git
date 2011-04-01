@@ -274,6 +274,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RemoveEndPoint (endPointID);
     }
 
+    private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
+    {
+      IVirtualEndPoint endPoint;
+      if (endPointID.Definition.Cardinality == CardinalityType.One)
+        endPoint = RegisterVirtualObjectEndPoint (endPointID);
+      else
+        endPoint = RegisterCollectionEndPoint (endPointID);
+      return endPoint;
+    }
+
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
@@ -381,12 +391,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           "EnsureDataAvailable should guarantee that the DataContainer is registered, which in turn guarantees that all non-virtual end points are "
           + "registered in the map");
 
-      // TODO 3818: RegisterVirtualEndPoint
-      IVirtualEndPoint endPoint;
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-        endPoint = RegisterVirtualObjectEndPoint (endPointID);
-      else
-        endPoint = RegisterCollectionEndPoint (endPointID);
+      IVirtualEndPoint endPoint = RegisterVirtualEndPoint(endPointID);
 
       endPoint.EnsureDataComplete ();
 
@@ -559,7 +564,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var oppositeEndPoint = GetVirtualObjectEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
         oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
-        // TODO 3818: Move this to IncompleteVirtualObjectEndPoint.RegisterOriginalOppositeEndPoint
+        // TODO 3837: Move this to IncompleteVirtualObjectEndPoint.RegisterOriginalOppositeEndPoint
         if (!oppositeEndPoint.IsDataComplete)
           oppositeEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference());
       }
