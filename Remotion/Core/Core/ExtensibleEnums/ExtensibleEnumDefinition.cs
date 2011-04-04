@@ -160,10 +160,10 @@ namespace Remotion.ExtensibleEnums
     {
       ArgumentUtility.CheckNotNull ("attributeType", attributeType);
 
-      var attributes = from info in GetValueInfos()
+      var attributes = (from info in GetValueInfos()
                        let extensionType = info.DefiningMethod.DeclaringType
                        from attribute in AttributeUtility.GetCustomAttributes (extensionType, attributeType, false)
-                       select attribute;
+                       select attribute).Distinct();
       var list = attributes.ToList ();
       
       var array = (object[]) Array.CreateInstance (attributeType, list.Count);
