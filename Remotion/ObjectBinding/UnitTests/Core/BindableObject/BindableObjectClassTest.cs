@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -74,14 +73,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       ArgumentUtility.CheckNotNull ("expectedProperty", expectedProperty);
 
-      Assert.That (actualProperty, SyntaxHelper.Not.Null);
+      Assert.That (actualProperty, Is.Not.Null);
       Assert.That (actualProperty.GetType(), Is.SameAs (expectedProperty.GetType()), "BusinessObjectPropertyType");
       Assert.That (expectedProperty.PropertyType, Is.EqualTo (actualProperty.PropertyType), "PropertyType");
       Assert.That (expectedProperty.IsList, Is.EqualTo (actualProperty.IsList), "IsList");
       if (expectedProperty.IsList)
         Assert.That (expectedProperty.ListInfo.ItemType, Is.EqualTo (actualProperty.ListInfo.ItemType), "ListInfo.ItemType");
       Assert.That (expectedProperty.IsRequired, Is.EqualTo (actualProperty.IsRequired), "IsRequired");
-      Assert.That (((PropertyBase) actualProperty).ReflectedClass, SyntaxHelper.Not.Null);
+      Assert.That (((PropertyBase) actualProperty).ReflectedClass, Is.Not.Null);
 
       if (typeof (IBusinessObjectStringProperty).IsAssignableFrom (actualProperty.GetType()))
         CheckStringProperty ((IBusinessObjectStringProperty) actualProperty, expectedProperty);
@@ -238,14 +237,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           MixinTypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass)), _bindableObjectProvider, new PropertyBase[0]);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (SimpleBusinessObjectClass)));
-      Assert.That (bindableObjectClass.ConcreteType, SyntaxHelper.Not.SameAs (typeof (SimpleBusinessObjectClass)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.Not.SameAs (typeof (SimpleBusinessObjectClass)));
       Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (MixinTypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass))));
       Assert.That (
           bindableObjectClass.Identifier,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
       Assert.That (bindableObjectClass.RequiresWriteBack, Is.False);
       Assert.That (bindableObjectClass.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
-      Assert.That (bindableObjectClass.BusinessObjectProviderAttribute, Is.InstanceOfType (typeof (BindableObjectProviderAttribute)));
+      Assert.That (bindableObjectClass.BusinessObjectProviderAttribute, Is.InstanceOf (typeof (BindableObjectProviderAttribute)));
     }
 
     [Test]

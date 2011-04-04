@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterServiceTests

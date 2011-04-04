@@ -18,7 +18,6 @@ using System;
 using System.Web;
 using System.Web.UI;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;

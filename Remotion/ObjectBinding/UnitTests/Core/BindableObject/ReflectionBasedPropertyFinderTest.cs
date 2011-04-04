@@ -21,7 +21,6 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPropertyFinderTestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;

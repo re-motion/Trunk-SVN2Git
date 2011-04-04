@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject

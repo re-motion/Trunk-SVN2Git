@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -237,7 +236,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       ArgumentUtility.CheckNotNull ("expected", expected);
 
-      Assert.That (actual, Is.InstanceOfType (expected.GetType()));
+      Assert.That (actual, Is.InstanceOf (expected.GetType()));
       Assert.That (actual.Value, Is.EqualTo (expected.Value));
       Assert.That (actual.Identifier, Is.EqualTo (expected.Identifier));
       Assert.That (actual.IsEnabled, Is.EqualTo (expected.IsEnabled));

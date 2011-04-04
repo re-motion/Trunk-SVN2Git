@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -113,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       _mockRepository.VerifyAll ();
       Assert.That (
           actual,
-          NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SecurableClassWithReferenceType"));
+         Is.StringStarting("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SecurableClassWithReferenceType"));
     }
   }
 }

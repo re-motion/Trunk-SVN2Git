@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -39,9 +38,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void BusinessObjectClass()
     {
-      Assert.That (_instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (_instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
       var bindableObjectClass = (BindableObjectClass) _instance.BusinessObjectClass;
-      Assert.That (bindableObjectClass.BusinessObjectProvider, Is.InstanceOfType (typeof (BindableObjectProvider)));
+      Assert.That (bindableObjectClass.BusinessObjectProvider, Is.InstanceOf (typeof (BindableObjectProvider)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
     }
@@ -106,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod ()
     {
       var instance = new ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod ();
-      Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
       Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod)));
       Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod))));
     }

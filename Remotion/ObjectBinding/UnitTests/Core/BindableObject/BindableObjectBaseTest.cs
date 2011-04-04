@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -58,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CreateImplementation ()
     {
       var instance = new ClassDerivedFromBindableObjectBase ();
-      Assert.That (PrivateInvoke.GetNonPublicField (instance, "_implementation"), Is.InstanceOfType (typeof (BindableObjectBaseImplementation)));
+      Assert.That (PrivateInvoke.GetNonPublicField (instance, "_implementation"), Is.InstanceOf (typeof (BindableObjectBaseImplementation)));
     }
 
     [Test]

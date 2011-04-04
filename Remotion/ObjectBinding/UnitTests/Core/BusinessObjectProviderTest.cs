@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
@@ -72,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       using (MixinConfiguration.BuildNew().ForClass (typeof (StubBusinessObjectProvider)).AddMixin<MixinStub>().EnterScope())
       {
         IBusinessObjectProvider provider = BusinessObjectProvider.GetProvider (typeof (StubBusinessObjectProviderAttribute));
-        Assert.That (provider, Is.InstanceOfType (typeof (IMixinTarget)));
+        Assert.That (provider, Is.InstanceOf (typeof (IMixinTarget)));
       }
     }
 
@@ -190,7 +189,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       ((BusinessObjectProvider) _provider).AddService<IBusinessObjectService> (new StubBusinessObjectService());
       ((BusinessObjectProvider) _provider).AddService (expectedService);
 
-      Assert.That (_provider.GetService (typeof (IBusinessObjectService)), Is.InstanceOfType (typeof (StubBusinessObjectService)));
+      Assert.That (_provider.GetService (typeof (IBusinessObjectService)), Is.InstanceOf (typeof (StubBusinessObjectService)));
       Assert.That (_provider.GetService (expectedService.GetType ()), Is.SameAs (expectedService));
       Assert.That (_provider.GetService (expectedService.GetType ()), Is.Not.SameAs (_provider.GetService (typeof (IBusinessObjectService))));
     }

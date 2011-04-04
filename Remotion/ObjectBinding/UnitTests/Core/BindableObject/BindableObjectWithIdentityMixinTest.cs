@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -33,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       Assert.That (
           ObjectFactory.Create<ClassWithIdentity>(ParamList.Create ("TheUniqueIdentifier")),
-          Is.InstanceOfType (typeof (IBusinessObjectWithIdentity)));
+          Is.InstanceOf (typeof (IBusinessObjectWithIdentity)));
     }
 
     [Test]

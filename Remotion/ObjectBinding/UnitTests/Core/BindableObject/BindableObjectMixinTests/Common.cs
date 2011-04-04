@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -31,7 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void InstantiateMixedType ()
     {
-      Assert.That (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty), Is.InstanceOfType (typeof (IBusinessObject)));
+      Assert.That (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty), Is.InstanceOf (typeof (IBusinessObject)));
     }
 
     [Test]

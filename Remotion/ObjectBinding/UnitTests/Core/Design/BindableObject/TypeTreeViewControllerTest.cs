@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Design.BindableObject;
 using Remotion.Utilities;
 

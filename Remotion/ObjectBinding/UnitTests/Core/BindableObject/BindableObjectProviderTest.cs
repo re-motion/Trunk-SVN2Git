@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -174,7 +173,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadataFactory_WithDefaultFactory ()
     {
-      Assert.IsInstanceOfType (typeof (BindableObjectMetadataFactory), _provider.MetadataFactory);
+      Assert.IsInstanceOf (typeof (BindableObjectMetadataFactory), _provider.MetadataFactory);
     }
 
     [Test]
@@ -187,7 +186,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetServiceFactory_WithDefaultFactory ()
     {
-      Assert.That (_provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
+      Assert.That (_provider.ServiceFactory, Is.InstanceOf (typeof (BindableObjectServiceFactory)));
     }
 
     [Test]
@@ -196,8 +195,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       using (MixinConfiguration.BuildNew().ForClass (typeof (BindableObjectServiceFactory)).AddMixin<MixinStub>().EnterScope())
       {
         var provider = new BindableObjectProvider();
-        Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
-        Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (IMixinTarget)));
+        Assert.That (provider.ServiceFactory, Is.InstanceOf (typeof (BindableObjectServiceFactory)));
+        Assert.That (provider.ServiceFactory, Is.InstanceOf (typeof (IMixinTarget)));
       }
     }
 

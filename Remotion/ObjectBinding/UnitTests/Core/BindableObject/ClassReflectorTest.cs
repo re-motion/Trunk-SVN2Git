@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -58,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       BindableObjectClass bindableObjectClass = _classReflector.GetMetadata();
 
-      Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClass)));
+      Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClass)));
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (_type));
       Assert.That (bindableObjectClass.GetPropertyDefinitions().Length, Is.EqualTo (1));
       Assert.That (bindableObjectClass.GetPropertyDefinitions()[0].Identifier, Is.EqualTo ("Public"));
@@ -72,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, _metadataFactory);
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
-      Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
+      Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClassWithIdentity)));
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithIdentity)));
       Assert.That (bindableObjectClass.GetPropertyDefinitions()[0].BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
@@ -83,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, _metadataFactory);
       var bindableObjectClass = classReflector.GetMetadata ();
 
-      Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
+      Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClassWithIdentity)));
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithManualIdentity)));
     }
 
@@ -157,7 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         var bindableObjectClass = classReflector.GetMetadata();
         var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
-        Assert.That (derivedBusinessObject, Is.InstanceOfType (typeof (IMixinAddingProperty)));
+        Assert.That (derivedBusinessObject, Is.InstanceOf (typeof (IMixinAddingProperty)));
 
         ((BaseBusinessObjectClass) derivedBusinessObject).Public = "p";
         var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("Public");

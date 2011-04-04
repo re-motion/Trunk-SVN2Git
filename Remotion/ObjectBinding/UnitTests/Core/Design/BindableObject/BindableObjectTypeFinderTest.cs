@@ -23,7 +23,6 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Design.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 {

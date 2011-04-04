@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -44,8 +43,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       using (MixinConfiguration.BuildNew().ForClass (typeof (BindableObjectMetadataFactory)).AddMixin<MixinStub>().EnterScope())
       {
         BindableObjectMetadataFactory factory = BindableObjectMetadataFactory.Create();
-        Assert.That (factory, Is.InstanceOfType (typeof (BindableObjectMetadataFactory)));
-        Assert.That (factory, Is.InstanceOfType (typeof (IMixinTarget)));
+        Assert.That (factory, Is.InstanceOf (typeof (BindableObjectMetadataFactory)));
+        Assert.That (factory, Is.InstanceOf (typeof (IMixinTarget)));
       }
     }
 

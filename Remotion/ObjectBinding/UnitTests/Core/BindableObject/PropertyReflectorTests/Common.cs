@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -59,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
         Assert.That (propertyReflector.PropertyInfo, Is.SameAs (propertyInfo));
         Assert.That (propertyReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
-        Assert.That (propertyReflector, Is.InstanceOfType (typeof (IMixinTarget)));
+        Assert.That (propertyReflector, Is.InstanceOf (typeof (IMixinTarget)));
       }
     }
 

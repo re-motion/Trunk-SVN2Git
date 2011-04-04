@@ -20,7 +20,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.BindableObject;

@@ -526,7 +526,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     
       Assert.IsNotNull (validators);
       Assert.AreEqual (1, validators.Length);
-      Assert.IsInstanceOfType (typeof (EditModeValidator), validators[0]);
+      Assert.IsInstanceOf (typeof (EditModeValidator), validators[0]);
       Assert.AreEqual (BocList.ID, validators[0].ControlToValidate);
       Assert.AreEqual (resourceManager.GetString (Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier.ListEditModeErrorMessage), validators[0].ErrorMessage);
     }
@@ -544,7 +544,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     
       Assert.IsNotNull (validators);
       Assert.AreEqual (1, validators.Length);
-      Assert.IsInstanceOfType (typeof (EditModeValidator), validators[0]);
+      Assert.IsInstanceOf (typeof (EditModeValidator), validators[0]);
       Assert.AreEqual (BocList.ID, validators[0].ControlToValidate);
       Assert.AreEqual ("Foo Bar", validators[0].ErrorMessage);
     }

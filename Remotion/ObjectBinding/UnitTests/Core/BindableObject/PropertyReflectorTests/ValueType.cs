@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -48,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("Scalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
@@ -67,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("NullableScalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType?)));
@@ -86,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (EnumerationProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (EnumerationProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("Scalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (EnumWithUndefinedValue)));
@@ -105,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyScalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
@@ -124,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyNonPublicSetterScalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
@@ -143,7 +142,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyAttributeScalar"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
@@ -162,7 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("Array"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType[])));
@@ -183,7 +182,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (PropertyBase)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("NullableArray"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType?[])));

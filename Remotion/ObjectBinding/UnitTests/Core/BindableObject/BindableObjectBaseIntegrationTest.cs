@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -41,9 +40,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void BusinessObjectClass ()
     {
-      Assert.That (_instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (_instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
       var bindableObjectClass = (BindableObjectClass) _instance.BusinessObjectClass;
-      Assert.That (bindableObjectClass.BusinessObjectProvider, Is.InstanceOfType (typeof (BindableObjectProvider)));
+      Assert.That (bindableObjectClass.BusinessObjectProvider, Is.InstanceOf (typeof (BindableObjectProvider)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
     }
@@ -156,7 +155,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ClassDerivedFromBindableObjectBaseOverridingMixinMethod ()
     {
       var instance = new ClassDerivedFromBindableObjectBaseOverridingMixinMethod();
-      Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
       Assert.That (
           ((BindableObjectClass) instance.BusinessObjectClass).TargetType,
           Is.SameAs (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod)));

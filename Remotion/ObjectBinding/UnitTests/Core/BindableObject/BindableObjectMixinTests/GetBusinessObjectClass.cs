@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -83,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
           .EnterScope ())
       {
         businessObject = (IBusinessObject) ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
-        Assert.That (businessObject, Is.InstanceOfType (typeof (IMixinAddingProperty)));
+        Assert.That (businessObject, Is.InstanceOf (typeof (IMixinAddingProperty)));
       }
 
       // lazy initialization here - should use mixin configuration from above
@@ -101,7 +100,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
           .EnterScope ())
       {
         businessObject = Serializer.SerializeAndDeserialize ((IBusinessObject) ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty));
-        Assert.That (businessObject, Is.InstanceOfType (typeof (IMixinAddingProperty)));
+        Assert.That (businessObject, Is.InstanceOf (typeof (IMixinAddingProperty)));
       }
 
       // lazy initialization here - should use mixin configuration from above

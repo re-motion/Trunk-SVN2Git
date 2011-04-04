@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;

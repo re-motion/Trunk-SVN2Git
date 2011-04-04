@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;

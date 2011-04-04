@@ -21,7 +21,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;

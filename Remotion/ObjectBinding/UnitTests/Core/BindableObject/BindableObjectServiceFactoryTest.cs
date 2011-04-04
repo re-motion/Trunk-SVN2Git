@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Rhino.Mocks;
 
@@ -40,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       Assert.That (
           _serviceFactory.CreateService (_provider, typeof (IBindableObjectGlobalizationService)),
-          Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
+          Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
     }
 
     [Test]
@@ -48,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       Assert.That (
           _serviceFactory.CreateService (_provider, typeof (IBusinessObjectStringFormatterService)),
-          Is.InstanceOfType (typeof (BusinessObjectStringFormatterService)));
+          Is.InstanceOf (typeof (BusinessObjectStringFormatterService)));
     }
 
     [Test]

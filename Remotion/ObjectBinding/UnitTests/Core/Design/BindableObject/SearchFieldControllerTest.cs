@@ -17,7 +17,6 @@
 using System;
 using System.Windows.Forms;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Design.BindableObject;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject

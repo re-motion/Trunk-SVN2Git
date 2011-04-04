@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -49,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("Array"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType[])));
@@ -70,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyArray"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType[])));
@@ -91,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ListOfT"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (List<SimpleReferenceType>)));
@@ -112,7 +111,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyListOfT"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (List<SimpleReferenceType>)));
@@ -133,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyCollectionOfT"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (ReadOnlyCollection<SimpleReferenceType>)));
@@ -154,7 +153,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyCollectionOfTWithSetter"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (ReadOnlyCollection<SimpleReferenceType>)));
@@ -175,7 +174,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ArrayList"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (ArrayList)));
@@ -196,7 +195,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
-      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty, Is.InstanceOf (typeof (NotSupportedProperty)));
       Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ReadOnlyArrayList"));
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (ArrayList)));
