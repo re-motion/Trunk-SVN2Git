@@ -17,7 +17,6 @@
 using System;
 using System.Threading;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
@@ -59,7 +58,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
             .WhenCalled (
             invocation =>
             {
-              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ReturningFromSubFunctionState)));
+              Assert.That (invocation.Arguments[0], Is.InstanceOf (typeof (ReturningFromSubFunctionState)));
               var nextState = (ReturningFromSubFunctionState) invocation.Arguments[0];
               Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
               Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));

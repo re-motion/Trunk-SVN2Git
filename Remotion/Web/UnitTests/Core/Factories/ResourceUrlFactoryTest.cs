@@ -17,7 +17,6 @@
 using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.Factories;
 using Rhino.Mocks;
 
@@ -41,7 +40,7 @@ namespace Remotion.Web.UnitTests.Core.Factories
     {
       var resourceUrl = _factory.CreateResourceUrl (typeof (ResourceUrlFactoryTest), ResourceType.Image, "theRelativeUrl.img");
 
-      Assert.That (resourceUrl, Is.InstanceOfType (typeof (ResourceUrl)));
+      Assert.That (resourceUrl, Is.InstanceOf (typeof (ResourceUrl)));
       Assert.That (((ResourceUrl) resourceUrl).DefiningType, Is.EqualTo (typeof (ResourceUrlFactoryTest)));
       Assert.That (((ResourceUrl) resourceUrl).ResourceType, Is.EqualTo (ResourceType.Image));
       Assert.That (((ResourceUrl) resourceUrl).RelativeUrl, Is.EqualTo ("theRelativeUrl.img"));
@@ -52,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.Factories
     {
       var resourceUrl = _factory.CreateThemedResourceUrl (typeof (ResourceUrlFactoryTest), ResourceType.Image, "theRelativeUrl.img");
 
-      Assert.That (resourceUrl, Is.InstanceOfType (typeof (ThemedResourceUrl)));
+      Assert.That (resourceUrl, Is.InstanceOf (typeof (ThemedResourceUrl)));
       Assert.That (((ThemedResourceUrl) resourceUrl).DefiningType, Is.EqualTo (typeof (ResourceUrlFactoryTest)));
       Assert.That (((ThemedResourceUrl) resourceUrl).ResourceType, Is.EqualTo (ResourceType.Image));
       Assert.That (((ThemedResourceUrl) resourceUrl).ResourceTheme, Is.EqualTo (_resourceTheme));

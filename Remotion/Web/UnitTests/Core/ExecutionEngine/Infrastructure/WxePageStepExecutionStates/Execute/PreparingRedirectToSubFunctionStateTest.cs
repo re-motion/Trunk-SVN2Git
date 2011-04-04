@@ -18,7 +18,6 @@ using System;
 using System.Collections.Specialized;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;

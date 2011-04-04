@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
 using Remotion.Web.Legacy;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;

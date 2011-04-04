@@ -18,7 +18,6 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.Context;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 

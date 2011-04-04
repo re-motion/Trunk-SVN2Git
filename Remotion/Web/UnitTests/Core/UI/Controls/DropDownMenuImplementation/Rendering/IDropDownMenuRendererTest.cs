@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 

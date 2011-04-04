@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       titleTag.Render (_htmlHelper.Writer);
 
       var documentText = _htmlHelper.GetDocumentText();
-      Assert.That (documentText, NUnit.Framework.SyntaxHelpers.Text.Contains ("My &lt;Title&gt;"));
+      Assert.That (documentText, Is.StringContaining("My &lt;Title&gt;"));
     }
   }
 }

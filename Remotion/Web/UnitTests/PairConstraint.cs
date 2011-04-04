@@ -57,6 +57,7 @@ namespace Remotion.Web.UnitTests
             string.Format ("{{ {0} , {1} }}", _expected.First, _expected.Second),
             string.Format ("{{ {0} , {1} }}", _actual.First, _actual.Second),
             -1,
+            false,
             false);
       }
     }

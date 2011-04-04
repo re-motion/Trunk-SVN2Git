@@ -17,7 +17,6 @@
 using System;
 using System.Globalization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.NumericValidatorTests

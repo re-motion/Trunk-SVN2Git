@@ -22,7 +22,6 @@ using System.Linq;
 using System.Web;
 using NUnit.Framework;
 using System.Web.UI;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
@@ -166,10 +165,10 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       object viewState = _memberCaller.SaveViewStateRecursive (_parent);
 
-      Assert.That (viewState, Is.InstanceOfType (typeof (Pair)));
+      Assert.That (viewState, Is.InstanceOf (typeof (Pair)));
       var parentViewState = (Pair) viewState;
       Assert.That (parentViewState.First, Is.EqualTo ("ParentValue"));
-      Assert.That (parentViewState.Second, Is.InstanceOfType (typeof (ArrayList)));
+      Assert.That (parentViewState.Second, Is.InstanceOf (typeof (ArrayList)));
       var childViewStates = (IList) parentViewState.Second;
       Assert.That (childViewStates.Count, Is.EqualTo (2));
       Assert.That (childViewStates[0], Is.EqualTo (0));
@@ -205,7 +204,7 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
+      Assert.That (childControlState, Is.InstanceOf (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (2));
       Assert.That (childControlState[_parent.UniqueID], new PairConstraint (new Pair ("ParentValue", null)));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
@@ -234,7 +233,7 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
+      Assert.That (childControlState, Is.InstanceOf (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (1));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
     }
@@ -254,7 +253,7 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
+      Assert.That (childControlState, Is.InstanceOf (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (1));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
     }
@@ -274,7 +273,7 @@ namespace Remotion.Web.UnitTests.Core.Utilities
 
       IDictionary childControlState = _memberCaller.GetChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
+      Assert.That (childControlState, Is.InstanceOf (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (2));
       Assert.That (childControlState[_parent.UniqueID], Is.EqualTo ("ParentValue"));
       Assert.That (childControlState[_child.UniqueID], Is.EqualTo ("ChildValue"));

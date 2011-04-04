@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
@@ -36,11 +35,11 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       ITransactionMode transactionMode = new CreateRootTransactionMode (true, new TestTransactionFactory ());
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), context);
 
-      Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
-      Assert.That (strategy.GetNativeTransaction<TestTransaction> (), Is.InstanceOfType (typeof (TestTransaction)));
-      Assert.That (strategy.OuterTransactionStrategy, Is.InstanceOfType (typeof (NullTransactionStrategy)));
+      Assert.That (strategy, Is.InstanceOf (typeof (RootTransactionStrategy)));
+      Assert.That (strategy.GetNativeTransaction<TestTransaction> (), Is.InstanceOf (typeof (TestTransaction)));
+      Assert.That (strategy.OuterTransactionStrategy, Is.InstanceOf (typeof (NullTransactionStrategy)));
       Assert.That (((RootTransactionStrategy) strategy).AutoCommit, Is.True);
-      Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
+      Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOf (typeof (TestTransaction)));
     }
 
     [Test]
@@ -62,7 +61,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
           invocation =>
           {
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, context);
-            Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
+            Assert.That (strategy, Is.InstanceOf (typeof (RootTransactionStrategy)));
             Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (((TestFunction2) parentFunction).TransactionStrategy));
           });
 

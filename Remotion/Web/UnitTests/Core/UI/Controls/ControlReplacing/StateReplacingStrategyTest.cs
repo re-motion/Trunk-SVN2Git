@@ -19,7 +19,6 @@ using System.Collections;
 using System.IO;
 using System.Web.UI;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Rhino.Mocks;
 

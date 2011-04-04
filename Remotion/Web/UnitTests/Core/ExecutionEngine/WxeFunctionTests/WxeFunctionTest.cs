@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Web;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
@@ -81,7 +80,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void GetExecutionListener ()
     {
       TestFunction2 function = new TestFunction2 ();
-      Assert.That (function.ExecutionListener, Is.InstanceOfType (typeof (NullExecutionListener)));
+      Assert.That (function.ExecutionListener, Is.InstanceOf (typeof (NullExecutionListener)));
     }
 
     [Test]

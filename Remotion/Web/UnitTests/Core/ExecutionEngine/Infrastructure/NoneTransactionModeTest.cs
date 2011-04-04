@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -37,7 +36,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       ITransactionMode transactionMode = new NoneTransactionMode ();
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), context);
 
-      Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
+      Assert.That (strategy, Is.InstanceOf (typeof (NoneTransactionStrategy)));
       Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (NullTransactionStrategy.Null));
     }
 
@@ -60,7 +59,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
           invocation =>
           {
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, context);
-            Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
+            Assert.That (strategy, Is.InstanceOf (typeof (NoneTransactionStrategy)));
             Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (((TestFunction2)parentFunction).TransactionStrategy));
           });
 

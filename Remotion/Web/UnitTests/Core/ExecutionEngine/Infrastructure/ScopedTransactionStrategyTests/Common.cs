@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -111,7 +110,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       TransactionStrategyBase childTransactionStrategy = _strategy.CreateChildTransactionStrategy (true, childExecutionContextStub, Context);
 
       MockRepository.VerifyAll();
-      Assert.That (childTransactionStrategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
+      Assert.That (childTransactionStrategy, Is.InstanceOf (typeof (ChildTransactionStrategy)));
       Assert.That (((ChildTransactionStrategy)childTransactionStrategy).AutoCommit, Is.True);
       Assert.That (((ChildTransactionStrategy) childTransactionStrategy).Transaction, Is.SameAs (childTransaction));
       Assert.That (childTransactionStrategy.OuterTransactionStrategy, Is.SameAs (_strategy));
@@ -139,7 +138,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       TransactionStrategyBase childTransactionStrategy = _strategy.CreateChildTransactionStrategy (true, childExecutionContextStub, Context);
 
       MockRepository.VerifyAll ();
-      Assert.That (childTransactionStrategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
+      Assert.That (childTransactionStrategy, Is.InstanceOf (typeof (ChildTransactionStrategy)));
       Assert.That (((ChildTransactionStrategy) childTransactionStrategy).AutoCommit, Is.True);
       Assert.That (((ChildTransactionStrategy) childTransactionStrategy).Transaction, Is.SameAs (childTransaction));
       Assert.That (childTransactionStrategy.OuterTransactionStrategy, Is.SameAs (_strategy));
@@ -191,7 +190,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTrans
       {
         MockRepository.VerifyAll();
         Assert.That (e.InnerException, Is.SameAs (innerException));
-        Assert.That (_strategy.Child, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
+        Assert.That (_strategy.Child, Is.InstanceOf (typeof (ChildTransactionStrategy)));
       }
     }
 

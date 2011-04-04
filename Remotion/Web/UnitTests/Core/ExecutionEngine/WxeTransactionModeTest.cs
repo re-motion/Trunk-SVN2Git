@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
@@ -29,14 +28,14 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     [Test]
     public void GetNone ()
     {
-      Assert.That (WxeTransactionMode<TestTransactionFactory>.None, Is.InstanceOfType (typeof (NoneTransactionMode)));
+      Assert.That (WxeTransactionMode<TestTransactionFactory>.None, Is.InstanceOf (typeof (NoneTransactionMode)));
     }
 
     [Test]
     public void GetCreateRoot ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRoot;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode)));
+      Assert.That (transactionMode, Is.InstanceOf (typeof (CreateRootTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
@@ -44,7 +43,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void GetCreateRootWithAutoCommit ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRootWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode)));
+      Assert.That (transactionMode, Is.InstanceOf (typeof (CreateRootTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
 
@@ -52,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void GetCreateChildIfParent ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParent;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode)));
+      Assert.That (transactionMode, Is.InstanceOf (typeof (CreateChildIfParentTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
@@ -60,7 +59,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void GetCreateChildIfParentWithAutoCommit ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParentWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode)));
+      Assert.That (transactionMode, Is.InstanceOf (typeof (CreateChildIfParentTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
   }

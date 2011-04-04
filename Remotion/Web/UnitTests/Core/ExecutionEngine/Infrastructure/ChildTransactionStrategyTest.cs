@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
@@ -74,7 +73,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       IWxeFunctionExecutionListener innerExecutionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       IWxeFunctionExecutionListener executionListener = _strategy.CreateExecutionListener (innerExecutionListenerStub);
 
-      Assert.That (executionListener, Is.InstanceOfType(typeof (ChildTransactionExecutionListener)));
+      Assert.That (executionListener, Is.InstanceOf(typeof (ChildTransactionExecutionListener)));
       Assert.That (((ChildTransactionExecutionListener) executionListener).InnerListener, Is.SameAs (innerExecutionListenerStub));
     }
 

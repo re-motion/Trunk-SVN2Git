@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UnitTests.Core.Utilities

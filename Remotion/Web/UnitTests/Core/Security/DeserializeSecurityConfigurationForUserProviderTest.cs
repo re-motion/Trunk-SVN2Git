@@ -31,7 +31,7 @@ namespace Remotion.Web.UnitTests.Core.Security
       SecurityConfiguration configuration = new SecurityConfiguration ();
       string xmlFragment = @"<remotion.security defaultPrincipalProvider=""HttpContext"" />";
       ConfigurationHelper.DeserializeSection (configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (HttpContextPrincipalProvider), configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (HttpContextPrincipalProvider), configuration.PrincipalProvider);
     }
 
   }

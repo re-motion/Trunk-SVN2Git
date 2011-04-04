@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using System.Web;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;

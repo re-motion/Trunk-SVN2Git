@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Threading;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
@@ -133,7 +132,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
               Assert.That (_pageStep.PostBackCollection[WxePageInfo.PostBackSequenceNumberID], Is.EqualTo ("100"));
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (_pageStep.PostBackCollection.AllKeys, Has.Member("Key"));
               Assert.That (_pageStep.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.IsReturningPostBack, Is.True);
             });

@@ -20,7 +20,6 @@ using System.ComponentModel.Design;
 using System.Configuration;
 using System.Web.UI.Design;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.Web.UI.Design;
 
