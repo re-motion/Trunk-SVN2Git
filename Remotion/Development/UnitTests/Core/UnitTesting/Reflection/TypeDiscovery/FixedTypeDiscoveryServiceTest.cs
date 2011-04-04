@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Reflection.TypeDiscovery

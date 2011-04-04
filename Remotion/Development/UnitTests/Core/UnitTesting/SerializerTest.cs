@@ -20,7 +20,6 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {

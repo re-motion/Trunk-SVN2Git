@@ -23,7 +23,6 @@ using System.Net.Mail;
 using System.Security.Permissions;
 using System.Web;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing

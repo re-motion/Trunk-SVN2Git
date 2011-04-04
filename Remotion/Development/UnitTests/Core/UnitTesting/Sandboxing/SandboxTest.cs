@@ -22,7 +22,6 @@ using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
 using System.Collections.Generic;
 using System.Linq;

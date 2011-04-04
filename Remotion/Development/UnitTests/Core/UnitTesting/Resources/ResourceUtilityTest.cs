@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Resources

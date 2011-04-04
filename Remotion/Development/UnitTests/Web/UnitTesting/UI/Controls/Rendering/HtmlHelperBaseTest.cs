@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Rhino.Mocks;
 

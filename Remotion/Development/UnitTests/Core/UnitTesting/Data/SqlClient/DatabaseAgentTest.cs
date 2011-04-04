@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient

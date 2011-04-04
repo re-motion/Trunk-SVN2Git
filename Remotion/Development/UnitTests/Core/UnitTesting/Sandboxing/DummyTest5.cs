@@ -25,7 +25,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     [Ignore]
     public void TestIgnored ()
     {
-      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", TestStatus.Failed, new NotSupportedException());
+      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", SandboxTestStatus.Failed, new NotSupportedException ());
     }
 
     public void TestSucceeded ()
@@ -41,7 +41,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     [ExpectedException(typeof(TestFailedException))]
     public void TestExpectedExceptionSucceeded ()
     {
-      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", TestStatus.Failed, new NotSupportedException ());
+      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", SandboxTestStatus.Failed, new NotSupportedException ());
     }
 
     [ExpectedException(typeof(TestFailedException))]
@@ -52,7 +52,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 
     public void TestThrowsException ()
     {
-      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", TestStatus.Failed, new NotSupportedException ());
+      throw new TestFailedException (typeof (DummyTest5), "TestIgnored", SandboxTestStatus.Failed, new NotSupportedException ());
     }
 
   }

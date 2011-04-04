@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Sandboxing;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
@@ -41,7 +40,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var result = TestResult.CreateSucceeded (_methodInfo);
       
       Assert.That (result.MethodInfo, Is.SameAs (_methodInfo));
-      Assert.That (result.Status, Is.EqualTo (TestStatus.Succeeded));
+      Assert.That (result.Status, Is.EqualTo (SandboxTestStatus.Succeeded));
       Assert.That (result.Exception, Is.Null);
     }
 
@@ -51,7 +50,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var result = TestResult.CreateIgnored (_methodInfo);
 
       Assert.That (result.MethodInfo, Is.SameAs (_methodInfo));
-      Assert.That (result.Status, Is.EqualTo (TestStatus.Ignored));
+      Assert.That (result.Status, Is.EqualTo (SandboxTestStatus.Ignored));
       Assert.That (result.Exception, Is.Null);
     }
 
@@ -61,7 +60,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var result = TestResult.CreateFailed (_methodInfo, _exception);
 
       Assert.That (result.MethodInfo, Is.SameAs (_methodInfo));
-      Assert.That (result.Status, Is.EqualTo (TestStatus.Failed));
+      Assert.That (result.Status, Is.EqualTo (SandboxTestStatus.Failed));
       Assert.That (result.Exception, Is.SameAs (_exception));
     }
 
@@ -71,7 +70,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var result = TestResult.CreateFailedInSetUp (_methodInfo, _exception);
 
       Assert.That (result.MethodInfo, Is.SameAs (_methodInfo));
-      Assert.That (result.Status, Is.EqualTo (TestStatus.FailedInSetUp));
+      Assert.That (result.Status, Is.EqualTo (SandboxTestStatus.FailedInSetUp));
       Assert.That (result.Exception, Is.SameAs (_exception));
     }
 
@@ -81,7 +80,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       var result = TestResult.CreateFailedInTearDown (_methodInfo, _exception);
 
       Assert.That (result.MethodInfo, Is.SameAs (_methodInfo));
-      Assert.That (result.Status, Is.EqualTo (TestStatus.FailedInTearDown));
+      Assert.That (result.Status, Is.EqualTo (SandboxTestStatus.FailedInTearDown));
       Assert.That (result.Exception, Is.SameAs (_exception));
     }
     
