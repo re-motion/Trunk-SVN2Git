@@ -19,7 +19,6 @@ using System.ComponentModel.Design;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -186,7 +185,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     {
       var service =
           (ITypeDiscoveryService) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
-      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
 
       var repository = new MockRepository();
       var designModeHelperMock = repository.StrictMock<IDesignModeHelper> ();
@@ -203,7 +202,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       {
         service = (ITypeDiscoveryService) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-        Assert.That (service, Is.Not.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+        Assert.That (service, Is.Not.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
         Assert.That (service, Is.SameAs (designerServiceMock));
       }
       finally

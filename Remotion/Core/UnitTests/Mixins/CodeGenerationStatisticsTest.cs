@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -98,8 +97,8 @@ namespace Remotion.UnitTests.Mixins
     {
       Type t1 = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
       Type t2 = TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration);
-      Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), List.Contains (t1));
-      Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), List.Contains (t2));
+      Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), Has.Member(t1));
+      Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), Has.Member(t2));
     }
 
     [Test]
@@ -113,8 +112,8 @@ namespace Remotion.UnitTests.Mixins
     {
       Type t1 = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
       Type t2 = TypeFactory.GetConcreteType (typeof (List<int>), GenerationPolicy.ForceGeneration);
-      Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), List.Contains (t1));
-      Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), List.Contains (t2));
+      Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), Has.Member(t1));
+      Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), Has.Member(t2));
     }
 
     [Test]

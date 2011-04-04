@@ -17,7 +17,6 @@
 using System;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;

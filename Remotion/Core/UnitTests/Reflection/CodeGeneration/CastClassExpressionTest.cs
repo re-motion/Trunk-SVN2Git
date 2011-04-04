@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {

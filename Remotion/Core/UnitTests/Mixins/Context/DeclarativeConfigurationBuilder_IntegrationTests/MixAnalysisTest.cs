@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -37,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     public void AdditionalDependenciesAreAnalyzed ()
     {
       ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
-      Assert.That (context.Mixins[typeof (MixinForGlobalMix)].ExplicitDependencies, List.Contains (typeof (AdditionalDependencyForGlobalMix)));
+      Assert.That (context.Mixins[typeof (MixinForGlobalMix)].ExplicitDependencies, Has.Member(typeof (AdditionalDependencyForGlobalMix)));
     }
 
     [Test]

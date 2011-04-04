@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.CodeGeneration.Serialization;
@@ -67,7 +66,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       _concreteMixin.I = 7431;
       MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
-      Assert.That (_serializationInfo.GetValue ("__baseMemberValues", typeof (object[])), List.Contains (7431));
+      Assert.That (_serializationInfo.GetValue ("__baseMemberValues", typeof (object[])), Has.Member(7431));
     }
 
     [Test]

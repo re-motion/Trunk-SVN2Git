@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
@@ -65,7 +64,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var finder = element.CreateRootAssemblyFinder ();
       Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
 
-      Assert.That (finder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
+      Assert.That (finder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
       var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];
       Assert.That (namedFinder.Specifications.ToArray(), Is.Empty);
 
@@ -84,7 +83,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var finder = element.CreateRootAssemblyFinder ();
       Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
 
-      Assert.That (finder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
+      Assert.That (finder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
       var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];
       Assert.That (namedFinder.Specifications.Single ().AssemblyName.ToString (), Is.EqualTo ("mscorlib"));
 

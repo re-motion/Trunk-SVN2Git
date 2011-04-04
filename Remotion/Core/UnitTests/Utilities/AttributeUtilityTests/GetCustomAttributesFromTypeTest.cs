@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
 using Remotion.Utilities;
 
@@ -30,7 +29,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void ReturnSpecificArrayType ()
     {
       object[] attributes = AttributeUtility.GetCustomAttributes (typeof (BaseClassWithAttribute), typeof (BaseInheritedAttribute), false);
-      Assert.That (attributes, Is.InstanceOfType (typeof (BaseInheritedAttribute[])));
+      Assert.That (attributes, Is.InstanceOf (typeof (BaseInheritedAttribute[])));
     }
 
     [Test]

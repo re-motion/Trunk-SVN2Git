@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
@@ -39,7 +38,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void ValueDiscoveryService ()
     {
-      Assert.That (_cache.ValueDiscoveryService, Is.InstanceOfType (typeof (ExtensibleEnumValueDiscoveryService)));
+      Assert.That (_cache.ValueDiscoveryService, Is.InstanceOf (typeof (ExtensibleEnumValueDiscoveryService)));
       Assert.That (((ExtensibleEnumValueDiscoveryService) _cache.ValueDiscoveryService).TypeDiscoveryService, 
           Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService()));
     }
@@ -49,7 +48,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       IExtensibleEnumDefinition instance = _cache.GetDefinition (typeof (Color));
 
-      Assert.That (instance, Is.InstanceOfType (typeof (ExtensibleEnumDefinition<Color>)));
+      Assert.That (instance, Is.InstanceOf (typeof (ExtensibleEnumDefinition<Color>)));
     }
 
     [Test]

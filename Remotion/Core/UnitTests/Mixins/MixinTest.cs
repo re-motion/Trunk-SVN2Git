@@ -16,7 +16,6 @@
 // 
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -47,7 +46,7 @@ namespace Remotion.UnitTests.Mixins
       var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var mixin = Mixin.Get<IBT1Mixin1> (bt1);
       Assert.That (mixin, Is.Not.Null);
-      Assert.That (mixin, Is.InstanceOfType (typeof (BT1Mixin1)));
+      Assert.That (mixin, Is.InstanceOf (typeof (BT1Mixin1)));
     }
 
     [Test]

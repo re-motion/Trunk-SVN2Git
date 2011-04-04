@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
@@ -120,7 +119,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       var instance = CreateMixedObject<NullTarget> (typeof (AbstractMixinWithoutAbstractMembers));
       var m1 = Mixin.Get<AbstractMixinWithoutAbstractMembers> (instance);
       Assert.That (m1, Is.Not.Null);
-      Assert.That (m1, Is.InstanceOfType (typeof (AbstractMixinWithoutAbstractMembers)));
+      Assert.That (m1, Is.InstanceOf (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.GetType (), Is.Not.SameAs (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.M1 (), Is.EqualTo ("AbstractMixinWithoutAbstractMembers.M1"));
     }

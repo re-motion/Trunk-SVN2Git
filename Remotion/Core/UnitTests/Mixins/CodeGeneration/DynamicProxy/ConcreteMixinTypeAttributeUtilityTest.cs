@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Text;

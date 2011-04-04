@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering;
 using System.Linq;

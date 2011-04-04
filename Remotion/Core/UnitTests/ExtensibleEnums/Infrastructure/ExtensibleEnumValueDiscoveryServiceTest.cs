@@ -20,7 +20,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Globalization;

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Samples.Tutorial.T01_Configuration.Core.Uses.UsesSamples;
 using Remotion.Reflection;
 

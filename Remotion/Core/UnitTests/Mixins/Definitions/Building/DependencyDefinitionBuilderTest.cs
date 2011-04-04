@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -513,7 +512,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
       Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)];
-      Assert.That (requirement.FindRequiringMixins (), List.Contains (mixin));
+      Assert.That (requirement.FindRequiringMixins (), Has.Member(mixin));
       Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)]));
       
       Assert.AreEqual(0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");
@@ -534,7 +533,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
 
       Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
-      Assert.That (requirement.FindRequiringMixins (), List.Contains (mixin));
+      Assert.That (requirement.FindRequiringMixins (), Has.Member(mixin));
       Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)]));
 
       Assert.AreEqual (0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");

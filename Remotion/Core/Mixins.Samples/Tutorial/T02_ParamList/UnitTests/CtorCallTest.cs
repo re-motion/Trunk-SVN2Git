@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Samples.Tutorial.T02_ParamList.Core;
 using Remotion.Reflection;
 

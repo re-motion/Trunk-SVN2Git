@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Context;
 using System.Linq;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -44,26 +43,26 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void GetTypesToInheritFrom_Base ()
     {
-      Assert.That (_policy.GetTypesToInheritFrom (typeof (string)).ToArray (), List.Contains (typeof (object)));
+      Assert.That (_policy.GetTypesToInheritFrom (typeof (string)).ToArray (), Has.Member(typeof (object)));
     }
 
     [Test]
     public void GetTypesToInheritFrom_Interfaces ()
     {
       Assert.That (_policy.GetTypesToInheritFrom (typeof (string)).ToArray (), 
-          List.Contains (typeof (IEnumerable<char>)));
+          Has.Member(typeof (IEnumerable<char>)));
     }
 
     [Test]
     public void GetTypesToInheritFrom_GenericTypeDef ()
     {
-      Assert.That (_policy.GetTypesToInheritFrom (typeof (List<int>)).ToArray (), List.Contains (typeof (List<>)));
+      Assert.That (_policy.GetTypesToInheritFrom (typeof (List<int>)).ToArray (), Has.Member(typeof (List<>)));
     }
 
     [Test]
     public void GetTypesToInheritFrom_NoGenericTypeDef_ForOpenGenericType ()
     {
-      Assert.That (_policy.GetTypesToInheritFrom (typeof (List<>)).ToArray (), List.Not.Contains (typeof (List<>)));
+      Assert.That (_policy.GetTypesToInheritFrom (typeof (List<>)).ToArray (), Has.No.Member(typeof (List<>)));
     }
 
     [Test]

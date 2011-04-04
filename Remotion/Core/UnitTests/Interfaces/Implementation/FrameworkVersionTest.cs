@@ -20,7 +20,6 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;

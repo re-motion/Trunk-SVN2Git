@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
 

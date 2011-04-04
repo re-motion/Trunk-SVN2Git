@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -106,7 +105,7 @@ namespace Remotion.UnitTests.Mixins.Context
     public void AddAssembly_AddsTypesInAssembly ()
     {
       _builder.AddAssembly (typeof (DeclarativeConfigurationBuilderTest).Assembly);
-      Assert.That (_builder.AllTypes, List.Contains (typeof (BaseType1)));
+      Assert.That (_builder.AllTypes, Has.Member(typeof (BaseType1)));
     }
 
     [Test]
@@ -114,7 +113,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddAssembly (typeof (DeclarativeConfigurationBuilderTest).Assembly);
 
-      Assert.That (_builder.AllTypes, List.Not.Contains (typeof (TypeIgnored)));
+      Assert.That (_builder.AllTypes, Has.No.Member(typeof (TypeIgnored)));
     }
 
     [Test]

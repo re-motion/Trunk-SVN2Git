@@ -17,7 +17,6 @@
 using System;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Text.StringExtensions;
 
 namespace Remotion.UnitTests.Text.StringExtensions

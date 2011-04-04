@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           .EnterScope())
       {
         var instance = ObjectFactory.Create<ClassOverridingSingleMixinMethod>(ParamList.Empty);
-        Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Overridden: "));
+        Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), Is.StringStarting("Overridden: "));
       }
     }
   }

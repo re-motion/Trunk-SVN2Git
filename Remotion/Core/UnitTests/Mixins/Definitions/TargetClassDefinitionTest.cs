@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;

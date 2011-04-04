@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -322,7 +321,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       IClassEmitter emitter = _unsavedModuleManager.CreateClassEmitter ("X", typeof (BaseType2), new[] { typeof (IMarkerInterface) }, TypeAttributes.Public, true);
       Type type = emitter.BuildType();
-      Assert.That (emitter, Is.InstanceOfType (typeof (CustomClassEmitter)));
+      Assert.That (emitter, Is.InstanceOf (typeof (CustomClassEmitter)));
       Assert.That (type.BaseType, Is.SameAs (typeof (BaseType2)));
       Assert.That (type.GetInterface (typeof (IMarkerInterface).FullName), Is.SameAs (typeof (IMarkerInterface)));
       Assert.That (type.Attributes, Is.EqualTo (TypeAttributes.Public));

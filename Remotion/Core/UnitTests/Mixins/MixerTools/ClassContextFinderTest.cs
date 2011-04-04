@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
@@ -65,8 +64,8 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
-      Assert.That (result, List.Contains (_configuredClassContext1));
-      Assert.That (result, List.Contains (_configuredClassContext2));
+      Assert.That (result, Has.Member(_configuredClassContext1));
+      Assert.That (result, Has.Member(_configuredClassContext2));
     }
 
     [Test]
@@ -75,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
-      Assert.That (result, List.Not.Contains (_genericClassContext));
+      Assert.That (result, Has.No.Member(_genericClassContext));
     }
 
     [Test]
@@ -84,7 +83,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
-      Assert.That (result, List.Not.Contains (_interfaceClassContext));
+      Assert.That (result, Has.No.Member(_interfaceClassContext));
     }
 
     [Test]

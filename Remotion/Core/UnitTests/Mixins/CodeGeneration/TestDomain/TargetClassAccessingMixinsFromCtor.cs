@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.TestDomain;
 
@@ -33,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
       Mixins = mixinTarget.Mixins;
 
       Assert.That (Mixins.Length, Is.EqualTo (1));
-      Assert.That (Mixins[0], Is.InstanceOfType (typeof (NullMixin)));
+      Assert.That (Mixins[0], Is.InstanceOf (typeof (NullMixin)));
     }
   }
 }

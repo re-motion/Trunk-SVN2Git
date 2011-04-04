@@ -20,7 +20,6 @@ using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 using Rhino.Mocks;
@@ -44,7 +43,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.AreEqual ("ParamSimple", returnValue);
 
       Assert.IsNotNull (method.MethodBuilder);
-      Assert.That (method.ParameterTypes, Is.EquivalentTo (new[] { typeof (string), typeof (string) }));
+      Assert.That (method.ParameterTypes, Is.EqualTo (new[] { typeof (string) }));
     }
 
     [Test]

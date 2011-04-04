@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.Utilities.TestDomain;
 

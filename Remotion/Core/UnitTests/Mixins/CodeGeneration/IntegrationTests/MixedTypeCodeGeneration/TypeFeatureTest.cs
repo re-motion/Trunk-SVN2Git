@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
@@ -159,7 +158,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
 
-      Assert.That (attributes[0].OrderedMixinTypes, List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+      Assert.That (attributes[0].OrderedMixinTypes, Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]
@@ -281,7 +280,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.That (mixins.Length, Is.EqualTo (mixinTarget.ClassContext.Mixins.Count));
 
       var mixinTypes = MixinTypeUtility.GetMixinTypesExact (typeof (BaseType1));
-      Assert.That (mixins[0], Is.InstanceOfType (mixinTypes[0]));
+      Assert.That (mixins[0], Is.InstanceOf (mixinTypes[0]));
     }
 
     [Test]
@@ -292,7 +291,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           typeof (ClassOverridingMixinMembers), 
           typeof (MixinWithAbstractMembers));
 
-      Assert.That (concreteType.GetInterfaces (), List.Contains (concreteMixinType.GeneratedOverrideInterface));
+      Assert.That (concreteType.GetInterfaces (), Has.Member(concreteMixinType.GeneratedOverrideInterface));
     }
 
     [Test]
@@ -303,7 +302,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           typeof (ClassOverridingMixinMembersProtected),
           typeof (MixinWithAbstractMembers));
 
-      Assert.That (concreteType.GetInterfaces (), List.Contains (concreteMixinType.GeneratedOverrideInterface));
+      Assert.That (concreteType.GetInterfaces (), Has.Member(concreteMixinType.GeneratedOverrideInterface));
       
       var explicitInterfaceMember = concreteType.GetMethod (
           concreteMixinType.GeneratedOverrideInterface.FullName + ".AbstractMethod", 

@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy

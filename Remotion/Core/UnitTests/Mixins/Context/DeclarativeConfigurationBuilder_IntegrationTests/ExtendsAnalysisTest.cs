@@ -21,7 +21,6 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Remotion.Utilities;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_IntegrationTests
 {

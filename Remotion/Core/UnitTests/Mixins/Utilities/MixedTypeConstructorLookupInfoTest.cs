@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Utilities;
 
@@ -97,7 +96,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
       Func<ConcreteTypeMock> d = (Func<ConcreteTypeMock>) info.GetDelegate (typeof (Func<ConcreteTypeMock>));
       ConcreteTypeMock instance = d();
       Assert.That (instance, Is.Not.Null);
-      Assert.That (instance, Is.InstanceOfType (typeof (ConcreteTypeMock)));
+      Assert.That (instance, Is.InstanceOf (typeof (ConcreteTypeMock)));
     }
 
     [Test]

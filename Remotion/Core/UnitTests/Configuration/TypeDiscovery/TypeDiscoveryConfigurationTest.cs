@@ -18,7 +18,6 @@ using System;
 using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
@@ -107,14 +106,14 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
       var service = section.CreateTypeDiscoveryService ();
 
-      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
       var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
-      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (SearchPathRootAssemblyFinder)));
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (SearchPathRootAssemblyFinder)));
 
       var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
       Assert.That (searchPathRootAssemblyFinder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
 
-      Assert.That (assemblyFinder.AssemblyLoader, Is.InstanceOfType (typeof (FilteringAssemblyLoader)));
+      Assert.That (assemblyFinder.AssemblyLoader, Is.InstanceOf (typeof (FilteringAssemblyLoader)));
 
       var castLoader = (FilteringAssemblyLoader) assemblyFinder.AssemblyLoader;
       Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
@@ -127,9 +126,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
       var service = section.CreateTypeDiscoveryService ();
 
-      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
       var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
-      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (FakeRootAssemblyFinder)));
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (FakeRootAssemblyFinder)));
     }
 
     [Test]
@@ -149,13 +148,13 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
       var service = section.CreateTypeDiscoveryService ();
 
-      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
       var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
-      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (CompositeRootAssemblyFinder)));
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (CompositeRootAssemblyFinder)));
 
       var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
       Assert.That (rootAssemblyFinder.InnerFinders.Length, Is.EqualTo (2));
-      Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
+      Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
 
       var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);
       Assert.That (namedFinder.Specifications.First().AssemblyName.ToString(), Is.EqualTo ("mscorlib"));
@@ -171,7 +170,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
       var service = section.CreateTypeDiscoveryService ();
 
-      Assert.That (service, Is.InstanceOfType (typeof (FakeTypeDiscoveryService)));
+      Assert.That (service, Is.InstanceOf (typeof (FakeTypeDiscoveryService)));
     }
 
     [Test]

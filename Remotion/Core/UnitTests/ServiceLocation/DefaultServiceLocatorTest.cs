@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
@@ -53,7 +52,7 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (result, Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
       Assert.That (
           SafeServiceLocator.Current.GetInstance<ITestInstanceConcreteImplementationAttributeType>(),
-          Is.InstanceOfType (typeof (TestConcreteImplementationAttributeType)));
+          Is.InstanceOf (typeof (TestConcreteImplementationAttributeType)));
     }
 
     [Test]

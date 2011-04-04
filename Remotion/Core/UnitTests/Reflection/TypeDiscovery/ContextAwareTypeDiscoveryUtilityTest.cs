@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.UnitTests.Configuration.TypeDiscovery;
@@ -65,7 +64,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
       TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService.Type = typeof (FakeTypeDiscoveryService);
 
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
-      Assert.That (defaultService, Is.InstanceOfType (typeof (FakeTypeDiscoveryService)));
+      Assert.That (defaultService, Is.InstanceOf (typeof (FakeTypeDiscoveryService)));
     }
 
     [Test]

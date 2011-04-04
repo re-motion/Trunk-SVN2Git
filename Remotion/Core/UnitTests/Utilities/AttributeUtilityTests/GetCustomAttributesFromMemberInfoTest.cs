@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
 using Remotion.Utilities;
 
@@ -57,7 +56,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 
       Assert.AreEqual (1, attributes.Length);
       Assert.IsNotNull (attributes[0]);
-      Assert.IsInstanceOfType (typeof (InheritedAttribute), attributes[0]);
+      Assert.IsInstanceOf (typeof (InheritedAttribute), attributes[0]);
     }
 
     [Test]
@@ -76,7 +75,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 
       Assert.AreEqual (1, attributes.Length);
       Assert.IsNotNull (attributes[0]);
-      Assert.IsInstanceOfType (typeof (ICustomAttribute), attributes[0]);
+      Assert.IsInstanceOf (typeof (ICustomAttribute), attributes[0]);
     }
 
     [Test]
@@ -163,7 +162,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void Test_ReturnSpecificArrayType ()
     {
       object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (BaseInheritedAttribute), false);
-      Assert.That (attributes, Is.InstanceOfType (typeof (BaseInheritedAttribute[])));
+      Assert.That (attributes, Is.InstanceOf (typeof (BaseInheritedAttribute[])));
     }
 
   }

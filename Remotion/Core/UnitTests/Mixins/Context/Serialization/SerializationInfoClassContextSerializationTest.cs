@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;

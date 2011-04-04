@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins;

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;

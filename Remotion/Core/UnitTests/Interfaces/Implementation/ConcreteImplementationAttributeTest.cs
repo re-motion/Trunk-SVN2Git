@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
 

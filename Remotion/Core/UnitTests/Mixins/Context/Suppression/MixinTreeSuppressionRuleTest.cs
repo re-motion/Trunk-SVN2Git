@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Mixins.Context;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.TestDomain;
 

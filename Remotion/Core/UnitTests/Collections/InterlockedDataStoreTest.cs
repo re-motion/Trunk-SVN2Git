@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -46,7 +45,7 @@ namespace Remotion.UnitTests.Collections
     public void DefaultConstructor ()
     {
       InterlockedDataStore<string, int> store = new InterlockedDataStore<string, int> ();
-      Assert.IsInstanceOfType (typeof (SimpleDataStore<string, int>), PrivateInvoke.GetNonPublicField (store, "_innerStore"));
+      Assert.IsInstanceOf (typeof (SimpleDataStore<string, int>), PrivateInvoke.GetNonPublicField (store, "_innerStore"));
     }
 
     [Test]

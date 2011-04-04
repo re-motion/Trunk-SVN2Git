@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -60,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       ClassContextBuilder classBuilder = builder.ForClass (typeof (BaseType1));
       Assert.That (classBuilder.TargetType, Is.SameAs (typeof (BaseType1)));
       Assert.That (classBuilder.Parent, Is.SameAs (builder));
-      Assert.That (builder.ClassContextBuilders, List.Contains (classBuilder));
+      Assert.That (builder.ClassContextBuilders, Has.Member(classBuilder));
     }
 
     [Test]
@@ -79,7 +78,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       ClassContextBuilder classBuilder = builder.ForClass<BaseType1> ();
       Assert.That (classBuilder.TargetType, Is.SameAs (typeof (BaseType1)));
       Assert.That (classBuilder.Parent, Is.SameAs (builder));
-      Assert.That (builder.ClassContextBuilders, List.Contains (classBuilder));
+      Assert.That (builder.ClassContextBuilders, Has.Member(classBuilder));
     }
 
     [Test]

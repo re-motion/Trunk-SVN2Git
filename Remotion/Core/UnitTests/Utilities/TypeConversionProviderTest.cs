@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
@@ -621,7 +620,7 @@ namespace Remotion.UnitTests.Utilities
     {
       TypeConverterResult converterResult = _provider.GetTypeConverter (typeof (Color), _string);
       Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.SourceTypeConverter));
-      Assert.That (converterResult.TypeConverter, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (converterResult.TypeConverter, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
       Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
     }
 
@@ -630,7 +629,7 @@ namespace Remotion.UnitTests.Utilities
     {
       TypeConverterResult converterResult = _provider.GetTypeConverter (_string, typeof (Color));
       Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.DestinationTypeConverter));
-      Assert.That (converterResult.TypeConverter, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (converterResult.TypeConverter, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
       Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
     }
 
@@ -822,7 +821,7 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
       Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
       Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
-      Assert.That (converterFirstRun, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (converterFirstRun, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
       Assert.That (((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType, Is.SameAs (typeof (Color)));
     }
 

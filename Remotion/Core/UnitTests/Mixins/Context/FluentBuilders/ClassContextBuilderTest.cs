@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -108,7 +107,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       MixinContextBuilder mixinBuilder = _classBuilder.AddMixin (typeof (BT2Mixin1));
       Assert.AreSame (typeof (BT2Mixin1), mixinBuilder.MixinType);
       Assert.AreSame (_classBuilder, mixinBuilder.Parent);
-      Assert.That (_classBuilder.MixinContextBuilders, List.Contains (mixinBuilder));
+      Assert.That (_classBuilder.MixinContextBuilders, Has.Member(mixinBuilder));
     }
 
     [Test]

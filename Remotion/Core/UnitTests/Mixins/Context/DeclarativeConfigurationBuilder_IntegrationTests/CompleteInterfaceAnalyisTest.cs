@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Context;
 using Remotion.UnitTests.Mixins.TestDomain;
 
@@ -33,11 +32,11 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       var classContext = result.ResolveCompleteInterface (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1));
       Assert.That (classContext, Is.Not.Null);
       Assert.That (classContext.Type, Is.SameAs (typeof (ClassWithHasCompleteInterfaces)));
-      Assert.That (classContext.CompleteInterfaces, List.Contains (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1)));
+      Assert.That (classContext.CompleteInterfaces, Has.Member(typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1)));
 
       var classContext2 = result.ResolveCompleteInterface (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2));
       Assert.That (classContext2, Is.SameAs (classContext));
-      Assert.That (classContext2.CompleteInterfaces, List.Contains (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)));
+      Assert.That (classContext2.CompleteInterfaces, Has.Member(typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)));
     }
   }
 }

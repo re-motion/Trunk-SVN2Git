@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -134,8 +133,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
         var rootAssemblies = rootAssemblyFinder.FindRootAssemblies (loader);
 
-        Assert.That (rootAssemblies, List.Not.Contains (firstInMemoryAssembly));
-        Assert.That (rootAssemblies, List.Not.Contains (secondInMemoryAssembly));
+        Assert.That (rootAssemblies, Has.No.Member(firstInMemoryAssembly));
+        Assert.That (rootAssemblies, Has.No.Member(secondInMemoryAssembly));
 
         Assert.That (
             rootAssemblies.Select (root => root.Assembly).ToArray(),
@@ -172,8 +171,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
         var rootAssemblies = rootAssemblyFinder.FindRootAssemblies (loader);
 
-        Assert.That (rootAssemblies, List.Not.Contains (firstInMemoryAssembly));
-        Assert.That (rootAssemblies, List.Not.Contains (secondInMemoryAssembly));
+        Assert.That (rootAssemblies, Has.No.Member(firstInMemoryAssembly));
+        Assert.That (rootAssemblies, Has.No.Member(secondInMemoryAssembly));
 
         Assert.That (
             rootAssemblies.Select (root => root.Assembly).ToArray (),

@@ -21,7 +21,6 @@ using System;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
@@ -143,7 +142,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
       var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType3));
 
       Assert.That (MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteMixedType), 
-          List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+          Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
   }
 }

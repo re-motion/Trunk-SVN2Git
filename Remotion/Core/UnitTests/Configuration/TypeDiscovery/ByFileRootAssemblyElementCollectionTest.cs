@@ -17,7 +17,6 @@
 using System;
 using System.Configuration;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using System.Linq;
@@ -53,9 +52,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       ByFileRootAssemblyElementBase[] result = collection.ToArray ();
 
       Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
-      Assert.That (result[1], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
-      Assert.That (result[2], Is.InstanceOfType (typeof (ByFileExcludeRootAssemblyElement)));
+      Assert.That (result[0], Is.InstanceOf (typeof (ByFileIncludeRootAssemblyElement)));
+      Assert.That (result[1], Is.InstanceOf (typeof (ByFileIncludeRootAssemblyElement)));
+      Assert.That (result[2], Is.InstanceOf (typeof (ByFileExcludeRootAssemblyElement)));
     }
 
     [Test]
@@ -147,7 +146,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var finder = collection.CreateRootAssemblyFinder ();
 
       Assert.That (finder.SearchPath, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
-      Assert.That (finder.FileSearchService, Is.InstanceOfType (typeof (FileSystemSearchService)));
+      Assert.That (finder.FileSearchService, Is.InstanceOf (typeof (FileSystemSearchService)));
 
       var specs = finder.Specifications.ToArray();
 

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
@@ -428,7 +427,7 @@ namespace Remotion.UnitTests.Mixins
           typeof (BT7Mixin9), 
           typeof (BT7Mixin5) }));
 
-      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]
@@ -445,7 +444,7 @@ namespace Remotion.UnitTests.Mixins
           typeof (BT7Mixin9), 
           typeof (BT7Mixin5) }));
 
-      Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType3))), List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType3))), Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]

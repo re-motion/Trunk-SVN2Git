@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
@@ -41,7 +40,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
-      Assert.That (finderDirectories, List.Contains ("baseDirectory"));
+      Assert.That (finderDirectories, Has.Member("baseDirectory"));
     }
 
     [Test]
@@ -50,7 +49,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
-      Assert.That (finderDirectories, List.Contains ("relativeSearchPath"));
+      Assert.That (finderDirectories, Has.Member("relativeSearchPath"));
     }
 
     [Test]
@@ -59,8 +58,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath1;relativeSearchPath2", false, "dynamicDirectory");
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
-      Assert.That (finderDirectories, List.Contains ("relativeSearchPath1"));
-      Assert.That (finderDirectories, List.Contains ("relativeSearchPath2"));
+      Assert.That (finderDirectories, Has.Member("relativeSearchPath1"));
+      Assert.That (finderDirectories, Has.Member("relativeSearchPath2"));
     }
 
     [Test]
@@ -80,7 +79,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
       var finderService = GetSearchServiceForCombinedFinder (finder);
 
-      Assert.That (finderService, Is.InstanceOfType (typeof (FileSystemSearchService)));
+      Assert.That (finderService, Is.InstanceOf (typeof (FileSystemSearchService)));
     }
 
     [Test]
@@ -89,7 +88,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
-      Assert.That (finderDirectories, List.Not.Contains ("dynamicDirectory"));
+      Assert.That (finderDirectories, Has.No.Member ("dynamicDirectory"));
     }
 
     [Test]
@@ -100,11 +99,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finderSpecs = GetSpecificationsForCombinedFinder (finder);
       var finderService = GetSearchServiceForCombinedFinder (finder);
 
-      Assert.That (finderDirectories, List.Contains ("dynamicDirectory"));
+      Assert.That (finderDirectories, Has.Member("dynamicDirectory"));
       Assert.That (finderSpecs, Is.EquivalentTo (new[] { 
           new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences), 
           new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences) }));
-      Assert.That (finderService, Is.InstanceOfType (typeof (FileSystemSearchService)));
+      Assert.That (finderService, Is.InstanceOf (typeof (FileSystemSearchService)));
     }
 
     [Test]

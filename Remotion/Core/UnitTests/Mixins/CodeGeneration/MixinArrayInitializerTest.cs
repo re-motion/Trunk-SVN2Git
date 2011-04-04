@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -96,7 +95,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
-      Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
+      Assert.That (mixinArray[0], Is.InstanceOf (typeof (NullMixin)));
     }
 
     [Test]
@@ -107,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
-      Assert.That (mixinArray[0], Is.InstanceOfType (typeof (ValueTypeMixin)));
+      Assert.That (mixinArray[0], Is.InstanceOf (typeof (ValueTypeMixin)));
     }
 
     [Test]
@@ -122,7 +121,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         var mixinArray = initializer.CreateMixinArray (null);
 
         Assert.That (mixinArray.Length, Is.EqualTo (1));
-        Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
+        Assert.That (mixinArray[0], Is.InstanceOf (typeof (NullMixin)));
         Assert.That (Mixin.Get<NullMixin2> (mixinArray[0]), Is.Not.Null);
       }
     }
@@ -146,7 +145,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
-      Assert.That (mixinArray[0], Is.InstanceOfType (typeof (MixinWithAbstractMembers)));
+      Assert.That (mixinArray[0], Is.InstanceOf (typeof (MixinWithAbstractMembers)));
       Assert.That (mixinArray[0].GetType(), Is.Not.SameAs (typeof (MixinWithAbstractMembers)));
     }
 
@@ -158,8 +157,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (2));
-      Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
-      Assert.That (mixinArray[1], Is.InstanceOfType (typeof (NullMixin2)));
+      Assert.That (mixinArray[0], Is.InstanceOf (typeof (NullMixin)));
+      Assert.That (mixinArray[1], Is.InstanceOf (typeof (NullMixin2)));
     }
 
     [Test]
@@ -174,7 +173,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       Assert.That (mixinArray.Length, Is.EqualTo (3));
       Assert.That (mixinArray[0], Is.SameAs (mixin1));
-      Assert.That (mixinArray[1], Is.InstanceOfType (typeof (NullMixin2)));
+      Assert.That (mixinArray[1], Is.InstanceOf (typeof (NullMixin2)));
       Assert.That (mixinArray[2], Is.SameAs (mixin3));
     }
 

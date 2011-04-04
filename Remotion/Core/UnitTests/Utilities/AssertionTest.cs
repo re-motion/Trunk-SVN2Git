@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Assertion=Remotion.Utilities.Assertion;
 using AssertionException=Remotion.Utilities.AssertionException;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.UnitTests.Utilities
 {

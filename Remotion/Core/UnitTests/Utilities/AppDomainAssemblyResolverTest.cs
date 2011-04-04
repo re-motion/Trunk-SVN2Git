@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Remoting;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities

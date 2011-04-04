@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -31,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object));
       var name = GuidNameProvider.Instance.GetNameForConcreteMixedType (definition);
-      Assert.That (name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("System.Object_Mixed_"));
+      Assert.That (name, Is.StringStarting("System.Object_Mixed_"));
     }
 
     [Test]
@@ -49,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
       var name = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
-      Assert.That (name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("System.Object_GeneratedMixin_"));
+      Assert.That (name, Is.StringStarting("System.Object_GeneratedMixin_"));
     }
 
     [Test]
@@ -57,7 +56,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (List<int>), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
       var name = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
-      Assert.That (name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("System.Collections.Generic.List`1_GeneratedMixin_"));
+      Assert.That (name, Is.StringStarting("System.Collections.Generic.List`1_GeneratedMixin_"));
     }
 
     [Test]

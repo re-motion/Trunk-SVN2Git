@@ -20,7 +20,6 @@ using System;
 using System.Threading;
 using castle::Castle.Core.Interceptor;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.UnitTests.Collections

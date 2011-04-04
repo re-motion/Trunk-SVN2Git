@@ -18,7 +18,6 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Mixins;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins

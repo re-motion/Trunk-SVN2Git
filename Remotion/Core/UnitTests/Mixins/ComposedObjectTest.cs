@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -32,8 +31,8 @@ namespace Remotion.UnitTests.Mixins
     {
       var instance = ObjectFactory.Create<ClassDerivedFromComposedObject> (ParamList.Empty);
 
-      Assert.That (instance, Is.InstanceOfType (typeof (ClassDerivedFromComposedObject)));
-      Assert.That (instance, Is.InstanceOfType (typeof (ClassDerivedFromComposedObject.IClassDerivedFromComposedObject)));
+      Assert.That (instance, Is.InstanceOf (typeof (ClassDerivedFromComposedObject)));
+      Assert.That (instance, Is.InstanceOf (typeof (ClassDerivedFromComposedObject.IClassDerivedFromComposedObject)));
       Assert.That (Mixin.Get<ClassDerivedFromComposedObject.Mixin1> (instance), Is.Not.Null);
     }
 
@@ -65,7 +64,7 @@ namespace Remotion.UnitTests.Mixins
     {
       ClassDerivedFromComposedObject.IClassDerivedFromComposedObject instance = ClassDerivedFromComposedObject.NewObject();
 
-      Assert.That (instance, Is.InstanceOfType (typeof (ClassDerivedFromComposedObject)));
+      Assert.That (instance, Is.InstanceOf (typeof (ClassDerivedFromComposedObject)));
       Assert.That (Mixin.Get<ClassDerivedFromComposedObject.Mixin1> (instance), Is.Not.Null);
     }
 
@@ -77,7 +76,7 @@ namespace Remotion.UnitTests.Mixins
       var result = PrivateInvoke.GetNonPublicProperty (instance, "This");
 
       Assert.That (result, Is.SameAs (instance));
-      Assert.That (result, Is.InstanceOfType (typeof (ClassDerivedFromComposedObject.IClassDerivedFromComposedObject)));
+      Assert.That (result, Is.InstanceOf (typeof (ClassDerivedFromComposedObject.IClassDerivedFromComposedObject)));
     }
 
     [Test]

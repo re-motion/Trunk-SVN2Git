@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 
 namespace Remotion.UnitTests.Collections
@@ -113,7 +112,7 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (KeyNotFoundException),
+    [ExpectedException (typeof (KeyNotFoundException),
         ExpectedMessage = "The given key was not present in the dictionary.")]
     public void Indexer_Get_Failure ()
     {
@@ -141,14 +140,14 @@ namespace Remotion.UnitTests.Collections
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Add ()
     {
       _readOnlyDictionaryAsIDictionary.Add ("this", "fails");
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Remove ()
     {
       _readOnlyDictionaryAsIDictionary.Remove ("this_fails");
@@ -163,7 +162,7 @@ namespace Remotion.UnitTests.Collections
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Indexer_Set_Fails ()
     {
       _readOnlyDictionaryAsIDictionary["this"] = "fails";

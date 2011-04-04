@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Remoting.Contexts;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Reflection

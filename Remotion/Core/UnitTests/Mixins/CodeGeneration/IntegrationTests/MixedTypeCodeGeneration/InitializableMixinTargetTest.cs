@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
@@ -60,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       
       Assert.That (instance.Mixins, Is.Not.SameAs (oldMixins));
       Assert.That (instance.Mixins.Length, Is.EqualTo (1));
-      Assert.That (instance.Mixins[0], Is.InstanceOfType(typeof (NullMixin)));
+      Assert.That (instance.Mixins[0], Is.InstanceOf(typeof (NullMixin)));
     }
 
     [Test]

@@ -18,12 +18,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Text.StringExtensions;
 using Remotion.Utilities.ConsoleApplication;
 using Rhino.Mocks;
-using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
+using NUnitText = NUnit.Framework; //. .SyntaxHelpers.Text;
 
 namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
 {
@@ -47,12 +46,12 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
       var outResult = stringWriterOut.ToString();
       var errorResult = stringWriterError.ToString();
 
-      Assert.That (outResult, NUnitText.Contains ("Application Usage:"));
-      Assert.That (outResult, NUnitText.Contains ("[/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
-      Assert.That (outResult, NUnitText.Contains ("/stringArg  stringArg description."));
-      Assert.That (outResult, NUnitText.Contains ("/flagArg    flagArg description."));
-      Assert.That (outResult, NUnitText.Contains ("/?          Show usage"));
-      Assert.That (outResult, NUnitText.Contains (Process.GetCurrentProcess().MainModule.FileName.RightUntilChar ('\\')));
+      Assert.That (outResult, Is.StringContaining("Application Usage:"));
+      Assert.That (outResult, Is.StringContaining ("[/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
+      Assert.That (outResult, Is.StringContaining ("/stringArg  stringArg description."));
+      Assert.That (outResult, Is.StringContaining ("/flagArg    flagArg description."));
+      Assert.That (outResult, Is.StringContaining ("/?          Show usage"));
+      Assert.That (outResult, Is.StringContaining (Process.GetCurrentProcess ().MainModule.FileName.RightUntilChar ('\\')));
 
       Assert.That (errorResult, Is.EqualTo (""));
     }
@@ -99,7 +98,7 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
       consoleApplication.Main (args);
 
       var errorResult = stringWriterError.ToString();
-      Assert.That (errorResult, NUnitText.Contains (@"An error occured: Argument /UNKNOWN_ARGUMENT: invalid argument name"));
+      Assert.That (errorResult, Is.StringContaining(@"An error occured: Argument /UNKNOWN_ARGUMENT: invalid argument name"));
     }
 
     [Test]
@@ -204,7 +203,7 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
       consoleApplicationMock.VerifyAllExpectations();
 
       var result = stringWriterError.ToString();
-      Assert.That (result, NUnitText.StartsWith ("Execution aborted. Exception stack:\r\nSystem.Exception: The valve just came loose..."));
+      Assert.That (result, Is.StringStarting("Execution aborted. Exception stack:\r\nSystem.Exception: The valve just came loose..."));
     }
   }
 }

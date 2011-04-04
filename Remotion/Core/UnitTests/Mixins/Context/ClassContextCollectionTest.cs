@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Context;
 using System.Linq;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -231,7 +230,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       var classContexts = new ClassContext[5];
       _collectionWithObjectAndString.CopyTo (classContexts, 2);
-      Assert.That (classContexts, Is.EquivalentTo (new[] { _ccObjectWithMixin, _ccString, null }));
+      Assert.That (classContexts, Is.EquivalentTo (new[] { _ccObjectWithMixin, _ccString, null, null, null }));
       Assert.That (classContexts[0], Is.Null);
       Assert.That (classContexts[1], Is.Null);
       Assert.That (classContexts[4], Is.Null);
@@ -242,7 +241,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       var classContexts = new object[5];
       ((ICollection) _collectionWithObjectAndString).CopyTo (classContexts, 1);
-      Assert.That (classContexts, Is.EquivalentTo (new[] { _ccObjectWithMixin, _ccString, null }));
+      Assert.That (classContexts, Is.EquivalentTo (new[] { _ccObjectWithMixin, _ccString, null, null, null }));
     }
 
     [Test]

@@ -22,7 +22,6 @@ using log4net;
 using log4net.Appender;
 using log4net.Config;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
@@ -373,12 +372,12 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
 
     private void CheckLog (string fullLog, string expectedLogMessage)
     {
-      Assert.That (fullLog, NUnit.Framework.SyntaxHelpers.Text.Contains (expectedLogMessage));
+      Assert.That (fullLog, Is.StringContaining(expectedLogMessage));
     }
 
     private void CheckLogRegEx (string fullLog, string expectedLogRegEx)
     {
-      Assert.That (fullLog, NUnit.Framework.SyntaxHelpers.Text.Matches (expectedLogRegEx));
+      Assert.That (fullLog, Is.StringMatching (expectedLogRegEx));
     }
   }
 }

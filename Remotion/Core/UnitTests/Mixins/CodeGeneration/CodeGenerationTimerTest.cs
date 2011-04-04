@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration

@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
 using Remotion.Logging;
 using Remotion.Mixins.BridgeImplementations;

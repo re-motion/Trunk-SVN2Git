@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Logging
       
       ILog log = logManager.GetLogger ("The Name");
 
-      Assert.IsInstanceOfType (typeof (Log4NetLog), log);
+      Assert.IsInstanceOf (typeof (Log4NetLog), log);
       Log4NetLog log4NetLog = (Log4NetLog) log;
       Assert.AreEqual ("The Name", log4NetLog.Logger.Name);
     }
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Logging
 
       ILog log = logManager.GetLogger (typeof (SampleType));
 
-      Assert.IsInstanceOfType (typeof (Log4NetLog), log);
+      Assert.IsInstanceOf (typeof (Log4NetLog), log);
       Log4NetLog log4NetLog = (Log4NetLog) log;
       Assert.AreEqual ("Remotion.UnitTests.Logging.SampleType", log4NetLog.Logger.Name);
     }

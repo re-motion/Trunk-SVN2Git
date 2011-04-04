@@ -17,7 +17,6 @@
 using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Design;
 using Remotion.Utilities;
 using Rhino.Mocks;

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.Reflection;
@@ -69,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
       using (MixinConfiguration.BuildNew ().ForClass (typeof (TestServiceProvider)).AddCompleteInterface (typeof (IServiceProvider)).EnterScope ())
       {
         object instance = _implementation.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
-        Assert.That (instance, Is.InstanceOfType (typeof (TestServiceProvider)));
+        Assert.That (instance, Is.InstanceOf (typeof (TestServiceProvider)));
       }
     }
 
@@ -78,8 +77,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (instance, Is.Not.SameAs (typeof (BaseType1)));
-      Assert.That (instance, Is.InstanceOfType (typeof (BaseType1)));
-      Assert.That (instance, Is.InstanceOfType (TypeFactory.GetConcreteType (typeof (BaseType1))));
+      Assert.That (instance, Is.InstanceOf (typeof (BaseType1)));
+      Assert.That (instance, Is.InstanceOf (TypeFactory.GetConcreteType (typeof (BaseType1))));
     }
 
     [Test]

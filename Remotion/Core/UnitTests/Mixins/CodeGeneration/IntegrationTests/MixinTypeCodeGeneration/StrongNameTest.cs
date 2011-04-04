@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Samples.UsesAndExtends.Core;
 using Remotion.Mixins.Utilities;

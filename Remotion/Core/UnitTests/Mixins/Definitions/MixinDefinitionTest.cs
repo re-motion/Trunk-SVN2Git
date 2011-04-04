@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -195,7 +194,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var overrides = definition.GetAllOverrides ().ToArray();
       Assert.That (overrides, Is.EquivalentTo (new MemberDefinitionBase[] { methodOverride, propertyOverride, eventOverride }));
-      Assert.That (overrides, List.Not.Contains (nonOverride));
+      Assert.That (overrides, Has.No.Member(nonOverride));
     }
   }
 }
