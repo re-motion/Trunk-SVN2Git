@@ -239,8 +239,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       existingSubordinate.Supervisor = newSupervisor;
 
       DataContainerCollection collection = new DataContainerCollection ();
-			collection.Add (existingSubordinate.InternalDataContainer);
-			collection.Add (newSupervisor.InternalDataContainer);
+      collection.Add (existingSubordinate.InternalDataContainer);
+      collection.Add (newSupervisor.InternalDataContainer);
 
       Provider.Save (collection);
 
@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newObjectID = order.ID;
 
       DataContainerCollection collection = new DataContainerCollection ();
-			collection.Add (order.InternalDataContainer);
+      collection.Add (order.InternalDataContainer);
 
       Provider.Save (collection);
 
@@ -285,8 +285,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       newOrder.Official = existingOfficial;
 
       DataContainerCollection collection = new DataContainerCollection ();
-			collection.Add (newOrder.InternalDataContainer);
-			collection.Add (newCustomer.InternalDataContainer);
+      collection.Add (newOrder.InternalDataContainer);
+      collection.Add (newCustomer.InternalDataContainer);
 
       Provider.Save (collection);
 
