@@ -209,17 +209,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       UnregisterOppositeForRealObjectEndPoint(objectEndPoint);
     }
 
-    public VirtualObjectEndPoint RegisterVirtualObjectEndPointWithNullOpposite (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
-      CheckVirtuality (endPointID, true, "RegisterVirtualObjectEndPoint", "endPointID");
-
-      var endPoint = RegisterVirtualObjectEndPoint (endPointID);
-      endPoint.MarkDataComplete (null);
-      return endPoint;
-    }
-
     private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       var objectEndPoint = new VirtualObjectEndPoint (
@@ -298,7 +287,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
         else if (endPointID.Definition.Cardinality == CardinalityType.One)
         {
-          RegisterVirtualObjectEndPointWithNullOpposite (endPointID);
+          var endPoint = RegisterVirtualObjectEndPoint (endPointID);
+          endPoint.MarkDataComplete (null);
         }
         else
         {
