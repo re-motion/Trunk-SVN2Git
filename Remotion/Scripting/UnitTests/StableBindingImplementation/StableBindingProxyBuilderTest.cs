@@ -21,7 +21,6 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Scripting.StableBindingImplementation;
@@ -370,7 +369,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChild.VirtualMethodNotInBaseType' not found.")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChild.VirtualMethodNotInBaseType' not found.")]
     public void BuildProxyType_VirtualMethodNotInBaseType_IsNotKnown_ProxiedChild ()
     {
       AssertBuildProxyType_MethodOverridden (
@@ -378,7 +377,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChildChildChild.VirtualMethodNotInBaseType' not found.")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChildChildChild.VirtualMethodNotInBaseType' not found.")]
     public void BuildProxyType_VirtualMethodNotInBaseType_IsNotKnown_ProxiedChildChildChild ()
     {
       AssertBuildProxyType_MethodOverridden (

@@ -18,7 +18,6 @@ using System;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests

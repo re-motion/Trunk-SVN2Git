@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.Scripting;
 using Remotion.Scripting.StableBindingImplementation;
@@ -42,7 +41,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'MixinTest' object has no attribute 'StringTimes'")]
+    [ExpectedException (typeof (MissingMemberException), ExpectedMessage = "'MixinTest' object has no attribute 'StringTimes'")]
     public void MixinTest_IsAmbigous ()
     {
       AssertGetCustomMemberFromScript (new MixinTest (), "MixinTest_IsAmbigous");

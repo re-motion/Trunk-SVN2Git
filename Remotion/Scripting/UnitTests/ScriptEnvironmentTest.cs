@@ -18,7 +18,6 @@ using System;
 using IronPython.Runtime;
 using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -61,7 +60,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'str' object has no attribute 'Substring'")]
+    [ExpectedException (typeof (MissingMemberException), ExpectedMessage = "'str' object has no attribute 'Substring'")]
     public void NotImportClr ()
     {
       var scriptEnvironment = ScriptEnvironment.Create ();
@@ -137,7 +136,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (UnboundNameException), ExpectedMessage = "name 'NonExistingSymbol' is not defined")]
+    [ExpectedException (typeof (UnboundNameException), ExpectedMessage = "name 'NonExistingSymbol' is not defined")]
     public void ImportIifHelperFunctions_IIfIsNotLazy ()
     {
       var scriptEnvironment = ScriptEnvironment.Create ();

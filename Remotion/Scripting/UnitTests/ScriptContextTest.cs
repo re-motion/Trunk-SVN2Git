@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Scripting.StableBindingImplementation;
 using Rhino.Mocks;
@@ -54,7 +53,7 @@ namespace Remotion.Scripting.UnitTests
       
       var moduleScope = scriptContext.StableBindingProxyProvider.ModuleScope;
       Assert.That (moduleScope, Is.Not.Null);
-      Assert.That (moduleScope.StrongNamedModuleName, NUnit.Framework.SyntaxHelpers.Text.Contains ("Scripting.ScriptContext.ContextXyz1"));
+      Assert.That (moduleScope.StrongNamedModuleName,Is.StringContaining("Scripting.ScriptContext.ContextXyz1"));
     }
 
     [Test]
@@ -66,7 +65,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext 'DuplicateContext' already exists.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "ScriptContext 'DuplicateContext' already exists.")]
     public void Create_CreatingSameNamedContextFails ()
     {
       var scriptContext = ScriptContext.Create ("DuplicateContext", _typeFilterStub);

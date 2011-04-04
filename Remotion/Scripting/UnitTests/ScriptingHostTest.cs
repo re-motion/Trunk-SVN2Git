@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Scripting.UnitTests
@@ -51,7 +50,7 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (scriptingHost, Is.Not.Null);
       Assert.That (scriptingHost.GetScriptRuntime (), Is.Not.Null);
       Assert.That (scriptingHost.GetScriptRuntime ().Setup.LanguageSetups.Count, Is.EqualTo (1));
-      Assert.That (scriptingHost.GetScriptRuntime ().Setup.LanguageSetups[0].TypeName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("IronPython.Runtime.PythonContext"));
+      Assert.That (scriptingHost.GetScriptRuntime ().Setup.LanguageSetups[0].TypeName, Is.StringStarting("IronPython.Runtime.PythonContext"));
     }
 
     [Test]
@@ -85,7 +84,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
     public void GetEngine_Fails ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
@@ -101,7 +100,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
     public void GetEngine_Static_Fails ()
     {
       ScriptingHost.GetScriptEngine (ScriptLanguageType.None);

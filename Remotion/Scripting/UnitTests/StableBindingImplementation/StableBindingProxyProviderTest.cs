@@ -19,7 +19,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;
 
@@ -48,7 +47,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
       var proxyMethod = proxyType.GetAllInstanceMethods(attributeName,typeof(string)).Single();
 
-      Assert.That (proxyMethod, SyntaxHelper.Not.Null);
+      Assert.That (proxyMethod, Is.Not.Null);
     }
 
 
@@ -82,7 +81,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       // TODO: Introduce BuildProxyFromType(proxiedType)
       ScriptingHelper.SetProxiedFieldValue (proxy, proxied); 
    
-      Assert.That (proxy, SyntaxHelper.Not.Null);
+      Assert.That (proxy, Is.Not.Null);
 
       var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.PrependName('simsalbum',2)", proxy);
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
@@ -97,7 +96,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var proxied = new GetProxyTypeIsCachedTest ("abrakadava");
 
       var proxyType =  provider.GetProxyType (proxied.GetType());
-      Assert.That (proxyType, SyntaxHelper.Not.Null);
+      Assert.That (proxyType, Is.Not.Null);
       Assert.That (provider.GetProxyType (proxied.GetType ()), Is.SameAs (proxyType));
     }
 
@@ -111,7 +110,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
       var proxy0 = provider.GetProxy (proxied0);
-      Assert.That (proxy0, SyntaxHelper.Not.Null);
+      Assert.That (proxy0, Is.Not.Null);
       var proxy1 = provider.GetProxy (proxied1);
       Assert.That (proxy0, Is.SameAs (proxy1));
     }
@@ -126,7 +125,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
       var proxy0 = provider.GetProxy (proxied0);
-      Assert.That (proxy0, SyntaxHelper.Not.Null);
+      Assert.That (proxy0, Is.Not.Null);
 
       var proxiedFieldValue0 = ScriptingHelper.GetProxiedFieldValue (proxy0);
       Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));

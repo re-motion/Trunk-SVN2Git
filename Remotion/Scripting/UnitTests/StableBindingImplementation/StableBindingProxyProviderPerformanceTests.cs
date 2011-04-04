@@ -17,7 +17,6 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Scripting.StableBindingImplementation;

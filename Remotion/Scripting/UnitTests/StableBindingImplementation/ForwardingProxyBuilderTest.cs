@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;

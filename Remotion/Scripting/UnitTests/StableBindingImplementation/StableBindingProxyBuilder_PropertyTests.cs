@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;
 
@@ -250,7 +249,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'ProxiedChild' object has no attribute 'PropertyAmbigous'")]
+    [ExpectedException (typeof (MissingMemberException), ExpectedMessage = "'ProxiedChild' object has no attribute 'PropertyAmbigous'")]
     public void AmbigousExplicitInterfaceProperties_Without_Proxy ()
     {
       var proxied = new ProxiedChild ("PC");

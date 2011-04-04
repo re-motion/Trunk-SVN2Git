@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.UnitTests.TestDomain;
 using Remotion.Utilities;
 
