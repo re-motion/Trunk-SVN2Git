@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
 
       MetadataObject metadataObject = MetadataObject.Find (metadataObjectID);
 
-      Assert.IsInstanceOfType (typeof (SecurableClassDefinition), metadataObject);
+      Assert.IsInstanceOf (typeof (SecurableClassDefinition), metadataObject);
     }
 
     [Test]
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
 
       MetadataObject metadataObject = MetadataObject.Find (metadataObjectID);
 
-      Assert.IsInstanceOfType (typeof (StateDefinition), metadataObject);
+      Assert.IsInstanceOf (typeof (StateDefinition), metadataObject);
       StateDefinition state = (StateDefinition) metadataObject;
       Assert.AreEqual ("Reaccounted", state.Name);
       Assert.AreEqual (2, state.Value);

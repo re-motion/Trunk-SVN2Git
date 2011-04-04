@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       IBusinessObjectProperty property = businessObject.BusinessObjectClass.GetPropertyDefinition ("UniqueIdentifier");
 
-      Assert.IsInstanceOfType (typeof (IBusinessObjectStringProperty), property);
+      Assert.IsInstanceOf (typeof (IBusinessObjectStringProperty), property);
       Assert.AreEqual ("My Unique Identifier", businessObject.GetProperty (property));
     }
 

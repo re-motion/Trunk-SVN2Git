@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Security;
@@ -122,7 +121,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         IObjectSecurityStrategy objectSecurityStrategy = position.GetSecurityStrategy();
         Assert.IsNotNull (objectSecurityStrategy);
-        Assert.IsInstanceOfType (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
+        Assert.IsInstanceOf (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
         DomainObjectSecurityStrategy domainObjectSecurityStrategy = (DomainObjectSecurityStrategy) objectSecurityStrategy;
         Assert.AreEqual (RequiredSecurityForStates.None, domainObjectSecurityStrategy.RequiredSecurityForStates);
       }

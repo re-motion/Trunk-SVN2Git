@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -34,7 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       IObjectSecurityStrategy objectSecurityStrategy = group.GetSecurityStrategy();
       Assert.IsNotNull (objectSecurityStrategy);
-      Assert.IsInstanceOfType (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
+      Assert.IsInstanceOf (typeof (DomainObjectSecurityStrategy), objectSecurityStrategy);
       DomainObjectSecurityStrategy domainObjectSecurityStrategy = (DomainObjectSecurityStrategy) objectSecurityStrategy;
       Assert.AreEqual (RequiredSecurityForStates.None, domainObjectSecurityStrategy.RequiredSecurityForStates);
     }

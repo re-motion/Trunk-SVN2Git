@@ -23,7 +23,6 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;

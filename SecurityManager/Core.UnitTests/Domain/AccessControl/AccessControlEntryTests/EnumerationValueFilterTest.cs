@@ -18,7 +18,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Configuration;
@@ -55,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var ace = CreateAceForStateless();
       var property = GetPropertyDefinition (ace, "UserCondition");
 
-      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (UserCondition.Owner));
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), Has.No.Member (UserCondition.Owner));
     }
 
     [Test]
@@ -76,8 +75,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = GetPropertyDefinition (ace, "GroupCondition");
 
       var actual = property.GetEnabledValues (ace).Select (value => value.Value).ToArray();
-      Assert.That (actual, List.Not.Contains (GroupCondition.OwningGroup));
-      Assert.That (actual, List.Not.Contains (GroupCondition.BranchOfOwningGroup));
+      Assert.That (actual, Has.No.Member(GroupCondition.OwningGroup));
+      Assert.That (actual, Has.No.Member(GroupCondition.BranchOfOwningGroup));
     }
 
     [Test]
@@ -97,7 +96,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var ace = CreateAceForStateless();
       var property = GetPropertyDefinition (ace, "TenantCondition");
 
-      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (TenantCondition.OwningTenant));
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), Has.No.Member(TenantCondition.OwningTenant));
     }
 
     [Test]
@@ -106,7 +105,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var ace = CreateAceForStateful();
       var property = GetPropertyDefinition (ace, "TenantHierarchyCondition");
 
-      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (TenantHierarchyCondition.Parent));
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), Has.No.Member(TenantHierarchyCondition.Parent));
     }
 
     [Test]
@@ -116,8 +115,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = GetPropertyDefinition (ace, "GroupHierarchyCondition");
 
       var actual = property.GetEnabledValues (ace).Select (value => value.Value).ToArray();
-      Assert.That (actual, List.Not.Contains (GroupHierarchyCondition.Parent));
-      Assert.That (actual, List.Not.Contains (GroupHierarchyCondition.Children));
+      Assert.That (actual, Has.No.Member(GroupHierarchyCondition.Parent));
+      Assert.That (actual, Has.No.Member(GroupHierarchyCondition.Children));
     }
 
     private AccessControlEntry CreateAceForStateless ()

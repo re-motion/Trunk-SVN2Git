@@ -18,7 +18,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
@@ -293,7 +292,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
       var bindingTransaction = principal.User.GetBindingTransaction();
       Assert.That (bindingTransaction.Extensions.Count, Is.EqualTo (1));
-      Assert.That (bindingTransaction.Extensions[0], Is.InstanceOfType (typeof (SecurityClientTransactionExtension)));
+      Assert.That (bindingTransaction.Extensions[0], Is.InstanceOf (typeof (SecurityClientTransactionExtension)));
     }
 
     [Test]

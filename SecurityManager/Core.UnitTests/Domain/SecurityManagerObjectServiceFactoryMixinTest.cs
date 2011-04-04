@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
@@ -58,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void Initialize ()
     {
       Assert.That (_serviceMixin, Is.Not.Null);
-      Assert.That (_serviceMixin, Is.InstanceOfType (typeof (IBusinessObjectServiceFactory)));
+      Assert.That (_serviceMixin, Is.InstanceOf (typeof (IBusinessObjectServiceFactory)));
       Assert.That (Mixin.Get<BindableDomainObjectServiceFactoryMixin> (_serviceFactory), Is.Not.Null);
     }
 
@@ -67,7 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (UserPropertiesSearchService)),
-          Is.InstanceOfType (typeof (UserPropertiesSearchService)));
+          Is.InstanceOf (typeof (UserPropertiesSearchService)));
     }
 
     [Test]
@@ -75,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (GroupPropertiesSearchService)),
-          Is.InstanceOfType (typeof (GroupPropertiesSearchService)));
+          Is.InstanceOf (typeof (GroupPropertiesSearchService)));
     }
 
     [Test]
@@ -83,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (RolePropertiesSearchService)),
-          Is.InstanceOfType (typeof (RolePropertiesSearchService)));
+          Is.InstanceOf (typeof (RolePropertiesSearchService)));
     }
 
     [Test]
@@ -91,7 +90,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (AccessControlEntryPropertiesSearchService)),
-          Is.InstanceOfType (typeof (AccessControlEntryPropertiesSearchService)));
+          Is.InstanceOf (typeof (AccessControlEntryPropertiesSearchService)));
     }
 
     [Test]
@@ -99,7 +98,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (SubstitutionPropertiesSearchService)),
-          Is.InstanceOfType (typeof (SubstitutionPropertiesSearchService)));
+          Is.InstanceOf (typeof (SubstitutionPropertiesSearchService)));
     }
 
     [Test]
@@ -107,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (IBindableObjectGlobalizationService)),
-          Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
+          Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
     }
 
     [Test]
@@ -115,7 +114,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IGetObjectService)),
-          Is.InstanceOfType (typeof (BindableDomainObjectGetObjectService)));
+          Is.InstanceOf (typeof (BindableDomainObjectGetObjectService)));
     }
 
     [Test]

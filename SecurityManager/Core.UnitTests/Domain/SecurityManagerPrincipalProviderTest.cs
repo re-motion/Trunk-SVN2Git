@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Rhino.Mocks;

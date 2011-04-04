@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -120,7 +119,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       Assert.That (ace.SpecificAbstractRole, Is.Not.Null);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.AbstractRoles, List.Contains (ace.SpecificAbstractRole));
+      Assert.That (aclProbe.SecurityToken.AbstractRoles, Has.Member(ace.SpecificAbstractRole));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;

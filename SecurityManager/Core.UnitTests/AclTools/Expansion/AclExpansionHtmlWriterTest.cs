@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
@@ -31,7 +30,6 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Globalization.AclTools.Expansion;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -53,8 +51,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           new AclExpansionHtmlWriterSettings { ShortenNames = false });
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
         string result = stringWriter.ToString();
-        Assert.That (result, NUnitText.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
-        Assert.That (result, NUnitText.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
+        Assert.That (result, Is.StringContaining ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
+        Assert.That (result, Is.StringContaining("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
       }
     }
 
@@ -72,13 +70,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           new AclExpansionHtmlWriterSettings { ShortenNames = true });
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
         string result = stringWriter.ToString ();
-        Assert.That (result, NUnitText.Contains ("Dhl"));
+        Assert.That (result, Is.StringContaining ("Dhl"));
         Assert.That (
             result,
-            NUnitText.DoesNotContain (
+            Is.Not.StringContaining (
                 "Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
-        Assert.That (result, NUnitText.Contains ("Order"));
-        Assert.That (result, NUnitText.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
+        Assert.That (result, Is.StringContaining("Order"));
+        Assert.That (result, Is.Not.StringContaining ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
       }
     }
 
@@ -95,9 +93,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         new AclExpansionHtmlWriterSettings { OutputRowCount = true });
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (2)"));
-      Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (2)"));
-      Assert.That (result, NUnitText.Contains ("Order (2)"));
+      Assert.That (result, Is.StringContaining ("Usa Da, Dr. (2)"));
+      Assert.That (result, Is.StringContaining ("Da Group, Supreme Being (2)"));
+      Assert.That (result, Is.StringContaining ("Order (2)"));
     }
 
     [Test]
@@ -113,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         new AclExpansionHtmlWriterSettings { OutputRowCount = false });
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      Assert.That (result, NUnitText.DoesNotContain ("(2)"));
+      Assert.That (result, Is.Not.StringContaining ("(2)"));
     }
 
 
@@ -131,7 +129,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
 
-      Assert.That (result, NUnitText.Contains ("James Ryan"));
+      Assert.That (result, Is.StringContaining("James Ryan"));
       Assert.That (result.IndexOf ("James Ryan"), Is.LessThan (result.IndexOf ("Smith, Mr.")));
     }
 
@@ -153,12 +151,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       const string firstRoleText = "Anotha Group, Supreme Being";
       const string secondRoleText = "Anotha Group, Working Drone";
       const string thirdRoleText = "Da 3rd Group, Combatant";
-      Assert.That (result, NUnitText.Contains (firstRoleText));
+      Assert.That (result, Is.StringContaining (firstRoleText));
       Assert.That (result.IndexOf (firstRoleText), Is.LessThan (result.IndexOf (secondRoleText)));
       Assert.That (result.IndexOf (secondRoleText), Is.LessThan (result.IndexOf (thirdRoleText)));
 
-      Assert.That (result, NUnitText.Contains ("Dhl, None, Received"));
-      Assert.That (result, NUnitText.Contains ("Delete, FirstAccessType, Read, Write"));
+      Assert.That (result, Is.StringContaining ("Dhl, None, Received"));
+      Assert.That (result, Is.StringContaining ("Delete, FirstAccessType, Read, Write"));
     }
 
 
@@ -459,7 +457,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.Implementation.StatelessAclStateHtmlText = stateLessAclStateHtmlText;
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           string result = textWriter.ToString ();
-          Assert.That (result, NUnitText.Contains("<td>"+ stateLessAclStateHtmlText + @"</td>"));
+          Assert.That (result, Is.StringContaining("<td>"+ stateLessAclStateHtmlText + @"</td>"));
         }
       }
     }
@@ -493,7 +491,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.Implementation.AclWithNoAssociatedStatesHtmlText = aclWithNoAssociatedStatesHtmlText;
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           string result = textWriter.ToString ();
-          Assert.That (result, NUnitText.Contains ("<td>" + aclWithNoAssociatedStatesHtmlText + @"</td>"));
+          Assert.That (result, Is.StringContaining ("<td>" + aclWithNoAssociatedStatesHtmlText + @"</td>"));
         }
       }
     }
@@ -556,9 +554,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         //Clipboard.SetText (result);
 
         // Detail tests 
-        Assert.That (result, NUnitText.Contains ("Denied Rights</th>")); // Denied rights header
-        Assert.That (result, NUnitText.Contains ("<td>Delete</td>")); // allowed rights
-        Assert.That (result, NUnitText.Contains ("<td>Read, Write</td>")); // denied rights
+        Assert.That (result, Is.StringContaining ("Denied Rights</th>")); // Denied rights header
+        Assert.That (result, Is.StringContaining("<td>Delete</td>")); // allowed rights
+        Assert.That (result, Is.StringContaining ("<td>Read, Write</td>")); // denied rights
 
         const string resultExpected =
         #region
@@ -633,10 +631,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string result = stringWriter.ToString ();
       //Clipboard.SetText (result);
 
-      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
+      Assert.That (result, Is.StringContaining (inResultingHtmlString));
       foreach (string notInResultingHtml in notInResultingHtmlStrings)
       {
-        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
+        Assert.That (result, Is.Not.StringContaining (notInResultingHtml));
       }
     }
 
@@ -664,10 +662,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string result = stringWriter.ToString ();
       //Clipboard.SetText (result);
 
-      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
+      Assert.That (result, Is.StringContaining (inResultingHtmlString));
       foreach (string notInResultingHtml in notInResultingHtmlStrings)
       {
-        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
+        Assert.That (result, Is.Not.StringContaining (notInResultingHtml));
       }
     }
 

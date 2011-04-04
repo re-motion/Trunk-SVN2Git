@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
@@ -58,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         
         var classNodes = roleNodes[0].Children;
         Assert.That (classNodes.Count, Is.EqualTo (1)); // # classes
-        Assert.That (classNodes[0].Key.StatefulAccessControlLists, List.Contains (Acl));
+        Assert.That (classNodes[0].Key.StatefulAccessControlLists, Has.Member(Acl));
 
         var stateNodes = classNodes[0].Children;
         Assert.That (stateNodes.Count, Is.EqualTo (2)); // # states
