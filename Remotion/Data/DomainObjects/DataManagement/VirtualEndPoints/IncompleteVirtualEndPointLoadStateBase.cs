@@ -89,16 +89,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       return endPoint.GetOriginalData();
     }
  
-    public void RegisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
+    public virtual void RegisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _originalOppositeEndPoints.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
-
       oppositeEndPoint.ResetSyncState ();
     }
 
-    public void UnregisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
+    public virtual void UnregisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 

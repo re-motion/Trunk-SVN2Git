@@ -60,6 +60,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       MarkDataComplete (endPoint, items, stateSetter);
     }
 
+    public override void RegisterOriginalOppositeEndPoint (IVirtualObjectEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
+    {
+      base.RegisterOriginalOppositeEndPoint (endPoint, oppositeEndPoint);
+
+      // With VirtualObjectEndPoints, we mark the end-point complete as soon as the next opposite end-point is registered. This is an optimization
+      // to avoid a virtual end-point query when the virtual side is accessed for the first time.
+      endPoint.MarkDataComplete (oppositeEndPoint.GetDomainObjectReference ());
+    }
+
     public IDataManagementCommand CreateSetCommand (
         IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
     {

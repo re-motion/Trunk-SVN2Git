@@ -273,6 +273,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint;
     }
 
+    private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
+    {
+      return (IVirtualEndPoint) this[endPointID] ?? RegisterVirtualEndPoint (endPointID);
+    }
+
     // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
@@ -357,7 +362,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
       CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
 
-      var endPoint = GetCollectionEndPointOrRegisterEmpty (endPointID);
+      var endPoint = (ICollectionEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
       endPoint.MarkDataComplete (items);
     }
 
@@ -382,7 +387,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           + "registered in the map");
 
       IVirtualEndPoint endPoint = RegisterVirtualEndPoint(endPointID);
-
       endPoint.EnsureDataComplete ();
 
       Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
@@ -550,19 +554,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       var oppositeVirtualEndPointID = RelationEndPointID.Create (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-      if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-      {
-        var oppositeEndPoint = GetVirtualObjectEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
-        // TODO 3837: Move this to IncompleteVirtualObjectEndPoint.RegisterOriginalOppositeEndPoint
-        if (!oppositeEndPoint.IsDataComplete)
-          oppositeEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference());
-      }
-      else
-      {
-        var oppositeEndPoint = GetCollectionEndPointOrRegisterEmpty (oppositeVirtualEndPointID);
-        oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
-      }
+      var oppositeEndPoint = GetVirtualEndPointOrRegisterEmpty(oppositeVirtualEndPointID);
+      oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
     }
 
     private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
@@ -589,16 +582,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           }
         }
       }
-    }
-
-    private ICollectionEndPoint GetCollectionEndPointOrRegisterEmpty (RelationEndPointID endPointID)
-    {
-      return (ICollectionEndPoint) this[endPointID] ?? RegisterCollectionEndPoint (endPointID);
-    }
-
-    private IVirtualObjectEndPoint GetVirtualObjectEndPointOrRegisterEmpty (RelationEndPointID endPointID)
-    {
-      return (IVirtualObjectEndPoint) this[endPointID] ?? RegisterVirtualObjectEndPoint (endPointID);
     }
 
     // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it

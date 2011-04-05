@@ -15,15 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.VirtualObjectEndPoints
 {
@@ -145,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       bool stateSetterCalled = false;
 
-      _loadState.RegisterOriginalOppositeEndPoint (_virtualObjectEndPointMock, _relatedEndPointStub);
-      _loadState.RegisterOriginalOppositeEndPoint (_virtualObjectEndPointMock, _relatedEndPointStub2);
+      AddOriginalOppositeEndPoint (_loadState, _relatedEndPointStub);
+      AddOriginalOppositeEndPoint (_loadState, _relatedEndPointStub2);
 
       _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       // ReSharper disable AccessToModifiedClosure
@@ -189,8 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       newKeeperMock.VerifyAllExpectations ();
       _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
-
-
+    
     [Test]
     public void MarkDataComplete_ItemWithEndPoint ()
     {
@@ -202,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       oppositeEndPointMock.Expect (mock => mock.MarkSynchronized ());
       oppositeEndPointMock.Replay ();
 
-      _loadState.RegisterOriginalOppositeEndPoint (_virtualObjectEndPointMock, oppositeEndPointMock);
+      AddOriginalOppositeEndPoint (_loadState, oppositeEndPointMock);
 
       _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _virtualObjectEndPointMock.Replay ();
@@ -221,6 +224,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       newKeeperMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
       _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
+    }
+
+    [Test]
+    public void RegisterOriginalOppositeEndPoint ()
+    {
+      var mockRepository = new MockRepository();
+      Assert.That (_loadState.OriginalOppositeEndPoints.Count, Is.EqualTo (0));
+
+      var endPointMock = mockRepository.StrictMock<IRealObjectEndPoint> ();
+      var virtualObjectEndPointMock = mockRepository.StrictMock<IVirtualObjectEndPoint>();
+
+      using (mockRepository.Ordered ())
+      {
+        endPointMock.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
+        endPointMock.Expect (mock => mock.ResetSyncState ());
+
+        endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
+        virtualObjectEndPointMock
+            .Expect (mock => mock.MarkDataComplete (_relatedObject))
+            .WhenCalled (mi => Assert.That (_loadState.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointMock })));
+      }
+
+      mockRepository.ReplayAll ();
+
+      _loadState.RegisterOriginalOppositeEndPoint (virtualObjectEndPointMock, endPointMock);
+
+      mockRepository.VerifyAll();
     }
 
     [Test]
@@ -258,8 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       var dataKeeperFactory = new SerializableVirtualObjectEndPointDataKeeperFactoryFake ();
 
       var state = new IncompleteVirtualObjectEndPointLoadState (dataKeeper, lazyLoader, dataKeeperFactory);
-      var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
-      state.RegisterOriginalOppositeEndPoint (_virtualObjectEndPointMock, oppositeEndPoint);
+      AddOriginalOppositeEndPoint (state, new SerializableRealObjectEndPointFake (null, _relatedObject));
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
@@ -286,6 +315,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _virtualObjectEndPointMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (fakeResult));
+    }
+
+    private void AddOriginalOppositeEndPoint (IncompleteVirtualObjectEndPointLoadState loadState, IRealObjectEndPoint oppositeEndPoint)
+    {
+      var dictionary = (Dictionary<ObjectID, IRealObjectEndPoint>) PrivateInvoke.GetNonPublicField (loadState, "_originalOppositeEndPoints");
+      dictionary.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);
     }
   }
 }

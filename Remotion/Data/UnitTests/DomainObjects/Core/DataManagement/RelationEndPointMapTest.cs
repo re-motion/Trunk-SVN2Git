@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -433,14 +432,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
 
-      var domainObjectReference = LifetimeService.GetObjectReference (ClientTransactionMock, id.ObjectID);
-
       var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
       virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
       virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
-      virtualObjectEndPointMock.Expect (mock => mock.MarkDataComplete (domainObjectReference));
       virtualObjectEndPointMock.Replay ();
 
       RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointMock);

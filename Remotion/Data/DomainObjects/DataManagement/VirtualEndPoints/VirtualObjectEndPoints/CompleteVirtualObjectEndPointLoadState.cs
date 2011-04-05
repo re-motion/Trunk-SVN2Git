@@ -63,9 +63,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      // TODO 3837: Check that item matches current data; if so, don't call MarkDataComplete => second half of optimization in Incomplete...RegisterOriginalOppositeEndPoint
-      Assertion.IsTrue ((item == null && DataKeeper.CurrentOppositeObjectID == null) || item.ID == DataKeeper.CurrentOppositeObjectID);
-      // MarkDataComplete (endPoint, new[] { item }, stateSetter);
+      // In IncompleteVirtualObjectEndPointLoadState, we automatically call MarkDataComplete when an original opposite end-point is registered in
+      // order to optimize away one virtual end-point query. That implicit call to MarkDataComplete would, however, cause the subsequent call
+      // to MarkDataComplete in DataManager.LoadLazyVirtualObjectEndPoint to fail. Therefore, we check whether the MarkDataComplete call here
+      // is "okay" and only throw (in the base MarkDataComplete call) if it isn't.
+      var itemID = item == null ? null : item.ID;
+      if (DataKeeper.CurrentOppositeObjectID != itemID)
+        MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 
     public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
