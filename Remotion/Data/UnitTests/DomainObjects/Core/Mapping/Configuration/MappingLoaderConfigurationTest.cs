@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Configuration
 
       ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (FakeMappingLoader), _configuration.CreateMappingLoader());
+      Assert.IsInstanceOf (typeof (FakeMappingLoader), _configuration.CreateMappingLoader());
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Configuration
 
       ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (MappingReflector), _configuration.CreateMappingLoader());
+      Assert.IsInstanceOf (typeof (MappingReflector), _configuration.CreateMappingLoader());
     }
   }
 }

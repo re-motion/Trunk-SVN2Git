@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;

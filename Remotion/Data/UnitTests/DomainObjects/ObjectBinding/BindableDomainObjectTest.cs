@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.ObjectBinding;
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void CreateImplementation ()
     {
       var instance = SampleBindableDomainObject.NewObject ();
-      Assert.That (PrivateInvoke.GetNonPublicField (instance, "_implementation"), Is.InstanceOfType (typeof (BindableDomainObjectImplementation)));
+      Assert.That (PrivateInvoke.GetNonPublicField (instance, "_implementation"), Is.InstanceOf (typeof (BindableDomainObjectImplementation)));
     }
 
     [Test]

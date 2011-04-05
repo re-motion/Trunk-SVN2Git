@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -26,6 +25,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using System.Linq;
 using Remotion.Reflection;
+using Throws = Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.Throws;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {

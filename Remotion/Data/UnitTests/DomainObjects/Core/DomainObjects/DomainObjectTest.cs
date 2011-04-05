@@ -24,7 +24,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
@@ -60,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.Int16Property, Is.EqualTo (32767), "Int16Property");
       Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (2147483647), "Int32Property");
       Assert.That (classWithAllDataTypes.Int64Property, Is.EqualTo (9223372036854775807L), "Int64Property");
-      Assert.That (classWithAllDataTypes.SingleProperty, Is.EqualTo (6789.321), "SingleProperty");
+      Assert.That (classWithAllDataTypes.SingleProperty, Is.EqualTo (6789.321f), "SingleProperty");
       Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdeföäü"), "StringProperty");
       Assert.That (classWithAllDataTypes.StringPropertyWithoutMaxLength, Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"), "StringPropertyWithoutMaxLength");
       ResourceManager.IsEqualToImage1 (classWithAllDataTypes.BinaryProperty, "BinaryProperty");
@@ -112,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Partner2);
       Assert.That (company, Is.Not.Null);
 
-      Assert.That (company, Is.InstanceOfType (typeof (Partner)));
+      Assert.That (company, Is.InstanceOf (typeof (Partner)));
       var partner = (Partner) company;
 
       Assert.That (partner.ID, Is.EqualTo (DomainObjectIDs.Partner2), "ID");
@@ -127,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Supplier1);
       Assert.That (company, Is.Not.Null);
 
-      Assert.That (company, Is.InstanceOfType (typeof (Supplier)));
+      Assert.That (company, Is.InstanceOf (typeof (Supplier)));
       var supplier = (Supplier) company;
 
       Assert.That (supplier.ID, Is.EqualTo (DomainObjectIDs.Supplier1));

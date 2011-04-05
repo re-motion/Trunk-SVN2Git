@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
@@ -163,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var list = _collection.AsList<Customer> ();
 
-      Assert.That (list, Is.InstanceOfType (typeof (DomainObjectCollectionWrapper<Customer>)));
+      Assert.That (list, Is.InstanceOf (typeof (DomainObjectCollectionWrapper<Customer>)));
       Assert.That (((DomainObjectCollectionWrapper<Customer>) list).WrappedCollection, Is.SameAs (_collection));
     }
 
@@ -172,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var readOnlyCollection = _collection.AsReadOnlyCollection ();
 
-      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (ReadOnlyCollection<DomainObject>)));
+      Assert.That (readOnlyCollection, Is.InstanceOf (typeof (ReadOnlyCollection<DomainObject>)));
       Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
     }
 
@@ -193,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var objectList = new ObjectList<Customer> { _customer1, _customer2 };
       var readOnlyCollection = objectList.AsReadOnlyCollection ();
 
-      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (ReadOnlyCollection<Customer>)));
+      Assert.That (readOnlyCollection, Is.InstanceOf (typeof (ReadOnlyCollection<Customer>)));
       Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
     }
   }

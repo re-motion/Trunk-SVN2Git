@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndP
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -1031,7 +1030,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      Assert.That (customer.Orders, List.Contains (order1)); // enumerating reloads the relation contents because the foreign key is stored in order1
+      Assert.That (customer.Orders, Has.Member (order1)); // enumerating reloads the relation contents because the foreign key is stored in order1
 
       AssertObjectWasLoadedAmongOthers (listenerMock, order1);
       Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));

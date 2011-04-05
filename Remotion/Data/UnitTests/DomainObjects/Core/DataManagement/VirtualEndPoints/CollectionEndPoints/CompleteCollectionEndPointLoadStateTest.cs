@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -216,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointRemoveCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
@@ -267,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand (_collectionEndPointMock);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointDeleteCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointDeleteCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
 
       Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
@@ -316,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 12);
 
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
@@ -368,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
@@ -422,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointReplaceCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
@@ -444,7 +443,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
 
       var command = (RelationEndPointModificationCommand) _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointReplaceSameCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));

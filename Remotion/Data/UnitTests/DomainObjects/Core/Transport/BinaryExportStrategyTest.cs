@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;

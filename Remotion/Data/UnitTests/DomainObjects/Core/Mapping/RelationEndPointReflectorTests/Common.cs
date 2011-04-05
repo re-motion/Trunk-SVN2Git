@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
@@ -34,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void CreateRelationEndPointReflector()
     {
       PropertyInfo propertyInfo = typeof (ClassWithVirtualRelationEndPoints).GetProperty ("NoAttribute");
-      Assert.IsInstanceOfType (
+      Assert.IsInstanceOf (
           typeof (RdbmsRelationEndPointReflector), 
           RelationEndPointReflector.CreateRelationEndPointReflector (
               CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints)), propertyInfo, Configuration.NameResolver));

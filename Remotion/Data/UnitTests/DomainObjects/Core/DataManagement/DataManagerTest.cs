@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -171,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
       
       var expected = CreateDataTuple (orderWithChangedRelation);
-      Assert.That (changedDomainObjects.ToArray (), List.Contains (expected));
+      Assert.That (changedDomainObjects.ToArray (), Has.Member(expected));
     }
 
     [Test]
@@ -202,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var result = _dataManager.GetChangedDataContainersForCommit ();
 
-      Assert.That (result.ToArray (), List.Not.Contains (orderWithChangedRelation.InternalDataContainer));
+      Assert.That (result.ToArray (), Has.No.Member(orderWithChangedRelation.InternalDataContainer));
     }
 
     [Test]
@@ -739,7 +738,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var command = _dataManager.CreateDeleteCommand (deletedObject);
 
-      Assert.That (command, Is.InstanceOfType (typeof (DeleteCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (DeleteCommand)));
       Assert.That (((DeleteCommand) command).ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
       Assert.That (((DeleteCommand) command).DeletedObject, Is.SameAs (deletedObject));
     }
@@ -762,7 +761,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
 
       var command = _dataManager.CreateDeleteCommand (deletedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (NopCommand)));
+      Assert.That (command, Is.InstanceOf (typeof (NopCommand)));
     }
 
     [Test]

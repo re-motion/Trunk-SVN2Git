@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -45,13 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         order1.OrderItems.EnsureDataComplete();
 
         Assert.That (orderItem1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderItems, List.Contains (orderItem1));
+        Assert.That (order1.OrderItems, Has.Member(orderItem1));
 
         CheckSyncState (orderItem1, oi => oi.Order, true);
         CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
         Assert.That (orderItem1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderItems, List.Contains (orderItem1));
+        Assert.That (order1.OrderItems, Has.Member(orderItem1));
 
         CheckSyncState (orderItem1, oi => oi.Order, true);
         CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
@@ -81,12 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
 
         Assert.That (orderItem1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderItems, List.Contains (orderItem1));
+        Assert.That (order1.OrderItems, Has.Member(orderItem1));
 
         CheckSyncState (orderItem1, oi => oi.Order, true);
         CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
-        Assert.That (order1.OrderItems, List.Contains (orderItem1));
+        Assert.That (order1.OrderItems, Has.Member(orderItem1));
         Assert.That (orderItem1.Order, Is.SameAs (order1));
 
         CheckSyncState (orderItem1, oi => oi.Order, true);
@@ -266,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector, s => s.Companies));
 
         CheckSyncState (industrialSector, s => s.Companies, true);
-        Assert.That (industrialSector.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector.Companies, Has.No.Member(company));
 
         CheckActionWorks (() => industrialSector.Companies.Add (company));
       }
@@ -275,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (industrialSector, s => s.Companies, true);
 
       Assert.That (company.IndustrialSector, Is.Null);
-      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+      Assert.That (industrialSector.Companies, Has.No.Member(company));
     }
 
     [Test]
@@ -289,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         PrepareInconsistentState_OneMany_ObjectIncluded (out company, out industrialSector);
 
         Assert.That (company.IndustrialSector, Is.Null);
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member(company));
         CheckSyncState (industrialSector, s => s.Companies, false);
 
         UnloadService.UnloadData (ClientTransaction.Current, company.ID);
@@ -297,14 +296,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         CheckSyncState (industrialSector, s => s.Companies, true);
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member(company));
 
         CheckActionWorks (() => industrialSector.Companies.Remove (company));
       }
 
       CheckSyncState (industrialSector, s => s.Companies, true);
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, List.Contains (company));
+      Assert.That (industrialSector.Companies, Has.Member(company));
     }
 
     [Test]
@@ -318,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         PrepareInconsistentState_OneMany_ObjectNotIncluded (out company, out industrialSector);
 
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-        Assert.That (industrialSector.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector.Companies, Has.No.Member(company));
 
         CheckSyncState (company, c => c.IndustrialSector, false);
         CheckSyncState (industrialSector, s => s.Companies, true);
@@ -336,7 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (company, c => c.IndustrialSector));
 
         CheckSyncState (company, c => c.IndustrialSector, true);
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member(company));
         CheckActionWorks (() => company.IndustrialSector = null);
         CheckActionWorks (() => industrialSector.Companies.Add (company));
       }
@@ -345,7 +344,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (industrialSector, s => s.Companies, true);
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, List.Contains (company));
+      Assert.That (industrialSector.Companies, Has.Member(company));
     }
 
     [Test]
@@ -370,8 +369,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         industrialSector2.Companies.EnsureDataComplete();
 
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
-        Assert.That (industrialSector1.Companies, List.Contains (company));
-        Assert.That (industrialSector2.Companies, List.Contains (company));
+        Assert.That (industrialSector1.Companies, Has.Member(company));
+        Assert.That (industrialSector2.Companies, Has.Member (company));
 
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector1, s => s.Companies, true);
@@ -380,8 +379,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector2, s => s.Companies));
 
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
-        Assert.That (industrialSector1.Companies, List.Contains (company));
-        Assert.That (industrialSector2.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector1.Companies, Has.Member (company));
+        Assert.That (industrialSector2.Companies, Has.No.Member(company));
 
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector1, s => s.Companies, true);
@@ -393,8 +392,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckSyncState (industrialSector2, s => s.Companies, true);
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
-      Assert.That (industrialSector1.Companies, List.Contains (company));
-      Assert.That (industrialSector2.Companies, List.Not.Contains (company));
+      Assert.That (industrialSector1.Companies, Has.Member (company));
+      Assert.That (industrialSector2.Companies, Has.No.Member(company));
     }
 
     [Test]
@@ -405,14 +404,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
 
-      Assert.That (order.OrderItems, List.Contains (orderItem));
+      Assert.That (order.OrderItems, Has.Member (orderItem));
       Assert.That (orderItem.Order, Is.SameAs (order));
       CheckSyncState (order, o => o.OrderItems, true);
       CheckSyncState (orderItem, oi => oi.Order, true);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.That (order.OrderItems, List.Contains (orderItem));
+        Assert.That (order.OrderItems, Has.Member (orderItem));
         Assert.That (orderItem.Order, Is.SameAs (order));
         CheckSyncState (order, o => o.OrderItems, true);
         CheckSyncState (orderItem, oi => oi.Order, true);
@@ -422,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.That (order.OrderItems, List.Not.Contains (orderItem));
+        Assert.That (order.OrderItems, Has.No.Member(orderItem));
         Assert.That (orderItem.Order, Is.Null);
         CheckSyncState (order, o => o.OrderItems, true);
         CheckSyncState (orderItem, oi => oi.Order, true);
@@ -433,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.That (order.OrderItems, List.Not.Contains (orderItem));
+        Assert.That (order.OrderItems, Has.No.Member(orderItem));
         Assert.That (orderItem.Order, Is.Null);
         CheckSyncState (order, o => o.OrderItems, true);
         CheckSyncState (orderItem, oi => oi.Order, true);
@@ -448,7 +447,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PrepareInconsistentState_OneMany_ObjectIncluded (out company, out industrialSector);
 
       Assert.That (company.IndustrialSector, Is.Null);
-      Assert.That (industrialSector.Companies, List.Contains (company));
+      Assert.That (industrialSector.Companies, Has.Member (company));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
       CheckSyncState (industrialSector, s => s.Companies, false);
@@ -456,7 +455,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.That (company.IndustrialSector, Is.Null);
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member (company));
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector, s => s.Companies, false);
       }
@@ -466,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.That (company.IndustrialSector, Is.Null);
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member (company));
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector, s => s.Companies, false);
       }
@@ -476,7 +475,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.That (company.IndustrialSector, Is.Null);
-        Assert.That (industrialSector.Companies, List.Contains (company));
+        Assert.That (industrialSector.Companies, Has.Member (company));
         CheckSyncState (company, c => c.IndustrialSector, true);
         CheckSyncState (industrialSector, s => s.Companies, false);
       }
@@ -490,14 +489,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PrepareInconsistentState_OneMany_ObjectNotIncluded (out company, out industrialSector);
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+      Assert.That (industrialSector.Companies, Has.No.Member(company));
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-        Assert.That (industrialSector.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector.Companies, Has.No.Member(company));
         CheckSyncState (company, c => c.IndustrialSector, false);
         CheckSyncState (industrialSector, s => s.Companies, true);
       }
@@ -507,7 +506,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-        Assert.That (industrialSector.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector.Companies, Has.No.Member(company));
         CheckSyncState (company, c => c.IndustrialSector, false);
         CheckSyncState (industrialSector, s => s.Companies, true);
       }
@@ -517,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-        Assert.That (industrialSector.Companies, List.Not.Contains (company));
+        Assert.That (industrialSector.Companies, Has.No.Member(company));
         CheckSyncState (company, c => c.IndustrialSector, false);
         CheckSyncState (industrialSector, s => s.Companies, true);
       }
@@ -531,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PrepareInconsistentState_OneMany_ObjectIncluded (out company, out industrialSector);
 
       Assert.That (company.IndustrialSector, Is.Null);
-      Assert.That (industrialSector.Companies, List.Contains (company));
+      Assert.That (industrialSector.Companies, Has.Member (company));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
       CheckSyncState (industrialSector, s => s.Companies, false);
@@ -573,7 +572,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       PrepareInconsistentState_OneMany_ObjectNotIncluded(out company, out industrialSector);
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+      Assert.That (industrialSector.Companies, Has.No.Member(company));
 
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
@@ -782,7 +781,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         Assert.That (ex, Is.TypeOf (typeof (TException)));
         Assert.That (
             ex.Message,
-            NUnit.Framework.SyntaxHelpers.Text.Contains (expectedMessage),
+            Is.StringContaining(expectedMessage),
             "Expected: " + expectedMessage + Environment.NewLine + "Was: " + ex.Message);
       }
 
@@ -830,7 +829,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       industrialSector.Companies.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.Null);
-      Assert.That (industrialSector.Companies, List.Contains (company));
+      Assert.That (industrialSector.Companies, Has.Member (company));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
       CheckSyncState (industrialSector, s => s.Companies, false);
@@ -853,7 +852,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       industrialSector.Companies.EnsureDataComplete ();
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, List.Not.Contains (company));
+      Assert.That (industrialSector.Companies, Has.No.Member(company));
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
     }

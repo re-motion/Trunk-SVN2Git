@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {

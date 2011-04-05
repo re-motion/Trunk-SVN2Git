@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -177,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void ToCustomCollection_WithCollectionType ()
     {
       var collection = _resultWithCustomType.ToCustomCollection ();
-      Assert.That (collection, Is.InstanceOfType (typeof (OrderCollection)));
+      Assert.That (collection, Is.InstanceOf (typeof (OrderCollection)));
       Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
@@ -185,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void ToCustomCollection_WithoutCollectionType ()
     {
       var collection = _result.ToCustomCollection ();
-      Assert.That (collection, Is.InstanceOfType (typeof (DomainObjectCollection)));
+      Assert.That (collection, Is.InstanceOf (typeof (DomainObjectCollection)));
       Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
@@ -211,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       using (ClientTransactionScope.EnterNullScope ())
       {
         var collection = _resultWithCustomType.ToCustomCollection();
-        Assert.That (collection, Is.InstanceOfType (typeof (OrderCollection)));
+        Assert.That (collection, Is.InstanceOf (typeof (OrderCollection)));
         Assert.That (collection, Is.EqualTo (new[] { _order1, _order2, _order3 }));
       }
     }

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.ObjectBinding;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var boClass = instanceAsBusinessObject.BusinessObjectClass;
 
       Assert.That (boClass.GetPropertyDefinitions ().Select (p => p.Identifier ).ToArray(),
-          List.Contains ("MixedProperty"));
+          Has.Member("MixedProperty"));
     }
 
     [Test]

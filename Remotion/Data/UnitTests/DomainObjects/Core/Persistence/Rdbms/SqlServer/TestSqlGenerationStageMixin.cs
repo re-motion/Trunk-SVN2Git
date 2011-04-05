@@ -16,7 +16,6 @@
 // 
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;

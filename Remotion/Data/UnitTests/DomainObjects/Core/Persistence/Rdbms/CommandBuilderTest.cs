@@ -16,7 +16,6 @@
 // 
 using System.Data;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions;
 using Remotion.Development.UnitTesting;

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
@@ -166,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
 
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Contains (endPointMock));
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.Member(endPointMock));
     }
 
     [Test]
@@ -185,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       endPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (endPointMock));
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(endPointMock));
     }
 
     [Test]
@@ -217,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeperMock.VerifyAllExpectations();
       _virtualEndPointMock.AssertWasNotCalled (mock => mock.MarkDataIncomplete());
       _virtualEndPointMock.AssertWasNotCalled (mock => mock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub));
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (_relatedEndPointStub));
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(_relatedEndPointStub));
     }
 
     [Test]
@@ -308,13 +307,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeperMock.Replay();
 
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Contains (endPointMock));
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.Member(endPointMock));
 
       _loadState.SynchronizeOppositeEndPoint (endPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
-      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, List.Not.Contains (endPointMock));
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(endPointMock));
     }
 
     [Test]

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -151,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (steps[0], Is.SameAs (_command));
 
       // customer.Orders[index].Touch()
-      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchCommand)));
+      Assert.That (steps[1], Is.InstanceOf (typeof (RelationEndPointTouchCommand)));
       Assert.That (((RelationEndPointTouchCommand) steps[1]).EndPoint, Is.SameAs (oppositeEndPoint));
     }
   }

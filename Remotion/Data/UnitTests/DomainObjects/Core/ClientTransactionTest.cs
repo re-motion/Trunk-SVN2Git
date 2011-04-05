@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -147,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var result = ClientTransactionTestHelper.CallGetObject (_transaction, DomainObjectIDs.Order1, false);
 
-      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (result, Is.InstanceOf (typeof (Order)));
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
     }
@@ -260,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (result, Is.InstanceOf (typeof (Order)));
       Assert.That (InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (((object) result).GetType()), Is.True);
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (_transaction.IsEnlisted (result), Is.True);

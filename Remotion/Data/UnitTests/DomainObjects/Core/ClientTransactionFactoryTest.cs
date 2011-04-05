@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
@@ -33,11 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ITransactionFactory transactionFactory = new ClientTransactionFactory();
 
       ITransaction transaction = transactionFactory.CreateRootTransaction();
-      Assert.That (transaction, Is.InstanceOfType (typeof (ClientTransactionWrapper)));
-      Assert.That (transaction.To<ClientTransaction>(), Is.InstanceOfType (typeof (ClientTransaction)));
+      Assert.That (transaction, Is.InstanceOf (typeof (ClientTransactionWrapper)));
+      Assert.That (transaction.To<ClientTransaction>(), Is.InstanceOf (typeof (ClientTransaction)));
       
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (transaction.To<ClientTransaction>());
-      Assert.That (persistenceStrategy, Is.InstanceOfType (typeof (RootPersistenceStrategy)));
+      Assert.That (persistenceStrategy, Is.InstanceOf (typeof (RootPersistenceStrategy)));
     }
 
     [Test]

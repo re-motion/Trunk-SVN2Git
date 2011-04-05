@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -61,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedMap = (RelationEndPointMap) Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
 
       Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedMap.ClientTransaction, Is.InstanceOfType (typeof (ClientTransactionMock)));
+      Assert.That (deserializedMap.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));
       Assert.That (deserializedMap.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
 
       var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);

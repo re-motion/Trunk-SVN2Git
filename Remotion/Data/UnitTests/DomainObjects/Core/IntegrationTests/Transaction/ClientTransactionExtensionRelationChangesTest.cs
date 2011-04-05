@@ -23,6 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
+using Is = Rhino.Mocks.Constraints.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {

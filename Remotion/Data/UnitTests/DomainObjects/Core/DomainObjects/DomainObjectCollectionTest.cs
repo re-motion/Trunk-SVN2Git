@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -70,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       
       var modificationCheckingDecorator = 
           DomainObjectCollection.CreateDataStrategyForStandAloneCollection (dataStoreStub, typeof (Order), eventRaiserStub);
-      Assert.That (modificationCheckingDecorator, Is.InstanceOfType (typeof (ModificationCheckingCollectionDataDecorator)));
+      Assert.That (modificationCheckingDecorator, Is.InstanceOf (typeof (ModificationCheckingCollectionDataDecorator)));
       Assert.That (modificationCheckingDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
 
       var eventRaisingDecorator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (
@@ -491,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var collection = new DomainObjectCollection (originalDataStub);
 
       var nonNotifyingData = (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
-      Assert.That (nonNotifyingData, Is.InstanceOfType (typeof (ModificationCheckingCollectionDataDecorator)));
+      Assert.That (nonNotifyingData, Is.InstanceOf (typeof (ModificationCheckingCollectionDataDecorator)));
       Assert.That (nonNotifyingData.RequiredItemType, Is.SameAs (typeof (Customer)));
 
       var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (

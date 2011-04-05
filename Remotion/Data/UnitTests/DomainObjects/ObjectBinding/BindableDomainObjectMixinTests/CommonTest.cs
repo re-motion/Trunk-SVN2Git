@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
@@ -32,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void InstantiateMixedType ()
     {
-      Assert.That (SampleBindableMixinDomainObject.NewObject(), Is.InstanceOfType (typeof (IBusinessObject)));
+      Assert.That (SampleBindableMixinDomainObject.NewObject(), Is.InstanceOf (typeof (IBusinessObject)));
     }
 
     [Test]

@@ -20,7 +20,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
@@ -49,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
-      Assert.That (order, Is.InstanceOfType (typeof (Order)));
+      Assert.That (order, Is.InstanceOf (typeof (Order)));
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 

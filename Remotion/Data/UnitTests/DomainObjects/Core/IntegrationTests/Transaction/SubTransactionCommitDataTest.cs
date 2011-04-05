@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -130,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (originalOrder.Official, Is.Null);
 
       Assert.That (originalTicket.Order, Is.Null);
-      Assert.That (originalOfficial.Orders, List.Not.Contains (originalOrder));
+      Assert.That (originalOfficial.Orders, Has.No.Member(originalOrder));
     }
 
     [Test]
@@ -166,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (originalOrder.Official, Is.Null);
 
       Assert.That (originalItem.Order, Is.Null);
-      Assert.That (originalOfficial.Orders, List.Not.Contains (originalOrder));
+      Assert.That (originalOfficial.Orders, Has.No.Member(originalOrder));
     }
 
     [Test]

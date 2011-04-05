@@ -22,7 +22,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {

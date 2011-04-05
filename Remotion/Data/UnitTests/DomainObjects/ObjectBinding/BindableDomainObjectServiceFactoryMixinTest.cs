@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Mixins;
@@ -56,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void Initialize ()
     {
       Assert.That (_serviceMixin, Is.Not.Null);
-      Assert.That (_serviceMixin, Is.InstanceOfType (typeof (IBusinessObjectServiceFactory)));
+      Assert.That (_serviceMixin, Is.InstanceOf (typeof (IBusinessObjectServiceFactory)));
     }
 
     [Test]
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IBindableObjectGlobalizationService)),
-          Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
+          Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
     }
 
     [Test]
@@ -72,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IBusinessObjectStringFormatterService)),
-          Is.InstanceOfType (typeof (BusinessObjectStringFormatterService)));
+          Is.InstanceOf (typeof (BusinessObjectStringFormatterService)));
     }
 
     [Test]
@@ -80,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IGetObjectService)),
-          Is.InstanceOfType (typeof (BindableDomainObjectGetObjectService)));
+          Is.InstanceOf (typeof (BindableDomainObjectGetObjectService)));
     }
 
     [Test]
@@ -88,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (ISearchAvailableObjectsService)),
-          Is.InstanceOfType (typeof (BindableDomainObjectCompoundSearchService)));
+          Is.InstanceOf (typeof (BindableDomainObjectCompoundSearchService)));
     }
 
     [Test]

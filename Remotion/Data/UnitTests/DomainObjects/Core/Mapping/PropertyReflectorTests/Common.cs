@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       PropertyDefinition actual = propertyReflector.GetMetadata();
       actual.SetStorageProperty (new SimpleColumnDefinition ("Boolean", typeof (bool), "bit", true, false));
 
-      Assert.IsInstanceOfType (typeof (ReflectionBasedPropertyDefinition), actual);
+      Assert.IsInstanceOf (typeof (ReflectionBasedPropertyDefinition), actual);
       Assert.IsNotNull (actual);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreEqual ("Boolean", StorageModelTestHelper.GetColumnName(actual));

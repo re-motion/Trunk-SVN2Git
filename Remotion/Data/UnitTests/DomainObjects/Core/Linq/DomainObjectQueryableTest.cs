@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
@@ -48,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryableWithOrder = new DomainObjectQueryable<Order> (_queryParserStub, _executorStub);
 
       Assert.That (queryableWithOrder.Provider, Is.Not.Null);
-      Assert.That (queryableWithOrder.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
+      Assert.That (queryableWithOrder.Provider, Is.InstanceOf (typeof (DefaultQueryProvider)));
       Assert.That (((DefaultQueryProvider) queryableWithOrder.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
       Assert.That (queryableWithOrder.Provider.Executor, Is.SameAs (_executorStub));
       Assert.That (queryableWithOrder.Provider.QueryParser, Is.SameAs (_queryParserStub));

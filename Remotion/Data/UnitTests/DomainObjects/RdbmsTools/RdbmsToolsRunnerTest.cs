@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.RdbmsTools;
 
 namespace Remotion.Data.UnitTests.DomainObjects.RdbmsTools

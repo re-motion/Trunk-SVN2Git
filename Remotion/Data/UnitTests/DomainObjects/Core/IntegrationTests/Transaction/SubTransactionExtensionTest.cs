@@ -1256,7 +1256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.ReplayAll();
 
       QueryResult<DomainObject> finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.That (finalResult, NUnit.Framework.SyntaxHelpers.Is.SameAs (subFilteredQueryResult));
+      Assert.That (finalResult, NUnit.Framework.Is.SameAs (subFilteredQueryResult));
 
       _mockRepository.VerifyAll();
     }
@@ -1308,7 +1308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.ReplayAll();
 
       QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.That (finalQueryResult, NUnit.Framework.SyntaxHelpers.Is.SameAs (subFilteredQueryResult));
+      Assert.That (finalQueryResult, NUnit.Framework.Is.SameAs (subFilteredQueryResult));
 
       _mockRepository.VerifyAll();
     }

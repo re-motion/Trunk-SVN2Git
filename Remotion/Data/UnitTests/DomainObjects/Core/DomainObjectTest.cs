@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -569,7 +568,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var order = _transaction.Execute (() => Order.NewObject ());
       var transactionContextIndexer = order.TransactionContext;
 
-      Assert.That (transactionContextIndexer, Is.InstanceOfType (typeof (DomainObjectTransactionContextIndexer)));
+      Assert.That (transactionContextIndexer, Is.InstanceOf (typeof (DomainObjectTransactionContextIndexer)));
       Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[_transaction]).DomainObject, Is.SameAs (order));
     }
   }

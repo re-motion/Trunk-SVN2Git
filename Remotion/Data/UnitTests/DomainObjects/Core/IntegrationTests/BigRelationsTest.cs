@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Linq.Utilities;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.FunctionalProgramming;

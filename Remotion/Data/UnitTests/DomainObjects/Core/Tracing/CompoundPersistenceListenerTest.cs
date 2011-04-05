@@ -17,7 +17,6 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
 using System.Collections.Generic;

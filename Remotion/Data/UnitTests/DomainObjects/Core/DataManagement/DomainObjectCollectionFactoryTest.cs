@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -52,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var collection = _factory.CreateCollection (typeof (ObjectList<Order>), _dataWithOrderType);
 
-      Assert.That (collection, Is.InstanceOfType (typeof (ObjectList<Order>)));
+      Assert.That (collection, Is.InstanceOf (typeof (ObjectList<Order>)));
       CheckDataStrategy (collection, _dataWithOrderType);
     }
 
@@ -61,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var collection = _factory.CreateCollection (typeof (DomainObjectCollection), _data);
 
-      Assert.That (collection, Is.InstanceOfType (typeof (DomainObjectCollection)));
+      Assert.That (collection, Is.InstanceOf (typeof (DomainObjectCollection)));
       CheckDataStrategy (collection, _data);
     }
 
@@ -70,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var collection = _factory.CreateCollection (typeof (CollectionWithProtectedCtor), _dataWithOrderType);
 
-      Assert.That (collection, Is.InstanceOfType (typeof (CollectionWithProtectedCtor)));
+      Assert.That (collection, Is.InstanceOf (typeof (CollectionWithProtectedCtor)));
       CheckDataStrategy (collection, _dataWithOrderType);
     }
 

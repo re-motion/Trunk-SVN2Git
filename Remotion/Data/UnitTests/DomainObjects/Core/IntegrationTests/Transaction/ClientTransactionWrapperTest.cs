@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -68,11 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ITransaction child = _transaction.CreateChild();
       Assert.IsNotNull (child);
-      Assert.IsInstanceOfType (typeof (ClientTransactionWrapper), child);
-      Assert.IsInstanceOfType (typeof (ClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
+      Assert.IsInstanceOf (typeof (ClientTransactionWrapper), child);
+      Assert.IsInstanceOf (typeof (ClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
 
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (((ClientTransactionWrapper) child).WrappedInstance);
-      Assert.IsInstanceOfType (typeof (SubPersistenceStrategy), persistenceStrategy);
+      Assert.IsInstanceOf (typeof (SubPersistenceStrategy), persistenceStrategy);
     }
 
     [Test]

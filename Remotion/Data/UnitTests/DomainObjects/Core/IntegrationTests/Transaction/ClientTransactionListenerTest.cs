@@ -27,7 +27,6 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction

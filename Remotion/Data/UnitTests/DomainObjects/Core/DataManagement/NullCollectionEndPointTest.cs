@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -161,37 +160,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateSetCollectionCommand ()
     {
-      Assert.That (_nullEndPoint.CreateSetCollectionCommand (new DomainObjectCollection()), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateSetCollectionCommand (new DomainObjectCollection()), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
     public void CreateInsertCommand ()
     {
-      Assert.That (_nullEndPoint.CreateInsertCommand (_relatedObject, 12), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateInsertCommand (_relatedObject, 12), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
     public void CreateAddCommand ()
     {
-      Assert.That (_nullEndPoint.CreateAddCommand (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateAddCommand (_relatedObject), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
     public void CreateRemoveCommand ()
     {
-      Assert.That (_nullEndPoint.CreateRemoveCommand (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateRemoveCommand (_relatedObject), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
     public void CreateReplaceCommand ()
     {
-      Assert.That (_nullEndPoint.CreateReplaceCommand (12, _relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateReplaceCommand (12, _relatedObject), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
     public void CreateDeleteCommand ()
     {
-      Assert.That (_nullEndPoint.CreateDeleteCommand(), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (_nullEndPoint.CreateDeleteCommand(), Is.InstanceOf (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]

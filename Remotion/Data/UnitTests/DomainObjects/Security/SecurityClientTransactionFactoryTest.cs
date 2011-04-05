@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Security;
@@ -60,9 +59,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
       var clientTransaction = transaction.To<ClientTransaction>();
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (clientTransaction);
-      Assert.That (persistenceStrategy, Is.InstanceOfType (typeof (RootPersistenceStrategy)));
+      Assert.That (persistenceStrategy, Is.InstanceOf (typeof (RootPersistenceStrategy)));
       Assert.That (clientTransaction.Extensions.Count, Is.EqualTo (1));
-      Assert.That (clientTransaction.Extensions[0], Is.InstanceOfType (typeof (SecurityClientTransactionExtension)));
+      Assert.That (clientTransaction.Extensions[0], Is.InstanceOf (typeof (SecurityClientTransactionExtension)));
       Assert.That (clientTransaction.Extensions[typeof (SecurityClientTransactionExtension).FullName], Is.SameAs (clientTransaction.Extensions[0]));
     }
 
@@ -76,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
 
       var clientTransaction = transaction.To<ClientTransaction> ();
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (clientTransaction);
-      Assert.That (persistenceStrategy, Is.InstanceOfType (typeof (RootPersistenceStrategy)));
+      Assert.That (persistenceStrategy, Is.InstanceOf (typeof (RootPersistenceStrategy)));
       Assert.That (clientTransaction.Extensions, Is.Empty);
     }
   }

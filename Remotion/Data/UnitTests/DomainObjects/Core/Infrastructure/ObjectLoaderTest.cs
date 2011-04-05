@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -754,7 +753,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void CheckLoadedObject (DomainObject loadedObject, DataContainer dataContainer)
     {
-      Assert.That (loadedObject, Is.InstanceOfType (dataContainer.DomainObjectType));
+      Assert.That (loadedObject, Is.InstanceOf (dataContainer.DomainObjectType));
       Assert.That (loadedObject.ID, Is.EqualTo (dataContainer.ID));
       Assert.That (_clientTransaction.IsEnlisted (loadedObject), Is.True);
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (_clientTransaction));

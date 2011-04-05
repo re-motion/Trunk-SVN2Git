@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -115,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ObjectList_IsIList ()
     {
       IList<OrderItem> list = new ObjectList<OrderItem> ();
-      Assert.IsInstanceOfType (typeof (IList<OrderItem>), list);
+      Assert.IsInstanceOf (typeof (IList<OrderItem>), list);
     }
 
     [Test]

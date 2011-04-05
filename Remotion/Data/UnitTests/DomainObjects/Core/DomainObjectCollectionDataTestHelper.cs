@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -30,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static T GetDataStrategyAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (collection, "_dataStrategy");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      Assert.That (data, Is.InstanceOf (typeof (T)));
       return (T) data;
     }
 
@@ -42,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static T GetWrappedDataAndCheckType<T> (DomainObjectCollectionDataDecoratorBase decorator) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      Assert.That (data, Is.InstanceOf (typeof (T)));
       return (T) data;
     }
     

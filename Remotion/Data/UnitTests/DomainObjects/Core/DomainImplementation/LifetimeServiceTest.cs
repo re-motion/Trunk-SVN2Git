@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
@@ -105,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       var result = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
 
-      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (result, Is.InstanceOf (typeof (Order)));
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (result.State, Is.EqualTo (StateType.NotLoadedYet));
     }

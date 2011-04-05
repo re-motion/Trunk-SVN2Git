@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void SupportedMethods ()
     {
       var method = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
-      Assert.That (ContainsObjectExpressionNode.SupportedMethods, List.Contains (method));
+      Assert.That (ContainsObjectExpressionNode.SupportedMethods, Has.Member(method));
     }
 
     [Test]
@@ -88,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.SameAs (QueryModel));
 
       Assert.That (QueryModel.ResultOperators.Count, Is.EqualTo (1));
-      Assert.That (QueryModel.ResultOperators[0], Is.InstanceOfType (expectedResultOperatorType));
+      Assert.That (QueryModel.ResultOperators[0], Is.InstanceOf (expectedResultOperatorType));
     }
 
     private MethodCallExpressionParseInfo CreateFakeParseInfo ()

@@ -20,7 +20,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
@@ -54,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (Order));
       var lookupInfo = new DomainObjectConstructorLookupInfo (typeof (Order), concreteDomainObjectType, BindingFlags.Public | BindingFlags.Instance);
       var del = lookupInfo.GetDelegate (typeof (Func<Order>));
-      Assert.That (del, Is.InstanceOfType (typeof (Func<Order>)));
-      Assert.That (((Func<Order>) del) (), Is.InstanceOfType (concreteDomainObjectType));
+      Assert.That (del, Is.InstanceOf (typeof (Func<Order>)));
+      Assert.That (((Func<Order>) del) (), Is.InstanceOf (concreteDomainObjectType));
     }
 
     [Test]

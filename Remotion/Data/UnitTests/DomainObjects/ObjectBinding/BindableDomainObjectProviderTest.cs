@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
@@ -34,8 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void Instantiate_WithDefaultValues ()
     {
       BindableDomainObjectProvider provider = new BindableDomainObjectProvider();
-      Assert.IsInstanceOfType (typeof (BindableDomainObjectMetadataFactory), provider.MetadataFactory);
-      Assert.IsInstanceOfType (typeof (BindableObjectServiceFactory), provider.ServiceFactory);
+      Assert.IsInstanceOf (typeof (BindableDomainObjectMetadataFactory), provider.MetadataFactory);
+      Assert.IsInstanceOf (typeof (BindableObjectServiceFactory), provider.ServiceFactory);
     }
 
     [Test]
@@ -44,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       using (MixinConfiguration.BuildNew ().ForClass (typeof (BindableDomainObjectMetadataFactory)).AddMixin<MixinStub> ().EnterScope ())
       {
         BindableDomainObjectProvider provider = new BindableDomainObjectProvider ();
-        Assert.That (provider.MetadataFactory, Is.InstanceOfType (typeof (BindableDomainObjectMetadataFactory)));
-        Assert.That (provider.MetadataFactory, Is.InstanceOfType (typeof (IMixinTarget)));
-        Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
+        Assert.That (provider.MetadataFactory, Is.InstanceOf (typeof (BindableDomainObjectMetadataFactory)));
+        Assert.That (provider.MetadataFactory, Is.InstanceOf (typeof (IMixinTarget)));
+        Assert.That (provider.ServiceFactory, Is.InstanceOf (typeof (BindableObjectServiceFactory)));
       }
     }
 

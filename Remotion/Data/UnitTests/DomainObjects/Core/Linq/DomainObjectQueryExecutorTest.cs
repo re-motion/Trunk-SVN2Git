@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -153,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .WhenCalled (mi =>
           {
             var actualQueryModel = (QueryModel) mi.Arguments[1];
-            Assert.That (actualQueryModel.ResultOperators, List.Not.Contains (fetchRequest));
+            Assert.That (actualQueryModel.ResultOperators, Has.No.Member(fetchRequest));
             
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count(), Is.EqualTo (1));
@@ -196,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .WhenCalled (mi =>
           {
             var actualQueryModel = (QueryModel) mi.Arguments[1];
-            Assert.That (actualQueryModel.ResultOperators, List.Contains (fetchRequest));
+            Assert.That (actualQueryModel.ResultOperators, Has.Member(fetchRequest));
 
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count (), Is.EqualTo (0));
@@ -340,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .WhenCalled (mi =>
           {
             var actualQueryModel = (QueryModel) mi.Arguments[1];
-            Assert.That (actualQueryModel.ResultOperators, List.Not.Contains (fetchRequest));
+            Assert.That (actualQueryModel.ResultOperators, Has.No.Member(fetchRequest));
 
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count (), Is.EqualTo (1));
@@ -382,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .WhenCalled (mi =>
           {
             var actualQueryModel = (QueryModel) mi.Arguments[1];
-            Assert.That (actualQueryModel.ResultOperators, List.Contains (fetchRequest));
+            Assert.That (actualQueryModel.ResultOperators, Has.Member (fetchRequest));
 
             var rs = (IEnumerable<FetchQueryModelBuilder>) mi.Arguments[2];
             Assert.That (rs.Count (), Is.EqualTo (0));

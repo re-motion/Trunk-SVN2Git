@@ -18,7 +18,6 @@ using System;
 using System.Collections.Specialized;
 using System.Configuration;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;

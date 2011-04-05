@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.ObjectBinding;
@@ -118,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObject));
 
       Assert.That (provider, Is.Not.Null);
-      Assert.That (provider, Is.InstanceOfType (typeof (BindableDomainObjectProvider)));
+      Assert.That (provider, Is.InstanceOf (typeof (BindableDomainObjectProvider)));
       Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
       Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
     }
@@ -175,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void ClassDerivedFromBindableDomainObjectOverridingMixinMethod ()
     {
       var instance = (IBusinessObject) TestDomain.ClassDerivedFromBindableDomainObjectOverridingMixinMethod.NewObject ();
-      Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (instance.BusinessObjectClass, Is.InstanceOf (typeof (BindableObjectClass)));
       Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod)));
       Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod))));
     }

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -50,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> ((DomainObject) null);
 
-      Assert.That (oppositeEndPoint, Is.InstanceOfType (typeof (NullCollectionEndPoint)));
+      Assert.That (oppositeEndPoint, Is.InstanceOf (typeof (NullCollectionEndPoint)));
       var expectedID = RelationEndPointID.Create(null, endPoint.Definition.GetOppositeEndPointDefinition ());
       Assert.That (oppositeEndPoint.ID, Is.EqualTo (expectedID));
     }
@@ -76,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> ((ObjectID) null);
 
-      Assert.That (oppositeEndPoint, Is.InstanceOfType (typeof (NullCollectionEndPoint)));
+      Assert.That (oppositeEndPoint, Is.InstanceOf (typeof (NullCollectionEndPoint)));
       var expectedID = RelationEndPointID.Create(null, endPoint.Definition.GetOppositeEndPointDefinition ());
       Assert.That (oppositeEndPoint.ID, Is.EqualTo (expectedID));
     }

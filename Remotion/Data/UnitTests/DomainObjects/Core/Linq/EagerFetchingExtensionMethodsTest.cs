@@ -17,7 +17,6 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Queries;

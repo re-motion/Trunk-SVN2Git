@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;

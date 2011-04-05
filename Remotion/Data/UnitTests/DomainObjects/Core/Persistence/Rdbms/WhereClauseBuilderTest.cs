@@ -18,7 +18,6 @@ using System;
 using System.Data;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;

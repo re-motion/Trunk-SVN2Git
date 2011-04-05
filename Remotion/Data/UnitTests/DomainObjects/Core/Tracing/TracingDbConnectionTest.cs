@@ -19,7 +19,6 @@ using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 {

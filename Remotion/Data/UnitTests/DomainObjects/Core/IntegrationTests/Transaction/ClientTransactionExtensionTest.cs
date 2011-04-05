@@ -34,7 +34,7 @@ using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Interfaces;
 using Is = Rhino.Mocks.Constraints.Is;
-using List = NUnit.Framework.SyntaxHelpers.List;
+using List = NUnit.Framework.List;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Extensions ()
     {
-      Assert.That (ClientTransactionMock.Extensions, List.Contains (_extensionMock));
+      Assert.That (ClientTransactionMock.Extensions, Has.Member(_extensionMock));
     }
 
     [Test]
@@ -1103,7 +1103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_newTransaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        Assert.That (finalResult, NUnit.Framework.SyntaxHelpers.Is.SameAs (newQueryResult));
+        Assert.That (finalResult, NUnit.Framework.Is.SameAs (newQueryResult));
       }
 
       _mockRepository.VerifyAll();
@@ -1137,7 +1137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_newTransaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        Assert.That (finalQueryResult, NUnit.Framework.SyntaxHelpers.Is.SameAs (newQueryResult));
+        Assert.That (finalQueryResult, NUnit.Framework.Is.SameAs (newQueryResult));
       }
       _mockRepository.VerifyAll();
     }
@@ -1196,7 +1196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_newTransaction.EnterNonDiscardingScope())
       {
         QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        Assert.That (finalQueryResult, NUnit.Framework.SyntaxHelpers.Is.SameAs (newQueryResult2));
+        Assert.That (finalQueryResult, NUnit.Framework.Is.SameAs (newQueryResult2));
       }
 
       _mockRepository.VerifyAll();

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -341,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Not.Contains (order));
+      Assert.That (relatedObjects, Has.No.Member(order));
     }
 
     [Test]
@@ -349,7 +348,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
       var relatedObjects = new List<DomainObject> (ceo.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Not.Contains (ceo.Company.IndustrialSector));
+      Assert.That (relatedObjects, Has.No.Member(ceo.Company.IndustrialSector));
     }
 
     [Test]
@@ -365,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.NewObject ();
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Not.Contains (null));
+      Assert.That (relatedObjects, Has.No.Member(null));
     }
 
     [Test]
@@ -373,8 +372,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Contains (order.Official));
-      Assert.That (relatedObjects, List.Contains (order.OrderTicket));
+      Assert.That (relatedObjects, Has.Member (order.Official));
+      Assert.That (relatedObjects, Has.Member (order.OrderTicket));
     }
 
     [Test]
@@ -382,11 +381,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       var relatedObjects = new List<DomainObject> (computer.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Contains (computer.Employee));
+      Assert.That (relatedObjects, Has.Member (computer.Employee));
 
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
       relatedObjects = new List<DomainObject> (employee.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Contains (employee.Computer));
+      Assert.That (relatedObjects, Has.Member (employee.Computer));
 
     }
 
@@ -395,7 +394,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Client client = Client.GetObject (DomainObjectIDs.Client2);
       var relatedObjects = new List<DomainObject> (client.Properties.GetAllRelatedObjects ());
-      Assert.That (relatedObjects, List.Contains (client.ParentClient));
+      Assert.That (relatedObjects, Has.Member (client.ParentClient));
     }
 
     [Test]

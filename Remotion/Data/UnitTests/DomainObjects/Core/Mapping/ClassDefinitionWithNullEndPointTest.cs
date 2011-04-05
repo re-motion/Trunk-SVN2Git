@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -53,15 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitions ()
     {
-      Assert.That (_locationClass.GetRelationEndPointDefinitions (), List.Contains (_locationEndPoint));
-      Assert.That (_clientClass.GetRelationEndPointDefinitions (), List.Not.Contains (_clientEndPoint));
+      Assert.That (_locationClass.GetRelationEndPointDefinitions (), Has.Member(_locationEndPoint));
+      Assert.That (_clientClass.GetRelationEndPointDefinitions (), Has.No.Member(_clientEndPoint));
     }
 
     [Test]
     public void GetMyRelationEndPointDefinitions ()
     {
-      Assert.That (_locationClass.MyRelationEndPointDefinitions, List.Contains (_locationEndPoint));
-      Assert.That (_clientClass.MyRelationEndPointDefinitions, List.Not.Contains (_clientEndPoint));
+      Assert.That (_locationClass.MyRelationEndPointDefinitions, Has.Member(_locationEndPoint));
+      Assert.That (_clientClass.MyRelationEndPointDefinitions, Has.No.Member(_clientEndPoint));
     }
   }
 }

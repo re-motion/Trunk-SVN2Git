@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
@@ -49,14 +48,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void GetTypeConversionProvider ()
     {
       var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
-      Assert.That (providerDefinition.Factory.CreateTypeConversionProvider(), Is.InstanceOfType (typeof (TypeConversionProvider)));
+      Assert.That (providerDefinition.Factory.CreateTypeConversionProvider(), Is.InstanceOf (typeof (TypeConversionProvider)));
     }
 
     [Test]
     public void GetTypeProvider ()
     {
       var providerDefinition = new RdbmsProviderDefinition ("Provider", _sqlStorageObjectFactory, "ConnectionString");
-      Assert.That (providerDefinition.Factory.CreateTypeProvider(), Is.InstanceOfType (typeof (TypeProvider)));
+      Assert.That (providerDefinition.Factory.CreateTypeProvider(), Is.InstanceOf (typeof (TypeProvider)));
     }
 
   }

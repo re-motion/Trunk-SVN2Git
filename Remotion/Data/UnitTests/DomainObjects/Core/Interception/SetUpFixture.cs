@@ -17,7 +17,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception

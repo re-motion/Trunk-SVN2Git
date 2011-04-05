@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
 
-      Assert.IsInstanceOfType (typeof (VirtualRelationEndPointDefinition), actual);
+      Assert.IsInstanceOf (typeof (VirtualRelationEndPointDefinition), actual);
       Assert.AreEqual (
          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.NoAttribute",
          actual.PropertyName);
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
 
-      Assert.IsInstanceOfType (typeof (VirtualRelationEndPointDefinition), actual);
+      Assert.IsInstanceOf (typeof (VirtualRelationEndPointDefinition), actual);
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample.ClassWithVirtualRelationEndPoints.NotNullable",
           actual.PropertyName);
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
 
-      Assert.IsInstanceOfType (typeof (VirtualRelationEndPointDefinition), actual);
+      Assert.IsInstanceOf (typeof (VirtualRelationEndPointDefinition), actual);
       VirtualRelationEndPointDefinition relationEndPointDefinition = (VirtualRelationEndPointDefinition) actual;
       Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
       Assert.AreEqual (
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
 
       IRelationEndPointDefinition actual = relationEndPointReflector.GetMetadata ();
 
-      Assert.IsInstanceOfType (typeof (VirtualRelationEndPointDefinition), actual);
+      Assert.IsInstanceOf (typeof (VirtualRelationEndPointDefinition), actual);
       VirtualRelationEndPointDefinition relationEndPointDefinition = (VirtualRelationEndPointDefinition) actual;
       Assert.AreSame (_classDefinition, relationEndPointDefinition.ClassDefinition);
       Assert.AreEqual (

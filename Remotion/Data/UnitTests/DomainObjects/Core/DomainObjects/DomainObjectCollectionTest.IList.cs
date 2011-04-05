@@ -16,7 +16,6 @@
 // 
 using System.Collections;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -57,24 +56,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void IList_Add ()
     {
       IList list = _collection;
-      Assert.That (_collection, List.Not.Contains (_customer3NotInCollection));
+      Assert.That (_collection, Has.No.Member(_customer3NotInCollection));
 
       list.Add (_customer3NotInCollection);
-      Assert.That (_collection, List.Contains (_customer3NotInCollection));
+      Assert.That (_collection, Has.Member(_customer3NotInCollection));
     }
 
     [Test]
     public void IList_Remove ()
     {
       IList list = _collection;
-      Assert.That (_collection, List.Contains (_customer1));
-      Assert.That (_collection, List.Contains (_customer2));
+      Assert.That (_collection, Has.Member(_customer1));
+      Assert.That (_collection, Has.Member(_customer2));
 
       list.Remove (_customer1);
-      Assert.That (_collection, List.Not.Contains (_customer1));
+      Assert.That (_collection, Has.No.Member(_customer1));
 
       list.Remove (_customer2.ID);
-      Assert.That (_collection, List.Not.Contains (_customer2));
+      Assert.That (_collection, Has.No.Member(_customer2));
 
       list.Add (_customer3NotInCollection);
       Assert.That (_collection, Is.EqualTo (new[] { _customer3NotInCollection }));

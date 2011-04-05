@@ -20,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;

@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
@@ -103,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataKeeperFactory = ((RelationEndPointMap) dataManager.RelationEndPointMap).CollectionEndPointDataKeeperFactory;
       Assert.That (
           ((CollectionEndPointDataKeeperFactory) dataKeeperFactory).ChangeDetectionStrategy,
-          Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
+          Is.InstanceOf (typeof (SubCollectionEndPointChangeDetectionStrategy)));
       Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_invalidDomainObjectManager"), Is.SameAs (invalidDomainObjectManagerStub));
       Assert.That (PrivateInvoke.GetNonPublicField (dataManager, "_objectLoader"), Is.SameAs (objectLoaderStub));
     }

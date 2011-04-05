@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -132,14 +131,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_order1.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
       Assert.That (_order2.Customer, Is.SameAs (customer3));
-      Assert.That (customer3.Orders, List.Contains (_order2));
+      Assert.That (customer3.Orders, Has.Member(_order2));
 
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
       Assert.That (_order1.Customer, Is.Null);
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
       Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()));
-      Assert.That (customer3.Orders, List.Not.Contains (_order2));
+      Assert.That (customer3.Orders, Has.No.Member(_order2));
     }
 
     [Test]

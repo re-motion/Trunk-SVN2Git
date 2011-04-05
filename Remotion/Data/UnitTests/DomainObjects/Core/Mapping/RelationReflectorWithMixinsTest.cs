@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
@@ -123,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "UnidirectionalRelationProperty");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOf (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
@@ -140,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "UnidirectionalRelationProperty");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (AnonymousRelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOf (typeof (AnonymousRelationEndPointDefinition)));
       var oppositeEndPointDefinition = (AnonymousRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
 
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_relatedClassDefinition));
@@ -156,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "RelationProperty");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOf (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
@@ -174,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "RelationProperty");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (VirtualRelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOf (typeof (VirtualRelationEndPointDefinition)));
       var oppositeEndPointDefinition = (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
 
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_relatedClassDefinition));
@@ -194,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "CollectionPropertyNSide");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOf (typeof (RelationEndPointDefinition)));
 
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
 
@@ -212,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "CollectionPropertyNSide");
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions);
-      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOfType (typeof (VirtualRelationEndPointDefinition)));
+      Assert.That (actualRelationDefinition.EndPointDefinitions[1], Is.InstanceOf (typeof (VirtualRelationEndPointDefinition)));
       var oppositeEndPointDefinition = (VirtualRelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[1];
       Assert.That (oppositeEndPointDefinition.ClassDefinition, Is.SameAs (_relatedClassDefinition));
       Assert.That (

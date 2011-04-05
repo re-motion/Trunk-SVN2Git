@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -113,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.IsNotNull (deserializedClientTransaction);
       Assert.IsNotNull (deserializedClientTransaction.Extensions);
       Assert.AreEqual (1, deserializedClientTransaction.Extensions.Count);
-      Assert.IsInstanceOfType (typeof (ClientTransactionExtensionWithQueryFiltering), deserializedClientTransaction.Extensions[0]);
+      Assert.IsInstanceOf (typeof (ClientTransactionExtensionWithQueryFiltering), deserializedClientTransaction.Extensions[0]);
     }
 
 

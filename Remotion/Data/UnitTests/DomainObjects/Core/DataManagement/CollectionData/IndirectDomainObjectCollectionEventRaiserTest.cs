@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionData
 {

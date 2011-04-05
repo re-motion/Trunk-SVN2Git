@@ -97,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsInstanceOfType (typeof (SingleInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (firstDerivedClassObjectID).Single());
-        Assert.IsInstanceOfType (typeof (SingleInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
+        Assert.IsInstanceOf (typeof (SingleInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (firstDerivedClassObjectID).Single());
+        Assert.IsInstanceOf (typeof (SingleInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
       }
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         var actualObjectWithRelations = ClientTransaction.Current.QueryManager.GetCollection<SingleInheritanceObjectWithRelations> (query)
           .AsEnumerable().Single();
 
-        Assert.IsInstanceOfType (typeof (SingleInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
+        Assert.IsInstanceOf (typeof (SingleInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
         Assert.AreEqual (2, actualObjectWithRelations.VectorProperty.Count);
         Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceFirstDerivedClass> ().Single ());
         Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<SingleInheritanceSecondDerivedClass> ().Single ());
@@ -185,8 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsInstanceOfType (typeof (ConcreteInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (firstDerivedClassObjectID).Single());
-        Assert.IsInstanceOfType (typeof (ConcreteInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
+        Assert.IsInstanceOf (typeof (ConcreteInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (firstDerivedClassObjectID).Single());
+        Assert.IsInstanceOf (typeof (ConcreteInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
       }
     }
 
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         var actualObjectWithRelations = ClientTransaction.Current.QueryManager.GetCollection<ConcreteInheritanceObjectWithRelations> (query)
           .AsEnumerable ().Single ();
 
-        Assert.IsInstanceOfType (typeof (ConcreteInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
+        Assert.IsInstanceOf (typeof (ConcreteInheritanceFirstDerivedClass), actualObjectWithRelations.ScalarProperty);
         Assert.AreEqual (2, actualObjectWithRelations.VectorProperty.Count);
         Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceFirstDerivedClass> ().Single ());
         Assert.IsNotNull (actualObjectWithRelations.VectorProperty.OfType<ConcreteInheritanceSecondDerivedClass> ().Single ());

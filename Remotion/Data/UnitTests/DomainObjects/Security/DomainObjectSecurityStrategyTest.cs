@@ -72,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       DomainObjectSecurityStrategy strategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, _stubContextFactory);
 
       Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
-      Assert.IsInstanceOfType (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOfType (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
+      Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
+      Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
     }
 
@@ -263,9 +263,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       Assert.AreNotSame (strategy, deserializedStrategy);
       Assert.AreEqual (RequiredSecurityForStates.NewAndDeleted, deserializedStrategy.RequiredSecurityForStates);
       Assert.AreNotSame (factory, deserializedStrategy.SecurityContextFactory);
-      Assert.IsInstanceOfType (typeof (SerializableFactory), deserializedStrategy.SecurityContextFactory);
+      Assert.IsInstanceOf (typeof (SerializableFactory), deserializedStrategy.SecurityContextFactory);
       Assert.AreNotSame (securityStrategy, deserializedStrategy.SecurityStrategy);
-      Assert.IsInstanceOfType (typeof (SecurityStrategy), deserializedStrategy.SecurityStrategy);
+      Assert.IsInstanceOf (typeof (SecurityStrategy), deserializedStrategy.SecurityStrategy);
     }
   }
 }

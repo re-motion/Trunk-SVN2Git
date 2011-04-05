@@ -22,6 +22,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
+using Is = Rhino.Mocks.Constraints.Is;
+using List = Rhino.Mocks.Constraints.List;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {

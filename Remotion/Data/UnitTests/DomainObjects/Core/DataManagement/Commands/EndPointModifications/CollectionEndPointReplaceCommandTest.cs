@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -153,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var oldCustomer = _replacementRelatedObject.Customer;
 
       // DomainObject.Orders[...].Customer = null
-      Assert.That (steps[0], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      Assert.That (steps[0], Is.InstanceOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
       var setReplacedOrderCustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[0]).DecoratedCommand);
       Assert.That (setReplacedOrderCustomerCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (setReplacedOrderCustomerCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacedRelatedObject.ID));
@@ -161,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (setReplacedOrderCustomerCommand.NewRelatedObject, Is.Null);
 
       // _replacementRelatedObject.Customer = DomainObject
-      Assert.That (steps[1], Is.InstanceOfType (typeof (RealObjectEndPointRegistrationCommandDecorator)));
+      Assert.That (steps[1], Is.InstanceOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
       var setReplacementOrderCustomerCommand = ((ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[1]).DecoratedCommand);
       Assert.That (setReplacementOrderCustomerCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (setReplacementOrderCustomerCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacementRelatedObject.ID));
@@ -172,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (steps[2], Is.SameAs (_command));
 
       // oldCustomer.Orders.Remove (_replacementRelatedObject)
-      Assert.That (steps[3], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
+      Assert.That (steps[3], Is.InstanceOf (typeof (CollectionEndPointRemoveCommand)));
       var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) steps[3]);
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));

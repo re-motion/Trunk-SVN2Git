@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;

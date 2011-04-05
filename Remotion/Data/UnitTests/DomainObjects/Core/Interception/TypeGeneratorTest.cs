@@ -19,7 +19,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;

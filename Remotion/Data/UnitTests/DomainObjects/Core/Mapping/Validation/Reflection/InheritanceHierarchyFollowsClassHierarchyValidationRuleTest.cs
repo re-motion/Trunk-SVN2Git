@@ -17,7 +17,6 @@
 using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Development.UnitTesting;

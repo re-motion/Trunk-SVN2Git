@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Resources

@@ -19,7 +19,6 @@ using System.Data.SqlClient;
 using log4net;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Database;

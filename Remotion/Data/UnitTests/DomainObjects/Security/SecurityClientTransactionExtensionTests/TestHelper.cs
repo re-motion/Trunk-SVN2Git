@@ -26,7 +26,6 @@ using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
@@ -133,15 +132,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       endPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
       endPointStub.Stub (stub => stub.ObjectID).Return (_domainObject2.ID);
       
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.No.Member (_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Has.No.Member(_domainObject2));
 
       _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
 
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray(), Has.Member(_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { endPointStub }));
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
     }
@@ -166,19 +165,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints, Is.Empty);
       Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Has.Member(_domainObject2));
 
       _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
 
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Has.No.Member(_domainObject2));
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray(), Is.EqualTo(new[]{endPointStub}));
     }
 
@@ -193,15 +192,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeper.RegisterOriginalOppositeEndPoint (endPointStub);
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.Length, Is.EqualTo (1));
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
       Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Is.EqualTo (new[] { endPointStub }));
 
       _dataKeeper.UnregisterOriginalOppositeEndPoint (endPointStub);
 
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.No.Member(_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray(), Is.Empty);
       Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.Empty);
     }
@@ -247,11 +246,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
 
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), List.Contains (_domainObjectEndPoint1));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray (), Has.Member(_domainObjectEndPoint1));
 
       _dataKeeper.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
 
-      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray(), List.Not.Contains(_domainObjectEndPoint1));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoints.ToArray(), Has.No.Member(_domainObjectEndPoint1));
     }
 
     [Test]
@@ -277,16 +276,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void RegisterOriginalItemWithoutEndPoint ()
     {
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), Has.No.Member (_domainObject2));
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
 
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { _domainObject2 }));
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoints.ToArray (), Is.Empty);
     }
 
@@ -311,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       }
       catch
       {
-        Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, List.Not.Contains (_domainObject2));
+        Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Has.No.Member(_domainObject2));
         throw;
       }
     }
@@ -321,14 +320,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_domainObject2);
       Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints, Is.EqualTo (new[] { _domainObject2 }));
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
 
       _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
 
-      Assert.That (_dataKeeper.CollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Not.Contains (_domainObject2));
-      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), List.Not.Contains (_domainObject2));
+      Assert.That (_dataKeeper.CollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.No.Member(_domainObject2));
+      Assert.That (_dataKeeper.OriginalItemsWithoutEndPoints.ToArray (), Has.No.Member(_domainObject2));
       Assert.That (_dataKeeper.HasDataChanged (), Is.False);
     }
 
@@ -353,7 +352,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       }
       catch
       {
-        Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), List.Contains (_domainObject2));
+        Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
         throw;
       }
     }

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -255,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var commands = extended.GetNestedCommands();
       Assert.That (commands.Count, Is.EqualTo (6)); // self, Official, OrderTicket, Customer, OrderItem1, OrderItem2
 
-      Assert.That (commands, List.Contains (_deleteOrder1Command));
+      Assert.That (commands, Has.Member(_deleteOrder1Command));
 
       var officialCommand = GetEndPointModificationCommand (commands, DomainObjectIDs.Official1);
       Assert.That (officialCommand, Is.Not.Null);
