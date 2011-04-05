@@ -471,9 +471,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       command.Perform();
 
       Assert.That (_relationEndPointMap[realEndPointID], Is.Null);
-      Assert.That (_relationEndPointMap[oppositeVirtualEndPointID], Is.Null);
+      Assert.That (_relationEndPointMap[oppositeVirtualEndPointID].IsDataComplete, Is.False);
     }
-
 
     [Test]
     public void Perform_KeepsRelationsWithoutForeignKeys ()
@@ -512,7 +511,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Perform_RemovesNullVirtualEndPoints ()
+    public void Perform_KeepsVirtualObjectEndPoints ()
     {
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
       EnsureDataAvailable (DomainObjectIDs.Employee1);
@@ -520,12 +519,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _relationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
 
       Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
-      Assert.That (((IObjectEndPoint) _relationEndPointMap[virtualEndPointID]).OppositeObjectID, Is.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataComplete, Is.True);
 
       var command = CreateCommand (DomainObjectIDs.Employee1);
       command.Perform();
 
-      Assert.That (_relationEndPointMap[virtualEndPointID], Is.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID], Is.Not.Null);
+      Assert.That (_relationEndPointMap[virtualEndPointID].IsDataComplete, Is.True);
     }
 
     [Test]

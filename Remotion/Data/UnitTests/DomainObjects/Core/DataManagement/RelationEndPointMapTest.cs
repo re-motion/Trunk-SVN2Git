@@ -562,18 +562,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterRealObjectEndPoint_UnregistersOppositeVirtualObjectEndPoint ()
+    public void UnregisterRealObjectEndPoint_UnregistersFromOppositeVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
+      var realEndPoint = new RealObjectEndPoint (
+          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
 
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
-
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
+      oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
+      oppositeEndPointMock.Replay ();
+      
       _map.UnregisterRealObjectEndPoint (id);
 
-      Assert.That (_map[oppositeEndPointID], Is.Null);
+      oppositeEndPointMock.VerifyAllExpectations();
+      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
     }
 
     [Test]
@@ -596,6 +604,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.UnregisterRealObjectEndPoint (id);
 
       oppositeEndPointMock.VerifyAllExpectations();
+      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
     }
 
     [Test]
@@ -854,7 +863,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterEndPointsForDataContainer_Existing_UnregistersOppositeVirtualObjectEndPoints ()
+    public void UnregisterEndPointsForDataContainer_Existing_UnregistersFromOppositeVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
@@ -862,14 +871,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var oppositeID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order2, "OrderTicket");
       Assert.That (_map[oppositeID], Is.Not.Null);
+      Assert.That (_map[oppositeID].IsDataComplete, Is.True);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
 
-      Assert.That (_map[oppositeID], Is.Null);
+      Assert.That (_map[oppositeID].IsDataComplete, Is.False);
     }
 
     [Test]
-    public void UnregisterEndPointsForDataContainer_Existing_UnregistersNoCollectionEndPoints ()
+    public void UnregisterEndPointsForDataContainer_Existing_IgnoresCollectionEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
@@ -883,7 +893,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterEndPointsForDataContainer_Existing_UnregistersNoOriginalNonNullVirtualObjectEndPoints ()
+    public void UnregisterEndPointsForDataContainer_Existing_IgnoresVirtualObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
@@ -892,44 +902,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var virtualObjectEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
       virtualObjectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
       virtualObjectEndPointStub.Stub (stub => stub.OriginalOppositeObjectID).Return (DomainObjectIDs.OrderTicket1);
-      // the current value is ignored, only the original value is relevant
-      virtualObjectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (null);
       RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointStub);
 
       Assert.That (_map[endPointID], Is.Not.Null);
-
-      _map.UnregisterEndPointsForDataContainer (dataContainer);
-
-      Assert.That (_map[endPointID], Is.Not.Null);
-    }
-
-    [Test]
-    public void UnregisterEndPointsForDataContainer_Existing_UnregistersOriginalNullVirtualObjectEndPoints ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
-      _map.RegisterEndPointsForDataContainer (dataContainer);
-      var endPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID);
-      endPoint.MarkDataComplete (null);
-
-      Assert.That (_map[endPointID], Is.Not.Null);
-      Assert.That (_map[endPointID].IsDataComplete, Is.True);
-
-      _map.UnregisterEndPointsForDataContainer (dataContainer);
-
-      Assert.That (_map[endPointID], Is.Null);
-    }
-
-    [Test]
-    public void UnregisterEndPointsForDataContainer_Existing_IgnoresIncompleteVirtualObjectEndPoints ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var dataContainer = RelationEndPointTestHelper.CreateExistingDataContainer (endPointID);
-      _map.RegisterEndPointsForDataContainer (dataContainer);
-      CallRegisterVirtualObjectEndPoint (_map, endPointID);
-
-      Assert.That (_map[endPointID], Is.Not.Null);
-      Assert.That (_map[endPointID].IsDataComplete, Is.False);
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
 

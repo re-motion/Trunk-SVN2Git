@@ -446,23 +446,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
     {
       var includeVirtualEndPoints = dataContainer.State == StateType.New;
-      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        if (!endPointID.Definition.IsVirtual || includeVirtualEndPoints)
-        {
-          yield return endPointID;
-        }
-        else if (endPointID.Definition.Cardinality == CardinalityType.One)
-        {
-          var loadedVirtualObjectEndPoint = (IObjectEndPoint) this[endPointID];
-          if (loadedVirtualObjectEndPoint != null
-              && loadedVirtualObjectEndPoint.IsDataComplete
-              && loadedVirtualObjectEndPoint.OriginalOppositeObjectID == null)
-          {
-            yield return endPointID;
-          }
-        }
-      }
+      return dataContainer.AssociatedRelationEndPointIDs.Where (endPointID => !endPointID.Definition.IsVirtual || includeVirtualEndPoints);
     }
 
     private void CheckCardinality (
@@ -531,10 +515,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
       var maybeOppositeEndPoint =
           Maybe.ForValue (endPoint)
-              .Where (ep => !ep.Definition.IsVirtual)
-              .Select (ep => ep as IObjectEndPoint)
+              .Select (ep => ep as IRealObjectEndPoint)
               .Where (ep => ep.OppositeObjectID != null)
-              .Select (ep => RelationEndPointID.Create(ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
+              .Select (ep => RelationEndPointID.Create (ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
               .Select (oppositeID => this[oppositeID]);
       if (maybeOppositeEndPoint.Where (oppositeEndPoint => oppositeEndPoint.HasChanged).HasValue)
         return false;
@@ -568,18 +551,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (realObjectEndPoint.OppositeObjectID != null)
       {
         var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
+        var oppositeEndPoint = (IVirtualEndPoint) this[oppositeVirtualEndPointID];
+        if (oppositeEndPoint != null)
         {
-          UnregisterVirtualObjectEndPoint (oppositeVirtualEndPointID);
-        }
-        else
-        {
-          var oppositeEndPoint = (ICollectionEndPoint) this[oppositeVirtualEndPointID];
-          if (oppositeEndPoint != null)
-          {
-            Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
-            oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
-          }
+          Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
+          oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
         }
       }
     }

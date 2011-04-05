@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class UnloadTest : ClientTransactionBaseTest
   {
     [Test]
-    public void UnloadCollectionEndPoint ()
+    public void UnloadVirtualEndPoint_Collection ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItem1, "Order", true);
       CheckEndPointExists (orderItem2, "Order", true);
-      CheckCollectionEndPoint (order, "OrderItems", false);
+      CheckVirtualEndPoint (order, "OrderItems", false);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItem1.State, Is.EqualTo (StateType.Unchanged));
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_AccessingEndPoint ()
+    public void UnloadVirtualEndPoint_Collection_AccessingEndPoint ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_EnsureDataComplete ()
+    public void UnloadVirtualEndPoint_Collection_EnsureDataComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_Reload ()
+    public void UnloadVirtualEndPoint_Collection_Reload ()
     {
       SetDatabaseModifyable ();
 
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
     
     [Test]
-    public void UnloadCollectionEndPoint_AlreadyUnloaded ()
+    public void UnloadVirtualEndPoint_Collection_AlreadyUnloaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -144,6 +144,105 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, endPoint.ID);
+    }
+
+    [Test]
+    public void UnloadVirtualEndPoint_Object ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket = order.OrderTicket;
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckDataContainerExists (order, true);
+      CheckDataContainerExists (orderTicket, true);
+
+      CheckEndPointExists (orderTicket, "Order", true);
+      CheckVirtualEndPoint (order, "OrderTicket", false);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    [Ignore ("TODO 3841")]
+    public void UnloadVirtualEndPoint_Object_AccessingEndPoint ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", false);
+
+      Dev.Null = order.OrderTicket;
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+    }
+
+    [Test]
+    [Ignore ("TODO 3841")]
+    public void UnloadVirtualEndPoint_Object_EnsureDataComplete ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket = order.OrderTicket;
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", false);
+
+      ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+      Assert.That (order.OrderTicket, Is.EquivalentTo (new[] { orderTicket }));
+    }
+
+    [Test]
+    public void UnloadVirtualEndPoint_Object_Reload ()
+    {
+      SetDatabaseModifyable ();
+
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var oldOrderTicket = order.OrderTicket;
+
+      ObjectID newOrderTicketID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var orderInOtherTx = Order.GetObject (DomainObjectIDs.Order1);
+        orderInOtherTx.OrderTicket.Delete();
+
+        orderInOtherTx.OrderTicket = OrderTicket.NewObject ();
+        newOrderTicketID = orderInOtherTx.OrderTicket.ID;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (order.OrderTicket, Is.SameAs (oldOrderTicket));
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      Assert.That (order.OrderTicket, Is.SameAs (OrderTicket.GetObject (newOrderTicketID)));
+    }
+
+    [Test]
+    public void UnloadVirtualEndPoint_Object_AlreadyUnloaded ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", true);
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckVirtualEndPoint (order, "OrderTicket", false);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, RelationEndPointID.Create (order, o => o.OrderTicket));
     }
 
     [Test]
@@ -162,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckDataContainerExists (order, true);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckEndPointExists (order, "OrderTicket", false);
+      CheckVirtualEndPoint (order, "OrderTicket", false);
 
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
@@ -206,14 +305,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckEndPointExists (order, "OrderTicket", false);
+      CheckVirtualEndPoint (order, "OrderTicket", false);
 
       // 1:1 relation reload from real side
 
       Assert.That (orderTicket1.Order, Is.SameAs (order));
 
       CheckEndPointExists (orderTicket1, "Order", true);
-      CheckEndPointExists (order, "OrderTicket", true);
+      CheckVirtualEndPoint (order, "OrderTicket", true);
     }
 
     [Test]
@@ -229,14 +328,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckEndPointExists (order, "OrderTicket", false);
+      CheckVirtualEndPoint (order, "OrderTicket", false);
 
       // 1:1 relation reload from virtual side
 
       Assert.That (order.OrderTicket, Is.SameAs (orderTicket1));
 
       CheckEndPointExists (orderTicket1, "Order", true);
-      CheckEndPointExists (order, "OrderTicket", true);
+      CheckVirtualEndPoint (order, "OrderTicket", true);
     }
 
     [Test]
@@ -273,9 +372,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckEndPointExists (order1, "OrderTicket", true);
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
       CheckEndPointExists (order1, "Customer", false);
-      CheckCollectionEndPoint (customer, "Orders", false);
+      CheckVirtualEndPoint (customer, "Orders", false);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (orderItems.IsDataComplete, Is.True);
@@ -301,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
 
       Assert.That (orderItemA.Order, Is.SameAs (order1));
       Assert.That (orderItemB.Order, Is.SameAs (order1));
@@ -312,7 +411,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
     }
 
     [Test]
@@ -330,7 +429,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
 
       Assert.That (order1.OrderItems, Is.EqualTo (new[] { orderItemA, orderItemB }));
 
@@ -340,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
     }
 
     [Test]
@@ -364,7 +463,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPoint (order1, "OrderItems", false);
 
       Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItems.IsDataComplete, Is.False);
@@ -408,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPoint (order1, "OrderItems", false);
 
       Assert.That (orderItemA.Order, Is.SameAs (order1));
 
@@ -418,7 +517,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPoint (order1, "OrderItems", false);
     }
 
     [Test]
@@ -436,7 +535,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPoint (order1, "OrderItems", false);
 
       Assert.That (order1.OrderItems, Is.EquivalentTo (new[] { orderItemA, orderItemB }));
 
@@ -446,7 +545,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPoint (order1, "OrderItems", true);
     }
 
     [Test]
@@ -586,7 +685,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckDataContainerExists (orderItem1, false);
       CheckDataContainerExists (orderItem2, false);
 
-      CheckCollectionEndPoint (order, "OrderItems", false);
+      CheckVirtualEndPoint (order, "OrderItems", false);
       CheckEndPointExists (orderItem1, "Order", false);
       CheckEndPointExists (orderItem2, "Order", false);
 
@@ -1129,7 +1228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         Assert.That (endPoint, Is.Null, "End point '{0}' should not exist.", endPointID);
     }
 
-    private void CheckCollectionEndPoint (DomainObject owningObject, string shortPropertyName, bool shouldDataBeComplete)
+    private void CheckVirtualEndPoint (DomainObject owningObject, string shortPropertyName, bool shouldDataBeComplete)
     {
       CheckEndPointExists (owningObject, shortPropertyName, true);
 
