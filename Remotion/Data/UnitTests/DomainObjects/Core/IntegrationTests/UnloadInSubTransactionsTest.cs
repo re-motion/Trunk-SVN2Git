@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (_subTransaction, order, true);
       CheckDataContainerExists (_subTransaction, orderItem1, true);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckCollectionEndPoint (_subTransaction, order, "OrderItems", false);
       CheckCollectionEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", false);
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       try
       {
-        UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
+        UnloadService.UnloadVirtualEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException ex)
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
     }

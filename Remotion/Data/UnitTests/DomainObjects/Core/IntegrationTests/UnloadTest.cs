@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderItem1, true);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (
+      UnloadService.UnloadVirtualEndPoint (
           ClientTransactionMock,
           orderItems.AssociatedEndPointID);
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPoint (
+      UnloadService.UnloadVirtualEndPoint (
           ClientTransactionMock,
           orderItems.AssociatedEndPointID);
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPoint (
+      UnloadService.UnloadVirtualEndPoint (
           ClientTransactionMock, 
           orderItems.AssociatedEndPointID);
 
@@ -139,11 +139,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, endPoint.ID);
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, endPoint.ID);
     }
 
     [Test]

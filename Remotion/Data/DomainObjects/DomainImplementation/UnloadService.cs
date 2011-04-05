@@ -24,33 +24,36 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DomainImplementation
 {
   /// <summary>
-  /// Provides functionality for unloading the data that a <see cref="ClientTransaction"/> stores for <see cref="DomainObject"/> instances.
+  /// Provides functionality for unloading the data that a <see cref="ClientTransaction"/> stores for <see cref="DomainObject"/> instances and for
+  /// relations. Use the methods of this class to remove unneeded data from memory and, more importantly, to reload data from the underlying 
+  /// data source.
   /// </summary>
   public static class UnloadService
   {
     /// <summary>
-    /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified
+    /// Unloads the virtual relation end point indicated by the given <see cref="RelationEndPointID"/> in the specified
     /// <see cref="ClientTransaction"/>. If the end point has not been loaded or has already been unloaded, this method does nothing.
+    /// The relation must be unchanged in order to be unloaded.
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
-    /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
-    /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
+    /// <param name="endPointID">The ID of the relation property to unload. This must denote a virtual relation end-point, ie., the relation side not 
+    /// holding the foreign key property.</param>
     /// <exception cref="InvalidOperationException">The given end point is not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
+    /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a virtual relation end point.</exception>
     /// <remarks>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
     /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
     /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
     /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static void UnloadVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (!TryUnloadCollectionEndPoint (clientTransaction, endPointID))
+      if (!TryUnloadVirtualEndPoint (clientTransaction, endPointID))
       {
         var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
         throw new InvalidOperationException (message);
@@ -58,25 +61,26 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     }
 
     /// <summary>
-    /// Tries to unload the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified
+    /// Tries to unload the virtual end point indicated by the given <see cref="RelationEndPointID"/> in the specified
     /// <see cref="ClientTransaction"/>, returning a value indicating whether the unload operation succeeded. If the end point has not been loaded or
     /// has already been unloaded, this method does nothing.
+    /// The relation must be unchanged in order to be unloaded.
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
-    /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
-    /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
+    /// <param name="endPointID">The ID of the relation property to unload. This must denote a virtual relation end-point, ie., the relation side not 
+    /// holding the foreign key property.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
-    /// (in any transaction).</returns>
+    /// (in one transaction).</returns>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
+    /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a virtual relation end point.</exception>
     /// <remarks>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
     /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
     /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
     /// succeeded, but not in the one where it failed or those above.
     /// </remarks>
-    public static bool TryUnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static bool TryUnloadVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -85,14 +89,14 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           clientTransaction,
           delegate (ClientTransaction tx)
           {
-            var collectionEndPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
-            if (collectionEndPoint != null)
+            var virtualEndPoint = CheckAndGetVirtualEndPoint (tx, endPointID);
+            if (virtualEndPoint != null)
             {
-              if (!CanUnloadCollectionEndPoint (collectionEndPoint))
+              if (!CanUnloadVirtualEndPoint (virtualEndPoint))
                 return false;
 
-              if (collectionEndPoint.IsDataComplete)
-                collectionEndPoint.MarkDataIncomplete();
+              if (virtualEndPoint.IsDataComplete)
+                virtualEndPoint.MarkDataIncomplete();
             }
             return true;
           });
@@ -112,10 +116,9 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <remarks>
     /// <para>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
-    /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object 
-    /// end-points, and the virtual object end points pointing to <see langword="null" />. This means that unloading an object will unload a relation 
-    /// if and only if the object's <see cref="DataContainer"/> is holding the foreign key for the relation or if the relation points from the 
-    /// unloaded object to <see langword="null" />.
+    /// the collection end points the object owns), the non-virtual end points owned by the object and their respective opposite virtual object 
+    /// end-points. This means that unloading an object will unload a relation if and only if the object's <see cref="DataContainer"/> is holding 
+    /// the foreign key for the relation.
     /// </para>
     /// <para>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
@@ -149,14 +152,13 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// hierarchy.</param>
     /// <param name="objectID">The object ID.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
-    /// (in any transaction).</returns>
+    /// (in one transaction).</returns>
     /// <remarks>
-    /// 	<para>
+    /// <para>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
-    /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object
-    /// end-points, and the virtual object end points pointing to <see langword="null"/>. This means that unloading an object will unload a relation
-    /// if and only if the object's <see cref="DataContainer"/> is holding the foreign key for the relation or if the relation points from the
-    /// unloaded object to <see langword="null"/>.
+    /// the collection end points the object owns), the non-virtual end points owned by the object and their respective opposite virtual object 
+    /// end-points. This means that unloading an object will unload a relation if and only if the object's <see cref="DataContainer"/> is holding 
+    /// the foreign key for the relation.
     /// </para>
     /// 	<para>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
@@ -184,9 +186,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     }
 
     /// <summary>
-    /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified 
+    /// Unloads the collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified 
     /// <see cref="ClientTransaction"/> as well as the data items stored by it. If the end point has not been loaded or has already been unloaded, 
     /// this method does nothing.
+    /// The relation must be unchanged in order to be unloaded.
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
@@ -235,7 +238,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
-    /// (in any transaction).</returns>
+    /// (in one transaction).</returns>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
@@ -256,7 +259,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
             var endPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
             if (endPoint != null && endPoint.IsDataComplete)
             {
-              if (!CanUnloadCollectionEndPoint (endPoint))
+              if (!CanUnloadVirtualEndPoint (endPoint))
                 return false;
 
               var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
@@ -278,16 +281,27 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     {
       if (endPointID.Definition.Cardinality != CardinalityType.Many)
       {
-        var message = string.Format ("The given end point ID '{0}' does not denote a CollectionEndPoint.", endPointID);
+        var message = string.Format ("The given end point ID '{0}' does not denote a collection-valued end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
       }
 
-      return (ICollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      return (ICollectionEndPoint) CheckAndGetVirtualEndPoint (clientTransaction, endPointID);
     }
 
-    private static bool CanUnloadCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
+    private static IVirtualEndPoint CheckAndGetVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      return !collectionEndPoint.HasChanged;
+      if (!endPointID.Definition.IsVirtual)
+      {
+        var message = string.Format ("The given end point ID '{0}' does not denote a virtual end-point.", endPointID);
+        throw new ArgumentException (message, "endPointID");
+      }
+
+      return (IVirtualEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+    }
+
+    private static bool CanUnloadVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
+    {
+      return !virtualEndPoint.HasChanged;
     }
 
     private static bool ApplyToTransactionHierarchy (ClientTransaction clientTransaction, Func<ClientTransaction, bool> operation)

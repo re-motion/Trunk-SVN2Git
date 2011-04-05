@@ -575,7 +575,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItemsEndPoint.ID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, orderItemsEndPoint.ID);
 
       _mockRepository.VerifyAll ();
     }

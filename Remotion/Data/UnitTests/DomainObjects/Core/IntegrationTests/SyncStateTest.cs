@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
     }
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnsynchronizedRealObjectEndPointSyncState)));
 
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, orderItem.Order.OrderItems.AssociatedEndPointID);
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
 
