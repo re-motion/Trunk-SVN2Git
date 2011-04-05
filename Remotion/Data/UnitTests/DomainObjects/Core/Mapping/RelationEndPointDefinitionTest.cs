@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           typeof (Order), (ClassDefinition) null, Type.EmptyTypes);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),
           "Customer",

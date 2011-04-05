@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var classWithAllDataTypesDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (ClassWithAllDataTypes), null);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
 
       var result = _provider.GetColumnName (propertyDefinition);
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Distributor), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, StorageClass.Persistent, typeof (Distributor).GetProperty ("NumberOfShops"));
 
       var result = _provider.GetColumnName (propertyDefinition);
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnName_RelationProperty_ReturnsRelationIDName ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
 
       var result = _provider.GetColumnName (propertyDefinition);
 
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetRelationClassIDColumnName_PropertyDefinitionParameter ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (FileSystemItem), null);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
+      var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, "ParentFolder", typeof (ObjectID));
 
       var result = _provider.GetRelationClassIDColumnName (propertyDefinition);
 

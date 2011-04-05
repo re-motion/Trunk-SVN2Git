@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool isNullable, int? maxLength)
     {
-      return ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      return PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
   }

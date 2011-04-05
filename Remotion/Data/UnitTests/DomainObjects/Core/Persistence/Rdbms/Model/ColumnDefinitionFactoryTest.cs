@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_RelationProperty ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
+      var propertyDefinition = PropertyDefinitionFactory.Create (_fileSystemItemClassDefinition, "ParentFolder", typeof (ObjectID));
       StubStorageCalculators (propertyDefinition);
 
       var result = (SimpleColumnDefinition) _columnDefinitionFactory.CreateColumnDefinition (propertyDefinition);
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_PropertyType ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageCalculators (propertyDefinition);
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_StorageType ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       StubStorageCalculators (propertyDefinition);
 
@@ -115,9 +115,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_IsNullable ()
     {
-      var nullablePropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var nullablePropertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), true);
-      var nonNullablePropertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var nonNullablePropertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, typeof (ClassWithAllDataTypes), "StringProperty", "StringProperty", typeof (string), false);
       StubStorageCalculators (nullablePropertyDefinition);
       StubStorageCalculators (nonNullablePropertyDefinition);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_NotSupportedType ()
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           _classWithAllDataTypesDefinition, StorageClass.Persistent, typeof (ClassWithAllDataTypes).GetProperty ("BooleanProperty"));
       _storageTypeCalculatorStub.Stub (stub => stub.GetStorageType (propertyDefinition)).Return (null);
 
@@ -146,9 +146,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_ClassAboveDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), false);
-      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classAboveDbTableAttribute, StorageClass.Persistent, typeof (ClassNotInMapping).GetProperty ("RelationProperty"), true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
@@ -168,9 +168,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_ClassWithDbTableAttribute()
     {
-      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), false);
-      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classWithDbTableAttribute, StorageClass.Persistent, typeof (Company).GetProperty ("Name"), true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
@@ -188,9 +188,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_ClassBelowDbTableAttribute ()
     {
-      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), false);
-      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
           _classBelowDbTableAttribute, StorageClass.Persistent, typeof (Partner).GetProperty ("ContactPerson"), true);
 
       StubStorageCalculators (propertyDefinitionNotNullable);
@@ -209,12 +209,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateColumnDefinition_ClassBelowBelowDbTableAttribute_And_PropertyDefinitionIsNotNullabe ()
     {
-      var propertyDefinitionNotNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNotNullable = PropertyDefinitionFactory.Create (
           _classBelowBelowDbTableAttribute,
           StorageClass.Persistent,
           typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),
           false);
-      var propertyDefinitionNullable = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinitionNullable = PropertyDefinitionFactory.Create (
          _classBelowBelowDbTableAttribute,
          StorageClass.Persistent,
          typeof (Distributor).GetProperty ("ClassWithoutRelatedClassIDColumn", BindingFlags.NonPublic | BindingFlags.Instance),

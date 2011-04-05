@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnDefinitionsForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var nonPersistentProperty = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var nonPersistentProperty = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test1",
           typeof (string),
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           StorageClass.Persistent,
           propertyInfo,
           null);
-      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test2",
           typeof (string),
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
-      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           "Test1",
           typeof (string),

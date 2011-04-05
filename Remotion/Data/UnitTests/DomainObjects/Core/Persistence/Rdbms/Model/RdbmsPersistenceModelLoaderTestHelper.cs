@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private PropertyDefinition CreateAndAddPropertyDefinition (
         ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition,
           propertyName,
           typeof (string),

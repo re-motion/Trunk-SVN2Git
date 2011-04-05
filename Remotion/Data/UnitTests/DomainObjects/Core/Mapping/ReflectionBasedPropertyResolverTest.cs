@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classWithInterface = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithInterface,
               typeof (ClassWithInterface),
               "ImplicitProperty",
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               100));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithInterface,
               typeof (ClassWithInterface),
               typeof (IInterfaceWithProperties).FullName + ".ExplicitManagedProperty",
@@ -302,7 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithInterfaceWithMissingAccessors,
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithGetAccessor",
@@ -311,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               100));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithInterfaceWithMissingAccessors,
               typeof (ClassWithInterfaceWithMissingAccessors),
               "PropertyWithSetAccessor",
@@ -329,7 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,
               typeof (MixinAddingInterfaceWithProperties),
               "ImplicitProperty",
@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               100));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,
               typeof (MixinAddingInterfaceWithProperties),
               typeof (IInterfaceWithPropertiesAddedByMixin).FullName + ".ExplicitManagedProperty",
@@ -355,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classWithMixinAddingInterface =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,
               typeof (MixinAddingPropertyBase),
               "Property",

@@ -42,13 +42,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      _propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      _propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property1", "Property1", typeof (ObjectID), true, null, StorageClass.Persistent);
-      _propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      _propertyDefinition2 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property2", "Property2", typeof(ObjectID),true,null,StorageClass.Persistent);
-      _propertyDefinition3 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      _propertyDefinition3 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property3", "Property3", typeof (ObjectID), true, null, StorageClass.Persistent);
-      _propertyDefinition4 = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      _propertyDefinition4 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property4", "Property4", typeof (ObjectID), true, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (
           new PropertyDefinitionCollection (new[] { _propertyDefinition1, _propertyDefinition2, _propertyDefinition3, _propertyDefinition4 }, true));
@@ -88,12 +88,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
-     var basedPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+     var basedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           baseClassDefinition, "Property1", "Property1", typeof (ObjectID), true, null, StorageClass.Persistent);
      baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
       var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
-     var derivedPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+     var derivedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           derivedClassDefinition, "Property2", "Property2", typeof(ObjectID),true,null,StorageClass.Persistent);
       derivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { derivedPropertyDefinition }, true));
 

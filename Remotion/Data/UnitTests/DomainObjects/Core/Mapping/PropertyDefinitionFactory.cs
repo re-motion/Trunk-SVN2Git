@@ -26,10 +26,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   /// <summary>
-  /// Provides simple factory methods to manually create ReflectionBasedPropertyDefinition objects for testing. The definition objects will have
+  /// Provides simple factory methods to manually create <see cref="PropertyDefinition"/> objects for testing. The definition objects will have
   /// dummy (invalid) PropertyInfo properties.
   /// </summary>
-  public static class ReflectionBasedPropertyDefinitionFactory
+  public static class PropertyDefinitionFactory
   {
     public static string FakeProperty
     {
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyInfo GetFakePropertyInfo ()
     {
-      return typeof (ReflectionBasedPropertyDefinitionFactory).GetProperty ("FakeProperty", BindingFlags.Static | BindingFlags.Public);
+      return typeof (PropertyDefinitionFactory).GetProperty ("FakeProperty", BindingFlags.Static | BindingFlags.Public);
     }
 
     public static IStoragePropertyDefinition GetFakeStorageProperty (string name)

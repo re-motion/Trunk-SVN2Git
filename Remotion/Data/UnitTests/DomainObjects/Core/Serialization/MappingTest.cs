@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassID", "EntityName", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
 
       SerializeAndDeserialize (propertyDefinition);
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassID", "EntityName", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
-      PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "PropertyName", "ColumnName", typeof (int), StorageClass.Persistent);
 
       SerializeAndDeserialize (propertyDefinition);
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
               classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       var endPointdefinition = new RelationEndPointDefinition (propertyDefinition, true);
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
 
-      var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var orderTicketPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
               orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
 
-      var orderTicketPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var orderTicketPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
               orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Location", "Location", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Location), false);
 
-      var locationPropertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var locationPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
               locationDefinition, "Client", "ClientID", typeof (ObjectID), false, StorageClass.Persistent);
       locationDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { locationPropertyDefinition }, true));
 

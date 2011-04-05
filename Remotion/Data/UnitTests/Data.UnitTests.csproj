@@ -254,7 +254,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\SyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestablePropertyDefinition.cs" />
@@ -409,7 +408,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedNameResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionFactory.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionTest.cs" />

@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var propertyDefinition1 = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),
           "OrderNumber",
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           StorageClass.Persistent,
           typeof (Order).GetProperty ("OrderNumber"),
           new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
-      var propertyDefinition2 = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
           typeof (Order),
           "DeliveryDate",
@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
+      var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
       
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
@@ -516,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new PropertyDefinitionCollection (
               new[]
               {
-                  ReflectionBasedPropertyDefinitionFactory.Create (
+                  PropertyDefinitionFactory.Create (
                       orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)
               },
               true));

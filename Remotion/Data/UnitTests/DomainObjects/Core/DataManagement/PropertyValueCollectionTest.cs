@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", UnitTestStorageProviderDefinition, typeof (Order), false);
-      var definition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+      var definition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, name, name, propertyType, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }

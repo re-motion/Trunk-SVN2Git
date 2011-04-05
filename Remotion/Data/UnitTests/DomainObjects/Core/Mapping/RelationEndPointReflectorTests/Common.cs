@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       var propertyInfo = typeof (ClassWithRealRelationEndPoints).GetProperty ("Unidirectional");
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithRealRelationEndPoints));
-      var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
+      var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, "Unidirectional", typeof (ClassWithRealRelationEndPoints));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 

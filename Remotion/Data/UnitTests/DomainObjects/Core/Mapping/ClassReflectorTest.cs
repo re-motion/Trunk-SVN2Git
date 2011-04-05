@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BaseString",
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BaseUnidirectionalOneToOne",
@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentPropertiesNotInMapping),
               "BasePrivateUnidirectionalOneToOne",
@@ -244,13 +244,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition, typeof (ClassWithDifferentProperties), "Int32", "Int32", typeof (int), false, null, StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition, typeof (ClassWithDifferentProperties), "String", "String", typeof (string), true, null, StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentProperties),
               "PrivateString",
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (ClassWithDifferentProperties),
               "UnidirectionalOneToOne",
@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "String",
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "PrivateString",
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               null,
               StorageClass.Persistent));
       properties.Add (
-          ReflectionBasedPropertyDefinitionFactory.Create (
+          PropertyDefinitionFactory.Create (
               classDefinition,
               typeof (DerivedClassWithDifferentProperties),
               "OtherString",

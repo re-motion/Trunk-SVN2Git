@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _discardedDataContainer = DataContainer.CreateNew (_invalidObjectID);
       _discardedDataContainer.Discard();
 
-      _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (orderClass, "Name", "Name");
+      _nameDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (orderClass, "Name", "Name");
       _nameProperty = new PropertyValue (_nameDefinition, "Arthur Dent");
     }
 
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container = DataContainer.CreateNew (id);
 
       PropertyDefinition reportsToDefinition =
-          ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
+          PropertyDefinitionFactory.CreateForFakePropertyInfo (
               (ClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
