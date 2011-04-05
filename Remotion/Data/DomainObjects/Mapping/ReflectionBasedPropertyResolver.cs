@@ -25,11 +25,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
-  /// Provides functionality to resolve <see cref="PropertyInfo"/> objects into child objects of <see cref="ReflectionBasedClassDefinition"/>.
+  /// Provides functionality to resolve <see cref="PropertyInfo"/> objects into child objects of <see cref="ClassDefinition"/>.
   /// </summary>
   public static class ReflectionBasedPropertyResolver
   {
-    public static T ResolveDefinition<T> (IPropertyInformation propertyInformation, ReflectionBasedClassDefinition classDefinition, Func<string, T> definitionGetter) 
+    public static T ResolveDefinition<T> (IPropertyInformation propertyInformation, ClassDefinition classDefinition, Func<string, T> definitionGetter) 
         where T : class
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping
               select definition).FirstOrDefault();
     }
 
-    private static IEnumerable<Type> GetImplementingType (ReflectionBasedClassDefinition classDefinition, IPropertyInformation interfaceProperty)
+    private static IEnumerable<Type> GetImplementingType (ClassDefinition classDefinition, IPropertyInformation interfaceProperty)
     {
       Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
 
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       else
       {
         var allPersistentMixins = classDefinition
-            .CreateSequence (cd => (ReflectionBasedClassDefinition) cd.BaseClass)
+            .CreateSequence (cd => cd.BaseClass)
             .SelectMany (cd => cd.PersistentMixins);
         return allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (m)).ToArray();
       }

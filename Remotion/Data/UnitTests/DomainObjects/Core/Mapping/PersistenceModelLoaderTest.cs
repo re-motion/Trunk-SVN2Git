@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private IStorageProviderDefinitionFinder _storageProviderDefinitionStub;
     private PersistenceModelLoader _persistenceModelLoader;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

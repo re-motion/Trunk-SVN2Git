@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     private OnlyOneTablePerHierarchyValidationRule _validationRule;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private ReflectionBasedClassDefinition _baseClassDefinition;
-    private ReflectionBasedClassDefinition _classDefinitionWithBaseClass;
+    private ClassDefinition _baseClassDefinition;
+    private ClassDefinition _classDefinitionWithBaseClass;
 
     [SetUp]
     public void SetUp ()

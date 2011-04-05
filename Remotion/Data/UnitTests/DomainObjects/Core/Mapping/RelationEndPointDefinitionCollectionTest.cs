@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class RelationEndPointDefinitionCollectionTest : MappingReflectionTestBase
   {
     private RelationEndPointDefinitionCollection _collection;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
     private RelationEndPointDefinition _endPoint1;
     private RelationEndPointDefinition _endPoint2;
     private ReflectionBasedPropertyDefinition _propertyDefinition1;

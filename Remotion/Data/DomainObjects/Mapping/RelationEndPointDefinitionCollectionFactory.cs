@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingNameResolver = mappingNameResolver;
     }
 
-    public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ReflectionBasedClassDefinition classDefinition)
+    public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return endPoints;
     }
 
-    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
+    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ClassDefinition classDefinition)
     {
       var relationPropertyFinder = new RelationPropertyFinder (
           classDefinition.ClassType,

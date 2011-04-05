@@ -406,8 +406,8 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\StorageSpecificName.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\StringProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyReflectorTests\ValueTypes.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedClassDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyResolverTest.cs" />
@@ -702,7 +702,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsSupportedForCardianlityOfRelationPropertyValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Validation\ColumnNamesAreUniqueWithinInheritanceTreeValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\PropertyDefinitionValidatorTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\Validation\ReflectionBasedClassDefinitionWithUnresolvedClassType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\Validation\ClassDefinitionWithUnresolvedClassType.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\DomainObjectTypeDoesNotHaveLegacyInfrastructureConstructorValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\DomainObjectTypeIsNotGenericValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\InheritanceHierarchyFollowsClassHierarchyValidationRuleTest.cs" />

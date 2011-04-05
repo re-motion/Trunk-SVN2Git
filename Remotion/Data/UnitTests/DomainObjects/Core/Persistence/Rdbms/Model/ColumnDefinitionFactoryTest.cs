@@ -36,13 +36,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   {
     private StorageTypeCalculator _storageTypeCalculatorStub;
     private ColumnDefinitionFactory _columnDefinitionFactory;
-    private ReflectionBasedClassDefinition _classWithAllDataTypesDefinition;
-    private ReflectionBasedClassDefinition _fileSystemItemClassDefinition;
+    private ClassDefinition _classWithAllDataTypesDefinition;
+    private ClassDefinition _fileSystemItemClassDefinition;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private ReflectionBasedClassDefinition _classAboveDbTableAttribute;
-    private ReflectionBasedClassDefinition _classWithDbTableAttribute;
-    private ReflectionBasedClassDefinition _classBelowDbTableAttribute;
-    private ReflectionBasedClassDefinition _classBelowBelowDbTableAttribute;
+    private ClassDefinition _classAboveDbTableAttribute;
+    private ClassDefinition _classWithDbTableAttribute;
+    private ClassDefinition _classBelowDbTableAttribute;
+    private ClassDefinition _classBelowBelowDbTableAttribute;
     private IStorageNameProvider _storageNameProviderStub;
 
     [SetUp]

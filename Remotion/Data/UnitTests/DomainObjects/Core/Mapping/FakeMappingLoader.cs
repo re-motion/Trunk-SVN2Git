@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {

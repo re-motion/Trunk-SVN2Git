@@ -40,14 +40,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       var relationDefinitions = new RelationDefinitionCollection();
-      foreach (ReflectionBasedClassDefinition classDefinition in classDefinitions)
+      foreach (ClassDefinition classDefinition in classDefinitions)
         GetRelationDefinitions (classDefinitions, classDefinition, relationDefinitions);
       
       return relationDefinitions;
     }
 
     private void GetRelationDefinitions (
-        ClassDefinitionCollection classDefinitions, ReflectionBasedClassDefinition classDefinition, RelationDefinitionCollection relationDefinitions)
+        ClassDefinitionCollection classDefinitions, ClassDefinition classDefinition, RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);

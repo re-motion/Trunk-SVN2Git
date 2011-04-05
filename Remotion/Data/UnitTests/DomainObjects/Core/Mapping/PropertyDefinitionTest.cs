@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class PropertyDefinitionTest : StandardMappingTest
   {
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     public override void SetUp ()
     {

@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class TypeNotFoundClassDefinition : ReflectionBasedClassDefinition
+  public class TypeNotFoundClassDefinition : ClassDefinition
   {
     private readonly PropertyInfo _relationProperty;
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       throw new NotImplementedException();
     }
 
-    public override ReflectionBasedClassDefinitionValidator GetValidator ()
+    public override ClassDefinitionValidator GetValidator ()
     {
       throw new NotImplementedException();
     }

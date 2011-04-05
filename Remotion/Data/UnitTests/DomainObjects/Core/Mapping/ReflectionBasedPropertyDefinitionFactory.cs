@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         return new FakeStoragePropertyDefinition (name);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (ReflectionBasedClassDefinition classDefinition, string propertyName, Type propertyType)
+    public static ReflectionBasedPropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
       return Create (
           classDefinition,
@@ -63,14 +63,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
+        ClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
     {
       return Create (
           classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
         string columnName,
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
         string columnName,
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
         string columnName,
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
         string columnName,
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
         Type propertyType,
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo)
     {
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition storagePropertyDefinition)
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
         bool isNullable
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
         string columnName)
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition Create (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         string propertyName,
         Type propertyType,
         bool isNullable,
@@ -267,7 +267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)
+        ClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)
     {
       var fakePropertyInfo = GetFakePropertyInfo();
       return Create (
@@ -282,7 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, StorageClass storageClass)
+        ClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, StorageClass storageClass)
     {
       var fakePropertyInfo = GetFakePropertyInfo();
       return Create (
@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         string propertyName,
         string columnName,
         Type propertyType,
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         string propertyName,
         string columnName,
         Type propertyType,
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName)
+        ClassDefinition classDefinition, string propertyName, string columnName)
     {
       var fakePropertyInfo = GetFakePropertyInfo();
       return Create (

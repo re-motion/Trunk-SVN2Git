@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.That (result, Is.TypeOf (typeof (TypeNotObjectIDRelationEndPointDefinition)));
     }
 
-    private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    private ClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
     }

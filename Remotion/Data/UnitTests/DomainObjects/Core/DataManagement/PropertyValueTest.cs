@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class PropertyValueTest : StandardMappingTest
   {
-    private ReflectionBasedClassDefinition _orderClassDefinition;
+    private ClassDefinition _orderClassDefinition;
     private PropertyDefinition _orderNumberPropertyDefinition;
 
     public override void SetUp ()

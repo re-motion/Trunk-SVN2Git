@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   public class CheckForInvalidRelationEndPointsValidationRuleTest : ValidationRuleTestBase
   {
     private CheckForInvalidRelationEndPointsValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

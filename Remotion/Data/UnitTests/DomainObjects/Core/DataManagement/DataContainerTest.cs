@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ReflectionBasedClassDefinition: Order' "
+        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
         + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
     public void ClassDefinitionNotInMapping ()
     {
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       PropertyDefinition reportsToDefinition =
           ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ReflectionBasedClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
+              (ClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 

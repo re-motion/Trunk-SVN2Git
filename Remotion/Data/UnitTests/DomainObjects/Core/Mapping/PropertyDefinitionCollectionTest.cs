@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private PropertyDefinition _propertyDefinition1;
     private PropertyDefinition _propertyDefinition2;
     private PropertyDefinition _propertyDefinitionNonPersisted;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     public override void SetUp ()
     {
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       PropertyDefinition copy =
           ReflectionBasedPropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ReflectionBasedClassDefinition) _propertyDefinition1.ClassDefinition,
+              (ClassDefinition) _propertyDefinition1.ClassDefinition,
               _propertyDefinition1.PropertyName,
               StorageModelTestHelper.GetColumnName(_propertyDefinition1));
 

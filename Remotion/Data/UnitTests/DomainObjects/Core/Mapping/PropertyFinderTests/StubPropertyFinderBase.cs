@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     public StubPropertyFinderBase (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IPersistentMixinFinder persistentMixinFinder)

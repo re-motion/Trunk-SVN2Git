@@ -51,12 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     public void IsTypeSupported_Added_BaseClass ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
-      Assert.That (_typeProvider.IsTypeSupported (typeof (ReflectionBasedClassDefinition)), Is.False);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (TypeNotFoundClassDefinition)), Is.False);
 
       _typeProvider.AddSupportedBaseType (typeof (ClassDefinition));
 
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
-      Assert.That (_typeProvider.IsTypeSupported (typeof (ReflectionBasedClassDefinition)), Is.True);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (TypeNotFoundClassDefinition)), Is.True);
     }
 
     [Test]

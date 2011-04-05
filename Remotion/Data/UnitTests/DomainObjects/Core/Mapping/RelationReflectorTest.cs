@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class RelationReflectorTest : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _classWithRealRelationEndPoints;
-    private ReflectionBasedClassDefinition _classWithVirtualRelationEndPoints;
-    private ReflectionBasedClassDefinition _classWithBothEndPointsOnSameClassClassDefinition;
+    private ClassDefinition _classWithRealRelationEndPoints;
+    private ClassDefinition _classWithVirtualRelationEndPoints;
+    private ClassDefinition _classWithBothEndPointsOnSameClassClassDefinition;
     private ClassDefinitionCollection _classDefinitions;
     private ReflectionBasedNameResolver _nameResolver;
 
@@ -556,19 +556,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return typeof (ClassWithInvalidBidirectionalRelationRightSide);
     }
 
-    private RelationReflector CreateRelationReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    private RelationReflector CreateRelationReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       return new RelationReflector (classDefinition, propertyInfo, _nameResolver);
     }
 
-    private RelationReflector CreateRelationReflector (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)
+    private RelationReflector CreateRelationReflector (ClassDefinition classDefinition, Type declaringType, string propertyName)
     {
       PropertyInfo propertyInfo = EnsurePropertyDefinitionExisitsOnClassDefinition (classDefinition, declaringType, propertyName);
       return CreateRelationReflector (classDefinition, propertyInfo);
     }
 
     private PropertyInfo EnsurePropertyDefinitionExisitsOnClassDefinition (
-        ReflectionBasedClassDefinition classDefinition, 
+        ClassDefinition classDefinition, 
         Type declaringType, 
         string propertyName)
     {

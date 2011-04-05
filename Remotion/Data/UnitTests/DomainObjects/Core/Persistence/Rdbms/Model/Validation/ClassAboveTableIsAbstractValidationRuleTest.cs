@@ -30,10 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   public class ClassAboveTableIsAbstractValidationRuleTest : ValidationRuleTestBase
   {
     private ClassAboveTableIsAbstractValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _abstractClassDefinition;
+    private ClassDefinition _abstractClassDefinition;
     private TableDefinition _tableDefinition;
     private UnionViewDefinition _unionViewDefinition;
-    private ReflectionBasedClassDefinition _noAbstractClassDefinition;
+    private ClassDefinition _noAbstractClassDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void ClassTypeUnresolved ()
     {
-      var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
+      var classDefinition = new ClassDefinitionWithUnresolvedClassType (
           "NonAbstractClassHasEntityNameDomainObject",
           "NonAbstractClassHasEntityNameStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),

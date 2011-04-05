@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   public class PropertyTypeIsSupportedByStorageProviderValidationRuleTest : ValidationRuleTestBase
   {
     private PropertyTypeIsSupportedByStorageProviderValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

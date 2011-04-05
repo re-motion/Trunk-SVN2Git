@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlStorageTypeCalculatorTest : StandardMappingTest
   {
     private SqlStorageTypeCalculator _typeCalculator;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
     private ClassDefinition _orderItemClass;
     private ClassDefinition _orderClass;
     private StorageProviderDefinitionFinder _storageProviderDefinitionFinder;

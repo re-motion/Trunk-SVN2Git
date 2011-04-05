@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result =
           _factory.CreateRelationDefinition (
               new ClassDefinitionCollection (new[] { orderClassDefinition, orderItemClassDefinition }, true, true),
-              (ReflectionBasedClassDefinition) orderItemClassDefinition,
+              orderItemClassDefinition,
               orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
 
       Assert.That (result, Is.Not.Null);

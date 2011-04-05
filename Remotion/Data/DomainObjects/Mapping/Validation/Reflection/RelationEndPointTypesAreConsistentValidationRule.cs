@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      if (relationEndPointDefinition.PropertyInfo != null && relationEndPointDefinition.ClassDefinition is ReflectionBasedClassDefinition)
+      if (relationEndPointDefinition.PropertyInfo != null)
       {
         var relationAttribute =
             (BidirectionalRelationAttribute)
@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         var oppositePropertyInfo = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
         if (oppositePropertyInfo != null && relationAttribute!=null)
         {
-          var classDefinition = relationEndPointDefinition.ClassDefinition as ReflectionBasedClassDefinition;
+          var classDefinition = relationEndPointDefinition.ClassDefinition;
           var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
           var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;

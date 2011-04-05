@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class InvalidRelationEndPointDefinitionBaseTest
   {
     private InvalidRelationEndPointDefinitionBase _invalidEndPointDefinition;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

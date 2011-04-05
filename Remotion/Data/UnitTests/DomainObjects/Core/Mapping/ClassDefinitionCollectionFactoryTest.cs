@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinitionCollection _classDefinitions;
     private ClassDefinitionCollectionFactory _classDefinitionCollectionFactory;
     private IMappingObjectFactory _mappingObjectFactoryMock;
-    private ReflectionBasedClassDefinition _fakeClassDefinition;
+    private ClassDefinition _fakeClassDefinition;
 
     [SetUp]
     public void SetUp ()

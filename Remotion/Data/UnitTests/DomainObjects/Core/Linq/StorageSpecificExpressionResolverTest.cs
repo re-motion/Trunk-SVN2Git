@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   public class StorageSpecificExpressionResolverTest : StandardMappingTest
   {
     private StorageSpecificExpressionResolver _storageSpecificExpressionResolver;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
     private IStorageNameProvider _storageNameProvider;
 
     [SetUp]
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     private PropertyDefinition CreatePropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         string propertyName,
         string columnName,
         Type propertyType,

@@ -26,9 +26,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   //TODO: Test for null or empty StorageSpecificIdentifier
   public class PropertyReflector: MemberReflectorBase
   {
-    private readonly ReflectionBasedClassDefinition _classDefinition;
+    private readonly ClassDefinition _classDefinition;
 
-    public PropertyReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+    public PropertyReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

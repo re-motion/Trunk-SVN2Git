@@ -38,8 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public PropertyDefinitionCollection CreatePropertyDefinitions (
-        ReflectionBasedClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos)
+    public PropertyDefinitionCollection CreatePropertyDefinitions (ClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);

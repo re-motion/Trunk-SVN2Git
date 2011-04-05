@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   [TestFixture]
   public class ReflectionUtilityTest : StandardMappingTest
   {
-    private ReflectionBasedClassDefinition _classDefinitionWithMixedproperty;
+    private ClassDefinition _classDefinitionWithMixedproperty;
 
     [SetUp]
     public override void SetUp ()

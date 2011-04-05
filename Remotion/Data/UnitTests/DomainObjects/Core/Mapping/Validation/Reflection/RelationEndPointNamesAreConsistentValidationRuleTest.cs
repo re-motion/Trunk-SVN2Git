@@ -26,8 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
   public class RelationEndPointNamesAreConsistentValidationRuleTest : ValidationRuleTestBase
   {
     private RelationEndPointNamesAreConsistentValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _classDefinition1;
-    private ReflectionBasedClassDefinition _classDefinition2;
+    private ClassDefinition _classDefinition1;
+    private ClassDefinition _classDefinition2;
     
     [SetUp]
     public void SetUp ()

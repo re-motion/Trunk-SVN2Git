@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       return propertyInfo;
     }
 
-    protected ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    protected ClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           type.Name,

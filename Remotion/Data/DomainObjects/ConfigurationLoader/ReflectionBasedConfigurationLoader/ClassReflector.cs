@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
@@ -24,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// The <see cref="ClassReflector"/> is used to build a <see cref="ReflectionBasedClassDefinition"/>.
+  /// The <see cref="ClassReflector"/> is used to build a <see cref="ClassDefinition"/>.
   /// </summary>
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="ClassReflector"/>'s constructor signature. </remarks>
   public class ClassReflector
@@ -64,10 +63,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _nameResolver; }
     }
 
-    public ReflectionBasedClassDefinition GetMetadata (ReflectionBasedClassDefinition baseClassDefinition)
+    public ClassDefinition GetMetadata (ClassDefinition baseClassDefinition)
     {
       var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
-      var classDefinition = new ReflectionBasedClassDefinition (
+      var classDefinition = new ClassDefinition (
           GetID(), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
 
       var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
@@ -102,7 +101,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return false;
     }
 
-    private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
+    private PropertyInfo[] GetPropertyInfos (ClassDefinition classDefinition)
     {
       PropertyFinder propertyFinder = new PropertyFinder (
           classDefinition.ClassType,

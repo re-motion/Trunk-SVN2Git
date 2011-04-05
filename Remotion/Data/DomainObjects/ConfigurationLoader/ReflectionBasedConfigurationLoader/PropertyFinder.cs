@@ -26,11 +26,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class PropertyFinder : PropertyFinderBase
   {
-    private readonly ReflectionBasedClassDefinition _classDefinition;
+    private readonly ClassDefinition _classDefinition;
 
     public PropertyFinder (
         Type type,
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMappingNameResolver nameResolver,

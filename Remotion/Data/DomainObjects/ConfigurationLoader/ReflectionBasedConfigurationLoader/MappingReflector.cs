@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
+using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {

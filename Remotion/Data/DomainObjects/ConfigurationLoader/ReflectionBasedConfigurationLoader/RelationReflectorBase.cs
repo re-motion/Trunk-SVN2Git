@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public abstract class RelationReflectorBase : MemberReflectorBase
   {
     protected RelationReflectorBase (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         PropertyInfo propertyInfo,
         Type bidirectionalRelationAttributeType,
         IMappingNameResolver nameResolver)
@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
     }
 
-    public ReflectionBasedClassDefinition ClassDefinition { get; private set; }
+    public ClassDefinition ClassDefinition { get; private set; }
     public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
 
     protected bool IsBidirectionalRelation

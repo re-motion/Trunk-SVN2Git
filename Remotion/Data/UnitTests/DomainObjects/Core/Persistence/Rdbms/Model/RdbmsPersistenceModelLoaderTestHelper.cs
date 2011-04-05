@@ -40,14 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   
   public class RdbmsPersistenceModelLoaderTestHelper
   {
-    private readonly ReflectionBasedClassDefinition _baseBaseClassDefinition;
-    private readonly ReflectionBasedClassDefinition _baseClassDefinition;
-    private readonly ReflectionBasedClassDefinition _tableClassDefinition1;
-    private readonly ReflectionBasedClassDefinition _tableClassDefinition2;
-    private readonly ReflectionBasedClassDefinition _derivedClassDefinition1;
-    private readonly ReflectionBasedClassDefinition _derivedClassDefinition2;
-    private readonly ReflectionBasedClassDefinition _derivedDerivedClassDefinition;
-    private readonly ReflectionBasedClassDefinition _derivedDerivedDerivedClassDefinition;
+    private readonly ClassDefinition _baseBaseClassDefinition;
+    private readonly ClassDefinition _baseClassDefinition;
+    private readonly ClassDefinition _tableClassDefinition1;
+    private readonly ClassDefinition _tableClassDefinition2;
+    private readonly ClassDefinition _derivedClassDefinition1;
+    private readonly ClassDefinition _derivedClassDefinition2;
+    private readonly ClassDefinition _derivedDerivedClassDefinition;
+    private readonly ClassDefinition _derivedDerivedDerivedClassDefinition;
     private readonly ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
     private readonly ReflectionBasedPropertyDefinition _basePropertyDefinition;
     private readonly ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
@@ -109,42 +109,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedDerivedClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
     }
 
-    public ReflectionBasedClassDefinition BaseBaseClassDefinition
+    public ClassDefinition BaseBaseClassDefinition
     {
       get { return _baseBaseClassDefinition; }
     }
 
-    public ReflectionBasedClassDefinition BaseClassDefinition
+    public ClassDefinition BaseClassDefinition
     {
       get { return _baseClassDefinition; }
     }
 
-    public ReflectionBasedClassDefinition TableClassDefinition1
+    public ClassDefinition TableClassDefinition1
     {
       get { return _tableClassDefinition1; }
     }
 
-    public ReflectionBasedClassDefinition TableClassDefinition2
+    public ClassDefinition TableClassDefinition2
     {
       get { return _tableClassDefinition2; }
     }
 
-    public ReflectionBasedClassDefinition DerivedClassDefinition1
+    public ClassDefinition DerivedClassDefinition1
     {
       get { return _derivedClassDefinition1; }
     }
 
-    public ReflectionBasedClassDefinition DerivedClassDefinition2
+    public ClassDefinition DerivedClassDefinition2
     {
       get { return _derivedClassDefinition2; }
     }
 
-    public ReflectionBasedClassDefinition DerivedDerivedClassDefinition
+    public ClassDefinition DerivedDerivedClassDefinition
     {
       get { return _derivedDerivedClassDefinition; }
     }
 
-    public ReflectionBasedClassDefinition DerivedDerivedDerivedClassDefinition
+    public ClassDefinition DerivedDerivedDerivedClassDefinition
     {
       get { return _derivedDerivedDerivedClassDefinition; }
     }
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
+        ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (
           classDefinition,

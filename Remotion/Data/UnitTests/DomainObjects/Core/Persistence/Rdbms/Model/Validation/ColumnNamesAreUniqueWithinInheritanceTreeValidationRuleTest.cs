@@ -30,10 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   public class ColumnNamesAreUniqueWithinInheritanceTreeValidationRuleTest : ValidationRuleTestBase
   {
     private ColumnNamesAreUniqueWithinInheritanceTreeValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _derivedBaseClass1;
-    private ReflectionBasedClassDefinition _derivedBaseClass2;
-    private ReflectionBasedClassDefinition _derivedClass;
-    private ReflectionBasedClassDefinition _baseOfBaseClass;
+    private ClassDefinition _derivedBaseClass1;
+    private ClassDefinition _derivedBaseClass2;
+    private ClassDefinition _derivedClass;
+    private ClassDefinition _baseOfBaseClass;
 
     [SetUp]
     public void SetUp ()

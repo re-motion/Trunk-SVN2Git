@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           isInheritanceRoot,
           true,
           new ReflectionBasedNameResolver(),
-          ((ReflectionBasedClassDefinition) classDefinition).PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 
       return propertyInfos.Select (propertyInfo => Validate (propertyInfo));

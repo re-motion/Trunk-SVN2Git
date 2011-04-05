@@ -31,11 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class RelationReflectorWithMixinsTest : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _mixinTargetClassDefinition;
-    private ReflectionBasedClassDefinition _multiMixinTargetClassDefinition;
-    private ReflectionBasedClassDefinition _multiMixinRelatedClassDefinition;
-    private ReflectionBasedClassDefinition _relatedClassDefinition;
-    private ReflectionBasedClassDefinition _inheritanceRootInheritingMixinClassDefinition;
+    private ClassDefinition _mixinTargetClassDefinition;
+    private ClassDefinition _multiMixinTargetClassDefinition;
+    private ClassDefinition _multiMixinRelatedClassDefinition;
+    private ClassDefinition _relatedClassDefinition;
+    private ClassDefinition _inheritanceRootInheritingMixinClassDefinition;
     private ClassDefinitionCollection _classDefinitions;
 
     public override void SetUp ()
@@ -65,18 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
       _classDefinitions = new ClassDefinitionCollection { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition };
-    }
-
-    private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
-    {
-      PropertyFinder propertyFinder = new PropertyFinder (
-          classDefinition.ClassType,
-          classDefinition,
-          classDefinition.BaseClass == null,
-          true,
-          new ReflectionBasedNameResolver(),
-          classDefinition.PersistentMixinFinder);
-      return propertyFinder.FindPropertyInfos ();
     }
 
     [Test]
@@ -269,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     private RelationReflector CreateRelationReflectorForProperty (
-        ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)
+        ClassDefinition classDefinition, Type declaringType, string propertyName)
     {
       var propertyInfo = declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
       var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver());

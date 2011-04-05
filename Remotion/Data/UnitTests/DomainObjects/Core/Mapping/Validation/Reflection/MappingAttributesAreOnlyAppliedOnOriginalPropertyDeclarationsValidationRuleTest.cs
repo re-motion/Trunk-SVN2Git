@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ClassDefinitionWithUnresolvedClassType ()
     {
       var type = typeof (BaseMappingAttributesClass);
-      var classDefinition = new ReflectionBasedClassDefinitionWithUnresolvedClassType (
+      var classDefinition = new ClassDefinitionWithUnresolvedClassType (
           "Test", "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
 
       _validationRule.Validate (classDefinition);

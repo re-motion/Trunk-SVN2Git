@@ -35,6 +35,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.R
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -506,9 +507,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsRelationEndPointDefinitionNotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      ReflectionBasedClassDefinition orderTicketDefinition =
+      ClassDefinition orderTicketDefinition =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
       orderTicketDefinition.SetPropertyDefinitions (

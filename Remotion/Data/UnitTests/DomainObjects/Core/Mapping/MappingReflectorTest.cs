@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection.TypeDiscovery;
+using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {

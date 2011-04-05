@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.False);
     }
 
-    private ReflectionBasedClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
+    private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithDifferentProperties",
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    private ReflectionBasedClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
+    private ClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DerivedClassWithDifferentProperties",
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    private ReflectionBasedClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
+    private ClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassWithVirtualRelationEndPoints",
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    private void CreatePropertyDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreatePropertyDefinitionsForClassWithDifferentProperties (ClassDefinition classDefinition)
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
-    private void CreateEndPointDefinitionsForClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreateEndPointDefinitionsForClassWithDifferentProperties (ClassDefinition classDefinition)
     {
       var endPoints = new List<IRelationEndPointDefinition>();
       endPoints.Add (CreateRelationEndPointDefinition (classDefinition, typeof (ClassWithDifferentProperties), "UnidirectionalOneToOne", false));
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
     }
 
-    private void CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreatePropertyDefinitionsForDerivedClassWithDifferentProperties (ClassDefinition classDefinition)
     {
       var properties = new List<PropertyDefinition>();
       properties.Add (
@@ -320,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
     }
 
-    private void CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (ReflectionBasedClassDefinition classDefinition)
+    private void CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (ClassDefinition classDefinition)
     {
       var endPoints = new List<IRelationEndPointDefinition>();
 
@@ -368,7 +368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));
     }
 
-    private void CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (ReflectionBasedClassDefinition classDefinition)
+    private void CreateEndPointDefinitionsForDerivedClassWithDifferentProperties (ClassDefinition classDefinition)
     {
       var endPoints = new List<IRelationEndPointDefinition>();
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (endPoints, true));

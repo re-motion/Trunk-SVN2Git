@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
-    private ReflectionBasedClassDefinition CreateClassDefinition (Type classType, ReflectionBasedClassDefinition baseClass, Type storageType)
+    private ClassDefinition CreateClassDefinition (Type classType, ClassDefinition baseClass, Type storageType)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           classType.Name,

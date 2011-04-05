@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return _mappingObjectFactory; }
     }
 
-    protected IEnumerable<PropertyInfo> GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
+    protected IEnumerable<PropertyInfo> GetRelationPropertyInfos (ClassDefinition classDefinition)
     {
       var relationPropertyFinder = new RelationPropertyFinder (
           classDefinition.ClassType,

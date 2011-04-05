@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly bool _isNullable;
 
     public ReflectionBasedPropertyDefinition (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         PropertyInfo propertyInfo,
         string propertyName,
         Type propertyType,

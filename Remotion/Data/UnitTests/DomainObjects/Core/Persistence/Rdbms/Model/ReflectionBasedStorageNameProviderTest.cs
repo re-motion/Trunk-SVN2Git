@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class ReflectionBasedStorageNameProviderTest
   {
     private ReflectionBasedStorageNameProvider _provider;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

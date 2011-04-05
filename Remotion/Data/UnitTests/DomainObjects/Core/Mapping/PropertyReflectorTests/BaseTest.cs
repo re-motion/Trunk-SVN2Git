@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
 
       Type type = typeof (T);
       PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      ReflectionBasedClassDefinition classDefinition;
+      ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
         classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, true);
       else

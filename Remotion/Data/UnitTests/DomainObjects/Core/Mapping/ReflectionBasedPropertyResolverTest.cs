@@ -23,7 +23,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -31,27 +30,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ReflectionBasedPropertyResolverTest : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _orderClass;
+    private ClassDefinition _orderClass;
 
-    private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
-    private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
+    private ClassDefinition _targetClassForPersistentMixinClass;
+    private ClassDefinition _derivedTargetClassForPersistentMixinClass;
 
-    private ReflectionBasedClassDefinition _classWithInterface;
-    private ReflectionBasedClassDefinition _classDerivedFromClassWithInterface;
-    private ReflectionBasedClassDefinition _classWithInterfaceWithMissingAccessors;
-    private ReflectionBasedClassDefinition _classWithMixinAddingInterface;
-    private ReflectionBasedClassDefinition _derivedClassWithMixinWithDuplicateInterface;
+    private ClassDefinition _classWithInterface;
+    private ClassDefinition _classDerivedFromClassWithInterface;
+    private ClassDefinition _classWithInterfaceWithMissingAccessors;
+    private ClassDefinition _classWithMixinAddingInterface;
+    private ClassDefinition _derivedClassWithMixinWithDuplicateInterface;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
 
       _targetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
       
       _classWithInterface = CreateDefinitionForClassWithInterface();
       _classDerivedFromClassWithInterface = CreateDefinitionForClassDerivedFromClassWithInterface(_classWithInterface);
@@ -265,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result, Is.SameAs (expected));
     }
 
-    private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterface ()
+    private ClassDefinition CreateDefinitionForClassWithInterface ()
     {
       var classWithInterface = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
@@ -291,13 +290,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classWithInterface;
     }
 
-    private ReflectionBasedClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ReflectionBasedClassDefinition baseClassDefinition)
+    private ClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ClassDefinition baseClassDefinition)
     {
       Type type = typeof (ClassDerivedFromClassWithInterface);
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false, baseClassDefinition);
     }
 
-    private ReflectionBasedClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
+    private ClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
     {
       var classWithInterfaceWithMissingAccessors =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
@@ -324,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classWithInterfaceWithMissingAccessors;
     }
 
-    private ReflectionBasedClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
+    private ClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
     {
       var classWithMixinAddingInterface =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
@@ -351,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classWithMixinAddingInterface;
     }
 
-    private ReflectionBasedClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
+    private ClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
     {
       var classWithMixinAddingInterface =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));

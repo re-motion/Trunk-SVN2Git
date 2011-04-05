@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
   public class PropertyTypeIsSupportedValidationRuleTest : ValidationRuleTestBase
   {
     private PropertyTypeIsSupportedValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     [SetUp]
     public void SetUp ()

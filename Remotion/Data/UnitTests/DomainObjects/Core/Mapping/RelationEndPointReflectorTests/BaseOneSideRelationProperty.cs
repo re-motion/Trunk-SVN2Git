@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
   [TestFixture]
   public class BaseOneSideRelationProperty : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     public override void SetUp()
     {
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
-    private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    private ClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
     }

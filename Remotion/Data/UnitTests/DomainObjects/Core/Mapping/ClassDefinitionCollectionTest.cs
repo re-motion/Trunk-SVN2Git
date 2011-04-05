@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     // member fields
 
     private ClassDefinitionCollection _collection;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     // construction and disposing
 
@@ -144,13 +144,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_classDefinition);
 
-      ReflectionBasedClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           _classDefinition.ID,
           StorageModelTestHelper.GetEntityName (_classDefinition),
           UnitTestDomainStorageProviderDefinition,
           _classDefinition.ClassType,
           false,
-          (ReflectionBasedClassDefinition) _classDefinition.BaseClass);
+          _classDefinition.BaseClass);
 
       Assert.IsFalse (_collection.Contains (copy));
     }

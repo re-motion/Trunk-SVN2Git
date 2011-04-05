@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
   public class RelationEndPointPropertyTypeIsSupportedValidationRuleTest : ValidationRuleTestBase
   {
     private RelationEndPointPropertyTypeIsSupportedValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
     
     [SetUp]
     public void SetUp ()

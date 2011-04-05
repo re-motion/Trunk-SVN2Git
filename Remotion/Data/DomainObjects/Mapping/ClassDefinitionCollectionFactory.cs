@@ -65,23 +65,22 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinitions;
     }
 
-    public ReflectionBasedClassDefinition GetClassDefinition (
+    public ClassDefinition GetClassDefinition (
         ClassDefinitionCollection classDefinitions, Type classType)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       if (classDefinitions.Contains (classType))
-        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (classType);
+        return classDefinitions.GetMandatory (classType);
 
       var classDefinition =
-          (ReflectionBasedClassDefinition)
           _mappingObjectFactory.CreateClassDefinition (classType, GetBaseClassDefinition (classDefinitions, classType));
       classDefinitions.Add (classDefinition);
 
       return classDefinition;
     }
 
-    private ReflectionBasedClassDefinition GetBaseClassDefinition (
+    private ClassDefinition GetBaseClassDefinition (
         ClassDefinitionCollection classDefinitions, Type type)
     {
       if (ReflectionUtility.IsInheritanceRoot (type))

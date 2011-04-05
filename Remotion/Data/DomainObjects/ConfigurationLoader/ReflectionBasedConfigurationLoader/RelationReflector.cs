@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public class RelationReflector : RelationReflectorBase
   {
     public RelationReflector (
-        ReflectionBasedClassDefinition classDefinition,
+        ClassDefinition classDefinition,
         PropertyInfo propertyInfo,
         IMappingNameResolver nameResolver)
         : base (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new PropertyNotFoundRelationEndPointDefinition (classDefinition, propertyInfo.Name);
     }
 
-    private ReflectionBasedClassDefinition GetOppositeClassDefinition (
+    private ClassDefinition GetOppositeClassDefinition (
         ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
     {
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           oppositeClassDefinition = oppositeClassDefinition.BaseClass;
       }
 
-      return (ReflectionBasedClassDefinition) oppositeClassDefinition;
+      return oppositeClassDefinition;
     }
   }
 }

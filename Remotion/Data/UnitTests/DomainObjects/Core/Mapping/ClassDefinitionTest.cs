@@ -41,18 +41,18 @@ using Person = Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Int
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   [TestFixture]
-  public class ReflectionBasedClassDefinitionTest : MappingReflectionTestBase
+  public class ClassDefinitionTest : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _orderClass;
-    private ReflectionBasedClassDefinition _distributorClass;
+    private ClassDefinition _orderClass;
+    private ClassDefinition _distributorClass;
 
-    private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
-    private ReflectionBasedClassDefinition _derivedTargetClassForPersistentMixinClass;
+    private ClassDefinition _targetClassForPersistentMixinClass;
+    private ClassDefinition _derivedTargetClassForPersistentMixinClass;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
-    private ReflectionBasedClassDefinition _domainBaseClass;
-    private ReflectionBasedClassDefinition _personClass;
-    private ReflectionBasedClassDefinition _customerClass;
-    private ReflectionBasedClassDefinition _organizationalUnitClass;
+    private ClassDefinition _domainBaseClass;
+    private ClassDefinition _personClass;
+    private ClassDefinition _customerClass;
+    private ClassDefinition _organizationalUnitClass;
 
     public override void SetUp ()
     {
@@ -76,19 +76,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass, _organizationalUnitClass }, true, true));
 
-      _orderClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _distributorClass = (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
+      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _distributorClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
 
       _targetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+           FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-          (ReflectionBasedClassDefinition) FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+           FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
     }
 
     [Test]
     public void Initialize ()
     {
-      var actual = new ReflectionBasedClassDefinition ("Order", typeof (Order), false, null, null, new PersistentMixinFinder (typeof (Order)));
+      var actual = new ClassDefinition ("Order", typeof (Order), false, null, null, new PersistentMixinFinder (typeof (Order)));
       actual.SetDerivedClasses (new ClassDefinitionCollection (true));
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
 
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase",
           null,
           UnitTestDomainStorageProviderDefinition,
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assert.That (_domainBaseClass.StorageGroupType, Is.Null);
 
-      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase",
           null,
           UnitTestDomainStorageProviderDefinition,
@@ -328,9 +328,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllConcreteEntityNamesForConreteSingleWithEntityName ()
     {
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false);
-      ReflectionBasedClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition customerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
 
       string[] entityNames = customerClass.GetAllConcreteEntityNames();
@@ -356,9 +356,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetAllConcreteEntityNamesForAbstractClassWithSameEntityNameInInheritanceHierarchy ()
     {
-      ReflectionBasedClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "DomainBase", null, UnitTestDomainStorageProviderDefinition, typeof (DomainBase), false);
-      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Person", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Person), false, domainBaseClass);
       ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
@@ -391,13 +391,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "OrderID", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
 
-      Assert.That (actual.ToString(), Is.EqualTo (typeof (ReflectionBasedClassDefinition).FullName + ": OrderID"));
+      Assert.That (actual.ToString(), Is.EqualTo (typeof (ClassDefinition).FullName + ": OrderID"));
     }
 
     [Test]
     public void GetIsAbstract_FromNonAbstractType ()
     {
-      ReflectionBasedClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
 
       Assert.IsFalse (actual.IsAbstract);
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetIsAbstract_FromAbstractType ()
     {
-      ReflectionBasedClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (AbstractClass), true);
 
       Assert.IsTrue (actual.IsAbstract);
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetIsAbstract_FromArgumentFalse ()
     {
-      ReflectionBasedClassDefinition actual =
+      ClassDefinition actual =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
               "ClassID", "Table", UnitTestDomainStorageProviderDefinition, typeof (AbstractClass), false);
 
@@ -425,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetIsAbstract_FromArgumentTrue ()
     {
-      ReflectionBasedClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "ClassID", "Table", UnitTestDomainStorageProviderDefinition, typeof (Order), true);
 
       Assert.IsTrue (actual.IsAbstract);

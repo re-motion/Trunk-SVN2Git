@@ -18,11 +18,11 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class ReflectionBasedClassDefinitionValidator
+  public class ClassDefinitionValidator
   {
-    private readonly ReflectionBasedClassDefinition _classDefinition;
+    private readonly ClassDefinition _classDefinition;
 
-    public ReflectionBasedClassDefinitionValidator (ReflectionBasedClassDefinition classDefinition) 
+    public ClassDefinitionValidator (ClassDefinition classDefinition) 
     {
       _classDefinition = classDefinition;
     }

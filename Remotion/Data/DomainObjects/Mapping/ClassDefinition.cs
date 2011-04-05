@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
@@ -27,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   [Serializable]
   [DebuggerDisplay ("{GetType().Name} for {ClassType.FullName}")]
-  public abstract class ClassDefinition : SerializableMappingObject
+  public class ClassDefinition : SerializableMappingObject
   {
     // types
 
@@ -67,16 +69,46 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private ClassDefinitionCollection _derivedClasses;
 
-    protected ClassDefinition (string id, Type storageGroupType, ClassDefinition baseClass)
+    [NonSerialized]
+    private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
+
+    [NonSerialized]
+    private readonly InterlockedCache<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
+
+    [NonSerialized]
+    private readonly bool _isAbstract;
+
+    [NonSerialized]
+    private readonly Type _classType;
+
+    [NonSerialized]
+    private readonly IPersistentMixinFinder _persistentMixinFinder;
+
+    public ClassDefinition (
+        string id,
+        Type classType,
+        bool isAbstract,
+        ClassDefinition baseClass,
+        Type storageGroupType,
+        IPersistentMixinFinder persistentMixinFinder)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("classType", classType);
+      ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
 
       _id = id;
       _storageGroupType = storageGroupType;
 
+      _classType = classType;
+      _persistentMixinFinder = persistentMixinFinder;
+      _isAbstract = isAbstract;
+
+      _propertyDefinitionCache = new InterlockedCache<IPropertyInformation, PropertyDefinition>();
+      _relationDefinitionCache = new InterlockedCache<IPropertyInformation, IRelationEndPointDefinition>();
+
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
-       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
-            () => RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this, true));
+      _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
+           () => RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this, true));
       _cachedPropertyDefinitions =
           new DoubleCheckedLockingContainer<PropertyDefinitionCollection> (
               () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this, true), true));
@@ -354,14 +386,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageEntityDefinition; }
     }
 
-    public abstract Type ClassType { get; }
-
-    public abstract bool IsClassTypeResolved { get; }
-
-    public abstract IDomainObjectCreator GetDomainObjectCreator ();
-    public abstract PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation);
-    public abstract IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation);
-
     public ClassDefinition BaseClass
     {
       get { return _baseClass; }
@@ -410,14 +434,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return (BaseClass != null || DerivedClasses.Count > 0); }
     }
 
-    public abstract bool IsAbstract { get; }
-
     public override string ToString ()
     {
       return GetType().FullName + ": " + _id;
     }
-
-    public abstract ReflectionBasedClassDefinitionValidator GetValidator ();
 
     private MappingException CreateMappingException (string message, params object[] args)
     {
@@ -537,6 +557,75 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return ID; }
     }
 
+    public IPersistentMixinFinder PersistentMixinFinder
+    {
+      get { return _persistentMixinFinder; }
+    }
+
+    public IEnumerable<Type> PersistentMixins
+    {
+      get { return _persistentMixinFinder.GetPersistentMixins(); }
+    }
+
+    public virtual bool IsAbstract
+    {
+      get { return _isAbstract; }
+    }
+
+    public virtual Type ClassType
+    {
+      get { return _classType; }
+    }
+
+    public virtual bool IsClassTypeResolved
+    {
+      get { return true; }
+    }
+
     #endregion
+
+    public Type GetPersistentMixin (Type mixinToSearch)
+    {
+      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
+      if (PersistentMixins.Contains (mixinToSearch))
+        return mixinToSearch;
+      else
+      {
+        foreach (Type mixin in PersistentMixins)
+        {
+          if (mixinToSearch.IsAssignableFrom (mixin))
+            return mixin;
+        }
+        return null;
+      }
+    }
+
+    public virtual PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _propertyDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetPropertyDefinition));
+    }
+
+    public virtual IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _relationDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetRelationEndPointDefinition));
+    }
+
+    public virtual ClassDefinitionValidator GetValidator ()
+    {
+      return new ClassDefinitionValidator (this);
+    }
+
+    public virtual IDomainObjectCreator GetDomainObjectCreator ()
+    {
+      return InterceptedDomainObjectCreator.Instance;
+    }
   }
 }

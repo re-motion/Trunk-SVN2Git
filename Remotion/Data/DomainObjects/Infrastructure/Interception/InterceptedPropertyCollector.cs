@@ -50,8 +50,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       _classDefinition = MappingConfiguration.Current.ClassDefinitions[_baseType];
       ValidateClassDefinition ();
-      Assertion.IsTrue (_classDefinition is ReflectionBasedClassDefinition);
-
+      
       AnalyzeAndValidateBaseType ();
     }
 

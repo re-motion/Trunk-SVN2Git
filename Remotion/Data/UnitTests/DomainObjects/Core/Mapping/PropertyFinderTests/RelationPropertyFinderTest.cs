@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       return propertyInfo;
     }
 
-    private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    private ClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
       return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           type.Name, type.Name, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, type, false);

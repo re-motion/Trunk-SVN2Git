@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
   public class TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRuleTest : ValidationRuleTestBase
   {
     private TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule _validationRule;
-    private ReflectionBasedClassDefinition _baseOfBaseClass;
-    private ReflectionBasedClassDefinition _derivedBaseClass1;
-    private ReflectionBasedClassDefinition _derivedClass;
+    private ClassDefinition _baseOfBaseClass;
+    private ClassDefinition _derivedBaseClass1;
+    private ClassDefinition _derivedClass;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
     private UnionViewDefinition _unionViewDefinition;

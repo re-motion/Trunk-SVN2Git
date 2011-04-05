@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
   [TestFixture]
   public class PropertyDefinitionValidatorTest
   {
-    private ReflectionBasedClassDefinition _classDefinition1;
-    private ReflectionBasedClassDefinition _classDefinition2;
-    private ReflectionBasedClassDefinition _classDefinition3;
+    private ClassDefinition _classDefinition1;
+    private ClassDefinition _classDefinition2;
+    private ClassDefinition _classDefinition3;
     private MappingValidationResult _fakeValidMappingValidationResult;
     private MappingValidationResult _fakeInvalidMappingValidationResult;
     private IPropertyDefinitionValidationRule _validationRuleMock1;

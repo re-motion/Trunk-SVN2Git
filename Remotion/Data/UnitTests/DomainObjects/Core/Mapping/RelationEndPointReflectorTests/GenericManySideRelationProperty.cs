@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
   [TestFixture]
   public class GenericManySideRelationProperty : MappingReflectionTestBase
   {
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
 
     public override void SetUp ()
     {

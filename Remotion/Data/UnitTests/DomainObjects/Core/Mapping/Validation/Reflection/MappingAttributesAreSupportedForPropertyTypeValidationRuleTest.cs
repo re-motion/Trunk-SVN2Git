@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
   public class MappingAttributesAreSupportedForPropertyTypeValidationRuleTest : ValidationRuleTestBase
   {
     private MappingAttributesAreSupportedForPropertyTypeValidationRule _validtionRule;
-    private ReflectionBasedClassDefinition _classDefinition;
+    private ClassDefinition _classDefinition;
     private Type _validType;
     private Type _invalidType;
 

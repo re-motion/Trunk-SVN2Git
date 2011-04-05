@@ -251,7 +251,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
     /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
     /// <returns>the declaring domain object type for the given property.</returns>
-    public static Type GetDeclaringDomainObjectTypeForProperty (PropertyInfo propertyInfo, ReflectionBasedClassDefinition classDefinition)
+    public static Type GetDeclaringDomainObjectTypeForProperty (PropertyInfo propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -275,7 +275,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
     /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
     /// <returns><see langword="true" /> if the given <see cref="PropertyInfo"/> is a mixed property.</returns>
-    public static bool IsMixedProperty (PropertyInfo propertyInfo, ReflectionBasedClassDefinition classDefinition)
+    public static bool IsMixedProperty (PropertyInfo propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

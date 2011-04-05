@@ -19,14 +19,14 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {
-  public class ReflectionBasedClassDefinitionWithUnresolvedClassType : ReflectionBasedClassDefinition
+  public class ClassDefinitionWithUnresolvedClassType : ClassDefinition
   {
-    public ReflectionBasedClassDefinitionWithUnresolvedClassType (
+    public ClassDefinitionWithUnresolvedClassType (
         string id,
         string storageProviderID,
         Type classType,
         bool isAbstract,
-        ReflectionBasedClassDefinition baseClass,
+        ClassDefinition baseClass,
         IPersistentMixinFinder persistentMixinFinder)
         : base (id, classType, isAbstract, baseClass, null, persistentMixinFinder)
     {
