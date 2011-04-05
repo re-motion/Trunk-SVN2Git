@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
           "ClosedGenericClassWithManySideRelationProperties",
           UnitTestDomainStorageProviderDefinition,
           typeof (ClosedGenericClassWithRealRelationEndPoints),

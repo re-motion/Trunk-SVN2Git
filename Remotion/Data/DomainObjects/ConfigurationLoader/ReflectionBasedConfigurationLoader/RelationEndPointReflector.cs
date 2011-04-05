@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private IRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition)
     {
       return
-          new ReflectionBasedVirtualRelationEndPointDefinition (
+          new VirtualRelationEndPointDefinition (
               classDefinition, GetPropertyName(), !IsNullable(), GetCardinality(), PropertyInfo.PropertyType, GetSortExpression(), PropertyInfo);
     }
 

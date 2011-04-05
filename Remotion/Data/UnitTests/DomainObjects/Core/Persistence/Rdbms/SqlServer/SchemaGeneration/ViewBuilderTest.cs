@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddView_NonEntityDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order), SchemaGenerationFirstStorageProviderDefinition);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order), SchemaGenerationFirstStorageProviderDefinition);
       classDefinition.SetStorageEntity (MockRepository.GenerateStub<IStorageEntityDefinition> ());
       
       _viewBuilder.AddView (classDefinition);

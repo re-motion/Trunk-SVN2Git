@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     {
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       var type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
-      _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
-      _classDefinition3 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
+      _classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
+      _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
+      _classDefinition3 = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false);
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IClassDefinitionValidationRule> ();

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypIsDomainObjectCollection ()
     {
       var propertyType = typeof (DomainObjectCollection);
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.Many, propertyType, null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypeIsSubclassOfDomainObjectCollection ()
     {
       var propertyType = typeof (ObjectList<BaseOfBaseValidationDomainObjectClass>);
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.Many, propertyType, null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void PropertyTypeIsSubclassOfDomainObject ()
     {
       var propertyType = typeof (BaseOfBaseValidationDomainObjectClass);
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.One, propertyType, null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void LeftEndpointPropertyTypeIsNoDomainObjectCellection_And_NotDerivedFromDomainObjectCollectionOrDomainObject ()
     {
       var propertyType = typeof (string);
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void RightEndpointPropertyTypeIsNoDomainObjectCellection_And_NotDerivedFromDomainObjectCollectionOrDomainObject ()
     {
       var propertyType = typeof (string);
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.One, typeof (BaseOfBaseValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_propertyType", propertyType);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_IncludeBasePropertiesIsFalse ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new AllMappingPropertiesFinder (
           typeof (DerivedClassWithMappingAttribute),
           false,
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_IncludeBasePropertiesIsTrue ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new AllMappingPropertiesFinder (
           typeof (DerivedClassWithMappingAttribute),
           true,

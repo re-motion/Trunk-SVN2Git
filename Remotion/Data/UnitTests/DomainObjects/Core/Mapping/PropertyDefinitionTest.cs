@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
            "Order", "OrderTable", TestDomainStorageProviderDefinition, typeof (Order), false);
       _propertyInfo = typeof (Order).GetProperty ("OrderNumber");
     }

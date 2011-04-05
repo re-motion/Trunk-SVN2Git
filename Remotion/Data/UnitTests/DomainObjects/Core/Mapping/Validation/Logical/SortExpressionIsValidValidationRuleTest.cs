@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ValidSortExpressionWithSortingDirection ()
     {
-       var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+       var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber desc", typeof (Customer).GetProperty ("Orders"));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ValidSortExpressionWithoutSortingDirection ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber", typeof (Customer).GetProperty ("Orders"));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void InvalidSortExpression ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "Test", typeof (Customer).GetProperty ("Orders"));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);

@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithDifferentProperties), classDefinition, true, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithDifferentProperties)));
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForInheritanceRoot ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithDifferentProperties), classDefinition, true, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForDerivedClass ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithDifferentProperties), classDefinition, false, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithInterface ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithInterface));
       var propertyFinder = new StubPropertyFinderBase (typeof (ClassWithInterface), classDefinition, false, true, classDefinition.PersistentMixinFinder);
 
       Assert.That (

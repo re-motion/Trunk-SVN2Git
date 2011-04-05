@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void Initialize ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
           typeof (DerivedClassWithDifferentProperties),
           true,
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
           typeof (ClassWithDifferentProperties), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
+      var classDefinition = CreateClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder = new RelationPropertyFinder (
           typeof (ClassWithVirtualRelationEndPoints), true, true, new ReflectionBasedNameResolver(), classDefinition.PersistentMixinFinder);
 
@@ -100,9 +100,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       return propertyInfo;
     }
 
-    private ClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    private ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      return ClassDefinitionFactory.CreateClassDefinition (
           type.Name, type.Name, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, type, false);
     }
   }

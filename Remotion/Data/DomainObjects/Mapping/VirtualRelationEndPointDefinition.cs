@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
-  public abstract class VirtualRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
+  public class VirtualRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
   {
     // types
 
@@ -69,38 +69,19 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly DoubleCheckedLockingContainer<SortExpressionDefinition> _sortExpression;
 
+    [NonSerialized]
+    private readonly PropertyInfo _propertyInfo;
+
     // construction and disposing
 
-    protected VirtualRelationEndPointDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        bool isMandatory,
-        CardinalityType cardinality,
-        Type propertyType)
-        : this (classDefinition, propertyName, isMandatory, cardinality, propertyType, null)
-    {
-    }
-
-    protected VirtualRelationEndPointDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        bool isMandatory,
-        CardinalityType cardinality,
-        Type propertyType,
-        string sortExpressionText)
-        : this (
-            classDefinition, propertyName, isMandatory, cardinality, ArgumentUtility.CheckNotNull ("propertyType", propertyType), null, sortExpressionText
-            )
-    {
-    }
-
-    protected VirtualRelationEndPointDefinition (
+    public VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
         CardinalityType cardinality,
         string propertyTypeName,
-        string sortExpressionText)
+        string sortExpression,
+        PropertyInfo propertyInfo)
         : this (
             classDefinition,
             propertyName,
@@ -108,7 +89,28 @@ namespace Remotion.Data.DomainObjects.Mapping
             cardinality,
             null,
             ArgumentUtility.CheckNotNullOrEmpty ("propertyTypeName", propertyTypeName),
-            sortExpressionText)
+            sortExpression,
+            propertyInfo)
+    {
+    }
+
+    public VirtualRelationEndPointDefinition (
+        ClassDefinition classDefinition,
+        string propertyName,
+        bool isMandatory,
+        CardinalityType cardinality,
+        Type propertyType,
+        string sortExpression,
+        PropertyInfo propertyInfo)
+        : this (
+            classDefinition,
+            propertyName,
+            isMandatory,
+            cardinality,
+            ArgumentUtility.CheckNotNull ("propertyType", propertyType),
+            null,
+            sortExpression,
+            propertyInfo)
     {
     }
 
@@ -119,18 +121,20 @@ namespace Remotion.Data.DomainObjects.Mapping
         CardinalityType cardinality,
         Type propertyType,
         string propertyTypeName,
-        string sortExpressionText)
+        string sortExpressionText,
+        PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckValidEnumValue ("cardinality", cardinality);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       if (classDefinition.IsClassTypeResolved && propertyTypeName != null)
         propertyType = ContextAwareTypeDiscoveryUtility.GetType (propertyTypeName, true);
 
       if (propertyType != null)
         propertyTypeName = propertyType.AssemblyQualifiedName;
-      
+
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = _classDefinition.ID;
       _cardinality = cardinality;
@@ -140,6 +144,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyTypeName = propertyTypeName;
       _sortExpressionText = sortExpressionText;
       _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
+      _propertyInfo = propertyInfo;
     }
 
     // methods and properties
@@ -197,10 +202,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyTypeName; }
     }
 
-    public abstract PropertyInfo PropertyInfo { get; }
-
-    public abstract bool IsPropertyInfoResolved { get; }
-
 
     public bool IsVirtual
     {
@@ -245,6 +246,16 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return PropertyName; }
     }
 
+    public virtual PropertyInfo PropertyInfo
+    {
+      get { return _propertyInfo; }
+    }
+
+    public virtual bool IsPropertyInfoResolved 
+    {
+      get { return PropertyInfo != null; }
+    }
+
     #endregion
 
     private SortExpressionDefinition ParseSortExpression (string sortExpressionText)
@@ -254,7 +265,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       try
       {
-        var parser = new SortExpressionParser (this.GetOppositeClassDefinition ());
+        var parser = new SortExpressionParser (this.GetOppositeClassDefinition());
         return parser.Parse (sortExpressionText);
       }
       catch (MappingException ex)

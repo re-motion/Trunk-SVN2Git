@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDefinitionForClassWithInterface ()
     {
-      var classWithInterface = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterface));
+      var classWithInterface = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithInterface));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -293,13 +293,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForClassDerivedFromClassWithInterface(ClassDefinition baseClassDefinition)
     {
       Type type = typeof (ClassDerivedFromClassWithInterface);
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition(type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false, baseClassDefinition);
+      return ClassDefinitionFactory.CreateClassDefinition(type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false, baseClassDefinition);
     }
 
     private ClassDefinition CreateDefinitionForClassWithInterfaceWithMissingAccessors ()
     {
       var classWithInterfaceWithMissingAccessors =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
+          ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithInterfaceWithMissingAccessors));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -326,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForClassWithMixinAddingInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
+          ClassDefinitionFactory.CreateClassDefinition (typeof (TargetClassForMixinAddingInterfaceWithProperties), typeof (MixinAddingInterfaceWithProperties));
       var properties = new List<PropertyDefinition>();
       properties.Add (
           PropertyDefinitionFactory.Create (
@@ -353,7 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ()
     {
       var classWithMixinAddingInterface =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
+          ClassDefinitionFactory.CreateClassDefinition (typeof (DerivedClassWithMixinWithDuplicateInterface), typeof (MixinAddingProperty), typeof(MixinAddingPropertyBase));
       classWithMixinAddingInterface.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{
           PropertyDefinitionFactory.Create (
               classWithMixinAddingInterface,

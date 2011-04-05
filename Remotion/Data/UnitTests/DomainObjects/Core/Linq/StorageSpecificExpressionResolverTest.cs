@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _storageNameProvider = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProvider.Stub (stub => stub.IDColumnName).Return ("ID");
       _storageSpecificExpressionResolver = new StorageSpecificExpressionResolver(_storageNameProvider);
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
     [Test]

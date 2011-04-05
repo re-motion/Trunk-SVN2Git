@@ -35,10 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointTypesAreConsistentValidationRule();
-      _baseClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass1));
-      _baseClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (BaseRelationEndPointPropertyClass2));
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition(typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
+      _baseClassDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (BaseRelationEndPointPropertyClass1));
+      _baseClassDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (BaseRelationEndPointPropertyClass2));
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateClassDefinition(typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void EndPointWithoutBidirectionalRelationAttribute ()
     {
-      var endPoint1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint1 = new VirtualRelationEndPointDefinition (
           _baseClassDefinition1,
           "RelationProperty2",
           false,
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ValidRelationDefinition ()
     {
-      var endPoint1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint1 = new VirtualRelationEndPointDefinition (
           _baseClassDefinition1,
           "RelationProperty1",
           false,
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (BaseRelationEndPointPropertyClass2),
           null,
           typeof (BaseRelationEndPointPropertyClass1).GetProperty ("RelationProperty1"));
-      var endPoint2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint2 = new VirtualRelationEndPointDefinition (
           _baseClassDefinition2,
           "RelationProperty1",
           false,
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void PropertyDeclaredOnClassDefinitionInMapping_PropertyTypeDoesNotMatch ()
     {
-      var endPoint1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint1 = new VirtualRelationEndPointDefinition (
           _derivedClassDefinition1,
           "RelationProperty3",
           false,
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (DerivedRelationEndPointPropertyClass2),
           null,
           typeof (DerivedRelationEndPointPropertyClass1).GetProperty ("RelationProperty3"));
-      var endPoint2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint2 = new VirtualRelationEndPointDefinition (
           _baseClassDefinition2,
           "RelationProperty3",
           false,
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void RelationToClassNotInMapping ()
     {
-      var endPoint1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint1 = new VirtualRelationEndPointDefinition (
           _derivedClassDefinition1,
           "RelationProperty4",
           false,
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (ClassNotInMapping),
           null,
           typeof (DerivedRelationEndPointPropertyClass1).GetProperty ("RelationProperty4"));
-      var endPoint2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint2 = new VirtualRelationEndPointDefinition (
           _derivedClassDefinition2,
           "RelationProperty4",
           false,

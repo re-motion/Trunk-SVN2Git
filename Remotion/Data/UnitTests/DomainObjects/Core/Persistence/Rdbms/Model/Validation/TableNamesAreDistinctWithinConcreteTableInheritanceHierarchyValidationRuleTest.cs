@@ -41,20 +41,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       _validationRule = new TableNamesAreDistinctWithinConcreteTableInheritanceHierarchyValidationRule();
 
-      _baseOfBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _baseOfBaseClass = ClassDefinitionFactory.CreateClassDefinition (
           "BaseOfBase",
           null,
           StorageProviderDefinition,
           typeof (BaseOfBaseValidationDomainObjectClass),
           false);
-      _derivedBaseClass1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _derivedBaseClass1 = ClassDefinitionFactory.CreateClassDefinition (
           "DerivedBase1",
           null,
           StorageProviderDefinition,
           typeof (BaseValidationDomainObjectClass),
           false,
           _baseOfBaseClass);
-      _derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _derivedClass = ClassDefinitionFactory.CreateClassDefinition (
           "Derived",
           "Derived",
           StorageProviderDefinition,

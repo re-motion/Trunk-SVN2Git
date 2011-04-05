@@ -57,14 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void Create ()
     {
       // Note: This test builds its own relations without a sort expression.
-      var domainBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
-      var personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var domainBaseClass = ClassDefinitionFactory.CreateClassDefinition ("DomainBase", null, StorageProviderDefinition, typeof (DomainBase), false);
+      var personClass = ClassDefinitionFactory.CreateClassDefinition (
           "Person", "TableInheritance_Person", StorageProviderDefinition, typeof (Person), false, domainBaseClass);
-      var organizationalUnitClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var organizationalUnitClass = ClassDefinitionFactory.CreateClassDefinition (
           "OrganizationalUnit", "TableInheritance_OrganizationalUnit", StorageProviderDefinition, typeof (OrganizationalUnit), false, domainBaseClass);
       domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass, organizationalUnitClass }, true, true));
 
-      var clientClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var clientClass = ClassDefinitionFactory.CreateClassDefinition (
           "Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
       var clientClassPropertyDefinition = PropertyDefinitionFactory.Create (
           domainBaseClass, typeof (DomainBase), "Client", "ClientID", typeof (ObjectID));
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       var domainBaseEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
-      var clientEndPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var clientEndPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
               clientClass, "AssignedObjects", false, CardinalityType.Many, typeof (DomainObjectCollection));
 
       var clientToDomainBaseRelationDefinition = new RelationDefinition ("ClientToDomainBase", clientEndPointDefinition, domainBaseEndPointDefinition);

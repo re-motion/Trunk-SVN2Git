@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoGenericType ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (NonGenericTypeDomainObject));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (NonGenericTypeDomainObject));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       typeStub.Stub (stub => stub.Assembly).Return (typeof (DomainObject).Assembly);
       typeStub.Stub (stub => stub.IsSubclassOf (typeof (DomainObject))).Return (true);
 
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeStub);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeStub);
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void IsGenericType_IsNotDomainObjectBase ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
      
       var validationResult = _validationRule.Validate (classDefinition);
 

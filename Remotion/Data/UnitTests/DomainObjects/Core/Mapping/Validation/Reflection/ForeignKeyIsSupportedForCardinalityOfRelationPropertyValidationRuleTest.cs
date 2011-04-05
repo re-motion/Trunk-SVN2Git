@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule();
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ForeignKeyIsSupportedClass));
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ForeignKeyIsSupportedClass));
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void PropertyWithNoDbBidirectionalRelationAttribute ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "PropertyWithNoDbBidirectionalRelationAttribute",
           false,
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoCollectionProperty_ContainsForeignKeyIsTrue ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "NoCollectionProperty_ContainsForeignKey",
           false,
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoCollectionProperty_ContainsForeignKeyIsFalse ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "NoCollectionProperty_ContainsNoForeignKey",
           false,
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void CollectionProperty_ContainsForeignKeyIsTrue ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "CollectionProperty_ContainsForeignKey",
           false,
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void CollectionProperty_ContainsForeignKeyIsTrue_BothEndPoints ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "CollectionProperty_ContainsForeignKey",
           false,
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void CollectionProperty_ContainsForeignKeyIsFalse ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "CollectionProperty_ContainsNoForeignKey",
           false,

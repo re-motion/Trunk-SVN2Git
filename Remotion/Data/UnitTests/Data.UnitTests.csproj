@@ -410,8 +410,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionFactory.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionTest.cs" />

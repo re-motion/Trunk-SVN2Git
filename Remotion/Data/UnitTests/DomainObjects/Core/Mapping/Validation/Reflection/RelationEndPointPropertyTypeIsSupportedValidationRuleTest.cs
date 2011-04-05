@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointPropertyTypeIsSupportedValidationRule();
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoBidirectionalRelation_PropertyTypeNoDomainObject ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "PropertyWithoutBidirectionalAttribute",
           false,
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void NoBidirectionalRelation_PropertyTypeDomainObject ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "DomainObjectPropertyWithoutBidirectionalAttribute",
           false,
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void BidirectionalRelation_PropertyTypeDomainObject ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "DomainObjectPropertyWithBidirectionalAttribute",
           false,
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void BidirectionalRelation_PropertyTypeNoDomainObject ()
     {
-      var endPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
           "PropertyWithBidirectionalAttribute",
           false,

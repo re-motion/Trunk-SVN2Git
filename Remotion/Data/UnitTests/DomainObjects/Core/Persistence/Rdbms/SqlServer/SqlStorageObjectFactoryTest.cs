@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       var result = _sqlProviderFactory.CreateLinqQueryExecutor (
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_CanBeMixed ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateLinqQueryExecutor_WithMixedStages ()
     {
-      var classDefintion = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider> ();
 
       using (MixinConfiguration.BuildNew ()

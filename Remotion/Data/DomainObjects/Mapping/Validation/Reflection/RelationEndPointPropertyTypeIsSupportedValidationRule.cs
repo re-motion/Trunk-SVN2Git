@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      var relationEndPointAsReflectionBasedVirtualRelationEndPoint = relationEndPointDefinition as ReflectionBasedVirtualRelationEndPointDefinition;
+      var relationEndPointAsReflectionBasedVirtualRelationEndPoint = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (relationEndPointAsReflectionBasedVirtualRelationEndPoint != null)
       {
         var propertyInfo = relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo;

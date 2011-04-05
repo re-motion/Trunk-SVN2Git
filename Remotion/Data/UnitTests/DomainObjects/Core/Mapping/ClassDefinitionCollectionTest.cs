@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       _classDefinition.SetStorageEntity (
           new TableDefinition (
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       try
       {
         _collection.Add (
-            ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+            ClassDefinitionFactory.CreateClassDefinition (
                 "OtherID", "OtherTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false));
         Assert.Fail ("Expected an ArgumentException.");
       }
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_classDefinition);
       _collection.Add (
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          ClassDefinitionFactory.CreateClassDefinition (
               "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Customer), false));
     }
 
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       _collection.Add (_classDefinition);
 
-      ClassDefinition copy = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition copy = ClassDefinitionFactory.CreateClassDefinition (
           _classDefinition.ID,
           StorageModelTestHelper.GetEntityName (_classDefinition),
           UnitTestDomainStorageProviderDefinition,

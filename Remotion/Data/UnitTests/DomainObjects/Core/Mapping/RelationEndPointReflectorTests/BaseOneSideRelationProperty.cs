@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     {
       base.SetUp();
 
-      _classDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
+      _classDefinition = CreateClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
     }
 
     [Test]
@@ -93,9 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Assert.IsTrue (relationEndPointReflector.IsVirtualEndRelationEndpoint());
     }
 
-    private ClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    private ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
+      return ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, UnitTestDomainStorageProviderDefinition, type, false);
     }
   }
 }

@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumnDefinitionsForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var nonPersistentProperty = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnDefinitionsForHierarchy_PropertiesWithSamePropertyInfoAreFiltered ()
     {
       var classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetColumnDefinition_CreateTableDefinition_StoragePropertyDefinitionHasNotBeenSet ()
     {
       var classDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+          ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
               typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
       var propertyInfo = typeof (ClassHavingStorageSpecificIdentifierAttribute).GetProperty ("StorageSpecificName");
       var propertyDefinition1 = PropertyDefinitionFactory.Create (

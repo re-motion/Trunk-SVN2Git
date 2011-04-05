@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _classDefinitions = new ClassDefinitionCollection();
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
       _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_mappingObjectFactoryMock);
-      _fakeClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      _fakeClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
     }
 
     [Test]
@@ -68,9 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinitionCollection_DerivedClassAreSet ()
     {
-      var fakeClassDefinitionCompany = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
-      var fakeClassDefinitionPartner = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Partner), fakeClassDefinitionCompany);
-      var fakeClassDefinitionCustomer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Customer), fakeClassDefinitionCompany);
+      var fakeClassDefinitionCompany = ClassDefinitionFactory.CreateClassDefinition (typeof (Company));
+      var fakeClassDefinitionPartner = ClassDefinitionFactory.CreateClassDefinition (typeof (Partner), fakeClassDefinitionCompany);
+      var fakeClassDefinitionCustomer = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer), fakeClassDefinitionCompany);
 
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreateClassDefinition (typeof (Order), null))
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
-      var fakeBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var fakeBaseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithDifferentProperties));
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreateClassDefinition (typeof (ClassWithDifferentProperties), null))
           .Return (fakeBaseClassDefinition);
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithBaseClassAlreadyInClassDefinitionCollection ()
     {
-      var expectedBaseClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithDifferentProperties));
+      var expectedBaseClass = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithDifferentProperties));
       _classDefinitions.Add (expectedBaseClass);
 
       _mappingObjectFactoryMock
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassDefinition_ForDerivedClass_WithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      var existing = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Order));
+      var existing = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
       _classDefinitions.Add (existing);
 
       _mappingObjectFactoryMock.Replay();
@@ -199,13 +199,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Type type1 = typeof (ClassWithSameClassID);
       Type type2 = typeof (OtherClassWithSameClassID);
       
-      var classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (
           "ClassID",
           "Entity1",
           new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
           type1,
           false);
-      var classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (
           "ClassID",
           "Entity2",
           new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),

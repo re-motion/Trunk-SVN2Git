@@ -58,20 +58,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
     public RdbmsPersistenceModelLoaderTestHelper ()
     {
-      _baseBaseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (BaseBaseClass), null);
-      _baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _baseBaseClassDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (BaseBaseClass), null);
+      _baseClassDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (BaseClass), _baseBaseClassDefinition);
-      _tableClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _tableClassDefinition1 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (Table1Class), _baseClassDefinition);
-      _tableClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _tableClassDefinition2 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (Table2Class), _baseClassDefinition);
-      _derivedClassDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _derivedClassDefinition1 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (Derived1Class), _tableClassDefinition2);
-      _derivedClassDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _derivedClassDefinition2 = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (Derived2Class), _tableClassDefinition2);
-      _derivedDerivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _derivedDerivedClassDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (DerivedDerivedClass), _derivedClassDefinition2);
-      _derivedDerivedDerivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      _derivedDerivedDerivedClassDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (DerivedDerivedDerivedClass), _derivedDerivedClassDefinition);
 
       _baseBaseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _baseClassDefinition }, true, true));

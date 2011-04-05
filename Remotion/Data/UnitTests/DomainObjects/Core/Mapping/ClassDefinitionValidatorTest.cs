@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkWhenNoChanges ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinA)).EnterScope())
       {
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkOnInheritanceRootInheritingMixin ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x",
           "xx",
           UnitTestDomainStorageProviderDefinition,
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenAnyChanges_EvenToNonPersistentMixins ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
 
       using (
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinMissing ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
       using (MixinConfiguration.BuildFromActive().ForClass<Order>().Clear().EnterScope())
       {
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsAdded ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (
@@ -121,9 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         MatchType = MessageMatch.Contains)]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
     {
-      ClassDefinition baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "xbase", "xx", UnitTestDomainStorageProviderDefinition, typeof (Company), false, typeof (MixinA));
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, baseClassDefinition);
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Company)).Clear().AddMixins (

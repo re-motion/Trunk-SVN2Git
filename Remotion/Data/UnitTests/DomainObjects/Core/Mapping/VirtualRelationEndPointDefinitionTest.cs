@@ -34,13 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _customerClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _customerClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Customer",
           "Customer",
           UnitTestDomainStorageProviderDefinition,
           typeof (Customer),
           false);
-      _customerOrdersEndPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      _customerOrdersEndPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _customerClassDefinition,
           "Orders",
           false,
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithPropertyType ()
     {
-      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(
+      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition(
           _orderClassDefinition,
           "VirtualEndPoint",
           true,
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithSortExpression ()
     {
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _customerClassDefinition,
           "Orders",
           false,
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetSortExpression_Null ()
     {
-      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _orderClassDefinition,
           "OrderItems",
           false,
@@ -134,16 +134,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Dev.Null = endPoint.GetSortExpression();
     }
 
-    private ReflectionBasedVirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
+    [Test]
+    public void PropertyInfo ()
     {
-      var endPoint = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      ClassDefinition employeeClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Employee));
+      VirtualRelationEndPointDefinition relationEndPointDefinition =
+          (VirtualRelationEndPointDefinition) employeeClassDefinition.GetRelationEndPointDefinition (typeof (Employee) + ".Computer");
+      Assert.AreEqual (typeof (Employee).GetProperty ("Computer"), relationEndPointDefinition.PropertyInfo);
+    }
+
+    private VirtualRelationEndPointDefinition CreateFullVirtualEndPoint (string sortExpressionString)
+    {
+      var endPoint = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _orderClassDefinition,
           "OrderItems",
           false,
           CardinalityType.Many,
           typeof (ObjectList<OrderItem>),
           sortExpressionString);
-      var orderItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OrderItem));
+      var orderItemClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
       var oppositeProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Order", typeof (ObjectID));
       var productProperty = PropertyDefinitionFactory.Create (orderItemClassDefinition, "Product", typeof (string));
       orderItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{oppositeProperty, productProperty}, true));

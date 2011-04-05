@@ -33,9 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
       return propertyInfo;
     }
 
-    protected ClassDefinition CreateReflectionBasedClassDefinition (Type type)
+    protected ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      return ClassDefinitionFactory.CreateClassDefinition (
           type.Name,
           type.Name,
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,

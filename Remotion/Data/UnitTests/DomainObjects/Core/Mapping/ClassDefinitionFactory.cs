@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class ClassDefinitionFactory
   {
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         string id,
         string entityName,
         StorageProviderDefinition storageProviderDefinition,
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         string id,
         string entityName,
         StorageProviderDefinition storageProviderDefinition,
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
         string id,
         string entityName,
         Type classType,
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         string id,
         string entityName,
         StorageProviderDefinition storageProviderDefinition,
@@ -94,11 +94,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         bool isAbstract,
         params Type[] persistentMixins)
     {
-      return CreateReflectionBasedClassDefinition (
+      return CreateClassDefinition (
           id, entityName, storageProviderDefinition, classType, isAbstract, null, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         string id,
         string entityName,
         StorageProviderDefinition storageProviderDefinition,
@@ -106,43 +106,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         bool isAbstract,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return CreateReflectionBasedClassDefinition (
+      return CreateClassDefinition (
           id, entityName, storageProviderDefinition, classType, isAbstract, null, null, persistentMixinFinder);
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
+    public static ClassDefinition CreateClassDefinition (Type type, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, mixins);
+      return CreateClassDefinition (type.Name, type.Name, null, type, false, mixins);
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         Type type, StorageProviderDefinition storageProviderDefinition, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, mixins);
+      return CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, mixins);
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         Type type, ClassDefinition baseClass, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, null, type, false, baseClass, mixins);
+      return CreateClassDefinition (type.Name, type.Name, null, type, false, baseClass, mixins);
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinition (
+    public static ClassDefinition CreateClassDefinition (
         Type type, StorageProviderDefinition storageProviderDefinition, ClassDefinition baseClass, params Type[] mixins)
     {
-      return CreateReflectionBasedClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, baseClass, mixins);
+      return CreateClassDefinition (type.Name, type.Name, storageProviderDefinition, type, false, baseClass, mixins);
     }
 
-    public static ClassDefinition CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+    public static ClassDefinition CreateClassDefinitionWithoutStorageEntity (
         Type type, ClassDefinition baseClass)
     {
-      return CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      return CreateClassDefinitionWithoutStorageEntity (
           type.Name, type.Name, type, false, baseClass, new PersistentMixinFinder (type));
     }
 
     public static ClassDefinition CreateFinishedClassDefinition (Type classType, ClassDefinition baseClass)
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (classType, baseClass);
+      var classDefinition = CreateClassDefinition (classType, baseClass);
 
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateFinishedFileSystemItemDefinitionWithDerivedClasses ()
     {
-      var fileSystemItemClassDefinition = CreateReflectionBasedClassDefinition (
+      var fileSystemItemClassDefinition = CreateClassDefinition (
           typeof (FileSystemItem), (ClassDefinition) null, Type.EmptyTypes);
       var fileClassDefinition = CreateFinishedClassDefinition (typeof (File), fileSystemItemClassDefinition);
       var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);

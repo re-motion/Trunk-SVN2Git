@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void CardinalityIsMany ()
     {
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
           _classDefinition, "Property", false, CardinalityType.Many, typeof (DomainObjectCollection), null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void CardinalityIsOne_And_EndPointDefinitionHasNoSortExpression ()
     {
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void CardinalityOne_And_EndPointDefinitionsHaveSortExpression ()
     {
-      var endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition = VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
         _classDefinition, "Property", false, CardinalityType.One, typeof (DerivedValidationDomainObjectClass), null);
       PrivateInvoke.SetNonPublicField (endPointDefinition, "_sortExpressionText", "SortExpression1");
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);

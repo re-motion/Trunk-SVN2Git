@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_PropertyNameDoesNotExist ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new NameBasedPropertyFinder (
           "UnknownPropertyName",
           typeof (DerivedClassWithMappingAttribute),
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void FindMappingProperties_PropertyNameDoesExist ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var propertyFinder = new NameBasedPropertyFinder (
           "Property2",
           typeof (DerivedClassWithMappingAttribute),
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
     [Test]
     public void CreateNewFinder ()
     {
-      var classDefinition = CreateReflectionBasedClassDefinition (typeof (DerivedClassWithMappingAttribute));
+      var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var nameResolver = new ReflectionBasedNameResolver();
       var propertyFinder = new NameBasedPropertyFinder (
           "Property2",

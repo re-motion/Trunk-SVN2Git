@@ -548,7 +548,6 @@
     <Compile Include="MandatoryAttribute.cs" />
     <Compile Include="DBColumnAttribute.cs" />
     <Compile Include="DBTableAttribute.cs" />
-    <Compile Include="Mapping\ReflectionBasedVirtualRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\Configuration\StorageGroupElement.cs" />
     <Compile Include="Persistence\Configuration\TypeProvider.cs" />
     <Compile Include="Infrastructure\PropertyAccessor.cs" />

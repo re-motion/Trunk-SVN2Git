@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void TwoVirtualRelationEndPoints ()
     {
-      var virtualEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var virtualEndPointDefinition = new VirtualRelationEndPointDefinition (
           _orderClass, "OrderNumber", false, CardinalityType.One, typeof (int), "", typeof (Order).GetProperty ("OrderNumber"));
       var relationDefinition = new RelationDefinition ("Test", virtualEndPointDefinition, virtualEndPointDefinition);
 
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void TwoVirtualRelationEndPoint_OneEndPointIsAnonymous ()
     {
       var anonymousEndPointDefinition = new AnonymousRelationEndPointDefinition (_orderClass);
-      var virtualEndPointDefinition = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var virtualEndPointDefinition = new VirtualRelationEndPointDefinition (
           _orderClass, "OrderNumber", false, CardinalityType.One, typeof (int), "", typeof (Order).GetProperty ("OrderNumber"));
       var relationDefinition = new RelationDefinition ("Test", virtualEndPointDefinition, anonymousEndPointDefinition);
 

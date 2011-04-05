@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public IEnumerable<ClassDefinition> GetClassDefinitions ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Fake",
           "Fake",
           new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),

@@ -33,14 +33,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointNamesAreConsistentValidationRule();
-      _classDefinition1 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass1));
-      _classDefinition2 = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass2));
+      _classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
+      _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass2));
     }
 
     [Test]
     public void ValidRelation ()
     {
-      var endPointDefinition1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition1 = new VirtualRelationEndPointDefinition (
           _classDefinition1,
           "RelationProperty2",
           false,
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty2"));
-      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition2 = new VirtualRelationEndPointDefinition (
           _classDefinition2,
           "RelationProperty2",
           false,
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void OppositeRelationPropertyHasNoBidirectionalRelationAttributeDefined ()
     {
-      var endPointDefinition1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition1 = new VirtualRelationEndPointDefinition (
           _classDefinition1,
           "RelationProperty1",
           false,
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty1"));
-      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition2 = new VirtualRelationEndPointDefinition (
           _classDefinition2,
           "RelationPopertyWithoutBidirectionalRelationAttribute",
           false,
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void OppositeRelationPropertyNameDoesNotMatch ()
     {
-      var endPointDefinition1 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition1 = new VirtualRelationEndPointDefinition (
           _classDefinition1,
           "RelationProperty3",
           false,
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           typeof (string),
           null,
           typeof (RelationEndPointPropertyClass1).GetProperty ("RelationProperty3"));
-      var endPointDefinition2 = new ReflectionBasedVirtualRelationEndPointDefinition (
+      var endPointDefinition2 = new VirtualRelationEndPointDefinition (
           _classDefinition2,
           "RelationPopertyWithNonMatchingPropertyName",
           false,

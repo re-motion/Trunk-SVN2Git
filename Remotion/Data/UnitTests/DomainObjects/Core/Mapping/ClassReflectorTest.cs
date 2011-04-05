@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "ClassWithDifferentProperties",
           "ClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateDerivedClassWithDifferentPropertiesClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "DerivedClassWithDifferentProperties",
           "DerivedClassWithDifferentProperties",
           UnitTestDomainStorageProviderDefinition,
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private ClassDefinition CreateClassWithVirtualRelationEndPointsClassDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "ClassWithVirtualRelationEndPoints",
           "ClassWithVirtualRelationEndPoints",
           UnitTestDomainStorageProviderDefinition,
@@ -395,7 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
 
-      return new ReflectionBasedVirtualRelationEndPointDefinition (
+      return new VirtualRelationEndPointDefinition (
           classDefinition,
           MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)),
           isMandatory,

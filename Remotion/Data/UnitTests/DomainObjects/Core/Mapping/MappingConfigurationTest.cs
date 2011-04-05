@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ClassDefinitionsAreValidated ()
     {
       var type = typeof (GenericTypeDomainObject<string>);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
 
       StubMockMappingLoader (classDefinition);
       _mockRepository.ReplayAll();
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyDefinitionsAreValidated ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           type.Name, type.Name, TestDomainStorageProviderDefinition, type, false);
       var propertyInfo = type.GetProperty ("PropertyWithStorageClassNone");
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         + "Property: OrderNumber")]
     public void RelationDefinitionsAreValidated ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationEndPointPropertyClass));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       var relationDefinition =
           FakeMappingConfiguration.Current.RelationDefinitions[
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new IEntityDefinition[]
           { new TableDefinition (UnitTestDomainStorageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]) },
           new IColumnDefinition[0]);
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           UnitTestDomainStorageProviderDefinition,
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void PersistenceModelIsLoaded ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         ExpectedMessage = "The persistence model loader did not assign a storage entity to class 'Order'.")]
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToTheRootClass ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStoragePropertyIsAppliedToTheRootClassProperty ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
       
@@ -383,8 +383,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void VerifyPersistenceModelApplied_NoStorageEntityIsAppliedToDerivedClass ()
     {
       var fakeStorageEntityDefinition = _fakeStorageEntityDefinition;
-      var companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Company), null);
-      var partnerClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
+      var companyClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Company), null);
+      var partnerClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Partner), companyClass);
 
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
@@ -507,10 +507,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ContainsRelationEndPointDefinitionNotInMapping ()
     {
-      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       ClassDefinition orderTicketDefinition =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          ClassDefinitionFactory.CreateClassDefinition (
               "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
       orderTicketDefinition.SetPropertyDefinitions (
           new PropertyDefinitionCollection (
@@ -522,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
-          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
               orderDefinition,
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket",
               true,

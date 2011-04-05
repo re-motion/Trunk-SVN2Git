@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateClassDefinition_WithBaseClass ()
     {
-      var companyClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company));
+      var companyClass = ClassDefinitionFactory.CreateClassDefinition (typeof (Company));
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       companyClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var result = _factory.CreateClassDefinition (typeof (Customer), companyClass);
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo = typeof (Order).GetProperty ("OrderItems");
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
@@ -93,13 +93,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinition ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo = typeof (Order).GetProperty ("OrderItems");
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
 
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedVirtualRelationEndPointDefinition)));
-      Assert.That (((ReflectionBasedVirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (result, Is.TypeOf (typeof (VirtualRelationEndPointDefinition)));
+      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Order), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyInfo1 = typeof (Order).GetProperty ("OrderNumber");
       var propertyInfo2 = typeof (Order).GetProperty ("DeliveryDate");
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (OrderItem));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
       var propertyDefinition = PropertyDefinitionFactory.Create (
           classDefinition, typeof (OrderItem), "Order", "OrderID", typeof (ObjectID), true);
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 

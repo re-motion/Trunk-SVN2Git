@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       _propertyDefinition1 = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           _classDefinition, "Property1", "Property1", typeof (ObjectID), true, null, StorageClass.Persistent);
@@ -86,12 +86,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllRelationEndPoints_ClassDefinitionWithBaseClassDefinition ()
     {
-      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Company", "Company", UnitTestDomainStorageProviderDefinition, typeof (Company), false);
      var basedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           baseClassDefinition, "Property1", "Property1", typeof (ObjectID), true, null, StorageClass.Persistent);
      baseClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { basedPropertyDefinition }, true));
-      var derivedClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      var derivedClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Partner", "Partner", UnitTestDomainStorageProviderDefinition, typeof (Partner), false, baseClassDefinition, new Type[0]);
      var derivedPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           derivedClassDefinition, "Property2", "Property2", typeof(ObjectID),true,null,StorageClass.Persistent);

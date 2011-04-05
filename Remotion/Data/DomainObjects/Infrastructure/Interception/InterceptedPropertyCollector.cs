@@ -84,10 +84,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         if (endPointDefinition.IsVirtual)
         {
-          Assertion.IsTrue (endPointDefinition is ReflectionBasedVirtualRelationEndPointDefinition);
+          Assertion.IsTrue (endPointDefinition is VirtualRelationEndPointDefinition);
 
           string propertyIdentifier = endPointDefinition.PropertyName;
-          PropertyInfo property = ((ReflectionBasedVirtualRelationEndPointDefinition) endPointDefinition).PropertyInfo;
+          PropertyInfo property = ((VirtualRelationEndPointDefinition) endPointDefinition).PropertyInfo;
 
           AnalyzeAndValidateProperty (property, propertyIdentifier);
         }

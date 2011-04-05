@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void SetUp ()
     {
       _validationRule = new ClassAboveTableIsAbstractValidationRule();
-      _abstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _abstractClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
           StorageProviderDefinition,
           typeof (DerivedValidationDomainObjectClass),
           true);
-      _noAbstractClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _noAbstractClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           "EntityName",
           StorageProviderDefinition,

@@ -59,17 +59,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _storageNameProviderStub.Stub (stub => stub.ClassIDColumnName).Return ("ClassID");
       _storageNameProviderStub.Stub (stub => stub.TimestampColumnName).Return ("Timestamp");
       _columnDefinitionFactory = new ColumnDefinitionFactory (_storageTypeCalculatorStub, _storageNameProviderStub, _storageProviderDefinitionFinder);
-      _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithAllDataTypes));
+      _classWithAllDataTypesDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithAllDataTypes));
       _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (FileSystemItem));
+      _fileSystemItemClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (FileSystemItem));
       _fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classAboveDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassNotInMapping));
+      _classAboveDbTableAttribute = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassNotInMapping));
       _classAboveDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classWithDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Company), _classAboveDbTableAttribute);
+      _classWithDbTableAttribute = ClassDefinitionFactory.CreateClassDefinition (typeof (Company), _classAboveDbTableAttribute);
       _classWithDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (Partner), _classWithDbTableAttribute);
+      _classBelowDbTableAttribute = ClassDefinitionFactory.CreateClassDefinition (typeof (Partner), _classWithDbTableAttribute);
       _classBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classBelowBelowDbTableAttribute = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      _classBelowBelowDbTableAttribute = ClassDefinitionFactory.CreateClassDefinition (
           typeof (Distributor), _classBelowDbTableAttribute);
       _classBelowBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
     }

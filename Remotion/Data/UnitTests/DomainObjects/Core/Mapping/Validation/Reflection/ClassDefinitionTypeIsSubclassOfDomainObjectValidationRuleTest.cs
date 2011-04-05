@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ClassDefinitionTypeIsSubClassOfDomainObject ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
       
       var validationResult = _validationRule.Validate (classDefinition);
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ClassDefinitionTypeIsNoSubClassOfDomainObject ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (string));
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (string));
       
       var validationResult = _validationRule.Validate (classDefinition);
 

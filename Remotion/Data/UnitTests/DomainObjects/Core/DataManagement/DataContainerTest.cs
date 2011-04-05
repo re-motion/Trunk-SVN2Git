@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var idValue = Guid.NewGuid();
       var orderClass =
-          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
+          ClassDefinitionFactory.CreateClassDefinition ("Order", "Order", TestDomainStorageProviderDefinition, typeof (Order), false);
 
       _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
       _existingDataContainer = DataContainer.CreateForExisting (

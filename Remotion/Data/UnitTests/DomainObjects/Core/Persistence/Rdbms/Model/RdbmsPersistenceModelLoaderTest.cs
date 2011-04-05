@@ -203,10 +203,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void ApplyPersistenceModelToHierarchy_CreatesNullEntity_ForAbstractClass_WithAbstractDerivedClass_WithoutConcreteDerivations ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (AbstractClassWithoutDerivations),
           null);
-      var derivedClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
+      var derivedClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
 
       derivedClass.SetStorageEntity (new NullEntityDefinition (_storageProviderDefinition));
       classDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true, true));

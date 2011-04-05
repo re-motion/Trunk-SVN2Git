@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         "The PropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithoutClassDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "ClassID", "EntityName", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
       PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         "The PropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithClassDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "ClassID", "EntityName", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
       PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "OrderNumber", "OrderNo", typeof (int), StorageClass.Persistent);
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         "The PropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithUnresolvedNativePropertyType_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
       PropertyDefinition propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "PropertyName", "ColumnName", typeof (int), StorageClass.Persistent);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
               classDefinition, "Order", "OrderID", typeof (ObjectID), false, StorageClass.Persistent);
@@ -113,9 +113,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
-      ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
 
       var orderTicketPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
-          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
               orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
       var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketPropertyDefinition, true);
@@ -150,14 +150,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage =
-        "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
+        "The VirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
 
       VirtualRelationEndPointDefinition endPointdefinition =
-          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
               classDefinition, "OrderTicket", true, CardinalityType.One, typeof (Order));
 
       SerializeAndDeserialize (endPointdefinition);
@@ -165,12 +165,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage =
-        "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
+        "The VirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "Order", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Order), false);
-      ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "OrderTicket", "OrderTicket", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (OrderTicket), false);
 
       var orderTicketPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       orderTicketDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { orderTicketPropertyDefinition }, true));
 
       VirtualRelationEndPointDefinition orderEndPointDefinition =
-          ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition (
+          VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
               orderDefinition, "OrderTicket", true, CardinalityType.One, typeof (OrderTicket));
 
       var orderTicketEndPointdefinition = new RelationEndPointDefinition (orderTicketPropertyDefinition, true);
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     ]
     public void AnonymousRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Client", "Client", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Client), false);
 
       var endPointdefinition = new AnonymousRelationEndPointDefinition (classDefinition);
@@ -224,9 +224,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     ]
     public void AnonymousRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ClassDefinition clientDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition clientDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Client", "Client", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Client), false);
-      ClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+      ClassDefinition locationDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Location", "Location", DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, typeof (Location), false);
 
       var locationPropertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (
