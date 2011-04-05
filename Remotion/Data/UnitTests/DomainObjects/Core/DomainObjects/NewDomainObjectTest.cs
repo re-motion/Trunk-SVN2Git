@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsNotNull (order.ID);
       Assert.AreEqual (StateType.New, order.State);
-			Assert.AreSame (order, order.InternalDataContainer.DomainObject);
+      Assert.AreSame (order, order.InternalDataContainer.DomainObject);
     }
 
     [Test]
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       customer.Name = "Arthur Dent";
 
       Assert.AreEqual ("Arthur Dent", customer.Name);
-			Assert.AreEqual (string.Empty, customer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name"].GetOriginalValue<string>());
+      Assert.AreEqual (string.Empty, customer.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name"].GetOriginalValue<string>());
       Assert.AreEqual (StateType.New, customer.State);
     }
 
@@ -226,11 +226,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.Customer = customer;
       order.OrderItems.Add (orderItem);
 
-			Assert.IsNull (ceo.InternalDataContainer.Timestamp);
-			Assert.IsNull (customer.InternalDataContainer.Timestamp);
-			Assert.IsNull (order.InternalDataContainer.Timestamp);
-			Assert.IsNull (orderTicket.InternalDataContainer.Timestamp);
-			Assert.IsNull (orderItem.InternalDataContainer.Timestamp);
+      Assert.IsNull (ceo.InternalDataContainer.Timestamp);
+      Assert.IsNull (customer.InternalDataContainer.Timestamp);
+      Assert.IsNull (order.InternalDataContainer.Timestamp);
+      Assert.IsNull (orderTicket.InternalDataContainer.Timestamp);
+      Assert.IsNull (orderItem.InternalDataContainer.Timestamp);
 
       ClientTransactionMock.Commit ();
       ReInitializeTransaction ();
@@ -271,11 +271,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (42, order.OrderNumber);
       Assert.AreEqual (new DateTime (2005, 2, 1), order.DeliveryDate);
 
-			Assert.IsNotNull (ceo.InternalDataContainer.Timestamp);
-			Assert.IsNotNull (customer.InternalDataContainer.Timestamp);
-			Assert.IsNotNull (order.InternalDataContainer.Timestamp);
-			Assert.IsNotNull (orderTicket.InternalDataContainer.Timestamp);
-			Assert.IsNotNull (orderItem.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (ceo.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (customer.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (order.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (orderTicket.InternalDataContainer.Timestamp);
+      Assert.IsNotNull (orderItem.InternalDataContainer.Timestamp);
     }
 
     [Test]
