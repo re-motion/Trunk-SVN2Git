@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         return new FakeStoragePropertyDefinition (name);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType)
+    public static PropertyDefinition Create (ClassDefinition classDefinition, string propertyName, Type propertyType)
     {
       return Create (
           classDefinition,
@@ -62,14 +62,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (propertyName));
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition, Type declaringClassType, string propertyName, string columnName, Type propertyType)
     {
       return Create (
           classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), null, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition, declaringClassType, propertyName, columnName, propertyType, IsNullable (propertyType), maxLength, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return Create (classDefinition, declaringClassType, propertyName, columnName, propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition();
       var fullPropertyName = originalDeclaringType.FullName + "." + propertyName;
 
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           classDefinition,
           propertyInfo,
           fullPropertyName,
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return propertyDefinition;
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         Type declaringClassType,
         string propertyName,
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition columnDefinition)
     {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           classDefinition,
           propertyInfo,
           propertyName,
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return propertyDefinition;
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo)
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (propertyInfo.Name));
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           storagePropertyDefinition);
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (propertyInfo.Name));
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         StorageClass storageClass,
         PropertyInfo propertyInfo,
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (columnName));
     }
 
-    public static ReflectionBasedPropertyDefinition Create (
+    public static PropertyDefinition Create (
         ClassDefinition classDefinition,
         string propertyName,
         Type propertyType,
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         PropertyInfo propertyInfo,
         IStoragePropertyDefinition columnDefinition)
     {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           classDefinition,
           propertyInfo,
           propertyName,
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return propertyDefinition;
     }
 
-    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
+    public static PropertyDefinition CreateForFakePropertyInfo (
         ClassDefinition classDefinition, string propertyName, string columnName, StorageClass storageClass)
     {
       var fakePropertyInfo = GetFakePropertyInfo();
@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (columnName));
     }
 
-    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
+    public static PropertyDefinition CreateForFakePropertyInfo (
         ClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, StorageClass storageClass)
     {
       var fakePropertyInfo = GetFakePropertyInfo();
@@ -296,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           GetFakeStorageProperty (columnName));
     }
 
-    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
+    public static PropertyDefinition CreateForFakePropertyInfo (
         ClassDefinition classDefinition,
         string propertyName,
         string columnName,
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition, propertyName, propertyType, isNullable, null, storageClass, GetFakePropertyInfo(), GetFakeStorageProperty (columnName));
     }
 
-    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
+    public static PropertyDefinition CreateForFakePropertyInfo (
         ClassDefinition classDefinition,
         string propertyName,
         string columnName,
@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           classDefinition, propertyName, propertyType, isNullable, maxLength, storageClass, GetFakePropertyInfo(), GetFakeStorageProperty (columnName));
     }
 
-    public static ReflectionBasedPropertyDefinition CreateForFakePropertyInfo (
+    public static PropertyDefinition CreateForFakePropertyInfo (
         ClassDefinition classDefinition, string propertyName, string columnName)
     {
       var fakePropertyInfo = GetFakePropertyInfo();

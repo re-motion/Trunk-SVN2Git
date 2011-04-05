@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     {
       ValidateBaseType ();
 
-      foreach (ReflectionBasedPropertyDefinition propertyDefinition in _classDefinition.GetPropertyDefinitions ())
+      foreach (PropertyDefinition propertyDefinition in _classDefinition.GetPropertyDefinitions ())
       {
         PropertyInfo property = propertyDefinition.PropertyInfo;
         string propertyIdentifier = propertyDefinition.PropertyName;

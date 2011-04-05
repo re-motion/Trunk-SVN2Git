@@ -48,13 +48,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private readonly ClassDefinition _derivedClassDefinition2;
     private readonly ClassDefinition _derivedDerivedClassDefinition;
     private readonly ClassDefinition _derivedDerivedDerivedClassDefinition;
-    private readonly ReflectionBasedPropertyDefinition _baseBasePropertyDefinition;
-    private readonly ReflectionBasedPropertyDefinition _basePropertyDefinition;
-    private readonly ReflectionBasedPropertyDefinition _tablePropertyDefinition1;
-    private readonly ReflectionBasedPropertyDefinition _tablePropertyDefinition2;
-    private readonly ReflectionBasedPropertyDefinition _derivedPropertyDefinition1;
-    private readonly ReflectionBasedPropertyDefinition _derivedPropertyDefinition2;
-    private readonly ReflectionBasedPropertyDefinition _derivedDerivedPropertyDefinition;
+    private readonly PropertyDefinition _baseBasePropertyDefinition;
+    private readonly PropertyDefinition _basePropertyDefinition;
+    private readonly PropertyDefinition _tablePropertyDefinition1;
+    private readonly PropertyDefinition _tablePropertyDefinition2;
+    private readonly PropertyDefinition _derivedPropertyDefinition1;
+    private readonly PropertyDefinition _derivedPropertyDefinition2;
+    private readonly PropertyDefinition _derivedDerivedPropertyDefinition;
 
     public RdbmsPersistenceModelLoaderTestHelper ()
     {
@@ -149,42 +149,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       get { return _derivedDerivedDerivedClassDefinition; }
     }
 
-    public ReflectionBasedPropertyDefinition BaseBasePropertyDefinition
+    public PropertyDefinition BaseBasePropertyDefinition
     {
       get { return _baseBasePropertyDefinition; }
     }
 
-    public ReflectionBasedPropertyDefinition BasePropertyDefinition
+    public PropertyDefinition BasePropertyDefinition
     {
       get { return _basePropertyDefinition; }
     }
 
-    public ReflectionBasedPropertyDefinition TablePropertyDefinition1
+    public PropertyDefinition TablePropertyDefinition1
     {
       get { return _tablePropertyDefinition1; }
     }
 
-    public ReflectionBasedPropertyDefinition TablePropertyDefinition2
+    public PropertyDefinition TablePropertyDefinition2
     {
       get { return _tablePropertyDefinition2; }
     }
 
-    public ReflectionBasedPropertyDefinition DerivedPropertyDefinition1
+    public PropertyDefinition DerivedPropertyDefinition1
     {
       get { return _derivedPropertyDefinition1; }
     }
 
-    public ReflectionBasedPropertyDefinition DerivedPropertyDefinition2
+    public PropertyDefinition DerivedPropertyDefinition2
     {
       get { return _derivedPropertyDefinition2; }
     }
 
-    public ReflectionBasedPropertyDefinition DerivedDerivedPropertyDefinition
+    public PropertyDefinition DerivedDerivedPropertyDefinition
     {
       get { return _derivedDerivedPropertyDefinition; }
     }
 
-    private ReflectionBasedPropertyDefinition CreateAndAddPropertyDefinition (
+    private PropertyDefinition CreateAndAddPropertyDefinition (
         ClassDefinition classDefinition, string propertyName, PropertyInfo propertyInfo)
     {
       var propertyDefinition = ReflectionBasedPropertyDefinitionFactory.Create (

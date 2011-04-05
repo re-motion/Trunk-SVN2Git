@@ -25,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private readonly PropertyInfo _propertyInfo;
 
     public TestablePropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
-        : base (classDefinition, propertyName, maxLength, storageClass)
+        : base (classDefinition, typeof(string).GetProperty("Length"), propertyName, typeof(object), false, maxLength, storageClass)
     {
     }
 
 
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
-      : base (classDefinition, propertyInfo.Name, maxLength, storageClass)
+      : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
       _propertyInfo = propertyInfo;
     }

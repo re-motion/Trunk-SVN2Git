@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   {
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = 
-        "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
+        "The PropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithoutClassDefinition_NotInMapping ()
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = 
-        "The ReflectionBasedPropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
+        "The PropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithClassDefinition_NotInMapping ()
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = 
-        "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
+        "The PropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithUnresolvedNativePropertyType_NotInMapping ()
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (

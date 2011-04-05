@@ -16,16 +16,18 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}")]
-  public abstract class PropertyDefinition : SerializableMappingObject
+  public class PropertyDefinition : SerializableMappingObject
   {
     // types
 
@@ -50,18 +52,50 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private IStoragePropertyDefinition _storagePropertyDefinition;
 
+    [NonSerialized]
+    private readonly PropertyInfo _propertyInfo;
+
+    [NonSerialized]
+    private readonly Type _propertyType;
+
+    [NonSerialized]
+    private readonly bool _isNullable;
+
     // construction and disposing
 
-    protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
+    public PropertyDefinition (
+        ClassDefinition classDefinition,
+        PropertyInfo propertyInfo,
+        string propertyName,
+        Type propertyType,
+        bool isNullable,
+        int? maxLength,
+        StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
+
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = classDefinition.ID;
       _propertyName = propertyName;
       _maxLength = maxLength;
       _storageClass = storageClass;
+
+      if (propertyType.IsValueType && Nullable.GetUnderlyingType (propertyType) == null && isNullable)
+        throw CreateArgumentException (propertyName, "Properties cannot be nullable when they have a non-nullable value type.");
+
+      //TODO: change byte[] to all arrays. Will have repurcussions in several places -> Search for byte[]
+      if (propertyType != typeof (string) && propertyType != typeof (byte[]) && maxLength.HasValue)
+      {
+        throw CreateArgumentException (
+            propertyName, "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type '{0}'.", propertyType);
+      }
+
+      _propertyInfo = propertyInfo;
+      _propertyType = propertyType;
+      _isNullable = isNullable;
     }
 
     // methods and properties
@@ -86,20 +120,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         return _storagePropertyDefinition;
       }
     }
-
-    public abstract Type PropertyType { get; }
-
-    public abstract bool IsPropertyTypeResolved { get;  }
-
-    public abstract PropertyInfo PropertyInfo { get;  }
-
-    public abstract bool IsPropertyInfoResolved { get; }
-
-    public abstract bool IsNullable { get; }
-
-    public abstract object DefaultValue { get; }
-
-    public abstract bool IsObjectID { get; }
 
     public int? MaxLength
     {
@@ -143,6 +163,65 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get { return PropertyName; }
     }
+
+    public virtual PropertyInfo PropertyInfo
+    {
+      get { return _propertyInfo; }
+    }
+
+    public virtual bool IsPropertyInfoResolved
+    {
+      get { return true; }
+    }
+
+    public virtual Type PropertyType
+    {
+      get { return _propertyType; }
+    }
+
+    public virtual bool IsPropertyTypeResolved
+    {
+      get { return true; }
+    }
+
+    public virtual object DefaultValue
+    {
+      get
+      {
+        if (_isNullable)
+          return null;
+
+        if (_propertyType.IsArray)
+          return Array.CreateInstance (_propertyType.GetElementType(), 0);
+
+        if (_propertyType == typeof (string))
+          return string.Empty;
+
+        if (_propertyType.IsEnum)
+          return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
+
+        if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
+          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos().First().Value;
+
+        return Activator.CreateInstance (_propertyType, new object[0]);
+      }
+    }
+
+    public virtual bool IsNullable
+    {
+      get { return _isNullable; }
+    }
+
+    public virtual bool IsObjectID
+    {
+      get { return _propertyType == typeof (ObjectID); }
+    }
+
     #endregion
+
+    private ArgumentException CreateArgumentException (string propertyName, string message, params object[] args)
+    {
+      return new ArgumentException (string.Format (message, args) + "\r\n  Property: " + propertyName);
+    }
   }
 }

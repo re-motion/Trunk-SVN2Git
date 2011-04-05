@@ -70,10 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition2 = classDefinition1.BaseClass;
 
       var propertyDefinition1 =
-          (ReflectionBasedPropertyDefinition)
           classDefinition1.GetMandatoryPropertyDefinition (property1.DeclaringType.FullName + "." + property1.Name);
       var propertyDefinition2 =
-          (ReflectionBasedPropertyDefinition)
           classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
 
       Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (property1));

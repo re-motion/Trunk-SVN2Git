@@ -35,11 +35,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _classDefinition = classDefinition;
     }
 
-    public ReflectionBasedPropertyDefinition GetMetadata ()
+    public PropertyDefinition GetMetadata ()
     {
       PropertyInfo propertyInfo = PropertyInfo;
       
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           _classDefinition,
           propertyInfo,
           GetPropertyName(),

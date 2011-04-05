@@ -190,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           classDefinition,
           dummyPropertyInfo,
           propertyName,

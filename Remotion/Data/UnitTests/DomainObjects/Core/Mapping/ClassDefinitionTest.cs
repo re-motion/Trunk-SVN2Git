@@ -1210,8 +1210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PropertyInfoWithSimpleProperty ()
     {
       PropertyInfo property = typeof (Order).GetProperty ("OrderNumber");
-      var propertyDefinition =
-          (ReflectionBasedPropertyDefinition) _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
+      var propertyDefinition = _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
       Assert.AreEqual (property, propertyDefinition.PropertyInfo);
     }
 

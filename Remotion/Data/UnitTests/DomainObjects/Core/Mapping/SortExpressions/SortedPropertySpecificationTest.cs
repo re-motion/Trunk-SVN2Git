@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       _orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       _productPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
       _positionPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
       var propertyDefinition = classDefinition.GetPropertyDefinition (typeof (ClassWithAllDataTypes).FullName + ".BinaryProperty");
-      
+
       new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
     }
 
@@ -70,7 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     public void Initialization_NotResolvedType ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
-      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (classDefinition, "BinaryProperty", null, StorageClass.Persistent);
+      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (
+          classDefinition, typeof (string).GetProperty ("Length"), "BinaryProperty", typeof (int), false, null, StorageClass.Persistent);
       Assert.That (fakePropertyDefinition.IsPropertyTypeResolved, Is.False);
 
       var result = new SortedPropertySpecification (fakePropertyDefinition, SortOrder.Ascending);
@@ -84,8 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
       var specificationAsc = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Ascending);
       var specificationDesc = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Descending);
 
-      Assert.That (specificationAsc.ToString (), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product ASC"));
-      Assert.That (specificationDesc.ToString (), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product DESC"));
+      Assert.That (specificationAsc.ToString(), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product ASC"));
+      Assert.That (specificationDesc.ToString(), Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product DESC"));
     }
 
     [Test]

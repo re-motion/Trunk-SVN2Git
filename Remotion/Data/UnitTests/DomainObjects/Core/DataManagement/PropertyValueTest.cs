@@ -657,7 +657,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.ReflectionBasedPropertyDefinition: OrderNumber'; the properties "
+        "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.PropertyDefinition: OrderNumber'; the properties "
         + "do not have the same property definition.\r\nParameter name: source")]
     public void SetValueFrom_InvalidDefinition ()
     {

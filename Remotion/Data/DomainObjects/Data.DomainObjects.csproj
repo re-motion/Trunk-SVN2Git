@@ -524,7 +524,6 @@
     <Compile Include="Infrastructure\ValuePropertyAccessorStrategy.cs" />
     <Compile Include="LoadMode.cs" />
     <Compile Include="Mapping\PersistentMixinFinder.cs" />
-    <Compile Include="Mapping\ReflectionBasedPropertyDefinition.cs" />
     <Compile Include="InstantiableAttribute.cs" />
     <Compile Include="ConfigurationLoader\IMappingLoader.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IMappingAttribute.cs" />

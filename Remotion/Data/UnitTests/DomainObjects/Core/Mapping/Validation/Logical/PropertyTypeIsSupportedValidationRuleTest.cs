@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void NoRelationProperty_SupportedType ()
     {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           _classDefinition,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           "PropertyWithStorageClassPersistent",
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void NoRelationProperty_UnsupportedType ()
     {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           _classDefinition,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent"),
           "PropertyWithTypeObjectWithStorageClassPersistent",
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void RelationProperty ()
     {
-      var propertyDefinition = new ReflectionBasedPropertyDefinition (
+      var propertyDefinition = new PropertyDefinition (
           _classDefinition,
           typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent"),
           "RelationPropertyWithStorageClassPersistent",

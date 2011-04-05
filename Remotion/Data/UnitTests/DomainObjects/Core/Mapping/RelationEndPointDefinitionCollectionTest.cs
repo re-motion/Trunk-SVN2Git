@@ -31,10 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _classDefinition;
     private RelationEndPointDefinition _endPoint1;
     private RelationEndPointDefinition _endPoint2;
-    private ReflectionBasedPropertyDefinition _propertyDefinition1;
-    private ReflectionBasedPropertyDefinition _propertyDefinition2;
-    private ReflectionBasedPropertyDefinition _propertyDefinition3;
-    private ReflectionBasedPropertyDefinition _propertyDefinition4;
+    private PropertyDefinition _propertyDefinition1;
+    private PropertyDefinition _propertyDefinition2;
+    private PropertyDefinition _propertyDefinition3;
+    private PropertyDefinition _propertyDefinition4;
 
     public override void SetUp ()
     {

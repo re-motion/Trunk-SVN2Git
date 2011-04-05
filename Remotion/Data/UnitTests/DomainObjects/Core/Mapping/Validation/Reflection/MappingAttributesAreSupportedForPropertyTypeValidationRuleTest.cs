@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InvalidPropertyWithStringPropertyAttribute ()
     {
       var propertyInfo = _invalidType.GetProperty ("IntPropertyWithStringPropertyAttribute");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void InvalidPropertyWithBinaryPropertyAttribute ()
     {
       var propertyInfo = _invalidType.GetProperty ("BoolPropertyWithBinaryPropertyAttribute");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ValidPropertyWithExtensibleEnumPropertyAttribute ()
     {
       var propertyInfo = _validType.GetProperty ("ExtensibleEnumProperty");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       _classDefinition.SetReadOnly ();
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ValidPropertyWithMandatoryPropertyAttribute ()
     {
       var propertyInfo = _validType.GetProperty ("MandatoryProperty");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void ValidValidPropertyWithBidirectionalRelationAttribute ()
     {
       var propertyInfo = _validType.GetProperty ("BidirectionalRelationProperty");
-      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, 20, StorageClass.Persistent);
+      var propertyDefinition = new TestablePropertyDefinition (_classDefinition, propertyInfo, null, StorageClass.Persistent);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition}, true));
       _classDefinition.SetReadOnly ();
 
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var propertyDefinition2 = new TestablePropertyDefinition (_classDefinition, propertyInfo2, 20, StorageClass.Persistent);
 
       var propertyInfo3 = _invalidType.GetProperty ("BoolPropertyWithBinaryPropertyAttribute");
-      var propertyDefinition3 = new TestablePropertyDefinition (_classDefinition, propertyInfo3, 20, StorageClass.Persistent);
+      var propertyDefinition3 = new TestablePropertyDefinition (_classDefinition, propertyInfo3, null, StorageClass.Persistent);
 
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2, propertyDefinition3}, true));
       _classDefinition.SetReadOnly ();

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
 
       Assert.That (actual.ClassDefinition, Is.SameAs (_classDefinition));
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithReferenceType_IsNullableFalse ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithReferenceType_IsNullableTrue ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.True);
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithNonNullableValueType_IsNullableFalse ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
     }
@@ -87,13 +87,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Properties cannot be nullable when they have a non-nullable value type.\r\n  Property: Test")]
     public void Initialize_WithNonNullableValueType_IsNullableTrue ()
     {
-      new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), true, null, StorageClass.Persistent);
+      new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), true, null, StorageClass.Persistent);
     }
 
     [Test]
     public void Initialize_WithNullableValueType_IsNullableFalse ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (int?), false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithNullableValueType_IsNullableTrue ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), true, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), true, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.True);
     }
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithString_MaxLengthSet ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, 50, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, 50, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.EqualTo (50));
     }
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithString_MaxLengthNotSet ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithByteArray_MaxLengthSet ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), true, 50, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), true, 50, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.EqualTo (50));
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithByteArrayString_MaxLengthNotSet ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (
+      var actual = new PropertyDefinition (
           _classDefinition, _propertyInfo, "Test", typeof (byte[]), true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
@@ -146,13 +146,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type 'System.Int32'.\r\n  Property: Test")]
     public void Initialize_WithOtherType_MaxLengthSet ()
     {
-      new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, 50, StorageClass.Persistent);
+      new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, 50, StorageClass.Persistent);
     }
 
     [Test]
     public void Initialize_WithOtherType_MaxLengthNotSet ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }
@@ -160,59 +160,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsObjectID_True ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (ObjectID), false, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (ObjectID), false, null, StorageClass.Persistent);
       Assert.IsTrue (actual.IsObjectID);
     }
 
     [Test]
     public void IsObjectID_False ()
     {
-      var actual = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
       Assert.IsFalse (actual.IsObjectID);
     }
 
     [Test]
     public void DefaultValue_Nullable ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), true, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int?), true, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.Null);
 
-      var nullableReferenceProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
+      var nullableReferenceProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
       Assert.That (nullableReferenceProperty.DefaultValue, Is.Null);
     }
 
     [Test]
     public void DefaultValue_NotNullable_Array ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (new byte[0]));
     }
 
     [Test]
     public void DefaultValue_NotNullable_String ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (""));
     }
 
     [Test]
     public void DefaultValue_NotNullable_Enum ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (EnumNotDefiningZero), false, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (EnumNotDefiningZero), false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (EnumNotDefiningZero.First));
     }
 
     [Test]
     public void DefaultValue_NotNullable_ExtensibleEnum ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (Color), false, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (Color), false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (Color.Values.Blue()));
     }
 
     [Test]
     public void DefaultValue_NotNullable_OtherType ()
     {
-      var nullableValueProperty = new ReflectionBasedPropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
+      var nullableValueProperty = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (int), false, null, StorageClass.Persistent);
       Assert.That (nullableValueProperty.DefaultValue, Is.EqualTo (0));
     }
 
