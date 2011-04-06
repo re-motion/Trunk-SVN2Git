@@ -106,15 +106,14 @@ namespace Remotion.Collections
 
     public ICollection<TKey> Keys
     {
-      get { throw new NotSupportedException ("Dictionary is read-only (IDictionary.Keys does not guarantee immutability)."); }
+      get { return new ReadOnlyCollectionDecorator<TKey> (_dictionary.Keys); }
     }
 
     public ICollection<TValue> Values
     {
-      get { throw new NotSupportedException ("Dictionary is read-only (IDictionary.Values does not guarantee immutability)."); }
+      get { return new ReadOnlyCollectionDecorator<TValue> (_dictionary.Values); }
     }
-
-
+    
     public override string ToString ()
     {
       return _dictionary.ToString();

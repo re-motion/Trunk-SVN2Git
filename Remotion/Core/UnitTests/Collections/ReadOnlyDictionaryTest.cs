@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
+using System.Linq;
 
 namespace Remotion.UnitTests.Collections
 {
@@ -150,19 +151,21 @@ namespace Remotion.UnitTests.Collections
 
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Dictionary is read-only (IDictionary.Keys does not guarantee immutability).")]
     public void IDictionary_Keys ()
     {
-      var dummy = _readOnlyDictionaryAsIDictionary.Keys;
+      var keys = _readOnlyDictionaryAsIDictionary.Keys;
+
+      Assert.That (keys, Is.TypeOf (typeof (ReadOnlyCollectionDecorator<string>)));
+      Assert.That (keys.ToArray(), Is.EqualTo (new[] { "a", "b", "c" }));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage = "Dictionary is read-only (IDictionary.Values does not guarantee immutability).")]
     public void IDictionary_Values ()
     {
-      var dummy = _readOnlyDictionaryAsIDictionary.Values;
+      var values = _readOnlyDictionaryAsIDictionary.Values;
+
+      Assert.That (values, Is.TypeOf (typeof (ReadOnlyCollectionDecorator<string>)));
+      Assert.That (values.ToArray (), Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
     }
   }
 }
