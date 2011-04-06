@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -87,7 +86,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [Ignore("TODO: NUnit Upgrade Problem")]
     public void GetFlattenedRelatedObjectGraph_TraversalFilter ()
     {
       var repository = new MockRepository();
@@ -143,21 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Set<DomainObject> result = new DomainObjectGraphTraverser (order, strategy).GetFlattenedRelatedObjectGraph();
       var expected = new DomainObject[] {order, order.Official, order.OrderTicket, order.OrderItems[0], order.OrderItems[1],
-          order.Customer, order.Customer.Ceo, order.Customer.Ceo.Company, order.Customer.IndustrialSector,
+          order.Customer, order.Customer.Ceo, order.Customer.IndustrialSector,
           order.Customer.IndustrialSector.Companies[1], order.Customer.IndustrialSector.Companies[1].Ceo,
           order.Customer.IndustrialSector.Companies[2], order.Customer.IndustrialSector.Companies[2].Ceo };
 
-      //TODO: Remove
-      Console.WriteLine ("Test");
-      foreach (var domainObject in result.Except (expected).ToArray ())
-      {
-        Console.WriteLine ("43534");
-        Console.WriteLine (domainObject); 
-      }
-
-      Assert.That (result, Is.EquivalentTo(expected));
-
-      repository.VerifyAll();
+      repository.VerifyAll ();
+      Assert.That (result, Is.EquivalentTo (expected));
     }
 
     [Test]
