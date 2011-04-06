@@ -522,6 +522,7 @@ function SmartPage_Context(
             _isSubmittingBeforeUnload = true;
 
             this.Backup();
+            ExecuteEventHandlers(_eventHandlers['onpostback'], _theForm.__EVENTTARGET.value, _theForm.__EVENTARGUMENT.value);
             return true;
           }
           else
