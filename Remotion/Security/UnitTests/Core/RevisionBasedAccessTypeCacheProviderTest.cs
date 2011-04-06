@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Configuration;
 using Remotion.Context;
@@ -148,7 +147,7 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.AreEqual ("MyProvider", deserializedProvider.Name);
       Assert.AreEqual ("The Description", deserializedProvider.Description);
-      Assert.IsInstanceOfType (typeof (InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
+      Assert.IsInstanceOf (typeof (InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
       Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache());
       Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
 

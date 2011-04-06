@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.Configuration;

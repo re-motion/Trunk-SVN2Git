@@ -16,40 +16,28 @@
 // 
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
+using System.Text;
+using NUnit.Framework.Constraints;
 using Remotion.Security.Metadata;
 
 namespace Remotion.Security.UnitTests.Core.Metadata
 {
-#pragma warning disable 612,618 // Asserters are obsolete
-  public class EnumValueInfoListContentsAsserter : AbstractAsserter
-#pragma warning restore 612,618
+  public class EnumValueInfoListContentsConstraint : Constraint
   {
-    // types
-
-    // static members
-
-    // member fields
-
     private string _expectedName;
-    private IList<EnumValueInfo> _list;
 
-    // construction and disposing
-
-    public EnumValueInfoListContentsAsserter (string expectedName, IList<EnumValueInfo> list, string message, params object[] args)
-      : base (message, args)
+    public EnumValueInfoListContentsConstraint (string expectedName)
     {
       _expectedName = expectedName;
-      _list = list;
     }
 
-    // methods and properties
-
-    public override bool Test ()
+    public override bool Matches (object actual)
     {
-      if (_list != null)
+      base.actual = actual;
+      var actualAsEnumValueInfoList = actual as List<EnumValueInfo>;
+      if (actualAsEnumValueInfoList != null)
       {
-        foreach (EnumValueInfo value in _list)
+        foreach (var value in actualAsEnumValueInfoList)
         {
           if (string.Equals (value.Name, _expectedName, StringComparison.Ordinal))
             return true;
@@ -59,20 +47,26 @@ namespace Remotion.Security.UnitTests.Core.Metadata
       return false;
     }
 
-    public override string Message
+    public override void WriteDescriptionTo (MessageWriter writer)
     {
-      get
-      {
-        FailureMessage.DisplayExpectedValue (_expectedName);
-        FailureMessage.DisplayListElements ("\t but was: ", ExtractNames (_list), 0, 10);
+      throw new NotImplementedException();
+    }
 
-        return base.FailureMessage.ToString ();
-      }
+    public override void WriteMessageTo (MessageWriter writer)
+    {
+      var message = new StringBuilder();
+      message.Append ("Expected: ");
+      message.Append (_expectedName);
+      message.Append("\t but was: ");
+      message.Append (String.Join(", ", ExtractNames (((IList<EnumValueInfo>) actual)).ToArray()));
+
+      writer.Write (message.ToString());
     }
 
     private List<string> ExtractNames (IList<EnumValueInfo> list)
     {
-      if (_list == null)
+      var actualAsEnumValueInfoList = base.actual as IList<EnumValueInfo>;
+      if (actualAsEnumValueInfoList == null)
         return null;
 
       List<string> actualNames = new List<string> ();

@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (MetadataToXmlConverter), converter);
+      Assert.IsInstanceOf (typeof (MetadataToXmlConverter), converter);
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsNull (localizingConverter.MetadataConverter);
       Assert.AreEqual (1, localizingConverter.Cultures.Length);
@@ -63,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsNull (localizingConverter.MetadataConverter);
       Assert.AreEqual (1, localizingConverter.Cultures.Length);
@@ -77,7 +77,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsNull (localizingConverter.MetadataConverter);
       Assert.AreEqual (1, localizingConverter.Cultures.Length);
@@ -92,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsNull (localizingConverter.MetadataConverter);
       Assert.AreEqual (2, localizingConverter.Cultures.Length);
@@ -109,9 +109,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
-      Assert.IsInstanceOfType (typeof (MetadataToXmlConverter), localizingConverter.MetadataConverter);
+      Assert.IsInstanceOf (typeof (MetadataToXmlConverter), localizingConverter.MetadataConverter);
       Assert.AreEqual (2, localizingConverter.Cultures.Length);
       Assert.AreEqual ("de", localizingConverter.Cultures[0].TwoLetterISOLanguageName);
       Assert.AreEqual ("fr", localizingConverter.Cultures[1].TwoLetterISOLanguageName);
@@ -125,7 +125,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
       IMetadataConverter converter = _converterBuilder.Create ();
 
-      Assert.IsInstanceOfType (typeof (LocalizingMetadataConverter), converter);
+      Assert.IsInstanceOf (typeof (LocalizingMetadataConverter), converter);
       LocalizingMetadataConverter localizingConverter = (LocalizingMetadataConverter) converter;
       Assert.IsNull (localizingConverter.MetadataConverter);
       Assert.AreEqual (2, localizingConverter.Cultures.Length);

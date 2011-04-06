@@ -47,7 +47,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetUser()
     {
-      Assert.IsInstanceOfType (typeof (NullSecurityPrincipal), _provider.GetPrincipal());
+      Assert.IsInstanceOf (typeof (NullSecurityPrincipal), _provider.GetPrincipal());
     }
 
     [Test]

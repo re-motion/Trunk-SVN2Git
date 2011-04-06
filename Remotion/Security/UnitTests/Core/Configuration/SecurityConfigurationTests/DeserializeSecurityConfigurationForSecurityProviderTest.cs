@@ -31,7 +31,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (NullSecurityProvider), Configuration.SecurityProvider);
+      Assert.IsInstanceOf (typeof (NullSecurityProvider), Configuration.SecurityProvider);
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security defaultSecurityProvider=""None"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (NullSecurityProvider), Configuration.SecurityProvider);
+      Assert.IsInstanceOf (typeof (NullSecurityProvider), Configuration.SecurityProvider);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
       Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::SecurityService", true);
 
-      Assert.IsInstanceOfType (expectedType, Configuration.SecurityProvider);
+      Assert.IsInstanceOf (expectedType, Configuration.SecurityProvider);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (SecurityProviderMock), Configuration.SecurityProvider);
+      Assert.IsInstanceOf (typeof (SecurityProviderMock), Configuration.SecurityProvider);
     }
 
     [Test]
@@ -99,8 +99,8 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (2, Configuration.SecurityProviders.Count);
-      Assert.IsInstanceOfType (typeof (SecurityProviderMock), Configuration.SecurityProviders["Custom"]);
-      Assert.IsInstanceOfType (typeof (NullSecurityProvider), Configuration.SecurityProvider);
+      Assert.IsInstanceOf (typeof (SecurityProviderMock), Configuration.SecurityProviders["Custom"]);
+      Assert.IsInstanceOf (typeof (NullSecurityProvider), Configuration.SecurityProvider);
       Assert.AreSame (Configuration.SecurityProvider, Configuration.SecurityProviders["None"]);
     }
 

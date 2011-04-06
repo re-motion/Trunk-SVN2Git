@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void Initialize ()
     {
-      Assert.IsInstanceOfType (typeof (IAccessTypeReflector), _accessTypeReflector);
+      Assert.IsInstanceOf (typeof (IAccessTypeReflector), _accessTypeReflector);
       Assert.AreSame (_enumeratedTypeReflector, _accessTypeReflector.EnumerationTypeReflector);
     }
 

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
@@ -39,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.MemberResolverTests
     {
       var methodInformation = _resolver.GetMethodInformation (typeof (SecurableObject), "CheckPermissions", MemberAffiliation.Static);
 
-      Assert.That (methodInformation, Is.InstanceOfType (typeof(NullMethodInformation)));
+      Assert.That (methodInformation, Is.InstanceOf (typeof(NullMethodInformation)));
     }
 
     [Test]

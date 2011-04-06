@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 using Rhino.Mocks;

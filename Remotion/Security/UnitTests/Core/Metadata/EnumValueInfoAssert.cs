@@ -25,9 +25,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
   {
     public static void Contains (string expectedName, IList<EnumValueInfo> list, string message, params object[] args)
     {
-#pragma warning disable 612,618 // Asserters are obsolete
-      Assert.DoAssert (new EnumValueInfoListContentsAsserter(expectedName, list, message, args));
-#pragma warning restore 612,618
+      var constraint = new EnumValueInfoListContentsConstraint (expectedName);
+      Assert.That (list, constraint);
     }
 
     public static void Contains (string expectedName, IList<EnumValueInfo> list, string message)

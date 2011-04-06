@@ -32,7 +32,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (2, Configuration.GlobalAccessTypeCacheProviders.Count);
-      Assert.IsInstanceOfType (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
       Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["None"]);
     }
 
@@ -49,7 +49,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security defaultGlobalAccessTypeCacheProvider=""None"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       string xmlFragment = @"<remotion.security defaultGlobalAccessTypeCacheProvider=""RevisionBased"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (RevisionBasedAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (RevisionBasedAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProvider);
       Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["Custom"]);
     }
 
@@ -92,8 +92,8 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (3, Configuration.GlobalAccessTypeCacheProviders.Count);
-      Assert.IsInstanceOfType (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProviders["Custom"]);
-      Assert.IsInstanceOfType (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (GlobalAccessTypeCacheProviderMock), Configuration.GlobalAccessTypeCacheProviders["Custom"]);
+      Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), Configuration.GlobalAccessTypeCacheProvider);
       Assert.AreSame (Configuration.GlobalAccessTypeCacheProvider, Configuration.GlobalAccessTypeCacheProviders["None"]);
     }
 

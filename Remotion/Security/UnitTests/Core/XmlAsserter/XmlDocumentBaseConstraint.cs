@@ -18,53 +18,51 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using NUnit.Framework;
+using NUnit.Framework.Constraints;
+using System.Linq;
 
 namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {
-  [CLSCompliant (false)]
-#pragma warning disable 612,618 // Asserters are obsolete
-  public abstract class XmlDocumentBaseAsserter : AbstractAsserter
-#pragma warning restore 612,618
+  public abstract class XmlDocumentBaseConstraint : Constraint
   {
     protected delegate void MessageListenerDelegate (string messageInfo);
+    protected List<string> Messages;
+    private readonly XmlDocument _expectedDocument;
 
-    private XmlDocument _expectedDocument;
-    private XmlDocument _actualDocument;
-
-    public XmlDocumentBaseAsserter (XmlDocument expected, XmlDocument actual, string message, params object[] args)
-      : base (message, args)
+    protected XmlDocumentBaseConstraint (XmlDocument expected)
     {
       _expectedDocument = expected;
-      _actualDocument = actual;
+      Messages = new List<string>();
     }
 
-    public XmlDocument ExpectedDocument
+    public override bool Matches (object actual)
     {
-      get { return _expectedDocument; }
-    }
-
-    public XmlDocument ActualDocument
-    {
-      get { return _actualDocument; }
-    }
-
-    public override bool Test ()
-    {
-      if (_actualDocument == null && _expectedDocument == null)
+      base.actual = actual;
+      var actualAsXmlDocument = actual as XmlDocument;
+      if (actualAsXmlDocument == null && _expectedDocument == null)
         return true;
 
-      if (_actualDocument == null || _expectedDocument == null)
+      if (actualAsXmlDocument == null || _expectedDocument == null)
         return false;
 
-      return CompareDocuments (_expectedDocument, _actualDocument);
+      return CompareDocuments (_expectedDocument, actualAsXmlDocument);
+    }
+
+    public override void WriteDescriptionTo (MessageWriter writer)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void WriteMessageTo (MessageWriter writer)
+    {
+      writer.Write (String.Join("\n", Messages.ToArray()));
     }
 
     protected abstract bool CompareDocuments (XmlDocument expectedDocument, XmlDocument actualDocument);
 
     protected void ShowNodeStack (XmlNode node, MessageListenerDelegate messageListener)
     {
-      Stack<XmlNode> nodeStack = GetNodeStack (node);
+      var nodeStack = GetNodeStack (node);
 
       while (nodeStack.Count > 0)
         messageListener (GetNodeInfo (nodeStack.Pop ()));
@@ -72,9 +70,9 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
 
     protected Stack<XmlNode> GetNodeStack (XmlNode node)
     {
-      Stack<XmlNode> nodeStack = new Stack<XmlNode> ();
+      var nodeStack = new Stack<XmlNode> ();
 
-      XmlNode currentNode = node;
+      var currentNode = node;
       while (currentNode != null && !(currentNode is XmlDocument))
       {
         nodeStack.Push (currentNode);
@@ -94,7 +92,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       if (attributes == null || attributes.Count == 0)
         return string.Empty;
 
-      StringBuilder attributeInfoBuilder = new StringBuilder ();
+      var attributeInfoBuilder = new StringBuilder ();
 
       foreach (XmlAttribute attribute in attributes)
       {

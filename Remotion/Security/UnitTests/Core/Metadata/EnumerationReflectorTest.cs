@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     [Test]
     public void Initialize ()
     {
-      Assert.IsInstanceOfType (typeof (IEnumerationReflector), _enumerationReflector);
+      Assert.IsInstanceOf (typeof (IEnumerationReflector), _enumerationReflector);
     }
 
     [Test]

@@ -14,19 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Xml;
 
 namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {
-  [CLSCompliant (false)]
-  public class XmlDocumentSimilarAsserter : XmlDocumentBaseAsserter
+  public class XmlDocumentSimilarConstraint : XmlDocumentBaseConstraint
   {
-    private NodeStackToXPathConverter _nodeStackToXPathConverter;
+    private readonly NodeStackToXPathConverter _nodeStackToXPathConverter;
 
-    public XmlDocumentSimilarAsserter (XmlDocument expected, XmlDocument actual, string message, params object[] args)
-      : base (expected, actual, message, args)
+    public XmlDocumentSimilarConstraint (XmlDocument expected)
+        : base(expected)
     {
       _nodeStackToXPathConverter = new NodeStackToXPathConverter ();
       _nodeStackToXPathConverter.IncludeNamespaces = true;
@@ -58,9 +56,9 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlNodeList nodes = testDocument.SelectNodes (xPathExpression, _nodeStackToXPathConverter.NamespaceManager);
       if (nodes.Count == 0)
       {
-        FailureMessage.WriteLine (xPathExpression + " Evaluation failed.");
-        FailureMessage.WriteLine ("Node missing in actual document:");
-        ShowNodeStack (node, FailureMessage.WriteExpectedLine);
+        Messages.Add(xPathExpression + " Evaluation failed.");
+        Messages.Add("Node missing in actual document:");
+        ShowNodeStack (node, Messages.Add);
 
         if (node.ParentNode != null)
         {
@@ -68,7 +66,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
           xPathExpression = _nodeStackToXPathConverter.GetXPathExpression (parentNodeStack);
           XmlNodeList actualNodes = testDocument.SelectNodes (xPathExpression, _nodeStackToXPathConverter.NamespaceManager);
           if (actualNodes.Count > 0)
-            ShowNodeStack (actualNodes[0], FailureMessage.WriteActualLine);
+            ShowNodeStack (actualNodes[0], Messages.Add);
         }
         return false;
       }

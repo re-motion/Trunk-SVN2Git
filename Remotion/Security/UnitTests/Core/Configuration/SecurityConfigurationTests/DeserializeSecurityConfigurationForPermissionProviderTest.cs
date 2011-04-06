@@ -33,7 +33,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (1, Configuration.PermissionProviders.Count);
-      Assert.IsInstanceOfType (typeof (PermissionReflector), Configuration.PermissionProvider);
+      Assert.IsInstanceOf (typeof (PermissionReflector), Configuration.PermissionProvider);
       Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Reflection"]);
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (PermissionProviderMock), Configuration.PermissionProvider);
+      Assert.IsInstanceOf (typeof (PermissionProviderMock), Configuration.PermissionProvider);
       Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Custom"]);
     }
 
@@ -76,8 +76,8 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (2, Configuration.PermissionProviders.Count);
-      Assert.IsInstanceOfType (typeof (PermissionProviderMock), Configuration.PermissionProviders["Custom"]);
-      Assert.IsInstanceOfType (typeof (PermissionReflector), Configuration.PermissionProvider);
+      Assert.IsInstanceOf (typeof (PermissionProviderMock), Configuration.PermissionProviders["Custom"]);
+      Assert.IsInstanceOf (typeof (PermissionReflector), Configuration.PermissionProvider);
       Assert.AreSame (Configuration.PermissionProvider, Configuration.PermissionProviders["Reflection"]);
     }
 

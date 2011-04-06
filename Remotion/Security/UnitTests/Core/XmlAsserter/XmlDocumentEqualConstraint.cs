@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Xml;
 
 namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {
-  [CLSCompliant (false)]
-  public class XmlDocumentEqualAsserter : XmlDocumentBaseAsserter
+  public class XmlDocumentEqualConstraint : XmlDocumentBaseConstraint
   {
-    private XmlnsAttributeHandler _xmlnsAttributeFilter;
+    private readonly XmlnsAttributeHandler _xmlnsAttributeFilter;
 
-    public XmlDocumentEqualAsserter (XmlDocument expected, XmlDocument actual, string message, params object[] args)
-        : base (expected, actual, message, args)
+    public XmlDocumentEqualConstraint (XmlDocument expected)
+        : base(expected)
     {
       _xmlnsAttributeFilter = new XmlnsAttributeHandler ();
     }
@@ -39,9 +37,10 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
     {
       if (expectedParentNode.ChildNodes.Count != actualParentNode.ChildNodes.Count)
       {
-        FailureMessage.WriteLine ("Child node lengths differ:");
-        FailureMessage.WriteExpectedLine (expectedParentNode.ChildNodes.Count.ToString ());
-        FailureMessage.WriteActualLine (actualParentNode.ChildNodes.Count.ToString ());
+        
+        Messages.Add("Child node lengths differ:");
+        Messages.Add ("Expected: " + expectedParentNode.ChildNodes.Count);
+        Messages.Add ("Actual: " + actualParentNode.ChildNodes.Count);
         SetFailureMessage (expectedParentNode, actualParentNode);
 
         return false;
@@ -54,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
 
         if (!AreNodesEqual (expectedNode, actualNode))
         {
-          FailureMessage.WriteLine ("Nodes differ:");
+          Messages.Add ("Nodes differ:");
           SetFailureMessage (expectedNode, actualNode);
           return false;
         }
@@ -106,8 +105,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
 
     protected void SetFailureMessage (XmlNode expectedNode, XmlNode actualNode)
     {
-      ShowNodeStack (expectedNode, FailureMessage.WriteExpectedLine);
-      ShowNodeStack (actualNode, FailureMessage.WriteActualLine);
+      ShowNodeStack (expectedNode, Messages.Add);
+      ShowNodeStack (actualNode, Messages.Add);
     }
   }
 }

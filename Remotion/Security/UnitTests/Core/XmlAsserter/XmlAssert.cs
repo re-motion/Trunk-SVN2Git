@@ -24,24 +24,10 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {
   public static class XmlAssert
   {
-    static public void IsElement (string expectedNamespace, string expectedLocalName, XmlNode actualNode, string message, params object[] args)
-    {
-      Assert.DoAssert (new XmlElementAsserter (expectedNamespace, expectedLocalName, actualNode, message, args));
-    }
-
-    static public void IsElement (string expectedNamespace, string expectedLocalName, XmlNode actualNode, string message)
-    {
-      IsElement (expectedNamespace, expectedLocalName, actualNode, message, null);
-    }
-
-    static public void IsElement (string expectedNamespace, string expectedLocalName, XmlNode actualNode)
-    {
-      IsElement (expectedNamespace, expectedLocalName, actualNode, string.Empty, null);
-    }
-
     static public void AreDocumentsEqual (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[] args)
     {
-      Assert.DoAssert (new XmlDocumentEqualAsserter (expectedDocument, actualDocument, message, args));
+      var constraint = new XmlDocumentEqualConstraint (expectedDocument);
+      Assert.That (actualDocument, constraint);
     }
 
     static public void AreDocumentsEqual (XmlDocument expectedDocument, XmlDocument actualDocument, string message)
@@ -74,7 +60,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
 
     static public void AreDocumentsSimilar (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[] args)
     {
-      Assert.DoAssert (new XmlDocumentSimilarAsserter (expectedDocument, actualDocument, message, args));
+      var constraint = new XmlDocumentSimilarConstraint (expectedDocument);
+      Assert.That (actualDocument, constraint);
     }
 
     static public void AreDocumentsSimilar (XmlDocument expectedDocument, XmlDocument actualDocument, string message)

@@ -84,7 +84,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       SecurityStrategy strategy = new SecurityStrategy();
 
-      Assert.IsInstanceOfType (typeof (Cache<ISecurityPrincipal, AccessType[]>), strategy.LocalCache);
+      Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), strategy.LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, strategy.GlobalCacheProvider);
     }
 

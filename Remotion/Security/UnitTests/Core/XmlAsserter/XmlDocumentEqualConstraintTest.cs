@@ -21,7 +21,7 @@ using NUnit.Framework;
 namespace Remotion.Security.UnitTests.Core.XmlAsserter
 {
   [TestFixture]
-  public class XmlDocumentEqualAsserterTest
+  public class XmlDocumentEqualConstraintTest
   {
     [Test]
     public void CompareEmptyDocuments ()
@@ -29,8 +29,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlDocument expected = new XmlDocument ();
       XmlDocument actual = new XmlDocument ();
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsTrue (constraint.Matches (actual));
     }
 
     [Test]
@@ -38,8 +38,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
     {
       XmlDocument expected = new XmlDocument ();
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, null, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches ((object)null));
     }
 
     [Test]
@@ -47,15 +47,15 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
     {
       XmlDocument actual = new XmlDocument ();
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (null, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (null);
+      Assert.IsFalse (constraint.Matches(actual));
     }
 
     [Test]
     public void ExpectedAndActualDocumentsAreNull ()
     {
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (null, null, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (null);
+      Assert.IsTrue (constraint.Matches((object)null));
     }
 
     [Test]
@@ -67,8 +67,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlElement actualRootNode = actual.CreateElement ("root", "http://test");
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches (actual));
     }
 
     [Test]
@@ -84,8 +84,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlElement actualRootNode = actual.CreateElement ("rootB", "http://test");
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches(actual));
     }
 
     [Test]
@@ -101,8 +101,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       XmlElement actualRootNode = actual.CreateElement ("root", "http://test");
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsTrue (constraint.Matches (actual));
     }
 
     [Test]
@@ -123,8 +123,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.AppendChild (actualChildNode);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches(actual));
     }
 
     [Test]
@@ -145,8 +145,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.Attributes.Append (actualAttribute);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches (actual));
     }
 
     [Test]
@@ -165,8 +165,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.Attributes.Append (actualAttribute);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint= new XmlDocumentEqualConstraint (expected);
+      Assert.IsTrue (constraint.Matches (actual));
     }
 
     [Test]
@@ -187,8 +187,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.Attributes.Append (actualAttribute);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsFalse (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.IsFalse (constraint.Matches (actual));
     }
 
     [Test]
@@ -206,8 +206,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.AppendChild (actualText);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint(expected);
+      Assert.IsTrue (constraint.Matches (actual));
     }
 
     [Test]
@@ -254,8 +254,8 @@ namespace Remotion.Security.UnitTests.Core.XmlAsserter
       actualRootNode.AppendChild (elementsNode);
       actual.AppendChild (actualRootNode);
 
-      XmlDocumentEqualAsserter asserter = new XmlDocumentEqualAsserter (expected, actual, string.Empty, null);
-      Assert.IsTrue (asserter.Test ());
+      var constraint = new XmlDocumentEqualConstraint (expected);
+      Assert.That (actual, constraint);
     }
   }
 }

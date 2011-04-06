@@ -31,11 +31,11 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       SecurityConfiguration configuration = SecurityConfiguration.Current;
 
       Assert.IsNotNull (configuration);
-      Assert.IsInstanceOfType (typeof (NullSecurityProvider), configuration.SecurityProvider);
-      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
-      Assert.IsInstanceOfType (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
-      Assert.IsInstanceOfType (typeof (PermissionReflector), configuration.PermissionProvider);
-      Assert.IsInstanceOfType (typeof (NullGlobalAccessTypeCacheProvider), configuration.GlobalAccessTypeCacheProvider);
+      Assert.IsInstanceOf (typeof (NullSecurityProvider), configuration.SecurityProvider);
+      Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
+      Assert.IsInstanceOf (typeof (PermissionReflector), configuration.PermissionProvider);
+      Assert.IsInstanceOf (typeof (NullGlobalAccessTypeCacheProvider), configuration.GlobalAccessTypeCacheProvider);
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (FunctionalSecurityStrategy), Configuration.FunctionalSecurityStrategy);
+      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategy), Configuration.FunctionalSecurityStrategy);
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (FunctionalSecurityStrategyMock), Configuration.FunctionalSecurityStrategy);
+      Assert.IsInstanceOf (typeof (FunctionalSecurityStrategyMock), Configuration.FunctionalSecurityStrategy);
     }
 
     [Test]
@@ -86,7 +86,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (MemberResolverMock), Configuration.MemberResolver);
+      Assert.IsInstanceOf (typeof (MemberResolverMock), Configuration.MemberResolver);
     }
   }
 }

@@ -74,8 +74,8 @@ namespace Remotion.Security.UnitTests.Core
       ObjectSecurityStrategy strategy = new ObjectSecurityStrategy (_stubContextFactory);
 
       Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
-      Assert.IsInstanceOfType (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOfType (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
+      Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
+      Assert.IsInstanceOf (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
     }
 

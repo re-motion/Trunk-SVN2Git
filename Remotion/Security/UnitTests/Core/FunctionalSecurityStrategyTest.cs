@@ -74,8 +74,8 @@ namespace Remotion.Security.UnitTests.Core
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       FunctionalSecurityStrategy strategy = new FunctionalSecurityStrategy ();
 
-      Assert.IsInstanceOfType (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOfType (typeof (NullCache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
+      Assert.IsInstanceOf (typeof (SecurityStrategy), strategy.SecurityStrategy);
+      Assert.IsInstanceOf (typeof (NullCache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
     }
 

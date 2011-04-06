@@ -31,7 +31,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security defaultPrincipalProvider=""Thread"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
       Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::Domain.SecurityManagerPrincipalService", true);
 
-      Assert.IsInstanceOfType (expectedType, Configuration.SecurityProvider);
+      Assert.IsInstanceOf (expectedType, Configuration.SecurityProvider);
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (PrincipalProviderMock), Configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (PrincipalProviderMock), Configuration.PrincipalProvider);
     }
 
     [Test]
@@ -89,8 +89,8 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
       Assert.AreEqual (2, Configuration.PrincipalProviders.Count);
-      Assert.IsInstanceOfType (typeof (PrincipalProviderMock), Configuration.PrincipalProviders["Custom"]);
-      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
+      Assert.IsInstanceOf (typeof (PrincipalProviderMock), Configuration.PrincipalProviders["Custom"]);
+      Assert.IsInstanceOf (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
       Assert.AreSame (Configuration.PrincipalProvider, Configuration.PrincipalProviders["Thread"]);
     }
 
