@@ -28,7 +28,6 @@ namespace Remotion.Collections
   /// Behaves analogue to <see cref="ReadOnlyCollection{T}"/>, i.e. not supported methods required by <see cref="IDictionary{TKey,TValue}"/> 
   /// throw <see cref="NotSupportedException"/>|s.
   /// <para/>
-  /// See also <see cref="ReadOnlyDictionarySpecific{TKey,TValue}"/>.
   /// </remarks>
   [Serializable]
   public class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>

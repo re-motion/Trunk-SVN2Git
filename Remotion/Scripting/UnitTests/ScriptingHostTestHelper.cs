@@ -28,15 +28,15 @@ namespace Remotion.Scripting.UnitTests
       return (ScriptRuntime) PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "GetScriptRuntime");
     }
 
-    public static ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> GetScriptEngines (this ScriptingHost scriptingHost)
+    public static ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines (this ScriptingHost scriptingHost)
     {
-      return (ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine>)
+      return (ReadOnlyDictionary<ScriptLanguageType, ScriptEngine>)
              PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "GetScriptEngines");
     }
 
-    public static ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> FindScriptEngines (this ScriptingHost scriptingHost)
+    public static ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> FindScriptEngines (this ScriptingHost scriptingHost)
     {
-      return (ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine>) 
+      return (ReadOnlyDictionary<ScriptLanguageType, ScriptEngine>) 
              PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "FindScriptEngines");
     }
 

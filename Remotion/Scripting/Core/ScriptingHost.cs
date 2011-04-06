@@ -54,7 +54,7 @@ namespace Remotion.Scripting
     private const string c_scriptingHostCurrentSafeContextTag = SafeContextKeys.ScriptingScriptingHost;
 
     private ScriptRuntime _scriptRuntime;
-    private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> _scriptEngines;
+    private ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
     /// <summary>
@@ -100,7 +100,7 @@ namespace Remotion.Scripting
       return _scriptRuntime;
     }
 
-    private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
+    private ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
     {
       if (_scriptEngines == null)
       {
@@ -109,7 +109,7 @@ namespace Remotion.Scripting
       return _scriptEngines;
     }
 
-    private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
+    private ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
     {
       var scriptEngines = new Dictionary<ScriptLanguageType, ScriptEngine> ();
       foreach (ScriptLanguageType languageType in Enum.GetValues (typeof (ScriptLanguageType)))
@@ -121,7 +121,7 @@ namespace Remotion.Scripting
           scriptEngines[languageType] = engine;
         }
       }
-      return new ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> (scriptEngines);
+      return new ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> (scriptEngines);
     }
 
 

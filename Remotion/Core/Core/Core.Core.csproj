@@ -142,7 +142,6 @@
     <Compile Include="Collections\ListAdapter.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensions.cs" />
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
-    <Compile Include="Collections\ReadOnlyDictionarySpecific.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileIncludeRootAssemblyElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElement.cs" />

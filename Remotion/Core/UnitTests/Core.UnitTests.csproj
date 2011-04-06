@@ -172,7 +172,6 @@
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
     <Compile Include="FunctionalProgramming\Element.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
-    <Compile Include="Collections\ReadOnlyDictionarySpecificTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionaryTest.cs" />
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollectionTest.cs" />
