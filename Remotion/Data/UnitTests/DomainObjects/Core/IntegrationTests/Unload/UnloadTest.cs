@@ -26,7 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
   [TestFixture]
   public class UnloadTest : ClientTransactionBaseTest

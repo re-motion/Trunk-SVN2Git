@@ -25,7 +25,7 @@ using Remotion.Development.UnitTesting;
 using System.Linq;
 using Remotion.Reflection;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
   public class RelationInconsistenciesTest : ClientTransactionBaseTest

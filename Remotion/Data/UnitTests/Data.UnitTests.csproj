@@ -248,11 +248,11 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\CollectionEndPointOppositeTrackingTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\VirtualObjectEndPointOppositeTrackingTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\RelationInconsistenciesInSubtransactionsTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\SyncStateTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadedCollectionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\VirtualObjectEndPointOppositeTrackingTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconsistenciesInSubtransactionsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\SyncStateTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
@@ -306,7 +306,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\BigRelationsTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\RelationInconsistenciesTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconsistenciesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqCastMethodAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
@@ -841,7 +841,7 @@
     <Compile Include="DomainObjects\Core\DomainImplementation\UnloadServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadInSubTransactionsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadInSubTransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
@@ -861,7 +861,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\ClientTransactionDiffersTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ConcurrencyViolationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\DomainObjectConstructorLookupInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClass.cs" />
