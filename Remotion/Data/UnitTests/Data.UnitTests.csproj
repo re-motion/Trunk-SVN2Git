@@ -249,8 +249,11 @@
     <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesInSubtransactionsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconsistenciesTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\VirtualObjectEndPointOppositeTrackingTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconsistenciesInSubtransactionsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesInSubtransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\SyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadedCollectionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
@@ -306,7 +309,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\BigRelationsTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconsistenciesTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqCastMethodAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />

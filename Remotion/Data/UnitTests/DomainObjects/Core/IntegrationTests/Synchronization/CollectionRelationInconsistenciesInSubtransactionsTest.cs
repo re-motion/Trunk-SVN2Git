@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -23,12 +22,11 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
-using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
-  public class RelationInconsistenciesInSubtransactionsTest : ClientTransactionBaseTest
+  public class CollectionRelationInconsistenciesInSubtransactionsTest : RelationInconsistenciesTestBase
   {
     [Test]
     public void VirtualEndPointQuery_OneMany_Consistent_ObjectLoadedFirst ()
@@ -101,128 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       CheckSyncState (orderItem1, oi => oi.Order, true);
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
-    }
-
-    [Test]
-    public void VirtualEndPointQuery_OneOne_Consistent_RealEndPointLoadedFirst ()
-    {
-      OrderTicket orderTicket1;
-      Order order1;
-
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
-
-        Assert.That (orderTicket1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-
-        Assert.That (orderTicket1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-
-        // these do nothing
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-      }
-
-      CheckSyncState (orderTicket1, oi => oi.Order, true);
-      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-    }
-
-    [Test]
-    public void VirtualEndPointQuery_OneOne_Consistent_VirtualEndPointLoadedFirst ()
-    {
-      Order order1;
-      OrderTicket orderTicket1;
-
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
-        order1.OrderTicket.EnsureDataAvailable();
-        orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-
-        Assert.That (orderTicket1.Order, Is.SameAs (order1));
-        Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-
-        Assert.That (order1.OrderTicket, Is.SameAs (orderTicket1));
-        Assert.That (orderTicket1.Order, Is.SameAs (order1));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-
-        // these do nothing
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
-
-        CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-      }
-
-      CheckSyncState (orderTicket1, oi => oi.Order, true);
-      CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
-    }
-
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
-        +
-        @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
-        + @"object already exists in the current ClientTransaction \(and points to a different object 'null'\).",
-        MatchType = MessageMatch.Regex)]
-    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsToNull ()
-    {
-      SetDatabaseModifyable();
-
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        var computer = CreateObjectInDatabaseAndLoad<Computer>();
-        Assert.That (computer.Employee, Is.Null);
-
-        var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
-
-        SetEmployeeInOtherTransaction (computer.ID, employee.ID);
-
-        // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to null!
-        Dev.Null = employee.Computer;
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
-        +
-        @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
-        + @"object already exists in the current ClientTransaction \(and points to a different object "
-        + @"'Employee\|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e\|System.Guid'\).",
-        MatchType = MessageMatch.Regex)]
-    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse ()
-    {
-      SetDatabaseModifyable();
-
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        var computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2));
-        Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
-
-        var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
-
-        SetEmployeeInOtherTransaction (computer.ID, employee.ID);
-
-        // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to Employee2!
-        Dev.Null = employee.Computer;
-      }
     }
 
     [Test]
@@ -712,148 +588,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (endPoint.IsSynchronized, Is.True);
       }
 
-      CheckSyncState (industrialSector, s => s.Companies, true);
-    }
-
-    private ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
-    {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (
-          industrialSectorID,
-          (c, s) =>
-          {
-            c.IndustrialSector = s;
-            c.Ceo = Ceo.NewObject();
-          });
-    }
-
-    private void SetIndustrialSectorInOtherTransaction (ObjectID companyID, ObjectID industrialSectorID)
-    {
-      DomainObjectMother.SetRelationInOtherTransaction<Company, IndustrialSector> (companyID, industrialSectorID, (c, s) => c.IndustrialSector = s);
-    }
-
-    private ObjectID CreateComputerAndSetEmployeeInOtherTransaction (ObjectID employeeID)
-    {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employeeID, (c, e) => c.Employee = e);
-    }
-
-    private void SetEmployeeInOtherTransaction (ObjectID computerID, ObjectID employeeID)
-    {
-      DomainObjectMother.SetRelationInOtherTransaction<Computer, Employee> (computerID, employeeID, (c, e) => c.Employee = e);
-    }
-
-    private void CheckSyncState<TOriginating, TRelated> (
-        TOriginating originating,
-        Expression<Func<TOriginating, TRelated>> propertyAccessExpression,
-        bool expectedState)
-        where TOriginating: DomainObject
-    {
-      var transaction = ClientTransaction.Current;
-      CheckSyncState (transaction, originating, propertyAccessExpression, expectedState);
-    }
-
-    private void CheckSyncState<TOriginating, TRelated> (
-        ClientTransaction transaction,
-        TOriginating originating,
-        Expression<Func<TOriginating, TRelated>> propertyAccessExpression,
-        bool expectedState)
-        where TOriginating: DomainObject
-    {
-      Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (transaction, RelationEndPointID.Create (originating, propertyAccessExpression)),
-          Is.EqualTo (expectedState));
-    }
-
-    private void CheckActionWorks (Action action)
-    {
-      action();
-    }
-
-    private void CheckActionThrows<TException> (Action action, string expectedMessage) where TException: Exception
-    {
-      var hadException = false;
-      try
-      {
-        action();
-      }
-      catch (Exception ex)
-      {
-        hadException = true;
-        Assert.That (ex, Is.TypeOf (typeof (TException)));
-        Assert.That (
-            ex.Message,
-            Is.StringContaining(expectedMessage),
-            "Expected: " + expectedMessage + Environment.NewLine + "Was: " + ex.Message);
-      }
-
-      if (!hadException)
-        Assert.Fail ("Expected " + typeof (TException).Name);
-    }
-
-    private Company CreateCompanyInDatabaseAndLoad ()
-    {
-      ObjectID objectID;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        var company = Company.NewObject();
-        company.Ceo = Ceo.NewObject();
-        ClientTransaction.Current.Commit();
-        objectID = company.ID;
-      }
-      return Company.GetObject (objectID);
-    }
-
-    private T CreateObjectInDatabaseAndLoad<T> () where T: DomainObject
-    {
-      ObjectID objectID;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        var domainObject = LifetimeService.NewObject (ClientTransaction.Current, typeof (T), ParamList.Empty);
-        ClientTransaction.Current.Commit();
-        objectID = domainObject.ID;
-      }
-      return (T) LifetimeService.GetObject (ClientTransaction.Current, objectID, false);
-    }
-
-    private void PrepareInconsistentState_OneMany_ObjectIncluded (out Company company, out IndustrialSector industrialSector)
-    {
-      SetDatabaseModifyable ();
-
-      company = CreateCompanyInDatabaseAndLoad ();
-      Assert.That (company.IndustrialSector, Is.Null);
-
-      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-
-      SetIndustrialSectorInOtherTransaction (company.ID, industrialSector.ID);
-
-      // Resolve virtual end point - the database says that company points to industrialSector, but the transaction says it points to null!
-      industrialSector.Companies.EnsureDataComplete ();
-
-      Assert.That (company.IndustrialSector, Is.Null);
-      Assert.That (industrialSector.Companies, Has.Member (company));
-
-      CheckSyncState (company, c => c.IndustrialSector, true);
-      CheckSyncState (industrialSector, s => s.Companies, false);
-    }
-
-    private void PrepareInconsistentState_OneMany_ObjectNotIncluded (out Company company, out IndustrialSector industrialSector)
-    {
-      SetDatabaseModifyable ();
-
-      var companyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (DomainObjectIDs.IndustrialSector1);
-      company = Company.GetObject (companyID);
-
-      Assert.That (company.Properties[typeof (Company), "IndustrialSector"].GetRelatedObjectID (), Is.EqualTo (DomainObjectIDs.IndustrialSector1));
-
-      SetIndustrialSectorInOtherTransaction (company.ID, DomainObjectIDs.IndustrialSector2);
-
-      industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-
-      // Resolve virtual end point - the database says that company does not point to IndustrialSector1, but the transaction says it does!
-      industrialSector.Companies.EnsureDataComplete ();
-
-      Assert.That (company.IndustrialSector, Is.SameAs (industrialSector));
-      Assert.That (industrialSector.Companies, Has.No.Member(company));
-      CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
     }
   }
