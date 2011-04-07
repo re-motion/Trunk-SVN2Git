@@ -22,7 +22,7 @@
     <AllConfigurations Include="Release">
       <Name>Release</Name>
       <Framework>net-3.5</Framework>
-      <OutputDirectory>net3.5\bin\release\</OutputDirectory>
+      <OutputDirectory>net-3.5\bin\release\</OutputDirectory>
       <AssemblyRevision>1</AssemblyRevision>
       <RunTests>True</RunTests>
       <IncludeBinaries>True</IncludeBinaries>
@@ -32,7 +32,7 @@
     <AllConfigurations Include="Doc">
       <Name>Release</Name>
       <Framework>net-3.5</Framework>
-      <OutputDirectory>net3.5\doc\</OutputDirectory>
+      <OutputDirectory>net-3.5\doc\</OutputDirectory>
       <AssemblyRevision>0</AssemblyRevision>
       <RunTests>False</RunTests>
       <IncludeBinaries>False</IncludeBinaries>
@@ -42,7 +42,7 @@
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
       <Framework>net-3.5</Framework>
-      <OutputDirectory>net3.5\bin\debug\</OutputDirectory>
+      <OutputDirectory>net-3.5\bin\debug\</OutputDirectory>
       <AssemblyRevision>2</AssemblyRevision>
       <RunTests>True</RunTests>
       <IncludeBinaries>True</IncludeBinaries>
