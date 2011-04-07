@@ -105,6 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckActionWorks (() => industrialSector.Companies.Add (Company.NewObject ()));
 
       var companyIndex = industrialSector.Companies.IndexOf (company);
+      CheckActionThrows<InvalidOperationException> (industrialSector.Delete, "out of sync with the opposite object property");
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Remove (company), "out of sync with the opposite object property");
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies[companyIndex] = Company.NewObject (), "out of sync with the opposite object property");
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies = new ObjectList<Company> (), "out of sync with the opposite object property");

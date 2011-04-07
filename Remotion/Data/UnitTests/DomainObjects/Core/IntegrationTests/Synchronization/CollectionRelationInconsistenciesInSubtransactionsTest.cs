@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    public void Commit_InSubTransactionSubTransaction_InconsistentState_OneMany_ObjectIncluded ()
+    public void Commit_InSubTransaction_InconsistentState_OneMany_ObjectIncluded ()
     {
       Company company;
       IndustrialSector industrialSector;
@@ -441,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    public void Commit_InSubTransactionSubTransaction_InconsistentState_OneMany_ObjectNotIncluded ()
+    public void Commit_InSubTransaction_InconsistentState_OneMany_ObjectNotIncluded ()
     {
       Company company;
       IndustrialSector industrialSector;

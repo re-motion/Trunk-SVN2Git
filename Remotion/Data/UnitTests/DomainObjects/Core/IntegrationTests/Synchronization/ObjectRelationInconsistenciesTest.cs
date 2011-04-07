@@ -25,6 +25,7 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
+  [Ignore ("TODO 3841")]
   public class ObjectRelationInconsistenciesTest : RelationInconsistenciesTestBase
   {
     [Test]
@@ -40,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
 
       CheckSyncState (orderTicket1, oi => oi.Order, true);
       CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
@@ -61,96 +62,411 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
 
       CheckSyncState (orderTicket1, oi => oi.Order, true);
       CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
     }
 
     [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
-        + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
-        + @"object already exists in the current ClientTransaction \(and points to a different object 'null'\).", 
-        MatchType = MessageMatch.Regex)]
     public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsToNull ()
     {
-      SetDatabaseModifyable ();
+      Computer computer;
+      Employee employee;
+      PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsToNull (out computer, out employee);
 
-      var computer = CreateObjectInDatabaseAndLoad<Computer> ();
+      Assert.That (employee.Computer, Is.SameAs (computer));
       Assert.That (computer.Employee, Is.Null);
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
 
-      SetEmployeeInOtherTransaction (computer.ID, employee.ID);
+      CheckActionWorks (computer.Delete);
+      ClientTransaction.Current.Rollback();
 
-      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to null!
-      Dev.Null = employee.Computer;
-    }
+      // sync states not changed by Rollback
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
 
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage =
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' of "
-        + @"'Employee\|51ece39b-f040-45b0-8b72-ad8b45353990\|System.Guid': The database returned related object 'Computer\|.*\|System.Guid', but that "
-        + @"object already exists in the current ClientTransaction \(and points to a different object "
-        + @"'Employee\|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e\|System.Guid'\).",
-        MatchType = MessageMatch.Regex)]
-    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse ()
-    {
-      SetDatabaseModifyable ();
+      CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = null, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = Computer.NewObject (), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = employee, "out of sync with the opposite object property");
 
-      var computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2));
-      Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
+      var newEmployee = Employee.NewObject();
+      CheckActionWorks (() => computer.Employee = newEmployee);
 
-      var employee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
 
-      SetEmployeeInOtherTransaction (computer.ID, employee.ID);
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
 
-      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to Employee2!
-      Dev.Null = employee.Computer;
-    }
-
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
-        @"The data of object 'Computer\|.*\|System.Guid' conflicts with existing data: It has a foreign key property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' which points to object "
-        + @"'Employee\|.*\|System.Guid'. However, that object has previously been determined to point back to object "
-        + "'<null>'. These two pieces of information contradict each other.",
-        MatchType = MessageMatch.Regex)]
-    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_Null ()
-    {
-      SetDatabaseModifyable();
-
-      var employee = CreateObjectInDatabaseAndLoad<Employee> ();
+      Assert.That (computer.Employee, Is.SameAs (newEmployee));
+      Assert.That (newEmployee.Computer, Is.SameAs (computer));
       Assert.That (employee.Computer, Is.Null);
 
-      ObjectID newComputerID = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID);
-
-      // This computer has a foreign key to employee; but employee's virtual end point already points to null!
-      Computer.GetObject (newComputerID);
+      CheckActionWorks (() => computer.Employee = employee);
     }
 
     [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
-        @"The data of object 'Computer\|.*\|System.Guid' conflicts with existing data: It has a foreign key property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' which points to object "
-        + @"'Employee\|.*|System.Guid'. However, that object has previously been determined to point back to object "
-        + @"'Computer\|.*\|System.Guid'. These two pieces of information contradict each other.",
-        MatchType = MessageMatch.Regex)]
-    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_NonNull ()
+    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse ()
+    {
+      Computer computer;
+      Employee employee;
+      Employee employee2;
+      PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse (out computer, out employee, out employee2);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      CheckActionWorks (computer.Delete);
+      CheckActionWorks (employee2.Delete);
+      ClientTransaction.Current.Rollback ();
+
+      // sync states not changed by Rollback
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = null, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = Computer.NewObject (), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = employee, "out of sync with the opposite object property");
+
+      CheckActionWorks (() => computer.Employee = null);
+      computer.Employee = employee2;
+      Assert.That (computer.State, Is.EqualTo (StateType.Unchanged));
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckActionWorks (() => computer.Employee = employee);
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse_SolvableViaReload ()
+    {
+      Computer computer;
+      Employee employee;
+      Employee employee2;
+      PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse (out computer, out employee, out employee2);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      UnloadService.UnloadData (ClientTransaction.Current, computer.ID);
+
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (employee2, e => e.Computer, true);
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneOne_ObjectNotReturned_ThatLocallyPointsToHere ()
+    {
+      Computer computer;
+      Employee employee;
+      Employee employee2;
+      PrepareInconsistentState_OneOne_ObjectNotReturned_ThatLocallyPointsToHere (out computer, out employee, out employee2);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      CheckActionWorks (employee2.Delete);
+      ClientTransaction.Current.Rollback ();
+
+      // sync states not changed by Rollback
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = null, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = Computer.NewObject (), "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = employee, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the opposite object property");
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+      
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.Null);
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+    }
+
+    [Test]
+    public void VirtualEndPointQuery_OneOne_ObjectNotReturned_ThatLocallyPointsToHere_WithChangedRelation ()
     {
       SetDatabaseModifyable ();
 
-      var originalComputer = Computer.GetObject (DomainObjectIDs.Computer1);
-      var employee = originalComputer.Employee;
-      Assert.That (employee.Computer, Is.SameAs (originalComputer));
+      var employee2 = Employee.GetObject (DomainObjectIDs.Employee2);
 
-      ObjectID newComputerID = CreateComputerAndSetEmployeeInOtherTransaction (employee.ID);
+      var computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID));
+      Assert.That (computer.Employee, Is.SameAs (employee2));
 
-      // This computer has a foreign key to employee; but employee's virtual end point already points to originalComputer; the new computer's 
-      // foreign key contradicts the existing foreign key
-      Computer.GetObject (newComputerID);
+      // 1:1 relations automatically cause virtual end-points to be marked loaded when the foreign key object is loaded, so unload the virtual side
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee2, e => e.Computer));
+
+      SetEmployeeInOtherTransaction (computer.ID, DomainObjectIDs.Employee1);
+
+      // Resolve virtual end point - the database says that computer points to employee1, but the transaction says computer points to employee2!
+      Dev.Null = employee2.Computer;
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee2.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      var newComputer = Computer.NewObject();
+      employee2.Computer = newComputer;
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee2.Computer, Is.SameAs (newComputer));
+      Assert.That (employee2.Properties[typeof (Employee), "Computer"], Is.SameAs (newComputer));
+      Assert.That (employee2.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_Null ()
+    {
+      Employee employee;
+      Computer computer;
+      PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNull(out employee, out computer);
+
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      CheckActionWorks (employee.Delete);
+      ClientTransaction.Current.Rollback ();
+
+      // sync states not changed by Rollback
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer, "out of sync with the opposite object property");
+
+      CheckActionWorks (() => employee.Computer = Computer.NewObject());
+      ClientTransaction.Current.Rollback ();
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      Assert.That (employee.Computer, Is.SameAs (employee));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+    }
+
+    [Test]
+    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_Null_UnloadCorrectsIssue ()
+    {
+      Employee employee;
+      Computer computer;
+      PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNull (out employee, out computer);
+
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      // Reload virtual relation from database => the two sides now match
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+      Dev.Null = employee.Computer;
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      Assert.That (employee.Computer, Is.SameAs (employee));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+    }
+
+    [Test]
+    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_NonNull ()
+    {
+      Employee employee;
+      Computer computer;
+      Computer computer2;
+      PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNonNull(out employee, out computer, out computer2);
+
+      // computer.Employee and employee.Computer match, but computer2.Employee doesn't
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (computer2.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (computer2, c => c.Employee, false);
+
+      CheckActionWorks (computer.Delete);
+      ClientTransaction.Current.Rollback ();
+
+      // sync states not changed by Rollback
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (computer2, c => c.Employee, false);
+
+      CheckActionWorks (employee.Delete);
+      ClientTransaction.Current.Rollback ();
+
+      CheckActionThrows<InvalidOperationException> (computer2.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (() => computer2.Employee = null, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer2, "out of sync with the opposite object property");
+
+      CheckActionWorks (() => computer.Employee = null);
+      ClientTransaction.Current.Rollback ();
+
+      CheckActionWorks (() => employee.Computer = null);
+      ClientTransaction.Current.Rollback ();
+
+      // TBD: Throw or simply make other relation unsynchronized?
+      CheckActionThrows<InvalidOperationException> (() =>
+          BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee)),
+          "additional object???");
+
+      // By unloading the employee.Computer -> computer relation, we can now synchronize computer2.Employee -> employee with employee.Computer
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (computer2, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      Assert.That (employee.Computer, Is.SameAs (computer2));
+      Assert.That (computer2.Employee, Is.SameAs (employee));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+    }
+
+    [Test]
+    public void ObjectLoaded_WithInconsistentForeignKey_OneOne_NonNull_UnloadCorrectsIssue ()
+    {
+      Employee employee;
+      Computer computer;
+      Computer computer2;
+      PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNonNull (out employee, out computer, out computer2);
+
+      // computer.Employee and employee.Computer match, but computer2.Employee doesn't
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (computer2.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+      CheckSyncState (computer2, c => c.Employee, false);
+
+      // Reload virtual relation from database => computer2 and employee now match, computer is unsynchronized
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+      Dev.Null = employee.Computer;
+      
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (computer2, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      Assert.That (employee.Computer, Is.SameAs (computer2));
+      Assert.That (computer2.Employee, Is.SameAs (employee));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+    }
+
+    [Test]
+    public void Commit_DoesNotChangeInconsistentState_OneOne_VirtualSideInconsistent ()
+    {
+      Computer computer;
+      Employee employee;
+      Employee employee2;
+      PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse (out computer, out employee, out employee2);
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+
+      ClientTransaction.Current.Commit();
+
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      Assert.That (employee.Computer, Is.SameAs (computer));
+      Assert.That (employee2.Computer, Is.SameAs (computer));
+
+      CheckSyncState (computer, c => c.Employee, true);
+      CheckSyncState (employee, e => e.Computer, false);
+      CheckSyncState (employee2, e => e.Computer, true);
+    }
+
+    [Test]
+    public void Commit_DoesNotChangeInconsistentState_OneOne_RealSideInconsistent ()
+    {
+      Employee employee;
+      Computer computer;
+      PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNull (out employee, out computer);
+
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, true);
+
+      ClientTransaction.Current.Commit();
+
+      Assert.That (computer.Employee, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (employee, e => e.Computer, true);
     }
   }
 }

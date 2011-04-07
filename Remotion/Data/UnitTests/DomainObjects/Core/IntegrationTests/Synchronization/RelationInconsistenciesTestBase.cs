@@ -5,6 +5,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
@@ -154,6 +155,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (industrialSector.Companies, Has.No.Member (company));
       CheckSyncState (company, c => c.IndustrialSector, false);
       CheckSyncState (industrialSector, s => s.Companies, true);
+    }
+
+    protected void PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsSomewhereElse (out Computer computer, out Employee nonMatchingEmployee, out Employee matchingEmployee)
+    {
+      SetDatabaseModifyable ();
+
+      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (DomainObjectIDs.Employee2));
+      Assert.That (computer.Employee.ID, Is.EqualTo (DomainObjectIDs.Employee2));
+
+      nonMatchingEmployee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+
+      SetEmployeeInOtherTransaction (computer.ID, nonMatchingEmployee.ID);
+
+      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to Employee2!
+      Dev.Null = nonMatchingEmployee.Computer;
+      matchingEmployee = computer.Employee;
+    }
+
+    protected void PrepareInconsistentState_OneOne_ObjectReturned_ThatLocallyPointsToNull (out Computer computer, out Employee nonMatchingEmployee)
+    {
+      SetDatabaseModifyable ();
+
+      computer = CreateObjectInDatabaseAndLoad<Computer> ();
+      Assert.That (computer.Employee, Is.Null);
+
+      nonMatchingEmployee = Employee.GetObject (DomainObjectIDs.Employee1); // virtual end point not yet resolved
+
+      SetEmployeeInOtherTransaction (computer.ID, nonMatchingEmployee.ID);
+
+      // Resolve virtual end point - the database says that computer points to employee, but the transaction says computer points to null!
+      Dev.Null = nonMatchingEmployee.Computer;
+    }
+
+    protected void PrepareInconsistentState_OneOne_ObjectNotReturned_ThatLocallyPointsToHere (out Computer computer, out Employee employee, out Employee employee2)
+    {
+      SetDatabaseModifyable ();
+
+      employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      employee2 = Employee.GetObject (DomainObjectIDs.Employee2);
+
+      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee2.ID));
+      Assert.That (computer.Employee, Is.SameAs (employee2));
+      
+      // 1:1 relations automatically cause virtual end-points to be marked loaded when the foreign key object is loaded, so unload the virtual side
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee2, e => e.Computer));
+
+      SetEmployeeInOtherTransaction (computer.ID, DomainObjectIDs.Employee1);
+
+      // Resolve virtual end point - the database says that computer points to employee1, but the transaction says computer points to employee2!
+      Dev.Null = employee2.Computer;
+      // Resolve virtual end point - the database says that computer points to employee1, but the transaction says computer points to employee2!
+      Dev.Null = employee.Computer;
+    }
+
+    protected void PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNull (out Employee employee, out Computer computer)
+    {
+      SetDatabaseModifyable ();
+
+      employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      // Employee has no computer
+      Assert.That (employee.Computer, Is.Null);
+
+      // This computer points to employee => conflict in the transaction
+      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+    }
+
+    protected void PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNonNull (out Employee employee, out Computer computer, out Computer computer2)
+    {
+      SetDatabaseModifyable ();
+
+      employee = Employee.GetObject (DomainObjectIDs.Employee1);
+
+      // This computer points to employee
+      computer = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      Assert.That (computer.Employee, Is.SameAs (employee));
+
+      // This computer _also_ points to employee => conflict in the transaction, 1:1 relation has two real object end-points
+      computer2 = Computer.GetObject (CreateComputerAndSetEmployeeInOtherTransaction (employee.ID));
+      Assert.That (computer2.Employee, Is.SameAs (employee));
     }
   }
 }
