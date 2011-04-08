@@ -28,22 +28,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         : base (classDefinition, typeof(string).GetProperty("Length"), propertyName, typeof(object), false, maxLength, storageClass)
     {
     }
-
-
+    
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
       : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
       _propertyInfo = propertyInfo;
-    }
-
-    public override Type PropertyType
-    {
-      get
-      {
-        if (!IsPropertyTypeResolved)
-          throw new InvalidOperationException();
-
-        return _propertyInfo.PropertyType; }
     }
 
     public override bool IsPropertyTypeResolved
@@ -51,29 +40,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return _propertyInfo != null; }
     }
 
-    public override PropertyInfo PropertyInfo
-    {
-      get { return _propertyInfo; }
-    }
-
     public override bool IsPropertyInfoResolved
     {
       get { return true; }
     }
 
-    public override bool IsNullable
-    {
-      get { throw new NotImplementedException (); }
-    }
-
-    public override object DefaultValue
-    {
-      get { throw new NotImplementedException (); }
-    }
-
-    public override bool IsObjectID
-    {
-      get { throw new NotImplementedException (); }
-    }
   }
 }

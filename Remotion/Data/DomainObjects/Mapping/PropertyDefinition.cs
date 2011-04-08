@@ -121,6 +121,59 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    public PropertyInfo PropertyInfo
+    {
+      get { return _propertyInfo; }
+    }
+
+    public virtual bool IsPropertyInfoResolved
+    {
+      get { return true; }
+    }
+
+    public Type PropertyType
+    {
+      get { return _propertyType; }
+    }
+
+    public virtual bool IsPropertyTypeResolved
+    {
+      get { return true; }
+    }
+
+    public object DefaultValue
+    {
+      get
+      {
+        if (_isNullable)
+          return null;
+
+        if (_propertyType.IsArray)
+          return Array.CreateInstance (_propertyType.GetElementType (), 0);
+
+        if (_propertyType == typeof (string))
+          return string.Empty;
+
+        if (_propertyType.IsEnum)
+          return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
+
+        if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
+          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos ().First ().Value;
+
+        return Activator.CreateInstance (_propertyType, new object[0]);
+      }
+    }
+
+    public bool IsNullable
+    {
+      get { return _isNullable; }
+    }
+
+    public bool IsObjectID
+    {
+      get { return _propertyType == typeof (ObjectID); }
+    }
+
     public int? MaxLength
     {
       get { return _maxLength; }
@@ -142,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return GetType ().FullName + ": " + _propertyName;
     }
-
+    
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)
@@ -162,59 +215,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     protected override string IDForExceptions
     {
       get { return PropertyName; }
-    }
-
-    public virtual PropertyInfo PropertyInfo
-    {
-      get { return _propertyInfo; }
-    }
-
-    public virtual bool IsPropertyInfoResolved
-    {
-      get { return true; }
-    }
-
-    public virtual Type PropertyType
-    {
-      get { return _propertyType; }
-    }
-
-    public virtual bool IsPropertyTypeResolved
-    {
-      get { return true; }
-    }
-
-    public virtual object DefaultValue
-    {
-      get
-      {
-        if (_isNullable)
-          return null;
-
-        if (_propertyType.IsArray)
-          return Array.CreateInstance (_propertyType.GetElementType(), 0);
-
-        if (_propertyType == typeof (string))
-          return string.Empty;
-
-        if (_propertyType.IsEnum)
-          return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
-
-        if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
-          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos().First().Value;
-
-        return Activator.CreateInstance (_propertyType, new object[0]);
-      }
-    }
-
-    public virtual bool IsNullable
-    {
-      get { return _isNullable; }
-    }
-
-    public virtual bool IsObjectID
-    {
-      get { return _propertyType == typeof (ObjectID); }
     }
 
     #endregion
