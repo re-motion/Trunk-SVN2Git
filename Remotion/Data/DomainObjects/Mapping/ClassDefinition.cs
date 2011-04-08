@@ -386,6 +386,39 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageEntityDefinition; }
     }
 
+    public virtual Type ClassType
+    {
+      get { return _classType; }
+    }
+
+    public virtual bool IsClassTypeResolved
+    {
+      get { return true; }
+    }
+
+    public virtual IDomainObjectCreator GetDomainObjectCreator ()
+    {
+      return InterceptedDomainObjectCreator.Instance;
+    }
+
+    public virtual PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _propertyDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetPropertyDefinition));
+    }
+
+    public virtual IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _relationDefinitionCache.GetOrCreateValue (
+          propertyInformation,
+          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetRelationEndPointDefinition));
+    }
+
     public ClassDefinition BaseClass
     {
       get { return _baseClass; }
@@ -540,6 +573,36 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    public IPersistentMixinFinder PersistentMixinFinder
+    {
+      get { return _persistentMixinFinder; }
+    }
+
+    public IEnumerable<Type> PersistentMixins
+    {
+      get { return _persistentMixinFinder.GetPersistentMixins (); }
+    }
+
+    public virtual bool IsAbstract
+    {
+      get { return _isAbstract; }
+    }
+
+    public Type GetPersistentMixin (Type mixinToSearch)
+    {
+      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
+      if (PersistentMixins.Contains (mixinToSearch))
+        return mixinToSearch;
+      else
+        return PersistentMixins.FirstOrDefault (mixinToSearch.IsAssignableFrom);
+    }
+
+    public virtual ClassDefinitionValidator GetValidator ()
+    {
+      return new ClassDefinitionValidator (this);
+    }
+
+
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)
@@ -557,75 +620,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return ID; }
     }
 
-    public IPersistentMixinFinder PersistentMixinFinder
-    {
-      get { return _persistentMixinFinder; }
-    }
-
-    public IEnumerable<Type> PersistentMixins
-    {
-      get { return _persistentMixinFinder.GetPersistentMixins(); }
-    }
-
-    public virtual bool IsAbstract
-    {
-      get { return _isAbstract; }
-    }
-
-    public virtual Type ClassType
-    {
-      get { return _classType; }
-    }
-
-    public virtual bool IsClassTypeResolved
-    {
-      get { return true; }
-    }
-
     #endregion
-
-    public Type GetPersistentMixin (Type mixinToSearch)
-    {
-      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
-      if (PersistentMixins.Contains (mixinToSearch))
-        return mixinToSearch;
-      else
-      {
-        foreach (Type mixin in PersistentMixins)
-        {
-          if (mixinToSearch.IsAssignableFrom (mixin))
-            return mixin;
-        }
-        return null;
-      }
-    }
-
-    public virtual PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-
-      return _propertyDefinitionCache.GetOrCreateValue (
-          propertyInformation,
-          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetPropertyDefinition));
-    }
-
-    public virtual IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
-
-      return _relationDefinitionCache.GetOrCreateValue (
-          propertyInformation,
-          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetRelationEndPointDefinition));
-    }
-
-    public virtual ClassDefinitionValidator GetValidator ()
-    {
-      return new ClassDefinitionValidator (this);
-    }
-
-    public virtual IDomainObjectCreator GetDomainObjectCreator ()
-    {
-      return InterceptedDomainObjectCreator.Instance;
-    }
   }
 }

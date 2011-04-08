@@ -26,7 +26,7 @@ namespace Remotion.Collections
   /// Read-only wrapper around an <see cref="ICollection{T}"/> which itself explicitely implements <see cref="ICollection{T}"/>.
   /// </summary>
   /// <remarks>
-  /// Behaves analogue to <see cref="ReadOnlyCollection{T}"/>, i.e. not supported methods required by <see cref="ICollection{TKey,TValue}"/> 
+  /// Behaves analogue to <see cref="ReadOnlyCollection{T}"/>, i.e. not supported methods required by <see cref="ICollection{T}"/> 
   /// throw <see cref="NotSupportedException"/>|s.
   /// <para/>
   /// </remarks>
