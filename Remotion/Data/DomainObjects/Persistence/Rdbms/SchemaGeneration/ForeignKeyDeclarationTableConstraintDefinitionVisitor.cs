@@ -21,6 +21,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
@@ -80,10 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     private string GetColumnNameList (IEnumerable<SimpleColumnDefinition> columnDefinitions)
     {
-      var referencedColumnsVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
-      foreach (var columnDefinition in columnDefinitions)
-        columnDefinition.Accept (referencedColumnsVisitor);
-      return referencedColumnsVisitor.GetNameList ();
+      return NameListColumnDefinitionVisitor.GetNameList (columnDefinitions.Cast<IColumnDefinition>(), false, _sqlDialect);
     }
 
     public string GetConstraintStatement ()

@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
@@ -41,14 +43,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       if (!string.IsNullOrEmpty (_constraintStatement))
         throw new InvalidOperationException ("Only one primary key constraint is allowed.");
 
-      var nameListVisitor = new NameListColumnDefinitionVisitor (false, _sqlDialect);
-      foreach (var columnDefinition in primaryKeyConstraintDefinition.Columns)
-        columnDefinition.Accept (nameListVisitor);
-
       _constraintStatement = string.Format (
           "CONSTRAINT {0} PRIMARY KEY CLUSTERED ({1})",
           _sqlDialect.DelimitIdentifier (primaryKeyConstraintDefinition.ConstraintName),
-          nameListVisitor.GetNameList());
+          NameListColumnDefinitionVisitor.GetNameList (primaryKeyConstraintDefinition.Columns.Cast<IColumnDefinition>(), false, _sqlDialect));
     }
 
     public void VisitForeignKeyConstraintDefinition (ForeignKeyConstraintDefinition foreignKeyConstraintDefinition)

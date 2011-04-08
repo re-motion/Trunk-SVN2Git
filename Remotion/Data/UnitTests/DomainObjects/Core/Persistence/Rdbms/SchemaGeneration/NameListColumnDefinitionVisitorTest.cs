@@ -29,6 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private NameListColumnDefinitionVisitor _visitorAllowingNulls;
     private ISqlDialect _sqlDialectStub;
     private NameListColumnDefinitionVisitor _visitorIgnoringClassIDColumns;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
 
     [SetUp]
     public void SetUp ()
@@ -36,16 +38,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
       _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
       _visitorIgnoringClassIDColumns = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
+      _column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
+      _column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true, false);
+    }
+
+    [Test]
+    public void GetNameList ()
+    {
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
+
+      var result = NameListColumnDefinitionVisitor.GetNameList (new[]{_column1, _column2}, true, _sqlDialectStub);
+
+      Assert.That (result, Is.EqualTo ("[C1], [C2]"));
     }
 
     [Test]
     public void VisitSimpleColumnDefinition ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
-
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
-      _visitorAllowingNulls.VisitSimpleColumnDefinition (column);
+      _visitorAllowingNulls.VisitSimpleColumnDefinition (_column1);
       var result = _visitorAllowingNulls.GetNameList ();
 
       Assert.That (result, Is.EqualTo ("[C1]"));
@@ -54,14 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void VisitSimpleColumnDefinition_SecondColumn ()
     {
-      var column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
-      var column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true, false);
-
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
 
-      _visitorAllowingNulls.VisitSimpleColumnDefinition (column1);
-      _visitorAllowingNulls.VisitSimpleColumnDefinition (column2);
+      _visitorAllowingNulls.VisitSimpleColumnDefinition (_column1);
+      _visitorAllowingNulls.VisitSimpleColumnDefinition (_column2);
       var result = _visitorAllowingNulls.GetNameList ();
 
       Assert.That (result, Is.EqualTo ("[C1], [C2]"));

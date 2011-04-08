@@ -78,12 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
     {
-      var visitor = new NameListColumnDefinitionVisitor (allowNulls, _sqlDialect);
-
-      foreach (var columnDefinition in columnDefinitions)
-        columnDefinition.Accept (visitor);
-
-      return visitor.GetNameList ();
+      return NameListColumnDefinitionVisitor.GetNameList (columnDefinitions, allowNulls, _sqlDialect);
     }
 
     protected string GetClassIDList (IEnumerable<string> classIDs)

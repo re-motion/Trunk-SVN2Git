@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -29,7 +30,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly bool _allowNullColumns;
     private readonly StringBuilder _nameList = new StringBuilder ();
     private readonly ISqlDialect _sqlDialect;
-    
+
+    public static string GetNameList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNullColumns, ISqlDialect sqlDialect)
+    {
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      var visitor = new NameListColumnDefinitionVisitor (allowNullColumns, sqlDialect);
+      foreach (var columnDefinition in columnDefinitions)
+        columnDefinition.Accept (visitor);
+      return visitor.GetNameList();
+    }
+
     public NameListColumnDefinitionVisitor (bool allowNullColumns, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
