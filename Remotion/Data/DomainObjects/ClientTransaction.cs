@@ -832,8 +832,6 @@ public class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the data source.
   /// </exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   protected internal virtual DomainObject GetObject (ObjectID id, bool includeDeleted)
   {
     ArgumentUtility.CheckNotNull ("id", id);
@@ -943,8 +941,6 @@ public class ClientTransaction
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   public T[] GetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
   {
@@ -964,8 +960,6 @@ public class ClientTransaction
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
   {
@@ -987,8 +981,6 @@ public class ClientTransaction
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   protected internal virtual T[] GetObjects<T> (ICollection<ObjectID> objectIDs, bool throwOnNotFound) 
       where T : DomainObject
   {
@@ -1010,8 +1002,6 @@ public class ClientTransaction
   /// <returns>The <see cref="DomainObject"/> that is the current related object.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
   /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/></exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   protected internal virtual DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -1035,8 +1025,6 @@ public class ClientTransaction
   /// <returns>The <see cref="DomainObject"/> that is the original related object.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
   /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/></exception>
-  /// <exception cref="LoadConflictException">A conflict between the data source and the state of this <see cref="ClientTransaction"/> has been 
-  /// detected.</exception>
   protected internal virtual DomainObject GetOriginalRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);

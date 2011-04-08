@@ -143,8 +143,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
-    /// detected.</exception>
     public T GetValue<T> ()
     {
       CheckType(typeof (T));
@@ -168,8 +166,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
-    /// detected.</exception>
     public object GetValueWithoutTypeCheck ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -185,8 +181,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
-    /// detected.</exception>
     public ObjectID GetRelatedObjectID ()
     {
       CheckTransactionalStatus (ClientTransaction);
@@ -272,8 +266,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
-    /// detected.</exception>
     public void SetValue<T> (T value)
     {
       CheckType (typeof (T));
@@ -293,8 +285,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="LoadConflictException">A conflict between the data source and the state of the <see cref="ClientTransaction"/> has been 
-    /// detected.</exception>
     public void SetValueWithoutTypeCheck (object value)
     {
       CheckTransactionalStatus (ClientTransaction);
