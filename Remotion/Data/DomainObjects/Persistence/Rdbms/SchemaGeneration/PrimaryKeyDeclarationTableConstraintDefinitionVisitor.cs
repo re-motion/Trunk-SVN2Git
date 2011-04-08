@@ -44,8 +44,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         throw new InvalidOperationException ("Only one primary key constraint is allowed.");
 
       _constraintStatement = string.Format (
-          "CONSTRAINT {0} PRIMARY KEY CLUSTERED ({1})",
+          "CONSTRAINT {0} PRIMARY KEY {1} ({2})",
           _sqlDialect.DelimitIdentifier (primaryKeyConstraintDefinition.ConstraintName),
+          primaryKeyConstraintDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
           NameListColumnDefinitionVisitor.GetNameList (primaryKeyConstraintDefinition.Columns.Cast<IColumnDefinition>(), false, _sqlDialect));
     }
 

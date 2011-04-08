@@ -29,20 +29,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private ISqlDialect _sqlDialectStub;
     private PrimaryKeyDeclarationTableConstraintDefinitionVisitor _visitor;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
       _visitor = new PrimaryKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialectStub);
+      _column1 = new SimpleColumnDefinition ("COL1", typeof (ObjectID), "uniqueidentifier", false, false);
+      _column2 = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", true, false);
     }
 
     [Test]
-    public void VisitPrimaryKeyConstraintDefinition ()
+    public void VisitPrimaryKeyConstraintDefinition_Clustered ()
     {
-      var column1 = new SimpleColumnDefinition ("COL1", typeof (ObjectID), "uniqueidentifier", false, false);
-      var column2 = new SimpleColumnDefinition ("COL2", typeof (string), "varchar", true, false);
-      var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", true, new[] { column1, column2 });
+      var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", true, new[] { _column1, _column2 });
 
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("PK_Test")).Return ("[PK_Test]");
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("COL1")).Return ("[COL1]");
@@ -51,6 +53,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _visitor.VisitPrimaryKeyConstraintDefinition (primaryKeyConstraint);
 
       Assert.That (_visitor.GetConstraintStatement(), Is.EqualTo ("CONSTRAINT [PK_Test] PRIMARY KEY CLUSTERED ([COL1], [COL2])"));
+    }
+
+    [Test]
+    public void VisitPrimaryKeyConstraintDefinition_NonClustered ()
+    {
+      var primaryKeyConstraint = new PrimaryKeyConstraintDefinition ("PK_Test", false, new[] { _column1, _column2 });
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("PK_Test")).Return ("[PK_Test]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("COL1")).Return ("[COL1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("COL2")).Return ("[COL2]");
+
+      _visitor.VisitPrimaryKeyConstraintDefinition (primaryKeyConstraint);
+
+      Assert.That (_visitor.GetConstraintStatement (), Is.EqualTo ("CONSTRAINT [PK_Test] PRIMARY KEY NONCLUSTERED ([COL1], [COL2])"));
     }
 
     [Test]
