@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Collections;
 
@@ -56,6 +54,12 @@ namespace Remotion.UnitTests.Collections
     public void Contains_False ()
     {
       Assert.That (_collection.Contains ("dummy"), Is.False);
+    }
+
+    [Test]
+    public void Contains_NullIsSupported ()
+    {
+      Assert.That (_collection.Contains (null), Is.False);
     }
 
     [Test]
@@ -98,6 +102,12 @@ namespace Remotion.UnitTests.Collections
     public void Clear ()
     {
       ((ICollection<string>) _collection).Clear();
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      Assert.That (_collection, Is.BinarySerializable);
     }
 
   }

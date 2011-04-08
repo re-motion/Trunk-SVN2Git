@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  [Serializable]
   /// <summary>
   /// Read-only wrapper around an <see cref="ICollection{T}"/> which itself explicitely implements <see cref="ICollection{T}"/>.
   /// </summary>
@@ -43,8 +44,6 @@ namespace Remotion.Collections
 
     public bool Contains (T item)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
-
       return _collection.Contains (item);
     }
 
