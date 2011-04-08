@@ -41,16 +41,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyType; }
     }
 
-    public bool IsPropertyTypeResolved
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    public string PropertyTypeName
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public PropertyInfo PropertyInfo
     {
       get { return null; }

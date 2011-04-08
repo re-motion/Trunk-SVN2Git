@@ -45,8 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (true, _definition.IsVirtual);
       Assert.IsNull (_definition.PropertyName);
       Assert.IsNull (_definition.PropertyType);
-      Assert.AreEqual (_clientDefinition.IsClassTypeResolved, _definition.IsPropertyTypeResolved);
-      Assert.IsNull (_definition.PropertyTypeName);
       Assert.IsTrue (_definition.IsAnonymous);
     }
 

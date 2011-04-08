@@ -77,16 +77,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return null; }
     }
 
-    public bool IsPropertyTypeResolved
-    {
-      get { return _classDefinition.IsClassTypeResolved; }
-    }
-
-    public string PropertyTypeName
-    {
-      get { return null; }
-    }
-
     public PropertyInfo PropertyInfo 
     {
       get { return null; }
