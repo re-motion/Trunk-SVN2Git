@@ -992,7 +992,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       PropertyDefinition propertyDefinition =
           PropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ClassDefinition) employee.InternalDataContainer.ClassDefinition,
+              employee.InternalDataContainer.ClassDefinition,
               "testproperty",
               "testproperty",
               typeof (string),
@@ -1019,7 +1019,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       PropertyDefinition propertyDefinition =
           PropertyDefinitionFactory.Create (
-              (ClassDefinition) employee.InternalDataContainer.ClassDefinition,
+              employee.InternalDataContainer.ClassDefinition,
               typeof (Employee), "Name",
               "Name",
               typeof (string),
