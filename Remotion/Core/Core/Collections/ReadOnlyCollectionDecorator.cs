@@ -22,7 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  [Serializable]
   /// <summary>
   /// Read-only wrapper around an <see cref="ICollection{T}"/> which itself explicitely implements <see cref="ICollection{T}"/>.
   /// </summary>
@@ -31,6 +30,7 @@ namespace Remotion.Collections
   /// throw <see cref="NotSupportedException"/>|s.
   /// <para/>
   /// </remarks>
+  [Serializable]
   public class ReadOnlyCollectionDecorator<T> : ICollection<T>
   {
     private readonly ICollection<T> _collection;
