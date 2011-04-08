@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void RelationDefinitionWithTypeNotFoundClassDefinition ()
     {
-      var classDefinition = new TypeNotFoundClassDefinition (
+      var classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (
           "Test",
           typeof (ClassOutOfInheritanceHierarchy),
           typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));

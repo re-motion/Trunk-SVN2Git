@@ -40,23 +40,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
     [Test]
     public void IsTypeSupported_AddedType ()
     {
-      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinitionForUnresolvedRelationPropertyType)), Is.False);
 
-      _typeProvider.AddSupportedType (typeof (ClassDefinition));
+      _typeProvider.AddSupportedType (typeof (ClassDefinitionForUnresolvedRelationPropertyType));
 
-      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.True);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinitionForUnresolvedRelationPropertyType)), Is.True);
     }
 
     [Test]
     public void IsTypeSupported_Added_BaseClass ()
     {
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
-      Assert.That (_typeProvider.IsTypeSupported (typeof (TypeNotFoundClassDefinition)), Is.False);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinitionForUnresolvedRelationPropertyType)), Is.False);
 
       _typeProvider.AddSupportedBaseType (typeof (ClassDefinition));
 
       Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinition)), Is.False);
-      Assert.That (_typeProvider.IsTypeSupported (typeof (TypeNotFoundClassDefinition)), Is.True);
+      Assert.That (_typeProvider.IsTypeSupported (typeof (ClassDefinitionForUnresolvedRelationPropertyType)), Is.True);
     }
 
     [Test]

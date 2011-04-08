@@ -230,7 +230,7 @@
     <Compile Include="Mapping\PersistenceModelLoader.cs" />
     <Compile Include="Mapping\ReflectionBasedMappingObjectFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollection.cs" />
-    <Compile Include="Mapping\TypeNotFoundClassDefinition.cs" />
+    <Compile Include="Mapping\ClassDefinitionForUnresolvedRelationPropertyType.cs" />
     <Compile Include="Mapping\PropertyNotFoundRelationEndPointDefinition.cs" />
     <Compile Include="Mapping\SortExpressions\SortedPropertySpecification.cs" />
     <Compile Include="Mapping\SortExpressions\SortOrder.cs" />

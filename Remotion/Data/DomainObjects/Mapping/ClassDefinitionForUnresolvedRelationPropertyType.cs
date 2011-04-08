@@ -16,17 +16,15 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class TypeNotFoundClassDefinition : ClassDefinition
+  public class ClassDefinitionForUnresolvedRelationPropertyType : ClassDefinition
   {
     private readonly PropertyInfo _relationProperty;
 
-    public TypeNotFoundClassDefinition (
+    public ClassDefinitionForUnresolvedRelationPropertyType (
         string id, Type classType, PropertyInfo relationProperty)
         : base (id, classType, false, null, null, new PersistentMixinFinder (classType))
     {
@@ -43,21 +41,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override bool IsClassTypeResolved
     {
       get { return false; }
-    }
-
-    public override IDomainObjectCreator GetDomainObjectCreator ()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
-    {
-      throw new NotImplementedException();
-    }
-
-    public override IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
-    {
-      throw new NotImplementedException();
     }
 
     public override ClassDefinitionValidator GetValidator ()

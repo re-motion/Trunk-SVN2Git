@@ -25,14 +25,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class TypeNotFoundClassDefinitionTest
   {
-    private TypeNotFoundClassDefinition _classDefinition;
+    private ClassDefinitionForUnresolvedRelationPropertyType _classDefinition;
     private Type _classType;
 
     [SetUp]
     public void SetUp ()
     {
       _classType = typeof (ClassNotInMapping);
-      _classDefinition = new TypeNotFoundClassDefinition (
+      _classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (
           "Test", _classType, typeof (string).GetProperty ("Length"));
     }
 

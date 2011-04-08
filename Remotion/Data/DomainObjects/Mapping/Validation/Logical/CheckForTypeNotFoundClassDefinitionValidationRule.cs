@@ -20,7 +20,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 {
   /// <summary>
-  /// Validates that the given<see cref="ClassDefinition"/> is no <see cref="TypeNotFoundClassDefinition"/>.
+  /// Validates that the given<see cref="ClassDefinition"/> is no <see cref="ClassDefinitionForUnresolvedRelationPropertyType"/>.
   /// </summary>
   public class CheckForTypeNotFoundClassDefinitionValidationRule : IRelationDefinitionValidatorRule
   {
@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
 
       foreach (var endPointDefinition in relationDefinition.EndPointDefinitions)
       {
-        var classDefinitionAsTypeNotFoundClassDefinition = endPointDefinition.ClassDefinition as TypeNotFoundClassDefinition;
+        var classDefinitionAsTypeNotFoundClassDefinition = endPointDefinition.ClassDefinition as ClassDefinitionForUnresolvedRelationPropertyType;
         if (classDefinitionAsTypeNotFoundClassDefinition!=null)
         {
           return MappingValidationResult.CreateInvalidResultForProperty (

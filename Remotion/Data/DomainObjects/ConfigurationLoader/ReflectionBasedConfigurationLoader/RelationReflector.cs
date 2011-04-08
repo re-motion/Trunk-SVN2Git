@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var oppositeClassDefinition = classDefinitions[type];
       if (oppositeClassDefinition == null)
       {
-        var notFoundClassDefinition = new TypeNotFoundClassDefinition (type.Name, type, PropertyInfo);
+        var notFoundClassDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (type.Name, type, PropertyInfo);
         notFoundClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
         notFoundClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());
         return notFoundClassDefinition;

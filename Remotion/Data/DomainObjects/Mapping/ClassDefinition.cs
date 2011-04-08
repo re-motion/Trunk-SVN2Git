@@ -386,7 +386,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _storageEntityDefinition; }
     }
 
-    public virtual Type ClassType
+    public Type ClassType
     {
       get { return _classType; }
     }
@@ -396,12 +396,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
-    public virtual IDomainObjectCreator GetDomainObjectCreator ()
+    public IDomainObjectCreator GetDomainObjectCreator ()
     {
       return InterceptedDomainObjectCreator.Instance;
     }
 
-    public virtual PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
+    public PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
@@ -410,7 +410,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetPropertyDefinition));
     }
 
-    public virtual IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
+    public IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
@@ -583,7 +583,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _persistentMixinFinder.GetPersistentMixins (); }
     }
 
-    public virtual bool IsAbstract
+    public bool IsAbstract
     {
       get { return _isAbstract; }
     }
