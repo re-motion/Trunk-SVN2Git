@@ -32,10 +32,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {

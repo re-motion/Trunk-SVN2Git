@@ -43,9 +43,5 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false; }
     }
 
-    public override ClassDefinitionValidator GetValidator ()
-    {
-      throw new NotImplementedException();
-    }
   }
 }

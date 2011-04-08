@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Rhino.Mocks;
 using System.Linq;
-using ClassDefinitionValidator = Remotion.Data.DomainObjects.Mapping.Validation.ClassDefinitionValidator;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
 {

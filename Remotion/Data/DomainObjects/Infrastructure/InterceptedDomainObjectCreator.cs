@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      objectID.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
+      objectID.ClassDefinition.ValidateCurrentMixinConfiguration ();
 
       var concreteType = Factory.GetConcreteDomainObjectType (objectID.ClassDefinition.ClassType);
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
-      classDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
+      classDefinition.ValidateCurrentMixinConfiguration ();
 
       Type concreteType = Factory.GetConcreteDomainObjectType (domainObjectType);
       return new DomainObjectConstructorLookupInfo (domainObjectType, concreteType, 

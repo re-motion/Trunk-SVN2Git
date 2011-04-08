@@ -597,11 +597,21 @@ namespace Remotion.Data.DomainObjects.Mapping
         return PersistentMixins.FirstOrDefault (mixinToSearch.IsAssignableFrom);
     }
 
-    public virtual ClassDefinitionValidator GetValidator ()
+    public void ValidateCurrentMixinConfiguration ()
     {
-      return new ClassDefinitionValidator (this);
+      var currentMixinConfiguration = Mapping.PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (ClassType);
+      if (!object.Equals(currentMixinConfiguration, PersistentMixinFinder.MixinConfiguration))
+      {
+        string message = string.Format (
+            "The mixin configuration for domain object type '{0}' was changed after the mapping information was built." + Environment.NewLine
+            + "Original configuration: {1}." + Environment.NewLine
+            + "Active configuration: {2}",
+            ClassType,
+            PersistentMixinFinder.MixinConfiguration,
+            currentMixinConfiguration);
+        throw new MappingException (message);
+      }
     }
-
 
     #region Serialization
 
