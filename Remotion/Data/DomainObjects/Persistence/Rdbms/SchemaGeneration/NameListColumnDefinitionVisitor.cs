@@ -33,6 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public static string GetNameList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNullColumns, ISqlDialect sqlDialect)
     {
+      ArgumentUtility.CheckNotNull ("columnDefinitions", columnDefinitions);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       var visitor = new NameListColumnDefinitionVisitor (allowNullColumns, sqlDialect);

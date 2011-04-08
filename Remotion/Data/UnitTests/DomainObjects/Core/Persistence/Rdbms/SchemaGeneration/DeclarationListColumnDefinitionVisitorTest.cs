@@ -28,22 +28,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private DeclarationListColumnDefinitionVisitor _visitor;
     private ISqlDialect _sqlDialectStub;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
 
     [SetUp]
     public void SetUp ()
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _visitor = new DeclarationListColumnDefinitionVisitor (_sqlDialectStub);
+      _column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
+      _column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true, false);
+    }
+
+    [Test]
+    public void GetDeclarationList ()
+    {
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
+
+      var result = DeclarationListColumnDefinitionVisitor.GetDeclarationList (new[] { _column1, _column2 }, _sqlDialectStub);
+
+      Assert.That (result, Is.EqualTo ("  [C1] integer NULL,\r\n  [C2] integer NULL"));
     }
 
     [Test]
     public void VisitSimpleColumnDefinition_Nullable ()
     {
-      var column = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
-
       _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
 
-      _visitor.VisitSimpleColumnDefinition (column);
+      _visitor.VisitSimpleColumnDefinition (_column1);
       var result = _visitor.GetDeclarationList ();
 
       Assert.That (result, Is.EqualTo ("  [C1] integer NULL"));

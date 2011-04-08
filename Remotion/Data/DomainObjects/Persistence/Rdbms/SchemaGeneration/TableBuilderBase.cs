@@ -87,12 +87,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var visitor = new DeclarationListColumnDefinitionVisitor (_sqlDialect);
 
-      foreach (var columnDefinition in tableDefinition.GetColumns ())
-        columnDefinition.Accept (visitor);
-
-      return visitor.GetDeclarationList ();
+      return DeclarationListColumnDefinitionVisitor.GetDeclarationList (tableDefinition.GetColumns(), _sqlDialect);
     }
 
     protected string GetPrimaryKeyConstraintStatement (TableDefinition tableDefinition)

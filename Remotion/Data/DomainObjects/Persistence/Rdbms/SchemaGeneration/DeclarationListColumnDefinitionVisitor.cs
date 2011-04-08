@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -28,6 +29,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   {
     private readonly StringBuilder _columnList = new StringBuilder();
     private readonly ISqlDialect _sqlDialect;
+
+    public static string GetDeclarationList (IEnumerable<IColumnDefinition> columnDefinitions, ISqlDialect sqlDialect)
+    {
+      ArgumentUtility.CheckNotNull ("columnDefinitions", columnDefinitions);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
+
+      var visitor = new DeclarationListColumnDefinitionVisitor (sqlDialect);
+      foreach (var columnDefinition in columnDefinitions)
+        columnDefinition.Accept (visitor);
+
+      return visitor.GetDeclarationList ();
+    }
 
     public DeclarationListColumnDefinitionVisitor (ISqlDialect sqlDialect)
     {
