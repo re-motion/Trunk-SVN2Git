@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       PropertyDefinition copy =
           PropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ClassDefinition) _propertyDefinition1.ClassDefinition,
+              _propertyDefinition1.ClassDefinition,
               _propertyDefinition1.PropertyName,
               StorageModelTestHelper.GetColumnName(_propertyDefinition1));
 
