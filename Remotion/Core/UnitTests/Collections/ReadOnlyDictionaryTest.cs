@@ -156,7 +156,7 @@ namespace Remotion.UnitTests.Collections
       var keys = _readOnlyDictionaryAsIDictionary.Keys;
 
       Assert.That (keys, Is.TypeOf (typeof (ReadOnlyCollectionDecorator<string>)));
-      Assert.That (keys.ToArray(), Is.EqualTo (new[] { "a", "b", "c" }));
+      Assert.That (keys, Is.EqualTo (new[] { "a", "b", "c" }));
     }
 
     [Test]
@@ -165,7 +165,7 @@ namespace Remotion.UnitTests.Collections
       var values = _readOnlyDictionaryAsIDictionary.Values;
 
       Assert.That (values, Is.TypeOf (typeof (ReadOnlyCollectionDecorator<string>)));
-      Assert.That (values.ToArray (), Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
+      Assert.That (values, Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
     }
   }
 }
