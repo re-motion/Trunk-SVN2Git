@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         bool isMandatory,
         CardinalityType cardinality,
         string propertyTypeName,
-        string sortExpression,
+        string sortExpressionText,
         PropertyInfo propertyInfo)
         : this (
             classDefinition,
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             cardinality,
             null,
             ArgumentUtility.CheckNotNullOrEmpty ("propertyTypeName", propertyTypeName),
-            sortExpression,
+            sortExpressionText,
             propertyInfo)
     {
     }
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         bool isMandatory,
         CardinalityType cardinality,
         Type propertyType,
-        string sortExpression,
+        string sortExpressionText,
         PropertyInfo propertyInfo)
         : this (
             classDefinition,
@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             cardinality,
             ArgumentUtility.CheckNotNull ("propertyType", propertyType),
             null,
-            sortExpression,
+            sortExpressionText,
             propertyInfo)
     {
     }
