@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints
@@ -72,20 +74,86 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 
+    public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
+      if (DataKeeper.OriginalOppositeEndPoint != null)
+      {
+        var message = string.Format (
+            "The object end-point '{0}' cannot be synchronized with the virtual object end-point '{1}' because the virtual relation property already "
+            + "refers to another object ('{2}'). To synchronize '{0}', use UnloadService to unload either object '{2}' or the virtual object "
+            + "end-point '{1}'.",
+            oppositeEndPoint.ID,
+            DataKeeper.EndPointID,
+            DataKeeper.OriginalOppositeEndPoint.ObjectID);
+        throw new InvalidOperationException (message);
+      }
+
+      base.SynchronizeOppositeEndPoint (oppositeEndPoint);
+    }
+
     public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
 
+      var oldRelatedObjectID = DataKeeper.CurrentOppositeObjectID;
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-      if (DataKeeper.CurrentOppositeObjectID == newRelatedObjectID)
+
+      if (DataKeeper.OriginalItemWithoutEndPoint != null)
+      {
+        var message = string.Format (
+            "The virtual property '{0}' of object '{1}' cannot be set because the property is "
+            + "out of sync with the opposite object property '{2}'. To make this change, synchronize the two properties by calling the "
+            + "'BidirectionalRelationSyncService.Synchronize' method on the '{0}' property.",
+            DataKeeper.EndPointID.Definition.PropertyName,
+            DataKeeper.EndPointID.ObjectID,
+            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+        throw new InvalidOperationException (message);
+      }
+
+      if (oldRelatedObjectID == newRelatedObjectID)
+      {
         return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
+      }
       else
+      {
+        if (newRelatedObjectID != null)
+          CheckAddedObject (newRelatedObjectID);
+
         return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, id => DataKeeper.CurrentOppositeObjectID = id);
+      }
     }
 
     public IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
+
+      if (UnsynchronizedOppositeEndPoints.Count != 0)
+      {
+        var message = string.Format (
+            "The domain object '{0}' cannot be deleted because the opposite object property '{2}' of domain object '{3}' is out of sync with the "
+            + "virtual property '{1}'. To make this change, synchronize the two properties by calling the "
+            + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
+            DataKeeper.EndPointID.ObjectID,
+            DataKeeper.EndPointID.Definition.PropertyName,
+            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
+            UnsynchronizedOppositeEndPoints.First ().ObjectID);
+        throw new InvalidOperationException (message);
+      }
+
+      if (DataKeeper.OriginalItemWithoutEndPoint != null)
+      {
+        var message = string.Format (
+            "The domain object '{0}' cannot be deleted because its virtual property '{1}' is out of sync with "
+            + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
+            + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
+            DataKeeper.EndPointID.ObjectID,
+            DataKeeper.EndPointID.Definition.PropertyName,
+            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
+            DataKeeper.OriginalItemWithoutEndPoint.ID);
+        throw new InvalidOperationException (message);
+      }
 
       return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
     }
@@ -103,6 +171,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     protected override bool HasUnsynchronizedCurrentOppositeEndPoints ()
     {
       return DataKeeper.CurrentOppositeEndPoint != null && !DataKeeper.CurrentOppositeEndPoint.IsSynchronized;
+    }
+
+    private void CheckAddedObject (ObjectID objectID)
+    {
+      if (ContainsUnsynchronizedOppositeEndPoint (objectID))
+      {
+        var message = string.Format (
+            "The domain object with ID '{0}' cannot be set into the virtual property '{1}' of object '{2}' because its object property "
+            + "'{3}' is out of sync with the virtual property. To make this change, synchronize the two properties by calling the "
+            + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
+            objectID,
+            DataKeeper.EndPointID.Definition.PropertyName,
+            DataKeeper.EndPointID.ObjectID,
+            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+        throw new InvalidOperationException (message);
+      }
     }
 
     #region Serialization

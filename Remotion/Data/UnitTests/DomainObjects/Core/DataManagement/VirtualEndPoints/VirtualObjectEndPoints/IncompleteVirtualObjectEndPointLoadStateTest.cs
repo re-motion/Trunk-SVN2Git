@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void RegisterOriginalOppositeEndPoint ()
+    public void RegisterOriginalOppositeEndPoint_RootTransaction ()
     {
       var mockRepository = new MockRepository();
       Assert.That (_loadState.OriginalOppositeEndPoints.Count, Is.EqualTo (0));
@@ -239,6 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         endPointMock.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
         endPointMock.Expect (mock => mock.ResetSyncState ());
 
+        virtualObjectEndPointMock.Stub (stub => stub.ClientTransaction).Return (ClientTransaction.CreateRootTransaction ());
         endPointMock.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
         virtualObjectEndPointMock
             .Expect (mock => mock.MarkDataComplete (_relatedObject))
@@ -250,6 +251,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _loadState.RegisterOriginalOppositeEndPoint (virtualObjectEndPointMock, endPointMock);
 
       mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void RegisterOriginalOppositeEndPoint_SubTransaction ()
+    {
+      var mockRepository = new MockRepository ();
+      Assert.That (_loadState.OriginalOppositeEndPoints.Count, Is.EqualTo (0));
+
+      var endPointMock = mockRepository.StrictMock<IRealObjectEndPoint> ();
+      var virtualObjectEndPointMock = mockRepository.StrictMock<IVirtualObjectEndPoint> ();
+      virtualObjectEndPointMock.Stub (stub => stub.ClientTransaction).Return (ClientTransaction.CreateRootTransaction ().CreateSubTransaction());
+
+      endPointMock.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
+      endPointMock.Expect (mock => mock.ResetSyncState ());
+
+      mockRepository.ReplayAll ();
+
+      _loadState.RegisterOriginalOppositeEndPoint (virtualObjectEndPointMock, endPointMock);
+
+      virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (Arg<DomainObject>.Is.Anything));
+      endPointMock.VerifyAllExpectations();
     }
 
     [Test]

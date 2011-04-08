@@ -24,7 +24,6 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
-  [Ignore ("TODO 3841")]
   public class ObjectRelationInconsistenciesInSubtransactionsTest : RelationInconsistenciesTestBase
   {
     [Test]
@@ -238,14 +237,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
 
-        Assert.That (employee.Computer, Is.SameAs (employee));
+        Assert.That (employee.Computer, Is.SameAs (computer));
         Assert.That (computer.Employee, Is.SameAs (employee));
       }
 
       CheckSyncState (computer, c => c.Employee, true);
       CheckSyncState (employee, e => e.Computer, true);
 
-      Assert.That (employee.Computer, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
       Assert.That (computer.Employee, Is.SameAs (employee));
     }
 
@@ -269,16 +268,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (employee, e => e.Computer, true);
         CheckSyncState (computer2, c => c.Employee, false);
 
-        // TBD: Throw or simply make other relation unsynchronized?
-        CheckActionThrows<InvalidOperationException> (
-            () =>
-            BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee)),
-            "additional object???");
+        CheckActionThrows<InvalidOperationException> (() =>
+            BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee)),
+            "The object end-point '{0}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' "
+            + "cannot be synchronized with the virtual object end-point "
+            + "'{2}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' because "
+            + "the virtual relation property already refers to another object ('{1}'). To synchronize "
+            + "'{0}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee', use "
+            + "UnloadService to unload either object '{1}' or the virtual object end-point "
+            + "'{2}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.",
+            computer2.ID,
+            computer.ID,
+            employee.ID);
 
         // By unloading the employee.Computer -> computer relation, we can now synchronize computer2.Employee -> employee with employee.Computer
         UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee));
 
         CheckSyncState (computer, c => c.Employee, false);
         CheckSyncState (computer2, c => c.Employee, true);
@@ -327,7 +333,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (order1.OrderTicket, Is.Null);
 
         CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
       }
       ClientTransaction.Current.Rollback ();
 
@@ -339,7 +344,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (order1.OrderTicket, Is.Null);
 
         CheckSyncState (orderTicket1, oi => oi.Order, true);
-        CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
       }
     }
 
@@ -469,9 +473,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNonNull (out employee, out computer, out computer2);
-
-        // computer.Employee and employee.Computer match, but computer2.Employee doesn't
         Assert.That (computer.Employee, Is.SameAs (employee));
         Assert.That (computer2.Employee, Is.SameAs (employee));
         Assert.That (employee.Computer, Is.SameAs (computer));
@@ -682,8 +683,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        PrepareInconsistentState_InconsistentForeignKeyLoaded_VirtualSideAlreadyNonNull (out employee, out computer, out computer2);
-
         // computer.Employee and employee.Computer match, but computer2.Employee doesn't
         Assert.That (computer.Employee, Is.SameAs (employee));
         Assert.That (employee.Computer, Is.SameAs (computer));

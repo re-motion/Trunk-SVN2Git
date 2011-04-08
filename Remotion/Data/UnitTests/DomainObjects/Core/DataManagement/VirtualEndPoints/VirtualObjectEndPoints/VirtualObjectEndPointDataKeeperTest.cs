@@ -47,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (_oppositeObject.ID);
+      _oppositeEndPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_oppositeObject);
     }
 
     [Test]
@@ -126,6 +127,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
 
       _stateUpdateListenerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RegisterOriginalOppositeEndPoint_PreviouslyItemWithoutEndPoint ()
+    {
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
+      
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
+
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
+      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "A different original opposite item has already been registered.")]
+    public void RegisterOriginalOppositeEndPoint_PreviouslyOtherItemWithoutEndPoint ()
+    {
+      var oppositeObject2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
+      _dataKeeper.RegisterOriginalItemWithoutEndPoint (oppositeObject2);
+
+      _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
     }
 
     [Test]

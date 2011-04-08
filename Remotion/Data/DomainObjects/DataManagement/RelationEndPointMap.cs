@@ -340,21 +340,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
               select loadedEndPoint).ToArray();
     }
 
-    public void CheckForConflictingForeignKeys (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-      {
-        if (!endPointID.Definition.IsVirtual)
-        {
-          var oppositeVirtualEndPointDefinition = endPointID.Definition.GetOppositeEndPointDefinition ();
-          if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One)
-            CheckForConflictingForeignKey (dataContainer, endPointID.Definition, oppositeVirtualEndPointDefinition);
-        }
-      }
-    }
-
     public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);

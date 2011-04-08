@@ -98,6 +98,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       if (_originalOppositeEndPoint != null)
         throw new InvalidOperationException ("The original opposite end-point has already been registered.");
 
+      var item = oppositeEndPoint.GetDomainObjectReference();
+      if (_originalItemWithoutEndPoint == item)
+        _originalItemWithoutEndPoint = null;
+      else if (_originalItemWithoutEndPoint != null)
+        throw new InvalidOperationException ("A different original opposite item has already been registered.");
+
       // Only set current end-point/value if they haven't already been set to a different value
       if (!HasDataChanged ())
       {

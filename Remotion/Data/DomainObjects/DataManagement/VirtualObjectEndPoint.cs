@@ -172,7 +172,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Commit ()
     {
-      _loadState.Commit();
+      if (HasChanged)
+        _loadState.Commit();
+
       _hasBeenTouched = false;
     }
 

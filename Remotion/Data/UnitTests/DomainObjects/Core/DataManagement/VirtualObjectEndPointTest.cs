@@ -370,17 +370,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit ()
+    public void Commit_Changed ()
     {
       _endPoint.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
-      _loadStateMock.Expect (mock => mock.Commit());
+      _loadStateMock.Stub(mock => mock.HasChanged()).Return (true);
+      _loadStateMock.Expect (mock => mock.Commit ());
       _loadStateMock.Replay ();
       
       _endPoint.Commit ();
 
       _loadStateMock.VerifyAllExpectations ();
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+    }
+
+    [Test]
+    public void Commit_Unchanged ()
+    {
+      _endPoint.Touch ();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
+
+      _loadStateMock.Stub (mock => mock.HasChanged ()).Return (false);
+      _loadStateMock.Replay ();
+
+      _endPoint.Commit ();
+
+      _loadStateMock.AssertWasNotCalled (mock => mock.Commit ());
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 

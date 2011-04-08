@@ -167,7 +167,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 3841")]
     public void UnloadVirtualEndPoint_Object_AccessingEndPoint ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -185,7 +184,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 3841")]
     public void UnloadVirtualEndPoint_Object_EnsureDataComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -200,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
 
       CheckVirtualEndPoint (order, "OrderTicket", true);
-      Assert.That (order.OrderTicket, Is.EquivalentTo (new[] { orderTicket }));
+      Assert.That (order.OrderTicket, Is.SameAs (orderTicket));
     }
 
     [Test]

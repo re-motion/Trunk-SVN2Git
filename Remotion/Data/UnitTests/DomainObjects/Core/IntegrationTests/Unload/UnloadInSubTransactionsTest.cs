@@ -196,7 +196,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 3841")]
     public void UnloadVirtualEndPoint_ObjectEndPoint_EnsureDataComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -216,7 +215,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 3841")]
     public void UnloadVirtualEndPoint_ObjectEndPoint_ChangedInParent_ButNotInSubTx ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -255,7 +253,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    // [Ignore ("TODO 3841")]
     public void UnloadVirtualEndPoint_ObjectEndPoint_Reload ()
     {
       SetDatabaseModifyable ();

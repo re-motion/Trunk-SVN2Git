@@ -41,8 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     private CompleteVirtualObjectEndPointLoadState _loadState;
 
     private IRelationEndPointDefinition _definition;
+
     private OrderTicket _relatedObject;
     private IRealObjectEndPoint _relatedEndPointStub;
+    private OrderTicket _relatedObject2;
+    private IRealObjectEndPoint _relatedEndPointStub2;
+
     private Order _owningObject;
 
     [SetUp]
@@ -61,9 +65,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _loadState = new CompleteVirtualObjectEndPointLoadState (_dataKeeperMock, _endPointProviderStub, _clientTransaction);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
+
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
+
+      _relatedObject2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
+
+      _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _relatedEndPointStub2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (_relatedObject2.ID, typeof (OrderTicket), "Order"));
+      _relatedEndPointStub2.Stub (stub => stub.GetDomainObjectReference()).Return (_relatedObject2);
+      _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (_relatedObject2.ID);
+
       _owningObject = DomainObjectMother.CreateFakeObject<Order> ();
     }
 
@@ -132,11 +145,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void SynchronizeOppositeEndPoint_NoExistingOppositeEndPoint ()
+    {
+      var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      endPointMock.Expect (mock => mock.MarkSynchronized ());
+      endPointMock.Replay ();
+      AddUnsynchronizedOppositeEndPoint (_loadState, endPointMock);
+
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
+      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
+      _dataKeeperMock.Replay ();
+
+      _loadState.SynchronizeOppositeEndPoint (endPointMock);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      endPointMock.VerifyAllExpectations ();
+      Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member (endPointMock));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The object end-point "
+        + "'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' cannot "
+        + "be synchronized with the virtual object end-point "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because the "
+        + "virtual relation property already refers to another object ('OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'). To synchronize "
+        + "'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order', use "
+        + "UnloadService to unload either object 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' or the virtual object end-point "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'.")]
+    public void SynchronizeOppositeEndPoint_WithExistingOppositeEndPoint ()
+    {
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (_relatedEndPointStub);
+
+      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub2);
+    }
+
+    [Test]
     public void CreateSetCommand_Same ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay();
       
+      _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
+      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (_relatedObject);
+      _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
+      _virtualObjectEndPointMock.Replay ();
+
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject);
+
+      Assert.That (command, Is.TypeOf (typeof (ObjectEndPointSetSameCommand)));
+      Assert.That (command.DomainObject, Is.SameAs (_owningObject));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      CheckOppositeObjectIDSetter (command);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+    "The virtual property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
+    + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be set because the property is out of sync with the opposite object "
+    + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, synchronize the two properties by "
+    + "calling the 'BidirectionalRelationSyncService.Synchronize' method on the "
+    + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' property.")]
+    public void CreateSetCommand_Same_WithItemWithoutEndPoint ()
+    {
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (_relatedObject);
+      _dataKeeperMock.Replay ();
+
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
       _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (_relatedObject);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -156,6 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void CreateSetCommand_Same_Null ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (null);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay ();
 
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
@@ -175,9 +256,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void CreateSetCommand_OneOne ()
+    public void CreateSetCommand_NotSame ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay ();
 
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
@@ -199,8 +281,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The virtual property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be set because the property is out of sync with the opposite object "
+        + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. To make this change, synchronize the two properties by "
+        + "calling the 'BidirectionalRelationSyncService.Synchronize' method on the "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' property.")]
+    public void CreateSetCommand_NotSame_WithItemWithoutEndPoint ()
+    {
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (_relatedObject);
+      _dataKeeperMock.Replay ();
+
+      _loadState.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The domain object with ID 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' cannot be set into the virtual property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' "
+        + "because its object property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' is out of sync with the virtual property. "
+        + "To make this change, synchronize the two properties by calling the 'BidirectionalRelationSyncService.Synchronize' method on the "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' property.")]
+    public void CreateSetCommand_NotSame_InputIsInUnsynchronizedOppositeEndPoints ()
+    {
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
+      _dataKeeperMock.Replay ();
+
+      AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub2);
+
+      _loadState.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject2);
+    }
+
+    [Test]
     public void CreateDeleteCommand ()
     {
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
+      _dataKeeperMock.Replay();
+
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
@@ -212,6 +331,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
 
       CheckOppositeObjectIDSetter (command);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The domain object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be deleted because its virtual property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' is out of sync with the opposite object property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. To make this change, synchronize the two properties by calling the "
+        + "'BidirectionalRelationSyncService.Synchronize' method on the 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' "
+        + "property.")]
+    public void CreateDeleteCommand_WithOriginalItemWithoutEndPoint ()
+    {
+      _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (_relatedObject);
+      _dataKeeperMock.Replay();
+
+      _loadState.CreateDeleteCommand (_virtualObjectEndPointMock);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The domain object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be deleted because the opposite object property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' is out of sync with the virtual property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'. To make this change, synchronize the two properties by calling the "
+        + "'BidirectionalRelationSyncService.Synchronize' method on the 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' "
+        + "property.")]
+    public void CreateDeleteCommand_WithUnsynchronizedOppositeEndPoints ()
+    {
+      AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
+
+      _loadState.CreateDeleteCommand (_virtualObjectEndPointMock);
     }
 
     [Test]

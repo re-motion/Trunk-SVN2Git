@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       action ();
     }
 
-    protected void CheckActionThrows<TException> (Action action, string expectedMessage) where TException : Exception
+    protected void CheckActionThrows<TException> (Action action, string expectedMessageFormatString, params object[] formatArgs) where TException : Exception
     {
       var hadException = false;
       try
@@ -63,6 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       {
         hadException = true;
         Assert.That (ex, Is.TypeOf (typeof (TException)));
+        var expectedMessage = string.Format (expectedMessageFormatString, formatArgs);
         Assert.That (
             ex.Message, 
             Is.StringContaining(expectedMessage), 

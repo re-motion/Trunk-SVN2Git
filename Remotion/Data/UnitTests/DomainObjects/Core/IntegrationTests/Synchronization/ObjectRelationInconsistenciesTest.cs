@@ -25,7 +25,6 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
-  [Ignore ("TODO 3841")]
   public class ObjectRelationInconsistenciesTest : RelationInconsistenciesTestBase
   {
     [Test]
@@ -199,20 +198,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (employee, e => e.Computer, false);
       CheckSyncState (employee2, e => e.Computer, true);
 
-      CheckActionWorks (employee2.Delete);
-      ClientTransaction.Current.Rollback ();
-
       // sync states not changed by Rollback
       CheckSyncState (computer, c => c.Employee, false);
       CheckSyncState (employee, e => e.Computer, false);
       CheckSyncState (employee2, e => e.Computer, true);
 
-      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the opposite property");
       CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (employee2.Delete, "out of sync with the virtual property");
       CheckActionThrows<InvalidOperationException> (() => employee.Computer = null, "out of sync with the opposite object property");
       CheckActionThrows<InvalidOperationException> (() => employee.Computer = Computer.NewObject (), "out of sync with the opposite object property");
-      CheckActionThrows<InvalidOperationException> (() => computer.Employee = employee, "out of sync with the opposite object property");
-      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = employee, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the opposite property");
 
       BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
       
@@ -269,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       Assert.That (computer.Employee, Is.SameAs (employee2));
       Assert.That (employee2.Computer, Is.SameAs (newComputer));
-      Assert.That (employee2.Properties[typeof (Employee), "Computer"], Is.SameAs (newComputer));
+      Assert.That (employee2.Properties[typeof (Employee), "Computer"].GetOriginalValue<Computer>(), Is.SameAs (computer));
       Assert.That (employee2.State, Is.EqualTo (StateType.Changed));
     }
 
@@ -286,16 +283,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (computer, c => c.Employee, false);
       CheckSyncState (employee, e => e.Computer, true);
 
-      CheckActionWorks (employee.Delete);
-      ClientTransaction.Current.Rollback ();
-
       // sync states not changed by Rollback
       CheckSyncState (computer, c => c.Employee, false);
       CheckSyncState (employee, e => e.Computer, true);
 
-      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the virtual property");
-      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the virtual property");
-      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (computer.Delete, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => computer.Employee = null, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer, "out of sync with the virtual property");
 
       CheckActionWorks (() => employee.Computer = Computer.NewObject());
       ClientTransaction.Current.Rollback ();
@@ -305,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (computer, c => c.Employee, true);
       CheckSyncState (employee, e => e.Computer, true);
 
-      Assert.That (employee.Computer, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
       Assert.That (computer.Employee, Is.SameAs (employee));
     }
 
@@ -329,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (computer, c => c.Employee, true);
       CheckSyncState (employee, e => e.Computer, true);
 
-      Assert.That (employee.Computer, Is.SameAs (employee));
+      Assert.That (employee.Computer, Is.SameAs (computer));
       Assert.That (computer.Employee, Is.SameAs (employee));
     }
 
@@ -358,12 +353,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (employee, e => e.Computer, true);
       CheckSyncState (computer2, c => c.Employee, false);
 
-      CheckActionWorks (employee.Delete);
-      ClientTransaction.Current.Rollback ();
-
-      CheckActionThrows<InvalidOperationException> (computer2.Delete, "out of sync with the virtual property");
-      CheckActionThrows<InvalidOperationException> (() => computer2.Employee = null, "out of sync with the virtual property");
-      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer2, "out of sync with the opposite object property");
+      CheckActionThrows<InvalidOperationException> (employee.Delete, "out of sync with the virtual property");
+      CheckActionThrows<InvalidOperationException> (computer2.Delete, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => computer2.Employee = null, "out of sync with the opposite property");
+      CheckActionThrows<InvalidOperationException> (() => employee.Computer = computer2, "out of sync with the virtual property");
 
       CheckActionWorks (() => computer.Employee = null);
       ClientTransaction.Current.Rollback ();
@@ -371,23 +364,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckActionWorks (() => employee.Computer = null);
       ClientTransaction.Current.Rollback ();
 
-      // TBD: Throw or simply make other relation unsynchronized?
       CheckActionThrows<InvalidOperationException> (() =>
-          BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee)),
-          "additional object???");
+          BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee)),
+          "The object end-point '{0}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' "
+          + "cannot be synchronized with the virtual object end-point "
+          + "'{2}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' because "
+          + "the virtual relation property already refers to another object ('{1}'). To synchronize "
+          + "'{0}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee', use "
+          + "UnloadService to unload either object '{1}' or the virtual object end-point "
+          + "'{2}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.",
+          computer2.ID,
+          computer.ID,
+          employee.ID);
 
-      // By unloading the employee.Computer -> computer relation, we can now synchronize computer2.Employee -> employee with employee.Computer
-      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+      // By unloading computer, we can notw synchronize the relation
+      UnloadService.UnloadData (ClientTransaction.Current, computer.ID);
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee));
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+      ClientTransaction.Current.EnsureDataAvailable (computer.ID);
 
-      CheckSyncState (computer, c => c.Employee, false);
+      CheckSyncState (computer, c => c.Employee, true);
       CheckSyncState (computer2, c => c.Employee, true);
       CheckSyncState (employee, e => e.Computer, true);
 
+      Assert.That (computer.Employee, Is.Null);
       Assert.That (employee.Computer, Is.SameAs (computer2));
       Assert.That (computer2.Employee, Is.SameAs (employee));
-      Assert.That (computer.Employee, Is.SameAs (employee));
     }
 
     [Test]

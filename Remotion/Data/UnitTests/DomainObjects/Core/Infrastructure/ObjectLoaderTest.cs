@@ -107,25 +107,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result }));
     }
 
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
-        "The data of object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' conflicts with existing data: It has a foreign key "
-        + "property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' which points to object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. However, that object has previously been determined to point back to object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. These two pieces of information contradict each other.")]
-    public void LoadObject_InconsistentForeignKeys ()
-    {
-      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket1)).Return (_orderTicket1DataContainer);
-      _persistenceStrategyMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.OrderTicket2)).Return (_orderTicket2DataContainer);
-
-      _persistenceStrategyMock.Replay ();
-
-      _objectLoader.LoadObject (DomainObjectIDs.OrderTicket1, _dataManager);
-      _objectLoader.LoadObject (DomainObjectIDs.OrderTicket2, _dataManager);
-    }
 
     [Test]
     public void LoadObjects ()
@@ -224,11 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void LoadObjects_Exception_Events ()
+    public void LoadObjects_EventsAreSignalledCorrectly_EvenIfAnExceptionIsThrown ()
     {
-      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-
+      var dataManagerStub = MockRepository.GenerateStub<IDataManager> ();
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
       using (_mockRepository.Ordered ())
@@ -243,14 +222,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _mockRepository.ReplayAll ();
 
+      dataManagerStub.Stub (stub => stub.GetDataContainerWithoutLoading (_orderTicket1DataContainer.ID)).Return (null);
+      dataManagerStub.Stub (stub => stub.GetDataContainerWithoutLoading (_orderTicket2DataContainer.ID)).Return (null);
+
+      var fakeException = new NotSupportedException ();
+      dataManagerStub
+          .Stub (stub => stub.RegisterDataContainer (_orderTicket1DataContainer))
+          .WhenCalled (mi => _dataManager.RegisterDataContainer (_orderTicket1DataContainer)); // so that ExpectObjectsLoaded works
+      dataManagerStub.Stub (stub => stub.RegisterDataContainer (_orderTicket2DataContainer)).Throw (fakeException);
+
       try
       {
-        _objectLoader.LoadObjects (new[] { DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2 }, true, _dataManager);
-        Assert.Fail ("Expected LoadConflictException");
+        _objectLoader.LoadObjects (new[] { DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2 }, true, dataManagerStub);
+        Assert.Fail ("Expected NotSupportedException");
       }
-      catch (LoadConflictException)
+      catch (NotSupportedException ex)
       {
-        // ok
+        Assert.That (ex, Is.SameAs (fakeException));
       }
 
       _mockRepository.VerifyAll ();
@@ -260,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void LoadRelatedObject ()
+    public void LoadRelatedObject_WithoutExistingDataContainer ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
@@ -269,7 +257,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]), 
               Arg.Is (endPointID)))
           .Return (_orderTicket1DataContainer);
-
       _persistenceStrategyMock.Replay ();
 
       var result = _objectLoader.LoadRelatedObject (endPointID, _dataManager);
@@ -279,50 +266,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "
-        + "points to a different object 'null').")]
-    public void LoadRelatedObject_InconsistentDatabaseResult_DataContainerAlreadyExists_PointsToNull ()
+    public void LoadRelatedObject_WithExistingDataContainer ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _orderTicket1DataContainer.SetDomainObject (LifetimeService.GetObjectReference (_clientTransaction, _orderTicket1DataContainer.ID));
-      _clientTransaction.DataManager.RegisterDataContainer (_orderTicket1DataContainer);
 
+      var existingDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      var existingDomainObject = LifetimeService.GetObjectReference (_clientTransaction, existingDataContainer.ID);
+      existingDataContainer.SetDomainObject (existingDomainObject);
+      _clientTransaction.DataManager.RegisterDataContainer (existingDataContainer);
+      
       _persistenceStrategyMock
           .Expect (mock => mock.LoadRelatedDataContainer (
               Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]),
               Arg.Is (endPointID)))
           .Return (_orderTicket1DataContainer);
-
       _persistenceStrategyMock.Replay ();
 
-      _objectLoader.LoadRelatedObject (endPointID, _dataManager);
-    }
+      var result = _objectLoader.LoadRelatedObject (endPointID, _dataManager);
 
-    [Test]
-    [ExpectedException (typeof (LoadConflictException), ExpectedMessage = 
-        "Cannot load the related 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid': The database returned related object "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', but that object already exists in the current ClientTransaction (and "
-        + "points to a different object 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid').")]
-    public void LoadRelatedObject_InconsistentDatabaseResult_DataContainerAlreadyExists_PointsToDifferentObject ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order2;
-      _orderTicket1DataContainer.SetDomainObject (LifetimeService.GetObjectReference (_clientTransaction, _orderTicket1DataContainer.ID));
-      _clientTransaction.DataManager.RegisterDataContainer (_orderTicket1DataContainer);
-
-      _persistenceStrategyMock
-          .Expect (mock => mock.LoadRelatedDataContainer (
-              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]),
-              Arg.Is (endPointID)))
-          .Return (_orderTicket1DataContainer);
-
-      _persistenceStrategyMock.Replay ();
-
-      _objectLoader.LoadRelatedObject (endPointID, _dataManager);
+      _persistenceStrategyMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (existingDomainObject));
+      Assert.That (_dataManager.GetDataContainerWithoutLoading (DomainObjectIDs.OrderTicket1), Is.SameAs (existingDataContainer));
     }
 
     [Test]
@@ -621,11 +585,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void LoadCollectionQueryResult_Exception_Events ()
+    public void LoadCollectionQueryResult_EventsAreSignalledCorrectly_EvenIfAnExceptionIsThrown ()
     {
-      _orderTicket1DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-      _orderTicket2DataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value = DomainObjectIDs.Order1;
-
+      var dataManagerStub = MockRepository.GenerateStub<IDataManager>();
       var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
 
       using (_mockRepository.Ordered ())
@@ -640,14 +602,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _mockRepository.ReplayAll ();
 
+      dataManagerStub.Stub (stub => stub.GetDataContainerWithoutLoading (_orderTicket1DataContainer.ID)).Return (null);
+      dataManagerStub.Stub (stub => stub.GetDataContainerWithoutLoading (_orderTicket2DataContainer.ID)).Return (null);
+
+      var fakeException = new NotSupportedException ();
+      dataManagerStub
+          .Stub (stub => stub.RegisterDataContainer (_orderTicket1DataContainer))
+          .WhenCalled (mi => _dataManager.RegisterDataContainer (_orderTicket1DataContainer)); // so that ExpectObjectsLoaded works
+      dataManagerStub.Stub (stub => stub.RegisterDataContainer (_orderTicket2DataContainer)).Throw (fakeException);
+
       try
       {
-        _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, _dataManager);
-        Assert.Fail ("Expected LoadConflictException");
+        _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery, dataManagerStub);
+        Assert.Fail ("Expected NotSupportedException");
       }
-      catch (LoadConflictException)
+      catch (NotSupportedException ex)
       {
-        // ok
+        Assert.That (ex, Is.SameAs (fakeException));
       }
 
       _mockRepository.VerifyAll ();

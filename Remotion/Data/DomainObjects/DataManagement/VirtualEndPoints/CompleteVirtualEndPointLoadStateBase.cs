@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
         DataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
-    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    public virtual void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
