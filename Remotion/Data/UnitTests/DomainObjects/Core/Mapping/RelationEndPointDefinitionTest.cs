@@ -71,9 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection { propertyDefinition });
       var endPoint = new RelationEndPointDefinition (propertyDefinition, true);
 
-      Assert.IsTrue (endPoint.IsPropertyTypeResolved);
       Assert.AreSame (typeof (ObjectID), endPoint.PropertyType);
-      Assert.AreEqual (typeof (ObjectID).AssemblyQualifiedName, endPoint.PropertyTypeName);
     }
 
     [Test]

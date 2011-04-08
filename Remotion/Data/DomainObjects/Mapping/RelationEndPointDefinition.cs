@@ -115,22 +115,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyDefinition.PropertyType; }
     }
 
-    public bool IsPropertyTypeResolved
-    {
-      get { return PropertyType != null; }
-    }
-
-    public string PropertyTypeName
-    {
-      get
-      {
-        if (IsPropertyTypeResolved)
-          return typeof (ObjectID).AssemblyQualifiedName;
-        else
-          return TypeUtility.GetPartialAssemblyQualifiedName (typeof (ObjectID));
-      }
-    }
-
     public PropertyInfo PropertyInfo 
     {
       get { return _propertyDefinition.PropertyInfo; }
@@ -138,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public bool IsPropertyInfoResolved 
     {
-      get { return PropertyInfo != null; }
+      get { return true; }
     }
 
     public bool IsVirtual

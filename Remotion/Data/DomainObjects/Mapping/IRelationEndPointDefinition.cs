@@ -25,8 +25,6 @@ public interface IRelationEndPointDefinition
   ClassDefinition ClassDefinition { get; }
   string PropertyName { get; }
   Type PropertyType { get; }
-  bool IsPropertyTypeResolved { get; }
-  string PropertyTypeName { get; }
   PropertyInfo PropertyInfo { get; }
   bool IsPropertyInfoResolved { get; }
   bool IsMandatory { get; }

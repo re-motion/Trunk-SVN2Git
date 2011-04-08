@@ -25,17 +25,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private static readonly PropertyInfo s_dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
 
-    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, string propertyTypeName, string sortExpressionString)
+    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
+        ClassDefinition classDefinition,
+        string propertyName,
+        bool isMandatory,
+        CardinalityType cardinality,
+        Type propertyType,
+        string sortExpressionString)
     {
-      return new VirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyTypeName, sortExpressionString, s_dummyPropertyInfo);
+      return new VirtualRelationEndPointDefinition (
+          classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, s_dummyPropertyInfo);
     }
 
-    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType, string sortExpressionString)
-    {
-      return new VirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyType, sortExpressionString, s_dummyPropertyInfo);
-    }
-
-    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType)
+    public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
+        ClassDefinition classDefinition, string propertyName, bool isMandatory, CardinalityType cardinality, Type propertyType)
     {
       return CreateVirtualRelationEndPointDefinition (classDefinition, propertyName, isMandatory, cardinality, propertyType, null);
     }

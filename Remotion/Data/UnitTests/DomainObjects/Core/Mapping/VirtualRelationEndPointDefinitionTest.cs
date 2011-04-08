@@ -59,12 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "VirtualEndPoint",
           true,
           CardinalityType.One,
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem, Remotion.Data.UnitTests",
+          typeof(OrderItem),
           null);
 
-      Assert.IsTrue (endPoint.IsPropertyTypeResolved);
       Assert.AreSame (typeof (OrderItem), endPoint.PropertyType);
-      Assert.AreEqual (typeof (OrderItem).AssemblyQualifiedName, endPoint.PropertyTypeName);
     }
 
     [Test]

@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -61,9 +60,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly Type _propertyType;
 
     [NonSerialized]
-    private readonly string _propertyTypeName;
-
-    [NonSerialized]
     private readonly string _sortExpressionText;
 
     [NonSerialized]
@@ -72,68 +68,20 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly PropertyInfo _propertyInfo;
 
-    // construction and disposing
-
-    public VirtualRelationEndPointDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        bool isMandatory,
-        CardinalityType cardinality,
-        string propertyTypeName,
-        string sortExpressionText,
-        PropertyInfo propertyInfo)
-        : this (
-            classDefinition,
-            propertyName,
-            isMandatory,
-            cardinality,
-            null,
-            ArgumentUtility.CheckNotNullOrEmpty ("propertyTypeName", propertyTypeName),
-            sortExpressionText,
-            propertyInfo)
-    {
-    }
-
     public VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
         CardinalityType cardinality,
         Type propertyType,
-        string sortExpressionText,
-        PropertyInfo propertyInfo)
-        : this (
-            classDefinition,
-            propertyName,
-            isMandatory,
-            cardinality,
-            ArgumentUtility.CheckNotNull ("propertyType", propertyType),
-            null,
-            sortExpressionText,
-            propertyInfo)
-    {
-    }
-
-    private VirtualRelationEndPointDefinition (
-        ClassDefinition classDefinition,
-        string propertyName,
-        bool isMandatory,
-        CardinalityType cardinality,
-        Type propertyType,
-        string propertyTypeName,
         string sortExpressionText,
         PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckValidEnumValue ("cardinality", cardinality);
+      ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      if (classDefinition.IsClassTypeResolved && propertyTypeName != null)
-        propertyType = ContextAwareTypeDiscoveryUtility.GetType (propertyTypeName, true);
-
-      if (propertyType != null)
-        propertyTypeName = propertyType.AssemblyQualifiedName;
 
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = _classDefinition.ID;
@@ -141,13 +89,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       _isMandatory = isMandatory;
       _propertyName = propertyName;
       _propertyType = propertyType;
-      _propertyTypeName = propertyTypeName;
       _sortExpressionText = sortExpressionText;
       _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
       _propertyInfo = propertyInfo;
     }
-
-    // methods and properties
 
     public bool CorrespondsTo (string classID, string propertyName)
     {
@@ -192,24 +137,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyType; }
     }
 
-    public bool IsPropertyTypeResolved
-    {
-      get { return _propertyType != null; }
-    }
-
-    public string PropertyTypeName
-    {
-      get { return _propertyTypeName; }
-    }
-
-    public virtual PropertyInfo PropertyInfo
+    public PropertyInfo PropertyInfo
     {
       get { return _propertyInfo; }
     }
 
-    public virtual bool IsPropertyInfoResolved
+    public bool IsPropertyInfoResolved
     {
-      get { return PropertyInfo != null; }
+      get { return true; }
     }
 
     public bool IsVirtual
