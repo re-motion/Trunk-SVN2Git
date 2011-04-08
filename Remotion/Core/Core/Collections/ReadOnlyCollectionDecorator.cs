@@ -17,10 +17,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Read-only wrapper around an <see cref="ICollection{T}"/> which itself explicitely implements <see cref="ICollection{T}"/>.
+  /// </summary>
+  /// <remarks>
+  /// Behaves analogue to <see cref="ReadOnlyCollection{T}"/>, i.e. not supported methods required by <see cref="ICollection{TKey,TValue}"/> 
+  /// throw <see cref="NotSupportedException"/>|s.
+  /// <para/>
+  /// </remarks>
   public class ReadOnlyCollectionDecorator<T> : ICollection<T>
   {
     private readonly ICollection<T> _collection;
