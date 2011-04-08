@@ -76,7 +76,7 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ThirdClass
 GO
 
 -- Drop foreign keys of all tables that will be created below
-DECLARE @statement nvarchar (4000)
+DECLARE @statement nvarchar (max)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
