@@ -202,6 +202,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyTypeName; }
     }
 
+    public virtual PropertyInfo PropertyInfo
+    {
+      get { return _propertyInfo; }
+    }
+
+    public virtual bool IsPropertyInfoResolved
+    {
+      get { return PropertyInfo != null; }
+    }
 
     public bool IsVirtual
     {
@@ -245,17 +254,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get { return PropertyName; }
     }
-
-    public virtual PropertyInfo PropertyInfo
-    {
-      get { return _propertyInfo; }
-    }
-
-    public virtual bool IsPropertyInfoResolved 
-    {
-      get { return PropertyInfo != null; }
-    }
-
+    
     #endregion
 
     private SortExpressionDefinition ParseSortExpression (string sortExpressionText)
