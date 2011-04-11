@@ -15,241 +15,83 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Rhino.Mocks;
-using Is = Rhino.Mocks.Constraints.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
   public class TableBuilderBaseTest : SchemaGenerationTestBase
   {
-    private MockRepository _mocks;
-    private TableBuilderBase _stubTableBuilder;
-    private IEntityDefinition _orderClassEntityDefinition;
-    private IEntityDefinition _customerClassEntityDefinition;
+    private TableBuilderBase _tableBuilder;
     private ISqlDialect _sqlDialectStub;
+    private TableDefinition _tableDefinition;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _mocks = new MockRepository();
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      // TODO Review 3856: Use TestableTableBuilder instead of StrictMock; implement abstract methods with "CREATE TABLE [tableDefinition.Name]" and "DROP TABLE [tableDefinition.Name]"
-      _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>(_sqlDialectStub);
+      _tableBuilder = new TestableTableBuilder (_sqlDialectStub);
 
-      // TODO Review 3856: Create custom TableDefinition, UnionViewDefinition, FilterViewDefinition, NullEntityDefinition instead
-      _orderClassEntityDefinition = (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition;
-      _customerClassEntityDefinition = (IEntityDefinition)MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition;
+      _tableDefinition = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "Order", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
     }
 
     [Test]
     public void AddTable ()
     {
-      using (_mocks.Ordered())
-      {
-        _stubTableBuilder
-            .Expect (
-                mock => mock.AddToCreateTableScript (Arg.Is ((TableDefinition) _orderClassEntityDefinition), Arg<StringBuilder>.Is.Anything))
-            .Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.IgnoreArguments();
-      }
-      _mocks.ReplayAll();
+      _tableBuilder.AddTable (_tableDefinition);
 
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      string actualScript = _stubTableBuilder.GetCreateTableScript();
+      var createTableScript = _tableBuilder.GetCreateTableScript();
+      var dropTableScript = _tableBuilder.GetDropTableScript();
 
-      _mocks.VerifyAll();
-      Assert.AreEqual ("CREATE TABLE [dbo].[Order] ()", actualScript);
-
-      // TODO Review 3856: Also test drop table script
+      Assert.AreEqual (createTableScript, "CREATE TABLE [Order]");
+      Assert.AreEqual (dropTableScript, "DROP TABLE [Order]");
     }
 
     [Test]
     public void AddTableTwice ()
     {
-      using (_mocks.Ordered())
-      {
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.IgnoreArguments();
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.IgnoreArguments();
-      }
-      _mocks.ReplayAll();
+      _tableBuilder.AddTable (_tableDefinition);
+      _tableBuilder.AddTable (_tableDefinition);
 
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      string actualScript = _stubTableBuilder.GetCreateTableScript();
+      var createTableScript = _tableBuilder.GetCreateTableScript();
+      var dropTableScript = _tableBuilder.GetDropTableScript();
 
-      _mocks.VerifyAll();
-      Assert.AreEqual ("CREATE TABLE [dbo].[Order] ()\r\nCREATE TABLE [dbo].[Order] ()", actualScript);
-      // TODO Review 3856: Also test drop table script
-    }
-
-    // TODO Review 3856: Delete
-    [Test]
-    public void GetCreateTableScript_GetDropTableScript_SeveralTablesAdded ()
-    {
-      using (_mocks.Ordered ())
-      {
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull ()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Customer] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
-      }
-      _mocks.ReplayAll ();
-
-      _stubTableBuilder.AddTable (_customerClassEntityDefinition);
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
-
-      _mocks.VerifyAll ();
-      Assert.AreEqual ("CREATE TABLE [dbo].[Customer] ()\r\nCREATE TABLE [dbo].[Order] ()", actualCreateTableScript);
-      Assert.AreEqual ("DROP TABLE [dbo].[Customer]\r\nDROP TABLE [dbo].[Order]", actualDropTableScript);
+      Assert.AreEqual (createTableScript, "CREATE TABLE [Order]\r\nCREATE TABLE [Order]");
+      Assert.AreEqual (dropTableScript, "DROP TABLE [Order]\r\nDROP TABLE [Order]");
     }
 
     [Test]
     public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
     {
-      _mocks.ReplayAll ();
+      var createTableScript = _tableBuilder.GetCreateTableScript();
+      var dropTableScript = _tableBuilder.GetDropTableScript();
 
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
+      Assert.IsEmpty (createTableScript);
+      Assert.IsEmpty (dropTableScript);
+    }
 
-      _mocks.VerifyAll ();
+    [Test]
+    public void AddTable_WithUnionViewDefinition ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          "Test",
+          new[] { _tableDefinition },
+          new IColumnDefinition[0]);
+      _tableBuilder.AddTable (unionViewDefinition);
+
+      var actualCreateTableScript = _tableBuilder.GetCreateTableScript();
+      var actualDropTableScript = _tableBuilder.GetDropTableScript();
+
       Assert.IsEmpty (actualCreateTableScript);
       Assert.IsEmpty (actualDropTableScript);
     }
-
-    // TODO Review 3856: Delete
-    [Test]
-    public void GetDropTableScript ()
-    {
-      using (_mocks.Ordered())
-      {
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.IgnoreArguments();
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
-      }
-      _mocks.ReplayAll();
-
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      string actualScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.AreEqual ("DROP TABLE [dbo].[Order]", actualScript);
-    }
-
-    // TODO Review 3856: Delete
-    [Test]
-    public void GetDropTableScriptWithMultipleTables ()
-    {
-      using (_mocks.Ordered())
-      {
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.IgnoreArguments();
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.IgnoreArguments();
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
-      }
-      _mocks.ReplayAll();
-
-      _stubTableBuilder.AddTable (_customerClassEntityDefinition);
-      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
-      string actualScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.AreEqual ("DROP TABLE [dbo].[Customer]\r\nDROP TABLE [dbo].[Order]", actualScript);
-    }
-
-    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
-    [Test]
-    public void AddTableWithAbstractClass ()
-    {
-      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(Company)].StorageEntityDefinition);
-      _mocks.ReplayAll();
-
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
-    }
-
-    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
-    [Test]
-    public void AddTableWithDerivedClassWithoutEntityName ()
-    {
-      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(DerivedClass)].StorageEntityDefinition);
-      _mocks.ReplayAll();
-
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
-    }
-
-    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
-    [Test]
-    public void AddTableWithDerivedClassWithEntityName ()
-    {
-      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(SecondDerivedClass)].StorageEntityDefinition);
-      _mocks.ReplayAll();
-
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
-    }
-
-    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
-    [Test]
-    public void AddTableWithDerivedOfDerivedClassWithEntityName ()
-    {
-      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(DerivedOfDerivedClass)].StorageEntityDefinition);
-      _mocks.ReplayAll();
-
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
-    }
-
-    private Action<TableDefinition, StringBuilder> CreateAddToDropTableScriptDelegate (string statement)
-    {
-      return delegate (TableDefinition tableDefinition, StringBuilder stringBuilder) { stringBuilder.Append (statement); };
-    }
-
-    private Action<TableDefinition, StringBuilder> CreateAddToCreateTableScriptDelegate (string statement)
-    {
-      return delegate (TableDefinition tableDefinition, StringBuilder stringBuilder) { stringBuilder.Append (statement); };
-    }
+    
   }
 }
