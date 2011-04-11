@@ -22,6 +22,18 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerat
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  // TODO Review 3856: Add ViewBuilderBaseTest, with TestableViewBuilder; test:
+  // - AddView with TableDefinition (create script and drop script), once and twice
+  // - AddView with UnionViewDefinition (create script and drop script), once and twice
+  // - AddView with FilterViewDefinition (create script and drop script), once and twice
+  // - AddView with NullEntityDefinition (create script and drop script)
+  // TODO Review 3856: Rewrite ViewBuilderTest:
+  // - Test CreateViewSeparator => must be "GO\r\n\r\n"
+  // - Test AddFilterViewToCreateViewScript
+  // - Test AddTableViewToCreateViewScript
+  // - Test AddUnionViewToCreateViewScript with one table, several tables in union
+  // - Test AddToDropViewScript
+  // TODO Review 386: Remove legacy tests below
   [TestFixture]
   public class ViewBuilderTest : SchemaGenerationTestBase
   {
@@ -155,6 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.IsEmpty (_viewBuilder.GetCreateViewScript());
     }
 
+    // TODO Review 3856: Delete
     [Test]
     public void AddViewTwice ()
     {

@@ -77,6 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual ("SchemaGenerationTestDomain2", _fileBuilderForSecondStorageProvider.GetDatabaseName ());
     }
 
+    // TODO Review 3856: Move to FileBuilderIntegrationTest
     [Test]
     public void GetScriptForFirstStorageProvider ()
     {
@@ -86,6 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, SchemaGenerationFirstStorageProviderDefinition)));
     }
 
+    // TODO Review 3856: Move to FileBuilderIntegrationTest
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
@@ -99,14 +101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Class 'Official' has storage provider 'SchemaGenerationSecondStorageProvider' defined, but storage provider 'SchemaGenerationFirstStorageProvider' is required."
         )]
-    public void GetScriptForFirstWrongStorageProvider ()
+    public void GetScript_WithWrongStorageProvider ()
     {
       Assert.AreEqual (
           _firstStorageProviderSetupDBScript,
           _fileBuilderForFirstStorageProvider.GetScript (
-              FileBuilder.GetClassesInStorageProvider (
-                  new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true),
-                  SchemaGenerationSecondStorageProviderDefinition)));
+                  new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true)));
     }
 
     [Test]
@@ -122,8 +122,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.EqualTo(_firstStorageProviderSetupDBScriptWithoutTables));
     }
 
+    // TODO Review 3856: Move to FileBuilderBaseTest
     [Test]
-    public void BuildWithMappingConfiguration ()
+    public void Build_WithMappingConfiguration ()
     {
       FileBuilderBase.Build (MappingConfiguration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
 
@@ -133,6 +134,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (_secondStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
     }
 
+    // TODO Review 3856: Add FileBuilderBaseTest.GetClassesInStorageProvider tests
+    // TODO Review 3856: Add FileBuilderBaseTest.GetFileName tests
+
+    // TODO Review 3856: Move to FileBuilderBaseTest
     [Test]
     public void BuildWithEmptyMappingConfiguration ()
     {
@@ -143,10 +148,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
       SetupResult.For (mappingLoaderStub.GetClassDefinitions()).Return (new ClassDefinition[0]);
       SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
-      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator()).Return (CreateRelationDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator()).Return (CreateSortExpressionValidator());
+      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
+      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
       mockRepository.ReplayAll();
 
       FileBuilderBase.Build (
@@ -158,26 +163,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
       Assert.AreEqual (
           _firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-    }
-
-    private ClassDefinitionValidator CreateClassDefinitionValidator ()
-    {
-      return new ClassDefinitionValidator();
-    }
-
-    private PropertyDefinitionValidator CreatePropertyDefinitionValidator ()
-    {
-      return new PropertyDefinitionValidator();
-    }
-
-    private RelationDefinitionValidator CreateRelationDefinitionValidator ()
-    {
-      return new RelationDefinitionValidator();
-    }
-
-    private SortExpressionValidator CreateSortExpressionValidator ()
-    {
-      return new SortExpressionValidator();
     }
   }
 }

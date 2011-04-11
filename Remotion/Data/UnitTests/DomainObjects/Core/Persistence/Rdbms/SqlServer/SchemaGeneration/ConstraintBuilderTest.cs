@@ -23,6 +23,15 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerat
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  // TODO Review 3856: Rewrite tests: Add ConstraintBuilderBaseTest with TestableConstraintBuilder:
+  // - With TableDefinition (create and drop script): once, twice
+  // - With UnionViewDefinition (create and drop script)
+  // - With FilterViewDefinition (create and drop script)
+  // - With NullEntityDefinition (create and drop script)
+  // - GetCreateScript/GetDropScript without AddConstraint (=> empty scripts)
+  // TODO Review 3856: Rewrite tests:
+  // - Test AddToCreateConstraintScript with a TableDefinition with foreign key constraints, without foreign key constraints
+  // - Test AddToDropConstraintScript with one, two entity names
   [TestFixture]
   public class ConstraintBuilderTest : SchemaGenerationTestBase
   {

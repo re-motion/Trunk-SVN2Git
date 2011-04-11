@@ -43,6 +43,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       CheckClassDefinitions (classDefinitions);
 
+      // TODO 3874: Add unit tests using mocks for view builder etc.
+
       var viewBuilder = CreateViewBuilder ();
       var tableBuilder = CreateTableBuilder ();
       var constraintBuilder = CreateConstraintBuilder ();

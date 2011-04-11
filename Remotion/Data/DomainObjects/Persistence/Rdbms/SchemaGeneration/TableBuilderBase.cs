@@ -77,7 +77,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-
       return DeclarationListColumnDefinitionVisitor.GetDeclarationList (tableDefinition.GetColumns(), _sqlDialect);
     }
 

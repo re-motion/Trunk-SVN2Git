@@ -41,7 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _mocks = new MockRepository();
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      // TODO Review 3856: Use TestableTableBuilder instead of StrictMock; implement abstract methods with "CREATE TABLE [tableDefinition.Name]" and "DROP TABLE [tableDefinition.Name]"
       _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>(_sqlDialectStub);
+
+      // TODO Review 3856: Create custom TableDefinition, UnionViewDefinition, FilterViewDefinition, NullEntityDefinition instead
       _orderClassEntityDefinition = (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition;
       _customerClassEntityDefinition = (IEntityDefinition)MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition;
     }
@@ -65,6 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _mocks.VerifyAll();
       Assert.AreEqual ("CREATE TABLE [dbo].[Order] ()", actualScript);
+
+      // TODO Review 3856: Also test drop table script
     }
 
     [Test]
@@ -89,8 +94,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _mocks.VerifyAll();
       Assert.AreEqual ("CREATE TABLE [dbo].[Order] ()\r\nCREATE TABLE [dbo].[Order] ()", actualScript);
+      // TODO Review 3856: Also test drop table script
     }
 
+    // TODO Review 3856: Delete
     [Test]
     public void GetCreateTableScript_GetDropTableScript_SeveralTablesAdded ()
     {
@@ -130,6 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.IsEmpty (actualDropTableScript);
     }
 
+    // TODO Review 3856: Delete
     [Test]
     public void GetDropTableScript ()
     {
@@ -149,6 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.AreEqual ("DROP TABLE [dbo].[Order]", actualScript);
     }
 
+    // TODO Review 3856: Delete
     [Test]
     public void GetDropTableScriptWithMultipleTables ()
     {
@@ -173,6 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.AreEqual ("DROP TABLE [dbo].[Customer]\r\nDROP TABLE [dbo].[Order]", actualScript);
     }
 
+    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
     [Test]
     public void AddTableWithAbstractClass ()
     {
@@ -187,6 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.IsEmpty (actualDropTableScript);
     }
 
+    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
     [Test]
     public void AddTableWithDerivedClassWithoutEntityName ()
     {
@@ -201,6 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.IsEmpty (actualDropTableScript);
     }
 
+    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
     [Test]
     public void AddTableWithDerivedClassWithEntityName ()
     {
@@ -215,6 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.IsEmpty (actualDropTableScript);
     }
 
+    // TODO Review 3856: Delete, add AddTable_WithUnionViewDefinition etc. instead
     [Test]
     public void AddTableWithDerivedOfDerivedClassWithEntityName ()
     {

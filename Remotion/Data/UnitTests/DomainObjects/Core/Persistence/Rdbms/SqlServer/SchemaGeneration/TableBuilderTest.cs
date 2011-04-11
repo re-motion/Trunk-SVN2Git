@@ -36,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableBuilder = new TableBuilder();
     }
 
-    //TODO: Move to TableBuilderBaseTest
     [Test]
     public void AddToCreateTableScript ()
     {
@@ -55,102 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _tableBuilder.AddToCreateTableScript (
           (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition, stringBuilder);
-
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
-    }
-
-    //TODO: Move to TableBuilderBaseTest
-    [Test]
-    public void AddToCreateTableScriptWithConcreteClass ()
-    {
-      string expectedStatement =
-          "CREATE TABLE [dbo].[Customer]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n"
-          + "  [Name] nvarchar (100) NOT NULL,\r\n"
-          + "  [PhoneNumber] nvarchar (100) NULL,\r\n"
-          + "  [AddressID] uniqueidentifier NULL,\r\n"
-          + "  [CustomerType] int NOT NULL,\r\n"
-          + "  [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches] nvarchar (100) NOT NULL,\r\n"
-          + "  [PrimaryOfficialID] varchar (255) NULL,\r\n"
-          + "  [LicenseCode] nvarchar (max) NULL,\r\n"
-          + "  CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder();
-
-      _tableBuilder.AddToCreateTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
-
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
-    }
-
-    //TODO: Move to TableBuilderBaseTest
-    [Test]
-    public void AddToCreateTableScriptWithDerivedClasses ()
-    {
-      string expectedStatement = "CREATE TABLE [dbo].[ConcreteClass]\r\n"
-                                 + "(\r\n"
-                                 + "  [ID] uniqueidentifier NOT NULL,\r\n"
-                                 + "  [ClassID] varchar (100) NOT NULL,\r\n"
-                                 + "  [Timestamp] rowversion NOT NULL,\r\n"
-                                 + "  [PropertyInConcreteClass] nvarchar (100) NOT NULL,\r\n"
-                                 + "  [PropertyInDerivedClass] nvarchar (100) NULL,\r\n"
-                                 + "  [PersistentProperty] nvarchar (max) NULL,\r\n"
-                                 + "  [PropertyInDerivedOfDerivedClass] nvarchar (100) NULL,\r\n"
-                                 + "  [ClassWithRelationsInDerivedOfDerivedClassID] uniqueidentifier NULL,\r\n"
-                                 + "  [ClassWithRelationsInDerivedOfDerivedClassIDClassID] varchar (100) NULL,\r\n"
-                                 + "  [PropertyInSecondDerivedClass] nvarchar (100) NULL,\r\n"
-                                 + "  [ClassWithRelationsInSecondDerivedClassID] uniqueidentifier NULL,\r\n"
-                                 + "  [ClassWithRelationsInSecondDerivedClassIDClassID] varchar (100) NULL,\r\n"
-                                 + "  CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])\r\n"
-                                 + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder();
-
-      _tableBuilder.AddToCreateTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions.GetMandatory ("ConcreteClass").StorageEntityDefinition, stringBuilder);
-
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
-    }
-
-    //TODO: Move to TableBuilderBaseTest
-    [Test]
-    public void AddToCreateTableScriptWithRelationToClassWithoutInheritance ()
-    {
-      string expectedStatement = "CREATE TABLE [dbo].[OrderItem]\r\n"
-                                 + "(\r\n"
-                                 + "  [ID] uniqueidentifier NOT NULL,\r\n"
-                                 + "  [ClassID] varchar (100) NOT NULL,\r\n"
-                                 + "  [Timestamp] rowversion NOT NULL,\r\n"
-                                 + "  [Position] int NOT NULL,\r\n"
-                                 + "  [Product] nvarchar (100) NOT NULL,\r\n"
-                                 + "  [OrderID] uniqueidentifier NULL,\r\n"
-                                 + "  CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])\r\n"
-                                 + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder();
-
-      _tableBuilder.AddToCreateTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition, stringBuilder);
-
-      Assert.AreEqual (expectedStatement, stringBuilder.ToString());
-    }
-
-    [Test]
-    public void AddToCreateTableScriptWithClassWithoutProperties ()
-    {
-      string expectedStatement =
-          "CREATE TABLE [dbo].[TableWithoutProperties]\r\n"
-          + "(\r\n"
-          + "  [ID] uniqueidentifier NOT NULL,\r\n"
-          + "  [ClassID] varchar (100) NOT NULL,\r\n"
-          + "  [Timestamp] rowversion NOT NULL,\r\n"
-          + "  CONSTRAINT [PK_TableWithoutProperties] PRIMARY KEY CLUSTERED ([ID])\r\n"
-          + ")\r\n";
-      StringBuilder stringBuilder = new StringBuilder();
-
-      _tableBuilder.AddToCreateTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
