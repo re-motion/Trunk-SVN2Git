@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
