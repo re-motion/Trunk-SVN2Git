@@ -16,40 +16,53 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  // TODO Review 3856: Rewrite tests: Add ConstraintBuilderBaseTest with TestableConstraintBuilder:
-  // - With TableDefinition (create and drop script): once, twice
-  // - With UnionViewDefinition (create and drop script)
-  // - With FilterViewDefinition (create and drop script)
-  // - With NullEntityDefinition (create and drop script)
-  // - GetCreateScript/GetDropScript without AddConstraint (=> empty scripts)
-  // TODO Review 3856: Rewrite tests:
-  // - Test AddToCreateConstraintScript with a TableDefinition with foreign key constraints, without foreign key constraints
-  // - Test AddToDropConstraintScript with one, two entity names
   [TestFixture]
   public class ConstraintBuilderTest : SchemaGenerationTestBase
   {
     private ConstraintBuilder _constraintBuilder;
+    private SimpleColumnDefinition _referencedColumn1;
+    private SimpleColumnDefinition _referencedColumn2;
+    private SimpleColumnDefinition _referencingColumn;
+    private ForeignKeyConstraintDefinition _foreignKeyConstraintDefinition1;
+    private ForeignKeyConstraintDefinition _foreignKeyConstraintDefinition2;
+    private TableDefinition _tableDefinition1;
+    private TableDefinition _tableDefinition2;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
       _constraintBuilder = new ConstraintBuilder();
+
+      _referencedColumn1 = new SimpleColumnDefinition ("OrderID", typeof (int), "integer", true, false);
+      _referencedColumn2 = new SimpleColumnDefinition ("CustomerID", typeof (int), "integer", true, false);
+
+      _referencingColumn = new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true);
+      _foreignKeyConstraintDefinition1 = new ForeignKeyConstraintDefinition (
+          "FK_OrderItem_OrderID", "Order", new[] { _referencingColumn }, new[] { _referencedColumn1 });
+      _foreignKeyConstraintDefinition2 = new ForeignKeyConstraintDefinition (
+          "FK_OrderItem_CustomerID", "Customer", new[] { _referencingColumn }, new[] { _referencedColumn2 });
+      _tableDefinition1 = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "OrderItem", null, new[] { _referencingColumn }, new[] { _foreignKeyConstraintDefinition1 });
+      _tableDefinition2 = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          "Customer",
+          null,
+          new[] { _referencingColumn },
+          new[] { _foreignKeyConstraintDefinition1, _foreignKeyConstraintDefinition2 });
     }
 
     [Test]
-    public void AddConstraintWithRelationToSameStorageProvider ()
+    public void GetAddConstraintScript_OneConstraint ()
     {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
+      _constraintBuilder.AddConstraint (_tableDefinition1);
 
-      string expectedScript =
+      var expectedScript =
           "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
           + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n";
 
@@ -57,122 +70,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void AddConstraintWithRelationToOtherStorageProvider ()
+    public void GetAddConstraintScript_Constraints ()
     {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
-
-      string expectedScript =
-          "ALTER TABLE [dbo].[Order] ADD\r\n"
-          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
+      _constraintBuilder.AddConstraint (_tableDefinition2);
+  
+      var expectedScript =
+          "ALTER TABLE [dbo].[Customer] ADD\r\n"
+          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID]),\r\n"
+          + "  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
     }
 
     [Test]
-    public void AddConstraintMultipleTimes ()
-    {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
-
-      string expectedScript =
-          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
-          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
-          + "ALTER TABLE [dbo].[Order] ADD\r\n"
-          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
-
-      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithNoConstraintNecessary ()
-    {
-      _constraintBuilder.AddConstraint (
-          (IEntityDefinition) MappingConfiguration.ClassDefinitions.GetMandatory (typeof (Official)).StorageEntityDefinition);
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithRelationToDerivedOfConcreteClass ()
-    {
-      _constraintBuilder.AddConstraint (
-          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
-
-      string expectedScript =
-          "ALTER TABLE [dbo].[TableWithRelations] ADD\r\n"
-          + "  CONSTRAINT [FK_TableWithRelations_DerivedClassID] FOREIGN KEY ([DerivedClassID]) REFERENCES [dbo].[ConcreteClass] ([ID])\r\n";
-
-      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithRelationToAbstractClass ()
-    {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition);
-
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithAbstractClass ()
-    {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Company)].StorageEntityDefinition);
-
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
-      Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithDerivedClassWithEntityName ()
-    {
-      _constraintBuilder.AddConstraint (
-          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (SecondDerivedClass)].StorageEntityDefinition);
-
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
-      Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
-    }
-
-    [Test]
-    public void AddConstraintWithDerivedOfDerivedClassWithEntityName ()
-    {
-      _constraintBuilder.AddConstraint (
-          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (DerivedOfDerivedClass)].StorageEntityDefinition);
-
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
-      Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
-    }
-
-    [Test]
-    public void GetAddConstraintScript_SeveralConstraintsAdded ()
-    {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
-      
-      string expectedScript =
-          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
-          + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
-          + "ALTER TABLE [dbo].[Order] ADD\r\n"
-          + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
-
-      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript ());
-    }
-
-    [Test]
-    public void GetAddConstraintScript_NoConstraintsAdded ()
+    public void GetAddConstraintScript_NoConstraint ()
     {
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript ());
     }
 
     [Test]
-    public void GetDropConstraintsScript ()
+    public void GetAddConstraintScript_NoConstraintsAdded ()
     {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
+      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
+    }
+
+    [Test]
+    public void GetDropConstraintScript ()
+    {
+      _constraintBuilder.AddConstraint (_tableDefinition1);
 
       string expectedScript =
           "DECLARE @statement nvarchar (max)\r\n"
           + "SET @statement = ''\r\n"
           + "SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
           + "    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id \r\n"
-          + "    WHERE fk.xtype = 'F' AND t.name IN ('TableWithRelations')\r\n"
+          + "    WHERE fk.xtype = 'F' AND t.name IN ('OrderItem')\r\n"
           + "    ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n";
 
@@ -182,15 +114,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropConstraintsScriptWithMultipleEntities ()
     {
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
-      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)].StorageEntityDefinition);
+      _constraintBuilder.AddConstraint (_tableDefinition1);
+      _constraintBuilder.AddConstraint (_tableDefinition2);
 
       string expectedScript =
           "DECLARE @statement nvarchar (max)\r\n"
           + "SET @statement = ''\r\n"
           + "SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
           + "    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id \r\n"
-          + "    WHERE fk.xtype = 'F' AND t.name IN ('TableWithRelations', 'ConcreteClass')\r\n"
+          + "    WHERE fk.xtype = 'F' AND t.name IN ('OrderItem', 'Customer')\r\n"
           + "    ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n";
 
