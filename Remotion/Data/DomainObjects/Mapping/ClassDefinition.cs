@@ -396,6 +396,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
+    public bool IsAbstract
+    {
+      get { return _isAbstract; }
+    }
+
     public IDomainObjectCreator GetDomainObjectCreator ()
     {
       return InterceptedDomainObjectCreator.Instance;
@@ -465,6 +470,41 @@ namespace Remotion.Data.DomainObjects.Mapping
     public bool IsPartOfInheritanceHierarchy
     {
       get { return (BaseClass != null || DerivedClasses.Count > 0); }
+    }
+
+    public IPersistentMixinFinder PersistentMixinFinder
+    {
+      get { return _persistentMixinFinder; }
+    }
+
+    public IEnumerable<Type> PersistentMixins
+    {
+      get { return _persistentMixinFinder.GetPersistentMixins (); }
+    }
+
+    public Type GetPersistentMixin (Type mixinToSearch)
+    {
+      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
+      if (PersistentMixins.Contains (mixinToSearch))
+        return mixinToSearch;
+      else
+        return PersistentMixins.FirstOrDefault (mixinToSearch.IsAssignableFrom);
+    }
+
+    public void ValidateCurrentMixinConfiguration ()
+    {
+      var currentMixinConfiguration = Mapping.PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (ClassType);
+      if (!object.Equals (currentMixinConfiguration, PersistentMixinFinder.MixinConfiguration))
+      {
+        string message = string.Format (
+            "The mixin configuration for domain object type '{0}' was changed after the mapping information was built." + Environment.NewLine
+            + "Original configuration: {1}." + Environment.NewLine
+            + "Active configuration: {2}",
+            ClassType,
+            PersistentMixinFinder.MixinConfiguration,
+            currentMixinConfiguration);
+        throw new MappingException (message);
+      }
     }
 
     public override string ToString ()
@@ -570,46 +610,6 @@ namespace Remotion.Data.DomainObjects.Mapping
               _id,
               derivedClass.BaseClass.ID);
         }
-      }
-    }
-
-    public IPersistentMixinFinder PersistentMixinFinder
-    {
-      get { return _persistentMixinFinder; }
-    }
-
-    public IEnumerable<Type> PersistentMixins
-    {
-      get { return _persistentMixinFinder.GetPersistentMixins (); }
-    }
-
-    public bool IsAbstract
-    {
-      get { return _isAbstract; }
-    }
-
-    public Type GetPersistentMixin (Type mixinToSearch)
-    {
-      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
-      if (PersistentMixins.Contains (mixinToSearch))
-        return mixinToSearch;
-      else
-        return PersistentMixins.FirstOrDefault (mixinToSearch.IsAssignableFrom);
-    }
-
-    public void ValidateCurrentMixinConfiguration ()
-    {
-      var currentMixinConfiguration = Mapping.PersistentMixinFinder.GetMixinConfigurationForDomainObjectType (ClassType);
-      if (!object.Equals(currentMixinConfiguration, PersistentMixinFinder.MixinConfiguration))
-      {
-        string message = string.Format (
-            "The mixin configuration for domain object type '{0}' was changed after the mapping information was built." + Environment.NewLine
-            + "Original configuration: {1}." + Environment.NewLine
-            + "Active configuration: {2}",
-            ClassType,
-            PersistentMixinFinder.MixinConfiguration,
-            currentMixinConfiguration);
-        throw new MappingException (message);
       }
     }
 
