@@ -230,7 +230,7 @@
     <Error Text="The property 'CodePlexDescription' is not set." Condition="'$(CodePlexDescription)' == ''" />
 
     <PropertyGroup>
-      <_releaseDate>$([System.DateTime]::Now.ToString('dd.MM.yyyy'))</_releaseDate>
+      <_releaseDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</_releaseDate>
     </PropertyGroup>
 
     <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;$(CodePlexDescription)&quot; /releaseDate:$(_releaseDate) /status:Stable /showToPublic:+ /isDefaultRelease:+ /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
