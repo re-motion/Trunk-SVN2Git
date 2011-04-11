@@ -171,11 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void IntegrationTest ()
     {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Customer)]);
-      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Order)]);
-
-      _tableBuilder.AddTables (classes);
+      _tableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
+      _tableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
 
       string expectedCreateTableScript = "CREATE TABLE [dbo].[Customer]\r\n"
                                          + "(\r\n"

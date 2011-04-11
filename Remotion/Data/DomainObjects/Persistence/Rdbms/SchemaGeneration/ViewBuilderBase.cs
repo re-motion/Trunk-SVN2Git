@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -59,21 +58,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return _dropViewStringBuilder.ToString ();
     }
 
-    public void AddViews (ClassDefinitionCollection classDefinitions)
+    public void AddView (IEntityDefinition entityDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      foreach (ClassDefinition classDefinition in classDefinitions)
-        AddView (classDefinition);
-    }
-
-    public void AddView (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      var entityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
-      if (entityDefinition != null)
-        entityDefinition.Accept (this);
+      entityDefinition.Accept (this);
     }
 
     protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)

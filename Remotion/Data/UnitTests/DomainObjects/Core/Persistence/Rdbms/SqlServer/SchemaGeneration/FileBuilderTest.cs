@@ -22,10 +22,14 @@ using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Resources;
 using Rhino.Mocks;
+using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -103,6 +107,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               FileBuilder.GetClassesInStorageProvider (
                   new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true),
                   SchemaGenerationSecondStorageProviderDefinition)));
+    }
+
+    [Test]
+    public void GetScript_NoIEntityDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
+      var storageEntityDefinitionStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
+      storageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
+      classDefinition.SetStorageEntity (storageEntityDefinitionStub);
+
+      var result = _fileBuilderForFirstStorageProvider.GetScript (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
+
+      Assert.That (result, Is.EqualTo(_firstStorageProviderSetupDBScriptWithoutTables));
     }
 
     [Test]

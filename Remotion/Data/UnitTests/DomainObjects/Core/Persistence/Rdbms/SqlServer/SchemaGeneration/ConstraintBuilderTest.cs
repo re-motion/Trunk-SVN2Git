@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithRelationToSameStorageProvider ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (OrderItem)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
 
       string expectedScript =
           "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
@@ -49,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithRelationToOtherStorageProvider ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Order)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
 
       string expectedScript =
           "ALTER TABLE [dbo].[Order] ADD\r\n"
@@ -61,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintMultipleTimes ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (OrderItem)]);
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Order)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
 
       string expectedScript =
           "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
@@ -76,14 +77,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithNoConstraintNecessary ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions.GetMandatory (typeof (Official)));
+      _constraintBuilder.AddConstraint (
+          (IEntityDefinition) MappingConfiguration.ClassDefinitions.GetMandatory (typeof (Official)).StorageEntityDefinition);
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
     }
 
     [Test]
     public void AddConstraintWithRelationToDerivedOfConcreteClass ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)]);
+      _constraintBuilder.AddConstraint (
+          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
 
       string expectedScript =
           "ALTER TABLE [dbo].[TableWithRelations] ADD\r\n"
@@ -95,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithRelationToAbstractClass ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Ceo)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition);
 
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
     }
@@ -103,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithAbstractClass ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (Company)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Company)].StorageEntityDefinition);
 
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
       Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
@@ -112,7 +115,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithDerivedClassWithEntityName ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (SecondDerivedClass)]);
+      _constraintBuilder.AddConstraint (
+          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (SecondDerivedClass)].StorageEntityDefinition);
 
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
       Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
@@ -121,44 +125,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void AddConstraintWithDerivedOfDerivedClassWithEntityName ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (DerivedOfDerivedClass)]);
+      _constraintBuilder.AddConstraint (
+          (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (DerivedOfDerivedClass)].StorageEntityDefinition);
 
       Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
       Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
     }
 
     [Test]
-    public void AddConstraints ()
+    public void GetAddConstraintScript_SeveralConstraintsAdded ()
     {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      classes.Add (MappingConfiguration.ClassDefinitions[typeof (OrderItem)]);
-      classes.Add (MappingConfiguration.ClassDefinitions[typeof (Order)]);
-
-      _constraintBuilder.AddConstraints (classes);
-
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (OrderItem)].StorageEntityDefinition);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
+      
       string expectedScript =
           "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
           + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
           + "ALTER TABLE [dbo].[Order] ADD\r\n"
           + "  CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
-      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript());
+      Assert.AreEqual (expectedScript, _constraintBuilder.GetAddConstraintScript ());
     }
 
     [Test]
-    public void AddConstraints_WithoutClassDefinitions ()
+    public void GetAddConstraintScript_NoConstraintsAdded ()
     {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-
-      _constraintBuilder.AddConstraints (classes);
-
-      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript());
+      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript ());
     }
 
     [Test]
     public void GetDropConstraintsScript ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
 
       string expectedScript =
           "DECLARE @statement nvarchar (max)\r\n"
@@ -173,20 +171,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetDropConstraintsScript_WithoutClasses ()
-    {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-
-      _constraintBuilder.AddConstraints (classes);
-
-      Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript());
-    }
-
-    [Test]
     public void GetDropConstraintsScriptWithMultipleEntities ()
     {
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)]);
-      _constraintBuilder.AddConstraint (MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)]);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithRelations)].StorageEntityDefinition);
+      _constraintBuilder.AddConstraint ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)].StorageEntityDefinition);
 
       string expectedScript =
           "DECLARE @statement nvarchar (max)\r\n"

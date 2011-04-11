@@ -56,21 +56,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return dropConstraintStringBuilder.ToString();
     }
 
-    public void AddConstraints (ClassDefinitionCollection classes)
+    public void AddConstraint (IEntityDefinition entityDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classes", classes);
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      foreach (ClassDefinition currentClass in classes)
-        AddConstraint (currentClass);
-    }
-
-    public void AddConstraint (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      var entityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
-      if (entityDefinition != null)
-        entityDefinition.Accept (this);
+      entityDefinition.Accept (this);
     }
 
     protected string GetForeignKeyConstraintStatement (TableDefinition tableDefinition)

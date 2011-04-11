@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
@@ -41,16 +42,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       CheckClassDefinitions (classDefinitions);
+
+      var viewBuilder = CreateViewBuilder ();
+      var tableBuilder = CreateTableBuilder ();
+      var constraintBuilder = CreateConstraintBuilder ();
+      foreach (ClassDefinition classDefinition in classDefinitions)
+      {
+        var storageEntityAsIEntityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
+        if (storageEntityAsIEntityDefinition != null)
+        {
+          viewBuilder.AddView (storageEntityAsIEntityDefinition);
+          tableBuilder.AddTable (storageEntityAsIEntityDefinition);
+          constraintBuilder.AddConstraint (storageEntityAsIEntityDefinition);
+        }
+      }
       
-      ViewBuilder viewBuilder = CreateViewBuilder();
-      viewBuilder.AddViews (classDefinitions);
-
-      TableBuilder tableBuilder = CreateTableBuilder();
-      tableBuilder.AddTables (classDefinitions);
-
-      ConstraintBuilder constraintBuilder = CreateConstraintBuilder();
-      constraintBuilder.AddConstraints (classDefinitions);
-
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"

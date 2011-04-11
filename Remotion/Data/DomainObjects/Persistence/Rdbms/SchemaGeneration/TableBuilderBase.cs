@@ -50,21 +50,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return _dropTableStringBuilder.ToString();
     }
 
-    public void AddTables (ClassDefinitionCollection classes)
+    public void AddTable (IEntityDefinition entityDefinition)
     {
-      ArgumentUtility.CheckNotNull ("classes", classes);
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      foreach (ClassDefinition currentClass in classes)
-        AddTable (currentClass);
-    }
-
-    public void AddTable (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      var entityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
-      if (entityDefinition != null)
-        entityDefinition.Accept (this);
+      entityDefinition.Accept (this);
     }
 
     private void AddToCreateTableScript (TableDefinition tableDefinition)

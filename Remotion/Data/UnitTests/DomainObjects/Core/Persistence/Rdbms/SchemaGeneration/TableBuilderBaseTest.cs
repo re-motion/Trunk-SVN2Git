@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 using Rhino.Mocks;
-using Remotion.Data.DomainObjects.Mapping;
 using Is = Rhino.Mocks.Constraints.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -32,8 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private MockRepository _mocks;
     private TableBuilderBase _stubTableBuilder;
-    private ClassDefinition _orderClass;
-    private ClassDefinition _customerClass;
+    private IEntityDefinition _orderClassEntityDefinition;
+    private IEntityDefinition _customerClassEntityDefinition;
     private ISqlDialect _sqlDialectStub;
 
     public override void SetUp ()
@@ -43,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _mocks = new MockRepository();
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>(_sqlDialectStub);
-      _orderClass = MappingConfiguration.ClassDefinitions[typeof (Order)];
-      _customerClass = MappingConfiguration.ClassDefinitions[typeof (Customer)];
+      _orderClassEntityDefinition = (IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition;
+      _customerClassEntityDefinition = (IEntityDefinition)MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition;
     }
 
     [Test]
@@ -54,14 +53,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       {
         _stubTableBuilder
             .Expect (
-                mock => mock.AddToCreateTableScript (Arg.Is ((TableDefinition) _orderClass.StorageEntityDefinition), Arg<StringBuilder>.Is.Anything))
+                mock => mock.AddToCreateTableScript (Arg.Is ((TableDefinition) _orderClassEntityDefinition), Arg<StringBuilder>.Is.Anything))
             .Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
         _stubTableBuilder.AddToDropTableScript (null, null);
         LastCall.IgnoreArguments();
       }
       _mocks.ReplayAll();
 
-      _stubTableBuilder.AddTable (_orderClass);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
       string actualScript = _stubTableBuilder.GetCreateTableScript();
 
       _mocks.VerifyAll();
@@ -74,22 +73,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       using (_mocks.Ordered())
       {
         _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
         _stubTableBuilder.AddToDropTableScript (null, null);
         LastCall.IgnoreArguments();
         _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
         _stubTableBuilder.AddToDropTableScript (null, null);
         LastCall.IgnoreArguments();
       }
       _mocks.ReplayAll();
 
-      _stubTableBuilder.AddTable (_orderClass);
-      _stubTableBuilder.AddTable (_orderClass);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
       string actualScript = _stubTableBuilder.GetCreateTableScript();
 
       _mocks.VerifyAll();
       Assert.AreEqual ("CREATE TABLE [dbo].[Order] ()\r\nCREATE TABLE [dbo].[Order] ()", actualScript);
+    }
+
+    [Test]
+    public void GetCreateTableScript_GetDropTableScript_SeveralTablesAdded ()
+    {
+      using (_mocks.Ordered ())
+      {
+        _stubTableBuilder.AddToCreateTableScript (null, null);
+        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull ()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Customer] ()"));
+        _stubTableBuilder.AddToDropTableScript (null, null);
+        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
+        _stubTableBuilder.AddToCreateTableScript (null, null);
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
+        _stubTableBuilder.AddToDropTableScript (null, null);
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
+      }
+      _mocks.ReplayAll ();
+
+      _stubTableBuilder.AddTable (_customerClassEntityDefinition);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
+      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
+      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
+
+      _mocks.VerifyAll ();
+      Assert.AreEqual ("CREATE TABLE [dbo].[Customer] ()\r\nCREATE TABLE [dbo].[Order] ()", actualCreateTableScript);
+      Assert.AreEqual ("DROP TABLE [dbo].[Customer]\r\nDROP TABLE [dbo].[Order]", actualDropTableScript);
+    }
+
+    [Test]
+    public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
+    {
+      _mocks.ReplayAll ();
+
+      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
+      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
+
+      _mocks.VerifyAll ();
+      Assert.IsEmpty (actualCreateTableScript);
+      Assert.IsEmpty (actualDropTableScript);
     }
 
     [Test]
@@ -100,11 +138,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         _stubTableBuilder.AddToCreateTableScript (null, null);
         LastCall.IgnoreArguments();
         _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
       }
       _mocks.ReplayAll();
 
-      _stubTableBuilder.AddTable (_orderClass);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
       string actualScript = _stubTableBuilder.GetDropTableScript();
 
       _mocks.VerifyAll();
@@ -119,16 +157,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         _stubTableBuilder.AddToCreateTableScript (null, null);
         LastCall.IgnoreArguments();
         _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal ((TableDefinition)_customerClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
+        LastCall.Constraints (Is.Equal (_customerClassEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
         _stubTableBuilder.AddToCreateTableScript (null, null);
         LastCall.IgnoreArguments();
         _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal ((TableDefinition) _orderClass.StorageEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
+        LastCall.Constraints (Is.Equal (_orderClassEntityDefinition), Is.NotNull ()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
       }
       _mocks.ReplayAll();
 
-      _stubTableBuilder.AddTable (_customerClass);
-      _stubTableBuilder.AddTable (_orderClass);
+      _stubTableBuilder.AddTable (_customerClassEntityDefinition);
+      _stubTableBuilder.AddTable (_orderClassEntityDefinition);
       string actualScript = _stubTableBuilder.GetDropTableScript();
 
       _mocks.VerifyAll();
@@ -136,54 +174,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddTables ()
-    {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-      classes.Add (_customerClass);
-      classes.Add (_orderClass);
-
-      using (_mocks.Ordered())
-      {
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_customerClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Customer] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_customerClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Customer]"));
-        _stubTableBuilder.AddToCreateTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToCreateTableScriptDelegate ("CREATE TABLE [dbo].[Order] ()"));
-        _stubTableBuilder.AddToDropTableScript (null, null);
-        LastCall.Constraints (Is.Equal (_orderClass.StorageEntityDefinition), Is.NotNull()).Do (CreateAddToDropTableScriptDelegate ("DROP TABLE [dbo].[Order]"));
-      }
-      _mocks.ReplayAll();
-
-      _stubTableBuilder.AddTables (classes);
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript();
-
-      _mocks.VerifyAll();
-      Assert.AreEqual ("CREATE TABLE [dbo].[Customer] ()\r\nCREATE TABLE [dbo].[Order] ()", actualCreateTableScript);
-      Assert.AreEqual ("DROP TABLE [dbo].[Customer]\r\nDROP TABLE [dbo].[Order]", actualDropTableScript);
-    }
-
-    [Test]
-    public void AddTables_WithoutClassDefinitions ()
-    {
-      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
-
-      _mocks.ReplayAll ();
-
-      _stubTableBuilder.AddTables (classes);
-      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
-      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
-
-      _mocks.VerifyAll ();
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
-    }
-
-    [Test]
     public void AddTableWithAbstractClass ()
     {
-      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(Company)]);
+      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(Company)].StorageEntityDefinition);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -197,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedClassWithoutEntityName ()
     {
-      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(DerivedClass)]);
+      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(DerivedClass)].StorageEntityDefinition);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -211,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedClassWithEntityName ()
     {
-      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(SecondDerivedClass)]);
+      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(SecondDerivedClass)].StorageEntityDefinition);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
@@ -225,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableWithDerivedOfDerivedClassWithEntityName ()
     {
-      _stubTableBuilder.AddTable (MappingConfiguration.ClassDefinitions[typeof(DerivedOfDerivedClass)]);
+      _stubTableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof(DerivedOfDerivedClass)].StorageEntityDefinition);
       _mocks.ReplayAll();
 
       string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript();
