@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -99,9 +100,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       CheckClassDefinitions (classDefinitions);
 
-      var entityDefintions = classDefinitions.Cast<ClassDefinition> ()
-          .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition> ();
+      var entityDefintions = GetEntityDefinitions (classDefinitions);
       return _scriptBuilder.GetScript (entityDefintions);
+    }
+
+    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions(ClassDefinitionCollection classDefinitions)
+    {
+      return classDefinitions.Cast<ClassDefinition>()
+          .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition>();
     }
 
     private void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)

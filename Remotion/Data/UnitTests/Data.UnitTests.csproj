@@ -267,6 +267,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ViewBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
