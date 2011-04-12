@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      throw new InvalidOperationException ("Cannot synchronize an opposite end-point with a collection end-point in incomplete state.");
+      throw new InvalidOperationException ("Cannot synchronize an opposite end-point with a virtual end-point in incomplete state.");
     }
 
     public void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint)
@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       if (s_log.IsInfoEnabled)
-        s_log.InfoFormat ("CollectionEndPoint '{0}' is transitioned to complete state.", endPoint.ID);
+        s_log.InfoFormat ("Virtual end-point '{0}' is transitioned to complete state.", endPoint.ID);
 
       var newDataKeeper = _dataKeeperFactory.Create (endPoint.ID);
       
@@ -198,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
           if (s_log.IsWarnEnabled)
           {
-            s_log.WarnFormat ("CollectionEndPoint '{0}' contains an item without an opposite end-point: '{1}'. The CollectionEndPoint is out-of-sync.",
+            s_log.WarnFormat ("Virtual end-point '{0}' contains an item without an opposite end-point: '{1}'. The virtual end-point is out-of-sync.",
                               endPoint.ID,
                               item.ID);
           }

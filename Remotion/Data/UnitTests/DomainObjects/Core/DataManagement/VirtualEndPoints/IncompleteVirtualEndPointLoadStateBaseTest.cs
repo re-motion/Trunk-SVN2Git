@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot synchronize an opposite end-point with a collection end-point in incomplete state.")]
+        "Cannot synchronize an opposite end-point with a virtual end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()
     {
       _relatedEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
