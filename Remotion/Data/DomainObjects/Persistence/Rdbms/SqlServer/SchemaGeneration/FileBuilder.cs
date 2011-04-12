@@ -24,12 +24,14 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
+// TODO Review 3857: Move to Rdbms\SchemaGeneration namespace
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  /// <summary>
+  /// Generates setup scripts for a list of mapped classes.
+  /// </summary>
   public class FileBuilder
   {
-    private readonly ScriptBuilderBase _scriptBuilder;
-
     public static void Build (
         ClassDefinitionCollection classDefinitions,
         StorageConfiguration storageConfiguration,
@@ -48,10 +50,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
-        {
+    {
           var fileBuilder = fileBuilderFactory (rdbmsProviderDefinition);
           fileBuilder.Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
-        }
+    }
       }
     }
 
@@ -68,6 +70,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       return Path.Combine (outputPath, fileName);
     }
+
+    private readonly ScriptBuilderBase _scriptBuilder;
 
     public FileBuilder (ScriptBuilderBase scriptBuilder)
     {
@@ -114,7 +118,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions (ClassDefinitionCollection classDefinitions)
     {
       return classDefinitions.Cast<ClassDefinition>()
-          .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition>();
+          .Select (cd => cd.StorageEntityDefinition)
+          .OfType<IEntityDefinition>();
     }
 
     private void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)

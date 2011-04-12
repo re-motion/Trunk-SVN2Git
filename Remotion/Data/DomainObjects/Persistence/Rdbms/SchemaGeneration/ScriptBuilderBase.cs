@@ -16,12 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  /// <summary>
+  /// Acts as an abstract base class for implementations generating a setup script for a list of entity definitions.
+  /// </summary>
   public abstract class ScriptBuilderBase
   {
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
