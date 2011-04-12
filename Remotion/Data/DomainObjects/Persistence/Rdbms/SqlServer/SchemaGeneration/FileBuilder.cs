@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -37,28 +40,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return temp.Substring (0, temp.IndexOf (";"));
     }
 
-    public override string GetScript (ClassDefinitionCollection classDefinitions)
+    protected override string GetScript (IEnumerable<IEntityDefinition> entityDefinitions)
     {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-
-      CheckClassDefinitions (classDefinitions);
-
       // TODO 3874: Add unit tests using mocks for view builder etc.
+      var viewBuilder = CreateViewBuilder();
+      var tableBuilder = CreateTableBuilder();
+      var constraintBuilder = CreateConstraintBuilder();
 
-      var viewBuilder = CreateViewBuilder ();
-      var tableBuilder = CreateTableBuilder ();
-      var constraintBuilder = CreateConstraintBuilder ();
-      foreach (ClassDefinition classDefinition in classDefinitions)
+      foreach (var entityDefinition in entityDefinitions)
       {
-        var storageEntityAsIEntityDefinition = classDefinition.StorageEntityDefinition as IEntityDefinition;
-        if (storageEntityAsIEntityDefinition != null)
-        {
-          viewBuilder.AddView (storageEntityAsIEntityDefinition);
-          tableBuilder.AddTable (storageEntityAsIEntityDefinition);
-          constraintBuilder.AddConstraint (storageEntityAsIEntityDefinition);
-        }
+        viewBuilder.AddView (entityDefinition);
+        tableBuilder.AddTable (entityDefinition);
+        constraintBuilder.AddConstraint (entityDefinition);
       }
-      
+
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"

@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -95,7 +98,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _rdbmsProviderDefinition; }
     }
 
-    public abstract string GetScript (ClassDefinitionCollection classDefinitions);
+    protected abstract string GetScript (IEnumerable<IEntityDefinition> entityDefinitions);
+
+    public virtual string GetScript (ClassDefinitionCollection classDefinitions)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      CheckClassDefinitions (classDefinitions);
+
+      var entityDefintions =
+          classDefinitions.Cast<ClassDefinition> ()
+          .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition> ();
+      return GetScript (entityDefintions);
+    }
 
     protected void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)
     {
