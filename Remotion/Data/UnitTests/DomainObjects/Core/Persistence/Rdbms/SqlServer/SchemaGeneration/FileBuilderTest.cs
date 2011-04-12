@@ -17,19 +17,13 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Resources;
 using Rhino.Mocks;
-using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -40,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private FileBuilder _fileBuilderForFirstStorageProvider;
     private FileBuilder _fileBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScript;
-    private string _secondStorageProviderSetupDBScript;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
 
     public override void TestFixtureSetUp ()
@@ -59,7 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _fileBuilderForSecondStorageProvider = new FileBuilder (SchemaGenerationSecondStorageProviderDefinition);
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
-      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
     }
 
     public override void TearDown ()
@@ -75,26 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       Assert.AreEqual ("SchemaGenerationTestDomain1", _fileBuilderForFirstStorageProvider.GetDatabaseName());
       Assert.AreEqual ("SchemaGenerationTestDomain2", _fileBuilderForSecondStorageProvider.GetDatabaseName ());
-    }
-
-    // TODO Review 3856: Move to FileBuilderIntegrationTest
-    [Test]
-    public void GetScriptForFirstStorageProvider ()
-    {
-      Assert.AreEqual (
-          _firstStorageProviderSetupDBScript,
-          _fileBuilderForFirstStorageProvider.GetScript (
-              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, SchemaGenerationFirstStorageProviderDefinition)));
-    }
-
-    // TODO Review 3856: Move to FileBuilderIntegrationTest
-    [Test]
-    public void GetScriptForSecondStorageProvider ()
-    {
-      Assert.AreEqual (
-          _secondStorageProviderSetupDBScript,
-          _fileBuilderForSecondStorageProvider.GetScript (
-              FileBuilder.GetClassesInStorageProvider (MappingConfiguration.ClassDefinitions, SchemaGenerationSecondStorageProviderDefinition)));
     }
 
     [Test]
@@ -121,48 +93,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.EqualTo(_firstStorageProviderSetupDBScriptWithoutTables));
     }
-
-    // TODO Review 3856: Move to FileBuilderBaseTest
-    [Test]
-    public void Build_WithMappingConfiguration ()
-    {
-      FileBuilderBase.Build (MappingConfiguration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
-
-      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-      Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
-      Assert.AreEqual (_secondStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
-    }
-
-    // TODO Review 3856: Add FileBuilderBaseTest.GetClassesInStorageProvider tests
-    // TODO Review 3856: Add FileBuilderBaseTest.GetFileName tests
-
-    // TODO Review 3856: Move to FileBuilderBaseTest
-    [Test]
-    public void BuildWithEmptyMappingConfiguration ()
-    {
-      MockRepository mockRepository = new MockRepository();
-      IMappingLoader mappingLoaderStub = mockRepository.StrictMock<IMappingLoader>();
-      ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
-      SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
-      SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
-      SetupResult.For (mappingLoaderStub.GetClassDefinitions()).Return (new ClassDefinition[0]);
-      SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
-      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
-      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
-      mockRepository.ReplayAll();
-
-      FileBuilderBase.Build (
-          new MappingConfiguration (
-              mappingLoaderStub, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))),
-          DomainObjectsConfiguration.Current.Storage,
-          "TestDirectory");
-
-      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-      Assert.AreEqual (
-          _firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
-    }
+    
   }
 }
