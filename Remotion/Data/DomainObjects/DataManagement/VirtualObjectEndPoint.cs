@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
     {
       var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<IVirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
       _loadState.SetValueFrom (this, sourceVirtualObjectEndPoint);

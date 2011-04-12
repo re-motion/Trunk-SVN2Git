@@ -234,12 +234,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
       var relatedObject = DomainObjectMother.CreateFakeObject<Order> ();
 
-      Action<ObjectID> oppositeObjectIDSetter = null;
+      Action<DomainObject> oppositeObjectSetter = null;
 
       _syncStateMock
-          .Expect (mock => mock.CreateSetCommand (Arg.Is (_endPoint), Arg.Is (relatedObject), Arg<Action<ObjectID>>.Is.Anything))
+          .Expect (mock => mock.CreateSetCommand (Arg.Is (_endPoint), Arg.Is (relatedObject), Arg<Action<DomainObject>>.Is.Anything))
           .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[2]; });
+          .WhenCalled (mi => { oppositeObjectSetter = (Action<DomainObject>) mi.Arguments[2]; });
       _syncStateMock.Replay ();
 
       var result = _endPoint.CreateSetCommand (relatedObject);
@@ -248,8 +248,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (result, Is.SameAs (fakeResult));
 
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      oppositeObjectIDSetter (DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      var newRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
+      oppositeObjectSetter (newRelatedObject);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newRelatedObject.ID));
     }
 
     [Test]
@@ -257,11 +258,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      Action<ObjectID> oppositeObjectIDSetter = null;
+      Action<DomainObject> oppositeObjectSetter = null;
       _syncStateMock
-          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPoint), Arg<Action<ObjectID>>.Is.Anything))
+          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPoint), Arg<Action<DomainObject>>.Is.Anything))
           .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectIDSetter = (Action<ObjectID>) mi.Arguments[1]; });
+          .WhenCalled (mi => { oppositeObjectSetter = (Action<DomainObject>) mi.Arguments[1]; });
       _syncStateMock.Replay ();
 
       var result = _endPoint.CreateDeleteCommand ();
@@ -270,8 +271,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (result, Is.SameAs (fakeResult));
 
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      oppositeObjectIDSetter (DomainObjectIDs.Order2);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      var newRelatedObject = DomainObjectMother.CreateFakeObject<Order>();
+      oppositeObjectSetter (newRelatedObject);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newRelatedObject.ID));
     }
 
     [Test]
@@ -313,14 +315,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeObjectIDValueFrom ()
+    public void SetOppositeObjectValueFrom ()
     {
       var source = MockRepository.GenerateStub<IObjectEndPoint>();
       source.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Order2);
 
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", source);
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectFrom", source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
       Assert.That (_endPoint.HasChanged, Is.True);

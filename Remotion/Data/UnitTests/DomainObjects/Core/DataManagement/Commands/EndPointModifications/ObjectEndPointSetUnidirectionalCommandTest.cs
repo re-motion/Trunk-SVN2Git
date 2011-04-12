@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, c => c.ParentClient);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
-      _command = new ObjectEndPointSetUnidirectionalCommand (_endPoint, _newRelatedObject, OppositeObjectIDSetter);
+      _command = new ObjectEndPointSetUnidirectionalCommand (_endPoint, _newRelatedObject, OppositeObjectSetter);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointSetUnidirectionalCommand (endPoint, _newRelatedObject, OppositeObjectIDSetter);
+      new ObjectEndPointSetUnidirectionalCommand (endPoint, _newRelatedObject, OppositeObjectSetter);
     }
 
     [Test]
@@ -119,12 +119,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform_InvokesPerformRelationChange ()
     {
-      Assert.That (OppositeObjectIDSetterCalled, Is.False);
+      Assert.That (OppositeObjectSetterCalled, Is.False);
 
       _command.Perform ();
 
-      Assert.That (OppositeObjectIDSetterCalled, Is.True);
-      Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_newRelatedObject.ID));
+      Assert.That (OppositeObjectSetterCalled, Is.True);
+      Assert.That (OppositeObjectSetterObject, Is.SameAs (_newRelatedObject));
     }
 
     [Test]

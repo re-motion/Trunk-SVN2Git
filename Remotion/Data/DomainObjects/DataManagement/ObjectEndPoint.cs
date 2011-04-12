@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
-    protected abstract void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint);
+    protected abstract void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint);
 
     public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
 
@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       if (OppositeObjectID != sourceObjectEndPoint.OppositeObjectID)
-        SetOppositeObjectIDValueFrom (sourceObjectEndPoint);
+        SetOppositeObjectFrom (sourceObjectEndPoint);
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch();

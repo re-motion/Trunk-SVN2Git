@@ -464,9 +464,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }
 
-    private Action<ObjectID> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    private Action<DomainObject> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
     {
-      return (Action<ObjectID>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
+      return (Action<DomainObject>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectSetter");
     }
 
     private void AddUnsynchronizedOppositeEndPoint (CompleteVirtualObjectEndPointLoadState loadState, IRealObjectEndPoint oppositeEndPoint)
@@ -479,11 +479,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       var setter = GetOppositeObjectIDSetter (command);
 
+      var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+
       _dataKeeperMock.BackToRecord ();
-      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket5);
+      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObjectID = newRelatedObject.ID);
       _dataKeeperMock.Replay ();
 
-      setter (DomainObjectIDs.OrderTicket5);
+      setter (newRelatedObject);
 
       _dataKeeperMock.VerifyAllExpectations ();
     }

@@ -114,14 +114,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
 
       if (oldRelatedObjectID == newRelatedObjectID)
       {
-        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
+        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
       }
       else
       {
         if (newRelatedObjectID != null)
           CheckAddedObject (newRelatedObjectID);
 
-        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, id => DataKeeper.CurrentOppositeObjectID = id);
+        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
       }
     }
 
@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         throw new InvalidOperationException (message);
       }
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, id => DataKeeper.CurrentOppositeObjectID = id);
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()

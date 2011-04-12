@@ -15,12 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -28,28 +24,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
     private IRelationEndPointProvider _endPointProviderStub;
-    private bool _oppositeObjectIDSetterCalled;
-    private ObjectID _oppositeObjectIDSetterID;
-    private Action<ObjectID> _oppositeObjectIDSetter;
+    private bool _oppositeObjectSetterCalled;
+    private DomainObject _oppositeObjectSetterObject;
+    private Action<DomainObject> _oppositeObjectSetter;
 
     protected IRelationEndPointProvider EndPointProviderStub
     {
       get { return _endPointProviderStub; }
     }
 
-    public bool OppositeObjectIDSetterCalled
+    public bool OppositeObjectSetterCalled
     {
-      get { return _oppositeObjectIDSetterCalled; }
+      get { return _oppositeObjectSetterCalled; }
     }
 
-    public ObjectID OppositeObjectIDSetterID
+    public DomainObject OppositeObjectSetterObject
     {
-      get { return _oppositeObjectIDSetterID; }
+      get { return _oppositeObjectSetterObject; }
     }
 
-    public Action<ObjectID> OppositeObjectIDSetter
+    public Action<DomainObject> OppositeObjectSetter
     {
-      get { return _oppositeObjectIDSetter; }
+      get { return _oppositeObjectSetter; }
     }
 
     public override void SetUp ()
@@ -57,11 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp ();
 
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _oppositeObjectIDSetterCalled = false;
-      _oppositeObjectIDSetter = id =>
+      _oppositeObjectSetterCalled = false;
+      _oppositeObjectSetter = id =>
       {
-        _oppositeObjectIDSetterCalled = true;
-        _oppositeObjectIDSetterID = id;
+        _oppositeObjectSetterCalled = true;
+        _oppositeObjectSetterObject = id;
       };
     }
   }

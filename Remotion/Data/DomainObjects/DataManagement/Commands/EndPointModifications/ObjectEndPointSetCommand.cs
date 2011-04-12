@@ -24,26 +24,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public abstract class ObjectEndPointSetCommand : RelationEndPointModificationCommand
   {
-    private readonly Action<ObjectID> _oppositeObjectIDSetter;
+    private readonly Action<DomainObject> _oppositeObjectSetter;
 
     protected ObjectEndPointSetCommand (
         IObjectEndPoint modifiedEndPoint, 
         DomainObject newRelatedObject, 
-        Action<ObjectID> oppositeObjectIDSetter)
+        Action<DomainObject> oppositeObjectSetter)
       : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-      _oppositeObjectIDSetter = oppositeObjectIDSetter;
+      _oppositeObjectSetter = oppositeObjectSetter;
     }
 
     public override void Perform ()
     {
-      var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
-      _oppositeObjectIDSetter(id);
+      _oppositeObjectSetter (NewRelatedObject);
       ModifiedEndPoint.Touch();
     }
   }

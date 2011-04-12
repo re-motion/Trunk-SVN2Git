@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     private UnsynchronizedRealObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
-    private Action<ObjectID> _fakeSetter;
+    private Action<DomainObject> _fakeSetter;
 
     public override void SetUp ()
     {
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
       _state = new UnsynchronizedRealObjectEndPointSyncState ();
-      _fakeSetter = id => { };
+      _fakeSetter = domainObject => { };
     }
 
     [Test]

@@ -140,12 +140,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _syncState.CreateDeleteCommand (this, SetOppositeObjectID);
+      return _syncState.CreateDeleteCommand (this, domainObject => SetOppositeObjectID (domainObject.GetIDOrNull()));
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return _syncState.CreateSetCommand (this, newRelatedObject, SetOppositeObjectID);
+      return _syncState.CreateSetCommand (this, newRelatedObject, domainObject => SetOppositeObjectID (domainObject.GetIDOrNull()));
     }
 
     public override void Touch ()
@@ -168,7 +168,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (HasChanged);
     }
 
-    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
 

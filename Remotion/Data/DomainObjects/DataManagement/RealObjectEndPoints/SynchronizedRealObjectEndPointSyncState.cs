@@ -54,14 +54,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       // nothing to do here - the end-point is already syncrhonized
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<DomainObject> oppositeObjectSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectIDSetter);
+      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectSetter);
 
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {
@@ -75,23 +75,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RealObjectEndPoints
       }
     }
 
-    public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
+    public IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<DomainObject> oppositeObjectSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (endPoint.OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectIDSetter);
+        return new ObjectEndPointSetSameCommand (endPoint, oppositeObjectSetter);
       else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectIDSetter);
+        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectSetter);
       else
       {
         var setCommand = oppositeEndPointDefinition.Cardinality == CardinalityType.One
-                             ? (IDataManagementCommand) new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectIDSetter)
-                             : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectIDSetter, _endPointProvider);
+                             ? (IDataManagementCommand) new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectSetter)
+                             : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectSetter, _endPointProvider);
         var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
         var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, newRelatedObjectID);
         return new RealObjectEndPointRegistrationCommandDecorator (setCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);

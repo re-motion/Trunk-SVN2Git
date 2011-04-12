@@ -416,14 +416,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeObjectIDValueFrom ()
+    public void SetOppositeObjectValueFrom ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
 
       _loadStateMock.Expect (mock => mock.SetValueFrom (_endPoint, oppositeEndPointStub));
       _loadStateMock.Replay();
 
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectIDValueFrom", oppositeEndPointStub);
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectFrom", oppositeEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
     }

@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, oi => oi.Order);
       _endPoint = (RealObjectEndPoint) RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
-      _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, OppositeObjectIDSetter, EndPointProviderStub);
+      _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, OppositeObjectSetter, EndPointProviderStub);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
       endPoint.Stub (stub => stub.IsNull).Return (true);
 
-      new ObjectEndPointSetOneManyCommand (endPoint, _newRelatedObject, OppositeObjectIDSetter, EndPointProviderStub);
+      new ObjectEndPointSetOneManyCommand (endPoint, _newRelatedObject, OppositeObjectSetter, EndPointProviderStub);
     }
 
     [Test]
@@ -125,13 +125,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform ()
     {
-      Assert.That (OppositeObjectIDSetterCalled, Is.False);
+      Assert.That (OppositeObjectSetterCalled, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _command.Perform ();
 
-      Assert.That (OppositeObjectIDSetterCalled, Is.True);
-      Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_newRelatedObject.ID));
+      Assert.That (OppositeObjectSetterCalled, Is.True);
+      Assert.That (OppositeObjectSetterObject, Is.SameAs (_newRelatedObject));
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 

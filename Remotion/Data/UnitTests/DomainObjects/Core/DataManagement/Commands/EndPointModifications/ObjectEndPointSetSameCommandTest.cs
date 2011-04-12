@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
       
-      _command = new ObjectEndPointSetSameCommand (_endPoint, OppositeObjectIDSetter);
+      _command = new ObjectEndPointSetSameCommand (_endPoint, OppositeObjectSetter);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointSetSameCommand (endPoint, OppositeObjectIDSetter);
+      new ObjectEndPointSetSameCommand (endPoint, OppositeObjectSetter);
     }
 
     [Test]
@@ -96,12 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform_InvokesPerformRelationChange ()
     {
-      Assert.That (OppositeObjectIDSetterCalled, Is.False);
+      Assert.That (OppositeObjectSetterCalled, Is.False);
 
       _command.Perform ();
       
-      Assert.That (OppositeObjectIDSetterCalled, Is.True);
-      Assert.That (OppositeObjectIDSetterID, Is.EqualTo (_relatedObject.ID));
+      Assert.That (OppositeObjectSetterCalled, Is.True);
+      Assert.That (OppositeObjectSetterObject, Is.EqualTo (_relatedObject));
     }
 
     [Test]

@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public ObjectEndPointSetOneManyCommand (
         IRealObjectEndPoint modifiedEndPoint,
         DomainObject newRelatedObject,
-        Action<ObjectID> oppositeObjectIDSetter,
+        Action<DomainObject> oppositeObjectSetter,
         IRelationEndPointProvider endPointProvider)
-        : base (modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
+        : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 

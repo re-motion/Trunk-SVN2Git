@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return new TestSetCommand (this, newRelatedObject, id => { throw new NotImplementedException (); });
     }
 
-    protected override void SetOppositeObjectIDValueFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
     {
       Assert.That (_isSetOppositeObjectIDValueFromExpected, Is.True);
       _oppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
@@ -132,8 +132,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public class TestSetCommand : ObjectEndPointSetCommand
     {
-      public TestSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<ObjectID> oppositeObjectIDSetter)
-        : base (modifiedEndPoint, newRelatedObject, oppositeObjectIDSetter)
+      public TestSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<DomainObject> oppositeObjectSetter)
+        : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter)
       {
       }
 

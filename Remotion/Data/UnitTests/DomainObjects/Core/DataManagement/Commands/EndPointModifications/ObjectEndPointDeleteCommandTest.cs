@@ -29,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _endPointID;
     private DomainObject _domainObject;
 
-    private bool _oppositeObjectIDSetterCalled;
-    private ObjectID _oppositeObjectIDSetterID;
-    private Action<ObjectID> _oppositeObjectIDSetter;
+    private bool _oppositeObjectSetterCalled;
+    private DomainObject _oppositeObjectSetterObject;
+    private Action<DomainObject> _oppositeObjectSetter;
 
     private ObjectEndPointDeleteCommand _command;
 
@@ -43,14 +43,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.OrderTicket1);
       _domainObject = _endPoint.GetDomainObject();
       
-      _oppositeObjectIDSetterCalled = false;
-      _oppositeObjectIDSetter = id =>
+      _oppositeObjectSetterCalled = false;
+      _oppositeObjectSetter = domainObject =>
       {
-        _oppositeObjectIDSetterCalled = true;
-        _oppositeObjectIDSetterID = id;
+        _oppositeObjectSetterCalled = true;
+        _oppositeObjectSetterObject = domainObject;
       };
       
-      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectIDSetter);
+      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectSetter);
     }
 
     [Test]
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _domainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       _domainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      Assert.That (_oppositeObjectIDSetterCalled, Is.False);
+      Assert.That (_oppositeObjectSetterCalled, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _command.Perform ();
@@ -133,8 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (_oppositeObjectIDSetterCalled, Is.True);
-      Assert.That (_oppositeObjectIDSetterID, Is.Null);
+      Assert.That (_oppositeObjectSetterCalled, Is.True);
+      Assert.That (_oppositeObjectSetterObject, Is.Null);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 

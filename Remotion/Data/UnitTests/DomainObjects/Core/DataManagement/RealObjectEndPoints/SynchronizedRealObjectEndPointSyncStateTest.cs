@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
     private IRelationEndPointDefinition _orderCustomerEndPointDefinition;
     private IRelationEndPointProvider _endPointProviderStub;
 
-    private Action<ObjectID> _fakeSetter;
+    private Action<DomainObject> _fakeSetter;
 
     public override void SetUp ()
     {
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       _locationClientEndPointDefinition = GetRelationEndPointDefinition (typeof (Location), "Client");
       _orderCustomerEndPointDefinition = GetRelationEndPointDefinition (typeof (Order), "Customer");
 
-      _fakeSetter = id => { };
+      _fakeSetter = domainObject => { };
     }
 
     [Test]
@@ -297,9 +297,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RealObjectEn
       return Configuration.ClassDefinitions.GetMandatory (classType).GetRelationEndPointDefinition (classType.FullName + "." + shortPropertyName);
     }
 
-    private Action<ObjectID> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    private Action<DomainObject> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
     {
-      return (Action<ObjectID>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectIDSetter");
+      return (Action<DomainObject>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectSetter");
     }
 
   }
