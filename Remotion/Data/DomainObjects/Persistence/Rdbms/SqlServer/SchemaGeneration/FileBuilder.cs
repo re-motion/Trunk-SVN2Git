@@ -30,7 +30,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     private readonly ScriptBuilderBase _scriptBuilder;
 
-    public static void Build (ClassDefinitionCollection classDefinitions, StorageConfiguration storageConfiguration, string outputPath)
+    public static void Build (
+        ClassDefinitionCollection classDefinitions,
+        StorageConfiguration storageConfiguration,
+        string outputPath,
+        Func<RdbmsProviderDefinition, FileBuilder> fileBuilderFactory)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
@@ -45,9 +49,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
         {
-          var fileBuilder = new FileBuilder(new ScriptBuilder (rdbmsProviderDefinition));
+          var fileBuilder = fileBuilderFactory (rdbmsProviderDefinition);
           fileBuilder.Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
-        } 
+        }
       }
     }
 
@@ -107,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return _scriptBuilder.GetScript (entityDefintions);
     }
 
-    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions(ClassDefinitionCollection classDefinitions)
+    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions (ClassDefinitionCollection classDefinitions)
     {
       return classDefinitions.Cast<ClassDefinition>()
           .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition>();
