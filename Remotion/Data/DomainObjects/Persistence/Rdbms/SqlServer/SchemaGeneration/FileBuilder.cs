@@ -44,33 +44,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
-          Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
+        {
+          var fileBuilder = new FileBuilder(new ScriptBuilder (rdbmsProviderDefinition));
+          fileBuilder.Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
+        } 
       }
-    }
-
-    public static void Build (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
-
-      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition);
-      var scriptBuilder = rdbmsProviderDefinition.Factory.CreateSchemaScriptBuilder(rdbmsProviderDefinition);
-      var fileBuilder = new FileBuilder (scriptBuilder);
-      var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
-      File.WriteAllText (fileName, script);
-    }
-
-    public static ClassDefinitionCollection GetClassesInStorageProvider (
-        ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
-    {
-      var classes = new ClassDefinitionCollection (false);
-      foreach (ClassDefinition currentClass in classDefinitions)
-      {
-        if (currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition)
-          classes.Add (currentClass);
-      }
-
-      return classes;
     }
 
     public static string GetFileName (StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders)
@@ -92,6 +70,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("scriptBuilder", scriptBuilder);
 
       _scriptBuilder = scriptBuilder;
+    }
+
+    public virtual void Build (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition);
+      var scriptBuilder = rdbmsProviderDefinition.Factory.CreateSchemaScriptBuilder (rdbmsProviderDefinition);
+      var fileBuilder = new FileBuilder (scriptBuilder);
+      var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
+      File.WriteAllText (fileName, script);
+    }
+
+    public virtual ClassDefinitionCollection GetClassesInStorageProvider (
+        ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      var classes = new ClassDefinitionCollection (false);
+      foreach (ClassDefinition currentClass in classDefinitions)
+      {
+        if (currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition)
+          classes.Add (currentClass);
+      }
+
+      return classes;
     }
 
     public virtual string GetScript (ClassDefinitionCollection classDefinitions)

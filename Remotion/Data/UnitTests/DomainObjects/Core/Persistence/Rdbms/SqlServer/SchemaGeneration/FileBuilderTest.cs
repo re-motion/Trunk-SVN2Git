@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var classDefinition3 = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer));
       classDefinition1.SetStorageEntity (secondStorageProviderTableDefinition);
 
-      var classesInFirstStorageProvider = FileBuilder.GetClassesInStorageProvider (
+      var classesInFirstStorageProvider = _fileBuilder.GetClassesInStorageProvider (
           new ClassDefinitionCollection (new[] { classDefinition1, classDefinition2, classDefinition3 }, true, true),
           SchemaGenerationFirstStorageProviderDefinition);
 
