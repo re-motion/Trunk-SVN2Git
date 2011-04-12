@@ -21,8 +21,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   /// </summary>
   public interface IVirtualObjectEndPointDataKeeper : IVirtualEndPointDataKeeper
   {
-    ObjectID CurrentOppositeObjectID { get; set; }
-    ObjectID OriginalOppositeObjectID { get; }
+    DomainObject CurrentOppositeObject { get; set; }
+    DomainObject OriginalOppositeObject { get; }
 
     IRealObjectEndPoint CurrentOppositeEndPoint { get; }
     IRealObjectEndPoint OriginalOppositeEndPoint { get; }

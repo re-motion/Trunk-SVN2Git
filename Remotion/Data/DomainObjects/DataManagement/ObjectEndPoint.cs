@@ -52,28 +52,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
+    public abstract DomainObject GetOppositeObject (bool includeDeleted);
+    public abstract DomainObject GetOriginalOppositeObject ();
+
     protected abstract void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint);
 
     public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
-
-    public DomainObject GetOppositeObject (bool includeDeleted)
-    {
-      if (OppositeObjectID == null)
-        return null;
-      else if (includeDeleted && ClientTransaction.IsInvalid (OppositeObjectID))
-        return ClientTransaction.GetInvalidObjectReference (OppositeObjectID);
-      else
-        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
-    }
-
-    public DomainObject GetOriginalOppositeObject ()
-    {
-      if (OriginalOppositeObjectID == null)
-        return null;
-
-      return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
-    }
-
+    
     public override void CheckMandatory ()
     {
       if (OppositeObjectID == null)

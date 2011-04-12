@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   /// Represents the state of a <see cref="VirtualObjectEndPoint"/> where all of its data is available (ie., the end-point has been (lazily) loaded).
   /// </summary>
   public class CompleteVirtualObjectEndPointLoadState
-      : CompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, ObjectID, IVirtualObjectEndPointDataKeeper>, IVirtualObjectEndPointLoadState
+      : CompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper>, IVirtualObjectEndPointLoadState
   {
     public CompleteVirtualObjectEndPointLoadState (
         IVirtualObjectEndPointDataKeeper dataKeeper, 
@@ -38,18 +38,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     {
     }
 
-    public override ObjectID GetData (IVirtualObjectEndPoint endPoint)
+    public override DomainObject GetData (IVirtualObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return DataKeeper.CurrentOppositeObjectID;
+      return DataKeeper.CurrentOppositeObject;
     }
 
-    public override ObjectID GetOriginalData (IVirtualObjectEndPoint endPoint)
+    public override DomainObject GetOriginalData (IVirtualObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return DataKeeper.OriginalOppositeObjectID;
+      return DataKeeper.OriginalOppositeObject;
     }
 
     public override void SetValueFrom (IVirtualObjectEndPoint endPoint, IVirtualObjectEndPoint sourceEndPoint)
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
 
-      DataKeeper.CurrentOppositeObjectID = sourceEndPoint.OppositeObjectID;
+      DataKeeper.CurrentOppositeObject = sourceEndPoint.GetOppositeObject(true);
     }
 
     public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter)
@@ -69,8 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       // order to optimize away one virtual end-point query. That implicit call to MarkDataComplete would, however, cause the subsequent call
       // to MarkDataComplete in DataManager.LoadLazyVirtualObjectEndPoint to fail. Therefore, we check whether the MarkDataComplete call here
       // is "okay" and only throw (in the base MarkDataComplete call) if it isn't.
-      var itemID = item == null ? null : item.ID;
-      if (DataKeeper.CurrentOppositeObjectID != itemID)
+      if (DataKeeper.CurrentOppositeObject != item)
         MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 
@@ -97,9 +96,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
 
-      var oldRelatedObjectID = DataKeeper.CurrentOppositeObjectID;
-      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
-
+      var oldRelatedObject = DataKeeper.CurrentOppositeObject;
       if (DataKeeper.OriginalItemWithoutEndPoint != null)
       {
         var message = string.Format (
@@ -112,16 +109,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         throw new InvalidOperationException (message);
       }
 
-      if (oldRelatedObjectID == newRelatedObjectID)
+      if (oldRelatedObject == newRelatedObject)
       {
-        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
+        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
       }
       else
       {
-        if (newRelatedObjectID != null)
-          CheckAddedObject (newRelatedObjectID);
+        if (newRelatedObject != null)
+          CheckAddedObject (newRelatedObject);
 
-        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
+        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
       }
     }
 
@@ -155,7 +152,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
         throw new InvalidOperationException (message);
       }
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObjectID = domainObject.GetIDOrNull());
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
@@ -173,15 +170,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       return DataKeeper.CurrentOppositeEndPoint != null && !DataKeeper.CurrentOppositeEndPoint.IsSynchronized;
     }
 
-    private void CheckAddedObject (ObjectID objectID)
+    private void CheckAddedObject (DomainObject domainObject)
     {
-      if (ContainsUnsynchronizedOppositeEndPoint (objectID))
+      if (ContainsUnsynchronizedOppositeEndPoint (domainObject.ID))
       {
         var message = string.Format (
             "The domain object with ID '{0}' cannot be set into the virtual property '{1}' of object '{2}' because its object property "
             + "'{3}' is out of sync with the virtual property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
-            objectID,
+            domainObject.ID,
             DataKeeper.EndPointID.Definition.PropertyName,
             DataKeeper.EndPointID.ObjectID,
             DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);

@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
   /// <summary>
   /// Represents the lazy-loading state of a <see cref="VirtualObjectEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
-  public interface IVirtualObjectEndPointLoadState : IVirtualEndPointLoadState<IVirtualObjectEndPoint, ObjectID, IVirtualObjectEndPointDataKeeper>
+  public interface IVirtualObjectEndPointLoadState : IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper>
   {
     void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter);
 

@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -40,103 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      
-      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, DomainObjectIDs.OrderTicket1);
-    }
 
-    [Test]
-    public void GetOppositeObject ()
-    {
-      var oppositeObject = _endPoint.GetOppositeObject (true);
-      Assert.That (OrderTicket.GetObject (_endPoint.OppositeObjectID), Is.SameAs (oppositeObject));
-    }
-
-
-    [Test]
-    public void GetOppositeObject_Null ()
-    {
-      _endPoint.SetOppositeObjectID (null);
-
-      var oppositeObject = _endPoint.GetOppositeObject (false);
-      Assert.That (oppositeObject, Is.Null);
-    }
-
-    [Test]
-    public void GetOppositeObject_Deleted ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      order1.Delete ();
-      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
-
-      _endPoint.SetOppositeObjectID (order1.ID);
-
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void GetOppositeObject_Deleted_NoDeleted ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      order1.Delete ();
-      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
-
-      _endPoint.SetOppositeObjectID (order1.ID);
-
-      _endPoint.GetOppositeObject (false);
-    }
-
-    [Test]
-    public void GetOppositeObject_Invalid_IncludeDeleted ()
-    {
-      var oppositeObject = Order.NewObject ();
-
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
-
-      _endPoint.SetOppositeObjectID (oppositeObject.ID);
-
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void GetOppositeObject_Invalid_ExcludeDeleted ()
-    {
-      var oppositeObject = Order.NewObject ();
-
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
-
-      _endPoint.SetOppositeObjectID (oppositeObject.ID);
-      
-      _endPoint.GetOppositeObject (false);
-    }
-
-    [Test]
-    public void GetOriginalOppositeObject ()
-    {
-      _endPoint.SetOppositeObjectID (DomainObjectIDs.OrderTicket4);
-
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1)));
-    }
-
-    [Test]
-    public void GetOriginalOppositeObject_Null ()
-    {
-      var endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, null);
-
-      Assert.That (endPoint.GetOriginalOppositeObject (), Is.Null);
-    }
-
-    [Test]
-    public void GetOriginalOppositeObject_Deleted ()
-    {
-      var originalOppositeObject = (OrderTicket) _endPoint.GetOppositeObject (true);
-      originalOppositeObject.Delete ();
-
-      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
+      var oppositeObject = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, oppositeObject);
     }
 
     [Test]
@@ -146,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket2);
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket2));
 
-      _endPoint.ExpectSetOppositeObjectIDValueFrom();
+      _endPoint.ExpectSetOppositeObjectFrom();
 
       _endPoint.SetValueFrom (source);
 
@@ -161,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket1);
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
 
-      _endPoint.ExpectNotSetOppositeObjectIDValueFrom ();
+      _endPoint.ExpectNotSetOppositeObjectFrom ();
       
       _endPoint.SetValueFrom (source);
 
@@ -207,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.HasBeenTouched, Is.False);
       Assert.That (source.HasBeenTouched, Is.False);
 
-      _endPoint.ExpectSetOppositeObjectIDValueFrom ();
+      _endPoint.ExpectSetOppositeObjectFrom ();
 
       _endPoint.SetValueFrom (source);
 
@@ -262,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeRelationEndPointID_NullEndPoint ()
     {
-      _endPoint.SetOppositeObjectID (null);
+      _endPoint.SetOppositeObject (null);
 
       var oppositeEndPointID = _endPoint.GetOppositeRelationEndPointID ();
 

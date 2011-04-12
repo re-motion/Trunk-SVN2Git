@@ -112,6 +112,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _syncState.IsSynchronized (this); }
     }
 
+    public override DomainObject GetOppositeObject (bool includeDeleted)
+    {
+      if (OppositeObjectID == null)
+        return null;
+      else if (includeDeleted && ClientTransaction.IsInvalid (OppositeObjectID))
+        return ClientTransaction.GetInvalidObjectReference (OppositeObjectID);
+      else
+        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
+    }
+
+    public override DomainObject GetOriginalOppositeObject ()
+    {
+      if (OriginalOppositeObjectID == null)
+        return null;
+
+      return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
+    }
+
     public override void EnsureDataComplete ()
     {
       Assertion.IsTrue (IsDataComplete);

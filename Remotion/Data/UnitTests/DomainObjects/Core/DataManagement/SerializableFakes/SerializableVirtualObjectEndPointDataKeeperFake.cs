@@ -96,13 +96,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public ObjectID CurrentOppositeObjectID
+    public DomainObject CurrentOppositeObject
     {
       get { throw new NotImplementedException(); }
       set { throw new NotImplementedException(); }
     }
 
-    public ObjectID OriginalOppositeObjectID
+    public DomainObject OriginalOppositeObject
     {
       get { throw new NotImplementedException(); }
     }

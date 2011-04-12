@@ -172,6 +172,105 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetOppositeObject ()
+    {
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
+
+      var oppositeObject = _endPoint.GetOppositeObject (true);
+      Assert.That (oppositeObject, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+    }
+
+    [Test]
+    public void GetOppositeObject_Null ()
+    {
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
+
+      var oppositeObject = _endPoint.GetOppositeObject (false);
+      Assert.That (oppositeObject, Is.Null);
+    }
+
+    [Test]
+    public void GetOppositeObject_Deleted ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete ();
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void GetOppositeObject_Deleted_NoDeleted ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete ();
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOppositeObject_Invalid_IncludeDeleted ()
+    {
+      var oppositeObject = Order.NewObject ();
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
+
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetOppositeObject_Invalid_ExcludeDeleted ()
+    {
+      var oppositeObject = Order.NewObject ();
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
+
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject ()
+    {
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
+      _foreignKeyDataContainer.CommitState();
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject_Null ()
+    {
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order4);
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.Null);
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject_Deleted ()
+    {
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
+      _foreignKeyDataContainer.CommitState();
+      var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      originalOppositeObject.Delete ();
+
+      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
+    }
+
+    [Test]
     public void EnsureDataComplete_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);

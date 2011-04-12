@@ -95,45 +95,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void OppositeObjectID ()
     {
-      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (DomainObjectIDs.OrderTicket1);
+      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (_oppositeObject);
       _loadStateMock.Replay();
 
       var result = _endPoint.OppositeObjectID;
       _loadStateMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (result, Is.EqualTo (_oppositeObject.ID));
     }
 
     [Test]
     public void GetData ()
     {
-      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (DomainObjectIDs.OrderTicket1);
+      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (_oppositeObject);
       _loadStateMock.Replay ();
 
-      var result = ((IVirtualEndPoint<ObjectID>) _endPoint).GetData ();
-      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      var result = ((IVirtualObjectEndPoint) _endPoint).GetData ();
+      Assert.That (result, Is.SameAs (_oppositeObject));
     }
 
     [Test]
     public void OriginalOppositeObjectID ()
     {
-      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (DomainObjectIDs.OrderTicket2);
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (_oppositeObject);
       _loadStateMock.Replay ();
 
       var result = _endPoint.OriginalOppositeObjectID;
       _loadStateMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (result, Is.EqualTo (_oppositeObject.ID));
     }
 
     [Test]
     public void GetOriginalData ()
     {
-      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (DomainObjectIDs.OrderTicket2);
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (_oppositeObject);
       _loadStateMock.Replay ();
 
-      var result = ((IVirtualEndPoint<ObjectID>) _endPoint).GetOriginalData ();
-      Assert.That (result, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      var result = ((IVirtualObjectEndPoint) _endPoint).GetOriginalData ();
+      Assert.That (result, Is.SameAs (_oppositeObject));
     }
 
     [Test]
@@ -170,6 +170,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void GetOppositeObject ()
+    {
+      _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (_oppositeObject);
+      _loadStateMock.Replay();
+
+      var result = _endPoint.GetOppositeObject (true);
+
+      _loadStateMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_oppositeObject));
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject ()
+    {
+      _loadStateMock.Expect (mock => mock.GetOriginalData (_endPoint)).Return (_oppositeObject);
+      _loadStateMock.Replay ();
+
+      var result = _endPoint.GetOriginalOppositeObject ();
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_oppositeObject));
     }
 
     [Test]

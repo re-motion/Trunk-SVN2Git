@@ -83,32 +83,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void GetData ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Replay();
 
       var result = _loadState.GetData (_virtualObjectEndPointMock);
 
-      Assert.That (result, Is.EqualTo (_relatedObject.ID));
+      Assert.That (result, Is.SameAs (_relatedObject));
     }
 
     [Test]
     public void GetOriginalData ()
     {
-      _dataKeeperMock.Stub (stub => stub.OriginalOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.OriginalOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
       var result = _loadState.GetOriginalData (_virtualObjectEndPointMock);
 
-      Assert.That (result, Is.EqualTo (_relatedObject.ID));
+      Assert.That (result, Is.SameAs (_relatedObject));
     }
 
     [Test]
     public void SetValueFrom ()
     {
       var sourceEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.OrderTicket3);
+      sourceEndPointStub.Stub (stub => stub.GetOppositeObject (true)).Return (_relatedObject);
 
-      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3);
+      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObject = _relatedObject);
       _dataKeeperMock.Replay();
 
       _loadState.SetValueFrom (_virtualObjectEndPointMock, sourceEndPointStub);
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
     public void MarkDataComplete_ThrowsException_IfItemsDontMatch ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => Assert.Fail ("Must not be called"));
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void MarkDataComplete_ThrowsNoException_IfItemsMatch ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, _relatedObject, keeper => Assert.Fail ("Must not be called"));
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void MarkDataComplete_ThrowsNoException_IfItemsMatch_Null ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (null);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (null);
       _dataKeeperMock.Replay();
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => Assert.Fail ("Must not be called"));
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateSetCommand_Same ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay();
       
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' property.")]
     public void CreateSetCommand_Same_WithItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateSetCommand_Same_Null ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (null);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (null);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay ();
 
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CreateSetCommand_NotSame ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay ();
 
@@ -289,7 +289,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' property.")]
     public void CreateSetCommand_NotSame_WithItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' property.")]
     public void CreateSetCommand_NotSame_InputIsInUnsynchronizedOppositeEndPoints ()
     {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObjectID).Return (_relatedObject.ID);
+      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Stub (stub => stub.OriginalItemWithoutEndPoint).Return (null);
       _dataKeeperMock.Replay ();
 
@@ -482,7 +482,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
       _dataKeeperMock.BackToRecord ();
-      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObjectID = newRelatedObject.ID);
+      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObject = newRelatedObject);
       _dataKeeperMock.Replay ();
 
       setter (newRelatedObject);

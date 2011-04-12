@@ -37,6 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     private OrderTicket _oppositeObject;
     private IRealObjectEndPoint _oppositeEndPointStub;
 
+    private OrderTicket _oppositeObject2;
+    private IRealObjectEndPoint _oppositeEndPointStub2;
+
     public override void SetUp ()
     {
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
@@ -46,37 +49,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      _oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (_oppositeObject.ID);
       _oppositeEndPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_oppositeObject);
+
+      _oppositeObject2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
+      _oppositeEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _oppositeEndPointStub2.Stub (stub => stub.GetDomainObjectReference()).Return (_oppositeObject2);
     }
 
     [Test]
-    public void CurrentOppositeObjectID_Set ()
+    public void CurrentOppositeObject_Set ()
     {
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
 
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket4;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
 
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket4));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
     }
 
     [Test]
-    public void CurrentOppositeObjectID_Set_RaisesNotification ()
+    public void CurrentOppositeObject_Set_RaisesNotification ()
     {
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
       _stateUpdateListenerMock.Replay();
 
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket4;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
 
       _stateUpdateListenerMock.VerifyAllExpectations();
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
       _stateUpdateListenerMock.Replay();
 
-      _dataKeeper.CurrentOppositeObjectID = null;
+      _dataKeeper.CurrentOppositeObject = null;
 
       _stateUpdateListenerMock.VerifyAllExpectations();
     }
@@ -84,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void ContainsOriginalObjectID_False ()
     {
-      Assert.That (_dataKeeper.ContainsOriginalObjectID (DomainObjectIDs.OrderTicket1), Is.False);
+      Assert.That (_dataKeeper.ContainsOriginalObjectID (_oppositeObject.ID), Is.False);
     }
 
     [Test]
@@ -92,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.ContainsOriginalObjectID (DomainObjectIDs.OrderTicket1), Is.True);
+      Assert.That (_dataKeeper.ContainsOriginalObjectID (_oppositeObject.ID), Is.True);
     }
 
     [Test]
@@ -102,17 +108,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
     }
 
     [Test]
     public void RegisterOriginalOppositeEndPoint_CurrentValueAlreadySet ()
     {
-      var currentOppositeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      currentOppositeEndPoint.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.OrderTicket2);
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket2;
-      _dataKeeper.RegisterCurrentOppositeEndPoint (currentOppositeEndPoint);
+      _dataKeeper.CurrentOppositeObject = _oppositeObject2;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
@@ -121,10 +125,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeEndPointStub.ObjectID));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.EqualTo (_oppositeObject));
 
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (currentOppositeEndPoint));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
 
       _stateUpdateListenerMock.VerifyAllExpectations();
     }
@@ -138,8 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.SameAs (_oppositeEndPointStub.ObjectID));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
     }
 
@@ -176,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Null);
 
       _stateUpdateListenerMock.VerifyAllExpectations();
     }
@@ -200,17 +204,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void RegisterOriginalItemWithoutEndPoint ()
     {
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (_oppositeObject.ID));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Not.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Not.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
     }
@@ -218,10 +222,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void RegisterOriginalItemWithoutEndPoint_CurrentValueAlreadySet ()
     {
-      var currentOppositeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      currentOppositeEndPoint.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.OrderTicket2);
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket2;
-      _dataKeeper.RegisterCurrentOppositeEndPoint (currentOppositeEndPoint);
+      _dataKeeper.CurrentOppositeObject = _oppositeObject2;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
@@ -229,12 +231,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (currentOppositeEndPoint));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
 
       _stateUpdateListenerMock.VerifyAllExpectations();
     }
@@ -260,22 +262,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void UnregisterOriginalItemWithoutEndPoint ()
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.Null);
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Not.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Not.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.Null);
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Not.Null);
 
       _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
     }
 
     [Test]
     public void UnregisterOriginalItemWithoutEndPoint_CurrentValueAlreadySet ()
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket2;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject2;
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
@@ -284,9 +286,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
 
       _stateUpdateListenerMock.VerifyAllExpectations();
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Null);
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
     }
 
     [Test]
@@ -356,11 +358,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       Assert.That (_dataKeeper.HasDataChanged(), Is.False);
 
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.Order2;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
 
       Assert.That (_dataKeeper.HasDataChanged(), Is.True);
 
-      _dataKeeper.CurrentOppositeObjectID = null;
+      _dataKeeper.CurrentOppositeObject = null;
 
       Assert.That (_dataKeeper.HasDataChanged(), Is.False);
     }
@@ -369,18 +371,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void Commit ()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
 
-      var newOppositeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();
       _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-      _dataKeeper.RegisterCurrentOppositeEndPoint (newOppositeEndPoint);
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
+      _dataKeeper.CurrentOppositeObject = _oppositeObject2;
 
-      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.SameAs (newOppositeEndPoint));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket3));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.SameAs (_oppositeEndPointStub2));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.Not.SameAs (_oppositeObject2));
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
@@ -388,10 +389,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _dataKeeper.Commit();
 
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (newOppositeEndPoint));
-      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (newOppositeEndPoint));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.EqualTo (_oppositeObject2));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.EqualTo (_oppositeObject2));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
+      Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
 
       _stateUpdateListenerMock.VerifyAllExpectations();
     }
@@ -400,13 +401,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void Commit_ClearsItemWithoutEndPoint ()
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectMother.CreateFakeObject<OrderTicket>());
-      _dataKeeper.CurrentOppositeObjectID = _oppositeObject.ID;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
       _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
 
       _dataKeeper.Commit ();
 
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
@@ -415,16 +416,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    [Ignore ("TODO 3825")]
     public void Commit_SetsItemWithoutEndPoint ()
     {
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (DomainObjectMother.CreateFakeObject<OrderTicket> ());
-      _dataKeeper.CurrentOppositeObjectID = _oppositeObject.ID;
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
 
       _dataKeeper.Commit ();
 
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (_oppositeObject.ID));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
@@ -436,16 +436,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void Rollback ()
     {
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.EqualTo (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.EqualTo (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
 
       _dataKeeper.UnregisterCurrentOppositeEndPoint (_oppositeEndPointStub);
-      _dataKeeper.RegisterCurrentOppositeEndPoint (MockRepository.GenerateStub<IRealObjectEndPoint>());
-      _dataKeeper.CurrentOppositeObjectID = DomainObjectIDs.OrderTicket3;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
+      _dataKeeper.CurrentOppositeObject = _oppositeObject2;
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Not.SameAs (_oppositeEndPointStub));
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Not.SameAs (_oppositeObject));
 
       _stateUpdateListenerMock.BackToRecord();
       _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
@@ -453,8 +453,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _dataKeeper.Rollback();
 
-      Assert.That (_dataKeeper.CurrentOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_dataKeeper.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
 
@@ -475,9 +475,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       Assert.That (deserializedInstance.EndPointID, Is.Not.Null);
       Assert.That (deserializedInstance.UpdateListener, Is.Not.Null);
       Assert.That (deserializedInstance.OriginalOppositeEndPoint, Is.Not.Null);
-      Assert.That (deserializedInstance.OriginalOppositeObjectID, Is.Not.Null);
+      Assert.That (deserializedInstance.OriginalOppositeObject, Is.Not.Null);
       Assert.That (deserializedInstance.CurrentOppositeEndPoint, Is.Not.Null);
-      Assert.That (deserializedInstance.CurrentOppositeObjectID, Is.Not.Null);
+      Assert.That (deserializedInstance.CurrentOppositeObject, Is.Not.Null);
     }
   }
 }

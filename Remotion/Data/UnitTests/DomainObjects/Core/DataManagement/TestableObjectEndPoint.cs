@@ -26,16 +26,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   public class TestableObjectEndPoint : ObjectEndPoint
   {
-    private readonly ObjectID _originalOppositeObjectID;
-    private ObjectID _oppositeObjectID;
+    private readonly DomainObject _originalOppositeObject;
+    private DomainObject _oppositeObject;
     private bool _hasBeenTouched;
-    private bool _isSetOppositeObjectIDValueFromExpected;
+    private bool _isSetOppositeObjectFromExpected;
 
-    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider, ObjectID originalOppositeObjectID)
+    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider, DomainObject oppositeObject)
         : base (clientTransaction, id, lazyLoader, endPointProvider)
     {
-      _originalOppositeObjectID = originalOppositeObjectID;
-      _oppositeObjectID = originalOppositeObjectID;
+      _originalOppositeObject = oppositeObject;
+      _oppositeObject = oppositeObject;
       _hasBeenTouched = false;
     }
 
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public override bool HasChanged
     {
-      get { return _oppositeObjectID != _originalOppositeObjectID; }
+      get { return _oppositeObject != _originalOppositeObject; }
     }
 
     public override bool HasBeenTouched
@@ -96,27 +96,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public override ObjectID OppositeObjectID
     {
-      get { return _oppositeObjectID; }
+      get { return _oppositeObject.GetIDOrNull(); }
     }
 
-    public void SetOppositeObjectID (ObjectID objectID)
+    public void SetOppositeObject (DomainObject domainObject)
     {
-      _oppositeObjectID = objectID;
+      _oppositeObject = domainObject;
     }
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return _originalOppositeObjectID; }
+      get { return _originalOppositeObject.GetIDOrNull(); }
     }
 
-    public void ExpectSetOppositeObjectIDValueFrom()
+    public override DomainObject GetOppositeObject (bool includeDeleted)
     {
-      _isSetOppositeObjectIDValueFromExpected = true;
+      return _oppositeObject;
     }
 
-    public void ExpectNotSetOppositeObjectIDValueFrom ()
+    public override DomainObject GetOriginalOppositeObject ()
     {
-      _isSetOppositeObjectIDValueFromExpected = false;
+      return _originalOppositeObject;
+    }
+
+    public void ExpectSetOppositeObjectFrom()
+    {
+      _isSetOppositeObjectFromExpected = true;
+    }
+
+    public void ExpectNotSetOppositeObjectFrom ()
+    {
+      _isSetOppositeObjectFromExpected = false;
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
@@ -126,8 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
     {
-      Assert.That (_isSetOppositeObjectIDValueFromExpected, Is.True);
-      _oppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+      Assert.That (_isSetOppositeObjectFromExpected, Is.True);
+      _oppositeObject = sourceObjectEndPoint.GetOppositeObject (true);
     }
 
     public class TestSetCommand : ObjectEndPointSetCommand

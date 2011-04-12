@@ -67,22 +67,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override ObjectID OppositeObjectID
     {
-      get { return _loadState.GetData (this); }
+      get { return GetOppositeObject (true).GetIDOrNull(); }
     }
 
-    ObjectID IVirtualEndPoint<ObjectID>.GetData ()
+    DomainObject IVirtualEndPoint<DomainObject>.GetData ()
     {
-      return OppositeObjectID;
+      return GetOppositeObject (true);
     }
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return _loadState.GetOriginalData (this); }
+      get { return GetOriginalOppositeObject().GetIDOrNull(); }
     }
 
-    ObjectID IVirtualEndPoint<ObjectID>.GetOriginalData ()
+    DomainObject IVirtualEndPoint<DomainObject>.GetOriginalData ()
     {
-      return OriginalOppositeObjectID;
+      return GetOriginalOppositeObject();
     }
 
     public override bool HasChanged
@@ -103,6 +103,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override bool IsSynchronized
     {
       get { return _loadState.IsSynchronized (this); }
+    }
+
+    public override DomainObject GetOppositeObject (bool includeDeleted)
+    {
+      return _loadState.GetData (this);
+    }
+
+    public override DomainObject GetOriginalOppositeObject ()
+    {
+      return _loadState.GetOriginalData (this);
     }
 
     public override void EnsureDataComplete ()
