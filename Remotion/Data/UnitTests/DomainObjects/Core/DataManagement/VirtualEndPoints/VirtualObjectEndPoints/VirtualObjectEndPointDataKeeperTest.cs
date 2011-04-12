@@ -230,15 +230,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _stateUpdateListenerMock.Replay();
 
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
+      _stateUpdateListenerMock.VerifyAllExpectations ();
 
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
-      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
-      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
-
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
-      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
+      Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
 
-      _stateUpdateListenerMock.VerifyAllExpectations();
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
     }
 
     [Test]
