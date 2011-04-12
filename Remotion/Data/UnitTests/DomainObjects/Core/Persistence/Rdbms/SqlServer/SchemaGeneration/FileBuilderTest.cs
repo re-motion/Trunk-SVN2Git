@@ -17,28 +17,30 @@
 using System;
 using System.IO;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Resources;
 using Rhino.Mocks;
+using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  //TODO: Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
   [TestFixture]
   public class FileBuilderTest : SchemaGenerationTestBase
   {
-    private FileBuilder _fileBuilderForFirstStorageProvider;
-    private FileBuilder _fileBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScript;
+    private string _secondStorageProviderSetupDBScript;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
+    private FileBuilder _fileBuilder;
 
     public override void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp();
+      base.TestFixtureSetUp ();
 
       if (Directory.Exists ("TestDirectory"))
         Directory.Delete ("TestDirectory", true);
@@ -46,27 +48,93 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     public override void SetUp ()
     {
-      base.SetUp();
+      base.SetUp ();
 
-      _fileBuilderForFirstStorageProvider = new FileBuilder (SchemaGenerationFirstStorageProviderDefinition);
-      _fileBuilderForSecondStorageProvider = new FileBuilder (SchemaGenerationSecondStorageProviderDefinition);
-      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
-      _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
+      _fileBuilder = new FileBuilder (new ScriptBuilder(SchemaGenerationFirstStorageProviderDefinition));
+
+      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProvider.sql");
+      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (typeof (ScriptBuilderTest), "TestData.SetupDB_SecondStorageProvider.sql");
+      _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
     }
 
     public override void TearDown ()
     {
-      base.TearDown();
+      base.TearDown ();
 
       if (Directory.Exists ("TestDirectory"))
         Directory.Delete ("TestDirectory", true);
     }
 
     [Test]
-    public void GetDatabaseName ()
+    public void Build_WithMappingConfiguration ()
     {
-      Assert.AreEqual ("SchemaGenerationTestDomain1", _fileBuilderForFirstStorageProvider.GetDatabaseName());
-      Assert.AreEqual ("SchemaGenerationTestDomain2", _fileBuilderForSecondStorageProvider.GetDatabaseName ());
+      FileBuilder.Build (MappingConfiguration.ClassDefinitions, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
+
+      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
+      Assert.AreEqual (_secondStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
+    }
+
+    [Test]
+    public void BuildWithEmptyMappingConfiguration ()
+    {
+      FileBuilder.Build (new ClassDefinitionCollection (), DomainObjectsConfiguration.Current.Storage, "TestDirectory");
+
+      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.AreEqual (
+          _firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+    }
+
+    [Test]
+    public void GetClassesInStorageProvider ()
+    {
+      var firstStorageProviderTableDefinition = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "TestFirstProvider", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+      var secondStorageProviderTableDefinition = new TableDefinition (
+          SchemaGenerationSecondStorageProviderDefinition, "TestSecondProvider", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+
+      var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
+      classDefinition1.SetStorageEntity (firstStorageProviderTableDefinition);
+      var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
+      classDefinition1.SetStorageEntity (firstStorageProviderTableDefinition);
+      var classDefinition3 = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer));
+      classDefinition1.SetStorageEntity (secondStorageProviderTableDefinition);
+
+      var classesInFirstStorageProvider = FileBuilder.GetClassesInStorageProvider (
+          new ClassDefinitionCollection (new[] { classDefinition1, classDefinition2, classDefinition3 }, true, true),
+          SchemaGenerationFirstStorageProviderDefinition);
+
+      Assert.That (classesInFirstStorageProvider.Count, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void GetFileName ()
+    {
+      var result = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", false);
+
+      Assert.That (result, Is.EqualTo ("TestOutputPath\\SetupDB.sql"));
+    }
+
+    [Test]
+    public void GetFileName_MultipleStorageProviders ()
+    {
+      var result = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", true);
+
+      Assert.That (result, Is.EqualTo ("TestOutputPath\\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+    }
+
+    [Test]
+    public void GetScript_NoIEntityDefinition ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
+      var storageEntityDefinitionStub = MockRepository.GenerateStub<IStorageEntityDefinition> ();
+      storageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
+      classDefinition.SetStorageEntity (storageEntityDefinitionStub);
+
+      var result = _fileBuilder.GetScript (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
+
+      Assert.That (result, Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
     }
 
     [Test]
@@ -77,22 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       Assert.AreEqual (
           _firstStorageProviderSetupDBScript,
-          _fileBuilderForFirstStorageProvider.GetScript (
-                  new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true)));
+          _fileBuilder.GetScript (new ClassDefinitionCollection (new[] { MappingConfiguration.ClassDefinitions["Official"] }, true, true)));
     }
-
-    [Test]
-    public void GetScript_NoIEntityDefinition ()
-    {
-      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
-      var storageEntityDefinitionStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
-      storageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
-      classDefinition.SetStorageEntity (storageEntityDefinitionStub);
-
-      var result = _fileBuilderForFirstStorageProvider.GetScript (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
-
-      Assert.That (result, Is.EqualTo(_firstStorageProviderSetupDBScriptWithoutTables));
-    }
-    
   }
 }

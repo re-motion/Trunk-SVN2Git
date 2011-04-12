@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Logging;
@@ -118,7 +119,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
         throw new NotSupportedException ("The schemaBuilder parameter is obsolete and should no longer be used. "
           +"(The schema file builder is now retrieved from the storage provider definition.)");
 
-      FileBuilderBase.Build (MappingConfiguration.Current.ClassDefinitions, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameters.SchemaOutputDirectory);
+      FileBuilder.Build (MappingConfiguration.Current.ClassDefinitions, DomainObjectsConfiguration.Current.Storage, _rdbmsToolsParameters.SchemaOutputDirectory);
     }
   }
 }

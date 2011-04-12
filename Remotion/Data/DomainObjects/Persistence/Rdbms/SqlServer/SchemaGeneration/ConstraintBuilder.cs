@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         createConstraintStringBuilder.AppendFormat (
             "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
-            FileBuilder.DefaultSchema,
+            ScriptBuilder.DefaultSchema,
             tableDefinition.TableName,
             constraintStatement);
       }
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    WHERE fk.xtype = 'F' AND t.name IN ('{1}')\r\n"
           + "    ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n",
-          FileBuilder.DefaultSchema,
+          ScriptBuilder.DefaultSchema,
           string.Join ("', '", entityNamesForDropConstraintScript.ToArray()));
     }
   

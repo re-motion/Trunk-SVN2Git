@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    FROM [{0}].[{3}]\r\n"
           + "    WHERE [ClassID] IN ({4})\r\n"
           + "  WITH CHECK OPTION\r\n",
-          FileBuilder.DefaultSchema,
+          ScriptBuilder.DefaultSchema,
           filterViewDefinition.ViewName,
           GetColumnList (filterViewDefinition.GetColumns(), false),
           filterViewDefinition.GetBaseTable().TableName,
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  SELECT {2}\r\n"
           + "    FROM [{0}].[{3}]\r\n"
           + "  WITH CHECK OPTION\r\n",
-          FileBuilder.DefaultSchema,
+          ScriptBuilder.DefaultSchema,
           tableDefinition.ViewName,
           GetColumnList (tableDefinition.GetColumns (), false),
           tableDefinition.TableName);
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n",
-          FileBuilder.DefaultSchema,
+          ScriptBuilder.DefaultSchema,
           unionViewDefinition.ViewName,
           GetColumnList (unionViewDefinition.GetColumns (), false));
 
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]\r\n",
             GetColumnList (unionedColumns, true),
-            FileBuilder.DefaultSchema,
+            ScriptBuilder.DefaultSchema,
             tableDefinition.TableName);
 
         numberOfSelects++;
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP VIEW [{1}].[{0}]\r\n",
           entityDefinition.ViewName,
-          FileBuilder.DefaultSchema);
+          ScriptBuilder.DefaultSchema);
     }
     
   }

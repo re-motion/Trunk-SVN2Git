@@ -15,82 +15,109 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class FileBuilder : FileBuilderBase
+  public class FileBuilder
   {
-    public const string DefaultSchema = "dbo";
+    private readonly ScriptBuilderBase _scriptBuilder;
 
-    public FileBuilder (RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (rdbmsProviderDefinition)
+    public static void Build (ClassDefinitionCollection classDefinitions, StorageConfiguration storageConfiguration, string outputPath)
     {
-    }
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
+      ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
-    public string GetDatabaseName ()
-    {
-      //TODO improve this logic
-      string temp = RdbmsProviderDefinition.ConnectionString.Substring (RdbmsProviderDefinition.ConnectionString.IndexOf ("Initial Catalog=") + 16);
-      return temp.Substring (0, temp.IndexOf (";"));
-    }
+      if (outputPath != String.Empty && !Directory.Exists (outputPath))
+        Directory.CreateDirectory (outputPath);
 
-    protected override string GetScript (IEnumerable<IEntityDefinition> entityDefinitions)
-    {
-      // TODO 3874: Add unit tests using mocks for view builder etc.
-      var viewBuilder = CreateViewBuilder();
-      var tableBuilder = CreateTableBuilder();
-      var constraintBuilder = CreateConstraintBuilder();
-
-      foreach (var entityDefinition in entityDefinitions)
+      bool createMultipleFiles = storageConfiguration.StorageProviderDefinitions.Count > 1;
+      foreach (StorageProviderDefinition storageProviderDefinition in storageConfiguration.StorageProviderDefinitions)
       {
-        viewBuilder.AddView (entityDefinition);
-        tableBuilder.AddTable (entityDefinition);
-        constraintBuilder.AddConstraint (entityDefinition);
+        var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
+        if (rdbmsProviderDefinition != null)
+          Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
+      }
+    }
+
+    public static void Build (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition);
+      var scriptBuilder = rdbmsProviderDefinition.Factory.CreateSchemaScriptBuilder(rdbmsProviderDefinition);
+      var fileBuilder = new FileBuilder (scriptBuilder);
+      var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
+      File.WriteAllText (fileName, script);
+    }
+
+    public static ClassDefinitionCollection GetClassesInStorageProvider (
+        ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      var classes = new ClassDefinitionCollection (false);
+      foreach (ClassDefinition currentClass in classDefinitions)
+      {
+        if (currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition)
+          classes.Add (currentClass);
       }
 
-      return string.Format (
-          "USE {0}\r\n"
-          + "GO\r\n\r\n"
-          + "-- Drop all views that will be created below\r\n"
-          + "{1}GO\r\n\r\n"
-          + "-- Drop foreign keys of all tables that will be created below\r\n"
-          + "{2}GO\r\n\r\n"
-          + "-- Drop all tables that will be created below\r\n"
-          + "{3}GO\r\n\r\n"
-          + "-- Create all tables\r\n"
-          + "{4}GO\r\n\r\n"
-          + "-- Create constraints for tables that were created above\r\n"
-          + "{5}GO\r\n\r\n"
-          + "-- Create a view for every class\r\n"
-          + "{6}GO\r\n",
-          GetDatabaseName(),
-          viewBuilder.GetDropViewScript(),
-          constraintBuilder.GetDropConstraintScript(),
-          tableBuilder.GetDropTableScript(),
-          tableBuilder.GetCreateTableScript(),
-          constraintBuilder.GetAddConstraintScript(),
-          viewBuilder.GetCreateViewScript());
+      return classes;
     }
 
-    protected virtual TableBuilder CreateTableBuilder ()
+    public static string GetFileName (StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders)
     {
-      return new TableBuilder();
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("outputPath", outputPath);
+
+      string fileName;
+      if (multipleStorageProviders)
+        fileName = String.Format ("SetupDB_{0}.sql", storageProviderDefinition.Name);
+      else
+        fileName = "SetupDB.sql";
+
+      return Path.Combine (outputPath, fileName);
     }
 
-    protected virtual ViewBuilder CreateViewBuilder ()
+    public FileBuilder (ScriptBuilderBase scriptBuilder)
     {
-      return new ViewBuilder();
+      ArgumentUtility.CheckNotNull ("scriptBuilder", scriptBuilder);
+
+      _scriptBuilder = scriptBuilder;
     }
 
-    protected virtual ConstraintBuilder CreateConstraintBuilder ()
+    public virtual string GetScript (ClassDefinitionCollection classDefinitions)
     {
-      return new ConstraintBuilder();
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
+
+      CheckClassDefinitions (classDefinitions);
+
+      var entityDefintions = classDefinitions.Cast<ClassDefinition> ()
+          .Select (cd => cd.StorageEntityDefinition).Where (ed => ed is IEntityDefinition).Cast<IEntityDefinition> ();
+      return _scriptBuilder.GetScript (entityDefintions);
+    }
+
+    private void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)
+    {
+      foreach (ClassDefinition classDefinition in classDefinitions)
+      {
+        if (classDefinition.StorageEntityDefinition.StorageProviderDefinition != _scriptBuilder.RdbmsProviderDefinition)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Class '{0}' has storage provider '{1}' defined, but storage provider '{2}' is required.",
+                  classDefinition.ID,
+                  classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
+                  _scriptBuilder.RdbmsProviderDefinition.Name));
+        }
+      }
     }
   }
 }

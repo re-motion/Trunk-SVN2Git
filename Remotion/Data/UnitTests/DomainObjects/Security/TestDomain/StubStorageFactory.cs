@@ -99,11 +99,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new DomainObjectQueryExecutor (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
     }
 
-    public FileBuilderBase CreateSchemaFileBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public ScriptBuilderBase CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new FileBuilder (storageProviderDefinition);
+      return new ScriptBuilder (storageProviderDefinition);
     }
 
     public IStorageNameProvider CreateStorageNameProvider ()

@@ -14,17 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  /// <summary>
-  /// <see cref="IStorageObjectFactory"/> defines the API for all relational database management system storage object factories.
-  /// </summary>
-  public interface IRdbmsStorageObjectFactory : IStorageObjectFactory
+  public abstract class ScriptBuilderBase
   {
-    ScriptBuilderBase CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    IStorageNameProvider CreateStorageNameProvider ();
+    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+
+    protected ScriptBuilderBase (RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+
+      _rdbmsProviderDefinition = rdbmsProviderDefinition;
+    }
+
+    public RdbmsProviderDefinition RdbmsProviderDefinition
+    {
+      get { return _rdbmsProviderDefinition; }
+    }
+
+    public abstract string GetScript (IEnumerable<IEntityDefinition> entityDefinitions);
+   
   }
 }

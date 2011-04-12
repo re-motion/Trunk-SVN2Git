@@ -120,9 +120,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var result = _sqlProviderFactory.CreateSchemaFileBuilder (_rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (FileBuilder)));
+      Assert.That (result, Is.TypeOf (typeof (ScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
     }
 
