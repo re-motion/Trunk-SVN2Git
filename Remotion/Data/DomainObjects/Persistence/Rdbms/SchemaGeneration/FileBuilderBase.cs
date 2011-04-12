@@ -24,13 +24,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   public abstract class FileBuilderBase
   {
-    // types
-
-    // static members and constants
-
-    public static void Build (MappingConfiguration mappingConfiguration, StorageConfiguration storageConfiguration, string outputPath)
+    public static void Build (ClassDefinitionCollection classDefinitions, StorageConfiguration storageConfiguration, string outputPath)
     {
-      ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
@@ -42,16 +38,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       {
         var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
-          Build (mappingConfiguration, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
+          Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
       }
     }
 
-    public static void Build (MappingConfiguration mappingConfiguration, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
+    public static void Build (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
     {
-      ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
+      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (mappingConfiguration.ClassDefinitions, rdbmsProviderDefinition);
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition);
       var fileBuilder = rdbmsProviderDefinition.Factory.CreateSchemaFileBuilder(rdbmsProviderDefinition);
 
       var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);

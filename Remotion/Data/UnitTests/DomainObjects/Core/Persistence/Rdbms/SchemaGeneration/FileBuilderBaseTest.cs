@@ -17,17 +17,13 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Resources;
-using Rhino.Mocks;
 using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -89,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void Build_WithMappingConfiguration ()
     {
-      FileBuilderBase.Build (MappingConfiguration, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
+      FileBuilderBase.Build (MappingConfiguration.ClassDefinitions, DomainObjectsConfiguration.Current.Storage, "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
       Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
@@ -100,24 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void BuildWithEmptyMappingConfiguration ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IMappingLoader mappingLoaderStub = mockRepository.StrictMock<IMappingLoader> ();
-      ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection ();
-      SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
-      SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver ());
-      SetupResult.For (mappingLoaderStub.GetClassDefinitions ()).Return (new ClassDefinition[0]);
-      SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinition[0]);
-      SetupResult.For (mappingLoaderStub.CreateClassDefinitionValidator ()).Return (new ClassDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreatePropertyDefinitionValidator ()).Return (new PropertyDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreateRelationDefinitionValidator ()).Return (new RelationDefinitionValidator ());
-      SetupResult.For (mappingLoaderStub.CreateSortExpressionValidator ()).Return (new SortExpressionValidator ());
-      mockRepository.ReplayAll ();
-
-      FileBuilderBase.Build (
-          new MappingConfiguration (
-              mappingLoaderStub, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))),
-          DomainObjectsConfiguration.Current.Storage,
-          "TestDirectory");
+      FileBuilderBase.Build (new ClassDefinitionCollection(), DomainObjectsConfiguration.Current.Storage, "TestDirectory");
 
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
       Assert.AreEqual (
