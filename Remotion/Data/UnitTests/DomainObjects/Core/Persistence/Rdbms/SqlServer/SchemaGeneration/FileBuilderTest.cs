@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting.Resources;
 using Rhino.Mocks;
 using File = System.IO.File;
 using System.Linq;
@@ -38,15 +37,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class FileBuilderTest : SchemaGenerationTestBase
   {
-    private string _firstStorageProviderSetupDBScript;
-    private string _secondStorageProviderSetupDBScript;
-    private string _firstStorageProviderSetupDBScriptWithoutTables;
     private TestableFileBuilder _fileBuilder;
-    private Func<RdbmsProviderDefinition, FileBuilder> _fileBuilderFactory;
     private ScriptBuilderBase _scriptBuilderMock;
+
     private ClassDefinition _classDefinition1;
     private ClassDefinition _classDefinition2;
     private ClassDefinition _classDefinition3;
+
+    private IEntityDefinition _firstProviderStorageEntityDefinitionStub;
+    private IEntityDefinition _secondProviderStorageEntityDefinitionStub;
 
     public override void TestFixtureSetUp ()
     {
@@ -60,20 +59,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProvider.sql");
-      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (
-          typeof (ScriptBuilderTest), "TestData.SetupDB_SecondStorageProvider.sql");
-      _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
-          typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
-
-      _fileBuilderFactory = pd => new FileBuilder (new ScriptBuilder (pd));
-
       _scriptBuilderMock = MockRepository.GenerateStrictMock<ScriptBuilderBase> (SchemaGenerationFirstStorageProviderDefinition);
       _fileBuilder = new TestableFileBuilder (_scriptBuilderMock);
 
       _classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
       _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
       _classDefinition3 = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer));
+
+      _firstProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
+      _firstProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
+
+      _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
+      _secondProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationSecondStorageProviderDefinition);
     }
 
     public override void TearDown ()
@@ -85,46 +82,105 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void Build_WithMappingConfiguration ()
+    public void Build_Static_ExecutesFileBuilder_WithSingleFile ()
     {
-      FileBuilder.Build (MappingConfiguration.ClassDefinitions, DomainObjectsConfiguration.Current.Storage, "TestDirectory", _fileBuilderFactory);
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory = providerDefinition => fileBuilderMock1;
 
-      Assert.That (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"), Is.True);
-      Assert.That (
-          File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"), Is.EqualTo (_firstStorageProviderSetupDBScript));
-      Assert.That (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"), Is.True);
-      Assert.That (
-          File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"), Is.EqualTo (_secondStorageProviderSetupDBScript));
+      var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
+
+      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB.sql"));
+      fileBuilderMock1.Replay ();
+
+      FileBuilder.Build (
+          classDefinitions,
+          new[] { SchemaGenerationFirstStorageProviderDefinition },
+          "TestDirectory",
+          fileBuilderFactory);
+
+      fileBuilderMock1.VerifyAllExpectations ();
     }
 
     [Test]
-    public void Build_WithEmptyMappingConfiguration ()
+    public void Build_Static_ExecutesFileBuilders_WithMultipleFiles ()
     {
-      FileBuilder.Build (new ClassDefinitionCollection(), DomainObjectsConfiguration.Current.Storage, "TestDirectory", _fileBuilderFactory);
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      var fileBuilderMock2 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
+          providerDefinition => providerDefinition == SchemaGenerationFirstStorageProviderDefinition ? fileBuilderMock1 : fileBuilderMock2;
 
-      Assert.That (File.Exists (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"), Is.True);
-      Assert.That (
-          File.ReadAllText (@"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"),
-          Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
+      var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
+
+      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      fileBuilderMock1.Replay();
+
+      fileBuilderMock2.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
+      fileBuilderMock2.Replay();
+
+      FileBuilder.Build (
+          classDefinitions, 
+          new[] { SchemaGenerationFirstStorageProviderDefinition, SchemaGenerationSecondStorageProviderDefinition }, 
+          "TestDirectory", 
+          fileBuilderFactory);
+
+      fileBuilderMock1.VerifyAllExpectations ();
+      fileBuilderMock2.VerifyAllExpectations ();
     }
 
     [Test]
-    public void GetClassesInStorageProvider ()
+    public void Build_Static_WithNonRdbmsProvider ()
     {
-      var firstStorageProviderTableDefinition = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "TestFirstProvider", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
-      var secondStorageProviderTableDefinition = new TableDefinition (
-          SchemaGenerationSecondStorageProviderDefinition, "TestSecondProvider", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+      Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
+          storageProvider => { throw new InvalidOperationException ("Should not be called."); };
 
-      _classDefinition1.SetStorageEntity (firstStorageProviderTableDefinition);
-      _classDefinition1.SetStorageEntity (firstStorageProviderTableDefinition);
-      _classDefinition1.SetStorageEntity (secondStorageProviderTableDefinition);
+    var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
-      var classesInFirstStorageProvider = _fileBuilder.GetClassesInStorageProvider (
-          new ClassDefinitionCollection (new[] { _classDefinition1, _classDefinition2, _classDefinition3 }, true, true),
-          SchemaGenerationFirstStorageProviderDefinition);
+      var fakeStorageProviderDefinition = new UnitTestStorageProviderStubDefinition ("Test");
+      FileBuilder.Build (
+          classDefinitions,
+          new StorageProviderDefinition[] { fakeStorageProviderDefinition },
+          "TestDirectory",
+          fileBuilderFactory);
+    }
 
-      Assert.That (classesInFirstStorageProvider.Count, Is.EqualTo (2));
+    [Test]
+    public void Build_Static_CreatesDirectory ()
+    {
+      Assert.That (Directory.Exists ("TestDirectory"), Is.False);
+
+      Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
+    storageProvider => { throw new InvalidOperationException ("Should not be called."); };
+
+      var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
+
+      var fakeStorageProviderDefinition = new UnitTestStorageProviderStubDefinition ("Test");
+      FileBuilder.Build (
+          classDefinitions,
+          new StorageProviderDefinition[] { fakeStorageProviderDefinition },
+          "TestDirectory",
+          fileBuilderFactory);
+
+      Assert.That (Directory.Exists ("TestDirectory"), Is.True);
+    }
+
+    [Test]
+    public void Build_Static_WithEmptyDirectory ()
+    {
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory = providerDefinition => fileBuilderMock1;
+
+      var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
+
+      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"SetupDB.sql"));
+      fileBuilderMock1.Replay ();
+
+      FileBuilder.Build (
+          classDefinitions,
+          new[] { SchemaGenerationFirstStorageProviderDefinition },
+          "",
+          fileBuilderFactory);
+
+      fileBuilderMock1.VerifyAllExpectations ();
     }
 
     [Test]
@@ -144,6 +200,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    public void Build_InstanceMethod ()
+    {
+      _classDefinition1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
+
+      _scriptBuilderMock
+          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Return ("Dummy");
+      
+      _fileBuilder.Build (new[] { _classDefinition1 }, @"FileBuilderTest_Build_InstanceMethod.sql");
+
+      Assert.That (File.Exists (@"FileBuilderTest_Build_InstanceMethod.sql"), Is.True);
+      try
+      {
+        Assert.That (File.ReadAllText (@"FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("Dummy"));
+      }
+      finally
+      {
+        File.Delete (@"FileBuilderTest_Build_InstanceMethod.sql");
+      }
+    }
+    
+    [Test]
     public void GetScript_NoIEntityDefinition ()
     {
       var storageEntityDefinitionStub = MockRepository.GenerateStub<IStorageEntityDefinition>();
@@ -155,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           .Return ("result");
       _scriptBuilderMock.Replay();
 
-      var result = _fileBuilder.GetScript (new ClassDefinitionCollection (new[] { _classDefinition1 }, true, true));
+      var result = _fileBuilder.GetScript (new[] { _classDefinition1 });
 
       _scriptBuilderMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo ("result"));
@@ -164,16 +242,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScript_WithIEntityDefinition ()
     {
-      var storageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
-      storageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
-      _classDefinition1.SetStorageEntity (storageEntityDefinitionStub);
+      _classDefinition1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
 
       _scriptBuilderMock
-          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { storageEntityDefinitionStub })))
+          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
           .Return ("result");
       _scriptBuilderMock.Replay ();
 
-      var result = _fileBuilder.GetScript (new ClassDefinitionCollection (new[] { _classDefinition1 }, true, true));
+      var result = _fileBuilder.GetScript (new[] { _classDefinition1 });
 
       _scriptBuilderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo ("result"));
@@ -182,20 +258,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScript_WithWrongStorageProvider ()
     {
-      var storageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
-      storageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationSecondStorageProviderDefinition);
-      _classDefinition1.SetStorageEntity (storageEntityDefinitionStub);
+      _classDefinition1.SetStorageEntity (_secondProviderStorageEntityDefinitionStub);
 
-      _scriptBuilderMock.Replay();
+      _scriptBuilderMock
+          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
+          .Return ("result");
+      _scriptBuilderMock.Replay ();
 
-      var exception = Assert.Throws<ArgumentException> (
-          () => _fileBuilder.GetScript (new ClassDefinitionCollection (new[] { _classDefinition1 }, true, true)));
-      Assert.That (
-          exception.Message, Is.EqualTo (
-          "Class 'Order' has storage provider 'SchemaGenerationSecondStorageProvider' defined, but storage provider "
-          + "'SchemaGenerationFirstStorageProvider' is required."));
+      var result = _fileBuilder.GetScript (new[] { _classDefinition1 });
 
-      _scriptBuilderMock.AssertWasNotCalled (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.Is.Anything));
+      _scriptBuilderMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo ("result"));
+    }
+
+    [Test]
+    public void GetClassesInStorageProvider ()
+    {
+      _classDefinition1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
+      _classDefinition2.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
+      _classDefinition3.SetStorageEntity (_secondProviderStorageEntityDefinitionStub);
+
+      var classesInFirstStorageProvider = _fileBuilder.GetClassesInStorageProvider (
+          new[] { _classDefinition1, _classDefinition2, _classDefinition3 },
+          SchemaGenerationFirstStorageProviderDefinition);
+
+      Assert.That (classesInFirstStorageProvider, Is.EqualTo (new[] { _classDefinition1, _classDefinition2 }));
     }
 
     [Test]
@@ -209,9 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _classDefinition2.SetStorageEntity (storageEntityDefinition);
       _classDefinition3.SetStorageEntity (entityDefinition2);
 
-      var result =
-          _fileBuilder.GetEntityDefinitions (
-              new ClassDefinitionCollection (new[] { _classDefinition1, _classDefinition2, _classDefinition3 }, true, true));
+      var result = _fileBuilder.GetEntityDefinitions (new[] { _classDefinition1, _classDefinition2, _classDefinition3 });
 
       Assert.That (result.ToArray(), Is.EqualTo (new[] { entityDefinition1, entityDefinition2 }));
   }

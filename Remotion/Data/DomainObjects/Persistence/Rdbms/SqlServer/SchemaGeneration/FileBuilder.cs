@@ -25,35 +25,37 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
 
 // TODO Review 3857: Move to Rdbms\SchemaGeneration namespace
+
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   /// <summary>
-  /// Generates setup scripts for a list of mapped classes.
+  /// Generates setup files for a list of mapped classes.
   /// </summary>
-  public class FileBuilder
+  public class FileBuilder : IFileBuilder
   {
     public static void Build (
-        ClassDefinitionCollection classDefinitions,
-        StorageConfiguration storageConfiguration,
+        ICollection<ClassDefinition> classDefinitions,
+        ICollection<StorageProviderDefinition> storageProviders,
         string outputPath,
-        Func<RdbmsProviderDefinition, FileBuilder> fileBuilderFactory)
+        Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("storageConfiguration", storageConfiguration);
+      ArgumentUtility.CheckNotNull ("storageProviders", storageProviders);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
       if (outputPath != String.Empty && !Directory.Exists (outputPath))
         Directory.CreateDirectory (outputPath);
 
-      bool createMultipleFiles = storageConfiguration.StorageProviderDefinitions.Count > 1;
-      foreach (StorageProviderDefinition storageProviderDefinition in storageConfiguration.StorageProviderDefinitions)
+      bool createMultipleFiles = storageProviders.Count > 1;
+      foreach (var storageProviderDefinition in storageProviders)
       {
         var rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)
-    {
+        {
           var fileBuilder = fileBuilderFactory (rdbmsProviderDefinition);
-          fileBuilder.Build (classDefinitions, rdbmsProviderDefinition, GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles));
-    }
+          var fileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles);
+          fileBuilder.Build (classDefinitions, fileName);
+        }
       }
     }
 
@@ -80,62 +82,37 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _scriptBuilder = scriptBuilder;
     }
 
-    public virtual void Build (ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition, string fileName)
+    public void Build (IEnumerable<ClassDefinition> classDefinitions, string fileName)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
 
-      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition);
-      var scriptBuilder = rdbmsProviderDefinition.Factory.CreateSchemaScriptBuilder (rdbmsProviderDefinition);
-      var fileBuilder = new FileBuilder (scriptBuilder);
-      var script = fileBuilder.GetScript (classDefinitionsForStorageProvider);
+      var script = GetScript (classDefinitions);
       File.WriteAllText (fileName, script);
     }
 
-    public virtual ClassDefinitionCollection GetClassesInStorageProvider (
-        ClassDefinitionCollection classDefinitions, RdbmsProviderDefinition rdbmsProviderDefinition)
-    {
-      var classes = new ClassDefinitionCollection (false);
-      foreach (ClassDefinition currentClass in classDefinitions)
-      {
-        if (currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition)
-          classes.Add (currentClass);
-      }
-
-      return classes;
-    }
-
-    public virtual string GetScript (ClassDefinitionCollection classDefinitions)
+    public virtual string GetScript (IEnumerable<ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      CheckClassDefinitions (classDefinitions);
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, _scriptBuilder.RdbmsProviderDefinition);
 
-      var entityDefintions = GetEntityDefinitions (classDefinitions);
+      var entityDefintions = GetEntityDefinitions (classDefinitionsForStorageProvider);
       return _scriptBuilder.GetScript (entityDefintions);
     }
 
-    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions (ClassDefinitionCollection classDefinitions)
+    protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (
+        IEnumerable<ClassDefinition> classDefinitions,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
     {
-      return classDefinitions.Cast<ClassDefinition>()
-          .Select (cd => cd.StorageEntityDefinition)
-          .OfType<IEntityDefinition>();
+      return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
     }
 
-    private void CheckClassDefinitions (ClassDefinitionCollection classDefinitions)
+    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
     {
-      foreach (ClassDefinition classDefinition in classDefinitions)
-      {
-        if (classDefinition.StorageEntityDefinition.StorageProviderDefinition != _scriptBuilder.RdbmsProviderDefinition)
-        {
-          throw new ArgumentException (
-              string.Format (
-                  "Class '{0}' has storage provider '{1}' defined, but storage provider '{2}' is required.",
-                  classDefinition.ID,
-                  classDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
-                  _scriptBuilder.RdbmsProviderDefinition.Name));
-        }
-      }
+      return classDefinitions
+          .Select (cd => cd.StorageEntityDefinition)
+          .OfType<IEntityDefinition>();
     }
   }
 }

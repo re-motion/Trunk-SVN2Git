@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -30,7 +31,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
     }
 
-    public new IEnumerable<IEntityDefinition> GetEntityDefinitions (ClassDefinitionCollection classDefinitions)
+    public new IEnumerable<ClassDefinition> GetClassesInStorageProvider (
+        IEnumerable<ClassDefinition> classDefinitions, 
+        RdbmsProviderDefinition providerDefinition)
+    {
+      return base.GetClassesInStorageProvider (classDefinitions, providerDefinition);
+    }
+
+    public new IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
     {
       return base.GetEntityDefinitions (classDefinitions);
     }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
@@ -122,8 +123,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       }
 
       FileBuilder.Build (
-          MappingConfiguration.Current.ClassDefinitions,
-          DomainObjectsConfiguration.Current.Storage,
+          MappingConfiguration.Current.ClassDefinitions.Cast<ClassDefinition>().ToList(),
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
           _rdbmsToolsParameters.SchemaOutputDirectory,
           pd => new FileBuilder (new ScriptBuilder (pd)));
     }

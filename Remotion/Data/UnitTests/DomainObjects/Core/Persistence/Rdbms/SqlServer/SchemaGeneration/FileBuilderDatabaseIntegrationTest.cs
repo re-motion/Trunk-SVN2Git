@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
@@ -30,6 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private FileBuilder _sqlFileBuilderForFirstStorageProvider;
     private FileBuilder _sqlFileBuilderForSecondStorageProvider;
 
+    private ClassDefinition[] _classesInFirstStorageProvider;
+    private ClassDefinition[] _classesInSecondStorageProvider;
+
     public override void SetUp ()
     {
       base.SetUp();
@@ -38,6 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlFileBuilderForSecondStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition));
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
       _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
+
+      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
+          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
+          .ToArray ();
+      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
+          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
+          .ToArray ();
     }
 
     public override void TestFixtureSetUp ()
@@ -55,10 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
 
-      var sqlScript =
-          _sqlFileBuilderForFirstStorageProvider.GetScript (
-              _sqlFileBuilderForFirstStorageProvider.GetClassesInStorageProvider (
-                  MappingConfiguration.ClassDefinitions, SchemaGenerationFirstStorageProviderDefinition));
+      var sqlScript = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
 
       DatabaseAgent.ExecuteBatchString (sqlScript, false);
     }
@@ -68,10 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
 
-      var sqlScript =
-          _sqlFileBuilderForSecondStorageProvider.GetScript (
-              _sqlFileBuilderForSecondStorageProvider.GetClassesInStorageProvider (
-                  MappingConfiguration.ClassDefinitions, SchemaGenerationSecondStorageProviderDefinition));
+      var sqlScript = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
 
       DatabaseAgent.ExecuteBatchString (sqlScript, false);
     }
@@ -79,21 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForFirstStorageProvider ()
     {
-      Assert.AreEqual (
-          _firstStorageProviderSetupDBScript,
-          _sqlFileBuilderForFirstStorageProvider.GetScript (
-              _sqlFileBuilderForFirstStorageProvider.GetClassesInStorageProvider (
-                  MappingConfiguration.ClassDefinitions, SchemaGenerationFirstStorageProviderDefinition)));
+      Assert.AreEqual (_firstStorageProviderSetupDBScript, _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider));
     }
 
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
-      Assert.AreEqual (
-          _secondStorageProviderSetupDBScript,
-          _sqlFileBuilderForSecondStorageProvider.GetScript (
-              _sqlFileBuilderForSecondStorageProvider.GetClassesInStorageProvider (
-                  MappingConfiguration.ClassDefinitions, SchemaGenerationSecondStorageProviderDefinition)));
+      Assert.AreEqual (_secondStorageProviderSetupDBScript, _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider));
     }
   }
 }
