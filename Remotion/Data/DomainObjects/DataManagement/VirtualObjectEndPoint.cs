@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override ObjectID OppositeObjectID
     {
-      get { return GetOppositeObject (true).GetIDOrNull(); }
+      get { return DomainObject.GetIDOrNull (GetOppositeObject (true)); }
     }
 
     DomainObject IVirtualEndPoint<DomainObject>.GetData ()
@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return GetOriginalOppositeObject().GetIDOrNull(); }
+      get { return DomainObject.GetIDOrNull (GetOriginalOppositeObject()); }
     }
 
     DomainObject IVirtualEndPoint<DomainObject>.GetOriginalData ()

@@ -42,10 +42,6 @@ namespace Remotion.Data.DomainObjects
   [DebuggerDisplay ("{GetPublicDomainObjectType().FullName}: {ID.ToString()}")]
   public class DomainObject
   {
-    // types
-
-    // static members and constants
-
     #region Creation and GetObject factory methods
 
     /// <summary>
@@ -146,9 +142,18 @@ namespace Remotion.Data.DomainObjects
 
     #endregion
 
-    // Returns a strategy object for creating instances of the given domain object type.
-
-    // member fields
+    /// <summary>
+    /// Returns the <see cref="DomainObject.ID"/> of the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if 
+    /// <paramref name="domainObjectOrNull"/> is itself <see langword="null" />.
+    /// </summary>
+    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> whose <see cref="DomainObject.ID"/> to get. If this parameter is 
+    /// <see langword="null" />, the method returns <see langword="null" />.</param>
+    /// <returns>The <paramref name="domainObjectOrNull"/>'s <see cref="DomainObject.ID"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
+    /// is <see langword="null" />.</returns>
+    public static ObjectID GetIDOrNull (DomainObject domainObjectOrNull)
+    {
+      return domainObjectOrNull != null ? domainObjectOrNull.ID : null;
+    }
 
     /// <summary>
     /// Occurs before a <see cref="PropertyValue"/> of the <see cref="DomainObject"/> is changed.
@@ -219,8 +224,6 @@ namespace Remotion.Data.DomainObjects
 
     [NonSerialized] // required when ISerializable is not implemented by subclass
     private PropertyIndexer _properties; // lazily initialized
-
-    // construction and disposing
 
     /// <summary>
     /// Initializes a new <see cref="DomainObject"/> with the current <see cref="DomainObjects.ClientTransaction"/>.
@@ -300,13 +303,11 @@ namespace Remotion.Data.DomainObjects
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
         Type publicDomainObjectType = GetPublicDomainObjectType();
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
-        string message = string.Format (
+        string message = String.Format (
             "The GetObjectData method on type {0} did not call DomainObject's BaseGetObjectData method.", publicDomainObjectType.FullName);
         throw new SerializationException (message, ex);
       }
     }
-
-    // methods and properties
 
     /// <summary>
     /// Gets the <see cref="ObjectID"/> of the <see cref="DomainObject"/>.

@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return Equals (_originalOppositeObject.GetIDOrNull(), objectID);
+      return Equals (DomainObject.GetIDOrNull (_originalOppositeObject), objectID);
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
