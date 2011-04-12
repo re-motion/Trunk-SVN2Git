@@ -18,31 +18,35 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  // TODO Review 3856: Add ViewBuilderBaseTest, with TestableViewBuilder; test:
-  // - AddView with TableDefinition (create script and drop script), once and twice
-  // - AddView with UnionViewDefinition (create script and drop script), once and twice
-  // - AddView with FilterViewDefinition (create script and drop script), once and twice
-  // - AddView with NullEntityDefinition (create script and drop script)
-  // TODO Review 3856: Rewrite ViewBuilderTest:
-  // - Test CreateViewSeparator => must be "GO\r\n\r\n"
-  // - Test AddFilterViewToCreateViewScript
-  // - Test AddTableViewToCreateViewScript
-  // - Test AddUnionViewToCreateViewScript with one table, several tables in union
-  // - Test AddToDropViewScript
-  // TODO Review 386: Remove legacy tests below
   [TestFixture]
   public class ViewBuilderTest : SchemaGenerationTestBase
   {
     private ViewBuilder _viewBuilder;
+    private TableDefinition _tableDefinition1;
+    private FilterViewDefinition _filterViewDefinition;
+    private TableDefinition _tableDefinition2;
+    private SimpleColumnDefinition _column1;
+    private SimpleColumnDefinition _column2;
+    private SimpleColumnDefinition _column3;
 
     public override void SetUp ()
     {
       base.SetUp();
       _viewBuilder = new ViewBuilder();
+
+      _column1 = new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true);
+      _column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false);
+      _column3 = new SimpleColumnDefinition ("Test", typeof (string), "varchar(100)", true, false);
+
+      _tableDefinition1 = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "Order", "OrderView", new[]{_column1, _column2}, new ITableConstraintDefinition[0]);
+      _tableDefinition2 = new TableDefinition (
+         SchemaGenerationFirstStorageProviderDefinition, "Customer", "CustomerView", new[]{_column3}, new ITableConstraintDefinition[0]);
+      _filterViewDefinition = new FilterViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "OrderView", _tableDefinition1, new[] { "ClassID" }, new[] { _column1, _column2 });
     }
 
     [Test]
@@ -52,14 +56,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void AddView ()
+    public void CreateViewSeparator ()
     {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
+      var result = _viewBuilder.CreateViewSeparator;
+
+      Assert.That (result, Is.EqualTo ("GO\r\n\r\n"));
+    }
+
+    [Test]
+    public void GetCreateViewScript_TableDefinition ()
+    {
+      _viewBuilder.AddView (_tableDefinition1);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
+          + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
@@ -67,166 +79,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void AddViewWithConcreteDerivedClass ()
+    public void GetCreateViewScript_FilterViewDefinition ()
     {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
+      _viewBuilder.AddView (_filterViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]\r\n"
-          + "    FROM [dbo].[Customer]\r\n"
-          + "  WITH CHECK OPTION\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
-    }
-
-    [Test]
-    public void AddViewWithConcreteBaseClass ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)].StorageEntityDefinition);
-
-      string expectedScript =
-          "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID]\r\n"
-          + "    FROM [dbo].[ConcreteClass]\r\n"
-          + "  WITH CHECK OPTION\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
-    }
-
-    [Test]
-    public void AddViewWithAbstractClass ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Company)].StorageEntityDefinition);
-
-      string expectedScript =
-          "CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], NULL, NULL, NULL\r\n"
-          + "    FROM [dbo].[Customer]\r\n"
-          + "  UNION ALL\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], NULL, NULL, NULL, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]\r\n"
-          + "    FROM [dbo].[DevelopmentPartner]\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
-    }
-
-    [Test]
-    public void AddViewWithAbstractClassWithSingleConcreteConcrete ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Partner)].StorageEntityDefinition);
-
-      string expectedScript =
-          "CREATE VIEW [dbo].[PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]\r\n"
-          + "    FROM [dbo].[DevelopmentPartner]\r\n"
-          + "  WITH CHECK OPTION\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
-    }
-
-    [Test]
-    public void AddViewWithDerivedClass ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (DerivedClass)].StorageEntityDefinition);
-
-      string expectedScript =
-          "CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID]\r\n"
-          + "    FROM [dbo].[ConcreteClass]\r\n"
-          + "    WHERE [ClassID] IN ('DerivedClass', 'DerivedOfDerivedClass')\r\n"
-          + "  WITH CHECK OPTION\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
-    }
-
-    [Test]
-    public void AddViewWithClassWithoutProperties ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ClassWithoutProperties)].StorageEntityDefinition);
-
-      string expectedScript =
-          "CREATE VIEW [dbo].[ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp]\r\n"
-          + "    FROM [dbo].[TableWithoutProperties]\r\n"
+          + "  SELECT [ID], [Name]\r\n"
+          + "    FROM [dbo].[Order]\r\n"
+          + "    WHERE [ClassID] IN ('ClassID')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
     }
 
     [Test]
-    public void AddViewWithAbstractWithoutConcreteTable ()
+    public void GetCreateViewScript_UnionViewDefinitionWithOneTable ()
     {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (AbstractWithoutConcreteClass)].StorageEntityDefinition);
+      var unionViewDefinition = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "OrderView", new[] { _tableDefinition1 }, new[]{_column1, _column2});
 
-      Assert.IsEmpty (_viewBuilder.GetCreateViewScript());
-    }
-
-    // TODO Review 3856: Delete
-    [Test]
-    public void AddViewTwice ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (ConcreteClass)].StorageEntityDefinition);
+      _viewBuilder.AddView (unionViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])\r\n"
+          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]\r\n"
+          + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
-          + "  WITH CHECK OPTION\r\n"
-          + "GO\r\n\r\n"
-          + "CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID])\r\n"
-          + "  WITH SCHEMABINDING AS\r\n"
-          + "  SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID]\r\n"
-          + "    FROM [dbo].[ConcreteClass]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
     }
 
     [Test]
-    public void GetDropViewScriptWithConcreteClass ()
+    public void GetCreateViewScript_UnionViewDefinitionWithSeveralTables ()
     {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
+      var unionViewDefinition = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition, "OrderView", new[] { _tableDefinition1, _tableDefinition2 }, new[] { _column1, _column2, _column3 });
+
+      _viewBuilder.AddView (unionViewDefinition);
 
       string expectedScript =
+          "CREATE VIEW [dbo].[OrderView] ([ID], [Name], [Test])\r\n"
+          + "  WITH SCHEMABINDING AS\r\n"
+          + "  SELECT [ID], [Name], NULL\r\n"
+          + "    FROM [dbo].[Order]\r\n"
+          + "  UNION ALL\r\n"
+          + "  SELECT NULL, NULL, [Test]\r\n"
+          + "    FROM [dbo].[Customer]\r\n";
+
+      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
+    }
+
+
+    [Test]
+    public void GetDropViewScript_OneView ()
+    {
+      _viewBuilder.AddView (_tableDefinition1);
+
+      var expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript ());
     }
 
     [Test]
-    public void GetDropViewScriptWithAbstractClass ()
+    public void GetDropViewScript_TwoViews ()
     {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Company)].StorageEntityDefinition);
+      _viewBuilder.AddView (_tableDefinition1);
+      _viewBuilder.AddView (_tableDefinition2);
 
-      string expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[CompanyView]\r\n";
-
-      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
-    }
-
-    [Test]
-    public void GetDropViewScriptWithTwoClasses ()
-    {
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
-      _viewBuilder.AddView ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Company)].StorageEntityDefinition);
-
-      string expectedScript =
+      var expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n\r\n"
-          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')\r\n"
-          + "  DROP VIEW [dbo].[CompanyView]\r\n";
+          + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[CustomerView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript ());
     }
+  
   }
 }
