@@ -27,10 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     public static T GetEndPointWithOppositeDefinition<T> (this IRelationEndPoint endPoint, DomainObject oppositeObject) where T : IRelationEndPoint
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      var oppositeObjectID = oppositeObject != null ? oppositeObject.ID : null;
-      return endPoint.GetEndPointWithOppositeDefinition<T> (oppositeObjectID);
+      return endPoint.GetEndPointWithOppositeDefinition<T> (oppositeObject.GetIDOrNull());
     }
 
     public static T GetEndPointWithOppositeDefinition<T> (this IRelationEndPoint endPoint, ObjectID oppositeObjectID) where T : IRelationEndPoint

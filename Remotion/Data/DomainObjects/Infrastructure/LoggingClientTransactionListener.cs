@@ -365,7 +365,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private string GetDomainObjectString (DomainObject domainObject)
     {
-      return GetObjectIDString (domainObject != null ? domainObject.ID : null);
+      return GetObjectIDString (domainObject.GetIDOrNull());
     }
 
     private IEnumerable<string> ConvertToStringAndCount<T> (IEnumerable<T> sequence, int maximumCount, Func<T, string> converter)
