@@ -43,18 +43,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "Order"),
           new EntityNameDefinition (null, "OrderView"),
           new IColumnDefinition[0],
-          new ITableConstraintDefinition[0]);
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "OrderView"),
           new[] { _tableDefinition },
-          new IColumnDefinition[0]);
+          new IColumnDefinition[0],
+          new IIndexDefinition[0]);
       _filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "OrderView"),
           _tableDefinition,
           new[] { "ClassID" },
-          new IColumnDefinition[0]);
+          new IColumnDefinition[0],
+          new IIndexDefinition[0]);
     }
 
     [Test]

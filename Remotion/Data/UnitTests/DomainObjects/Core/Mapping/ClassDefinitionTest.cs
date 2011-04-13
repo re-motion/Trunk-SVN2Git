@@ -168,7 +168,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new EntityNameDefinition (null, "Tablename"),
           new EntityNameDefinition (null, "Viewname"),
           new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0]);
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0]);
 
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
@@ -184,7 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           new EntityNameDefinition (null, "Tablename"),
           new EntityNameDefinition (null, "Viewname"),
           new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0]);
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0]);
       _domainBaseClass.SetReadOnly();
 
       _domainBaseClass.SetStorageEntity (tableDefinition);

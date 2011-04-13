@@ -58,6 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
+    public void Indexes ()
+    {
+      var result = _nullEntityDefinition.Indexes;
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<IEntityDefinitionVisitor> ();

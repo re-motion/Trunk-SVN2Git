@@ -52,13 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "OrderItem"),
           null,
           new[] { _referencingColumn },
-          new[] { _foreignKeyConstraintDefinition1 });
+          new[] { _foreignKeyConstraintDefinition1 },
+          new IIndexDefinition[0]);
       _tableDefinition2 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition("Test", "Customer"),
           null,
           new[] { _referencingColumn },
-          new[] { _foreignKeyConstraintDefinition1, _foreignKeyConstraintDefinition2 });
+          new[] { _foreignKeyConstraintDefinition1, _foreignKeyConstraintDefinition2 },
+          new IIndexDefinition[0]);
     }
 
     [Test]

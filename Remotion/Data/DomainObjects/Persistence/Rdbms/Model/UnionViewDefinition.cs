@@ -32,16 +32,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public UnionViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
-        IEnumerable<IColumnDefinition> columns)
+        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<IIndexDefinition> indexes)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
       for (int i = 0; i < unionedEntitiesList.Count; ++i)
@@ -62,6 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _viewName = viewName;
       _unionedEntities = unionedEntitiesList;
       _columns = columns.ToList().AsReadOnly();
+      _indexes = indexes.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
@@ -97,6 +101,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
+    }
+
+    public ReadOnlyCollection<IIndexDefinition> Indexes
+    {
+      get { return _indexes; }
     }
 
     public IColumnDefinition[] CreateFullColumnList (IEnumerable<IColumnDefinition> availableColumns)

@@ -222,6 +222,8 @@
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\IForeignKeyConstraintDefinitionFactory.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IIndexDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IIndexDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\IStorageNameProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlColumnDefinitionFindingVisitor.cs" />
     <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />

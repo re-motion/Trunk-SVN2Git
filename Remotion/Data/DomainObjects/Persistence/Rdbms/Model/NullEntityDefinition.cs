@@ -65,6 +65,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return new ReadOnlyCollection<IColumnDefinition> (new IColumnDefinition[0]);
     }
 
+    public ReadOnlyCollection<IIndexDefinition> Indexes
+    {
+      get { return null;  }
+    }
+
     public void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

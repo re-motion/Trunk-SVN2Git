@@ -77,7 +77,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, tableName),
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           columns,
-          new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints));
+          new ITableConstraintDefinition[] { clusteredPrimaryKeyConstraint }.Concat (foreignKeyConstraints),
+          new IIndexDefinition[0]);
     }
 
     public virtual IEntityDefinition CreateFilterViewDefinition (ClassDefinition classDefinition, IEntityDefinition baseEntity)
@@ -92,7 +93,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          columns);
+          columns,
+          new IIndexDefinition[0]);
     }
 
     public virtual IEntityDefinition CreateUnionViewDefinition (ClassDefinition classDefinition, IEnumerable<IEntityDefinition> unionedEntities)
@@ -103,7 +105,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var columns = GetColumnsDefinitionForEntity (classDefinition);
 
       return new UnionViewDefinition (
-          _storageProviderDefinition, new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)), unionedEntities, columns);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
+          unionedEntities,
+          columns,
+          new IIndexDefinition[0]);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)

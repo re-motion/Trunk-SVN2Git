@@ -15,20 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IEntityDefinition"/> defines the API for an entity definition for a relational database.
+  /// <see cref="IIndexDefinition"/> defines the API for an index definition in a relational database.
   /// </summary>
-  public interface IEntityDefinition : IStorageEntityDefinition, INullObject
+  public interface IIndexDefinition
   {
-    EntityNameDefinition ViewName { get; }
-    ReadOnlyCollection<IColumnDefinition> GetColumns ();
-    ReadOnlyCollection<IIndexDefinition> Indexes { get; }
-
-    void Accept (IEntityDefinitionVisitor visitor);
+    void Accept (IIndexDefinitionVisitor visitor);
   }
 }

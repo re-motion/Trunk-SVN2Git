@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,20 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.Persistence.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IEntityDefinition"/> defines the API for an entity definition for a relational database.
+  /// <see cref="IIndexDefinitionVisitor"/> defines the API for the index definition visitor implementations.
   /// </summary>
-  public interface IEntityDefinition : IStorageEntityDefinition, INullObject
+  public interface IIndexDefinitionVisitor
   {
-    EntityNameDefinition ViewName { get; }
-    ReadOnlyCollection<IColumnDefinition> GetColumns ();
-    ReadOnlyCollection<IIndexDefinition> Indexes { get; }
-
-    void Accept (IEntityDefinitionVisitor visitor);
   }
 }

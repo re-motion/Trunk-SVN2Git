@@ -33,24 +33,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
+    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public TableDefinition (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
         IEnumerable<IColumnDefinition> columns,
-        IEnumerable<ITableConstraintDefinition> constraints)
+        IEnumerable<ITableConstraintDefinition> constraints,
+        IEnumerable<IIndexDefinition> indexes)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);
       ArgumentUtility.CheckNotNull ("columns", columns);
       ArgumentUtility.CheckNotNull ("constraints", constraints);
+      ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
       _viewName = viewName;
       _columns = columns.ToList().AsReadOnly();
       _constraints = constraints.ToList().AsReadOnly();
+      _indexes = indexes.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
@@ -91,6 +95,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
+    }
+
+    public ReadOnlyCollection<IIndexDefinition> Indexes
+    {
+      get { return _indexes; }
     }
 
     public void Accept (IEntityDefinitionVisitor visitor)

@@ -29,6 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private TableDefinition _tableDefintion;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private PrimaryKeyConstraintDefinition[] _constraints;
+    private IIndexDefinition[] _indexes;
 
     [SetUp]
     public void SetUp ()
@@ -40,8 +41,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                          new PrimaryKeyConstraintDefinition (
                              "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false, false) })
                      };
+      _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _tableDefintion = new TableDefinition (
-          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), new EntityNameDefinition (null, "TestView"), _columns, _constraints);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "TestView"),
+          _columns,
+          _constraints,
+          _indexes);
     }
 
     [Test]
@@ -55,7 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var tableDefinition = new TableDefinition (_storageProviderDefinition, new EntityNameDefinition(null, "Test"), null, _columns, _constraints);
+      var tableDefinition = new TableDefinition (
+          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), null, _columns, _constraints, new IIndexDefinition[0]);
       Assert.That (tableDefinition.ViewName, Is.Null);
     }
 
@@ -85,6 +93,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _tableDefintion.GetColumns();
 
       Assert.That (result, Is.EqualTo (_columns));
+    }
+
+    [Test]
+    public void Indexes ()
+    {
+      var result = _tableDefintion.Indexes;
+
+      Assert.That (result, Is.EqualTo (_indexes));
     }
 
     [Test]

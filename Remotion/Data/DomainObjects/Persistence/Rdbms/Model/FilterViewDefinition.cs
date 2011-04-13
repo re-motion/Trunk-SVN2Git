@@ -33,18 +33,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly ReadOnlyCollection<string> _classIDs;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
+    private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
     public FilterViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
-        IEnumerable<IColumnDefinition> columns)
+        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<IIndexDefinition> indexes)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
       ArgumentUtility.CheckNotNull ("columns", columns);
+      ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       if (!(baseEntity is TableDefinition || baseEntity is FilterViewDefinition))
       {
@@ -60,6 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _baseEntity = baseEntity;
       _classIDs = classIDs.ToList().AsReadOnly();
       _columns = columns.ToList().AsReadOnly();
+      _indexes = indexes.ToList().AsReadOnly();
     }
 
     public string StorageProviderID
@@ -100,6 +104,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()
     {
       return _columns;
+    }
+
+    public ReadOnlyCollection<IIndexDefinition> Indexes
+    {
+      get { return _indexes; }
     }
 
     // Always returns a table

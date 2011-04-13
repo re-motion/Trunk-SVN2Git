@@ -57,16 +57,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           new EntityNameDefinition (null, "TableName"),
           null,
           new SimpleColumnDefinition[0],
-          new ITableConstraintDefinition[0]);
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
           new IEntityDefinition[]
           {
               new TableDefinition (
-              storageProviderDefinition, new EntityNameDefinition (null, "Test"), null, new IColumnDefinition[0], new ITableConstraintDefinition[0])
+              storageProviderDefinition,
+              new EntityNameDefinition (null, "Test"),
+              null,
+              new IColumnDefinition[0],
+              new ITableConstraintDefinition[0],
+              new IIndexDefinition[0])
           },
-          new SimpleColumnDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0]);
     }
 
     [Test]
