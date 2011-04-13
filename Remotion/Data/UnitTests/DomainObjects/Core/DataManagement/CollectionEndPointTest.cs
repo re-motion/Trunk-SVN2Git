@@ -861,6 +861,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [Ignore ("TODO 3851")]
+    public void CanBeCollected ()
+    {
+      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPointWithLoadStateMock)).Return (true).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPointWithLoadStateMock)).Return (false).Repeat.Once ();
+      _loadStateMock.Replay();
+
+      var result1 = _endPointWithLoadStateMock.CanBeCollected;
+      var result2 = _endPointWithLoadStateMock.CanBeCollected;
+
+      _loadStateMock.VerifyAllExpectations();
+      Assert.That (result1, Is.True);
+      Assert.That (result2, Is.False);
+    }
+
+    [Test]
     public void GetOppositeRelationEndPointIDs ()
     {
       var relatedObject1 = DomainObjectMother.CreateFakeObject<Order> ();

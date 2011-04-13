@@ -846,7 +846,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.UnregisterEndPointsForDataContainer (dataContainer);
 
-      Assert.That (_map[oppositeID].IsDataComplete, Is.False);
+      Assert.That (_map[oppositeID], Is.Null);
     }
 
     [Test]

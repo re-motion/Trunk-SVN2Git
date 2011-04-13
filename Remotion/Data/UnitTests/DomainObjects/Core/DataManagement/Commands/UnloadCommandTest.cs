@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       command.Perform();
 
       Assert.That (_relationEndPointMap[realEndPointID], Is.Null);
-      Assert.That (_relationEndPointMap[oppositeVirtualEndPointID].IsDataComplete, Is.False);
+      Assert.That (_relationEndPointMap[oppositeVirtualEndPointID], Is.Null);
     }
 
     [Test]

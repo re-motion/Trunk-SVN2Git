@@ -259,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (order, true);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckEndPointExists (order, "OrderTicket", false);
 
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
@@ -303,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckEndPointExists (order, "OrderTicket", false);
 
       // 1:1 relation reload from real side
 
@@ -326,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       UnloadService.UnloadData (ClientTransactionMock, orderTicket1.ID);
 
       CheckEndPointExists (orderTicket1, "Order", false);
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckEndPointExists (order, "OrderTicket", false);
 
       // 1:1 relation reload from virtual side
 

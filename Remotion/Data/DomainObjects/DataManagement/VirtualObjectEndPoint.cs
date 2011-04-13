@@ -136,10 +136,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.MarkDataComplete (this, item, SetCompleteState);
     }
 
-    // TODO 3851
     public bool CanBeCollected
     {
-      get { return false; }
+      get { return _loadState.GetCanEndPointBeCollected (this); }
     }
 
     public void MarkDataIncomplete ()

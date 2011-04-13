@@ -24,10 +24,10 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization
 {
   [TestFixture]
-  [Ignore ("TODO 3851")]
   public class VirtualEndPointGarbageCollectionTest : ClientTransactionBaseTest
   {
     [Test]
+    [Ignore ("TODO 3851")]
     public void UnloadLastFK_CausesCollectionEndPointToBeRemoved ()
     {
       SetDatabaseModifyable();

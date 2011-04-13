@@ -151,7 +151,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     [Test]
     public void CanBeCollected ()
     {
-      Assert.That (_loadState.CanBeCollected, Is.False);
+      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+      Assert.That (result, Is.False);
     }
 
     [Test]

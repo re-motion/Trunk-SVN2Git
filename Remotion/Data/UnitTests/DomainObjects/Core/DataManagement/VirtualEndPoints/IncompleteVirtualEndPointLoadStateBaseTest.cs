@@ -85,13 +85,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void CanBeCollected_False ()
     {
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1);
-      Assert.That (_loadState.CanBeCollected, Is.False);
+      
+      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
     public void CanBeCollected_True ()
     {
-      Assert.That (_loadState.CanBeCollected, Is.True);
+      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+      Assert.That (result, Is.True);
     }
 
     [Test]

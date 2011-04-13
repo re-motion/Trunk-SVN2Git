@@ -123,6 +123,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _loadState.IsDataComplete(); }
     }
 
+    public bool CanBeCollected
+    {
+      // TODO 3851: As long as EndPointDelegatingCollectionData holds a direct reference to ICollectionEndPoint, we cannot return true here - a DomainObjectCollection would lose its connection!
+      get { return false; }
+    }
+
     public override bool HasChanged
     {
       get { return OriginalCollection != Collection || _loadState.HasChanged(); }
@@ -142,12 +148,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("items", items);
       _loadState.MarkDataComplete (this, items, SetCompleteLoadState);
-    }
-
-    // TODO 3851
-    public bool CanBeCollected
-    {
-      get { return false; }
     }
 
     public void MarkDataIncomplete ()
