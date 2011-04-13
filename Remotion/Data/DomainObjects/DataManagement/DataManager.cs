@@ -260,10 +260,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var dataContainer = GetDataContainerWithoutLoading (objectID);
       if (dataContainer == null)
+      {
         _objectLoader.LoadObject (objectID, this);
+        dataContainer = GetDataContainerWithoutLoading (objectID);
+        Assertion.IsNotNull (dataContainer);
+      }
 
-      dataContainer = GetDataContainerWithoutLoading (objectID);
-      Assertion.IsNotNull (dataContainer);
       return dataContainer;
     }
 
@@ -302,7 +304,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
       var domainObject = _objectLoader.LoadRelatedObject (virtualObjectEndPoint.ID, this);
-      virtualObjectEndPoint.MarkDataComplete (domainObject);
+      // Since RelationEndPointMap.RegisterOppositeForRealObjectEndPoint contains a query optimization for 1:1 relations, it is possible that
+      // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).
+      if (!virtualObjectEndPoint.IsDataComplete)
+        virtualObjectEndPoint.MarkDataComplete (domainObject);
     }
 
     public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)

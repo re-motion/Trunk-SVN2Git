@@ -1001,7 +1001,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void LoadLazyVirtualObjectEndPoint ()
+    public void LoadLazyVirtualObjectEndPoint_MarkedCompleteByLoader ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
@@ -1010,10 +1010,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPointMock.Stub (stub => stub.IsDataComplete).Return (false).Repeat.Once();
+      endPointMock.Replay ();
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
+
+      _objectLoaderMock
+          .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWitLoaderMock))
+          .Return (loaderResult)
+          .WhenCalled (mi => endPointMock.Stub (stub => stub.IsDataComplete).Return (true));
+      _objectLoaderMock.Replay ();
+
+      _dataManagerWitLoaderMock.LoadLazyVirtualObjectEndPoint (endPointMock);
+
+      _objectLoaderMock.VerifyAllExpectations ();
+
+      endPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (loaderResult));
+      endPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void LoadLazyVirtualObjectEndPoint_NotMarkedCompleteByLoader ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var loaderResult = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+
+      var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       endPointMock.Stub (stub => stub.IsDataComplete).Return (false);
       endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
       endPointMock.Replay ();
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
 
       _objectLoaderMock
           .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWitLoaderMock))

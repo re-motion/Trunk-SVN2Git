@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       // order to optimize away one virtual end-point query. That implicit call to MarkDataComplete would, however, cause the subsequent call
       // to MarkDataComplete in DataManager.LoadLazyVirtualObjectEndPoint to fail. Therefore, we check whether the MarkDataComplete call here
       // is "okay" and only throw (in the base MarkDataComplete call) if it isn't.
-      if (DataKeeper.CurrentOppositeObject != item)
+      // if (DataKeeper.CurrentOppositeObject != item)
         MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 

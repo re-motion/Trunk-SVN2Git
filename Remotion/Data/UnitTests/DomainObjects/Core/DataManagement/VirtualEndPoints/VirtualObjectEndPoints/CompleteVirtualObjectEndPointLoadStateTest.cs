@@ -118,30 +118,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already complete.")]
-    public void MarkDataComplete_ThrowsException_IfItemsDontMatch ()
-    {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
-      _dataKeeperMock.Replay ();
-
-      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => Assert.Fail ("Must not be called"));
-    }
-
-    [Test]
-    public void MarkDataComplete_ThrowsNoException_IfItemsMatch ()
+    public void MarkDataComplete_ThrowsException ()
     {
       _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (_relatedObject);
       _dataKeeperMock.Replay ();
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, _relatedObject, keeper => Assert.Fail ("Must not be called"));
-    }
-
-    [Test]
-    public void MarkDataComplete_ThrowsNoException_IfItemsMatch_Null ()
-    {
-      _dataKeeperMock.Stub (stub => stub.CurrentOppositeObject).Return (null);
-      _dataKeeperMock.Replay();
-
-      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => Assert.Fail ("Must not be called"));
     }
 
     [Test]
