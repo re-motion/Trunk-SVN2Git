@@ -20,30 +20,36 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Development.UnitTesting.Data.SqlClient;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class FileBuilderDatabaseIntegrationTest : SchemaGenerationTestBase
+  public class FileBuilderIntegrationTest : SchemaGenerationTestBase
   {
+    private string _firstStorageProviderSetupDBScript;
+    private string _secondStorageProviderSetupDBScript;
+    private string _thirdStorageProviderSetupDBScript;
     private FileBuilder _sqlFileBuilderForFirstStorageProvider;
     private FileBuilder _sqlFileBuilderForSecondStorageProvider;
     private FileBuilder _sqlFileBuilderForThirdStorageProvider;
-
     private ClassDefinition[] _classesInFirstStorageProvider;
     private ClassDefinition[] _classesInSecondStorageProvider;
     private ClassDefinition[] _classesInThirdStorageProvider;
 
     public override void SetUp ()
     {
-      base.SetUp();
+      base.SetUp ();
 
       _sqlFileBuilderForFirstStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition));
       _sqlFileBuilderForSecondStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition));
-      _sqlFileBuilderForThirdStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
-     
+      _sqlFileBuilderForThirdStorageProvider = new ExtendendFileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
+
+      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_FirstStorageProvider.sql");
+      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_SecondStorageProvider.sql");
+      _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_ThirdStorageProvider.sql");
+
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
           .ToArray ();
@@ -51,48 +57,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
           .ToArray ();
       _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
-          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
-          .ToArray ();
-    }
-
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp();
-
-      var createDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SchemaGeneration_CreateDB.sql");
-
-      var masterAgent = new DatabaseAgent (MasterConnectionString);
-      masterAgent.ExecuteBatchString (createDBScript, false);
+         .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
+         .ToArray ();
     }
 
     [Test]
-    public void ExecuteScriptForFirstStorageProvider ()
+    public void GetScriptForFirstStorageProvider ()
     {
-      DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
-
-      var sqlScript = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
-
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      Assert.AreEqual (_firstStorageProviderSetupDBScript, _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider));
     }
 
     [Test]
-    public void ExecuteScriptForSecondStorageProvider ()
+    public void GetScriptForSecondStorageProvider ()
     {
-      DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
-
-      var sqlScript = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
-
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      Assert.AreEqual (_secondStorageProviderSetupDBScript, _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider));
     }
 
     [Test]
-    public void ExecuteScriptForThirdStorageProvider ()
+    public void GetScriptForThirdStorageProvider ()
     {
-      DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
-
-      var sqlScript = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
-
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      Assert.AreEqual (_thirdStorageProviderSetupDBScript, _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider));
     }
   }
 }

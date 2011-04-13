@@ -34,8 +34,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
         "Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain1;Data Source=localhost; Max Pool Size=1;";
     public const string SchemaGenerationConnectionString2 =
         "Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain2;Data Source=localhost; Max Pool Size=1;";
+    public const string SchemaGenerationConnectionString3 =
+        "Integrated Security=SSPI;Initial Catalog=SchemaGenerationTestDomain3;Data Source=localhost; Max Pool Size=1;";
     public const string SchemaGenerationFirstStorageProviderID = "SchemaGenerationFirstStorageProvider";
     public const string SchemaGenerationSecondStorageProviderID = "SchemaGenerationSecondStorageProvider";
+    public const string SchemaGenerationThirdStorageProviderID = "SchemaGenerationThirdStorageProvider";
     public const string SchemaGenerationInternalStorageProviderID = "SchemaGenerationInternalStorageProvider";
 
     private readonly DatabaseAgent _databaseAgent;

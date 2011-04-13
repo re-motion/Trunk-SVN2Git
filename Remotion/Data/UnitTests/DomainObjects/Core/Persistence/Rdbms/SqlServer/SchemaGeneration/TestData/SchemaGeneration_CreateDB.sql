@@ -12,6 +12,12 @@ BEGIN
   DROP DATABASE SchemaGenerationTestDomain2
 END
 GO
+IF EXISTS (SELECT * FROM sysdatabases WHERE name = 'SchemaGenerationTestDomain3')
+BEGIN
+  ALTER DATABASE SchemaGenerationTestDomain3 SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+  DROP DATABASE SchemaGenerationTestDomain3
+END
+GO
   
 CREATE DATABASE SchemaGenerationTestDomain1
 ON PRIMARY (
@@ -35,6 +41,19 @@ ON PRIMARY (
 LOG ON (
 	Name = 'SchemaGenerationTestDomain2_Log',
 	Filename = 'C:\Databases\SchemaGenerationTestDomain2.ldf',
+	Size = 10MB	
+)
+GO
+
+CREATE DATABASE SchemaGenerationTestDomain3
+ON PRIMARY (
+	Name = 'SchemaGenerationTestDomain3_Data',
+	Filename = 'C:\Databases\SchemaGenerationTestDomain3.mdf',
+	Size = 10MB
+)
+LOG ON (
+	Name = 'SchemaGenerationTestDomain3_Log',
+	Filename = 'C:\Databases\SchemaGenerationTestDomain3.ldf',
 	Size = 10MB	
 )
 GO

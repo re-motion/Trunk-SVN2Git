@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
@@ -28,7 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public SchemaGenerationTestBase ()
         : base (new DatabaseAgent (SchemaGenerationConnectionString1), "Dummy.sql")
     {
-      
     }
 
     [TestFixtureSetUp]
@@ -54,27 +54,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     protected MappingConfiguration MappingConfiguration
     {
-      get { return SchemaGenerationConfiguration.Instance.GetMappingConfiguration (); }
+      get { return SchemaGenerationConfiguration.Instance.GetMappingConfiguration(); }
     }
 
     protected StorageConfiguration StorageConfiguration
     {
-      get { return SchemaGenerationConfiguration.Instance.GetPersistenceConfiguration (); }
+      get { return SchemaGenerationConfiguration.Instance.GetPersistenceConfiguration(); }
     }
 
     protected RdbmsProviderDefinition SchemaGenerationFirstStorageProviderDefinition
     {
-      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationFirstStorageProviderID]; }
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[SchemaGenerationFirstStorageProviderID]; }
     }
 
     protected RdbmsProviderDefinition SchemaGenerationSecondStorageProviderDefinition
     {
-      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationSecondStorageProviderID]; }
+      get
+      {
+        return
+            (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[SchemaGenerationSecondStorageProviderID];
+      }
+    }
+
+    protected RdbmsProviderDefinition SchemaGenerationThirdStorageProviderDefinition
+    {
+      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[SchemaGenerationThirdStorageProviderID]; }
     }
 
     protected RdbmsProviderDefinition SchemaGenerationInternalStorageProviderDefinition
     {
-      get { return (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.SchemaGenerationInternalStorageProviderID]; }
+      get
+      {
+        return
+            (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[SchemaGenerationInternalStorageProviderID];
+      }
     }
   }
 }

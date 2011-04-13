@@ -261,13 +261,19 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestablePropertyDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\AboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\BelowInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendendFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableConstraintBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableTableBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ViewBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
@@ -1756,6 +1762,7 @@
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_SecondStorageProvider.sql" />
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SchemaGeneration_CreateDB.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_ThirdStorageProvider.sql" />
     <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

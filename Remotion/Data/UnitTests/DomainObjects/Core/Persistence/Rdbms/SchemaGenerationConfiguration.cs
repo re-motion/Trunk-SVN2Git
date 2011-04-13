@@ -74,6 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                                         DatabaseTest.SchemaGenerationSecondStorageProviderID,
                                                         sqlStorageObjectFactory,
                                                         DatabaseTest.SchemaGenerationConnectionString2),
+                                                    new RdbmsProviderDefinition(
+                                                        DatabaseTest.SchemaGenerationThirdStorageProviderID,
+                                                        sqlStorageObjectFactory,
+                                                        DatabaseTest.SchemaGenerationConnectionString3),
                                                     new RdbmsProviderDefinition (
                                                         DatabaseTest.SchemaGenerationInternalStorageProviderID,
                                                         sqlStorageObjectFactory,
@@ -91,6 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new StorageGroupElement (
               new SecondStorageGroupAttribute (),
               DatabaseTest.SchemaGenerationSecondStorageProviderID));
+      _storageConfiguration.StorageGroups.Add (
+          new StorageGroupElement (
+              new ThirdStorageGroupAttribute (),
+              DatabaseTest.SchemaGenerationThirdStorageProviderID));
       _storageConfiguration.StorageGroups.Add (
           new StorageGroupElement (
               new InternalStorageGroupAttribute (),
