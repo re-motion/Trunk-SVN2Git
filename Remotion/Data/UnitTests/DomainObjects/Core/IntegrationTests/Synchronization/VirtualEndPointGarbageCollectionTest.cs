@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
   public class VirtualEndPointGarbageCollectionTest : ClientTransactionBaseTest
   {
     [Test]
-    [Ignore ("TODO 3851")]
+    [Ignore ("TODO 3914")]
     public void UnloadLastFK_CausesCollectionEndPointToBeRemoved ()
     {
       SetDatabaseModifyable();

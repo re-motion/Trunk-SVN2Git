@@ -861,7 +861,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 3851")]
+    [Ignore ("TODO 3914")]
     public void CanBeCollected ()
     {
       _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPointWithLoadStateMock)).Return (true).Repeat.Once ();
