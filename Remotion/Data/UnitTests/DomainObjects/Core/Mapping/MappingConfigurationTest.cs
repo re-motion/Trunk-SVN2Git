@@ -49,8 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private TableDefinition _fakeStorageEntityDefinition = new TableDefinition (
         DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-        "Test",
-        "Test",
+        new EntityNameDefinition (null, "Test"),
+        new EntityNameDefinition (null, "Test"),
         new SimpleColumnDefinition[0],
         new ITableConstraintDefinition[0]);
 
@@ -178,9 +178,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var unionViewDefinition = new UnionViewDefinition (
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           new IEntityDefinition[]
-          { new TableDefinition (UnitTestDomainStorageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]) },
+          {
+              new TableDefinition (
+              UnitTestDomainStorageProviderDefinition,
+              new EntityNameDefinition (null, "Test"),
+              new EntityNameDefinition (null, "TestView"),
+              new IColumnDefinition[0],
+              new ITableConstraintDefinition[0])
+          },
           new IColumnDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
@@ -319,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.Null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName, Is.EqualTo ("Order"));
+      Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.EntityName, Is.EqualTo ("Order"));
       Assert.That (classDefinition.MyPropertyDefinitions.Count, Is.EqualTo (2));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).GetColumns().Count, Is.EqualTo (4));
       Assert.That (classDefinition.MyPropertyDefinitions["OrderNumber"].StoragePropertyDefinition, Is.Not.Null);
@@ -357,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Fake", "Fake");
       PrivateInvoke.SetNonPublicField (propertyDefinition, "_storagePropertyDefinition", null);
-      
+
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);

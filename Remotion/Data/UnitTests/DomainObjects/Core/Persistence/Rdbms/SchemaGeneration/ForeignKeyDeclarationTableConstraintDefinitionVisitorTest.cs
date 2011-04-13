@@ -38,19 +38,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [SetUp]
     public void SetUp ()
     {
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _visitor = new ForeignKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialectStub);
 
       _referencingColumn1 = new SimpleColumnDefinition ("ID1", typeof (int), "integer", false, false);
       _referencingColumn2 = new SimpleColumnDefinition ("ID2", typeof (int), "integer", false, false);
       _referencedColumn1 = new SimpleColumnDefinition ("FKID1", typeof (int), "integer", false, true);
       _referencedColumn2 = new SimpleColumnDefinition ("FKID2", typeof (int), "integer", false, true);
-      
+
       _foreignKeyConstraintDefinition1 = new ForeignKeyConstraintDefinition (
-          "FK1", "Table1", new[] { _referencingColumn1 }, new[] { _referencedColumn1 });
+          "FK1", new EntityNameDefinition (null, "Table1"), new[] { _referencingColumn1 }, new[] { _referencedColumn1 });
 
       _foreignKeyConstraintDefinition2 = new ForeignKeyConstraintDefinition (
-          "FK2", "Table2", new[] { _referencingColumn1, _referencingColumn2 }, new[] { _referencedColumn1, _referencedColumn2 });
+          "FK2",
+          new EntityNameDefinition (null, "Table2"),
+          new[] { _referencingColumn1, _referencingColumn2 },
+          new[] { _referencedColumn1, _referencedColumn2 });
     }
 
     [Test]
@@ -87,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _visitor.VisitForeignKeyConstraintDefinition (_foreignKeyConstraintDefinition1);
       _visitor.VisitForeignKeyConstraintDefinition (_foreignKeyConstraintDefinition2);
 
-      var result = _visitor.GetConstraintStatement ();
+      var result = _visitor.GetConstraintStatement();
 
       Assert.That (
           result,

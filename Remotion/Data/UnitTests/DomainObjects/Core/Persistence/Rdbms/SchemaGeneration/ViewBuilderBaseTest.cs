@@ -33,17 +33,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
       _viewBuilder = new TestableViewBuilder (_sqlDialectStub);
 
       _tableDefinition = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Order", "OrderView", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Order"),
+          new EntityNameDefinition (null, "OrderView"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "OrderView", new[] { _tableDefinition }, new IColumnDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "OrderView"),
+          new[] { _tableDefinition },
+          new IColumnDefinition[0]);
       _filterViewDefinition = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "OrderView", _tableDefinition, new[] { "ClassID" }, new IColumnDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "OrderView"),
+          _tableDefinition,
+          new[] { "ClassID" },
+          new IColumnDefinition[0]);
     }
 
     [Test]
@@ -52,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _viewBuilder.AddView (_tableDefinition);
 
       var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
@@ -64,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _viewBuilder.AddView (_tableDefinition);
       _viewBuilder.AddView (_tableDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
@@ -76,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _viewBuilder.AddView (_unionViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
@@ -89,8 +100,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _viewBuilder.AddView (_unionViewDefinition);
       _viewBuilder.AddView (_unionViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
@@ -101,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _viewBuilder.AddView (_filterViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
@@ -114,8 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _viewBuilder.AddView (_filterViewDefinition);
       _viewBuilder.AddView (_filterViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
@@ -128,10 +139,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _viewBuilder.AddView (nullEntityDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript ();
-      var dropViewScript = _viewBuilder.GetDropViewScript ();
+      var createViewScript = _viewBuilder.GetCreateViewScript();
+      var dropViewScript = _viewBuilder.GetDropViewScript();
 
-      Assert.IsEmpty(createViewScript);
+      Assert.IsEmpty (createViewScript);
       Assert.IsEmpty (dropViewScript);
     }
   }

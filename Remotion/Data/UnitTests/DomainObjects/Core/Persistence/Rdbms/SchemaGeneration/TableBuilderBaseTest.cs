@@ -38,7 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _tableBuilder = new TestableTableBuilder (_sqlDialectStub);
 
       _tableDefinition = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Order", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Order"),
+          null,
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
     }
 
     [Test]
@@ -81,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
-          "Test",
+          new EntityNameDefinition(null, "Test"),
           new[] { _tableDefinition },
           new IColumnDefinition[0]);
       _tableBuilder.AddTable (unionViewDefinition);
@@ -92,6 +96,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.IsEmpty (actualCreateTableScript);
       Assert.IsEmpty (actualDropTableScript);
     }
-    
   }
 }

@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlFileBuilderForFirstStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition));
       _sqlFileBuilderForSecondStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition));
-      _sqlFileBuilderForThirdStorageProvider = new ExtendendFileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
+      _sqlFileBuilderForThirdStorageProvider = new ExtendedFileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_FirstStorageProvider.sql");
       _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_SecondStorageProvider.sql");

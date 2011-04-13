@@ -42,17 +42,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
 
-      _tableDefinition1 = new TableDefinition (_storageProviderDefinition, "Table1", "View1", new[] { _column1 }, new ITableConstraintDefinition[0]);
+      _tableDefinition1 = new TableDefinition (
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Table1"),
+          new EntityNameDefinition (null, "View1"),
+          new[] { _column1 },
+          new ITableConstraintDefinition[0]);
       _tableDefinition2 = new TableDefinition (
-          _storageProviderDefinition, "Table2", "View2", new[] { _column2, _column3 }, new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Table2"),
+          new EntityNameDefinition (null, "View2"),
+          new[] { _column2, _column3 },
+          new ITableConstraintDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition, "Test", new[] { _tableDefinition1, _tableDefinition2 }, new[] { _column1, _column2, _column3 });
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { _column1, _column2, _column3 });
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_unionViewDefinition.ViewName, Is.EqualTo ("Test"));
+      Assert.That (_unionViewDefinition.ViewName.EntityName, Is.EqualTo ("Test"));
       Assert.That (_unionViewDefinition.UnionedEntities, Is.EqualTo (new[] { _tableDefinition1, _tableDefinition2 }));
       Assert.That (_unionViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_unionViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
@@ -79,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var filterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
-          "ViewName",
+          new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1,
           new[] { "x" },
           new IColumnDefinition[0]);
@@ -123,7 +135,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateFullColumnList_ChecksByContentNotByReference ()
     {
-      var column1WithDifferentReference = new SimpleColumnDefinition (_column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable, false);
+      var column1WithDifferentReference = new SimpleColumnDefinition (
+          _column1.Name, _column1.PropertyType, _column1.StorageType, _column1.IsNullable, false);
       var availableColumns = new[] { column1WithDifferentReference, _column2, _column3 };
 
       var result = _unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
@@ -136,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { new NullColumnDefinition() });
 
@@ -153,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { new IDColumnDefinition (_column1, _column2) });
 
@@ -173,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var columnDefinition = new IDColumnDefinition (_column1, _column2);
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { columnDefinition });
 
@@ -190,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new IColumnDefinition[] { null });
 
@@ -213,10 +226,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void GetAllTables_IndirectTables ()
     {
       var tableDefinition3 = new TableDefinition (
-          _storageProviderDefinition, "Table3", "View", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Table3"),
+          new EntityNameDefinition (null, "View"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "UnionView",
+          new EntityNameDefinition(null, "UnionView"),
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
           new IColumnDefinition[0]);
 

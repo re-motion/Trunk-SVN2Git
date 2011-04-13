@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
       {
         var allDistinctTableNames = new HashSet<string> ();
-        foreach (var tableName in FindAllTableDefinitions (classDefinition).Select (td => td.TableName))
+        foreach (var tableName in FindAllTableDefinitions (classDefinition).Select (td => td.TableName.EntityName))
         {
           if (allDistinctTableNames.Contains (tableName))
           {

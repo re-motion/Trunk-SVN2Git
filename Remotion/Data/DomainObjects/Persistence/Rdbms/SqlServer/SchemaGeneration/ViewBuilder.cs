@@ -47,10 +47,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    FROM [{0}].[{3}]\r\n"
           + "    WHERE [ClassID] IN ({4})\r\n"
           + "  WITH CHECK OPTION\r\n",
-          ScriptBuilder.DefaultSchema,
-          filterViewDefinition.ViewName,
+          filterViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          filterViewDefinition.ViewName.EntityName,
           GetColumnList (filterViewDefinition.GetColumns(), false),
-          filterViewDefinition.GetBaseTable().TableName,
+          filterViewDefinition.GetBaseTable().TableName.EntityName,
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
 
@@ -67,10 +67,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  SELECT {2}\r\n"
           + "    FROM [{0}].[{3}]\r\n"
           + "  WITH CHECK OPTION\r\n",
-          ScriptBuilder.DefaultSchema,
-          tableDefinition.ViewName,
+          tableDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          tableDefinition.ViewName.EntityName,
           GetColumnList (tableDefinition.GetColumns (), false),
-          tableDefinition.TableName);
+          tableDefinition.TableName.EntityName);
     }
 
     public override void AddUnionViewToCreateViewScript (
@@ -83,8 +83,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n",
-          ScriptBuilder.DefaultSchema,
-          unionViewDefinition.ViewName,
+          unionViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          unionViewDefinition.ViewName.EntityName,
           GetColumnList (unionViewDefinition.GetColumns (), false));
 
       int numberOfSelects = 0;
@@ -99,8 +99,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]\r\n",
             GetColumnList (unionedColumns, true),
-            ScriptBuilder.DefaultSchema,
-            tableDefinition.TableName);
+            tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.EntityName);
 
         numberOfSelects++;
       }
@@ -116,8 +116,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       dropViewStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP VIEW [{1}].[{0}]\r\n",
-          entityDefinition.ViewName,
-          ScriptBuilder.DefaultSchema);
+          entityDefinition.ViewName.EntityName,
+          entityDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema);
     }
     
   }

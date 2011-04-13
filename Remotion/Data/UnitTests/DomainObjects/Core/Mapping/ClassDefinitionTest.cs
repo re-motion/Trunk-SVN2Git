@@ -81,9 +81,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _distributorClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
 
       _targetClassForPersistentMixinClass =
-           FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-           FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
     }
 
     [Test]
@@ -164,7 +164,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetStorageEntityDefinition ()
     {
       var tableDefinition = new TableDefinition (
-          _storageProviderDefinition, "Tablename", "Viewname", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Tablename"),
+          new EntityNameDefinition (null, "Viewname"),
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
 
       _domainBaseClass.SetStorageEntity (tableDefinition);
 
@@ -176,7 +180,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetStorageEntityDefinition_ClassIsReadOnly ()
     {
       var tableDefinition = new TableDefinition (
-          _storageProviderDefinition, "Tablename", "Viewname", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Tablename"),
+          new EntityNameDefinition (null, "Viewname"),
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       _domainBaseClass.SetReadOnly();
 
       _domainBaseClass.SetStorageEntity (tableDefinition);
@@ -1377,9 +1385,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (MixinA)).EnterScope ())
+      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinA)).EnterScope())
       {
-        classDefinition.ValidateCurrentMixinConfiguration (); // ok, no changes
+        classDefinition.ValidateCurrentMixinConfiguration(); // ok, no changes
       }
     }
 
@@ -1395,13 +1403,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot));
 
       using (MixinConfiguration
-          .BuildNew ()
+          .BuildNew()
           .ForClass (typeof (TargetClassAboveInheritanceRoot))
           .AddMixins (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot))
-          .EnterScope ())
+          .EnterScope())
       {
         // ok, no changes, even though the mixins stem from a base class
-        classDefinition.ValidateCurrentMixinConfiguration ();
+        classDefinition.ValidateCurrentMixinConfiguration();
       }
     }
 
@@ -1420,10 +1428,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
 
       using (
-          MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA)).EnterScope
+          MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA)).EnterScope
               ())
       {
-        classDefinition.ValidateCurrentMixinConfiguration ();
+        classDefinition.ValidateCurrentMixinConfiguration();
       }
     }
 
@@ -1436,9 +1444,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
-      using (MixinConfiguration.BuildFromActive ().ForClass<Order> ().Clear ().EnterScope ())
+      using (MixinConfiguration.BuildFromActive().ForClass<Order>().Clear().EnterScope())
       {
-        classDefinition.ValidateCurrentMixinConfiguration ();
+        classDefinition.ValidateCurrentMixinConfiguration();
       }
     }
 
@@ -1452,10 +1460,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Order), false, typeof (MixinA));
       using (
-          MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (
-              typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
+          MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (
+              typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())
       {
-        classDefinition.ValidateCurrentMixinConfiguration ();
+        classDefinition.ValidateCurrentMixinConfiguration();
       }
     }
 
@@ -1471,10 +1479,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinition classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "x", "xx", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, baseClassDefinition);
       using (
-          MixinConfiguration.BuildFromActive ().ForClass (typeof (Company)).Clear ().AddMixins (
-              typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
+          MixinConfiguration.BuildFromActive().ForClass (typeof (Company)).Clear().AddMixins (
+              typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())
       {
-        classDefinition.ValidateCurrentMixinConfiguration ();
+        classDefinition.ValidateCurrentMixinConfiguration();
       }
     }
   }

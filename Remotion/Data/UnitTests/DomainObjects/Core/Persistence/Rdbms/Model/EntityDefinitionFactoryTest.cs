@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _columnDefinitionResolverMock,
           _storageNameProviderMock,
           _storageProviderDefinition);
-      _testModel = new RdbmsPersistenceModelLoaderTestHelper ();
+      _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
       _fakeIDColumnDefinition = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
       _fakeColumnDefinition1 = new SimpleColumnDefinition ("Test1", typeof (string), "varchar", true, false);
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _fakeTimestampColumnDefinition = new SimpleColumnDefinition ("Timestamp", typeof (object), "rowversion", false, false);
 
       _fakeForeignKeyConstraint = new ForeignKeyConstraintDefinition (
-          "FakeForeignKeyConstraint", "Test", new[] { _fakeIDColumnDefinition }, new[] { _fakeColumnDefinition1 });
+          "FakeForeignKeyConstraint", new EntityNameDefinition(null, "Test"), new[] { _fakeIDColumnDefinition }, new[] { _fakeColumnDefinition1 });
     }
 
     [Test]
@@ -126,7 +126,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateFilterViewDefinition_DerivedClassWithoutDerivations ()
     {
       var fakeBaseEntityDefiniton = new TableDefinition (
-          _storageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "TestView"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition1))
@@ -162,7 +166,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateFilterViewDefinition_DerivedClassWithDerivations ()
     {
       var fakeBaseEntityDefiniton = new TableDefinition (
-          _storageProviderDefinition, "Test", "TestView", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "TestView"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.DerivedClassDefinition2))
@@ -198,9 +206,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void CreateUnionViewDefinition ()
     {
       var fakeUnionEntity1 = new TableDefinition (
-          _storageProviderDefinition, "Test1", "TestView1", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test1"),
+          new EntityNameDefinition (null, "TestView1"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       var fakeUnionEntity2 = new TableDefinition (
-          _storageProviderDefinition, "Test2", "TestView2", new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test2"),
+          new EntityNameDefinition (null, "TestView2"),
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
 
       _columnDefinitionResolverMock
           .Expect (mock => mock.GetColumnDefinitionsForHierarchy (_testModel.BaseBaseClassDefinition))
@@ -216,7 +232,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       _columnDefinitionFactoryMock.Replay();
 
-      var result = _factory.CreateUnionViewDefinition (_testModel.BaseBaseClassDefinition, new IEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
+      var result = _factory.CreateUnionViewDefinition (
+          _testModel.BaseBaseClassDefinition, new IEntityDefinition[] { fakeUnionEntity1, fakeUnionEntity2 });
 
       _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
@@ -242,8 +259,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (entityDefinition, Is.TypeOf (typeof (TableDefinition)));
       Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((TableDefinition) entityDefinition).TableName, Is.EqualTo (tableName));
-      Assert.That (((TableDefinition) entityDefinition).ViewName, Is.EqualTo (viewName));
+      Assert.That (((TableDefinition) entityDefinition).TableName.EntityName, Is.EqualTo (tableName));
+      Assert.That (((TableDefinition) entityDefinition).TableName.SchemaName, Is.Null);
+      Assert.That (((TableDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
+      Assert.That (((TableDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((TableDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
 
       var tableConstraints = ((TableDefinition) entityDefinition).Constraints;
@@ -279,7 +298,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (entityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
       Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((FilterViewDefinition) entityDefinition).ViewName, Is.EqualTo (viewName));
+      Assert.That (((FilterViewDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
+      Assert.That (((FilterViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((FilterViewDefinition) entityDefinition).BaseEntity, Is.SameAs (baseEntity));
       Assert.That (((FilterViewDefinition) entityDefinition).ClassIDs, Is.EqualTo (classIDs));
       Assert.That (((FilterViewDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
@@ -294,7 +314,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (entityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
       Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((UnionViewDefinition) entityDefinition).ViewName, Is.EqualTo (viewName));
+      Assert.That (((UnionViewDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
+      Assert.That (((UnionViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((UnionViewDefinition) entityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
       Assert.That (((UnionViewDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
     }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -26,18 +27,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class TestableConstraintBuilder : ConstraintBuilderBase
   {
     public TestableConstraintBuilder (ISqlDialect sqlDialect)
-        : base(sqlDialect)
+        : base (sqlDialect)
     {
     }
 
     public override void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder)
     {
-      createConstraintStringBuilder.Append ("ADD CONSTRAINT [FK_"+tableDefinition.TableName+"_ID]");
+      createConstraintStringBuilder.Append ("ADD CONSTRAINT [FK_" + tableDefinition.TableName.EntityName + "_ID]");
     }
 
-    public override void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
+    public override void AddToDropConstraintScript (
+        List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
     {
-      dropConstraintStringBuilder.Append ("DROP CONSTRAINT ["+string.Join (", ", entityNamesForDropConstraintScript.ToArray ())+"]");
+      dropConstraintStringBuilder.Append (
+          "DROP CONSTRAINT [" + string.Join (", ", entityNamesForDropConstraintScript.Select (en => en.EntityName).ToArray()) + "]");
     }
   }
 }

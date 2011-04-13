@@ -42,11 +42,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _column3 = new SimpleColumnDefinition ("Test", typeof (string), "varchar(100)", true, false);
 
       _tableDefinition1 = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Order", "OrderView", new[]{_column1, _column2}, new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Order"),
+          new EntityNameDefinition (null, "OrderView"),
+          new[] { _column1, _column2 },
+          new ITableConstraintDefinition[0]);
       _tableDefinition2 = new TableDefinition (
-         SchemaGenerationFirstStorageProviderDefinition, "Customer", "CustomerView", new[]{_column3}, new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Customer"),
+          new EntityNameDefinition (null, "CustomerView"),
+          new[] { _column3 },
+          new ITableConstraintDefinition[0]);
       _filterViewDefinition = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "OrderView", _tableDefinition1, new[] { "ClassID" }, new[] { _column1, _column2 });
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "OrderView"),
+          _tableDefinition1,
+          new[] { "ClassID" },
+          new[] { _column1, _column2 });
     }
 
     [Test]
@@ -91,14 +103,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    WHERE [ClassID] IN ('ClassID')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
     }
 
     [Test]
     public void GetCreateViewScript_UnionViewDefinitionWithOneTable ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "OrderView", new[] { _tableDefinition1 }, new[]{_column1, _column2});
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "OrderView"),
+          new[] { _tableDefinition1 },
+          new[] { _column1, _column2 });
 
       _viewBuilder.AddView (unionViewDefinition);
 
@@ -109,14 +124,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
     }
 
     [Test]
     public void GetCreateViewScript_UnionViewDefinitionWithSeveralTables ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "OrderView", new[] { _tableDefinition1, _tableDefinition2 }, new[] { _column1, _column2, _column3 });
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition(null, "OrderView"),
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { _column1, _column2, _column3 });
 
       _viewBuilder.AddView (unionViewDefinition);
 
@@ -129,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  SELECT NULL, NULL, [Test]\r\n"
           + "    FROM [dbo].[Customer]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetCreateViewScript());
     }
 
 
@@ -142,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
     }
 
     [Test]
@@ -157,8 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[CustomerView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilder.GetDropViewScript());
     }
-  
   }
 }

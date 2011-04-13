@@ -34,8 +34,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       createTableStringBuilder.AppendFormat (
           "CREATE TABLE [{0}].[{1}]\r\n(\r\n{2},\r\n  {3}\r\n)\r\n",
-          ScriptBuilder.DefaultSchema,
-          tableDefinition.TableName,
+          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          tableDefinition.TableName.EntityName,
           GetColumnList(tableDefinition),
           GetPrimaryKeyConstraintStatement(tableDefinition));
     }
@@ -48,8 +48,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       dropTableStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP TABLE [{1}].[{0}]\r\n",
-          tableDefinition.TableName,
-          ScriptBuilder.DefaultSchema);
+          tableDefinition.TableName.EntityName,
+          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema);
     }
     
   }

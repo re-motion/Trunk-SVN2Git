@@ -28,13 +28,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class ForeignKeyConstraintDefinition : ITableConstraintDefinition
   {
     private readonly string _constraintName;
-    private readonly string _referencedTableName;
+    private readonly EntityNameDefinition _referencedTableName;
     private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencingColumns;
     private readonly ReadOnlyCollection<SimpleColumnDefinition> _referencedColumns;
 
     public ForeignKeyConstraintDefinition (
         string constraintName,
-        string referencedTableName,
+        EntityNameDefinition referencedTableName, //TODO RM-3862: don't pass the table name here -> get it from its TableDefinition !?
         IEnumerable<SimpleColumnDefinition> referencingColumns,
         IEnumerable<SimpleColumnDefinition> referencedColumns)
     {
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraintName; }
     }
 
-    public string ReferencedTableName
+    public EntityNameDefinition ReferencedTableName
     {
       get { return _referencedTableName; }
     }

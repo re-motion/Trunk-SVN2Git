@@ -28,19 +28,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class UnionViewDefinition : IEntityDefinition
   {
-    private readonly string _viewName;
+    private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
 
     public UnionViewDefinition (
         StorageProviderDefinition storageProviderDefinition,
-        string viewName,
+        EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
         IEnumerable<IColumnDefinition> columns)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotEmpty ("viewName", viewName);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
       ArgumentUtility.CheckNotNull ("columns", columns);
 
@@ -75,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageProviderDefinition; }
     }
 
-    public string ViewName
+    public EntityNameDefinition ViewName
     {
       get { return _viewName; }
     }
@@ -92,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyViewName
     {
-      get { return _viewName; }
+      get { return _viewName.EntityName; }
     }
 
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()

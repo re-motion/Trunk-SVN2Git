@@ -29,21 +29,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public class TableDefinition : IEntityDefinition
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly string _tableName;
-    private readonly string _viewName;
+    private readonly EntityNameDefinition _tableName;
+    private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
 
     public TableDefinition (
         StorageProviderDefinition storageProviderDefinition,
-        string tableName,
-        string viewName,
+        EntityNameDefinition tableName,
+        EntityNameDefinition viewName,
         IEnumerable<IColumnDefinition> columns,
         IEnumerable<ITableConstraintDefinition> constraints)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
-      ArgumentUtility.CheckNotEmpty ("viewName", viewName);
+      ArgumentUtility.CheckNotNull ("tableName", tableName);
       ArgumentUtility.CheckNotNull ("columns", columns);
       ArgumentUtility.CheckNotNull ("constraints", constraints);
 
@@ -64,12 +63,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageProviderDefinition; }
     }
 
-    public string TableName
+    public EntityNameDefinition TableName
     {
       get { return _tableName; }
     }
 
-    public string ViewName
+    public EntityNameDefinition ViewName
     {
       get { return _viewName; }
     }
@@ -81,12 +80,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyEntityName
     {
-      get { return _tableName; }
+      get { return _tableName.EntityName; }
     }
 
     public string LegacyViewName
     {
-      get { return _viewName; }
+      get { return _viewName.EntityName; }
     }
 
     public ReadOnlyCollection<IColumnDefinition> GetColumns ()

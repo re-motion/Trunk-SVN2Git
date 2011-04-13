@@ -16,26 +16,28 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public class ExtendendFileBuilder : FileBuilder
+  public class ExtendedFileBuilder : FileBuilder
   {
-    public ExtendendFileBuilder (ScriptBuilderBase scriptBuilder)
-        : base(scriptBuilder)
+    public ExtendedFileBuilder (ScriptBuilderBase scriptBuilder)
+        : base (scriptBuilder)
     {
     }
 
     public override string GetScript (IEnumerable<ClassDefinition> classDefinitions)
     {
-      var script = new StringBuilder(base.GetScript (classDefinitions));
+      var script = new StringBuilder (base.GetScript (classDefinitions));
 
+      script.Insert (0, "CREATE SCHEMA Test\r\nGO\r\n");
       script.Insert (0, "--Extendend file-builder comment at the beginning\r\n");
+      script.AppendLine ("DROP SCHEMA Test");
       script.AppendLine ("--Extendend file-builder comment at the end");
 
       return script.ToString();
@@ -46,12 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinitions = base.GetEntityDefinitions (classDefinitions).ToList();
 
       var tableDefinitions = entityDefinitions.OfType<TableDefinition>().ToList();
-      if (tableDefinitions.Count () > 0)
+      if (tableDefinitions.Count() > 0)
       {
         var firstTableDefinition = tableDefinitions[0];
         var newTableDefinition = new TableDefinition (
             firstTableDefinition.StorageProviderDefinition,
-            "NewTableName",
+            new EntityNameDefinition ("Test", "NewTableName"),
             firstTableDefinition.ViewName,
             firstTableDefinition.GetColumns(),
             firstTableDefinition.Constraints);
@@ -59,7 +61,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         entityDefinitions.Add (newTableDefinition);
 
         var newFilterViewDefinition = new FilterViewDefinition (
-            firstTableDefinition.StorageProviderDefinition, "AddedView", firstTableDefinition, new[]{"ClassID"}, firstTableDefinition.GetColumns());
+            firstTableDefinition.StorageProviderDefinition,
+            new EntityNameDefinition ("Test", "AddedView"),
+            firstTableDefinition,
+            new[] { "ClassID" },
+            firstTableDefinition.GetColumns());
         entityDefinitions.Add (newFilterViewDefinition);
       }
 

@@ -266,7 +266,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBaseTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendendFileBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendedFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableConstraintBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableTableBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableViewBuilder.cs" />

@@ -40,11 +40,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
       _entityDefinition = new TableDefinition (
-          _storageProviderDefinition, "Table", "View", new[] { _column1, _column2, _column3 }, new ITableConstraintDefinition[0]);
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Table"),
+          new EntityNameDefinition (null, "View"),
+          new[] { _column1, _column2, _column3 },
+          new ITableConstraintDefinition[0]);
 
       _filterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition (null, "Test"),
           _entityDefinition,
           new[] { "ClassId1", "ClassId2" },
           new[] { _column1, _column3 });
@@ -57,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (_filterViewDefinition.ClassIDs[0], Is.EqualTo ("ClassId1"));
       Assert.That (_filterViewDefinition.ClassIDs[1], Is.EqualTo ("ClassId2"));
       Assert.That (_filterViewDefinition.BaseEntity, Is.SameAs (_entityDefinition));
-      Assert.That (_filterViewDefinition.ViewName, Is.EqualTo ("Test"));
+      Assert.That (_filterViewDefinition.ViewName.EntityName, Is.EqualTo ("Test"));
       Assert.That (_filterViewDefinition.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_filterViewDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
     }
@@ -65,7 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization_WithBaseFilterViewEntity ()
     {
-      new FilterViewDefinition (_storageProviderDefinition, "Test", _filterViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
+      new FilterViewDefinition (
+          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), _filterViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
     }
 
     [Test]
@@ -75,10 +80,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          "TestUnion",
-          new IEntityDefinition[] { new TableDefinition (_storageProviderDefinition, "Test", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]) },
+          new EntityNameDefinition (null, "TestUnion"),
+          new IEntityDefinition[]
+          {
+              new TableDefinition (
+              _storageProviderDefinition, new EntityNameDefinition (null, "Test"), null, new IColumnDefinition[0], new ITableConstraintDefinition[0])
+          },
           new IColumnDefinition[0]);
-      new FilterViewDefinition (_storageProviderDefinition, "Test", unionViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
+      new FilterViewDefinition (
+          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), unionViewDefinition, new[] { "x" }, new IColumnDefinition[0]);
     }
 
     [Test]
@@ -122,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var derivedFilterViewDefinition = new FilterViewDefinition (
           _storageProviderDefinition,
-          "Test",
+          new EntityNameDefinition(null, "Test"),
           _filterViewDefinition,
           new[] { "x" },
           new IColumnDefinition[0]);

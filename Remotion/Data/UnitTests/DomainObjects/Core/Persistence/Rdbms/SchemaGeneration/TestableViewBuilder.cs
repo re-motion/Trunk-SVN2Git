@@ -31,22 +31,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public override void AddFilterViewToCreateViewScript (FilterViewDefinition filterViewDefinition, StringBuilder createViewStringBuilder)
     {
-      createViewStringBuilder.Append ("CREATE VIEW [" + filterViewDefinition.ViewName + "]");
+      createViewStringBuilder.Append ("CREATE VIEW [" + filterViewDefinition.ViewName.EntityName + "]");
     }
 
     public override void AddTableViewToCreateViewScript (TableDefinition tableDefinition, StringBuilder createViewStringBuilder)
     {
-      createViewStringBuilder.Append ("CREATE VIEW [" + tableDefinition.ViewName + "]");
+      createViewStringBuilder.Append ("CREATE VIEW [" + tableDefinition.ViewName.EntityName + "]");
     }
 
     public override void AddUnionViewToCreateViewScript (UnionViewDefinition unionViewDefinition, StringBuilder createViewStringBuilder)
     {
-      createViewStringBuilder.Append ("CREATE VIEW [" + unionViewDefinition.ViewName + "]");
+      createViewStringBuilder.Append ("CREATE VIEW [" + unionViewDefinition.ViewName.EntityName + "]");
     }
 
     public override void AddToDropViewScript (IEntityDefinition entityDefinition, StringBuilder dropViewStringBuilder)
     {
-      dropViewStringBuilder.Append ("DROP VIEW ["+entityDefinition.ViewName+"]");
+      dropViewStringBuilder.Append ("DROP VIEW ["+entityDefinition.ViewName.EntityName+"]");
     }
 
     public override string CreateViewSeparator

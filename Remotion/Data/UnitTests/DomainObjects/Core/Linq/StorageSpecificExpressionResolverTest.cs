@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
       var tableDefinition = new TableDefinition (
           TestDomainStorageProviderDefinition,
-          "Test",
+          new EntityNameDefinition(null, "Test"),
           null,
           new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDColumn, simpleColumn }, new ITableConstraintDefinition[0]);
       _classDefinition.SetStorageEntity (tableDefinition);

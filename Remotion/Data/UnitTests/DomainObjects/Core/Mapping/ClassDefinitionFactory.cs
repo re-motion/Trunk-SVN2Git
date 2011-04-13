@@ -184,7 +184,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       {
         classDefinition.SetStorageEntity (
             new TableDefinition (
-                storageProviderDefinition, entityName, classDefinition.ID + "View", new SimpleColumnDefinition[0], new ITableConstraintDefinition[0]));
+                storageProviderDefinition,
+                new EntityNameDefinition (null, entityName),
+                new EntityNameDefinition(null, classDefinition.ID + "View"),
+                new SimpleColumnDefinition[0],
+                new ITableConstraintDefinition[0]));
       }
       else
       {

@@ -19,6 +19,7 @@ using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -38,13 +39,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         createConstraintStringBuilder.AppendFormat (
             "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
-            ScriptBuilder.DefaultSchema,
-            tableDefinition.TableName,
+            tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.EntityName,
             constraintStatement);
       }
     }
 
-    public override void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
+    public override void AddToDropConstraintScript (List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("entityNamesForDropConstraintScript", entityNamesForDropConstraintScript);
       ArgumentUtility.CheckNotNull ("dropConstraintStringBuilder", dropConstraintStringBuilder);
@@ -52,13 +53,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       dropConstraintStringBuilder.AppendFormat (
           "DECLARE @statement nvarchar (max)\r\n"
           + "SET @statement = ''\r\n"
-          + "SELECT @statement = @statement + 'ALTER TABLE [{0}].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
-          + "    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id \r\n"
-          + "    WHERE fk.xtype = 'F' AND t.name IN ('{1}')\r\n"
-          + "    ORDER BY t.name, fk.name\r\n"
+          + "SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
+          + "FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id \r\n"
+          + "WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('{0}') \r\n"
+          + "ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n",
-          ScriptBuilder.DefaultSchema,
-          string.Join ("', '", entityNamesForDropConstraintScript.ToArray()));
+          string.Join("', '", entityNamesForDropConstraintScript.Select(en=>(en.SchemaName ?? ScriptBuilder.DefaultSchema)+"."+en.EntityName).ToArray()));
     }
   
   }

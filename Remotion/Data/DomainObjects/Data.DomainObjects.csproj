@@ -218,6 +218,7 @@
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
+    <Compile Include="Persistence\Rdbms\Model\EntityNameDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\ForeignKeyConstraintDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\IColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\IForeignKeyConstraintDefinitionFactory.cs" />

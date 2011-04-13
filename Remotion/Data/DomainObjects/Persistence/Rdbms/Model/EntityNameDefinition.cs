@@ -15,28 +15,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class TestableTableBuilder : TableBuilderBase
+  public class EntityNameDefinition
   {
-    public TestableTableBuilder (ISqlDialect sqlDialect)
-        : base(sqlDialect)
+    private readonly string _schemaName;
+    private readonly string _entityName;
+
+    public EntityNameDefinition (string schemaName, string entityName)
     {
+      ArgumentUtility.CheckNotEmpty ("schemaName", schemaName);
+      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+
+      _schemaName = schemaName;
+      _entityName = entityName;
     }
 
-    public override void AddToCreateTableScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder)
+    public string SchemaName
     {
-      createTableStringBuilder.Append ("CREATE TABLE ["+tableDefinition.TableName.EntityName+"]");
+      get { return _schemaName; }
     }
 
-    public override void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder)
+    public string EntityName
     {
-      dropTableStringBuilder.Append ("DROP TABLE [" + tableDefinition.TableName.EntityName + "]");
+      get { return _entityName; }
     }
   }
 }

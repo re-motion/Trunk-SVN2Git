@@ -106,7 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       //OrderItem and OrderTicket endpoints are virtual and Official endpoint has different storage provider
       Assert.That (foreignKeyConstraintDefinitions.Length, Is.EqualTo (1));
       var foreignKeyConstraint = foreignKeyConstraintDefinitions[0];
-      Assert.That (foreignKeyConstraint.ReferencedTableName, Is.EqualTo ("FakeTableName"));
+      Assert.That (foreignKeyConstraint.ReferencedTableName.EntityName, Is.EqualTo ("FakeTableName"));
+      Assert.That (foreignKeyConstraint.ReferencedTableName.SchemaName, Is.Null);
       Assert.That (foreignKeyConstraint.ConstraintName, Is.EqualTo ("FakeConstraintName"));
       Assert.That (foreignKeyConstraint.ReferencingColumns, Is.EqualTo (new[] { _fakeIdColumnDefinition.ObjectIDColumn }));
       Assert.That (foreignKeyConstraint.ReferencedColumns, Is.EqualTo (new[] { _fakeForeignColumnDefinition.ObjectIDColumn }));

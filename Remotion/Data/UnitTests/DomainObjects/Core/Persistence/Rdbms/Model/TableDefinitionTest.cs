@@ -40,13 +40,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                          new PrimaryKeyConstraintDefinition (
                              "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false, false) })
                      };
-      _tableDefintion = new TableDefinition (_storageProviderDefinition, "Test", "TestView", _columns, _constraints);
+      _tableDefintion = new TableDefinition (
+          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), new EntityNameDefinition (null, "TestView"), _columns, _constraints);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_tableDefintion.TableName, Is.EqualTo ("Test"));
+      Assert.That (_tableDefintion.TableName.EntityName, Is.EqualTo ("Test"));
       Assert.That (_tableDefintion.StorageProviderID, Is.EqualTo ("SPID"));
       Assert.That (_tableDefintion.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
     }
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Initialization_ViewNameNull ()
     {
-      var tableDefinition = new TableDefinition (_storageProviderDefinition, "Test", null, _columns, _constraints);
+      var tableDefinition = new TableDefinition (_storageProviderDefinition, new EntityNameDefinition(null, "Test"), null, _columns, _constraints);
       Assert.That (tableDefinition.ViewName, Is.Null);
     }
 
@@ -104,6 +105,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       visitorMock.VerifyAllExpectations();
     }
-   
   }
 }

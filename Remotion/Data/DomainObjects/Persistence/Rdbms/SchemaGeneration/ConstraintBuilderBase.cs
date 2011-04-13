@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public abstract class ConstraintBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createConstraintStringBuilder;
-    private readonly List<string> _entityNamesForDropConstraintScript;
+    private readonly List<EntityNameDefinition> _entityNamesForDropConstraintScript;
     private readonly ISqlDialect _sqlDialect;
 
     protected ConstraintBuilderBase (ISqlDialect sqlDialect)
@@ -34,11 +34,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       _sqlDialect = sqlDialect;
       _createConstraintStringBuilder = new StringBuilder();
-      _entityNamesForDropConstraintScript = new List<string>();
+      _entityNamesForDropConstraintScript = new List<EntityNameDefinition>();
     }
 
     public abstract void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder);
-    public abstract void AddToDropConstraintScript (List<string> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
+    public abstract void AddToDropConstraintScript (List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
 
     public string GetAddConstraintScript ()
     {

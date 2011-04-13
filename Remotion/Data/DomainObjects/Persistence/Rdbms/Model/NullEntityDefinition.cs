@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _storageProviderDefinition; }
     }
 
-    public string ViewName
+    public EntityNameDefinition ViewName
     {
       get { return null; }
     }

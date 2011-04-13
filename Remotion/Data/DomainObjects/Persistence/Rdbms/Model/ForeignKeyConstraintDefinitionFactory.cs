@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
         var foreignKeyConstraintDefinition = new ForeignKeyConstraintDefinition (
             _storageNameProvider.GetForeignKeyConstraintName (classDefinition, endPointColumnDefinition),
-            FindTableName(oppositeClassDefinition),
+            new EntityNameDefinition(null, FindTableName(oppositeClassDefinition)),
             referencingColumns,
             referencedColumns);
         foreignKeyConstraintDefinitions.Add (foreignKeyConstraintDefinition);

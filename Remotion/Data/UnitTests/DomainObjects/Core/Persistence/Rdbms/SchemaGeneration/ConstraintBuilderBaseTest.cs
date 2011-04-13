@@ -35,27 +35,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _constraintBuilder = new TestableConstraintBuilder(_sqlDialectStub);
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _constraintBuilder = new TestableConstraintBuilder (_sqlDialectStub);
       _tableDefinition1 = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Order", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Order"),
+          null,
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       _tableDefinition2 = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Customer", null, new IColumnDefinition[0], new ITableConstraintDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Customer"),
+          null,
+          new IColumnDefinition[0],
+          new ITableConstraintDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Test", new[] { _tableDefinition1 }, new IColumnDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new[] { _tableDefinition1 },
+          new IColumnDefinition[0]);
       _filterViewDefinition = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition, "Test", _tableDefinition1, new[]{"ClassID"}, new IColumnDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          _tableDefinition1,
+          new[] { "ClassID" },
+          new IColumnDefinition[0]);
       _nullEntityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
     }
 
     [Test]
     public void AddConstraint ()
     {
-      _constraintBuilder.AddConstraint(_tableDefinition1);
-      
-      var createTableScript = _constraintBuilder.GetAddConstraintScript ();
+      _constraintBuilder.AddConstraint (_tableDefinition1);
+
+      var createTableScript = _constraintBuilder.GetAddConstraintScript();
       var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]");
@@ -68,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _constraintBuilder.AddConstraint (_tableDefinition1);
       _constraintBuilder.AddConstraint (_tableDefinition2);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript ();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript ();
+      var createTableScript = _constraintBuilder.GetAddConstraintScript();
+      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]\r\nADD CONSTRAINT [FK_Customer_ID]");
       Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [Order, Customer]");
@@ -92,8 +107,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _constraintBuilder.AddConstraint (_filterViewDefinition);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript ();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript ();
+      var createTableScript = _constraintBuilder.GetAddConstraintScript();
+      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);
@@ -104,8 +119,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _constraintBuilder.AddConstraint (_nullEntityDefinition);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript ();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript ();
+      var createTableScript = _constraintBuilder.GetAddConstraintScript();
+      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);
@@ -114,8 +129,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoConstraintsAdded ()
     {
-      var createTableScript = _constraintBuilder.GetAddConstraintScript ();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript ();
+      var createTableScript = _constraintBuilder.GetAddConstraintScript();
+      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);

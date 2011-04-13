@@ -78,10 +78,10 @@ GO
 -- Drop foreign keys of all tables that will be created below
 DECLARE @statement nvarchar (max)
 SET @statement = ''
-SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
-    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('Address', 'Ceo', 'TableWithAllDataTypes', 'TableWithoutProperties', 'TableWithRelations', 'Customer', 'AbstractClass', 'ConcreteClass', 'DevelopmentPartner', 'Employee', 'FirstClass', 'Order', 'OrderItem', 'SecondClass', 'SiblingOfTableWithRelations', 'ThirdClass')
-    ORDER BY t.name, fk.name
+SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
+FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id 
+WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('dbo.Address', 'dbo.Ceo', 'dbo.TableWithAllDataTypes', 'dbo.TableWithoutProperties', 'dbo.TableWithRelations', 'dbo.Customer', 'dbo.AbstractClass', 'dbo.ConcreteClass', 'dbo.DevelopmentPartner', 'dbo.Employee', 'dbo.FirstClass', 'dbo.Order', 'dbo.OrderItem', 'dbo.SecondClass', 'dbo.SiblingOfTableWithRelations', 'dbo.ThirdClass') 
+ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
 
