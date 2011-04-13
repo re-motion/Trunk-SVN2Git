@@ -23,6 +23,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IVirtualEndPoint : IRelationEndPoint
   {
+    bool CanBeCollected { get; }
+
     void MarkDataIncomplete ();
 
     void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);

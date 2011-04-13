@@ -41,6 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CanBeCollected ()
+    {
+      Assert.That (_nullEndPoint.CanBeCollected, Is.True);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "A NullObjectEndPoint cannot be used to synchronize an opposite end-point.")]
     public void SynchronizeOppositeEndPoint ()

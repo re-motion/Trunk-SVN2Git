@@ -349,43 +349,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void UnregisterVirtualObjectEndPoint_RemovesEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      CallRegisterVirtualObjectEndPoint (_map, id);
-      Assert.That (_map[id], Is.Not.Null);
-
-      CallUnregisterVirtualObjectEndPoint (_map, id);
-
-      Assert.That (_map[id], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot remove end-point "
-        +
-        "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' because it has "
-        + "changed. End-points can only be unregistered when they are unchanged.")]
-    public void UnregisterVirtualObjectEndPoint_ThrowsWhenChanged ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var virtualObjectEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
-      virtualObjectEndPointStub.Stub (stub => stub.ID).Return (id);
-      virtualObjectEndPointStub.Stub (stub => stub.HasChanged).Return (true);
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointStub);
-      
-      try
-      {
-        CallUnregisterVirtualObjectEndPoint (_map, id);
-      }
-      finally
-      {
-        Assert.That (_map[id], Is.SameAs (virtualObjectEndPointStub));
-      }
-    }
-
-    [Test]
     public void RegisterRealObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -574,9 +537,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
+      oppositeEndPointMock.Stub (stub => stub.CanBeCollected).Return (false);
       oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
       oppositeEndPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
       
       _map.UnregisterRealObjectEndPoint (id);
 
@@ -597,14 +562,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oppositeEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
+      oppositeEndPointMock.Stub (stub => stub.CanBeCollected).Return (false);
       oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
-      oppositeEndPointMock.Replay();
+      oppositeEndPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
 
       _map.UnregisterRealObjectEndPoint (id);
 
       oppositeEndPointMock.VerifyAllExpectations();
       Assert.That (_map[oppositeEndPointID], Is.Not.Null);
+    }
+
+    [Test]
+    public void UnregisterRealObjectEndPoint_RemovesOppositeVirtualObjectEndPoint_IfCanBeCollected ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
+      var realEndPoint = new RealObjectEndPoint (
+          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
+
+      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
+      oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
+      oppositeEndPointStub.Stub (stub => stub.HasChanged).Return (false);
+      oppositeEndPointStub.Stub (stub => stub.CanBeCollected).Return (true);
+      oppositeEndPointStub.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointStub);
+
+      _map.UnregisterRealObjectEndPoint (id);
+
+      oppositeEndPointStub.VerifyAllExpectations ();
+      Assert.That (_map[oppositeEndPointID], Is.Null);
     }
 
     [Test]
@@ -615,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
       var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      _map.UnregisterCollectionEndPoint (oppositeEndPointID); // remove the CollectionEndPoint that was added by RegisterRealObjectEndPoint
+      RelationEndPointMapTestHelper.RemoveEndPoint (_map, oppositeEndPointID);
       Assert.That (_map[oppositeEndPointID], Is.Null);
 
       _map.UnregisterRealObjectEndPoint (id);
@@ -690,55 +681,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.LazyLoader, Is.SameAs (_map.LazyLoader));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_map.CollectionEndPointDataKeeperFactory));
-    }
-
-    [Test]
-    public void UnregisterCollectionObjectEndPoint_UnregistersEndPoint ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RegisterCollectionEndPoint (endPointID);
-
-      Assert.That (_map[endPointID], Is.Not.Null);
-
-      _map.UnregisterCollectionEndPoint (endPointID);
-
-      Assert.That (_map[endPointID], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The given end-point is not part of this map.\r\nParameter name: endPointID")]
-    public void UnregisterCollectionObjectEndPoint_ThrowsWhenNotRegistered ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-
-      _map.UnregisterCollectionEndPoint (endPointID);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot remove end-point "
-        + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' because "
-        + "it has changed. End-points can only be unregistered when they are unchanged.")]
-    public void UnregisterCollectionEndPoint_ThrowsWhenChanged ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var collectionEndPoint = _map.RegisterCollectionEndPoint (endPointID);
-      collectionEndPoint.MarkDataComplete (new DomainObject[0]);
-      Assert.That (_map[endPointID], Is.Not.Null);
-
-      var item = Order.NewObject();
-      collectionEndPoint.Collection.Add (item);
-      Assert.That (collectionEndPoint.HasChanged, Is.True);
-
-      try
-      {
-        _map.UnregisterCollectionEndPoint (endPointID);
-      }
-      finally
-      {
-        Assert.That (_map[endPointID], Is.SameAs (collectionEndPoint));
-      }
     }
 
     [Test]

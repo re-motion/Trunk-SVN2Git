@@ -29,6 +29,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
     }
 
+    public bool CanBeCollected
+    {
+      get { return true; }
+    }
+
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("A NullObjectEndPoint cannot be used to synchronize an opposite end-point.");

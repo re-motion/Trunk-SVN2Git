@@ -223,6 +223,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
+    public bool CanBeCollected
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public void MarkDataIncomplete ()
     {
       throw new NotImplementedException();

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
 
@@ -30,6 +31,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       endPointMap.RemoveEndPoint (endPoint.ID);
       AddEndPoint (endPointMap, endPoint);
+    }
+
+    public static void RemoveEndPoint (RelationEndPointMap map, RelationEndPointID relationEndPointID)
+    {
+      map.RemoveEndPoint (relationEndPointID);
     }
   }
 }

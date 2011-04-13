@@ -223,16 +223,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectEndPoint;
     }
 
-    private void UnregisterVirtualObjectEndPoint (RelationEndPointID endPointID)
-    {
-      var objectEndPoint = (IObjectEndPoint) this[endPointID];
-      Assertion.IsNotNull (objectEndPoint, "This method is only called in situations where the end-point has been registered.");
-
-      CheckUnchangedForUnregister (endPointID, objectEndPoint);
-
-      RemoveEndPoint (endPointID);
-    }
-
     public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -247,20 +237,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Add (collectionEndPoint);
 
       return collectionEndPoint;
-    }
-
-    public void UnregisterCollectionEndPoint (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.Many, "UnregisterCollectionEndPoint", "endPointID");
-
-      var collectionEndPoint = (ICollectionEndPoint) this[endPointID];
-      if (collectionEndPoint == null)
-        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
-
-      CheckUnchangedForUnregister (endPointID, collectionEndPoint);
-      
-      RemoveEndPoint (endPointID);
     }
 
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
@@ -322,11 +298,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
         if (!endPointID.Definition.IsVirtual)
+        {
           UnregisterRealObjectEndPoint (endPointID);
-        else if (endPointID.Definition.Cardinality == CardinalityType.One)
-          UnregisterVirtualObjectEndPoint (endPointID);
+        }
         else
-          UnregisterCollectionEndPoint (endPointID);
+        {
+          var endPoint = this[endPointID];
+          Assertion.IsTrue (IsUnregisterable (endPoint));
+          RemoveEndPoint (endPointID);
+        }
       }
     }
 
@@ -430,6 +410,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
     {
+      // DataContainers usually own all non-virtual end-points. New DataContainers also own all virtual end-points.
       var includeVirtualEndPoints = dataContainer.State == StateType.New;
       return dataContainer.AssociatedRelationEndPointIDs.Where (endPointID => !endPointID.Definition.IsVirtual || includeVirtualEndPoints);
     }
@@ -541,45 +522,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
         {
           Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
           oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
+          if (oppositeEndPoint.CanBeCollected)
+          {
+            Assertion.IsTrue (IsUnregisterable (oppositeEndPoint), "Caller checks that this end-point is unregisterable.");
+            RemoveEndPoint (oppositeEndPoint.ID);
+          }
         }
       }
-    }
-
-    // Check whether the given dataContainer contains a conflicting foreign key for the given definition. A foreign key is conflicting if it
-    // is non-null and points to an object that already points back to another object.
-    private void CheckForConflictingForeignKey (
-        DataContainer dataContainer,
-        IRelationEndPointDefinition foreignKeyEndPointDefinition,
-        IRelationEndPointDefinition oppositeVirtualObjectEndPointDefinition)
-    {
-      Assertion.IsTrue (foreignKeyEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (dataContainer.ClassDefinition));
-      Assertion.IsFalse (foreignKeyEndPointDefinition.IsVirtual);
-      Assertion.IsTrue (oppositeVirtualObjectEndPointDefinition.IsVirtual);
-      Assertion.IsTrue (oppositeVirtualObjectEndPointDefinition.Cardinality == CardinalityType.One);
-
-      var foreignKeyValue =
-          (ObjectID) dataContainer.PropertyValues[foreignKeyEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
-      if (foreignKeyValue == null) // null is never a conflicting foreign key value
-        return;
-
-      var oppositeVirtualEndPointID = RelationEndPointID.Create(foreignKeyValue, oppositeVirtualObjectEndPointDefinition);
-      var existingOppositeVirtualEndPoint = (IObjectEndPoint) this[oppositeVirtualEndPointID];
-      
-      // if the opposite end point does not exist - or is incomplete -, this is not a conflicting foreign key value
-      if (existingOppositeVirtualEndPoint == null || !existingOppositeVirtualEndPoint.IsDataComplete) 
-        return;
-
-      var existingConflictingObjectID = existingOppositeVirtualEndPoint.OriginalOppositeObjectID;
-      var message =
-            string.Format (
-                "The data of object '{0}' conflicts with existing data: It has a foreign key "
-                + "property '{1}' which points to object '{2}'. However, that object has previously been determined to point back to object '{3}'. "
-                + "These two pieces of information contradict each other.",
-                dataContainer.ID,
-                foreignKeyEndPointDefinition.PropertyName,
-                foreignKeyValue,
-                existingConflictingObjectID != null ? existingConflictingObjectID.ToString() : "<null>");
-      throw new InvalidOperationException (message);
     }
 
     #region Serialization

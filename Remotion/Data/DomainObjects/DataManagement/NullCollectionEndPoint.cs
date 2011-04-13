@@ -75,6 +75,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
+    public bool CanBeCollected
+    {
+      get { return true; }
+    }
+
     public bool HasChanged
     {
       get { return false; }

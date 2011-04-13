@@ -65,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (id.ObjectID, Is.Null);
     }
 
-
     [Test]
     public void Collection_Get ()
     {
@@ -101,9 +100,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void IsDataComplete_True ()
+    public void IsDataComplete ()
     {
       Assert.That (_nullEndPoint.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void CanBeCollected ()
+    {
+      Assert.That (_nullEndPoint.CanBeCollected, Is.True);
     }
 
     [Test]
