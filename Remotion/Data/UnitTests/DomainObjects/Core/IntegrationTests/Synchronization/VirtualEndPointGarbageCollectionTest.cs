@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -34,10 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       industrialSector.Companies.EnsureDataComplete();
 
-      var unsynchronizedCompanyID = 
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector>(
-            industrialSector.ID, 
-            (c, s) => c.IndustrialSector = s);
+      var unsynchronizedCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
       var unsynchronizedCompany = Company.GetObject (unsynchronizedCompanyID);
 
       var dataManager = ClientTransactionMock.DataManager;
@@ -59,23 +57,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       SetDatabaseModifyable ();
 
-      var order = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-      order.OrderItems.EnsureDataComplete ();
-      Assert.That (order.OrderItems, Is.Empty);
+      var employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      employee.Subordinates.EnsureDataComplete ();
+      Assert.That (employee.Subordinates, Is.Empty);
 
-      var unsynchronizedOrderItemID =
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (
-            order.ID,
-            (oi, o) => oi.Order = o);
-      var unsynchronizedOrderItem = OrderItem.GetObject (unsynchronizedOrderItemID);
+      var unsynchronizedSubordinateID =
+          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Employee, Employee> (
+            employee.ID,
+            (subOrdinate, e) => subOrdinate.Supervisor = e);
+      var unsynchronizedSubordinate = Employee.GetObject (unsynchronizedSubordinateID);
 
       var dataManager = ClientTransactionMock.DataManager;
-      var virtualEndPointID = RelationEndPointID.Create (order, o => o.OrderItems);
+      var virtualEndPointID = RelationEndPointID.Create (employee, o => o.Subordinates);
 
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedOrderItem.ID);
+      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedSubordinate.ID);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
     }
@@ -132,6 +130,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       UnloadService.UnloadData (ClientTransactionMock, unsynchronizedComputer.ID);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
+    }
+
+    protected ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
+    {
+      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
+      {
+        c.IndustrialSector = s;
+        c.Ceo = Ceo.NewObject ();
+      });
     }
   }
 }
