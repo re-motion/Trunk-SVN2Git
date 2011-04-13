@@ -45,6 +45,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     public abstract void EnsureDataComplete (TEndPoint endPoint);
 
+    public bool CanBeCollected
+    {
+      get { return _originalOppositeEndPoints.Count == 0; }
+    }
+
     public ICollection<IRealObjectEndPoint> OriginalOppositeEndPoints
     {
       get { return _originalOppositeEndPoints.Values; }

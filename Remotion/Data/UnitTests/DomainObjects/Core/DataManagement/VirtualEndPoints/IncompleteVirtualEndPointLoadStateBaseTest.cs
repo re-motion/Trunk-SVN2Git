@@ -35,7 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     private TestableIncompleteVirtualEndPointLoadState _loadState;
 
-    private IRealObjectEndPoint _relatedEndPointStub;
+    private IRealObjectEndPoint _relatedEndPointStub1;
+    private IRealObjectEndPoint _relatedEndPointStub2;
 
     [SetUp]
     public override void SetUp ()
@@ -49,21 +50,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _loadState = new TestableIncompleteVirtualEndPointLoadState (new IRealObjectEndPoint[0], _lazyLoaderMock, _dataKeeperFactoryStub);
 
-      _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
+      _relatedEndPointStub1 = MockRepository.GenerateStub<IRealObjectEndPoint>();
+      _relatedEndPointStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      _relatedEndPointStub1.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer"));
+
+      _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
+      _relatedEndPointStub2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "Customer"));
     }
 
     [Test]
     public void Initialization ()
     {
-      var realObjectEndPoint1 = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      realObjectEndPoint1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-      var realObjectEndPoint2 = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      realObjectEndPoint2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
-
       var loadState = new TestableIncompleteVirtualEndPointLoadState (
-          new[] { realObjectEndPoint1, realObjectEndPoint2 }, _lazyLoaderMock, _dataKeeperFactoryStub);
+          new[] { _relatedEndPointStub1, _relatedEndPointStub2 }, _lazyLoaderMock, _dataKeeperFactoryStub);
 
-      Assert.That (loadState.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { realObjectEndPoint1, realObjectEndPoint2 }));
+      Assert.That (loadState.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { _relatedEndPointStub1, _relatedEndPointStub2 }));
     }
 
     [Test]
@@ -77,6 +79,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void MarkDataIncomplete_ThrowsException ()
     {
       _loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => Assert.Fail ("Must not be called."));
+    }
+
+    [Test]
+    public void CanBeCollected_False ()
+    {
+      _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1);
+      Assert.That (_loadState.CanBeCollected, Is.False);
+    }
+
+    [Test]
+    public void CanBeCollected_True ()
+    {
+      Assert.That (_loadState.CanBeCollected, Is.True);
     }
 
     [Test]
@@ -146,16 +161,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     public void RegisterCurrentOppositeEndPoint ()
     {
       CheckOperationDelegatesToCompleteState (
-         s => s.RegisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub),
-         s => s.RegisterCurrentOppositeEndPoint(_relatedEndPointStub));
+         s => s.RegisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1),
+         s => s.RegisterCurrentOppositeEndPoint(_relatedEndPointStub1));
     }
 
     [Test]
     public void UnregisterCurrentOppositeEndPoint ()
     {
       CheckOperationDelegatesToCompleteState (
-         s => s.UnregisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub),
-         s => s.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
+         s => s.UnregisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1),
+         s => s.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub1));
     }
 
     [Test]
@@ -180,9 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
         "Cannot synchronize an opposite end-point with a virtual end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()
     {
-      _relatedEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"));
-
-      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub);
+      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub1);
     }
 
     [Test]

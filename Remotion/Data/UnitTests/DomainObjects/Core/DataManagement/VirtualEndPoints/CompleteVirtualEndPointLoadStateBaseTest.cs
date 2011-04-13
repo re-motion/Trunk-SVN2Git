@@ -149,6 +149,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void CanBeCollected ()
+    {
+      Assert.That (_loadState.CanBeCollected, Is.False);
+    }
+
+    [Test]
     public void RegisterOriginalOppositeEndPoint_WithoutExistingItem ()
     {
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();

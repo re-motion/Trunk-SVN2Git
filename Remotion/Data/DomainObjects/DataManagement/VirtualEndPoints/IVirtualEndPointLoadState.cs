@@ -16,6 +16,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
     bool IsDataComplete ();
     void EnsureDataComplete (TEndPoint endPoint);
 
+    bool CanBeCollected { get; }
+
     void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter);
 
     TData GetData (TEndPoint endPoint);

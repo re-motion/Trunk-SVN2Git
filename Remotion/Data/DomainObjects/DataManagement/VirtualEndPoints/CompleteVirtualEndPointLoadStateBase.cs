@@ -102,6 +102,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 
+    public bool CanBeCollected
+    {
+      get { return false; }
+    }
+
     public void RegisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
