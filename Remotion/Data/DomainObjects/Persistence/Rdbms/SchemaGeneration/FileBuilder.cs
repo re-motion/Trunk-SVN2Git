@@ -21,12 +21,10 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Utilities;
 
-// TODO Review 3857: Move to Rdbms\SchemaGeneration namespace
-
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
   /// Generates setup files for a list of mapped classes.
