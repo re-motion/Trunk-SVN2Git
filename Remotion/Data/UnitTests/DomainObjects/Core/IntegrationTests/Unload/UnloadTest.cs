@@ -337,6 +337,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 3894")]
+    public void UnloadData_Computer_WithUnsynchronizedOppositeEndPoint ()
+    {
+      SetDatabaseModifyable();
+
+      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+      var employee = computer1.Employee;
+      employee.EnsureDataAvailable ();
+
+      var unsynchronizedComputerID = 
+          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employee.ID, (ot, o) => ot.Employee = o);
+      var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
+
+      Assert.That (computer1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (unsynchronizedComputer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (employee.State, Is.EqualTo (StateType.Unchanged));
+
+      CheckEndPointExists (computer1, "Employee", true);
+      CheckEndPointExists (unsynchronizedComputer, "Employee", true);
+      CheckVirtualEndPoint (employee, "Computer", true);
+
+      UnloadService.UnloadData (ClientTransactionMock, computer1.ID);
+
+      CheckDataContainerExists (computer1, false);
+      CheckDataContainerExists (unsynchronizedComputer, true);
+      CheckDataContainerExists (employee, true);
+
+      CheckEndPointExists (computer1, "Employee", false);
+      CheckEndPointExists (unsynchronizedComputer, "Employee", true);
+      CheckVirtualEndPoint (employee, "Computer", false);
+
+      Assert.That (computer1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (unsynchronizedComputer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (employee.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
     public void UnloadData_Order ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -1233,9 +1270,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
       var endPoint = ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
       if (shouldDataBeComplete)
-        Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' does not have any data.", endPoint.ID);
+        Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' should have complete data.", endPoint.ID);
       else
-        Assert.That (endPoint.IsDataComplete, Is.False, "End point '{0}' should not have any data.", endPoint.ID);
+        Assert.That (endPoint.IsDataComplete, Is.False, "End point '{0}' should not have complete data.", endPoint.ID);
     }
 
     private void EnsureTransactionThrowsOnLoad ()
