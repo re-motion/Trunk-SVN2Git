@@ -337,7 +337,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 3894")]
     public void UnloadData_Computer_WithUnsynchronizedOppositeEndPoint ()
     {
       SetDatabaseModifyable();

@@ -505,6 +505,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var oppositeVirtualEndPointID = RelationEndPointID.Create (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
       var oppositeEndPoint = GetVirtualEndPointOrRegisterEmpty(oppositeVirtualEndPointID);
       oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
+
+      // Optimization for 1:1 relations: to avoid a database query, we'll mark the virtual end-point complete when the first opposite foreign key
+      // is registered with it. We can only do this in root transactions; in sub-transactions we need the query to occur so that we get the same
+      // relation state in the sub-transaction as in the root transaction even in the case of unsynchronized end-points.
+
+      var oppositeVirtualObjectEndPoint = oppositeEndPoint as IVirtualObjectEndPoint;
+      if (_clientTransaction.ParentTransaction == null && oppositeVirtualObjectEndPoint != null && !oppositeVirtualObjectEndPoint.IsDataComplete)
+        oppositeVirtualObjectEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference());
     }
 
     private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)

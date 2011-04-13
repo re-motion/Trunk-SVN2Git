@@ -60,19 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       MarkDataComplete (endPoint, items, stateSetter);
     }
 
-    public override void RegisterOriginalOppositeEndPoint (IVirtualObjectEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
-    {
-      base.RegisterOriginalOppositeEndPoint (endPoint, oppositeEndPoint);
-
-      // TODO 3841: Move optimization and check to somewhere else - this class should not check for root transactions
-      if (endPoint.ClientTransaction.ParentTransaction == null)
-      {
-        // With VirtualObjectEndPoints, we mark the end-point complete as soon as the next opposite end-point is registered. This is an optimization
-        // to avoid a virtual end-point query when the virtual side is accessed for the first time.
-        endPoint.MarkDataComplete (oppositeEndPoint.GetDomainObjectReference());
-      }
-    }
-
     public IDataManagementCommand CreateSetCommand (
         IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)
     {
