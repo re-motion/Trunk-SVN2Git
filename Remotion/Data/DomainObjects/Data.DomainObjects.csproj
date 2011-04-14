@@ -216,6 +216,8 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\IndexDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\ISqlIndexDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityNameDefinition.cs" />
@@ -332,10 +334,14 @@
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
+    <Compile Include="Persistence\Rdbms\PrimaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\SecondaryXmlIndexDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\SecondaryXmlIndexKind.cs" />
+    <Compile Include="Persistence\Rdbms\SqlIndexDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IFileBuilder.cs" />
