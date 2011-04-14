@@ -336,6 +336,7 @@
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\PrimaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBase.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitor.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IFileBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IndexBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\DeclarationListColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\NameListColumnDefinitionVisitor.cs" />
