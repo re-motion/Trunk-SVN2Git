@@ -40,12 +40,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _xmlColumn = xmlColumn;
     }
 
-    public EntityNameDefinition IndexName
+    public override EntityNameDefinition IndexName
     {
       get { return _indexName; }
-    }
+    } 
 
-    public EntityNameDefinition ObjectName
+    public override EntityNameDefinition ObjectName
     {
       get { return _objectName; }
     }

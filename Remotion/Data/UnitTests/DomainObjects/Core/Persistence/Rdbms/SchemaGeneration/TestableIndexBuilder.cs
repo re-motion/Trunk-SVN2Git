@@ -27,6 +27,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
     }
 
+    public override string IndexStatementSeparator
+    {
+      get { throw new NotImplementedException (); }
+    }
+
     public void VisitIndexDefinition (IndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + indexDefinition.IndexName.EntityName + " (IndexDefinition)");

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -39,6 +40,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropIndexStringBuilder = new StringBuilder();
     }
 
+    public abstract string IndexStatementSeparator { get; }
+    
     protected StringBuilder CreateIndexStringBuilder
     {
       get { return _createIndexStringBuilder; }
@@ -73,5 +76,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         indexDefinition.Accept (this);
       }
     }
+
+    protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
+    {
+      return NameListColumnDefinitionVisitor.GetNameList (columnDefinitions, allowNulls, _sqlDialect);
+    }
+
+    protected void AppendSeparator ()
+    {
+      if (_createIndexStringBuilder.Length != 0)
+        _createIndexStringBuilder.Append (IndexStatementSeparator);
+      if (_dropIndexStringBuilder.Length != 0)
+        _dropIndexStringBuilder.Append (IndexStatementSeparator);
+    }
+    
   }
 }

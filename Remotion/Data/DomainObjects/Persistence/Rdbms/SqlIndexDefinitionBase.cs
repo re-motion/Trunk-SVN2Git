@@ -37,6 +37,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       
     }
 
+    public abstract EntityNameDefinition IndexName { get; }
+    public abstract EntityNameDefinition ObjectName { get; }
+    
     public void Accept (IIndexDefinitionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlIndexDefinitionVisitor;
