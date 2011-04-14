@@ -35,9 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var script = new StringBuilder (base.GetScript (classDefinitions));
 
-      script.Insert (0, "CREATE SCHEMA Test\r\nGO\r\n");
+      script.Insert (0, "IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END\r\nGO\r\n");
       script.Insert (0, "--Extendend file-builder comment at the beginning\r\n");
-      script.AppendLine ("DROP SCHEMA Test");
       script.AppendLine ("--Extendend file-builder comment at the end");
 
       return script.ToString();
@@ -53,8 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         var firstTableDefinition = tableDefinitions[0];
         var newTableDefinition = new TableDefinition (
             firstTableDefinition.StorageProviderDefinition,
-            new EntityNameDefinition ("Test", "NewTableName"),
-            firstTableDefinition.ViewName,
+            firstTableDefinition.TableName,
+            new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
             firstTableDefinition.GetColumns(),
             firstTableDefinition.Constraints,
             new IIndexDefinition[0]);
@@ -62,9 +61,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         entityDefinitions.Add (newTableDefinition);
 
         var newFilterViewDefinition = new FilterViewDefinition (
-            firstTableDefinition.StorageProviderDefinition,
+            newTableDefinition.StorageProviderDefinition,
             new EntityNameDefinition ("Test", "AddedView"),
-            firstTableDefinition,
+            newTableDefinition,
             new[] { "ClassID" },
             firstTableDefinition.GetColumns(),
             new IIndexDefinition[0]);

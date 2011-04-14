@@ -44,12 +44,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT {2}\r\n"
-          + "    FROM [{0}].[{3}]\r\n"
-          + "    WHERE [ClassID] IN ({4})\r\n"
+          + "    FROM [{3}].[{4}]\r\n"
+          + "    WHERE [ClassID] IN ({5})\r\n"
           + "  WITH CHECK OPTION\r\n",
           filterViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
           filterViewDefinition.ViewName.EntityName,
           GetColumnList (filterViewDefinition.GetColumns(), false),
+          filterViewDefinition.GetBaseTable().TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
           filterViewDefinition.GetBaseTable().TableName.EntityName,
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
@@ -65,11 +66,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT {2}\r\n"
-          + "    FROM [{0}].[{3}]\r\n"
+          + "    FROM [{3}].[{4}]\r\n"
           + "  WITH CHECK OPTION\r\n",
           tableDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
           tableDefinition.ViewName.EntityName,
           GetColumnList (tableDefinition.GetColumns (), false),
+          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName);
     }
 

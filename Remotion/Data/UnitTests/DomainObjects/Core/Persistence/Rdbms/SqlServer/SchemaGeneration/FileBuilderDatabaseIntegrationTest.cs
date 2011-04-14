@@ -18,9 +18,9 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlFileBuilderForFirstStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition));
       _sqlFileBuilderForSecondStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition));
-      _sqlFileBuilderForThirdStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
+      _sqlFileBuilderForThirdStorageProvider = new ExtendedFileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
      
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
