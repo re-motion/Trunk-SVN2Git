@@ -23,8 +23,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class IndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
   {
-    public IndexBuilder (ISqlDialect sqlDialect)
-        : base(sqlDialect)
+    public IndexBuilder ()
+        : base(SqlServer.SqlDialect.Instance)
     {
     }
 

@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ReadOnlyCollection<IIndexDefinition> Indexes
     {
-      get { return null;  }
+      get { return Array.AsReadOnly(new IIndexDefinition[0]);  }
     }
 
     public void Accept (IEntityDefinitionVisitor visitor)

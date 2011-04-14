@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       var result = _nullEntityDefinition.Indexes;
 
-      Assert.That (result, Is.Null);
+      Assert.That (result, Is.Empty);
     }
 
     [Test]

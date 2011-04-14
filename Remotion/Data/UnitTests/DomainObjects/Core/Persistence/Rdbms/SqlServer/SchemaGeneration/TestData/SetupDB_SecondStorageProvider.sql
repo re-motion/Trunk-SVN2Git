@@ -1,6 +1,9 @@
 USE SchemaGenerationTestDomain2
 GO
 
+-- Drop all indexes that will be created below
+GO
+
 -- Drop all views that will be created below
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OfficialView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[OfficialView]
@@ -55,4 +58,7 @@ CREATE VIEW [dbo].[SpecialOfficialView] ([ID], [ClassID], [Timestamp], [Name], [
     FROM [dbo].[Official]
     WHERE [ClassID] IN ('SpecialOfficial')
   WITH CHECK OPTION
+GO
+
+-- Create indexes for tables that were created above
 GO

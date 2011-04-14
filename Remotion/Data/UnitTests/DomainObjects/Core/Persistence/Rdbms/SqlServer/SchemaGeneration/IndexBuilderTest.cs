@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp ();
 
-      _indexBuilder = new IndexBuilder (SqlDialect.Instance);
+      _indexBuilder = new IndexBuilder ();
 
       _column1 = new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true);
       _column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false);

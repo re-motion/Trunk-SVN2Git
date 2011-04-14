@@ -43,36 +43,44 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       var viewBuilder = CreateViewBuilder();
       var tableBuilder = CreateTableBuilder();
       var constraintBuilder = CreateConstraintBuilder();
+      var indexBuilder = CreateIndexBuilder();
 
       foreach (var entityDefinition in entityDefinitions)
       {
         viewBuilder.AddView (entityDefinition);
         tableBuilder.AddTable (entityDefinition);
         constraintBuilder.AddConstraint (entityDefinition);
+        indexBuilder.AddIndexes (entityDefinition);
       }
 
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"
-          + "-- Drop all views that will be created below\r\n"
+          + "-- Drop all indexes that will be created below\r\n"
           + "{1}GO\r\n\r\n"
-          + "-- Drop foreign keys of all tables that will be created below\r\n"
+          + "-- Drop all views that will be created below\r\n"
           + "{2}GO\r\n\r\n"
-          + "-- Drop all tables that will be created below\r\n"
+          + "-- Drop foreign keys of all tables that will be created below\r\n"
           + "{3}GO\r\n\r\n"
-          + "-- Create all tables\r\n"
+          + "-- Drop all tables that will be created below\r\n"
           + "{4}GO\r\n\r\n"
-          + "-- Create constraints for tables that were created above\r\n"
+          + "-- Create all tables\r\n"
           + "{5}GO\r\n\r\n"
+          + "-- Create constraints for tables that were created above\r\n"
+          + "{6}GO\r\n\r\n"
           + "-- Create a view for every class\r\n"
-          + "{6}GO\r\n",
+          + "{7}GO\r\n\r\n"
+          + "-- Create indexes for tables that were created above\r\n"
+          + "{8}GO\r\n",
           GetDatabaseName(),
+          indexBuilder.GetCreateIndexScript(),
           viewBuilder.GetDropViewScript(),
           constraintBuilder.GetDropConstraintScript(),
           tableBuilder.GetDropTableScript(),
           tableBuilder.GetCreateTableScript(),
           constraintBuilder.GetAddConstraintScript(),
-          viewBuilder.GetCreateViewScript());
+          viewBuilder.GetCreateViewScript(),
+          indexBuilder.GetCreateIndexScript());
     }
 
     protected virtual TableBuilder CreateTableBuilder ()
@@ -88,6 +96,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     protected virtual ConstraintBuilder CreateConstraintBuilder ()
     {
       return new ConstraintBuilder();
+    }
+
+    protected virtual IndexBuilder CreateIndexBuilder ()
+    {
+      return new IndexBuilder();
     }
   }
 }

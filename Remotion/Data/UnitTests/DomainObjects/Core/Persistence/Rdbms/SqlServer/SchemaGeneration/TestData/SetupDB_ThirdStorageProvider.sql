@@ -4,6 +4,9 @@ GO
 USE SchemaGenerationTestDomain3
 GO
 
+-- Drop all indexes that will be created below
+GO
+
 -- Drop all views that will be created below
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AboveInheritanceRootView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[AboveInheritanceRootView]
@@ -78,6 +81,9 @@ CREATE VIEW [Test].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInhe
     FROM [Test].[InheritanceRoot]
     WHERE [ClassID] IN ('ClassID')
   WITH CHECK OPTION
+GO
+
+-- Create indexes for tables that were created above
 GO
 DROP SCHEMA Test
 --Extendend file-builder comment at the end

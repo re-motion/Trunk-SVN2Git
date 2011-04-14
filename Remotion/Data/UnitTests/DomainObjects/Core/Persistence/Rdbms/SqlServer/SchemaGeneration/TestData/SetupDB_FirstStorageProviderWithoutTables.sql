@@ -1,6 +1,9 @@
 USE SchemaGenerationTestDomain1
 GO
 
+-- Drop all indexes that will be created below
+GO
+
 -- Drop all views that will be created below
 GO
 
@@ -17,4 +20,7 @@ GO
 GO
 
 -- Create a view for every class
+GO
+
+-- Create indexes for tables that were created above
 GO
