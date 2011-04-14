@@ -22,14 +22,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class PrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
-    private readonly EntityNameDefinition _indexName;
+    private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
 
     /// <summary>
     /// <see cref="PrimaryXmlIndexDefinition"/> represents a priamry xml-column index in a relational database.
     /// </summary>
-    public PrimaryXmlIndexDefinition (EntityNameDefinition indexName, EntityNameDefinition objectName, IColumnDefinition xmlColumn)
+    public PrimaryXmlIndexDefinition (string indexName, EntityNameDefinition objectName, IColumnDefinition xmlColumn)
     {
       ArgumentUtility.CheckNotNull ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _xmlColumn = xmlColumn;
     }
 
-    public override EntityNameDefinition IndexName
+    public override string IndexName
     {
       get { return _indexName; }
     } 

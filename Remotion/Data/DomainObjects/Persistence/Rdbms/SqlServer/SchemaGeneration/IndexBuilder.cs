@@ -59,13 +59,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private void AddToCreateIndexScript (IndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
-          "CREATE {0}{1} INDEX [{2}].[{3}]\r\n"
-          + "  ON [{4}].[{5}] ({6})\r\n{7}"
-          + "  WITH IGNORE_DUP_KEY = {8}, ONLINE = {9}\r\n",
+          "CREATE {0}{1} INDEX [{2}]\r\n"
+          + "  ON [{3}].[{4}] ({5})\r\n{6}"
+          + "  WITH IGNORE_DUP_KEY = {7}, ONLINE = {8}\r\n",
           indexDefinition.IsUnique ? "UNIQUE " : string.Empty,
           indexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
-          indexDefinition.IndexName.SchemaName ?? ScriptBuilder.DefaultSchema,
-          indexDefinition.IndexName.EntityName,
+          indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           GetColumnList (indexDefinition.Columns, false),
@@ -77,10 +76,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private void AddToCreateIndexScript (PrimaryXmlIndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
-          "CREATE PRIMARY XML INDEX [{0}].[{1}]\r\n"
-          + "  ON [{2}].[{3}] ([{4}])\r\n",
-          indexDefinition.IndexName.SchemaName ?? ScriptBuilder.DefaultSchema,
-          indexDefinition.IndexName.EntityName,
+          "CREATE PRIMARY XML INDEX [{0}]\r\n"
+          + "  ON [{1}].[{2}] ([{3}])\r\n",
+          indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name);
@@ -89,12 +87,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private void AddToCreateIndexScript (SecondaryXmlIndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
-          "CREATE XML INDEX [{0}].[{1}]\r\n"
-          + "  ON [{2}].[{3}] ([{4}])\r\n"
-          + "  USING XML INDEX [{5}].[{6}]\r\n"
-          + "  FOR {7}\r\n",
-          indexDefinition.IndexName.SchemaName ?? ScriptBuilder.DefaultSchema,
-          indexDefinition.IndexName.EntityName,
+          "CREATE XML INDEX [{0}]\r\n"
+          + "  ON [{1}].[{2}] ([{3}])\r\n"
+          + "  USING XML INDEX [{4}].[{5}]\r\n"
+          + "  FOR {6}\r\n",
+          indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
@@ -108,11 +105,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       DropIndexStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
           +"WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
-          + "  DROP INDEX [{3}].[{2}]\r\n",
+          + "  DROP INDEX [{2}]\r\n",
           indexDefinition.ObjectName.EntityName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
-          indexDefinition.IndexName.EntityName,
-          indexDefinition.IndexName.SchemaName ?? ScriptBuilder.DefaultSchema);
+          indexDefinition.IndexName);
     }
   }
 }

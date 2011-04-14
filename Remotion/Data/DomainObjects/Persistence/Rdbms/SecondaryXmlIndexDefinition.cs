@@ -25,14 +25,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class SecondaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
-    private readonly EntityNameDefinition _indexName;
+    private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
     private readonly EntityNameDefinition _primaryIndexName;
     private readonly SecondaryXmlIndexKind _kind;
 
     public SecondaryXmlIndexDefinition (
-        EntityNameDefinition indexName,
+        string indexName,
         EntityNameDefinition objectName,
         IColumnDefinition xmlColumn,
         EntityNameDefinition primaryIndexName,
@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _kind = kind;
     }
 
-    public override EntityNameDefinition IndexName
+    public override string IndexName
     {
       get { return _indexName; }
     }

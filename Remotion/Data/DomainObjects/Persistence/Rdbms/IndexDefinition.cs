@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class IndexDefinition : SqlIndexDefinitionBase
   {
-    private readonly EntityNameDefinition _indexName;
+    private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<IColumnDefinition> _includedColumns;
@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly bool _online;
 
     public IndexDefinition (
-        EntityNameDefinition indexName,
+        string indexName,
         EntityNameDefinition objectName,
         IColumnDefinition[] columns,
         IColumnDefinition[] includedColumns,
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _online = online;
     }
 
-    public override EntityNameDefinition IndexName
+    public override string IndexName
     {
       get { return _indexName; }
     }

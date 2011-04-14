@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "-- Create indexes for tables that were created above\r\n"
           + "{8}GO\r\n",
           GetDatabaseName(),
-          indexBuilder.GetCreateIndexScript(),
+          indexBuilder.GetDropIndexScript(),
           viewBuilder.GetDropViewScript(),
           constraintBuilder.GetDropConstraintScript(),
           tableBuilder.GetDropTableScript(),

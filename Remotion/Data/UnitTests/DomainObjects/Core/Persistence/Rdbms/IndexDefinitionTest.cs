@@ -28,24 +28,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private SimpleColumnDefinition[] _includedColumns;
     private SimpleColumnDefinition[] _columns;
     private EntityNameDefinition _objectName;
-    private EntityNameDefinition _indexName;
     private IndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _indexName = new EntityNameDefinition ("indexSchema", "indexName");
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
       _columns = new[] { new SimpleColumnDefinition ("TestColumn1", typeof (string), "varchar", true, false) };
       _includedColumns = new[] { new SimpleColumnDefinition ("TestColumn2", typeof (string), "varchar", true, false) };
 
-      _indexDefinition = new IndexDefinition (_indexName, _objectName, _columns, _includedColumns, true, true, true, true);
+      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, _includedColumns, true, true, true, true);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_indexDefinition.IndexName, Is.SameAs (_indexName));
+      Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.Columns, Is.EqualTo (_columns));
       Assert.That (_indexDefinition.IncludedColumns, Is.EqualTo (_includedColumns));
@@ -58,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Initialization_NoIncludedColumns ()
     {
-      _indexDefinition = new IndexDefinition (_indexName, _objectName, _columns, null, true, true, true, true);
+      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, null, true, true, true, true);
 
       Assert.That (_indexDefinition.IncludedColumns, Is.Null);
     }

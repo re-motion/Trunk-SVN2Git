@@ -34,20 +34,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public void VisitIndexDefinition (IndexDefinition indexDefinition)
     {
-      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + indexDefinition.IndexName.EntityName + " (IndexDefinition)");
-      DropIndexStringBuilder.AppendLine ("DROP INDEX " + indexDefinition.IndexName.EntityName + " (IndexDefinition)");
+      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + indexDefinition.IndexName + " (IndexDefinition)");
+      DropIndexStringBuilder.AppendLine ("DROP INDEX " + indexDefinition.IndexName + " (IndexDefinition)");
     }
 
     public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)
     {
-      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + primaryXmlIndexDefinition.IndexName.EntityName + " (PrimaryXmlIndexDefinition)");
-      DropIndexStringBuilder.AppendLine ("DROP INDEX " + primaryXmlIndexDefinition.IndexName.EntityName + " (PrimaryXmlIndexDefinition)");
+      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + primaryXmlIndexDefinition.IndexName + " (PrimaryXmlIndexDefinition)");
+      DropIndexStringBuilder.AppendLine ("DROP INDEX " + primaryXmlIndexDefinition.IndexName + " (PrimaryXmlIndexDefinition)");
     }
 
     public void VisitSecondaryXmlIndexDefinition (SecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
     {
-      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + secondaryXmlIndexDefinition.IndexName.EntityName + " (SecondaryXmlIndexDefinition)");
-      DropIndexStringBuilder.AppendLine ("DROP INDEX " + secondaryXmlIndexDefinition.IndexName.EntityName + " (SecondaryXmlIndexDefinition)");
+      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + secondaryXmlIndexDefinition.IndexName + " (SecondaryXmlIndexDefinition)");
+      DropIndexStringBuilder.AppendLine ("DROP INDEX " + secondaryXmlIndexDefinition.IndexName + " (SecondaryXmlIndexDefinition)");
     }
   }
 }

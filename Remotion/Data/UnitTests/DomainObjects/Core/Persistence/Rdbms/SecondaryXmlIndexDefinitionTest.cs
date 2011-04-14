@@ -25,7 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class SecondaryXmlIndexDefinitionTest
   {
-    private EntityNameDefinition _indexName;
     private EntityNameDefinition _objectName;
     private SimpleColumnDefinition _xmlColumn;
     private EntityNameDefinition _primaryIndexName;
@@ -34,18 +33,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [SetUp]
     public void SetUp ()
     {
-      _indexName = new EntityNameDefinition ("indexSchema", "indexName");
       _objectName = new EntityNameDefinition ("_objectSchema", "objectName");
       _xmlColumn = new SimpleColumnDefinition ("xmlColumn", typeof (string), "xml", false, false);
       _primaryIndexName = new EntityNameDefinition ("primarySchema", "primaryName");
       
-      _indexDefinition = new SecondaryXmlIndexDefinition (_indexName, _objectName, _xmlColumn, _primaryIndexName, SecondaryXmlIndexKind.Property);
+      _indexDefinition = new SecondaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, _primaryIndexName, SecondaryXmlIndexKind.Property);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_indexDefinition.IndexName, Is.SameAs (_indexName));
+      Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.PrimaryIndexName, Is.SameAs (_primaryIndexName));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));

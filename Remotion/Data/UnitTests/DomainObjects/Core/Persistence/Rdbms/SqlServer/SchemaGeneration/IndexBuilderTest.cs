@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -34,7 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private EntityNameDefinition _viewName;
     private IndexDefinition _indexDefinition;
     private TableDefinition _tableDefinition;
-    private EntityNameDefinition _indexName;
 
     public override void SetUp ()
     {
@@ -47,10 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _column3 = new SimpleColumnDefinition ("Test", typeof (string), "varchar(100)", true, false);
       _tableName = new EntityNameDefinition (null, "TableName");
       _viewName = new EntityNameDefinition (null, "ViewName");
-      _indexName = new EntityNameDefinition (null, "Index1");
-
+      
       _indexDefinition = new IndexDefinition (
-          _indexName, _tableName, new[] { _column1, _column2 }, null, true, true, false, false);
+          "Index1", _tableName, new[] { _column1, _column2 }, null, true, true, false, false);
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           _tableName,
@@ -83,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateIndexScript();
 
       var expectedScript =
-          "CREATE UNIQUE CLUSTERED INDEX [dbo].[Index1]\r\n"
+          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID], [Name])\r\n"
           + "  WITH IGNORE_DUP_KEY = OFF, ONLINE = OFF\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
@@ -92,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateIndexScript_FilterViewDefinition_IndexDefinitionWithIncludedColumns ()
     {
-      var indexDefinition = new IndexDefinition (_indexName, _tableName, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
+      var indexDefinition = new IndexDefinition ("Index1", _tableName, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
 
       var filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -107,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateIndexScript ();
 
       var expectedScript =
-          "CREATE NONCLUSTERED INDEX [dbo].[Index1]\r\n"
+          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID], [Name])\r\n"
           + "  INCLUDE ([Test])\r\n"
           + "  WITH IGNORE_DUP_KEY = ON, ONLINE = ON\r\n";
@@ -117,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateIndexScript_UnionViewDefinition_OneXmlIndex ()
     {
-      var indexDefinition = new PrimaryXmlIndexDefinition (_indexName, _tableName, _column3);
+      var indexDefinition = new PrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           _viewName,
@@ -130,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateIndexScript ();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [dbo].[Index1]\r\n"
+          "CREATE PRIMARY XML INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([Test])\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
@@ -138,9 +135,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateIndexScript_UnionViewDefinition_TwoXmlIndex ()
     {
-      var primaryIndexDefinition = new PrimaryXmlIndexDefinition (_indexName, _tableName, _column3);
+      var primaryIndexDefinition = new PrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
       var secondaryIndexDefinition = new SecondaryXmlIndexDefinition (
-          new EntityNameDefinition (null, "SecondaryName"),
+          "SecondaryName",
           _tableName,
           _column2,
           new EntityNameDefinition (null, "PrimaryName"),
@@ -158,10 +155,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateIndexScript ();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [dbo].[Index1]\r\n"
+          "CREATE PRIMARY XML INDEX [Index1]\r\n"
           +"  ON [dbo].[TableName] ([Test])\r\n"
           +"GO\r\n\r\n"
-          +"CREATE XML INDEX [dbo].[SecondaryName]\r\n"
+          +"CREATE XML INDEX [SecondaryName]\r\n"
           +"  ON [dbo].[TableName] ([Name])\r\n"
           +"  USING XML INDEX [dbo].[PrimaryName]\r\n"
           +"  FOR Property\r\n";
@@ -178,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedScript = 
         "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [dbo].[Index1]\r\n";
+        +"  DROP INDEX [Index1]\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
@@ -193,11 +190,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedScript = 
         "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [dbo].[Index1]\r\n"
+        +"  DROP INDEX [Index1]\r\n"
         +"GO\r\n\r\n"
         +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [dbo].[Index1]\r\n";
+        +"  DROP INDEX [Index1]\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
   }

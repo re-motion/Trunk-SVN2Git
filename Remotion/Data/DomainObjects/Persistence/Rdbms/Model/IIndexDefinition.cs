@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public interface IIndexDefinition
   {
-    EntityNameDefinition IndexName { get; }
+    string IndexName { get; }
     EntityNameDefinition ObjectName { get; }
     void Accept (IIndexDefinitionVisitor visitor);
   }
