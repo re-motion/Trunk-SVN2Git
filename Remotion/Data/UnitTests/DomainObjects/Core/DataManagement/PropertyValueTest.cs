@@ -569,18 +569,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetValueFrom_SetsValue ()
+    public void SetDataFromSubTransaction_SetsValue ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 2);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.Value, Is.EqualTo (1));
     }
 
     [Test]
-    public void SetValueFrom_SetsDiscardedFlag ()
+    public void SetDataFromSubTransaction_SetsDiscardedFlag ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       PrivateInvoke.InvokeNonPublicMethod (source, "Discard");
@@ -588,13 +588,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var target = new PropertyValue (_orderNumberPropertyDefinition, 2);
       Assert.That (target.IsDiscarded, Is.False);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.IsDiscarded, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfPropertyWasTouched ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfPropertyWasTouched ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 1);
@@ -603,14 +603,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (source.HasBeenTouched, Is.False);
       Assert.That (target.HasBeenTouched, Is.True);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.HasChanged, Is.False);
       Assert.That (target.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfSourcePropertyWasTouched ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfSourcePropertyWasTouched ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 1);
@@ -619,14 +619,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (source.HasBeenTouched, Is.True);
       Assert.That (target.HasBeenTouched, Is.False);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.HasChanged, Is.False);
       Assert.That (target.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfDataWasChanged ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 2);
@@ -634,14 +634,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (source.HasBeenTouched, Is.False);
       Assert.That (target.HasBeenTouched, Is.False);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.HasChanged, Is.True);
       Assert.That (target.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
+    public void SetDataFromSubTransaction_HasBeenTouched_FalseIfNothingHappened ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 1);
@@ -649,7 +649,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (source.HasBeenTouched, Is.False);
       Assert.That (target.HasBeenTouched, Is.False);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
 
       Assert.That (target.HasChanged, Is.False);
       Assert.That (target.HasBeenTouched, Is.False);
@@ -659,12 +659,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.PropertyDefinition: OrderNumber'; the properties "
         + "do not have the same property definition.\r\nParameter name: source")]
-    public void SetValueFrom_InvalidDefinition ()
+    public void SetDataFromSubTransaction_InvalidDefinition ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (CreateIntPropertyDefinition ("test"), 1);
 
-      target.SetValueFrom (source);
+      target.SetDataFromSubTransaction (source);
     }
 
     [Test]

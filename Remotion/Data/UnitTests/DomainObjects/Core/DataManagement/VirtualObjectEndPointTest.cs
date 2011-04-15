@@ -455,14 +455,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeObjectValueFrom ()
+    public void SetOppositeObjectDataFromSubTransaction ()
     {
       var source = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, ClientTransactionMock);
 
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, VirtualObjectEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay();
 
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectFrom", source);
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
       _loadStateMock.VerifyAllExpectations ();
     }

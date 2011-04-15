@@ -115,9 +115,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("GetOppositeRelationEndPointIDs cannot be called on a NullCollectionEndPoint.");
     }
 
-    public void SetValueFrom (IRelationEndPoint source)
+    public void SetDataFromSubTransaction (IRelationEndPoint source)
     {
-      throw new InvalidOperationException ("SetValueFrom cannot be called on a NullCollectionEndPoint.");
+      throw new InvalidOperationException ("SetDataFromSubTransaction cannot be called on a NullCollectionEndPoint.");
     }
 
     public DomainObjectCollection Collection

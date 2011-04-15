@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract DomainObject GetOppositeObject (bool includeDeleted);
     public abstract DomainObject GetOriginalOppositeObject ();
 
-    protected abstract void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint);
+    protected abstract void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint);
 
     public abstract IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
     
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetCommand (null);
     }
 
-    public override sealed void SetValueFrom (IRelationEndPoint source)
+    public override sealed void SetDataFromSubTransaction (IRelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
 
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       if (OppositeObjectID != sourceObjectEndPoint.OppositeObjectID)
-        SetOppositeObjectFrom (sourceObjectEndPoint);
+        SetOppositeObjectDataFromSubTransaction (sourceObjectEndPoint);
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch();

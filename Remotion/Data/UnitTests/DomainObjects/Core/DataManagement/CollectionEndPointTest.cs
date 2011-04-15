@@ -462,7 +462,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetValueFrom ()
+    public void SetDataFromSubTransaction ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
@@ -470,13 +470,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPointWithLoadStateMock, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _endPointWithLoadStateMock.SetValueFrom (source);
+      _endPointWithLoadStateMock.SetDataFromSubTransaction (source);
 
       _loadStateMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenSourceHasBeenTouched ()
+    public void SetDataFromSubTransaction_TouchesEndPoint_WhenSourceHasBeenTouched ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
       source.Touch();
@@ -487,13 +487,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
 
-      _endPointWithLoadStateMock.SetValueFrom (source);
+      _endPointWithLoadStateMock.SetDataFromSubTransaction (source);
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_TouchesEndPoint_WhenTargetHasChanged ()
+    public void SetDataFromSubTransaction_TouchesEndPoint_WhenTargetHasChanged ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
@@ -503,13 +503,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
 
-      _endPointWithLoadStateMock.SetValueFrom (source);
+      _endPointWithLoadStateMock.SetDataFromSubTransaction (source);
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
+    public void SetDataFromSubTransaction_DoesNotTouchEndPoint_WhenSourceUntouched_AndTargetUnchanged ()
     {
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
@@ -519,7 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
 
-      _endPointWithLoadStateMock.SetValueFrom (source);
+      _endPointWithLoadStateMock.SetDataFromSubTransaction (source);
 
       Assert.That (_endPointWithLoadStateMock.HasBeenTouched, Is.False);
     }
@@ -529,12 +529,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "Cannot set this end point's value from "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'; the end points "
         + "do not have the same end point definition.\r\nParameter name: source")]
-    public void SetValueFrom_InvalidDefinition ()
+    public void SetDataFromSubTransaction_InvalidDefinition ()
     {
       var otherID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       var source = RelationEndPointObjectMother.CreateCollectionEndPoint (otherID, new DomainObject[0]);
 
-      _customerEndPoint.SetValueFrom (source);
+      _customerEndPoint.SetDataFromSubTransaction (source);
     }
 
     [Test]

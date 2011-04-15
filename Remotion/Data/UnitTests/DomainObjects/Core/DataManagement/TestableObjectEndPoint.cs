@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return new TestSetCommand (this, newRelatedObject, id => { throw new NotImplementedException (); });
     }
 
-    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       Assert.That (_isSetOppositeObjectFromExpected, Is.True);
       _oppositeObject = sourceObjectEndPoint.GetOppositeObject (true);

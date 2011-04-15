@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public abstract void Commit ();
     public abstract void Rollback ();
-    public abstract void SetValueFrom (IRelationEndPoint source);
+    public abstract void SetDataFromSubTransaction (IRelationEndPoint source);
 
     public abstract void CheckMandatory ();
     

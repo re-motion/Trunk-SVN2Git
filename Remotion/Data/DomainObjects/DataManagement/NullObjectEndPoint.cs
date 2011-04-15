@@ -179,9 +179,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("GetOppositeRelationEndPointIDs cannot be called on a NullObjectEndPoint.");
     }
 
-    public void SetValueFrom (IRelationEndPoint source)
+    public void SetDataFromSubTransaction (IRelationEndPoint source)
     {
-      throw new InvalidOperationException ("SetValueFrom cannot be called on a NullObjectEndPoint.");
+      throw new InvalidOperationException ("SetDataFromSubTransaction cannot be called on a NullObjectEndPoint.");
     }
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)

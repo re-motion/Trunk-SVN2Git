@@ -19,7 +19,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -80,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       TestMappingConfiguration.Initialize();
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
-      ObjectID id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+      var id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
       
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
@@ -193,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       PropertyDefinition reportsToDefinition =
           PropertyDefinitionFactory.CreateForFakePropertyInfo (
-              (ClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
+              container.ClassDefinition, "ReportsTo", "ReportsTo", typeof(string), true, StorageClass.Persistent);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 
@@ -566,66 +565,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetPropertyValuesFrom_SetsValues ()
+    public void SetDataFromSubTransaction_SetsValues ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
       Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.Not.EqualTo (1));
 
-      newDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
       Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.EqualTo (1));
     }
 
     [Test]
-    public void SetPropertyValuesFrom_SetsForeignKeys ()
+    public void SetDataFromSubTransaction_SetsForeignKeys ()
     {
       var sourceDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
       Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.Not.EqualTo (DomainObjectIDs.Order1));
 
-      newDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
       Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
-    public void SetPropertyValuesFrom_SetsChangedFlag_IfChanged ()
+    public void SetDataFromSubTransaction_SetsChangedFlag_IfChanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var existingDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
       Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      existingDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      existingDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
       Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
-    public void SetPropertyValuesFrom_ResetsChangedFlag_IfUnchanged ()
+    public void SetDataFromSubTransaction_ResetsChangedFlag_IfUnchanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
       targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
-      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      targetDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesStateUpdated_Changed ()
+    public void SetDataFromSubTransaction_RaisesStateUpdated_Changed ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Changed);
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Changed);
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesStateUpdated_Unchanged ()
+    public void SetDataFromSubTransaction_RaisesStateUpdated_Unchanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
@@ -633,11 +632,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
       ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, targetDataContainer);
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Unchanged);
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Unchanged);
     }
 
     [Test]
-    public void SetPropertyValuesFrom_RaisesStateUpdated_OtherState ()
+    public void SetDataFromSubTransaction_RaisesStateUpdated_OtherState ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
@@ -645,11 +644,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
 
       ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, targetDataContainer);
-      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyValuesFrom (sourceDataContainer), StateType.Deleted);
+      CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Deleted);
     }
 
     [Test]
-    public void SetPropertyValuesFrom_DoesntMarkAsChanged ()
+    public void SetDataFromSubTransaction_DoesntMarkAsChanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
@@ -657,7 +656,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (sourceDataContainer.HasBeenMarkedChanged, Is.True);
       Assert.That (targetDataContainer.HasBeenMarkedChanged, Is.False);
 
-      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      targetDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
       Assert.That (targetDataContainer.HasBeenMarkedChanged, Is.False);
     }
@@ -666,12 +665,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot set this data container's property values from 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; the data containers do not "
         + "have the same class definition.\r\nParameter name: source")]
-    public void SetPropertyValuesFrom_InvalidDefinition ()
+    public void SetDataFromSubTransaction_InvalidDefinition ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
 
-      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+      targetDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
     }
 
     [Test]

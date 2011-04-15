@@ -439,7 +439,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectInvalidException ();
     }
 
-    public void SetValueFrom (PropertyValue source)
+    public void SetDataFromSubTransaction (PropertyValue source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
       CheckNotDiscarded ();

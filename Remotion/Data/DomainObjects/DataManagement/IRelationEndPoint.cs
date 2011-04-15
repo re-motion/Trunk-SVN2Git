@@ -53,6 +53,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void CheckMandatory ();
 
     IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ();
-    void SetValueFrom (IRelationEndPoint source);
+    void SetDataFromSubTransaction (IRelationEndPoint source);
   }
 }

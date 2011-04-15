@@ -414,14 +414,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeObjectValueFrom ()
+    public void SetOppositeObjectDataFromSubTransaction ()
     {
       var source = MockRepository.GenerateStub<IObjectEndPoint>();
       source.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Order2);
 
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectFrom", source);
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
       Assert.That (_endPoint.HasChanged, Is.True);

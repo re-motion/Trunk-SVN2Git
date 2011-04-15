@@ -275,9 +275,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void SetValueFrom ()
+    public void SetDataFromSubTransaction ()
     {
-      _nullEndPoint.SetValueFrom (MockRepository.GenerateStub<IRelationEndPoint> ());
+      _nullEndPoint.SetDataFromSubTransaction (MockRepository.GenerateStub<IRelationEndPoint> ());
     }
 
     [Test]

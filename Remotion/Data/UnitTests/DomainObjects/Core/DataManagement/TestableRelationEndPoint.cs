@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
     }
 
-    public override void SetValueFrom (IRelationEndPoint source)
+    public override void SetDataFromSubTransaction (IRelationEndPoint source)
     {
       throw new NotImplementedException();
     }

@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (HasChanged);
     }
 
-    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
 

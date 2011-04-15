@@ -199,7 +199,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
+    protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
       _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);

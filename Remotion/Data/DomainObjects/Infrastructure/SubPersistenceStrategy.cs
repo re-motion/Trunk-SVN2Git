@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
 
-      thisDataContainer.SetPropertyValuesFrom (parentDataContainer);
+      thisDataContainer.SetPropertyDataFromSubTransaction (parentDataContainer);
       thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
       thisDataContainer.SetDomainObject (parentDataContainer.DomainObject);
       thisDataContainer.CommitState(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
@@ -243,7 +243,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _parentTransaction.DataManager.RegisterDataContainer (parentDataContainer);
 
-      parentDataContainer.SetPropertyValuesFrom (dataContainer);
+      parentDataContainer.SetPropertyDataFromSubTransaction (dataContainer);
       if (dataContainer.HasBeenMarkedChanged)
         parentDataContainer.MarkAsChanged();
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
@@ -261,7 +261,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
-      parentDataContainer.SetPropertyValuesFrom (dataContainer);
+      parentDataContainer.SetPropertyDataFromSubTransaction (dataContainer);
 
       if (dataContainer.HasBeenMarkedChanged && (parentDataContainer.State == StateType.Unchanged || parentDataContainer.State == StateType.Changed))
         parentDataContainer.MarkAsChanged();
@@ -301,7 +301,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         // Therefore, we can safely ignore end points unknown to the parent transaction.
 
         if (parentEndPoint != null)
-          parentEndPoint.SetValueFrom (endPoint);
+          parentEndPoint.SetDataFromSubTransaction (endPoint);
       }
     }
   }

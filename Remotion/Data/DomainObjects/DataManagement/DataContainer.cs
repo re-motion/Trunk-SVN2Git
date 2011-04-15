@@ -457,7 +457,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = null;
     }
 
-    public void SetPropertyValuesFrom (DataContainer source)
+    public void SetPropertyDataFromSubTransaction (DataContainer source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
 
@@ -473,7 +473,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       for (int i = 0; i < _propertyValues.Count; ++i)
-        _propertyValues[i].SetValueFrom (source._propertyValues[i]);
+        _propertyValues[i].SetDataFromSubTransaction (source._propertyValues[i]);
 
       _hasBeenChanged = CalculatePropertyValueChangeState ();
       RaiseStateUpdatedNotification (State);

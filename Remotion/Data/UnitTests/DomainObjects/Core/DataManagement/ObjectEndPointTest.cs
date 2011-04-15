@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetValueFrom_SetsOppositeObjectID_IfIDsDiffer ()
+    public void SetDataFromSubTransaction_SetsOppositeObjectID_IfIDsDiffer ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket2);
@@ -53,14 +53,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.ExpectSetOppositeObjectFrom();
 
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket2));
       Assert.That (_endPoint.HasChanged, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_LeavesOppositeObjectID_IfIDsEqual ()
+    public void SetDataFromSubTransaction_LeavesOppositeObjectID_IfIDsEqual ()
     {
       var sourceID = RelationEndPointID.Create (DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket1);
@@ -68,27 +68,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.ExpectNotSetOppositeObjectFrom ();
       
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (_endPoint.HasChanged, Is.False);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfEndPointWasTouched ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
 
       _endPoint.Touch ();
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.HasChanged, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfSourceWasTouched ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfSourceWasTouched ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
@@ -96,14 +96,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       source.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.HasChanged, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
+    public void SetDataFromSubTransaction_HasBeenTouched_TrueIfDataWasChanged ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
@@ -114,19 +114,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPoint.ExpectSetOppositeObjectFrom ();
 
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.HasChanged, Is.True);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
+    public void SetDataFromSubTransaction_HasBeenTouched_FalseIfNothingHappened ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);
       ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
 
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
@@ -136,12 +136,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "Cannot set this end point's value from "
         + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'; "
         + "the end points do not have the same end point definition.\r\nParameter name: source")]
-    public void SetValueFrom_InvalidDefinition ()
+    public void SetDataFromSubTransaction_InvalidDefinition ()
     {
       var otherID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       ObjectEndPoint source = RelationEndPointObjectMother.CreateRealObjectEndPoint (otherID);
 
-      _endPoint.SetValueFrom (source);
+      _endPoint.SetDataFromSubTransaction (source);
     }
     
     [Test]

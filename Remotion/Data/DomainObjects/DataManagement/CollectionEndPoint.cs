@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _loadState.MarkDataIncomplete (this, SetIncompleteLoadState);
     }
 
-    public override void SetValueFrom (IRelationEndPoint source)
+    public override void SetDataFromSubTransaction (IRelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
       if (Definition != sourceCollectionEndPoint.Definition)
