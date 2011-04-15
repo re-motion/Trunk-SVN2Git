@@ -14,28 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   [TestFixture]
-  public class PrimaryXmlIndexDefinitionTest
+  public class IndexDefinitionTest
   {
+    private SimpleColumnDefinition[] _includedColumns;
+    private SimpleColumnDefinition[] _columns;
     private EntityNameDefinition _objectName;
-    private SimpleColumnDefinition _xmlColumn;
-    private PrimaryXmlIndexDefinition _indexDefinition;
+    private IndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
-      _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
-      _indexDefinition = new PrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn);
+      _columns = new[] { new SimpleColumnDefinition ("TestColumn1", typeof (string), "varchar", true, false) };
+      _includedColumns = new[] { new SimpleColumnDefinition ("TestColumn2", typeof (string), "varchar", true, false) };
+
+      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, _includedColumns, true, true, true, true);
     }
 
     [Test]
@@ -43,25 +44,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
-      Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
+      Assert.That (_indexDefinition.Columns, Is.EqualTo (_columns));
+      Assert.That (_indexDefinition.IncludedColumns, Is.EqualTo (_includedColumns));
+      Assert.That (_indexDefinition.IsClustered, Is.True);
+      Assert.That (_indexDefinition.IsUnique, Is.True);
+      Assert.That (_indexDefinition.IgnoreDupKey, Is.True);
+      Assert.That (_indexDefinition.IsUnique, Is.True);
+    }
+
+    [Test]
+    public void Initialization_NoIncludedColumns ()
+    {
+      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, null, true, true, true, true);
+
+      Assert.That (_indexDefinition.IncludedColumns, Is.Null);
     }
 
     [Test]
     public void Accept_IndexDefinitionVisitor ()
     {
-      var visitorMock = MockRepository.GenerateStrictMock<IIndexDefinitionVisitor> ();
-      visitorMock.Replay ();
+      var visitorMock = MockRepository.GenerateStrictMock<IIndexDefinitionVisitor>();
+      visitorMock.Replay();
 
       _indexDefinition.Accept (visitorMock);
 
-      visitorMock.VerifyAllExpectations ();
+      visitorMock.VerifyAllExpectations();
     }
 
     [Test]
     public void Accept_SqlIndexDefinitionVisitor ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ISqlIndexDefinitionVisitor> ();
-      visitorMock.Expect (mock => mock.VisitPrimaryXmlIndexDefinition (_indexDefinition));
+      visitorMock.Expect (mock => mock.VisitIndexDefinition (_indexDefinition));
       visitorMock.Replay ();
 
       _indexDefinition.Accept (visitorMock);

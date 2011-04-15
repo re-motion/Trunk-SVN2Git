@@ -14,29 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   [TestFixture]
-  public class SecondaryXmlIndexDefinitionTest
+  public class PrimaryXmlIndexDefinitionTest
   {
     private EntityNameDefinition _objectName;
     private SimpleColumnDefinition _xmlColumn;
-    private SecondaryXmlIndexDefinition _indexDefinition;
+    private PrimaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _objectName = new EntityNameDefinition ("_objectSchema", "objectName");
-      _xmlColumn = new SimpleColumnDefinition ("xmlColumn", typeof (string), "xml", false, false);
-      
-      _indexDefinition = new SecondaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, "PrimaryIndexName", SecondaryXmlIndexKind.Property);
+      _objectName = new EntityNameDefinition ("objectSchema", "objectName");
+      _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
+      _indexDefinition = new PrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn);
     }
 
     [Test]
@@ -44,9 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
-      Assert.That (_indexDefinition.PrimaryIndexName, Is.EqualTo("PrimaryIndexName"));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
-      Assert.That (_indexDefinition.Kind, Is.EqualTo (SecondaryXmlIndexKind.Property));
     }
 
     [Test]
@@ -64,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Accept_SqlIndexDefinitionVisitor ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ISqlIndexDefinitionVisitor> ();
-      visitorMock.Expect (mock => mock.VisitSecondaryXmlIndexDefinition (_indexDefinition));
+      visitorMock.Expect (mock => mock.VisitPrimaryXmlIndexDefinition (_indexDefinition));
       visitorMock.Replay ();
 
       _indexDefinition.Accept (visitorMock);
