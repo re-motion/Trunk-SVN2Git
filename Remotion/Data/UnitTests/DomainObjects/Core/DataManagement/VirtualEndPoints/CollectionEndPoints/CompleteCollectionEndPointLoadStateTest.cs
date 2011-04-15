@@ -28,7 +28,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints
 {
@@ -94,23 +93,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void SetValueFrom_ReplacesCollectionData ()
+    public void SetDataFromSubTransaction ()
     {
-      var sourceItem1 = DomainObjectMother.CreateFakeObject<Order>();
-      var sourceItem2 = DomainObjectMother.CreateFakeObject<Order>();
+      var sourceDataKeeper = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
+      var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataKeeper, _endPointProviderStub, _clientTransaction);
+      _dataKeeperMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataKeeper, _endPointProviderStub));
+      _dataKeeperMock.Replay ();
 
-      var sourceCollection = new DomainObjectCollection (new DomainObject[] { sourceItem1, sourceItem2 }, null);
-      var sourceEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.Collection).Return (sourceCollection);
+      _loadState.SetDataFromSubTransaction (_collectionEndPointMock, sourceLoadState);
 
-      var targetItem1 = DomainObjectMother.CreateFakeObject<Order>();
-      var targetCollectionData = new DomainObjectCollectionData (new DomainObject[] { targetItem1 });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (targetCollectionData);
-      _collectionEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-
-      _loadState.SetValueFrom (_collectionEndPointMock, sourceEndPointStub);
-
-      Assert.That (targetCollectionData.ToArray(), Is.EqualTo (new[] { sourceItem1, sourceItem2 }));
+      _dataKeeperMock.VerifyAllExpectations();
     }
 
     [Test]

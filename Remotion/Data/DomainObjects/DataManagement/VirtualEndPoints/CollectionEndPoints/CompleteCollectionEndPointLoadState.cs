@@ -52,12 +52,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       return DataKeeper.OriginalCollectionData;
     }
 
-    public override void SetValueFrom (ICollectionEndPoint collectionEndPoint, ICollectionEndPoint sourceEndPoint)
+    public override void SetDataFromSubTransaction (ICollectionEndPoint collectionEndPoint, IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
+      var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteCollectionEndPointLoadState> ("sourceLoadState", sourceLoadState);
 
-      DataKeeper.CollectionData.ReplaceContents (sourceEndPoint.Collection.Cast<DomainObject> ());
+      DataKeeper.SetDataFromSubTransaction (sourceCompleteLoadState.DataKeeper, EndPointProvider);
     }
 
     public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)

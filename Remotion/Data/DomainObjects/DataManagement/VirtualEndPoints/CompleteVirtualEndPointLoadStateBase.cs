@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     public abstract TData GetData (TEndPoint endPoint);
     public abstract TData GetOriginalData (TEndPoint endPoint);
-    public abstract void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint);
+    public abstract void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState);
 
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
     protected abstract IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ();

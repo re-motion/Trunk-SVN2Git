@@ -205,7 +205,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       _updateListener.StateUpdated (false);
     }
 
-    public void SetDataFromSubTransaction (VirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    public void SetDataFromSubTransaction (IVirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
     {
       ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);

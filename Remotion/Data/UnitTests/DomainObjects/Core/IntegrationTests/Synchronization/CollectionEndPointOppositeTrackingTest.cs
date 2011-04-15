@@ -299,7 +299,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    [Ignore ("TODO 3895")]
     public void SubtransactionCommit ()
     {
       CheckOriginalData (_fileSystemItem1, _fileSystemItem2);

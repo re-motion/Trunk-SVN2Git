@@ -153,13 +153,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
       throw new InvalidOperationException ("Cannot synchronize an opposite end-point with a virtual end-point in incomplete state.");
     }
 
-    public void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint)
+    public void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
+      ArgumentUtility.CheckNotNull ("sourceLoadState", sourceLoadState);
 
-      endPoint.EnsureDataComplete ();
-      endPoint.SetValueFrom (sourceEndPoint);
+      throw new InvalidOperationException ("Cannot comit data from a sub-transaction into a virtual end-point in incomplete state.");
     }
 
     public bool HasChanged ()

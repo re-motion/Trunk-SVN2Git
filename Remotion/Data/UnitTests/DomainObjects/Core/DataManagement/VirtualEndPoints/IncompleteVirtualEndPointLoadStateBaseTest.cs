@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -203,12 +204,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void SetValueFrom ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot comit data from a sub-transaction into a virtual end-point in incomplete state.")]
+    public void SetDataFromSubTransaction ()
     {
-      var fakeSourceEndPoint = MockRepository.GenerateStub<IVirtualEndPoint<object>> ();
-      CheckOperationDelegatesToCompleteState (
-          s => s.SetValueFrom (_virtualEndPointMock, fakeSourceEndPoint), 
-          s => s.SetValueFrom (fakeSourceEndPoint));
+      _loadState.SetDataFromSubTransaction (
+          _virtualEndPointMock,
+          MockRepository.GenerateStub<IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>> ());
     }
 
     [Test]

@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void SetValueFrom (IRelationEndPoint source)
     {
-      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<ICollectionEndPoint> ("source", source);
+      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
       if (Definition != sourceCollectionEndPoint.Definition)
       {
         var message = string.Format (
@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      _loadState.SetValueFrom (this, sourceCollectionEndPoint);
+      _loadState.SetDataFromSubTransaction (this, sourceCollectionEndPoint._loadState);
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();

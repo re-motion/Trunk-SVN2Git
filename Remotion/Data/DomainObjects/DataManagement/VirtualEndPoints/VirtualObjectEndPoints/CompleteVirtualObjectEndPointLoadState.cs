@@ -52,12 +52,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       return DataKeeper.OriginalOppositeObject;
     }
 
-    public override void SetValueFrom (IVirtualObjectEndPoint endPoint, IVirtualObjectEndPoint sourceEndPoint)
+    public override void SetDataFromSubTransaction (IVirtualObjectEndPoint endPoint, IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("sourceEndPoint", sourceEndPoint);
+      var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteVirtualObjectEndPointLoadState> ("sourceLoadState", sourceLoadState);
 
-      DataKeeper.CurrentOppositeObject = sourceEndPoint.GetOppositeObject(true);
+      DataKeeper.SetDataFromSubTransaction (sourceCompleteLoadState.DataKeeper, EndPointProvider);
     }
 
     public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter)

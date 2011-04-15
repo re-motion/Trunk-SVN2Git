@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
-    public void SetDataFromSubTransaction (CollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    public void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
     {
       ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);

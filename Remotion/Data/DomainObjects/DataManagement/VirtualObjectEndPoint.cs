@@ -201,8 +201,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     protected override void SetOppositeObjectFrom (IObjectEndPoint sourceObjectEndPoint)
     {
-      var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<IVirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
-      _loadState.SetValueFrom (this, sourceVirtualObjectEndPoint);
+      var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
+      _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);
     }
 
     private void SetIncompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)

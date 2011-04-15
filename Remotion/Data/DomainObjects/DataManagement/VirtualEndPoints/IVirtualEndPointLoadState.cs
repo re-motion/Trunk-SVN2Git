@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints
 
     void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
 
-    void SetValueFrom (TEndPoint endPoint, TEndPoint sourceEndPoint);
+    void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState);
 
     bool HasChanged ();
 

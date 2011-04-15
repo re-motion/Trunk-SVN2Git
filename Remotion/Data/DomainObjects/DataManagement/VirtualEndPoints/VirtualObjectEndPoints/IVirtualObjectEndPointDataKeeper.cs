@@ -27,6 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
     IRealObjectEndPoint CurrentOppositeEndPoint { get; }
     IRealObjectEndPoint OriginalOppositeEndPoint { get; }
     DomainObject OriginalItemWithoutEndPoint { get; }
-    void SetDataFromSubTransaction (VirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
+    void SetDataFromSubTransaction (IVirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
   }
 }

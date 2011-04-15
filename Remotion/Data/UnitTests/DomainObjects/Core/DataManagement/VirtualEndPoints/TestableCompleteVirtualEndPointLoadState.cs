@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       throw new NotImplementedException();
     }
 
-    public override void SetValueFrom (IVirtualEndPoint<object> endPoint, IVirtualEndPoint<object> sourceEndPoint)
+    public override void SetDataFromSubTransaction (IVirtualEndPoint<object> endPoint, IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper> sourceLoadState)
     {
       throw new NotImplementedException();
     }

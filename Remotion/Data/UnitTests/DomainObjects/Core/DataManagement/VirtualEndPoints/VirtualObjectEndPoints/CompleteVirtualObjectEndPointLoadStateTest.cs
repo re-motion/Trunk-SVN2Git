@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
@@ -103,15 +104,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
-    public void SetValueFrom ()
+    public void SetDataFromSubTransaction ()
     {
-      var sourceEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
-      sourceEndPointStub.Stub (stub => stub.GetOppositeObject (true)).Return (_relatedObject);
-
-      _dataKeeperMock.Expect (mock => mock.CurrentOppositeObject = _relatedObject);
+      var sourceDataKeeper = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper>();
+      var sourceLoadState = new CompleteVirtualObjectEndPointLoadState (sourceDataKeeper, _endPointProviderStub, _clientTransaction);
+      _dataKeeperMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataKeeper, _endPointProviderStub));
       _dataKeeperMock.Replay();
 
-      _loadState.SetValueFrom (_virtualObjectEndPointMock, sourceEndPointStub);
+      _loadState.SetDataFromSubTransaction (_virtualObjectEndPointMock, sourceLoadState);
 
       _dataKeeperMock.VerifyAllExpectations();
     }
