@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   //TODO: Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
   [TestFixture]
-  public class ScriptBuilderTest : SchemaGenerationTestBase
+  public class SqlScriptBuilderTest : SchemaGenerationTestBase
   {
     private SqlScriptBuilder _scriptBuilderForFirstStorageProvider;
     private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _scriptBuilderForSecondStorageProvider = new SqlScriptBuilder (
           SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
-          typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
+          typeof (SqlScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
     }
 
     [Test]

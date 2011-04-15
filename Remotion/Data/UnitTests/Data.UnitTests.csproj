@@ -280,7 +280,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IndexBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
@@ -757,10 +757,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\NameListColumnDefinitionVisitorTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\DeclarationListColumnDefinitionVisitorTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TableBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ViewBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\AbstractWithoutConcreteClass.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\Address.cs" />

@@ -17,7 +17,6 @@
 using System;
 using System.Text;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain;
@@ -25,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerat
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class TableBuilderTest : SchemaGenerationTestBase
+  public class SqlTableBuilderTest : SchemaGenerationTestBase
   {
     private SqlTableBuilder _tableBuilder;
 

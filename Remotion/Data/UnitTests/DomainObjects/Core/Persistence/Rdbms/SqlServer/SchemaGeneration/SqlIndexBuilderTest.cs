@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class IndexBuilderTest : SchemaGenerationTestBase
+  public class SqlIndexBuilderTest : SchemaGenerationTestBase
   {
     private SqlIndexBuilder _indexBuilder;
     private SimpleColumnDefinition _column1;

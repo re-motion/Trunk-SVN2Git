@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class ViewBuilderTest : SchemaGenerationTestBase
+  public class SqlViewBuilderTest : SchemaGenerationTestBase
   {
     private TestableViewBuilder _viewBuilderWithSchemaBinding;
     private TestableViewBuilder _viewBuilderWithoutSchemaBinding;
