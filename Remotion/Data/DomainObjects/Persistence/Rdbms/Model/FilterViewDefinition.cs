@@ -26,12 +26,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="FilterViewDefinition"/> defines a filtered view in a relational database.
   /// </summary>
-  public class FilterViewDefinition : IEntityDefinition
+  public class FilterViewDefinition : EntityDefinitionBase, IEntityDefinition
   {
-    private readonly EntityNameDefinition _viewName;
     private readonly IEntityDefinition _baseEntity;
     private readonly ReadOnlyCollection<string> _classIDs;
-    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
@@ -41,12 +39,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
         IEnumerable<IColumnDefinition> columns,
-        IEnumerable<IIndexDefinition> indexes)
+        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
       ArgumentUtility.CheckNotNullOrEmpty ("classIDs", classIDs);
-      ArgumentUtility.CheckNotNull ("columns", columns);
       ArgumentUtility.CheckNotNull ("indexes", indexes);
 
       if (!(baseEntity is TableDefinition || baseEntity is FilterViewDefinition))
@@ -59,10 +56,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       _storageProviderDefinition = storageProviderDefinition;
-      _viewName = viewName;
       _baseEntity = baseEntity;
       _classIDs = classIDs.ToList().AsReadOnly();
-      _columns = columns.ToList().AsReadOnly();
       _indexes = indexes.ToList().AsReadOnly();
     }
 
@@ -74,11 +69,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
-    }
-
-    public EntityNameDefinition ViewName
-    {
-      get { return _viewName; }
     }
 
     public IEntityDefinition BaseEntity
@@ -98,12 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyViewName
     {
-      get { return _viewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IColumnDefinition> Columns
-    {
-      get { return _columns; }
+      get { return ViewName.EntityName; }
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes

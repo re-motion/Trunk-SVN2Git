@@ -26,11 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>
-  public class UnionViewDefinition : IEntityDefinition
+  public class UnionViewDefinition : EntityDefinitionBase, IEntityDefinition
   {
-    private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
-    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
@@ -39,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
         IEnumerable<IColumnDefinition> columns,
-        IEnumerable<IIndexDefinition> indexes)
+        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
@@ -62,9 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       _storageProviderDefinition = storageProviderDefinition;
-      _viewName = viewName;
       _unionedEntities = unionedEntitiesList;
-      _columns = columns.ToList().AsReadOnly();
       _indexes = indexes.ToList().AsReadOnly();
     }
 
@@ -76,11 +72,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
-    }
-
-    public EntityNameDefinition ViewName
-    {
-      get { return _viewName; }
     }
 
     public ReadOnlyCollection<IEntityDefinition> UnionedEntities
@@ -95,12 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyViewName
     {
-      get { return _viewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IColumnDefinition> Columns
-    {
-      get { return _columns; }
+      get { return ViewName.EntityName; }
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes
@@ -113,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
       var finder = new ColumnDefinitionFinder (availableColumns);
-      return _columns.Select (c => finder.FindColumn (c)).ToArray ();
+      return Columns.Select (finder.FindColumn).ToArray ();
     }
 
     // Always returns at least one table

@@ -26,12 +26,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="TableDefinition"/> defines a table in a relational database.
   /// </summary>
-  public class TableDefinition : IEntityDefinition
+  public class TableDefinition : EntityDefinitionBase, IEntityDefinition
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _tableName;
-    private readonly EntityNameDefinition _viewName;
-    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<ITableConstraintDefinition> _constraints;
     private readonly ReadOnlyCollection<IIndexDefinition> _indexes;
 
@@ -41,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEnumerable<IColumnDefinition> columns,
         IEnumerable<ITableConstraintDefinition> constraints,
-        IEnumerable<IIndexDefinition> indexes)
+        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);
@@ -51,8 +49,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
       _storageProviderDefinition = storageProviderDefinition;
       _tableName = tableName;
-      _viewName = viewName;
-      _columns = columns.ToList().AsReadOnly();
       _constraints = constraints.ToList().AsReadOnly();
       _indexes = indexes.ToList().AsReadOnly();
     }
@@ -72,11 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _tableName; }
     }
 
-    public EntityNameDefinition ViewName
-    {
-      get { return _viewName; }
-    }
-
     public ReadOnlyCollection<ITableConstraintDefinition> Constraints
     {
       get { return _constraints; }
@@ -89,12 +80,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public string LegacyViewName
     {
-      get { return _viewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IColumnDefinition> Columns
-    {
-      get { return _columns; }
+      get { return ViewName.EntityName; }
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes
