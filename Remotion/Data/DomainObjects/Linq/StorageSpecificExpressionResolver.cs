@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var entityDefinition = (IEntityDefinition) classDefinition.StorageEntityDefinition;
       var tableColumns =
-          SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (entityDefinition.GetColumns()).Select (
+          SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (entityDefinition.Columns).Select (
               cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
 
       return new SqlEntityDefinitionExpression (

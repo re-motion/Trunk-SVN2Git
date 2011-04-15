@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
             firstTableDefinition.StorageProviderDefinition,
             firstTableDefinition.TableName,
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
-            firstTableDefinition.GetColumns(),
+            firstTableDefinition.Columns,
             firstTableDefinition.Constraints,
             new IIndexDefinition[0]);
         entityDefinitions.Remove (firstTableDefinition);
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition ("Test", "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
-          tableDefinition.GetColumns(),
+          tableDefinition.Columns,
           new IIndexDefinition[0]);
     }
 

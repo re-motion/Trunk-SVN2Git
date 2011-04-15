@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  WITH CHECK OPTION\r\n",
           filterViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
           filterViewDefinition.ViewName.EntityName,
-          GetColumnList (filterViewDefinition.GetColumns(), false),
+          GetColumnList (filterViewDefinition.Columns, false),
           UseSchemaBinding(filterViewDefinition) ? "WITH SCHEMABINDING " : string.Empty,
           filterViewDefinition.GetBaseTable().TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
           filterViewDefinition.GetBaseTable().TableName.EntityName,
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  WITH CHECK OPTION\r\n",
           tableDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
           tableDefinition.ViewName.EntityName,
-          GetColumnList (tableDefinition.GetColumns (), false),
+          GetColumnList (tableDefinition.Columns, false),
           UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
           tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName);
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  {3}AS\r\n",
           unionViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
           unionViewDefinition.ViewName.EntityName,
-          GetColumnList (unionViewDefinition.GetColumns (), false),
+          GetColumnList (unionViewDefinition.Columns, false),
           UseSchemaBinding(unionViewDefinition) ? "WITH SCHEMABINDING " : string.Empty);
 
       int numberOfSelects = 0;
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         if (numberOfSelects > 0)
           createViewStringBuilder.AppendFormat ("  UNION ALL\r\n");
 
-        var availableTableColumns = tableDefinition.GetColumns();
+        var availableTableColumns = tableDefinition.Columns;
         var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
         createViewStringBuilder.AppendFormat (
             "  SELECT {0}\r\n"

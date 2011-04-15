@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((TableDefinition) entityDefinition).TableName.SchemaName, Is.Null);
       Assert.That (((TableDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((TableDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((TableDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
+      Assert.That (((TableDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
       Assert.That (((TableDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
 
       var tableConstraints = ((TableDefinition) entityDefinition).Constraints;
@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((FilterViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((FilterViewDefinition) entityDefinition).BaseEntity, Is.SameAs (baseEntity));
       Assert.That (((FilterViewDefinition) entityDefinition).ClassIDs, Is.EqualTo (classIDs));
-      Assert.That (((FilterViewDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
+      Assert.That (((FilterViewDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
       Assert.That (((FilterViewDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
     }
 
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (((UnionViewDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((UnionViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((UnionViewDefinition) entityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
-      Assert.That (((UnionViewDefinition) entityDefinition).GetColumns(), Is.EqualTo (columnDefinitions));
+      Assert.That (((UnionViewDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
       Assert.That (((UnionViewDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
     }
 

@@ -101,9 +101,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _viewName.EntityName; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> GetColumns ()
+    public ReadOnlyCollection<IColumnDefinition> Columns
     {
-      return _columns;
+      get { return _columns; }
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes

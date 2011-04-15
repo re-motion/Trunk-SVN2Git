@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void GetColumns ()
     {
-      var result = _nullEntityDefinition.GetColumns();
+      var result = _nullEntityDefinition.Columns;
 
       Assert.That (result.Count, Is.EqualTo (0));
     }
