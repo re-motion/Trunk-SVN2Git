@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _column3;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IIndexDefinition[] _indexes;
+    private EntityNameDefinition[] _synonyms;
 
     [SetUp]
     public void SetUp ()
@@ -43,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
+      _synonyms = new[] { new EntityNameDefinition (null, "Test") };
 
       _tableDefinition1 = new TableDefinition (
           _storageProviderDefinition,
@@ -50,20 +52,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "View1"),
           new[] { _column1 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
           new[] { _column2, _column3 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { _column1, _column2, _column3 },
-          _indexes);
+          _indexes,
+          _synonyms);
     }
 
     [Test]
@@ -79,14 +82,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_ViewNameNull ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition, null, new[] { _tableDefinition1, _tableDefinition2 }, new IColumnDefinition[0], new IIndexDefinition[0]);
+          _storageProviderDefinition, null, new[] { _tableDefinition1, _tableDefinition2 }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
       Assert.That (unionViewDefinition.ViewName, Is.Null);
     }
 
     [Test]
     public void Initialization_WithUnionedUnionEntity ()
     {
-      new UnionViewDefinition (_storageProviderDefinition, null, new[] { _unionViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0]);
+      new UnionViewDefinition (_storageProviderDefinition, null, new[] { _unionViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -99,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1,
           new[] { "x" },
-          new IColumnDefinition[0], new IIndexDefinition[0]);
-      new UnionViewDefinition (_storageProviderDefinition, null, new[] { filterViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0]);
+          new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
+      new UnionViewDefinition (_storageProviderDefinition, null, new[] { filterViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -116,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumns ()
+    public void Columns ()
     {
       var result = _unionViewDefinition.Columns;
 
@@ -129,6 +132,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _unionViewDefinition.Indexes;
 
       Assert.That (result, Is.EqualTo (_indexes));
+    }
+
+    [Test]
+    public void Synonyms ()
+    {
+      var result = _unionViewDefinition.Synonyms;
+
+      Assert.That (result, Is.EqualTo (_synonyms));
     }
 
     [Test]
@@ -165,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { new NullColumnDefinition() },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var availableColumns = new[] { _column1 };
 
@@ -183,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { new IDColumnDefinition (_column1, _column2) },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var availableColumns = new[] { _column1 };
 
@@ -204,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { columnDefinition },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var availableColumns = new[] { columnDefinition };
 
@@ -222,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new IColumnDefinition[] { null },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var result =
           unionViewDefinition.CreateFullColumnList (new[] { new SimpleColumnDefinition ("Test", typeof (string), "varchar", false, false) }).ToArray();
@@ -248,13 +259,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "View"),
           new IColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition(null, "UnionView"),
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var result = baseUnionDefinition.GetAllTables().ToArray();
 

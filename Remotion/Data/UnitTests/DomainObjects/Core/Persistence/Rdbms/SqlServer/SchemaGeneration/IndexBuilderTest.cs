@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _viewName,
           new[] { _column1, _column2 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { _indexDefinition });
+          new IIndexDefinition[] { _indexDefinition }, new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _tableDefinition,
           new[] { "ClassID" },
           new IColumnDefinition[0],
-          new[] { indexDefinition });
+          new[] { indexDefinition }, new EntityNameDefinition[0]);
 
       _indexBuilder.AddIndexes (filterViewDefinition);
 
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _viewName,
           new[] { _tableDefinition },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { indexDefinition });
+          new IIndexDefinition[] { indexDefinition }, new EntityNameDefinition[0]);
 
       _indexBuilder.AddIndexes (unionViewDefinition);
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _viewName,
           new[] { _tableDefinition },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { primaryIndexDefinition, secondaryIndexDefinition });
+          new IIndexDefinition[] { primaryIndexDefinition, secondaryIndexDefinition }, new EntityNameDefinition[0]);
 
       _indexBuilder.AddIndexes (unionViewDefinition);
 

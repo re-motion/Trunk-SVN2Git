@@ -37,7 +37,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
         IEnumerable<IColumnDefinition> columns,
-        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
+        IEnumerable<IIndexDefinition> indexes,
+        IEnumerable<EntityNameDefinition> synonyms)
+        : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
@@ -99,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
       var finder = new ColumnDefinitionFinder (availableColumns);
-      return Columns.Select (finder.FindColumn).ToArray ();
+      return Columns.Select (finder.FindColumn).ToArray();
     }
 
     // Always returns at least one table

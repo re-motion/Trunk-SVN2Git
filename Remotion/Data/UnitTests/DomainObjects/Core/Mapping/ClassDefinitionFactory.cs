@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                 new EntityNameDefinition(null, classDefinition.ID + "View"),
                 new SimpleColumnDefinition[0],
                 new ITableConstraintDefinition[0],
-                new IIndexDefinition[0]));
+                new IIndexDefinition[0], new EntityNameDefinition[0]));
       }
       else
       {

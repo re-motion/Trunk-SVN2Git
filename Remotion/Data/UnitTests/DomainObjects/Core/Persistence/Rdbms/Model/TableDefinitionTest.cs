@@ -30,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private PrimaryKeyConstraintDefinition[] _constraints;
     private IIndexDefinition[] _indexes;
+    private EntityNameDefinition[] _synonyms;
 
     [SetUp]
     public void SetUp ()
@@ -42,13 +43,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
                              "PK_Table", true, new[] { new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniquidentifier", false, false) })
                      };
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
+      _synonyms = new[] { new EntityNameDefinition (null, "Test") };
+
       _tableDefintion = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
           _columns,
           _constraints,
-          _indexes);
+          _indexes, 
+          _synonyms);
     }
 
     [Test]
@@ -63,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_ViewNameNull ()
     {
       var tableDefinition = new TableDefinition (
-          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), null, _columns, _constraints, new IIndexDefinition[0]);
+          _storageProviderDefinition, new EntityNameDefinition (null, "Test"), null, _columns, _constraints, new IIndexDefinition[0], new EntityNameDefinition[0]);
       Assert.That (tableDefinition.ViewName, Is.Null);
     }
 
@@ -88,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumns ()
+    public void Columns ()
     {
       var result = _tableDefintion.Columns;
 
@@ -101,6 +105,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _tableDefintion.Indexes;
 
       Assert.That (result, Is.EqualTo (_indexes));
+    }
+
+    [Test]
+    public void Synonyms ()
+    {
+      var result = _tableDefintion.Synonyms;
+
+      Assert.That (result, Is.EqualTo (_synonyms));
     }
 
     [Test]

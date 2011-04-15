@@ -53,14 +53,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           new[] { _referencingColumn },
           new[] { _foreignKeyConstraintDefinition1 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition("Test", "Customer"),
           null,
           new[] { _referencingColumn },
           new[] { _foreignKeyConstraintDefinition1, _foreignKeyConstraintDefinition2 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]

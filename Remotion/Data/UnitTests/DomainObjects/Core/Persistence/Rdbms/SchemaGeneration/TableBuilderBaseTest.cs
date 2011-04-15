@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           null,
           new IColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition(null, "Test"),
           new[] { _tableDefinition },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _tableBuilder.AddTable (unionViewDefinition);
 
       var actualCreateTableScript = _tableBuilder.GetCreateTableScript();

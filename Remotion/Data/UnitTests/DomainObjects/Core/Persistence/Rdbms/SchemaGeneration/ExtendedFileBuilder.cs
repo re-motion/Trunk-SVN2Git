@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
             new EntityNameDefinition (firstTableDefinition.ViewName.SchemaName, "NewViewName"),
             firstTableDefinition.Columns,
             firstTableDefinition.Constraints,
-            new IIndexDefinition[0]);
+            new IIndexDefinition[0], new EntityNameDefinition[0]);
         entityDefinitions.Remove (firstTableDefinition);
         entityDefinitions.Add (newTableDefinition);
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           tableDefinition,
           new[] { "ClassID" },
           tableDefinition.Columns,
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new[] { column1, column2, column3, column4 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1 }) },
           new IIndexDefinition[]
-          { nonClusteredUniqueIndex, nonClusteredNonUniqueIndex, primaryXmlIndex, secondaryXmlIndex1, secondaryXmlIndex2, secondaryXmlIndex3 });
+          { nonClusteredUniqueIndex, nonClusteredNonUniqueIndex, primaryXmlIndex, secondaryXmlIndex1, secondaryXmlIndex2, secondaryXmlIndex3 }, new EntityNameDefinition[0]);
     }
 
     private TableDefinition CreateNewTableDefinitionWithNonClusteredPrimaryKey (StorageProviderDefinition storageProviderDefinition)
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           viewName,
           new[] { column1, column2 },
           new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
-          new IIndexDefinition[]{nonClusteredUniqueIndex});
+          new IIndexDefinition[]{nonClusteredUniqueIndex}, new EntityNameDefinition[0]);
     }
   }
 }

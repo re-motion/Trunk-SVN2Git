@@ -39,7 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
         IEnumerable<IColumnDefinition> columns,
-        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
+        IEnumerable<IIndexDefinition> indexes,
+        IEnumerable<EntityNameDefinition> synonyms)
+        : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);
@@ -102,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var current = BaseEntity;
       while (current is FilterViewDefinition)
         current = ((FilterViewDefinition) current).BaseEntity;
-      
+
       return (TableDefinition) current;
     }
 

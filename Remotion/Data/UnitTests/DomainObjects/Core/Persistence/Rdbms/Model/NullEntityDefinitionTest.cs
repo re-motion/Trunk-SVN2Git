@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumns ()
+    public void Columns ()
     {
       var result = _nullEntityDefinition.Columns;
 
@@ -61,6 +61,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Indexes ()
     {
       var result = _nullEntityDefinition.Indexes;
+
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    public void Synonyms ()
+    {
+      var result = _nullEntityDefinition.Synonyms;
 
       Assert.That (result, Is.Empty);
     }

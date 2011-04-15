@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           null,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           storageProviderDefinition,
           null,
@@ -58,10 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               null,
               new IColumnDefinition[0],
               new ITableConstraintDefinition[0],
-              new IIndexDefinition[0])
+              new IIndexDefinition[0], new EntityNameDefinition[0])
           },
           new SimpleColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       _baseClassDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "EntityNameMatchesParentEntityNameBaseDomainObject",

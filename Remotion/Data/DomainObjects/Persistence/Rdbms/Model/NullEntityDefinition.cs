@@ -70,6 +70,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return Array.AsReadOnly(new IIndexDefinition[0]);  }
     }
 
+    public ReadOnlyCollection<EntityNameDefinition> Synonyms
+    {
+      get { return Array.AsReadOnly(new EntityNameDefinition[0]); }
+    }
+
     public void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

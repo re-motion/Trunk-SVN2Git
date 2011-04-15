@@ -28,6 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     EntityNameDefinition ViewName { get; }
     ReadOnlyCollection<IColumnDefinition> Columns { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
+    ReadOnlyCollection<EntityNameDefinition> Synonyms { get; }
 
     void Accept (IEntityDefinitionVisitor visitor);
   }

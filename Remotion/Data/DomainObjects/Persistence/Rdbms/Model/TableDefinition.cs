@@ -39,7 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEnumerable<IColumnDefinition> columns,
         IEnumerable<ITableConstraintDefinition> constraints,
-        IEnumerable<IIndexDefinition> indexes) : base(ArgumentUtility.CheckNotNull ("columns", columns), viewName)
+        IEnumerable<IIndexDefinition> indexes,
+        IEnumerable<EntityNameDefinition> synonyms)
+        : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("tableName", tableName);

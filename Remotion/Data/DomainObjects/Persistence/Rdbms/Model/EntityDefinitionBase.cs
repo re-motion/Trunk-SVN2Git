@@ -29,13 +29,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
 
-    protected EntityDefinitionBase (IEnumerable<IColumnDefinition> columns, EntityNameDefinition viewName)
+    protected EntityDefinitionBase (EntityNameDefinition viewName, IEnumerable<IColumnDefinition> columns, IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
-      
+      ArgumentUtility.CheckNotNull ("synonyms", synonyms);
+
       _viewName = viewName;
-      _columns = columns.ToList ().AsReadOnly ();
+      _columns = columns.ToList().AsReadOnly();
+      _synonyms = synonyms.ToList().AsReadOnly();
     }
 
     public EntityNameDefinition ViewName
@@ -46,6 +49,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<IColumnDefinition> Columns
     {
       get { return _columns; }
+    }
+
+    public ReadOnlyCollection<EntityNameDefinition> Synonyms
+    {
+      get { return _synonyms; }
     }
   }
 }

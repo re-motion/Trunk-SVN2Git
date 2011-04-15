@@ -48,21 +48,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "OrderView"),
           new[] { _column1, _column2 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Customer"),
           new EntityNameDefinition (null, "CustomerView"),
           new[] { _column3 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "OrderView"),
           _tableDefinition1,
           new[] { "ClassID" },
           new[] { _column1, _column2 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "OrderView"),
           new[] { _tableDefinition1 },
           new[] { _column1, _column2 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       _viewBuilderWithSchemaBinding.AddView (unionViewDefinition);
 
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "OrderView"),
           new[] { _tableDefinition1 },
           new[] { _column1, _column2 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       _viewBuilderWithoutSchemaBinding.AddView (unionViewDefinition);
 
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition(null, "OrderView"),
           new[] { _tableDefinition1, _tableDefinition2 },
           new[] { _column1, _column2, _column3 },
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       _viewBuilderWithSchemaBinding.AddView (unionViewDefinition);
 

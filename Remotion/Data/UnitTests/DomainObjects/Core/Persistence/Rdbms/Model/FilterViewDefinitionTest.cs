@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private FilterViewDefinition _filterViewDefinition;
     private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
     private IIndexDefinition[] _indexes;
+    private EntityNameDefinition[] _synonyms;
 
     [SetUp]
     public void SetUp ()
@@ -40,13 +41,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
       _column2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", true, false);
       _column3 = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", true, false);
+      _synonyms = new[] { new EntityNameDefinition (null, "Test") };
+
       _entityDefinition = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table"),
           new EntityNameDefinition (null, "View"),
           new[] { _column1, _column2, _column3 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], 
+          new EntityNameDefinition[0]);
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
       _filterViewDefinition = new FilterViewDefinition (
@@ -55,7 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _entityDefinition,
           new[] { "ClassId1", "ClassId2" },
           new[] { _column1, _column3 },
-          _indexes);
+          _indexes,
+          _synonyms);
     }
 
     [Test]
@@ -79,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _filterViewDefinition,
           new[] { "x" },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -98,24 +103,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               null,
               new IColumnDefinition[0],
               new ITableConstraintDefinition[0],
-              new IIndexDefinition[0])
+              new IIndexDefinition[0], new EntityNameDefinition[0])
           },
           new IColumnDefinition[0], 
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       new FilterViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           unionViewDefinition,
           new[] { "x" },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
       var filterViewDefinition = new FilterViewDefinition (
-          _storageProviderDefinition, null, _entityDefinition, new[] { "ClassId" }, new IColumnDefinition[0], new IIndexDefinition[0]);
+          _storageProviderDefinition, null, _entityDefinition, new[] { "ClassId" }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
@@ -132,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void GetColumns ()
+    public void Columns ()
     {
       var result = _filterViewDefinition.Columns;
 
@@ -145,6 +150,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var result = _filterViewDefinition.Indexes;
 
       Assert.That (result, Is.EqualTo (_indexes));
+    }
+
+    [Test]
+    public void Synonyms ()
+    {
+      var result = _filterViewDefinition.Synonyms;
+
+      Assert.That (result, Is.EqualTo (_synonyms));
     }
 
     [Test]
@@ -164,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _filterViewDefinition,
           new[] { "x" },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       var table = derivedFilterViewDefinition.GetBaseTable();
 

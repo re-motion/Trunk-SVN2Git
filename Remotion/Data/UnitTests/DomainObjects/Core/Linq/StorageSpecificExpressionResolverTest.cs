@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new EntityNameDefinition(null, "Test"),
           null,
           new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDColumn, simpleColumn }, new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");

@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           "TestView",
           new SimpleColumnDefinition[] { },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Not.SameAs (tableDefinition));
       classDefinition.SetStorageEntity (tableDefinition);

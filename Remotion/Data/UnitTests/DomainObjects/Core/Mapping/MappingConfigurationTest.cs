@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         new EntityNameDefinition (null, "Test"),
         new SimpleColumnDefinition[0],
         new ITableConstraintDefinition[0],
-        new IIndexDefinition[0]);
+        new IIndexDefinition[0], new EntityNameDefinition[0]);
 
     public override void SetUp ()
     {
@@ -188,10 +188,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               new EntityNameDefinition (null, "TestView"),
               new IColumnDefinition[0],
               new ITableConstraintDefinition[0],
-              new IIndexDefinition[0])
+              new IIndexDefinition[0], new EntityNameDefinition[0])
           },
           new IColumnDefinition[0],
-          new IIndexDefinition[0]);
+          new IIndexDefinition[0], new EntityNameDefinition[0]);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "NonAbstractClassHasEntityNameDomainObject",
           null,
