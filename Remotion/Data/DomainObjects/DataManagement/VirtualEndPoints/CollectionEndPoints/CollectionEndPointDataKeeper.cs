@@ -235,6 +235,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
+    public void SetDataFromSubTransaction (CollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    {
+      ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+
+      _changeCachingCollectionData.ReplaceContents (sourceDataKeeper.CollectionData);
+      _currentOppositeEndPoints = sourceDataKeeper.CurrentOppositeEndPoints
+          .Select (ep => Assertion.IsNotNull (
+              (IRealObjectEndPoint) endPointProvider.GetRelationEndPointWithoutLoading (ep.ID), 
+              "When committing a current virtual relation value from a sub-transaction, the opposite end-point is guaranteed to exist."))
+          .ToDictionary (ep => ep.ObjectID);
+    }
+
     #region Serialization
 
     // ReSharper disable UnusedMember.Local

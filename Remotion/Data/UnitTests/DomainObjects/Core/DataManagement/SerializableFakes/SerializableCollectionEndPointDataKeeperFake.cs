@@ -130,6 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
+    public void SetDataFromSubTransaction (CollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    {
+      throw new NotImplementedException();
+    }
+
     public void Commit ()
     {
       throw new NotImplementedException();

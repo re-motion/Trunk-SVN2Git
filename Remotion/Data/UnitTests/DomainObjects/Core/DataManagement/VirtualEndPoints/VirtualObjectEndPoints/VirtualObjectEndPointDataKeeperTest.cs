@@ -461,6 +461,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     }
 
     [Test]
+    public void SetDataFromSubTransaction ()
+    {
+      var sourceOppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
+      sourceOppositeEndPointStub.Stub (stub => stub.ID).Return (_oppositeEndPointStub.ID);
+
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener>());
+      sourceDataKeeper.CurrentOppositeObject = _oppositeObject;
+      sourceDataKeeper.RegisterCurrentOppositeEndPoint (sourceOppositeEndPointStub);
+
+      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (sourceOppositeEndPointStub.ID))
+          .Return (_oppositeEndPointStub);
+
+      _stateUpdateListenerMock.BackToRecord();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
+      _stateUpdateListenerMock.Replay();
+
+      _dataKeeper.SetDataFromSubTransaction (sourceDataKeeper, endPointProviderStub);
+
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
+
+      _stateUpdateListenerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void SetDataFromSubTransaction_Null ()
+    {
+      _dataKeeper.CurrentOppositeObject = _oppositeObject;
+      _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
+
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener> ());
+      Assert.That (sourceDataKeeper.CurrentOppositeObject, Is.Null);
+      Assert.That (sourceDataKeeper.CurrentOppositeEndPoint, Is.Null);
+      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+
+      _stateUpdateListenerMock.BackToRecord ();
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Replay ();
+
+      _dataKeeper.SetDataFromSubTransaction (sourceDataKeeper, endPointProviderStub);
+
+      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
+      Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
+
+      _stateUpdateListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void FlattenedSerializable ()
     {
       var updateListener = new VirtualEndPointStateUpdateListener (ClientTransaction.CreateRootTransaction(), _endPointID);

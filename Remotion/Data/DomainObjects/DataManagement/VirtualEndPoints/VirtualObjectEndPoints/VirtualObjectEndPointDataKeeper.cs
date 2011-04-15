@@ -205,6 +205,28 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObj
       _updateListener.StateUpdated (false);
     }
 
+    public void SetDataFromSubTransaction (VirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    {
+      ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+
+      _currentOppositeObject = sourceDataKeeper.CurrentOppositeObject;
+      if (sourceDataKeeper.CurrentOppositeEndPoint == null)
+      {
+        _currentOppositeEndPoint = null;
+      }
+      else
+      {
+        _currentOppositeEndPoint =
+            (IRealObjectEndPoint) endPointProvider.GetRelationEndPointWithoutLoading (sourceDataKeeper.CurrentOppositeEndPoint.ID);
+        Assertion.IsNotNull (
+            _currentOppositeEndPoint,
+            "When committing a current virtual relation value from a sub-transaction, the opposite end-point is guaranteed to exist.");
+      }
+
+      _updateListener.StateUpdated (HasDataChanged ());
+    }
+
     #region Serialization
 
     public VirtualObjectEndPointDataKeeper (FlattenedDeserializationInfo info)
