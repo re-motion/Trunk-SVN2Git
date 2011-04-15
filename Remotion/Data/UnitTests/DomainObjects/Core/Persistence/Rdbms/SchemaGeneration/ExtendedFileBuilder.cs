@@ -64,6 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
         entityDefinitions.Add (CreateNewFilterViewDefinition (newTableDefinition));
         entityDefinitions.Add (CreateNewTableDefinitionWithIndexes (newTableDefinition.StorageProviderDefinition));
+        entityDefinitions.Add (CreateNewTableDefinitionWithNonClusteredPrimaryKey (newTableDefinition.StorageProviderDefinition));
       }
 
       return entityDefinitions;
@@ -106,9 +107,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           tableName,
           viewName,
           new[] { column1, column2, column3, column4 },
-          new[] { new PrimaryKeyConstraintDefinition ("PK_ID", true, new[] { column1 }) },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_IndexTestTable_ID", true, new[] { column1 }) },
           new IIndexDefinition[]
           { nonClusteredUniqueIndex, nonClusteredNonUniqueIndex, primaryXmlIndex, secondaryXmlIndex1, secondaryXmlIndex2, secondaryXmlIndex3 });
+    }
+
+    private TableDefinition CreateNewTableDefinitionWithNonClusteredPrimaryKey (StorageProviderDefinition storageProviderDefinition)
+    {
+      var tableName = new EntityNameDefinition (null, "PKTestTable");
+      var viewName = new EntityNameDefinition (null, "PKTestView");
+
+      var column1 = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
+      var column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", false, false);
+
+      var nonClusteredUniqueIndex = new IndexDefinition ("IDX_ClusteredUniqueIndex", tableName, new[] { column2 }, null, true, true, true, false);
+      
+      return new TableDefinition (
+          storageProviderDefinition,
+          tableName,
+          viewName,
+          new[] { column1, column2 },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_PKTestTable_ID", false, new[] { column1 }) },
+          new IIndexDefinition[]{nonClusteredUniqueIndex});
     }
   }
 }
