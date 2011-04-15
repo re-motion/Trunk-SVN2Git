@@ -5,8 +5,28 @@ USE SchemaGenerationTestDomain3
 GO
 
 -- Drop all indexes that will be created below
-IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_ClusteredUniqueIndex')
-  DROP INDEX [IDX_ClusteredUniqueIndex] ON [dbo].[IndexTestTable]
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_NonClusteredUniqueIndex')
+  DROP INDEX [IDX_NonClusteredUniqueIndex] ON [dbo].[IndexTestTable]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_NonClusteredNonUniqueIndex')
+  DROP INDEX [IDX_NonClusteredNonUniqueIndex] ON [dbo].[IndexTestTable]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_PrimaryXmlIndex')
+  DROP INDEX [IDX_PrimaryXmlIndex] ON [dbo].[IndexTestTable]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_SecondaryXmlIndex1')
+  DROP INDEX [IDX_SecondaryXmlIndex1] ON [dbo].[IndexTestTable]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_SecondaryXmlIndex2')
+  DROP INDEX [IDX_SecondaryXmlIndex2] ON [dbo].[IndexTestTable]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_SecondaryXmlIndex3')
+  DROP INDEX [IDX_SecondaryXmlIndex3] ON [dbo].[IndexTestTable]
 GO
 
 -- Drop all views that will be created below
@@ -62,10 +82,7 @@ CREATE TABLE [dbo].[IndexTestTable]
   [FirstName] varchar(100) NOT NULL,
   [LastName] varchar(100) NOT NULL,
   [XmlColumn1] xml NOT NULL,
-  [XmlColumn2] xml NULL,
-  [XmlColumn3] xml NULL,
-  [XmlColumn4] xml NULL,
-  
+  CONSTRAINT [PK_ID] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
 
@@ -103,16 +120,43 @@ CREATE VIEW [Test].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInhe
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[IndexTestView] ([ID], [FirstName], [LastName], [XmlColumn1], [XmlColumn2], [XmlColumn3], [XmlColumn4])
+CREATE VIEW [dbo].[IndexTestView] ([ID], [FirstName], [LastName], [XmlColumn1])
   WITH SCHEMABINDING AS
-  SELECT [ID], [FirstName], [LastName], [XmlColumn1], [XmlColumn2], [XmlColumn3], [XmlColumn4]
+  SELECT [ID], [FirstName], [LastName], [XmlColumn1]
     FROM [dbo].[IndexTestTable]
   WITH CHECK OPTION
 GO
 
 -- Create indexes for tables that were created above
-CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
+CREATE UNIQUE NONCLUSTERED INDEX [IDX_NonClusteredUniqueIndex]
   ON [dbo].[IndexTestTable] ([ID])
   WITH IGNORE_DUP_KEY
+GO
+
+CREATE NONCLUSTERED INDEX [IDX_NonClusteredNonUniqueIndex]
+  ON [dbo].[IndexTestTable] ([FirstName], [LastName])
+  INCLUDE ([ID])
+GO
+
+CREATE PRIMARY XML INDEX [IDX_PrimaryXmlIndex]
+  ON [dbo].[IndexTestTable] ([XmlColumn1])
+GO
+
+CREATE XML INDEX [IDX_SecondaryXmlIndex1]
+  ON [dbo].[IndexTestTable] ([XmlColumn1])
+  USING XML INDEX [IDX_PrimaryXmlIndex]
+  FOR Path
+GO
+
+CREATE XML INDEX [IDX_SecondaryXmlIndex2]
+  ON [dbo].[IndexTestTable] ([XmlColumn1])
+  USING XML INDEX [IDX_PrimaryXmlIndex]
+  FOR Value
+GO
+
+CREATE XML INDEX [IDX_SecondaryXmlIndex3]
+  ON [dbo].[IndexTestTable] ([XmlColumn1])
+  USING XML INDEX [IDX_PrimaryXmlIndex]
+  FOR Property
 GO
 --Extendend file-builder comment at the end

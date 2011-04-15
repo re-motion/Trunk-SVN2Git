@@ -88,14 +88,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       CreateIndexStringBuilder.AppendFormat (
           "CREATE XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}])\r\n"
-          + "  USING XML INDEX [{4}].[{5}]\r\n"
-          + "  FOR {6}\r\n",
+          + "  USING XML INDEX [{4}]\r\n"
+          + "  FOR {5}\r\n",
           indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
-          indexDefinition.PrimaryIndexName.SchemaName ?? ScriptBuilder.DefaultSchema,
-          indexDefinition.PrimaryIndexName.EntityName,
+          indexDefinition.PrimaryIndexName,
           indexDefinition.Kind);
     }
 

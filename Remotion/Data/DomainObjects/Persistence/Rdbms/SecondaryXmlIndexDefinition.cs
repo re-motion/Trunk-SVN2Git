@@ -28,14 +28,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
-    private readonly EntityNameDefinition _primaryIndexName;
+    private readonly string _primaryIndexName;
     private readonly SecondaryXmlIndexKind _kind;
 
     public SecondaryXmlIndexDefinition (
         string indexName,
         EntityNameDefinition objectName,
         IColumnDefinition xmlColumn,
-        EntityNameDefinition primaryIndexName,
+        string primaryIndexName,
         SecondaryXmlIndexKind kind)
     {
       ArgumentUtility.CheckNotNull ("indexName", indexName);
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _xmlColumn; }
     }
 
-    public EntityNameDefinition PrimaryIndexName
+    public string PrimaryIndexName
     {
       get { return _primaryIndexName; }
     }

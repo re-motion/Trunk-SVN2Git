@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "SecondaryName",
           _tableName,
           _column2,
-          new EntityNameDefinition (null, "PrimaryName"),
+          "PrimaryIndexName",
           SecondaryXmlIndexKind.Property);
 
       var unionViewDefinition = new UnionViewDefinition (
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           +"GO\r\n\r\n"
           +"CREATE XML INDEX [SecondaryName]\r\n"
           +"  ON [dbo].[TableName] ([Name])\r\n"
-          +"  USING XML INDEX [dbo].[PrimaryName]\r\n"
+          +"  USING XML INDEX [PrimaryIndexName]\r\n"
           +"  FOR Property\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }

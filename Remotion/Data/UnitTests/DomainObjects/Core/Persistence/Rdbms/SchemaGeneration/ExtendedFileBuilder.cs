@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
         entityDefinitions.Remove (firstTableDefinition);
         entityDefinitions.Add (newTableDefinition);
 
-        entityDefinitions.Add (CreateNewFilterViewDefinition(newTableDefinition));
+        entityDefinitions.Add (CreateNewFilterViewDefinition (newTableDefinition));
         entityDefinitions.Add (CreateNewTableDefinitionWithIndexes (newTableDefinition.StorageProviderDefinition));
       }
 
@@ -72,12 +72,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private FilterViewDefinition CreateNewFilterViewDefinition (TableDefinition tableDefinition)
     {
       return new FilterViewDefinition (
-            tableDefinition.StorageProviderDefinition,
-            new EntityNameDefinition ("Test", "AddedView"),
-            tableDefinition,
-            new[] { "ClassID" },
-            tableDefinition.GetColumns (),
-            new IIndexDefinition[0]);
+          tableDefinition.StorageProviderDefinition,
+          new EntityNameDefinition ("Test", "AddedView"),
+          tableDefinition,
+          new[] { "ClassID" },
+          tableDefinition.GetColumns(),
+          new IIndexDefinition[0]);
     }
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
@@ -86,22 +86,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var column2 = new SimpleColumnDefinition ("FirstName", typeof (string), "varchar(100)", false, false);
       var column3 = new SimpleColumnDefinition ("LastName", typeof (string), "varchar(100)", false, false);
       var column4 = new SimpleColumnDefinition ("XmlColumn1", typeof (string), "xml", false, false);
-      var column5 = new SimpleColumnDefinition ("XmlColumn2", typeof (string), "xml", true, false);
-      var column6 = new SimpleColumnDefinition ("XmlColumn3", typeof (string), "xml", true, false);
-      var column7 = new SimpleColumnDefinition ("XmlColumn4", typeof (string), "xml", true, false);
 
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
 
-      var clusteredUniqueIndex = new IndexDefinition ("IDX_ClusteredUniqueIndex", tableName, new[] { column1 }, null, true, true, true, false);
+      var nonClusteredUniqueIndex = new IndexDefinition ("IDX_NonClusteredUniqueIndex", tableName, new[] { column1 }, null, false, true, true, false);
+      var nonClusteredNonUniqueIndex = new IndexDefinition (
+          "IDX_NonClusteredNonUniqueIndex", tableName, new[] { column2, column3 }, new[] { column1 }, false, false, false, false);
+      var primaryXmlIndex = new PrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4);
+      var secondaryXmlIndex1 = new SecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex1", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Path);
+      var secondaryXmlIndex2 = new SecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex2", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Value);
+      var secondaryXmlIndex3 = new SecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex3", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Property);
 
       return new TableDefinition (
           storageProviderDefinition,
           tableName,
           viewName,
-          new[] { column1, column2, column3, column4, column5, column6, column7 },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { clusteredUniqueIndex });
+          new[] { column1, column2, column3, column4 },
+          new[] { new PrimaryKeyConstraintDefinition ("PK_ID", true, new[] { column1 }) },
+          new IIndexDefinition[]
+          { nonClusteredUniqueIndex, nonClusteredNonUniqueIndex, primaryXmlIndex, secondaryXmlIndex1, secondaryXmlIndex2, secondaryXmlIndex3 });
     }
   }
 }

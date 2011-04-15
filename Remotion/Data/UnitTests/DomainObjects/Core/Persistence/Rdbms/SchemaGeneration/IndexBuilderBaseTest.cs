@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _indexDefinition = new IndexDefinition ("IndexDefinitionName", objectName, new[] { xmlColumn }, null, false, false, false, false);
       _primaryXmlIndexDefinition = new PrimaryXmlIndexDefinition ("PrimaryIndexName", objectName, xmlColumn);
       _secondaryXmlIndexDefinition = new SecondaryXmlIndexDefinition (
-          "SecondaryIndexName", objectName, xmlColumn, objectName, SecondaryXmlIndexKind.Property);
+          "SecondaryIndexName", objectName, xmlColumn, "PrimaryIndexName", SecondaryXmlIndexKind.Property);
 
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
