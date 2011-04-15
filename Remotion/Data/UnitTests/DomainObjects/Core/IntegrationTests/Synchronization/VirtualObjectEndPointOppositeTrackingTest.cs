@@ -204,6 +204,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckOriginalOppositeEndPoint (null);
       CheckCurrentOppositeEndPoint (null);
     }
+
+    [Test]
+    [Ignore ("TODO 3895")]
+    public void SubtransactionCommit ()
+    {
+      CheckOriginalData (_computer1);
+      CheckOriginalOppositeEndPoint (_computer1EndPoint);
+
+      CheckCurrentData (_computer1);
+      CheckCurrentOppositeEndPoint (_computer1EndPoint);
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterNonDiscardingScope ())
+      {
+        _employee1.Computer = _computer2;
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      CheckOriginalData (_computer1);
+      CheckOriginalOppositeEndPoint (_computer1EndPoint);
+
+      CheckCurrentData (_computer2);
+      CheckCurrentOppositeEndPoint (_computer2EndPoint);
+    }
     
     private T GetEndPoint<T> (RelationEndPointID endPointID) where T : IRelationEndPoint
     {

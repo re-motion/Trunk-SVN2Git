@@ -18,7 +18,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -297,6 +296,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       CheckOriginalOppositeEndPoints ();
       CheckCurrentOppositeEndPoints ();
+    }
+
+    [Test]
+    [Ignore ("TODO 3895")]
+    public void SubtransactionCommit ()
+    {
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem1, _fileSystemItem2);
+      CheckCurrentOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterNonDiscardingScope())
+      {
+        _folder1.FileSystemItems.Remove (_fileSystemItem1);
+        _folder1.FileSystemItems.Add (_fileSystemItem3);
+
+        ClientTransaction.Current.Commit();
+      }
+
+      CheckOriginalData (_fileSystemItem1, _fileSystemItem2);
+      CheckOriginalOppositeEndPoints (_fileSystemItem1EndPoint, _fileSystemItem2EndPoint);
+
+      CheckCurrentData (_fileSystemItem2, _fileSystemItem3);
+      CheckCurrentOppositeEndPoints (_fileSystemItem2EndPoint, _fileSystemItem3EndPoint);
     }
 
     private T GetEndPoint<T> (RelationEndPointID endPointID) where T : IRelationEndPoint
