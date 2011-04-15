@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class IndexBuilderTest : SchemaGenerationTestBase
   {
-    private IndexBuilder _indexBuilder;
+    private SqlIndexBuilder _indexBuilder;
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp ();
 
-      _indexBuilder = new IndexBuilder ();
+      _indexBuilder = new SqlIndexBuilder ();
 
       _column1 = new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true);
       _column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false);

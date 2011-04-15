@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public class ExtendedViewBuilder : ViewBuilder
+  public class ExtendedViewBuilder : SqlViewBuilder
   {
     protected override bool UseSchemaBinding (IEntityDefinition entityDefinition)
     {

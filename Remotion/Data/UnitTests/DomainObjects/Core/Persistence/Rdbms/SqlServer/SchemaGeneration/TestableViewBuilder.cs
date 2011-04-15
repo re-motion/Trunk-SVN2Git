@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class TestableViewBuilder : ViewBuilder
+  public class TestableViewBuilder : SqlViewBuilder
   {
     private readonly bool _useSchemaBinding;
 

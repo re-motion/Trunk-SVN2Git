@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new ScriptBuilder (storageProviderDefinition, CreateTableBuilder(), CreateViewBuilder(), CreateConstraintBuilder(), CreateIndexBuilder());
+      return new SqlScriptBuilder (storageProviderDefinition, CreateTableBuilder(), CreateViewBuilder(), CreateConstraintBuilder(), CreateIndexBuilder());
     }
 
     public virtual IStorageNameProvider CreateStorageNameProvider ()
@@ -179,24 +179,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }
 
-    protected virtual TableBuilder CreateTableBuilder ()
+    protected virtual SqlTableBuilder CreateTableBuilder ()
     {
-      return new TableBuilder();
+      return new SqlTableBuilder();
     }
 
-    protected virtual ViewBuilder CreateViewBuilder ()
+    protected virtual SqlViewBuilder CreateViewBuilder ()
     {
-      return new ViewBuilder();
+      return new SqlViewBuilder();
     }
 
-    protected virtual ConstraintBuilder CreateConstraintBuilder ()
+    protected virtual SqlConstraintBuilder CreateConstraintBuilder ()
     {
-      return new ConstraintBuilder();
+      return new SqlConstraintBuilder();
     }
 
-    protected virtual IndexBuilder CreateIndexBuilder ()
+    protected virtual SqlIndexBuilder CreateIndexBuilder ()
     {
-      return new IndexBuilder();
+      return new SqlIndexBuilder();
     }
   }
 }

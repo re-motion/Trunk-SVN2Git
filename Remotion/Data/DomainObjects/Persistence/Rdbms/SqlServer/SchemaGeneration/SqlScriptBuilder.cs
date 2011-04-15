@@ -22,20 +22,20 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class ScriptBuilder : ScriptBuilderBase
+  public class SqlScriptBuilder : ScriptBuilderBase
   {
-    private readonly TableBuilder _tableBuilder;
-    private readonly ViewBuilder _viewBuilder;
-    private readonly ConstraintBuilder _constraintBuilder;
-    private readonly IndexBuilder _indexBuilder;
+    private readonly SqlTableBuilder _tableBuilder;
+    private readonly SqlViewBuilder _viewBuilder;
+    private readonly SqlConstraintBuilder _constraintBuilder;
+    private readonly SqlIndexBuilder _indexBuilder;
     public const string DefaultSchema = "dbo";
 
-    public ScriptBuilder (
+    public SqlScriptBuilder (
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        TableBuilder tableBuilder,
-        ViewBuilder viewBuilder,
-        ConstraintBuilder constraintBuilder,
-        IndexBuilder indexBuilder)
+        SqlTableBuilder tableBuilder,
+        SqlViewBuilder viewBuilder,
+        SqlConstraintBuilder constraintBuilder,
+        SqlIndexBuilder indexBuilder)
       : base (ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition))
     {
       ArgumentUtility.CheckNotNull ("tableBuilder", tableBuilder);
@@ -49,22 +49,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _indexBuilder = indexBuilder;
     }
 
-    public TableBuilder TableBuilder
+    public SqlTableBuilder TableBuilder
     {
       get { return _tableBuilder; }
     }
 
-    public ViewBuilder ViewBuilder
+    public SqlViewBuilder ViewBuilder
     {
       get { return _viewBuilder; }
     }
 
-    public ConstraintBuilder ConstraintBuilder
+    public SqlConstraintBuilder ConstraintBuilder
     {
       get { return _constraintBuilder; }
     }
 
-    public IndexBuilder IndexBuilder
+    public SqlIndexBuilder IndexBuilder
     {
       get { return _indexBuilder; }
     }

@@ -27,13 +27,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class TableBuilderTest : SchemaGenerationTestBase
   {
-    private TableBuilder _tableBuilder;
+    private SqlTableBuilder _tableBuilder;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilder = new TableBuilder();
+      _tableBuilder = new SqlTableBuilder();
     }
 
     [Test]

@@ -21,9 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class TableBuilder : TableBuilderBase
+  public class SqlTableBuilder : TableBuilderBase
   {
-    public TableBuilder () : base (SqlDialect.Instance)
+    public SqlTableBuilder () : base (SqlDialect.Instance)
     {
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       createTableStringBuilder.AppendFormat (
           "CREATE TABLE [{0}].[{1}]\r\n(\r\n{2},\r\n  {3}\r\n)\r\n",
-          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName,
           GetColumnList(tableDefinition),
           GetPrimaryKeyConstraintStatement(tableDefinition));
@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP TABLE [{1}].[{0}]\r\n",
           tableDefinition.TableName.EntityName,
-          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema);
+          tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema);
     }
     
   }

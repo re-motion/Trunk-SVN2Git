@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class ConstraintBuilderTest : SchemaGenerationTestBase
   {
-    private ConstraintBuilder _constraintBuilder;
+    private SqlConstraintBuilder _constraintBuilder;
     private SimpleColumnDefinition _referencedColumn1;
     private SimpleColumnDefinition _referencedColumn2;
     private SimpleColumnDefinition _referencingColumn;
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public override void SetUp ()
     {
       base.SetUp();
-      _constraintBuilder = new ConstraintBuilder();
+      _constraintBuilder = new SqlConstraintBuilder();
 
       _referencedColumn1 = new SimpleColumnDefinition ("OrderID", typeof (int), "integer", true, false);
       _referencedColumn2 = new SimpleColumnDefinition ("CustomerID", typeof (int), "integer", true, false);

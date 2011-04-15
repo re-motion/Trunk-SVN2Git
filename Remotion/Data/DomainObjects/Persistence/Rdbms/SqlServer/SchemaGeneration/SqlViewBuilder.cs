@@ -24,9 +24,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// Generates SQL Server-specific views for the persistence model.
   /// </summary>
-  public class ViewBuilder : ViewBuilderBase
+  public class SqlViewBuilder : ViewBuilderBase
   {
-    public ViewBuilder () : base(SqlDialect.Instance)
+    public SqlViewBuilder () : base(SqlDialect.Instance)
     {
     }
 
@@ -47,11 +47,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    FROM [{4}].[{5}]\r\n"
           + "    WHERE [ClassID] IN ({6})\r\n"
           + "  WITH CHECK OPTION\r\n",
-          filterViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          filterViewDefinition.ViewName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           filterViewDefinition.ViewName.EntityName,
           GetColumnList (filterViewDefinition.Columns, false),
           UseSchemaBinding(filterViewDefinition) ? "WITH SCHEMABINDING " : string.Empty,
-          filterViewDefinition.GetBaseTable().TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          filterViewDefinition.GetBaseTable().TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           filterViewDefinition.GetBaseTable().TableName.EntityName,
           GetClassIDList (filterViewDefinition.ClassIDs));
     }
@@ -69,11 +69,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  SELECT {2}\r\n"
           + "    FROM [{4}].[{5}]\r\n"
           + "  WITH CHECK OPTION\r\n",
-          tableDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          tableDefinition.ViewName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           tableDefinition.ViewName.EntityName,
           GetColumnList (tableDefinition.Columns, false),
           UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
-          tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName);
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  {3}AS\r\n",
-          unionViewDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          unionViewDefinition.ViewName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           unionViewDefinition.ViewName.EntityName,
           GetColumnList (unionViewDefinition.Columns, false),
           UseSchemaBinding(unionViewDefinition) ? "WITH SCHEMABINDING " : string.Empty);
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]\r\n",
             GetColumnList (unionedColumns, true),
-            tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
             tableDefinition.TableName.EntityName);
 
         numberOfSelects++;
@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{0}' AND TABLE_SCHEMA = '{1}')\r\n"
           + "  DROP VIEW [{1}].[{0}]\r\n",
           entityDefinition.ViewName.EntityName,
-          entityDefinition.ViewName.SchemaName ?? ScriptBuilder.DefaultSchema);
+          entityDefinition.ViewName.SchemaName ?? SqlScriptBuilder.DefaultSchema);
     }
 
     protected virtual bool UseSchemaBinding (IEntityDefinition entityDefinition)

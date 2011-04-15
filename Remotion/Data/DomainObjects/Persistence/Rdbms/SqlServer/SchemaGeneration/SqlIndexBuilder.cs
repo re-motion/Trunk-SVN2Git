@@ -22,9 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class IndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
+  public class SqlIndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
   {
-    public IndexBuilder ()
+    public SqlIndexBuilder ()
         : base(SqlServer.SqlDialect.Instance)
     {
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.IsUnique ? "UNIQUE " : string.Empty,
           indexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           GetColumnList (indexDefinition.Columns, false),
           indexDefinition.IncludedColumns!=null ? "  INCLUDE ("+GetColumnList (indexDefinition.IncludedColumns, false)+")\r\n" : string.Empty,
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}])\r\n",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name);
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  USING XML INDEX [{4}]\r\n"
           + "  FOR {5}\r\n",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           indexDefinition.PrimaryIndexName,
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           +"WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
           + "  DROP INDEX [{2}] ON [{1}].[{0}]\r\n",
           indexDefinition.ObjectName.EntityName,
-          indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.IndexName);
     }
 

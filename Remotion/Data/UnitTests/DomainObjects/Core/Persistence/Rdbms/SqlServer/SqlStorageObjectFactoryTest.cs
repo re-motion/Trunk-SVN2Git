@@ -120,21 +120,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var tableBuilderStub = MockRepository.GenerateStub<TableBuilder>();
-      var viewBuilderStub = MockRepository.GenerateStub<ViewBuilder>();
-      var constraintBuilderStub = MockRepository.GenerateStub<ConstraintBuilder>();
-      var indexBuilderStub = MockRepository.GenerateStub<IndexBuilder>();
+      var tableBuilderStub = MockRepository.GenerateStub<SqlTableBuilder>();
+      var viewBuilderStub = MockRepository.GenerateStub<SqlViewBuilder>();
+      var constraintBuilderStub = MockRepository.GenerateStub<SqlConstraintBuilder>();
+      var indexBuilderStub = MockRepository.GenerateStub<SqlIndexBuilder>();
 
       var sqlProviderFactory = new TestableSqlStorageObjectFactory (tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub);
 
       var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (ScriptBuilder)));
+      Assert.That (result, Is.TypeOf (typeof (SqlScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (((ScriptBuilder) result).TableBuilder, Is.SameAs (tableBuilderStub));
-      Assert.That (((ScriptBuilder) result).ViewBuilder, Is.SameAs (viewBuilderStub));
-      Assert.That (((ScriptBuilder) result).ConstraintBuilder, Is.SameAs (constraintBuilderStub));
-      Assert.That (((ScriptBuilder) result).IndexBuilder, Is.SameAs (indexBuilderStub));
+      Assert.That (((SqlScriptBuilder) result).TableBuilder, Is.SameAs (tableBuilderStub));
+      Assert.That (((SqlScriptBuilder) result).ViewBuilder, Is.SameAs (viewBuilderStub));
+      Assert.That (((SqlScriptBuilder) result).ConstraintBuilder, Is.SameAs (constraintBuilderStub));
+      Assert.That (((SqlScriptBuilder) result).IndexBuilder, Is.SameAs (indexBuilderStub));
     }
 
     [Test]

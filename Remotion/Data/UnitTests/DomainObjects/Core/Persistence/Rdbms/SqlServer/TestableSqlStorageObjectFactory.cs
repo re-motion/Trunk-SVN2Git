@@ -25,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    private readonly TableBuilder _tableBuilder;
-    private readonly ViewBuilder _viewBuilder;
-    private readonly ConstraintBuilder _constraintBuilder;
-    private readonly IndexBuilder _indexBuilder;
+    private readonly SqlTableBuilder _tableBuilder;
+    private readonly SqlViewBuilder _viewBuilder;
+    private readonly SqlConstraintBuilder _constraintBuilder;
+    private readonly SqlIndexBuilder _indexBuilder;
 
     public TestableSqlStorageObjectFactory (
-        TableBuilder tableBuilder, ViewBuilder viewBuilder, ConstraintBuilder constraintBuilder, IndexBuilder indexBuilder)
+        SqlTableBuilder tableBuilder, SqlViewBuilder viewBuilder, SqlConstraintBuilder constraintBuilder, SqlIndexBuilder indexBuilder)
     {
       _indexBuilder = indexBuilder;
       _constraintBuilder = constraintBuilder;
@@ -39,22 +39,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableBuilder = tableBuilder;
     }
 
-    protected override TableBuilder CreateTableBuilder ()
+    protected override SqlTableBuilder CreateTableBuilder ()
     {
       return _tableBuilder;
     }
 
-    protected override ViewBuilder CreateViewBuilder ()
+    protected override SqlViewBuilder CreateViewBuilder ()
     {
       return _viewBuilder;
     }
 
-    protected override ConstraintBuilder CreateConstraintBuilder ()
+    protected override SqlConstraintBuilder CreateConstraintBuilder ()
     {
       return _constraintBuilder;
     }
 
-    protected override IndexBuilder CreateIndexBuilder ()
+    protected override SqlIndexBuilder CreateIndexBuilder ()
     {
       return _indexBuilder;
     }

@@ -27,26 +27,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class ScriptBuilderTest : SchemaGenerationTestBase
   {
-    private ScriptBuilder _scriptBuilderForFirstStorageProvider;
-    private ScriptBuilder _scriptBuilderForSecondStorageProvider;
+    private SqlScriptBuilder _scriptBuilderForFirstStorageProvider;
+    private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
-    private TableBuilder _tableBuilderMock;
-    private ViewBuilder _viewBuilderMock;
-    private ConstraintBuilder _constraintBuilderMock;
-    private IndexBuilder _indexBuilderMock;
+    private SqlTableBuilder _tableBuilderMock;
+    private SqlViewBuilder _viewBuilderMock;
+    private SqlConstraintBuilder _constraintBuilderMock;
+    private SqlIndexBuilder _indexBuilderMock;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilderMock = MockRepository.GenerateStrictMock<TableBuilder>();
-      _viewBuilderMock = MockRepository.GenerateStrictMock<ViewBuilder>();
-      _constraintBuilderMock = MockRepository.GenerateStrictMock<ConstraintBuilder>();
-      _indexBuilderMock = MockRepository.GenerateStrictMock<IndexBuilder>();
+      _tableBuilderMock = MockRepository.GenerateStrictMock<SqlTableBuilder>();
+      _viewBuilderMock = MockRepository.GenerateStrictMock<SqlViewBuilder>();
+      _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlConstraintBuilder>();
+      _indexBuilderMock = MockRepository.GenerateStrictMock<SqlIndexBuilder>();
 
-      _scriptBuilderForFirstStorageProvider = new ScriptBuilder (
+      _scriptBuilderForFirstStorageProvider = new SqlScriptBuilder (
           SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
-      _scriptBuilderForSecondStorageProvider = new ScriptBuilder (
+      _scriptBuilderForSecondStorageProvider = new SqlScriptBuilder (
           SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
           typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");

@@ -23,9 +23,9 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class ConstraintBuilder : ConstraintBuilderBase
+  public class SqlConstraintBuilder : ConstraintBuilderBase
   {
-    public ConstraintBuilder () : base (SqlDialect.Instance)
+    public SqlConstraintBuilder () : base (SqlDialect.Instance)
     {
     }
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         createConstraintStringBuilder.AppendFormat (
             "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
-            tableDefinition.TableName.SchemaName ?? ScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
             tableDefinition.TableName.EntityName,
             constraintStatement);
       }
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('{0}') \r\n"
           + "ORDER BY t.name, fk.name\r\n"
           + "exec sp_executesql @statement\r\n",
-          string.Join("', '", entityNamesForDropConstraintScript.Select(en=>(en.SchemaName ?? ScriptBuilder.DefaultSchema)+"."+en.EntityName).ToArray()));
+          string.Join("', '", entityNamesForDropConstraintScript.Select(en=>(en.SchemaName ?? SqlScriptBuilder.DefaultSchema)+"."+en.EntityName).ToArray()));
     }
   
   }
