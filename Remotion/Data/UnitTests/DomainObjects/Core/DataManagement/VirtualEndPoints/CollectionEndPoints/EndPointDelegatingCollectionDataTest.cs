@@ -22,7 +22,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPoints.CollectionEndPoints
@@ -31,8 +33,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
   public class EndPointDelegatingCollectionDataTest : ClientTransactionBaseTest
   {
     private Order _owningOrder;
+    private RelationEndPointID _endPointID;
 
     private ICollectionEndPoint _collectionEndPointMock;
+    private IRelationEndPointProvider _endPointProviderStub;
+
     private IDomainObjectCollectionData _endPointDataStub;
     private ReadOnlyCollectionDataDecorator _endPointDataDecorator;
     private IDataManagementCommand _nestedCommandMock;
@@ -50,9 +55,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       base.SetUp();
 
       _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
+      _endPointID = RelationEndPointID.Create (_owningOrder, o => o.OrderItems);
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       StubCollectionEndPoint (_collectionEndPointMock, ClientTransactionMock, _owningOrder);
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithMinimumLoading (_endPointID))
+          .Return (_collectionEndPointMock);
 
       _endPointDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       _endPointDataDecorator = new ReadOnlyCollectionDataDecorator (_endPointDataStub, true);
@@ -61,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
-      _delegatingData = new EndPointDelegatingCollectionData (_collectionEndPointMock);
+      _delegatingData = new EndPointDelegatingCollectionData (_endPointID, _endPointProviderStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -74,6 +84,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
     {
       ClientTransactionScope.ActiveScope.Leave();
       base.TearDown();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Associated end-point must be a CollectionEndPoint.\r\nParameter name: endPointID")]
+    public void Initialization_ChecksEndPointIDCardinality ()
+    {
+      new EndPointDelegatingCollectionData (RelationEndPointID.Create (_owningOrder, o => o.Customer), _endPointProviderStub);
     }
 
     [Test]
@@ -394,6 +412,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       CheckOwningObjectDeletedException ((data, relatedObject) => data.Replace (17, relatedObject));
     }
 
+    [Test]
+    public void Serializable ()
+    {
+      var data = new EndPointDelegatingCollectionData (_endPointID, new SerializableRelationEndPointProviderFake());
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (data);
+
+      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+      Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
+    }
+
     private ICollectionEndPoint CreateCollectionEndPointStub (ClientTransaction clientTransaction, Order owningOrder)
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
@@ -454,7 +483,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var data = new EndPointDelegatingCollectionData (endPointStub);
+      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithMinimumLoading (_endPointID)).Return (endPointStub);
+      var data = new EndPointDelegatingCollectionData (_endPointID, endPointProviderStub);
 
       using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
       {

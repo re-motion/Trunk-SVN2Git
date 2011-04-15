@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (data, Is.InstanceOf (typeof (T)));
       return (T) data;
     }
-    
-    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, ICollectionEndPoint expectedEndPoint)
+
+    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, RelationEndPointID expectedEndPointID)
     {
       // collection => checking checking decorator => end point data => actual data store
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
-      Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
+      Assert.That (delegator.EndPointID, Is.EqualTo (expectedEndPointID));
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)

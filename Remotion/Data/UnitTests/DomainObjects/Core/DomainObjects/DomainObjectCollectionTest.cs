@@ -592,7 +592,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         
       ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPoint);
 
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPoint);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPoint.ID);
       Assert.That (_collection, Is.EqualTo (contents));
     }
 
@@ -734,7 +734,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       collectionEndPointStub.Stub (stub => stub.GetData()).Return (endPointDataStub);
 
-      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub);
+      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
+      endPointProviderStub.Stub (stub => stub.GetRelationEndPointWithMinimumLoading (endPointID)).Return (collectionEndPointStub);
+
+      var delegatingStrategy = new EndPointDelegatingCollectionData (endPointID, endPointProviderStub);
       var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (associatedCollection), Is.SameAs (collectionEndPointStub));
       return associatedCollection;

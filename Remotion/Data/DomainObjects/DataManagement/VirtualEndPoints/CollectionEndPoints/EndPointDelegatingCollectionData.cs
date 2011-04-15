@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints
@@ -33,20 +34,36 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
   [Serializable]
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
-    [NonSerialized] // relies on the collection end point restoring the association on deserialization
-    private readonly ICollectionEndPoint _associatedEndPoint;
+    private readonly RelationEndPointID _endPointID;
+    private readonly IRelationEndPointProvider _endPointProvider;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint)
+    public EndPointDelegatingCollectionData (RelationEndPointID endPointID, IRelationEndPointProvider endPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      _associatedEndPoint = collectionEndPoint;
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+
+      if (endPointID.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("Associated end-point must be a CollectionEndPoint.", "endPointID");
+
+      _endPointID = endPointID;
+      _endPointProvider = endPointProvider;
+    }
+
+    public RelationEndPointID EndPointID
+    {
+      get { return _endPointID; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
     }
 
     public int Count
     {
       get
       {
-        var data = _associatedEndPoint.GetData();
+        var data = AssociatedEndPoint.GetData();
         return data.Count;
       }
     }
@@ -73,25 +90,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
       }
     }
 
+    // TODO 3914: Test
     public ICollectionEndPoint AssociatedEndPoint
     {
-      get { return _associatedEndPoint; }
+      get { return (ICollectionEndPoint) _endPointProvider.GetRelationEndPointWithMinimumLoading (_endPointID); }
     }
 
     public bool IsDataComplete
     {
-      get { return _associatedEndPoint.IsDataComplete; }
+      get { return AssociatedEndPoint.IsDataComplete; }
     }
 
     public void EnsureDataComplete ()
     {
-      _associatedEndPoint.EnsureDataComplete ();
+      AssociatedEndPoint.EnsureDataComplete ();
     }
 
     public IDomainObjectCollectionData GetDataStore ()
     {
       // This will usually return the ChangeCachingDomainObjectCollectionData
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.GetDataStore();
     }
 
@@ -99,13 +117,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.GetObject (index);
     }
 
@@ -113,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.GetObject (objectID);
     }
 
@@ -121,13 +139,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.Collection
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.IndexOf(objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      var data = _associatedEndPoint.GetData ();
+      var data = AssociatedEndPoint.GetData ();
       return data.GetEnumerator ();
     }
 

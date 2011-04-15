@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndP
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -54,16 +53,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
-      var collectionType = id.Definition.PropertyType;
-      var dataStrategy = CreateDelegatingCollectionData();
-      _collection = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
-
-      _originalCollection = _collection;
-
       _hasBeenTouched = false;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
+
+      var collectionType = id.Definition.PropertyType;
+      var dataStrategy = CreateDelegatingCollectionData ();
+      _collection = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
+
+      _originalCollection = _collection;
 
       var dataKeeper = _dataKeeperFactory.Create (id);
       SetIncompleteLoadState (dataKeeper);
@@ -79,7 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _collection = value;
         Touch();
 
-        RaiseStateUpdateNotification (HasChanged);
+        ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, null);
       }
     }
 
@@ -187,21 +186,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        var oppositeObjectsReferenceBeforeRollback = _collection;
-
         if (_collection != _originalCollection)
         {
           var command = CreateSetCollectionCommand (_originalCollection);
           command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
         }
-
         Assertion.IsTrue (_collection == _originalCollection);
-        Assertion.IsTrue (_collection.IsAssociatedWith (this));
-        Assertion.IsTrue (
-            _collection == oppositeObjectsReferenceBeforeRollback
-            || !oppositeObjectsReferenceBeforeRollback.IsAssociatedWith (this));
 
-        _collection.ReplaceItemsWithoutNotifications (GetCollectionWithOriginalData().Cast<DomainObject>());
+        _collection.ReplaceItemsWithoutNotifications (GetOriginalData());
 
         _loadState.Rollback();
       }
@@ -233,7 +225,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this));
+      return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (ID, EndPointProvider));
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -326,11 +318,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
              select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
     }
 
-    private void RaiseStateUpdateNotification (bool hasChanged)
-    {
-      ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, hasChanged);
-    }
-
     private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
     {
       _loadState = new CompleteCollectionEndPointLoadState (dataKeeper, _endPointProvider, ClientTransaction);
@@ -353,8 +340,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
-
-      FixupDomainObjectCollection (_collection);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -366,36 +351,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataKeeperFactory);
       info.AddValue (_loadState);
-    }
-
-    private void FixupDomainObjectCollection (DomainObjectCollection collection)
-    {
-      // The reason we need to do a fix up for associated collections is that:
-      // - CollectionEndPoint is not serializable; it is /flattened/ serializable (for performance reasons); this means no reference to it can be held
-      //   by a serializable object.
-      // - DomainObjectCollection is serializable, not flattened serializable.
-      // - Therefore, EndPointDelegatingCollectionData can only be serializable, not flattened serializable.
-      // - Therefore, EndPointDelegatingCollectionData's back-reference to CollectionEndPoint cannot be serialized. (It is marked as [NonSerializable].)
-      // - Therefore, it needs to be fixed up manually when the end point is restored.
-
-      // Fixups could be avoided if DomainObjectCollection and all IDomainObjectCollectionData implementations were made flattened serializable, 
-      // but that would be complex and it would impose the details of flattened serialization to re-store's users. Won't happen.
-      // Fixups could also be avoided if the end points stop being flattened serializable. For that, however, they must lose any references they 
-      // currently have to RelationEndPointMap. Will probably happen in the future.
-      // If it doesn't happen, fixups can be made prettier by adding an IAssociatedEndPointFixup interface to DomainObjectCollection and all 
-      // IDomainObjectCollectionData implementors.
-
-      var dataField = typeof (DomainObjectCollection).GetField ("_dataStrategy", BindingFlags.NonPublic | BindingFlags.Instance);
-      var decorator = dataField.GetValue (collection);
-
-      var wrappedDataField = typeof (DomainObjectCollectionDataDecoratorBase).GetField (
-          "_wrappedData", BindingFlags.NonPublic | BindingFlags.Instance);
-      var endPointDelegatingData = (EndPointDelegatingCollectionData) wrappedDataField.GetValue (decorator);
-
-      var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField (
-          "_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
-      associatedEndPointField.SetValue (endPointDelegatingData, this);
-
     }
 
     #endregion

@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -257,12 +256,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Perform_DoesNotTransformOldCollectionToStandAlone_WhenOldCollectionAssociatedWithOtherEndPoint ()
     {
       _newCollection.Add (_order1);
-
-      var delegatingCollectionData = new EndPointDelegatingCollectionData (MockRepository.GenerateStub<ICollectionEndPoint> ());
-      var collectionOfDifferentEndPoint = new DomainObjectCollection (delegatingCollectionData);
-
-      Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (null), Is.False);
-      Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (CollectionEndPoint), Is.False);
 
       _oldTransformerMock.Stub (mock => mock.IsAssociatedWith (CollectionEndPoint)).Return (false);
       // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point

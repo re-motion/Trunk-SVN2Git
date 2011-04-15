@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (
           deserializedEndPoint.Collection,
           _endPoint.Collection.RequiredItemType,
-          deserializedEndPoint);
+          deserializedEndPoint.ID);
     }
 
     [Test]
@@ -149,28 +149,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         Assert.That (deserializedTuple.Item2.Companies, Is.SameAs (deserializedTuple.Item4));
         ClientTransaction.Current.Rollback();
         Assert.That (deserializedTuple.Item2.Companies, Is.SameAs (deserializedTuple.Item3));
-      }
-    }
-
-    [Test]
-    public void CollectionEndPoint_AssociatedEndPoint_OfCollection ()
-    {
-      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      var oldOpposites = industrialSector.Companies;
-      var newOpposites = industrialSector.Companies.Clone ();
-      industrialSector.Companies = newOpposites;
-
-      var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
-      var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
-      using (deserializedTuple.Item1.EnterDiscardingScope ())
-      {
-        var propertyName = ReflectionMappingHelper.GetPropertyName (typeof (IndustrialSector), "Companies");
-        var endPointID = RelationEndPointID.Create(industrialSector.ID, propertyName);
-        var endPoint = ((ClientTransactionMock)ClientTransaction.Current).DataManager.RelationEndPointMap[endPointID];
-        Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedTuple.Item2.Companies), Is.SameAs (endPoint));
-
-        ClientTransaction.Current.Rollback ();
-        Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedTuple.Item2.Companies), Is.SameAs (endPoint));
       }
     }
 

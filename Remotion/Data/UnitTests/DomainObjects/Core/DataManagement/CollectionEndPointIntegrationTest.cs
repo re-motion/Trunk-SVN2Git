@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -42,7 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders (_order1, _orderWithoutOrderItem);
+      _customerEndPoint = (CollectionEndPoint) 
+          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (
+            RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders"));
     }
 
     [Test]
@@ -112,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint.ID);
 
       // end point still holds on to the same old data store...
       Assert.That (GetDomainObjectCollectionData (newOpposites).GetDataStore(), Is.SameAs (originalDataStoreOfOldOpposites));
@@ -291,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.Rollback ();
 
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint.ID);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
 
       Assert.That (GetDomainObjectCollectionData (oldCollection).GetDataStore (), Is.SameAs (oldCollectionDataStore));
@@ -366,7 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Commit ();
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (oldCollection, typeof (Order));
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint.ID);
     }
 
     [Test]
@@ -381,6 +384,85 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.GetCollectionWithOriginalData(), Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
       Assert.That (_customerEndPoint.OriginalCollection, Is.SameAs (_customerEndPoint.Collection));
       Assert.That (_customerEndPoint.Collection.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void ChangesToDataState_CauseTransactionListenerNotifications ()
+    {
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_customerEndPoint.ClientTransaction);
+
+      _customerEndPoint.Collection.Add (_order2);
+
+      listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_customerEndPoint.ClientTransaction, _customerEndPoint.ID, null));
+    }
+
+    [Test]
+    public void HasBeenTouchedAddAndRemove_LeavingSameElements ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Add (Order.NewObject ());
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+      _customerEndPoint.Collection.RemoveAt (_customerEndPoint.Collection.Count - 1);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedInsert ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Insert (0, Order.NewObject ());
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedRemove ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Remove (_customerEndPoint.Collection[0]);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedRemoveNonExisting ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Remove (Order.NewObject ());
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedClear ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Clear ();
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedClearEmpty ()
+    {
+      _customerEndPoint.Collection.Clear ();
+      _customerEndPoint.Commit ();
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection.Clear ();
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedReplace ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection[0] = Order.NewObject ();
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void HasBeenTouchedReplaceWithSame ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      _customerEndPoint.Collection[0] = _customerEndPoint.Collection[0];
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
