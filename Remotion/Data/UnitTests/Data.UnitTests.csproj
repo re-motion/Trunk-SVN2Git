@@ -269,6 +269,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendedFileBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendedViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\IndexBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableConstraintBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableIndexBuilder.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\IndexBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableFileBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestableViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />

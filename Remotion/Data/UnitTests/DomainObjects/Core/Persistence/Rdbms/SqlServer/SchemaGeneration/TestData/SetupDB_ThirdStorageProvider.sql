@@ -130,7 +130,7 @@ CREATE VIEW [dbo].[NewViewName] ([ID], [ClassID], [Timestamp], [PropertyAboveInh
 GO
 
 CREATE VIEW [Test].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot])
-  WITH SCHEMABINDING AS
+  AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot]
     FROM [dbo].[InheritanceRoot]
     WHERE [ClassID] IN ('ClassID')

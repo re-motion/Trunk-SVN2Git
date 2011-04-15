@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       var tableBuilder = new TableBuilder();
-      var viewBuilder = new ViewBuilder();
+      var viewBuilder = new ExtendedViewBuilder();
       var constraintBuilder = new ConstraintBuilder();
       var indexBuilder = new IndexBuilder();
 
