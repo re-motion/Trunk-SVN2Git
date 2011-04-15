@@ -335,6 +335,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointMap[endPointID];
     }
 
+    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      return _relationEndPointMap.GetRelationEndPointWithMinimumLoading (endPointID);
+    }
+
     public IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);

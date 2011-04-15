@@ -335,6 +335,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelationEndPointWithMinimumLoading_EndPointAlreadyAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID);
+
+      Assert.That (_map[endPointID], Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (endPoint));
+      Assert.That (endPoint.IsDataComplete, Is.False);
+
+      var result = _map.GetRelationEndPointWithMinimumLoading (endPointID);
+      
+      Assert.That (result, Is.SameAs (endPoint));
+      Assert.That (_map[endPointID], Is.SameAs (endPoint));
+      Assert.That (endPoint.IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Virtual ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      Assert.That (_map[endPointID], Is.Null);
+
+      var result = _map.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (result));
+      Assert.That (result.IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Real ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[endPointID.ObjectID], Is.Null);
+      Assert.That (_map[endPointID], Is.Null);
+
+      var result = _map.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[endPointID.ObjectID], Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (result));
+      Assert.That (result.IsDataComplete, Is.True);
+    }
+
+    [Test]
     public void RegisterVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");

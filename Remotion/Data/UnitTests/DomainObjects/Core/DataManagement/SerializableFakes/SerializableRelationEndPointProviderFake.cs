@@ -44,6 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       return _endPoints.GetValueOrDefault (endPointID);
     }
 
+    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    {
+      throw new NotImplementedException();
+    }
+
     public IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
     {
       throw new NotImplementedException();

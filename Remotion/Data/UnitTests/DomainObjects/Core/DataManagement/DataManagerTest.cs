@@ -1177,6 +1177,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelationEndPointWithMinimumLoading_RealEndPointNotAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
+      Assert.That (result.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithMinimumLoading_VirtualEndPointNotAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
+      Assert.That (result.IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithMinimumLoading_EndPointAvailable ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      var result = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.SameAs (_dataManager.RelationEndPointMap[endPointID]));
+    }
+
+    [Test]
     public void GetOppositeVirtualEndPointWithLazyLoad ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");

@@ -340,22 +340,37 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (endPointID.ObjectID == null)
         return CreateNullEndPoint(ClientTransaction, endPointID.Definition);
 
-      if (!endPointID.Definition.IsVirtual)
-        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
-
-      var existingEndPoint = _relationEndPoints.GetValueOrDefault (endPointID);
+      var existingEndPoint = this[endPointID];
       if (existingEndPoint != null)
         return _relationEndPoints[endPointID];
 
-      Assertion.IsTrue (endPointID.Definition.IsVirtual,
-          "EnsureDataAvailable should guarantee that the DataContainer is registered, which in turn guarantees that all non-virtual end points are "
-          + "registered in the map");
+      if (endPointID.Definition.IsVirtual)
+      {
+        IVirtualEndPoint endPoint = RegisterVirtualEndPoint (endPointID);
+        endPoint.EnsureDataComplete();
 
-      IVirtualEndPoint endPoint = RegisterVirtualEndPoint(endPointID);
-      endPoint.EnsureDataComplete ();
+        Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
+        return endPoint;
+      }
+      else
+      {
+        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
+        return Assertion.IsNotNull (this[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+      }
+    }
 
-      Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
-      return _relationEndPoints[endPointID];
+    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    {
+      var existingEndPoint = this[endPointID];
+      if (existingEndPoint != null)
+        return existingEndPoint;
+      else if (endPointID.Definition.IsVirtual)
+        return GetVirtualEndPointOrRegisterEmpty (endPointID);
+      else
+      {
+        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID);
+        return Assertion.IsNotNull (this[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+      }
     }
 
     private void Add (IRelationEndPoint endPoint)

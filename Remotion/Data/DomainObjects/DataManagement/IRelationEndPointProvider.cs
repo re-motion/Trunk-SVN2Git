@@ -21,6 +21,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);
     IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID);
+    IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID);
     IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID);
   }
 }
