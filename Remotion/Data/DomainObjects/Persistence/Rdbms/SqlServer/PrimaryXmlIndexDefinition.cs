@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
   public class PrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
