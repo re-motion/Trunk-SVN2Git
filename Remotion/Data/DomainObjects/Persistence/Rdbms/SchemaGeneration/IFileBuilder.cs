@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
   /// Defines an interface for classes generating setup files for a list of mapped classes.

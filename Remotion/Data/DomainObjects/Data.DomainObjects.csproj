@@ -346,7 +346,7 @@
     <Compile Include="Persistence\Rdbms\SqlIndexDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlConstraintBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IFileBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IFileBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\DeclarationListColumnDefinitionVisitor.cs" />
