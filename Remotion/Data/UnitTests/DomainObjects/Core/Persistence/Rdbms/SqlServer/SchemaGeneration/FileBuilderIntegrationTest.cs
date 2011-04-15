@@ -40,25 +40,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _sqlFileBuilderForFirstStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition));
-      _sqlFileBuilderForSecondStorageProvider = new FileBuilder (new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition));
-      _sqlFileBuilderForThirdStorageProvider = new ExtendedFileBuilder (new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition));
+      var tableBuilder = new TableBuilder();
+      var viewBuilder = new ViewBuilder();
+      var constraintBuilder = new ConstraintBuilder();
+      var indexBuilder = new IndexBuilder();
 
-      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_FirstStorageProvider.sql");
-      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_SecondStorageProvider.sql");
-      _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.SetupDB_ThirdStorageProvider.sql");
+      _sqlFileBuilderForFirstStorageProvider =
+          new FileBuilder (
+              new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
+      _sqlFileBuilderForSecondStorageProvider =
+          new FileBuilder (
+              new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
+      _sqlFileBuilderForThirdStorageProvider =
+          new ExtendedFileBuilder (
+              new ScriptBuilder (SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
 
-      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
+      _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
+      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
+      _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
+
+      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
-          .ToArray ();
-      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
+          .ToArray();
+      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
-          .ToArray ();
-      _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition> ()
-         .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
-         .ToArray ();
+          .ToArray();
+      _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
+          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
+          .ToArray();
     }
 
     [Test]

@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new ScriptBuilder (storageProviderDefinition);
+      return new ScriptBuilder (storageProviderDefinition, new TableBuilder(), new ViewBuilder(), new ConstraintBuilder(), new IndexBuilder());
     }
 
     public IStorageNameProvider CreateStorageNameProvider ()

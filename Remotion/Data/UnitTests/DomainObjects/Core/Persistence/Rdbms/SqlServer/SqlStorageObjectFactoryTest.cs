@@ -120,10 +120,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var result = _sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
+      var tableBuilderStub = MockRepository.GenerateStub<TableBuilder>();
+      var viewBuilderStub = MockRepository.GenerateStub<ViewBuilder>();
+      var constraintBuilderStub = MockRepository.GenerateStub<ConstraintBuilder>();
+      var indexBuilderStub = MockRepository.GenerateStub<IndexBuilder>();
+
+      var sqlProviderFactory = new TestableSqlStorageObjectFactory (tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub);
+
+      var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (ScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (((ScriptBuilder) result).TableBuilder, Is.SameAs (tableBuilderStub));
+      Assert.That (((ScriptBuilder) result).ViewBuilder, Is.SameAs (viewBuilderStub));
+      Assert.That (((ScriptBuilder) result).ConstraintBuilder, Is.SameAs (constraintBuilderStub));
+      Assert.That (((ScriptBuilder) result).IndexBuilder, Is.SameAs (indexBuilderStub));
     }
 
     [Test]

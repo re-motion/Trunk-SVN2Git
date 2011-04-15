@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Resources;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -29,14 +30,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private ScriptBuilder _scriptBuilderForFirstStorageProvider;
     private ScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
+    private TableBuilder _tableBuilderMock;
+    private ViewBuilder _viewBuilderMock;
+    private ConstraintBuilder _constraintBuilderMock;
+    private IndexBuilder _indexBuilderMock;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _scriptBuilderForFirstStorageProvider = new ScriptBuilder (SchemaGenerationFirstStorageProviderDefinition);
-      _scriptBuilderForSecondStorageProvider = new ScriptBuilder (SchemaGenerationSecondStorageProviderDefinition);
-      _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
+      _tableBuilderMock = MockRepository.GenerateStrictMock<TableBuilder>();
+      _viewBuilderMock = MockRepository.GenerateStrictMock<ViewBuilder>();
+      _constraintBuilderMock = MockRepository.GenerateStrictMock<ConstraintBuilder>();
+      _indexBuilderMock = MockRepository.GenerateStrictMock<IndexBuilder>();
+
+      _scriptBuilderForFirstStorageProvider = new ScriptBuilder (
+          SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
+      _scriptBuilderForSecondStorageProvider = new ScriptBuilder (
+          SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
+      _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
+          typeof (ScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
     }
 
     [Test]
@@ -46,12 +59,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual ("SchemaGenerationTestDomain2", _scriptBuilderForSecondStorageProvider.GetDatabaseName());
     }
 
+    //TODO RM-3874: crate ITableBuilder, IViewBuilder, IConstraintBuilder and IIndexBuilder interfaces to test with mocks?
+    //[Test]
+    //public void GetScript ()
+    //{
+    //  var tableDefinition1 = new TableDefinition (
+    //      SchemaGenerationFirstStorageProviderDefinition,
+    //      new EntityNameDefinition (null, "Table1"),
+    //      new EntityNameDefinition (null, "View1"),
+    //      new IColumnDefinition[0],
+    //      new ITableConstraintDefinition[0],
+    //      new IIndexDefinition[0]);
+    //  var tableDefinition2 = new TableDefinition (
+    //      SchemaGenerationFirstStorageProviderDefinition,
+    //      new EntityNameDefinition (null, "Table2"),
+    //      new EntityNameDefinition (null, "View2"),
+    //      new IColumnDefinition[0],
+    //      new ITableConstraintDefinition[0],
+    //      new IIndexDefinition[0]);
+
+    //  _tableBuilderMock.Expect (mock => mock.AddTable (tableDefinition1));
+    //  _tableBuilderMock.Expect (mock => mock.AddTable (tableDefinition2));
+    //  _tableBuilderMock.Replay ();
+    //  _viewBuilderMock.Expect (mock => mock.AddView (tableDefinition1));
+    //  _viewBuilderMock.Expect (mock => mock.AddView (tableDefinition2));
+    //  _viewBuilderMock.Replay ();
+    //  _constraintBuilderMock.Expect (mock => mock.AddConstraint(tableDefinition1));
+    //  _constraintBuilderMock.Expect (mock => mock.AddConstraint(tableDefinition2));
+    //  _constraintBuilderMock.Replay ();
+    //  _indexBuilderMock.Expect (mock => mock.AddIndexes(tableDefinition1));
+    //  _indexBuilderMock.Expect (mock => mock.AddIndexes(tableDefinition2));
+    //  _indexBuilderMock.Replay ();
+
+    //  _scriptBuilderForFirstStorageProvider.GetScript (new[]{tableDefinition1, tableDefinition2});
+
+    //  _tableBuilderMock.VerifyAllExpectations ();
+    //  _viewBuilderMock.VerifyAllExpectations ();
+    //  _constraintBuilderMock.VerifyAllExpectations ();
+    //  _indexBuilderMock.VerifyAllExpectations ();
+    //}
+
     [Test]
     public void GetScript_NoEntities ()
     {
+      _tableBuilderMock.Replay();
+      _viewBuilderMock.Replay();
+      _constraintBuilderMock.Replay();
+      _indexBuilderMock.Replay();
+
       var result = _scriptBuilderForFirstStorageProvider.GetScript (new IEntityDefinition[0]);
 
       Assert.That (result, Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
+      _tableBuilderMock.VerifyAllExpectations();
+      _viewBuilderMock.VerifyAllExpectations();
+      _constraintBuilderMock.VerifyAllExpectations();
+      _indexBuilderMock.VerifyAllExpectations();
     }
   }
 }

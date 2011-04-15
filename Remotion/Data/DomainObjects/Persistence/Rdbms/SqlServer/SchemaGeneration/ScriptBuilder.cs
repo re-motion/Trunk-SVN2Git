@@ -18,16 +18,55 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   public class ScriptBuilder : ScriptBuilderBase
   {
+    private readonly TableBuilder _tableBuilder;
+    private readonly ViewBuilder _viewBuilder;
+    private readonly ConstraintBuilder _constraintBuilder;
+    private readonly IndexBuilder _indexBuilder;
     public const string DefaultSchema = "dbo";
 
-    public ScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition)
-        : base (rdbmsProviderDefinition)
+    public ScriptBuilder (
+        RdbmsProviderDefinition rdbmsProviderDefinition,
+        TableBuilder tableBuilder,
+        ViewBuilder viewBuilder,
+        ConstraintBuilder constraintBuilder,
+        IndexBuilder indexBuilder)
+      : base (ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition))
     {
+      ArgumentUtility.CheckNotNull ("tableBuilder", tableBuilder);
+      ArgumentUtility.CheckNotNull ("viewBuilder", viewBuilder);
+      ArgumentUtility.CheckNotNull ("constraintBuilder", constraintBuilder);
+      ArgumentUtility.CheckNotNull ("indexBuilder", indexBuilder);
+
+      _tableBuilder = tableBuilder;
+      _viewBuilder = viewBuilder;
+      _constraintBuilder = constraintBuilder;
+      _indexBuilder = indexBuilder;
+    }
+
+    public TableBuilder TableBuilder
+    {
+      get { return _tableBuilder; }
+    }
+
+    public ViewBuilder ViewBuilder
+    {
+      get { return _viewBuilder; }
+    }
+
+    public ConstraintBuilder ConstraintBuilder
+    {
+      get { return _constraintBuilder; }
+    }
+
+    public IndexBuilder IndexBuilder
+    {
+      get { return _indexBuilder; }
     }
 
     public string GetDatabaseName ()
@@ -40,17 +79,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     public override string GetScript (IEnumerable<IEntityDefinition> entityDefinitions)
     {
       // TODO 3874: Add unit tests using mocks for view builder etc.
-      var viewBuilder = CreateViewBuilder();
-      var tableBuilder = CreateTableBuilder();
-      var constraintBuilder = CreateConstraintBuilder();
-      var indexBuilder = CreateIndexBuilder();
-
       foreach (var entityDefinition in entityDefinitions)
       {
-        viewBuilder.AddView (entityDefinition);
-        tableBuilder.AddTable (entityDefinition);
-        constraintBuilder.AddConstraint (entityDefinition);
-        indexBuilder.AddIndexes (entityDefinition);
+        _viewBuilder.AddView (entityDefinition);
+        _tableBuilder.AddTable (entityDefinition);
+        _constraintBuilder.AddConstraint (entityDefinition);
+        _indexBuilder.AddIndexes (entityDefinition);
       }
 
       return string.Format (
@@ -73,34 +107,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "-- Create indexes for tables that were created above\r\n"
           + "{8}GO\r\n",
           GetDatabaseName(),
-          indexBuilder.GetDropIndexScript(),
-          viewBuilder.GetDropViewScript(),
-          constraintBuilder.GetDropConstraintScript(),
-          tableBuilder.GetDropTableScript(),
-          tableBuilder.GetCreateTableScript(),
-          constraintBuilder.GetAddConstraintScript(),
-          viewBuilder.GetCreateViewScript(),
-          indexBuilder.GetCreateIndexScript());
-    }
-
-    protected virtual TableBuilder CreateTableBuilder ()
-    {
-      return new TableBuilder();
-    }
-
-    protected virtual ViewBuilder CreateViewBuilder ()
-    {
-      return new ViewBuilder();
-    }
-
-    protected virtual ConstraintBuilder CreateConstraintBuilder ()
-    {
-      return new ConstraintBuilder();
-    }
-
-    protected virtual IndexBuilder CreateIndexBuilder ()
-    {
-      return new IndexBuilder();
+          _indexBuilder.GetDropIndexScript(),
+          _viewBuilder.GetDropViewScript(),
+          _constraintBuilder.GetDropConstraintScript(),
+          _tableBuilder.GetDropTableScript(),
+          _tableBuilder.GetCreateTableScript(),
+          _constraintBuilder.GetAddConstraintScript(),
+          _viewBuilder.GetCreateViewScript(),
+          _indexBuilder.GetCreateIndexScript());
     }
   }
 }
