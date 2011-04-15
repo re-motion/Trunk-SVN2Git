@@ -6,7 +6,7 @@ GO
 
 -- Drop all indexes that will be created below
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_ClusteredUniqueIndex')
-  DROP INDEX [IDX_ClusteredUniqueIndex]
+  DROP INDEX [IDX_ClusteredUniqueIndex] ON [dbo].[IndexTestTable]
 GO
 
 -- Drop all views that will be created below
@@ -113,6 +113,6 @@ GO
 -- Create indexes for tables that were created above
 CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
   ON [dbo].[IndexTestTable] ([ID])
-  WITH IGNORE_DUP_KEY = ON, ONLINE = ON
+  WITH IGNORE_DUP_KEY
 GO
 --Extendend file-builder comment at the end

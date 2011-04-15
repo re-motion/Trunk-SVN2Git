@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
@@ -60,8 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       CreateIndexStringBuilder.AppendFormat (
           "CREATE {0}{1} INDEX [{2}]\r\n"
-          + "  ON [{3}].[{4}] ({5})\r\n{6}"
-          + "  WITH IGNORE_DUP_KEY = {7}, ONLINE = {8}\r\n",
+          + "  ON [{3}].[{4}] ({5})\r\n{6}{7}",
           indexDefinition.IsUnique ? "UNIQUE " : string.Empty,
           indexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
           indexDefinition.IndexName,
@@ -69,8 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.ObjectName.EntityName,
           GetColumnList (indexDefinition.Columns, false),
           indexDefinition.IncludedColumns!=null ? "  INCLUDE ("+GetColumnList (indexDefinition.IncludedColumns, false)+")\r\n" : string.Empty,
-          indexDefinition.IgnoreDupKey ? "ON" : "OFF",
-          indexDefinition.Online ? "ON" : "OFF");
+          GetCreateIndexOptions (indexDefinition));
     }
 
     private void AddToCreateIndexScript (PrimaryXmlIndexDefinition indexDefinition)
@@ -105,10 +104,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       DropIndexStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
           +"WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
-          + "  DROP INDEX [{2}]\r\n",
+          + "  DROP INDEX [{2}] ON [{1}].[{0}]\r\n",
           indexDefinition.ObjectName.EntityName,
           indexDefinition.ObjectName.SchemaName ?? ScriptBuilder.DefaultSchema,
           indexDefinition.IndexName);
+    }
+
+    private string GetCreateIndexOptions (IndexDefinition indexDefinition)
+    {
+      var options = new StringBuilder (string.Empty);
+      if (indexDefinition.IgnoreDupKey || indexDefinition.Online)
+      {
+        if (indexDefinition.IgnoreDupKey)
+          AddOption ("IGNORE_DUP_KEY", options);
+        if (indexDefinition.Online)
+          AddOption ("ONLINE", options);
+        options.Insert(0, "  WITH ");
+        options.Append ("\r\n");
+      }
+      return options.ToString ();
+    }
+
+    private void AddOption (string option, StringBuilder options)
+    {
+      if (options.Length > 0)
+        options.Append (", ");
+      options.Append (option);
     }
   }
 }

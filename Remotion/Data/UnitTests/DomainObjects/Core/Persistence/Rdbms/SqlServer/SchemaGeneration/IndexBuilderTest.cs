@@ -81,8 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var expectedScript =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
-          + "  ON [dbo].[TableName] ([ID], [Name])\r\n"
-          + "  WITH IGNORE_DUP_KEY = OFF, ONLINE = OFF\r\n";
+          + "  ON [dbo].[TableName] ([ID], [Name])\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
@@ -107,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID], [Name])\r\n"
           + "  INCLUDE ([Test])\r\n"
-          + "  WITH IGNORE_DUP_KEY = ON, ONLINE = ON\r\n";
+          + "  WITH IGNORE_DUP_KEY, ONLINE\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
@@ -175,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedScript = 
         "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1]\r\n";
+        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
@@ -190,11 +189,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var expectedScript = 
         "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1]\r\n"
+        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n"
         +"GO\r\n\r\n"
         +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
         +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1]\r\n";
+        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
   }

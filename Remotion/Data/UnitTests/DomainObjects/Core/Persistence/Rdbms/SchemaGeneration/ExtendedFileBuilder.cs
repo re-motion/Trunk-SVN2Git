@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
 
-      var clusteredUniqueIndex = new IndexDefinition ("IDX_ClusteredUniqueIndex", tableName, new[] { column1 }, null, true, true, true, true);
+      var clusteredUniqueIndex = new IndexDefinition ("IDX_ClusteredUniqueIndex", tableName, new[] { column1 }, null, true, true, true, false);
 
       return new TableDefinition (
           storageProviderDefinition,

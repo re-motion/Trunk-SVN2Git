@@ -87,14 +87,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    [Ignore("TODO RM-3884: fix index options")]
     public void ExecuteScriptForThirdStorageProvider ()
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
 
       var sqlScript = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
-
-      //Console.WriteLine (sqlScript); //TODO: remove
 
       DatabaseAgent.ExecuteBatchString (sqlScript, false);
     }
