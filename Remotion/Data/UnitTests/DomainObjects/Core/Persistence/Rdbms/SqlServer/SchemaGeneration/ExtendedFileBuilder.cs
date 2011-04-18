@@ -79,8 +79,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           tableDefinition,
           new[] { "ClassID" },
           tableDefinition.Columns,
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
+          new IIndexDefinition[0], 
+          new[] { new EntityNameDefinition("Test", "AddedViewSynonym")});
     }
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)

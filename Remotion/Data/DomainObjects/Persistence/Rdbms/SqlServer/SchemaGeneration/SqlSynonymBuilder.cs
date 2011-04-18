@@ -59,7 +59,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           dropTableStringBuilder.Append ("\r\n");
 
         dropTableStringBuilder.AppendFormat (
-         "DROP SYNONYM [{0}].[{1}]\r\n",
+           "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
+           +"  DROP SYNONYM [{0}].[{1}]\r\n",
          synonym.SchemaName ?? SqlScriptBuilder.DefaultSchema,
          synonym.EntityName);
       }

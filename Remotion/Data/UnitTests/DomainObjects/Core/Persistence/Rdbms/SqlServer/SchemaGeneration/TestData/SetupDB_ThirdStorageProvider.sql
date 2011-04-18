@@ -5,6 +5,8 @@ USE SchemaGenerationTestDomain3
 GO
 
 -- Drop all synonyms that will be created below
+IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'Test' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
+  DROP SYNONYM [Test].[AddedViewSynonym]
 GO
 
 -- Drop all indexes that will be created below
@@ -193,5 +195,6 @@ CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
 GO
 
 -- Create synonyms for tables that were created above
+CREATE SYNONYM [Test].[AddedViewSynonym] FOR [Test].[AddedView]
 GO
 --Extendend file-builder comment at the end

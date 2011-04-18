@@ -87,7 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _synonymBuilder.AddToDropSynonymScript (_tableDefinition1, _stringBuilder);
 
-      var expectedResult = "DROP SYNONYM [dbo].[Synonym1]\r\n";
+      var expectedResult = "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
+                          + "  DROP SYNONYM [dbo].[Synonym1]\r\n";
       Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
     }
 
@@ -97,9 +98,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder.AddToDropSynonymScript (_tableDefinition2, _stringBuilder);
 
       var expectedResult =
-          "DROP SYNONYM [test].[Synonym1]\r\n\r\n"
-          + "DROP SYNONYM [test].[Synonym2]\r\n\r\n"
-          + "DROP SYNONYM [test].[Synonym3]\r\n";
+         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
+       + "  DROP SYNONYM [test].[Synonym1]\r\n\r\n"+
+         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
+       + "  DROP SYNONYM [test].[Synonym2]\r\n\r\n"+
+         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym3')\r\n"
+       + "  DROP SYNONYM [test].[Synonym3]\r\n";
       Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
     }
   }
