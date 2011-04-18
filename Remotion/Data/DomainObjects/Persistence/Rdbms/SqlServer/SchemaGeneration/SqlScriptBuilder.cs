@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private readonly SqlSynonymBuilder _synonymBuilder;
     public const string DefaultSchema = "dbo";
 
+    // TODO: Add tests using mocks as soon as interfaces can be used for partial script builders
     public SqlScriptBuilder (
         RdbmsProviderDefinition rdbmsProviderDefinition,
         SqlTableBuilder tableBuilder,
