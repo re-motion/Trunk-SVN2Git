@@ -118,6 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       var options = new StringBuilder (string.Empty);
       if (indexDefinition.IgnoreDupKey || indexDefinition.Online)
       {
+        // TODO Review 3883: Use WITH (... = ON/OFF)
         if (indexDefinition.IgnoreDupKey)
           AddOption ("IGNORE_DUP_KEY", options);
         if (indexDefinition.Online)
