@@ -31,7 +31,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
 
-    protected EntityDefinitionBase (EntityNameDefinition viewName, IEnumerable<IColumnDefinition> columns, IEnumerable<EntityNameDefinition> synonyms)
+    protected EntityDefinitionBase (
+        EntityNameDefinition viewName, 
+        IEnumerable<IColumnDefinition> columns, 
+        IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
       ArgumentUtility.CheckNotNull ("synonyms", synonyms);
