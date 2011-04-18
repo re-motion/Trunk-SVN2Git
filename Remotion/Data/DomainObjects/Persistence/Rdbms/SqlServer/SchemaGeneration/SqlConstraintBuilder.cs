@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("createConstraintStringBuilder", createConstraintStringBuilder);
-
+      <
       var constraintStatement = GetForeignKeyConstraintStatement (tableDefinition);
       if (!string.IsNullOrEmpty (constraintStatement))
       {

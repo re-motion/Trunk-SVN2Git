@@ -19,6 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
+  // TODO Review 3882: SqlSecondaryXmlIndexDefinition
   /// <summary>
   /// <see cref="SecondaryXmlIndexDefinition"/> represents a secondary xml-column index in a relational database.
   /// </summary>
@@ -37,10 +38,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         string primaryIndexName,
         SecondaryXmlIndexKind kind)
     {
-      ArgumentUtility.CheckNotNull ("indexName", indexName);
+      ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNull ("xmlColumn", xmlColumn);
-      ArgumentUtility.CheckNotNull ("primaryIndexName", primaryIndexName);
+      ArgumentUtility.CheckNotNullOrEmpty ("primaryIndexName", primaryIndexName);
 
       _indexName = indexName;
       _objectName = objectName;

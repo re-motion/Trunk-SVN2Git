@@ -297,10 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Assert.That (
               ((PrimaryKeyConstraintDefinition) tableConstraints[i]).Columns, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.Columns));
         }
-
-        //TODO: Check for ForeignKey Constraints
-
-        //TODO: Throw NotSupportedException on unsupported constraints
+        // TODO 3923: else: Assert.That (..., Is.EqualTo (...))
       }
     }
 

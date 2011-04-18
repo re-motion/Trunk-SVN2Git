@@ -18,9 +18,12 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
+  /// <summary>
+  /// Acts as a base class for classes defining SQL Server indexes.
+  /// </summary>
   public abstract class SqlIndexDefinitionBase : IIndexDefinition
   {
-    //TODO RM-3882: constants or fields??
+    //TODO RM-3882: Implement these properties
     //bool PAD_INDEX
     //int FILLFACTOR
     //bool SORT_IN_TEMPDB
@@ -46,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         Accept (specificVisitor);
     }
 
+    // TODO Review 3882: Make protected
     public abstract void Accept (ISqlIndexDefinitionVisitor visitor);
   }
 }

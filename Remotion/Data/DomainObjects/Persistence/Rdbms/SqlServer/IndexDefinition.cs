@@ -21,8 +21,9 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
+  // TODO Review 3882: SqlIndexDefinition
   /// <summary>
-  /// <see cref="IndexDefinition"/> represents a table-index in a relational database.
+  /// <see cref="IndexDefinition"/> represents an index on a table or view in a SQL Server database.
   /// </summary>
   public class IndexDefinition : SqlIndexDefinitionBase
   {
@@ -35,17 +36,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     private readonly bool _ignoreDupKey;
     private readonly bool _online;
 
+    // TODO Review 3882: Add SqlIndexedColumnDefinition class => holds on to IColumnDefinition + IndexOrder enum value (Ascending, Descending; nullable); use for Columns property
     public IndexDefinition (
         string indexName,
         EntityNameDefinition objectName,
-        IColumnDefinition[] columns,
-        IColumnDefinition[] includedColumns,
+        IColumnDefinition[] columns, // TODO Review 3882: IEnumerable
+        IColumnDefinition[] includedColumns, // TODO Review 3882: IEnumerable
         bool isClustered,
         bool isUnique,
         bool ignoreDupKey,
         bool online)
     {
-      ArgumentUtility.CheckNotNull ("indexName", indexName);
+      ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNullOrEmpty ("columns", columns);
       ArgumentUtility.CheckNotEmpty ("includedColumns", includedColumns);

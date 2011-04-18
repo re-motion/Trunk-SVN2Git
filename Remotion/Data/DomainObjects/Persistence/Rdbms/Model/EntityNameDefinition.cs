@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  /// <summary>
+  /// Defines the name of an entity in a relational database.
+  /// </summary>
   public class EntityNameDefinition
   {
     private readonly string _schemaName;

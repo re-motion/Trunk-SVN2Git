@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// <see cref="IIndexDefinition"/> defines the API for an index definition in a relational database.
+  /// <see cref="IIndexDefinition"/> defines an index definition in a relational database.
   /// </summary>
   public interface IIndexDefinition
   {

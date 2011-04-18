@@ -22,9 +22,9 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 {
   [TestFixture]
-  public class SqlColumnDefinitionFindingVisitorTest
+  public class SimpleColumnDefinitionFindingVisitorTest
   {
-    private SqlColumnDefinitionFindingVisitor _visitor;
+    private SimpleColumnDefinitionFindingVisitor _visitor;
     private SimpleColumnDefinition _simpleColumn1;
     private SimpleColumnDefinition _simpleColumn2;
     private SimpleColumnDefinition _simpleColumn3;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _idColumn1 = new IDColumnDefinition (_simpleColumn1, _simpleColumn2);
       _idColumn2 = new IDColumnDefinition (_simpleColumn3, _simpleColumn4);
 
-      _visitor = new SqlColumnDefinitionFindingVisitor();
+      _visitor = new SimpleColumnDefinitionFindingVisitor();
     }
 
     [Test]

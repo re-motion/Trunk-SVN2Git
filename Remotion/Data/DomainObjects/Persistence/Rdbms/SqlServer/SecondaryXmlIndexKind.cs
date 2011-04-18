@@ -16,6 +16,7 @@
 // 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
+  // TODO Review 3882: SqlSecondaryXmlIndexKind
   public enum SecondaryXmlIndexKind
   {
     Value,

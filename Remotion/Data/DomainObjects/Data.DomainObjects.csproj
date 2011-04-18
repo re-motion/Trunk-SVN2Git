@@ -229,7 +229,7 @@
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\Model\IIndexDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\Model\IStorageNameProvider.cs" />
-    <Compile Include="Persistence\Rdbms\Model\SqlColumnDefinitionFindingVisitor.cs" />
+    <Compile Include="Persistence\Rdbms\Model\SimpleColumnDefinitionFindingVisitor.cs" />
     <Compile Include="Linq\StorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\ClassDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\IMappingObjectFactory.cs" />

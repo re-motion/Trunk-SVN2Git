@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     public ForeignKeyConstraintDefinition (
         string constraintName,
-        EntityNameDefinition referencedTableName, //TODO RM-3862: don't pass the table name here -> get it from its TableDefinition !?
+        EntityNameDefinition referencedTableName,
         IEnumerable<SimpleColumnDefinition> referencingColumns,
         IEnumerable<SimpleColumnDefinition> referencedColumns)
     {

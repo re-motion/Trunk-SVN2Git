@@ -19,6 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
+  // TODO Review 3882: SqlPrimaryXmlIndexDefinition
   public class PrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     /// </summary>
     public PrimaryXmlIndexDefinition (string indexName, EntityNameDefinition objectName, IColumnDefinition xmlColumn)
     {
-      ArgumentUtility.CheckNotNull ("indexName", indexName);
+      ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNull ("xmlColumn", xmlColumn);
 

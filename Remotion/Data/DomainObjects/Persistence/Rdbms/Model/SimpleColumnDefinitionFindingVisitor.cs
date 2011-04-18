@@ -20,15 +20,15 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// The <see cref="SqlColumnDefinitionFindingVisitor"/> findes all <see cref="SimpleColumnDefinition"/>s in the specified column list.
+  /// The <see cref="SimpleColumnDefinitionFindingVisitor"/> findes all <see cref="SimpleColumnDefinition"/>s in the specified column list.
   /// </summary>
-  public class SqlColumnDefinitionFindingVisitor : IColumnDefinitionVisitor
+  public class SimpleColumnDefinitionFindingVisitor : IColumnDefinitionVisitor
   {
     public static IEnumerable<SimpleColumnDefinition> FindSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columnDefinitions)
     {
       ArgumentUtility.CheckNotNull ("columnDefinitions", columnDefinitions);
 
-      var visitor = new SqlColumnDefinitionFindingVisitor();
+      var visitor = new SimpleColumnDefinitionFindingVisitor();
       foreach (var columnDefinition in columnDefinitions)
         columnDefinition.Accept (visitor);
       return visitor.GetSimpleColumns();
@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 
     private readonly List<SimpleColumnDefinition> _columnDefinitions;
 
-    public SqlColumnDefinitionFindingVisitor ()
+    public SimpleColumnDefinitionFindingVisitor ()
     {
       _columnDefinitions = new List<SimpleColumnDefinition>();
     }

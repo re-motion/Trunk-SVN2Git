@@ -20,7 +20,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
   /// <summary>
-  /// Defines a column in a SQL database.
+  /// Defines a column in a relational database.
   /// </summary>
   public class SimpleColumnDefinition : IColumnDefinition
   {

@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
           _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
           true,
-          SqlColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
+          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
 
       var foreignKeyConstraints =
           _foreignKeyConstraintDefinitionFactory.CreateForeignKeyConstraints (classDefinition).Cast<ITableConstraintDefinition>();

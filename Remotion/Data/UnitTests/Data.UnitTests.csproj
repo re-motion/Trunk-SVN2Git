@@ -270,8 +270,8 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ConstraintBuilderBaseTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendedFileBuilder.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ExtendedViewBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedFileBuilder.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\IndexBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableConstraintBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableIndexBuilder.cs" />
@@ -710,7 +710,7 @@
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\PropertyTypeIsSupportedValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Logical\SortExpressionIsValidValidationRuleTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\Validation\Reflection\ClassDefinitionTypeIsSubclassOfDomainObjectValidationRuleTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SqlColumnDefinitionFindingVisitorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SimpleColumnDefinitionFindingVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\ReflectionBasedStorageNameProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnsupportedStorageTypeColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Validation\PropertyTypeIsSupportedByStorageProviderValidationRuleTest.cs" />
@@ -758,7 +758,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\Model\SqlStorageTypeCalculatorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\TableDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ConstraintBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlConstraintBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\NameListColumnDefinitionVisitorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\DeclarationListColumnDefinitionVisitorTest.cs" />
