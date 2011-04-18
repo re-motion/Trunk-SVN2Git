@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   public class SqlIndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
   {
     public SqlIndexBuilder ()
-        : base(SqlServer.SqlDialect.Instance)
+        : base (SqlServer.SqlDialect.Instance)
     {
     }
 
@@ -45,14 +45,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)
     {
-      AppendSeparator ();
+      AppendSeparator();
       AddToCreateIndexScript (primaryXmlIndexDefinition);
       AddToDropIndexScript (primaryXmlIndexDefinition);
     }
 
     public void VisitSecondaryXmlIndexDefinition (SecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
     {
-      AppendSeparator ();
+      AppendSeparator();
       AddToCreateIndexScript (secondaryXmlIndexDefinition);
       AddToDropIndexScript (secondaryXmlIndexDefinition);
     }
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           GetColumnList (indexDefinition.Columns, false),
-          indexDefinition.IncludedColumns!=null ? "  INCLUDE ("+GetColumnList (indexDefinition.IncludedColumns, false)+")\r\n" : string.Empty,
+          indexDefinition.IncludedColumns != null ? "  INCLUDE (" + GetColumnList (indexDefinition.IncludedColumns, false) + ")\r\n" : string.Empty,
           GetCreateIndexOptions (indexDefinition));
     }
 
@@ -102,13 +102,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       DropIndexStringBuilder.AppendFormat (
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
-          +"WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
+          + "WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
           + "  DROP INDEX [{2}] ON [{1}].[{0}]\r\n",
           indexDefinition.ObjectName.EntityName,
           indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.IndexName);
     }
 
+    // TODO Review 3883: Refactor as follows:
+    // - Extract another method: IEnumerable<string> GetCreateIndexOptionItems (IndexDefinition indexDefinition); that method returns a list of SQL option fragements
+    // - Refactor this method to take an "IEnumerable<string> optionItems" instead
+    // - Refactor the call site to call GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))
     private string GetCreateIndexOptions (IndexDefinition indexDefinition)
     {
       var options = new StringBuilder (string.Empty);
@@ -118,10 +122,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           AddOption ("IGNORE_DUP_KEY", options);
         if (indexDefinition.Online)
           AddOption ("ONLINE", options);
-        options.Insert(0, "  WITH ");
+        options.Insert (0, "  WITH ");
         options.Append ("\r\n");
       }
-      return options.ToString ();
+      return options.ToString();
     }
 
     private void AddOption (string option, StringBuilder options)

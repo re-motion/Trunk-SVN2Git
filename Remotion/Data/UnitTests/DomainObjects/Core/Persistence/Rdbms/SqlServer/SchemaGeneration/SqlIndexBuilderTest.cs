@@ -35,6 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private IndexDefinition _indexDefinition;
     private TableDefinition _tableDefinition;
 
+    // TODO Review 3883: Refactor tests: Rewrite to test the Visit...Definition methods instead of the base class methods. Remove TableDefinition etc. => not needed
+    // TODO Review 3883: Add tests with non-default schemas
+    // TODO Review 3883: Add tests for option values: one with all options on, one with all options off (later: one with all options undefined)
+
     public override void SetUp ()
     {
       base.SetUp ();

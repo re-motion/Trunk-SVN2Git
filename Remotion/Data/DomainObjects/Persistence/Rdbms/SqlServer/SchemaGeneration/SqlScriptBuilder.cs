@@ -81,7 +81,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     public string GetDatabaseName ()
     {
       //TODO improve this logic
-      string temp = RdbmsProviderDefinition.ConnectionString.Substring (RdbmsProviderDefinition.ConnectionString.IndexOf ("Initial Catalog=") + 16);
+      var initialCatalogMarker = "Initial Catalog=";
+      var startIndex = RdbmsProviderDefinition.ConnectionString.IndexOf (initialCatalogMarker) + initialCatalogMarker.Length;
+      string temp = RdbmsProviderDefinition.ConnectionString.Substring (startIndex);
       return temp.Substring (0, temp.IndexOf (";"));
     }
 

@@ -23,7 +23,6 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  //TODO: Derive ClassWithAllDataTypes from an abstract class to ensure that all data types are selected in a UNION
   [TestFixture]
   public class SqlScriptBuilderTest : SchemaGenerationTestBase
   {
