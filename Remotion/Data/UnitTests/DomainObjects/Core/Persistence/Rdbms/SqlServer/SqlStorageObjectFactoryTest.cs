@@ -124,8 +124,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var viewBuilderStub = MockRepository.GenerateStub<SqlViewBuilder>();
       var constraintBuilderStub = MockRepository.GenerateStub<SqlConstraintBuilder>();
       var indexBuilderStub = MockRepository.GenerateStub<SqlIndexBuilder>();
+      var synonymBuilderStub = MockRepository.GenerateStub<SqlSynonymBuilder>();
 
-      var sqlProviderFactory = new TestableSqlStorageObjectFactory (tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub);
+      var sqlProviderFactory = new TestableSqlStorageObjectFactory (
+          tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub, synonymBuilderStub);
 
       var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
@@ -135,6 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (((SqlScriptBuilder) result).ViewBuilder, Is.SameAs (viewBuilderStub));
       Assert.That (((SqlScriptBuilder) result).ConstraintBuilder, Is.SameAs (constraintBuilderStub));
       Assert.That (((SqlScriptBuilder) result).IndexBuilder, Is.SameAs (indexBuilderStub));
+      Assert.That (((SqlScriptBuilder) result).SynonymBuilder, Is.SameAs (synonymBuilderStub));
     }
 
     [Test]
@@ -167,22 +170,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateLinqQueryExecutor_WithMixedStages ()
     {
       var classDefintion = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider> ();
+      var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<DefaultSqlPreparationStage> ().AddMixin<TestSqlPreparationStageMixin> ()
-          .ForClass<DefaultMappingResolutionStage> ().AddMixin<TestMappingResolutionStageMixin> ()
-          .ForClass<DefaultSqlGenerationStage> ().AddMixin<TestSqlGenerationStageMixin> ()
-          .EnterScope ())
+      using (MixinConfiguration.BuildNew()
+          .ForClass<DefaultSqlPreparationStage>().AddMixin<TestSqlPreparationStageMixin>()
+          .ForClass<DefaultMappingResolutionStage>().AddMixin<TestMappingResolutionStageMixin>()
+          .ForClass<DefaultSqlGenerationStage>().AddMixin<TestSqlGenerationStageMixin>()
+          .EnterScope())
       {
         var executor = (DomainObjectQueryExecutor) _sqlProviderFactory.CreateLinqQueryExecutor (
-            classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault ());
+            classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault());
 
         Assert.That (Mixin.Get<TestSqlPreparationStageMixin> (executor.PreparationStage), Is.Not.Null);
         Assert.That (Mixin.Get<TestMappingResolutionStageMixin> (executor.ResolutionStage), Is.Not.Null);
         Assert.That (Mixin.Get<TestSqlGenerationStageMixin> (executor.GenerationStage), Is.Not.Null);
       }
     }
-
   }
 }

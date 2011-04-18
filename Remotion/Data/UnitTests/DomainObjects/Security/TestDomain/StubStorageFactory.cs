@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
       return new StubStorageProvider (storageProviderDefinition, storageNameProvider, persistenceListener);
     }
@@ -103,7 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new SqlScriptBuilder (storageProviderDefinition, new SqlTableBuilder(), new SqlViewBuilder(), new SqlConstraintBuilder(), new SqlIndexBuilder());
+      return new SqlScriptBuilder (
+          storageProviderDefinition,
+          new SqlTableBuilder(),
+          new SqlViewBuilder(),
+          new SqlConstraintBuilder(),
+          new SqlIndexBuilder(),
+          new SqlSynonymBuilder());
     }
 
     public IStorageNameProvider CreateStorageNameProvider ()

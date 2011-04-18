@@ -15,11 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
@@ -29,14 +26,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private readonly SqlViewBuilder _viewBuilder;
     private readonly SqlConstraintBuilder _constraintBuilder;
     private readonly SqlIndexBuilder _indexBuilder;
+    private readonly SqlSynonymBuilder _synonymBuilder;
 
     public TestableSqlStorageObjectFactory (
-        SqlTableBuilder tableBuilder, SqlViewBuilder viewBuilder, SqlConstraintBuilder constraintBuilder, SqlIndexBuilder indexBuilder)
+        SqlTableBuilder tableBuilder,
+        SqlViewBuilder viewBuilder,
+        SqlConstraintBuilder constraintBuilder,
+        SqlIndexBuilder indexBuilder,
+        SqlSynonymBuilder synonymBuilder)
     {
       _indexBuilder = indexBuilder;
       _constraintBuilder = constraintBuilder;
       _viewBuilder = viewBuilder;
       _tableBuilder = tableBuilder;
+      _synonymBuilder = synonymBuilder;
     }
 
     protected override SqlTableBuilder CreateTableBuilder ()
@@ -57,6 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     protected override SqlIndexBuilder CreateIndexBuilder ()
     {
       return _indexBuilder;
+    }
+
+    protected override SqlSynonymBuilder CreateSynonymBuilder ()
+    {
+      return _synonymBuilder;
     }
   }
 }

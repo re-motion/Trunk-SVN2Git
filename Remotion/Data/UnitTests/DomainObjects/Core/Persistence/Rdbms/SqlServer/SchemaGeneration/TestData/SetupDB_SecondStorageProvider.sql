@@ -1,6 +1,9 @@
 USE SchemaGenerationTestDomain2
 GO
 
+-- Drop all synonyms that will be created below
+GO
+
 -- Drop all indexes that will be created below
 GO
 
@@ -61,4 +64,7 @@ CREATE VIEW [dbo].[SpecialOfficialView] ([ID], [ClassID], [Timestamp], [Name], [
 GO
 
 -- Create indexes for tables that were created above
+GO
+
+-- Create synonyms for tables that were created above
 GO

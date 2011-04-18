@@ -4,6 +4,9 @@ GO
 USE SchemaGenerationTestDomain3
 GO
 
+-- Drop all synonyms that will be created below
+GO
+
 -- Drop all indexes that will be created below
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_NonClusteredUniqueIndex')
   DROP INDEX [IDX_NonClusteredUniqueIndex] ON [dbo].[IndexTestTable]
@@ -187,5 +190,8 @@ GO
 CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
   ON [dbo].[PKTestTable] ([Name])
   WITH IGNORE_DUP_KEY
+GO
+
+-- Create synonyms for tables that were created above
 GO
 --Extendend file-builder comment at the end

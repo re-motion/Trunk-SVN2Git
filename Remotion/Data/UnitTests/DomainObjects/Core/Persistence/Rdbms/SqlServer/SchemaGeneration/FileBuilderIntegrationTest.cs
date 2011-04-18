@@ -46,16 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var viewBuilder = new ExtendedViewBuilder();
       var constraintBuilder = new SqlConstraintBuilder();
       var indexBuilder = new SqlIndexBuilder();
+      var synonymBuilder = new SqlSynonymBuilder();
 
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
-              new SqlScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
+              new SqlScriptBuilder (
+                  SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
-              new SqlScriptBuilder (SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
+              new SqlScriptBuilder (
+                  SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
-              new SqlScriptBuilder (SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder));
+              new SqlScriptBuilder (
+                  SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
       _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");

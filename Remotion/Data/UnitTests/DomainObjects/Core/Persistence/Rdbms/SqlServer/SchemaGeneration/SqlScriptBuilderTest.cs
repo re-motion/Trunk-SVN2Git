@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlViewBuilder _viewBuilderMock;
     private SqlConstraintBuilder _constraintBuilderMock;
     private SqlIndexBuilder _indexBuilderMock;
+    private SqlSynonymBuilder _synonymBuilderMock;
 
     public override void SetUp ()
     {
@@ -43,11 +44,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderMock = MockRepository.GenerateStrictMock<SqlViewBuilder>();
       _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlConstraintBuilder>();
       _indexBuilderMock = MockRepository.GenerateStrictMock<SqlIndexBuilder>();
+      _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlSynonymBuilder>();
 
       _scriptBuilderForFirstStorageProvider = new SqlScriptBuilder (
-          SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
+          SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);
       _scriptBuilderForSecondStorageProvider = new SqlScriptBuilder (
-          SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock);
+          SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
           typeof (SqlScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
     }
@@ -106,6 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderMock.Replay();
       _constraintBuilderMock.Replay();
       _indexBuilderMock.Replay();
+      _synonymBuilderMock.Replay();
 
       var result = _scriptBuilderForFirstStorageProvider.GetScript (new IEntityDefinition[0]);
 
@@ -114,6 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderMock.VerifyAllExpectations();
       _constraintBuilderMock.VerifyAllExpectations();
       _indexBuilderMock.VerifyAllExpectations();
+      _synonymBuilderMock.VerifyAllExpectations();
     }
   }
 }
