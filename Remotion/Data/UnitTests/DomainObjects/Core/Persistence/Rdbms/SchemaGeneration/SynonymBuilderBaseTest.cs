@@ -59,19 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddSynonyms_TableDefinition_Wice ()
-    {
-      _synonymBuilder.AddSynonyms (_tableDefinition);
-      _synonymBuilder.AddSynonyms (_tableDefinition);
-
-      var createTableScript = _synonymBuilder.GetCreateTableScript ();
-      var dropTableScript = _synonymBuilder.GetDropTableScript ();
-
-      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]\r\nCREATE SYNONYM [SynonymName] FOR [OrderView]");
-      Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]\r\nDROP SYNONYM [SynonymName]");
-    }
-
-    [Test]
     public void AddSynonyms_FilterViewDefinition ()
     {
       var filterViewDefinition = new FilterViewDefinition (

@@ -29,16 +29,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
     }
 
-    public override void AddToCreateSynonymScript (EntityDefinitionBase tableDefinition, StringBuilder createTableStringBuilder)
+    public override void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder)
     {
-      if(tableDefinition.Synonyms.Count>0)
-        createTableStringBuilder.Append ("CREATE SYNONYM ["+ tableDefinition.Synonyms[0].EntityName +"] FOR [" + tableDefinition.ViewName.EntityName + "]");
+      if(entityDefinition.Synonyms.Count>0)
+        createTableStringBuilder.Append ("CREATE SYNONYM ["+ entityDefinition.Synonyms[0].EntityName +"] FOR [" + entityDefinition.ViewName.EntityName + "]");
     }
 
-    public override void AddToDropSynonymScript (EntityDefinitionBase tableDefinition, StringBuilder dropTableStringBuilder)
+    public override void AddToDropSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder dropTableStringBuilder)
     {
-      if(tableDefinition.Synonyms.Count>0)
-        dropTableStringBuilder.Append ("DROP SYNONYM [" + tableDefinition.Synonyms[0].EntityName + "]");
+      if(entityDefinition.Synonyms.Count>0)
+        dropTableStringBuilder.Append ("DROP SYNONYM [" + entityDefinition.Synonyms[0].EntityName + "]");
     }
   }
 }

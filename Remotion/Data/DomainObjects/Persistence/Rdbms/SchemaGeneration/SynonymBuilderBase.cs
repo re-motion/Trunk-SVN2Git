@@ -36,8 +36,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _sqlDialect = sqlDialect;
     }
 
-    public abstract void AddToCreateSynonymScript (EntityDefinitionBase tableDefinition, StringBuilder createTableStringBuilder);
-    public abstract void AddToDropSynonymScript (EntityDefinitionBase tableDefinition, StringBuilder dropTableStringBuilder);
+    public abstract void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder);
+    public abstract void AddToDropSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder dropTableStringBuilder);
 
     public string GetCreateTableScript ()
     {
@@ -60,24 +60,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      AddToCreateSynonymScript (tableDefinition);
-      AddToDropSynonymScript (tableDefinition);
+      AddToCreateSynonymScript (tableDefinition, _createSynonymStringBuilder);
+      AddToDropSynonymScript (tableDefinition, _dropSynonymStringBuilder);
     }
 
     public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
-      AddToCreateSynonymScript (unionViewDefinition);
-      AddToDropSynonymScript (unionViewDefinition);
+      AddToCreateSynonymScript (unionViewDefinition, _createSynonymStringBuilder);
+      AddToDropSynonymScript (unionViewDefinition, _dropSynonymStringBuilder);
     }
 
     public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
-      AddToCreateSynonymScript (filterViewDefinition);
-      AddToDropSynonymScript (filterViewDefinition);
+      AddToCreateSynonymScript (filterViewDefinition, _createSynonymStringBuilder);
+      AddToDropSynonymScript (filterViewDefinition, _dropSynonymStringBuilder);
     }
 
     public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
@@ -85,22 +85,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
 
       //Nothing to do here
-    }
-
-    private void AddToCreateSynonymScript (EntityDefinitionBase tableDefinition)
-    {
-      if (_createSynonymStringBuilder.Length != 0)
-        _createSynonymStringBuilder.Append ("\r\n");
-
-      AddToCreateSynonymScript (tableDefinition, _createSynonymStringBuilder);
-    }
-
-    private void AddToDropSynonymScript (EntityDefinitionBase tableDefinition)
-    {
-      if (_dropSynonymStringBuilder.Length != 0)
-        _dropSynonymStringBuilder.Append ("\r\n");
-
-      AddToDropSynonymScript (tableDefinition, _dropSynonymStringBuilder);
     }
   }
 }
