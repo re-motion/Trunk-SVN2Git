@@ -72,16 +72,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
-    {
-      var createTableScript = _tableBuilder.GetCreateTableScript();
-      var dropTableScript = _tableBuilder.GetDropTableScript();
-
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
-    }
-
-    [Test]
     public void AddTable_WithUnionViewDefinition ()
     {
       var unionViewDefinition = new UnionViewDefinition (
@@ -97,6 +87,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       Assert.IsEmpty (actualCreateTableScript);
       Assert.IsEmpty (actualDropTableScript);
+    }
+
+    [Test]
+    public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
+    {
+      var createTableScript = _tableBuilder.GetCreateTableScript ();
+      var dropTableScript = _tableBuilder.GetDropTableScript ();
+
+      Assert.IsEmpty (createTableScript);
+      Assert.IsEmpty (dropTableScript);
     }
   }
 }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
