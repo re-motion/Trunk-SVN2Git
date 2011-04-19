@@ -36,6 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return "GO\r\n\r\n"; }
     }
 
+    // TODO Review 3925: Make explicit
     public void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
     {
       ArgumentUtility.CheckNotNull ("sqlIndexDefinition", sqlIndexDefinition);
