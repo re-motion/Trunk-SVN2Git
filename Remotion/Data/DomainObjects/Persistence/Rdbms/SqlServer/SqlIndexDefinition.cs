@@ -31,20 +31,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     private readonly EntityNameDefinition _objectName;
     private readonly ReadOnlyCollection<SqlIndexedColumnDefinition> _columns;
     private readonly ReadOnlyCollection<IColumnDefinition> _includedColumns;
-    private readonly bool _isClustered;
-    private readonly bool _isUnique;
-    private readonly bool _ignoreDupKey;
-    private readonly bool _online;
+    private readonly bool? _isClustered;
+    private readonly bool? _isUnique;
+    private readonly bool? _ignoreDupKey;
+    private readonly bool? _online;
 
     public SqlIndexDefinition (
         string indexName,
         EntityNameDefinition objectName,
         IEnumerable<SqlIndexedColumnDefinition> columns,
         IEnumerable<IColumnDefinition> includedColumns,
-        bool isClustered,
-        bool isUnique,
-        bool ignoreDupKey,
-        bool online)
+        bool? isClustered = false,
+        bool? isUnique = false,
+        bool? ignoreDupKey = false,
+        bool? online = false,
+        bool? padIndex = null,
+        int? fillFactor = null,
+        bool? sortInTempDb = null,
+        bool? statisticsNoReCompute = null,
+        bool? dropExisting = null,
+        bool? allowRowLocks = null,
+        bool? allowPageLocks = null,
+        int? maxDop = null) : base(padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
@@ -82,22 +90,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _includedColumns; }
     }
 
-    public bool IsClustered
+    public bool? IsClustered
     {
       get { return _isClustered; }
     }
 
-    public bool IsUnique
+    public bool? IsUnique
     {
       get { return _isUnique; }
     }
 
-    public bool IgnoreDupKey
+    public bool? IgnoreDupKey
     {
       get { return _ignoreDupKey; }
     }
 
-    public bool Online
+    public bool? Online
     {
       get { return _online; }
     }

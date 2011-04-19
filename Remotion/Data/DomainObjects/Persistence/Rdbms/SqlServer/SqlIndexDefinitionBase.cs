@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
@@ -23,25 +24,78 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   /// </summary>
   public abstract class SqlIndexDefinitionBase : IIndexDefinition
   {
-    //TODO RM-3882: Implement these properties
-    //bool PAD_INDEX
-    //int FILLFACTOR
-    //bool SORT_IN_TEMPDB
-    //bool STATISTICS_NORECOMPUTE
-    //bool DROP_EXISTING
-    //bool ALLOW_ROW_LOCKS
-    //bool ALLOW_PAGE_LOCKS
-    //int MAXDOP
+    private readonly bool? _padIndex;
+    private readonly int? _fillFactor;
+    private readonly bool? _sortInDb;
+    private readonly bool? _statisticsNoReCompute;
+    private readonly bool? _dropExisiting;
+    private readonly bool? _allowRowLocks;
+    private readonly bool? _allowPageLocks;
+    private readonly int? _maxDop;
 
-
-    protected SqlIndexDefinitionBase ()
+    protected SqlIndexDefinitionBase (
+        bool? padIndex = null,
+        int? fillFactor = null,
+        bool? sortInTempDb = null,
+        bool? statisticsNoReCompute = null,
+        bool? dropExisting = null,
+        bool? allowRowLocks = null,
+        bool? allowPageLocks = null,
+        int? maxDop = null)
     {
-      
+      _padIndex = padIndex;
+      _fillFactor = fillFactor;
+      _sortInDb = sortInTempDb;
+      _statisticsNoReCompute = statisticsNoReCompute;
+      _dropExisiting = dropExisting;
+      _allowRowLocks = allowRowLocks;
+      _allowPageLocks = allowPageLocks;
+      _maxDop = maxDop;
     }
 
     public abstract string IndexName { get; }
     public abstract EntityNameDefinition ObjectName { get; }
-    
+
+    public bool? PadIndex
+    {
+      get { return _padIndex; }
+    }
+
+    public int? FillFactor
+    {
+      get { return _fillFactor; }
+    }
+
+    public bool? SortInDb
+    {
+      get { return _sortInDb; }
+    }
+
+    public bool? StatisticsNoReCompute
+    {
+      get { return _statisticsNoReCompute; }
+    }
+
+    public bool? DropExisiting
+    {
+      get { return _dropExisiting; }
+    }
+
+    public bool? AllowRowLocks
+    {
+      get { return _allowRowLocks; }
+    }
+
+    public bool? AllowPageLocks
+    {
+      get { return _allowPageLocks; }
+    }
+
+    public int? MaxDop
+    {
+      get { return _maxDop; }
+    }
+
     public void Accept (IIndexDefinitionVisitor visitor)
     {
       var specificVisitor = visitor as ISqlIndexDefinitionVisitor;
@@ -49,7 +103,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         Accept (specificVisitor);
     }
 
-    // TODO Review 3882: Make protected
     protected abstract void Accept (ISqlIndexDefinitionVisitor visitor);
   }
 }

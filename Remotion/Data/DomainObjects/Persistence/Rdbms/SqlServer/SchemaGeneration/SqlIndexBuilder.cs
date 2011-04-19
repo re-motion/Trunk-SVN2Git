@@ -63,8 +63,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       CreateIndexStringBuilder.AppendFormat (
           "CREATE {0}{1} INDEX [{2}]\r\n"
           + "  ON [{3}].[{4}] ({5})\r\n{6}{7}",
-          sqlIndexDefinition.IsUnique ? "UNIQUE " : string.Empty,
-          sqlIndexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
+          sqlIndexDefinition.IsUnique.HasValue && sqlIndexDefinition.IsUnique.Value ? "UNIQUE " : string.Empty,
+          sqlIndexDefinition.IsClustered.HasValue && sqlIndexDefinition.IsClustered.Value ? "CLUSTERED" : "NONCLUSTERED",
           sqlIndexDefinition.IndexName,
           sqlIndexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           sqlIndexDefinition.ObjectName.EntityName,
@@ -117,12 +117,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     private string GetCreateIndexOptions (SqlIndexDefinition sqlIndexDefinition)
     {
       var options = new StringBuilder (string.Empty);
-      if (sqlIndexDefinition.IgnoreDupKey || sqlIndexDefinition.Online)
+      if ((sqlIndexDefinition.IgnoreDupKey.HasValue && sqlIndexDefinition.IgnoreDupKey.Value) || (sqlIndexDefinition.Online.HasValue && sqlIndexDefinition.Online.Value))
       {
         // TODO Review 3883: Use WITH (... = ON/OFF)
-        if (sqlIndexDefinition.IgnoreDupKey)
+        if (sqlIndexDefinition.IgnoreDupKey.HasValue && sqlIndexDefinition.IgnoreDupKey.Value)
           AddOption ("IGNORE_DUP_KEY", options);
-        if (sqlIndexDefinition.Online)
+        if (sqlIndexDefinition.Online.HasValue && sqlIndexDefinition.Online.Value)
           AddOption ("ONLINE", options);
         options.Insert (0, "  WITH ");
         options.Append ("\r\n");
