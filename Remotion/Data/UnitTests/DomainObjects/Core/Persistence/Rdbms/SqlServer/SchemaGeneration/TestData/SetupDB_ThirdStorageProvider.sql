@@ -18,6 +18,10 @@ IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = s
   DROP INDEX [IDX_NonClusteredNonUniqueIndex] ON [dbo].[IndexTestTable]
 GO
 
+IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_IndexWithSeveralOptions')
+  DROP INDEX [IDX_IndexWithSeveralOptions] ON [dbo].[IndexTestTable]
+GO
+
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' and schema_name (so.schema_id)='dbo' and si.[name] = 'IDX_PrimaryXmlIndex')
   DROP INDEX [IDX_PrimaryXmlIndex] ON [dbo].[IndexTestTable]
 GO
@@ -168,26 +172,35 @@ CREATE NONCLUSTERED INDEX [IDX_NonClusteredNonUniqueIndex]
   WITH (IGNORE_DUP_KEY = OFF, ONLINE = OFF)
 GO
 
+CREATE UNIQUE NONCLUSTERED INDEX [IDX_IndexWithSeveralOptions]
+  ON [dbo].[IndexTestTable] ([FirstName] DESC)
+  WITH (IGNORE_DUP_KEY = ON, ONLINE = OFF, PAD_INDEX = ON, FILLFACTOR = 5, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = ON, DROP_EXISTING = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, MAXDOP = 2)
+GO
+
 CREATE PRIMARY XML INDEX [IDX_PrimaryXmlIndex]
   ON [dbo].[IndexTestTable] ([XmlColumn1])
+  WITH (PAD_INDEX = ON, FILLFACTOR = 3, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = ON, DROP_EXISTING = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, MAXDOP = 2)
 GO
 
 CREATE XML INDEX [IDX_SecondaryXmlIndex1]
   ON [dbo].[IndexTestTable] ([XmlColumn1])
   USING XML INDEX [IDX_PrimaryXmlIndex]
   FOR Path
+  WITH (PAD_INDEX = ON, SORT_IN_TEMPDB = OFF, STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF)
 GO
 
 CREATE XML INDEX [IDX_SecondaryXmlIndex2]
   ON [dbo].[IndexTestTable] ([XmlColumn1])
   USING XML INDEX [IDX_PrimaryXmlIndex]
   FOR Value
+  WITH (PAD_INDEX = OFF, FILLFACTOR = 8, SORT_IN_TEMPDB = ON)
 GO
 
 CREATE XML INDEX [IDX_SecondaryXmlIndex3]
   ON [dbo].[IndexTestTable] ([XmlColumn1])
   USING XML INDEX [IDX_PrimaryXmlIndex]
   FOR Property
+  WITH (STATISTICS_NORECOMPUTE = ON, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF)
 GO
 
 CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]

@@ -35,7 +35,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         EntityNameDefinition objectName,
         IColumnDefinition xmlColumn,
         string primaryIndexName,
-        SqlSecondaryXmlIndexKind kind)
+        SqlSecondaryXmlIndexKind kind, 
+        bool? padIndex = null,
+        int? fillFactor = null,
+        bool? sortInTempDb = null,
+        bool? statisticsNoReCompute = null,
+        bool? dropExisting = null,
+        bool? allowRowLocks = null,
+        bool? allowPageLocks = null,
+        int? maxDop = null)
+      : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);

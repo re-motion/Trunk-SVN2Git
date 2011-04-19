@@ -78,11 +78,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       CreateIndexStringBuilder.AppendFormat (
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
-          + "  ON [{1}].[{2}] ([{3}])\r\n",
+          + "  ON [{1}].[{2}] ([{3}])\r\n{4}",
           indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
-          indexDefinition.XmlColumn.Name);
+          indexDefinition.XmlColumn.Name,
+          GetCreateIndexOptions (GetCreateIndexOptionItemsBase (indexDefinition)));
     }
 
     private void AddToCreateIndexScript (SqlSecondaryXmlIndexDefinition indexDefinition)
@@ -91,13 +92,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}])\r\n"
           + "  USING XML INDEX [{4}]\r\n"
-          + "  FOR {5}\r\n",
+          + "  FOR {5}\r\n{6}",
           indexDefinition.IndexName,
           indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           indexDefinition.PrimaryIndexName,
-          indexDefinition.Kind);
+          indexDefinition.Kind,
+          GetCreateIndexOptions (GetCreateIndexOptionItemsBase (indexDefinition)));
     }
 
     private void AddToDropIndexScript (IIndexDefinition indexDefinition)
@@ -111,12 +113,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.IndexName);
     }
 
-    private IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinition indexDefinition)
+    private string GetCreateIndexOptions (IEnumerable<string> optionItems)
     {
-      if (indexDefinition.IgnoreDupKey.HasValue)
-        yield return string.Format ("IGNORE_DUP_KEY = {0}", indexDefinition.IgnoreDupKey.Value ? "ON" : "OFF");
-      if (indexDefinition.Online.HasValue)
-        yield return string.Format ("ONLINE = {0}", indexDefinition.Online.Value ? "ON" : "OFF");
+      return optionItems.Any () ? "  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")\r\n" : string.Empty;
+    }
+
+    private IEnumerable<string> GetCreateIndexOptionItemsBase (SqlIndexDefinitionBase indexDefinition)
+    {
       if (indexDefinition.PadIndex.HasValue)
         yield return string.Format ("PAD_INDEX = {0}", indexDefinition.PadIndex.Value ? "ON" : "OFF");
       if (indexDefinition.FillFactor.HasValue)
@@ -135,9 +138,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         yield return string.Format ("MAXDOP = {0}", indexDefinition.MaxDop.Value);
     }
 
-    private string GetCreateIndexOptions (IEnumerable<string> optionItems)
+    private IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinition indexDefinition)
     {
-      return optionItems.Any() ? "  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")\r\n" : string.Empty;
+      if (indexDefinition.IgnoreDupKey.HasValue)
+        yield return string.Format ("IGNORE_DUP_KEY = {0}", indexDefinition.IgnoreDupKey.Value ? "ON" : "OFF");
+      if (indexDefinition.Online.HasValue)
+        yield return string.Format ("ONLINE = {0}", indexDefinition.Online.Value ? "ON" : "OFF");
+      foreach (var optionItem in GetCreateIndexOptionItemsBase (indexDefinition))
+        yield return optionItem;
     }
+    
   }
 }

@@ -29,43 +29,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlIndexedColumnDefinition _column1;
     private SqlIndexedColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
-    private EntityNameDefinition _tableName;
-    private EntityNameDefinition _viewName;
-    private SqlIndexDefinition _sqlIndexDefinition;
-    private TableDefinition _tableDefinition;
-
-    // TODO Review 3883: Refactor tests: Rewrite to test the Visit...Definition methods instead of the base class methods. Remove TableDefinition etc. => not needed
-    // TODO Review 3883: Add tests with non-default schemas
-    // TODO Review 3883: Add tests for option values: one with all options on, one with all options off (later: one with all options undefined)
+    private EntityNameDefinition _tableNameWithDefaultSchema;
+    private EntityNameDefinition _tableNameWithoutDefaultSchema;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _indexBuilder = new SqlIndexBuilder ();
+      _indexBuilder = new SqlIndexBuilder();
 
-      _column1 = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true), IndexOrder.Asc);
-      _column2 = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false), IndexOrder.Desc);
+      _column1 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true), IndexOrder.Asc);
+      _column2 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false), IndexOrder.Desc);
       _column3 = new SimpleColumnDefinition ("Test", typeof (string), "varchar(100)", true, false);
-      _tableName = new EntityNameDefinition (null, "TableName");
-      _viewName = new EntityNameDefinition (null, "ViewName");
-      
-      _sqlIndexDefinition = new SqlIndexDefinition (
-          "Index1", _tableName, new[] { _column1, _column2 }, null, true, true);
-      _tableDefinition = new TableDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          _tableName,
-          _viewName,
-          new[] { _column1, _column2 },
-          new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { _sqlIndexDefinition }, new EntityNameDefinition[0]);
+      _tableNameWithDefaultSchema = new EntityNameDefinition (null, "TableName");
+      _tableNameWithoutDefaultSchema = new EntityNameDefinition ("test", "TableName");
     }
 
     [Test]
     public void Initialize ()
     {
-      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.Empty);
-      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.Empty);
+      Assert.That (_indexBuilder.GetCreateIndexScript(), Is.Empty);
+      Assert.That (_indexBuilder.GetCreateIndexScript(), Is.Empty);
     }
 
     [Test]
@@ -77,34 +61,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetCreateIndexScript_TableDefinition_IndexDefinitionWithoutIncludedColumns ()
+    public void VisitIndexDefinition_Once ()
     {
-      _indexBuilder.AddIndexes (_tableDefinition);
+      var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, null, true, true);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
 
-      var expectedScript =
+      var expectedCreateIndexScript =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n";
-      Assert.That (result, Is.EqualTo (expectedScript));
+      var expectedDropIndexScript =
+          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
+          +"schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
+          +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
+      
+      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.EqualTo (expectedCreateIndexScript));
+      Assert.That (_indexBuilder.GetDropIndexScript (), Is.EqualTo (expectedDropIndexScript));
     }
 
     [Test]
-    public void GetCreateIndexScript_FilterViewDefinition_IndexDefinitionWithIncludedColumns ()
+    public void VisitIndexDefinition_Twice ()
     {
-      var indexDefinition = new SqlIndexDefinition ("Index1", _tableName, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
+      var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithoutDefaultSchema, new[] { _column1, _column2 }, null, true, true);
 
-      var filterViewDefinition = new FilterViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          _viewName,
-          _tableDefinition,
-          new[] { "ClassID" },
-          new IColumnDefinition[0],
-          new[] { indexDefinition }, new EntityNameDefinition[0]);
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
 
-      _indexBuilder.AddIndexes (filterViewDefinition);
+      var expectedCreateIndexScript =
+          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          + "  ON [test].[TableName] ([ID] ASC, [Name] DESC)\r\n"
+          + "GO\r\n\r\n"
+          + "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          + "  ON [test].[TableName] ([ID] ASC, [Name] DESC)\r\n";
+      var expectedDropIndexScript =
+          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
+          +"schema_name (so.schema_id)='test' and si.[name] = 'Index1')\r\n"
+          +"  DROP INDEX [Index1] ON [test].[TableName]\r\n"
+          +"GO\r\n\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
+          +"schema_name (so.schema_id)='test' and si.[name] = 'Index1')\r\n"
+          +"  DROP INDEX [Index1] ON [test].[TableName]\r\n";
 
-      var result = _indexBuilder.GetCreateIndexScript ();
+      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.EqualTo (expectedCreateIndexScript));
+      Assert.That (_indexBuilder.GetDropIndexScript (), Is.EqualTo (expectedDropIndexScript));
+    }
+
+    [Test]
+    public void VisitIndexDefinition_WithIncludedColumnsAndSomeOptions ()
+    {
+      var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
+
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
+
+      var result = _indexBuilder.GetCreateIndexScript();
 
       var expectedScript =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -115,89 +124,146 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetCreateIndexScript_UnionViewDefinition_OneXmlIndex ()
+    public void VisitIndexDefinition_WithAllOptionsOn ()
     {
-      var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
-      var unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          _viewName,
-          new[] { _tableDefinition },
-          new IColumnDefinition[0],
-          new IIndexDefinition[] { indexDefinition }, new EntityNameDefinition[0]);
+      var indexDefinition = new SqlIndexDefinition (
+          "Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, new[] { _column3 }, true, true, true, true, true, 5, true, true, true, true, true, 2);
 
-      _indexBuilder.AddIndexes (unionViewDefinition);
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript ();
+      var result = _indexBuilder.GetCreateIndexScript();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [Index1]\r\n"
-          + "  ON [dbo].[TableName] ([Test])\r\n";
+          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
+          + "  INCLUDE ([Test])\r\n"
+          + "  WITH (IGNORE_DUP_KEY = ON, ONLINE = ON, PAD_INDEX = ON, FILLFACTOR = 5, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = ON, "
+          + "DROP_EXISTING = ON, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, MAXDOP = 2)\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
     [Test]
-    public void GetCreateIndexScript_UnionViewDefinition_TwoXmlIndex ()
+    public void VisitIndexDefinition_WithAllOptionsOff ()
     {
-      var primaryIndexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
+      var indexDefinition = new SqlIndexDefinition (
+          "Index1",
+          _tableNameWithDefaultSchema,
+          new[] { _column1, _column2 },
+          new[] { _column3 },
+          false,
+          false,
+          false,
+          false,
+          false,
+          0,
+          false,
+          false,
+          false,
+          false,
+          false,
+          0);
+
+      _indexBuilder.VisitIndexDefinition (indexDefinition);
+
+      var result = _indexBuilder.GetCreateIndexScript();
+
+      var expectedScript =
+          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
+          + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
+          + "  INCLUDE ([Test])\r\n"
+          + "  WITH (IGNORE_DUP_KEY = OFF, ONLINE = OFF, PAD_INDEX = OFF, FILLFACTOR = 0, SORT_IN_TEMPDB = OFF, STATISTICS_NORECOMPUTE = OFF, "
+          + "DROP_EXISTING = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF, MAXDOP = 0)\r\n";
+      Assert.That (result, Is.EqualTo (expectedScript));
+    }
+
+    [Test]
+    public void VisitPrimaryXmlIndexDefinition ()
+    {
+      var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableNameWithoutDefaultSchema, _column3);
+
+      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
+
+      var result = _indexBuilder.GetCreateIndexScript();
+
+      var expectedScript =
+          "CREATE PRIMARY XML INDEX [Index1]\r\n"
+          + "  ON [test].[TableName] ([Test])\r\n";
+      Assert.That (result, Is.EqualTo (expectedScript));
+    }
+
+    [Test]
+    public void VisitPrimaryXmlIndex_VisitSecondaryXmlIndex ()
+    {
+      var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableNameWithDefaultSchema, _column3);
       var secondaryIndexDefinition = new SqlSecondaryXmlIndexDefinition (
           "SecondaryName",
-          _tableName,
+          _tableNameWithDefaultSchema,
           _column2,
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Property);
 
-      var unionViewDefinition = new UnionViewDefinition (
-          SchemaGenerationFirstStorageProviderDefinition,
-          _viewName,
-          new[] { _tableDefinition },
-          new IColumnDefinition[0],
-          new IIndexDefinition[] { primaryIndexDefinition, secondaryIndexDefinition }, new EntityNameDefinition[0]);
+      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
+      _indexBuilder.VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
 
-      _indexBuilder.AddIndexes (unionViewDefinition);
+      var result = _indexBuilder.GetCreateIndexScript();
 
-      var result = _indexBuilder.GetCreateIndexScript ();
+      var expectedScript =
+          "CREATE PRIMARY XML INDEX [Index1]\r\n"
+          + "  ON [dbo].[TableName] ([Test])\r\n"
+          + "GO\r\n\r\n"
+          + "CREATE XML INDEX [SecondaryName]\r\n"
+          + "  ON [dbo].[TableName] ([Name])\r\n"
+          + "  USING XML INDEX [PrimaryIndexName]\r\n"
+          + "  FOR Property\r\n";
+      Assert.That (result, Is.EqualTo (expectedScript));
+    }
+
+    [Test]
+    public void VisitPrimaryXmlIndexDefinition_WithAllOptions ()
+    {
+      var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableNameWithDefaultSchema, _column3, true, 10, true, false, true, false, false, 18);
+
+      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
+
+      var result = _indexBuilder.GetCreateIndexScript();
 
       var expectedScript =
           "CREATE PRIMARY XML INDEX [Index1]\r\n"
           +"  ON [dbo].[TableName] ([Test])\r\n"
-          +"GO\r\n\r\n"
-          +"CREATE XML INDEX [SecondaryName]\r\n"
+          +"  WITH (PAD_INDEX = ON, FILLFACTOR = 10, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = ON, ALLOW_ROW_LOCKS = OFF, "
+          +"ALLOW_PAGE_LOCKS = OFF, MAXDOP = 18)\r\n";
+      Assert.That (result, Is.EqualTo (expectedScript));
+    }
+
+    [Test]
+    public void VisitSecondaryXmlIndexDefinition_WithAllOptions ()
+    {
+      var secondaryIndexDefinition = new SqlSecondaryXmlIndexDefinition (
+          "SecondaryName",
+          _tableNameWithDefaultSchema,
+          _column2,
+          "PrimaryIndexName",
+          SqlSecondaryXmlIndexKind.Property,
+          false,
+          20,
+          false,
+          true,
+          true,
+          true,
+          false,
+          100);
+
+      _indexBuilder.VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
+
+      var result = _indexBuilder.GetCreateIndexScript();
+
+      var expectedScript =
+          "CREATE XML INDEX [SecondaryName]\r\n"
           +"  ON [dbo].[TableName] ([Name])\r\n"
           +"  USING XML INDEX [PrimaryIndexName]\r\n"
-          +"  FOR Property\r\n";
-      Assert.That (result, Is.EqualTo (expectedScript));
-    }
-
-    [Test]
-    public void GetDropIndexScript_OneIndex ()
-    {
-      _indexBuilder.AddIndexes (_tableDefinition);
-
-      var result = _indexBuilder.GetDropIndexScript();
-
-      var expectedScript = 
-        "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
-        +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
-      Assert.That (result, Is.EqualTo (expectedScript));
-    }
-
-    [Test]
-    public void GetDropIndexScript_TwoIndexes ()
-    {
-      _indexBuilder.AddIndexes (_tableDefinition);
-      _indexBuilder.AddIndexes (_tableDefinition);
-      
-      var result = _indexBuilder.GetDropIndexScript ();
-
-      var expectedScript = 
-        "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
-        +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n"
-        +"GO\r\n\r\n"
-        +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
-        +"WHERE so.[name] = 'TableName' and schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
-        +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
+          +"  FOR Property\r\n"
+          +"  WITH (PAD_INDEX = OFF, FILLFACTOR = 20, SORT_IN_TEMPDB = OFF, STATISTICS_NORECOMPUTE = ON, DROP_EXISTING = ON, ALLOW_ROW_LOCKS = ON, "
+          +"ALLOW_PAGE_LOCKS = OFF, MAXDOP = 100)\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
   }

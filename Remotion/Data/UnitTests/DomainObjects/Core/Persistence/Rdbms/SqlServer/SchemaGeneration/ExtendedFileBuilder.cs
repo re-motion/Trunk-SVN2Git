@@ -104,13 +104,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           false,
           false);
-      var primaryXmlIndex = new SqlPrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4);
+      var indexWithOptionsSet = new SqlIndexDefinition (
+          "IDX_IndexWithSeveralOptions",
+          tableName,
+          new[] { new SqlIndexedColumnDefinition (column2, IndexOrder.Desc) },
+          null,
+          false,
+          true,
+          true,
+          false,
+          true,
+          5,
+          true,
+          true,
+          false,
+          true,
+          true,
+          2);
+      var primaryXmlIndex = new SqlPrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4, true, 3, true, true, false, true, true, 2);
       var secondaryXmlIndex1 = new SqlSecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex1", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Path);
+          "IDX_SecondaryXmlIndex1",
+          tableName,
+          column4,
+          "IDX_PrimaryXmlIndex",
+          SqlSecondaryXmlIndexKind.Path,
+          true,
+          null,
+          false,
+          false,
+          false,
+          false,
+          false);
       var secondaryXmlIndex2 = new SqlSecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex2", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Value);
+          "IDX_SecondaryXmlIndex2", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Value, false, 8, true);
       var secondaryXmlIndex3 = new SqlSecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex3", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Property);
+          "IDX_SecondaryXmlIndex3",
+          tableName,
+          column4,
+          "IDX_PrimaryXmlIndex",
+          SqlSecondaryXmlIndexKind.Property,
+          null,
+          null,
+          null,
+          true,
+          null,
+          true,
+          false);
 
       return new TableDefinition (
           storageProviderDefinition,
@@ -122,6 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           {
               nonClusteredUniqueIndex,
               nonClusteredNonUniqueIndex,
+              indexWithOptionsSet,
               primaryXmlIndex,
               secondaryXmlIndex1,
               secondaryXmlIndex2,

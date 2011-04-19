@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
@@ -28,7 +29,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     /// <summary>
     /// <see cref="SqlPrimaryXmlIndexDefinition"/> represents a priamry xml-column index in a relational database.
     /// </summary>
-    public SqlPrimaryXmlIndexDefinition (string indexName, EntityNameDefinition objectName, IColumnDefinition xmlColumn)
+    public SqlPrimaryXmlIndexDefinition (
+        string indexName,
+        EntityNameDefinition objectName,
+        IColumnDefinition xmlColumn,
+        bool? padIndex = null,
+        int? fillFactor = null,
+        bool? sortInTempDb = null,
+        bool? statisticsNoReCompute = null,
+        bool? dropExisting = null,
+        bool? allowRowLocks = null,
+        bool? allowPageLocks = null,
+        int? maxDop = null)
+        : base (padIndex, fillFactor, sortInTempDb, statisticsNoReCompute, dropExisting, allowRowLocks, allowPageLocks, maxDop)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
@@ -42,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     public override string IndexName
     {
       get { return _indexName; }
-    } 
+    }
 
     public override EntityNameDefinition ObjectName
     {

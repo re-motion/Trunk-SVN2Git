@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
       _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
-      _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn);
+      _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, true, 5, true, true, true, true, true, 2);
     }
 
     [Test]
@@ -42,6 +42,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
+      Assert.That (_indexDefinition.PadIndex.Value, Is.True);
+      Assert.That (_indexDefinition.SortInDb.Value, Is.True);
+      Assert.That (_indexDefinition.StatisticsNoReCompute.Value, Is.True);
+      Assert.That (_indexDefinition.AllowPageLocks.Value, Is.True);
+      Assert.That (_indexDefinition.AllowRowLocks.Value, Is.True);
+      Assert.That (_indexDefinition.DropExisiting.Value, Is.True);
+      Assert.That (_indexDefinition.FillFactor.Value, Is.EqualTo (5));
+      Assert.That (_indexDefinition.MaxDop.Value, Is.EqualTo (2));
     }
 
     [Test]

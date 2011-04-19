@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
 
