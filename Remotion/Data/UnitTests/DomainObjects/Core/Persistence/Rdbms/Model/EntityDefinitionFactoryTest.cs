@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _foreignKeyConstraintDefinitionFactoryMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
-      AssertTableDefinition (
+      CheckTableDefinition (
           result,
           _storageProviderID,
           "FakeTableName",
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
-      AssertFilterViewDefinition (
+      CheckFilterViewDefinition (
           result,
           _storageProviderID,
           "FakeViewName",
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
-      AssertFilterViewDefinition (
+      CheckFilterViewDefinition (
           result,
           _storageProviderID,
           "FakeViewName",
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _columnDefinitionResolverMock.VerifyAllExpectations();
       _columnDefinitionFactoryMock.VerifyAllExpectations();
       _storageNameProviderMock.VerifyAllExpectations();
-      AssertUnionViewDefinition (
+      CheckUnionViewDefinition (
           result,
           _storageProviderID,
           "FakeViewName",
@@ -261,33 +261,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition[0]);
     }
 
-    private void AssertTableDefinition (
-        IEntityDefinition entityDefinition,
-        string storageProviderID,
-        string tableName,
-        string viewName,
-        IColumnDefinition[] columnDefinitions,
-        ITableConstraintDefinition[] tableConstraintDefinitions,
-        IIndexDefinition[] indexDefinitions,
-        EntityNameDefinition[] synonyms)
+    private void CheckTableDefinition (
+        IEntityDefinition expectedEntityDefinition,
+        string expectedStorageProviderID,
+        string expectedTableName,
+        string expectedViewName,
+        IColumnDefinition[] expectedColumnDefinitions,
+        ITableConstraintDefinition[] expectedTableConstraintDefinitions,
+        IIndexDefinition[] expectedIndexDefinitions,
+        EntityNameDefinition[] expectedSynonyms)
     {
-      Assert.That (entityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((TableDefinition) entityDefinition).TableName.EntityName, Is.EqualTo (tableName));
-      Assert.That (((TableDefinition) entityDefinition).TableName.SchemaName, Is.Null);
-      Assert.That (((TableDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
-      Assert.That (((TableDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((TableDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
-      Assert.That (((TableDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
-      Assert.That (((TableDefinition) entityDefinition).Synonyms, Is.EqualTo (synonyms));
+      Assert.That (expectedEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
+      Assert.That (expectedEntityDefinition.StorageProviderID, Is.EqualTo (expectedStorageProviderID));
+      Assert.That (((TableDefinition) expectedEntityDefinition).TableName.EntityName, Is.EqualTo (expectedTableName));
+      Assert.That (((TableDefinition) expectedEntityDefinition).TableName.SchemaName, Is.Null);
+      Assert.That (((TableDefinition) expectedEntityDefinition).ViewName.EntityName, Is.EqualTo (expectedViewName));
+      Assert.That (((TableDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
+      Assert.That (((TableDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((TableDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
+      Assert.That (((TableDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
 
-      var tableConstraints = ((TableDefinition) entityDefinition).Constraints;
-      Assert.That (tableConstraints.Count, Is.EqualTo (tableConstraintDefinitions.Length));
+      var tableConstraints = ((TableDefinition) expectedEntityDefinition).Constraints;
+      Assert.That (tableConstraints.Count, Is.EqualTo (expectedTableConstraintDefinitions.Length));
 
-      for (var i = 0; i < tableConstraintDefinitions.Length; i++)
+      for (var i = 0; i < expectedTableConstraintDefinitions.Length; i++)
       {
-        Assert.That (tableConstraintDefinitions[i].ConstraintName, Is.EqualTo (tableConstraints[i].ConstraintName));
-        var tableConstraintDefinitioAsPrimaryKeyConstraint = tableConstraintDefinitions[i] as PrimaryKeyConstraintDefinition;
+        Assert.That (expectedTableConstraintDefinitions[i].ConstraintName, Is.EqualTo (tableConstraints[i].ConstraintName));
+        var tableConstraintDefinitioAsPrimaryKeyConstraint = expectedTableConstraintDefinitions[i] as PrimaryKeyConstraintDefinition;
         if (tableConstraintDefinitioAsPrimaryKeyConstraint != null)
         {
           Assert.That (tableConstraints[i], Is.TypeOf (typeof (PrimaryKeyConstraintDefinition)));
@@ -297,48 +297,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           Assert.That (
               ((PrimaryKeyConstraintDefinition) tableConstraints[i]).Columns, Is.EqualTo (tableConstraintDefinitioAsPrimaryKeyConstraint.Columns));
         }
-        // TODO 3923: else: Assert.That (..., Is.EqualTo (...))
+        else
+        {
+          Assert.That (tableConstraints[i], Is.EqualTo(expectedTableConstraintDefinitions[i]));
+        }
       }
     }
 
-    private void AssertFilterViewDefinition (
-        IEntityDefinition entityDefinition,
-        string storageProviderID,
-        string viewName,
-        IStorageEntityDefinition baseEntity,
-        string[] classIDs,
-        IColumnDefinition[] columnDefinitions,
-        IIndexDefinition[] indexDefinitions,
-        EntityNameDefinition[] synonyms)
+    private void CheckFilterViewDefinition (
+        IEntityDefinition expectedEntityDefinition,
+        string expectedStorageProviderID,
+        string expectedViewName,
+        IStorageEntityDefinition expectedBaseEntity,
+        string[] expectedClassIDs,
+        IColumnDefinition[] expectedColumnDefinitions,
+        IIndexDefinition[] expectedIndexDefinitions,
+        EntityNameDefinition[] expectedSynonyms)
     {
-      Assert.That (entityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((FilterViewDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
-      Assert.That (((FilterViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((FilterViewDefinition) entityDefinition).BaseEntity, Is.SameAs (baseEntity));
-      Assert.That (((FilterViewDefinition) entityDefinition).ClassIDs, Is.EqualTo (classIDs));
-      Assert.That (((FilterViewDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
-      Assert.That (((FilterViewDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
-      Assert.That (((FilterViewDefinition) entityDefinition).Synonyms, Is.EqualTo (synonyms));
+      Assert.That (expectedEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
+      Assert.That (expectedEntityDefinition.StorageProviderID, Is.EqualTo (expectedStorageProviderID));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).ViewName.EntityName, Is.EqualTo (expectedViewName));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).BaseEntity, Is.SameAs (expectedBaseEntity));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).ClassIDs, Is.EqualTo (expectedClassIDs));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
+      Assert.That (((FilterViewDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
     }
 
-    private void AssertUnionViewDefinition (
-        IEntityDefinition entityDefinition,
-        string storageProviderID,
-        string viewName,
-        IStorageEntityDefinition[] storageEntityDefinitions,
-        IColumnDefinition[] columnDefinitions,
-        IIndexDefinition[] indexDefinitions,
-        EntityNameDefinition[] synonyms)
+    private void CheckUnionViewDefinition (
+        IEntityDefinition expectedEntityDefinition,
+        string expectedStorageProviderID,
+        string expectedViewName,
+        IStorageEntityDefinition[] expectedStorageEntityDefinitions,
+        IColumnDefinition[] expectedColumnDefinitions,
+        IIndexDefinition[] expectedIndexDefinitions,
+        EntityNameDefinition[] expectedSynonyms)
     {
-      Assert.That (entityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
-      Assert.That (entityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
-      Assert.That (((UnionViewDefinition) entityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
-      Assert.That (((UnionViewDefinition) entityDefinition).ViewName.SchemaName, Is.Null);
-      Assert.That (((UnionViewDefinition) entityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));
-      Assert.That (((UnionViewDefinition) entityDefinition).Columns, Is.EqualTo (columnDefinitions));
-      Assert.That (((UnionViewDefinition) entityDefinition).Indexes, Is.EqualTo (indexDefinitions));
-      Assert.That (((UnionViewDefinition) entityDefinition).Synonyms, Is.EqualTo (synonyms));
+      Assert.That (expectedEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
+      Assert.That (expectedEntityDefinition.StorageProviderID, Is.EqualTo (expectedStorageProviderID));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).ViewName.EntityName, Is.EqualTo (expectedViewName));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).ViewName.SchemaName, Is.Null);
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).UnionedEntities, Is.EqualTo (expectedStorageEntityDefinitions));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).Columns, Is.EqualTo (expectedColumnDefinitions));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).Indexes, Is.EqualTo (expectedIndexDefinitions));
+      Assert.That (((UnionViewDefinition) expectedEntityDefinition).Synonyms, Is.EqualTo (expectedSynonyms));
     }
 
     private void MockSpecialColumns ()
