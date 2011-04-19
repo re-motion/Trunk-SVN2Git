@@ -21,11 +21,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  // TODO Review 3869: Class summary
   public abstract class SynonymBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createSynonymStringBuilder;
     private readonly StringBuilder _dropSynonymStringBuilder;
-    private readonly ISqlDialect _sqlDialect;
+    // TODO Review 3869: Remove field (and ctor parameter)
+    private readonly ISqlDialect _sqlDialect; 
 
     protected SynonymBuilderBase (ISqlDialect sqlDialect)
     {
@@ -55,6 +57,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       entityDefinition.Accept (this);
     }
+
+    // TODO Review 3869: Explicit
 
     public void VisitTableDefinition (TableDefinition tableDefinition)
     {

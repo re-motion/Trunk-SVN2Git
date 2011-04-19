@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
+  // TODO Review 3869: Implement IEntityDefinition (most members abstract)
   /// <summary>
   /// <see cref="EntityDefinitionBase"/> is the base-class for all entity definitions.
   /// </summary>

@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -22,6 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  // TODO Review 3869: Class summary
   public class SqlSynonymBuilder : SynonymBuilderBase
   {
     public SqlSynonymBuilder ()
@@ -29,22 +32,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
     }
 
+    // TODO Review 3869: Create three versions of this method: TableDefinition, UnionView, FilterView; for the TableDefinition, add a synonym for table name, the others should use view name
     public override void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
       ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
 
-      foreach (var synonym in entityDefinition.Synonyms)
+      AddToCreateSynonymScript(entityDefinition.Synonyms, entityDefinition.ViewName, createTableStringBuilder);
+    }
+
+    private void AddToCreateSynonymScript (
+        IEnumerable<EntityNameDefinition> synonyms, 
+        EntityNameDefinition referencedEntityName, 
+        StringBuilder createTableStringBuilder)
+    {
+      foreach (var synonym in synonyms)
       {
         if (createTableStringBuilder.Length != 0)
           createTableStringBuilder.Append ("\r\n");
 
         createTableStringBuilder.AppendFormat (
-         "CREATE SYNONYM [{0}].[{1}] FOR [{2}].[{3}]\r\n",
-         synonym.SchemaName ?? SqlScriptBuilder.DefaultSchema,
-         synonym.EntityName,
-         entityDefinition.ViewName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
-         entityDefinition.ViewName.EntityName);
+            "CREATE SYNONYM [{0}].[{1}] FOR [{2}].[{3}]\r\n",
+            synonym.SchemaName ?? SqlScriptBuilder.DefaultSchema,
+            synonym.EntityName,
+            referencedEntityName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
+            referencedEntityName.EntityName);
       }
     }
 
@@ -58,6 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         if (dropTableStringBuilder.Length != 0)
           dropTableStringBuilder.Append ("\r\n");
 
+        // TODO Review 3869: sys.synonyms lowercase, name lowercase
         dropTableStringBuilder.AppendFormat (
            "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
            +"  DROP SYNONYM [{0}].[{1}]\r\n",
