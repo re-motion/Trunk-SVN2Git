@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         string indexName,
         EntityNameDefinition objectName,
         IEnumerable<SqlIndexedColumnDefinition> columns,
-        IEnumerable<IColumnDefinition> includedColumns,
+        IEnumerable<IColumnDefinition> includedColumns = null,
         bool? isClustered = false,
         bool? isUnique = false,
         bool? ignoreDupKey = null,

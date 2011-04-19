@@ -63,12 +63,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void VisitIndexDefinition_Once ()
     {
-      var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, null, true, true);
+      var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 });
 
       _indexBuilder.VisitIndexDefinition (indexDefinition);
 
       var expectedCreateIndexScript =
-          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n";
       var expectedDropIndexScript =
           "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
