@@ -62,24 +62,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void AddToCreateSynonymScript_OneSynonym ()
+    public void AddToCreateSynonymScript_TableDefinition_OneSynonym ()
     {
       _synonymBuilder.AddToCreateSynonymScript (_tableDefinition1, _stringBuilder);
 
-      var expectedResult = "CREATE SYNONYM [dbo].[Synonym1] FOR [dbo].[OrderView]\r\n";
+      var expectedResult = "CREATE SYNONYM [dbo].[Synonym1] FOR [dbo].[Order]\r\n";
       Assert.That (_stringBuilder.ToString(), Is.EqualTo (expectedResult));
     }
 
     [Test]
-    public void AddToCreateSynonymScript_SeveralSynonyms ()
+    public void AddToCreateSynonymScript_TableDefinition_SeveralSynonyms ()
     {
       _synonymBuilder.AddToCreateSynonymScript (_tableDefinition2, _stringBuilder);
 
       var expectedResult =
-          "CREATE SYNONYM [test].[Synonym1] FOR [test].[OrderView]\r\n\r\n"
-          + "CREATE SYNONYM [test].[Synonym2] FOR [test].[OrderView]\r\n\r\n"
-          + "CREATE SYNONYM [test].[Synonym3] FOR [test].[OrderView]\r\n";
+          "CREATE SYNONYM [test].[Synonym1] FOR [test].[Order]\r\n\r\n"
+          + "CREATE SYNONYM [test].[Synonym2] FOR [test].[Order]\r\n\r\n"
+          + "CREATE SYNONYM [test].[Synonym3] FOR [test].[Order]\r\n";
       Assert.That (_stringBuilder.ToString(), Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void AddToCreateSynonymScript_FilterViewDefinition ()
+    {
+      var filterViewDefinition = new FilterViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "FilterView"),
+          _tableDefinition1,
+          new[] { "ClassID" },
+          new IColumnDefinition[0],
+          new IIndexDefinition[0],
+          new[] { new EntityNameDefinition (null, "Synonym1") });
+
+      _synonymBuilder.AddToCreateSynonymScript (filterViewDefinition, _stringBuilder);
+
+      var expectedResult = "CREATE SYNONYM [dbo].[Synonym1] FOR [dbo].[FilterView]\r\n";
+      Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void AddToCreateSynonymScript_UnionViewDefinition ()
+    {
+      var filterViewDefinition = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "UnionView"),
+          new[]{_tableDefinition1},
+          new IColumnDefinition[0],
+          new IIndexDefinition[0],
+          new[] { new EntityNameDefinition (null, "Synonym1") });
+
+      _synonymBuilder.AddToCreateSynonymScript (filterViewDefinition, _stringBuilder);
+
+      var expectedResult = "CREATE SYNONYM [dbo].[Synonym1] FOR [dbo].[UnionView]\r\n";
+      Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
     }
 
     [Test]
@@ -87,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _synonymBuilder.AddToDropSynonymScript (_tableDefinition1, _stringBuilder);
 
-      var expectedResult = "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
+      var expectedResult = "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
                           + "  DROP SYNONYM [dbo].[Synonym1]\r\n";
       Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
     }
@@ -98,11 +133,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder.AddToDropSynonymScript (_tableDefinition2, _stringBuilder);
 
       var expectedResult =
-         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
+         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
        + "  DROP SYNONYM [test].[Synonym1]\r\n\r\n"+
-         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
+         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
        + "  DROP SYNONYM [test].[Synonym2]\r\n\r\n"+
-         "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym3')\r\n"
+         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'test' AND SCHEMA_NAME(schema_id) = 'Synonym3')\r\n"
        + "  DROP SYNONYM [test].[Synonym3]\r\n";
       Assert.That (_stringBuilder.ToString (), Is.EqualTo (expectedResult));
     }

@@ -21,24 +21,23 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  // TODO Review 3869: Class summary
+  /// <summary>
+  /// Contains database-independent code for generating synonyms for the persistence model.
+  /// </summary>
   public abstract class SynonymBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createSynonymStringBuilder;
     private readonly StringBuilder _dropSynonymStringBuilder;
-    // TODO Review 3869: Remove field (and ctor parameter)
-    private readonly ISqlDialect _sqlDialect; 
-
-    protected SynonymBuilderBase (ISqlDialect sqlDialect)
+    
+    protected SynonymBuilderBase ()
     {
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-
       _createSynonymStringBuilder = new StringBuilder();
       _dropSynonymStringBuilder = new StringBuilder();
-      _sqlDialect = sqlDialect;
     }
 
-    public abstract void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder);
+    public abstract void AddToCreateSynonymScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder);
+    public abstract void AddToCreateSynonymScript (FilterViewDefinition filterViewDefinition, StringBuilder createTableStringBuilder);
+    public abstract void AddToCreateSynonymScript (UnionViewDefinition unionViewDefinition, StringBuilder createTableStringBuilder);
     public abstract void AddToDropSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder dropTableStringBuilder);
 
     public string GetCreateTableScript ()
@@ -58,9 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       entityDefinition.Accept (this);
     }
 
-    // TODO Review 3869: Explicit
-
-    public void VisitTableDefinition (TableDefinition tableDefinition)
+    void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
@@ -68,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       AddToDropSynonymScript (tableDefinition, _dropSynonymStringBuilder);
     }
 
-    public void VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
+    void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
@@ -76,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       AddToDropSynonymScript (unionViewDefinition, _dropSynonymStringBuilder);
     }
 
-    public void VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
+    void IEntityDefinitionVisitor.VisitFilterViewDefinition (FilterViewDefinition filterViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
@@ -84,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       AddToDropSynonymScript (filterViewDefinition, _dropSynonymStringBuilder);
     }
 
-    public void VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
+    void IEntityDefinitionVisitor.VisitNullEntityDefinition (NullEntityDefinition nullEntityDefinition)
     {
       ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
 

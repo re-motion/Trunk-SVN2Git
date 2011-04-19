@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
@@ -24,20 +23,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 {
   public class TestableSynonymBuilder : SynonymBuilderBase
   {
-    public TestableSynonymBuilder (ISqlDialect sqlDialect)
-        : base(sqlDialect)
+    public TestableSynonymBuilder ()
     {
     }
 
-    public override void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder)
+    public override void AddToCreateSynonymScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder)
     {
-      if(entityDefinition.Synonyms.Count>0)
-        createTableStringBuilder.Append ("CREATE SYNONYM ["+ entityDefinition.Synonyms[0].EntityName +"] FOR [" + entityDefinition.ViewName.EntityName + "]");
+      if (tableDefinition.Synonyms.Count > 0)
+        createTableStringBuilder.Append (
+            "CREATE SYNONYM [" + tableDefinition.Synonyms[0].EntityName + "] FOR [" + tableDefinition.TableName.EntityName + "]");
+    }
+
+    public override void AddToCreateSynonymScript (FilterViewDefinition filterViewDefinition, StringBuilder createTableStringBuilder)
+    {
+      if (filterViewDefinition.Synonyms.Count > 0)
+      {
+        createTableStringBuilder.Append (
+            "CREATE SYNONYM [" + filterViewDefinition.Synonyms[0].EntityName + "] FOR [" + filterViewDefinition.ViewName.EntityName + "]");
+      }
+    }
+
+    public override void AddToCreateSynonymScript (UnionViewDefinition unionViewDefinition, StringBuilder createTableStringBuilder)
+    {
+      if (unionViewDefinition.Synonyms.Count > 0)
+      {
+        createTableStringBuilder.Append (
+            "CREATE SYNONYM [" + unionViewDefinition.Synonyms[0].EntityName + "] FOR [" + unionViewDefinition.ViewName.EntityName + "]");
+      }
     }
 
     public override void AddToDropSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder dropTableStringBuilder)
     {
-      if(entityDefinition.Synonyms.Count>0)
+      if (entityDefinition.Synonyms.Count > 0)
         dropTableStringBuilder.Append ("DROP SYNONYM [" + entityDefinition.Synonyms[0].EntityName + "]");
     }
   }

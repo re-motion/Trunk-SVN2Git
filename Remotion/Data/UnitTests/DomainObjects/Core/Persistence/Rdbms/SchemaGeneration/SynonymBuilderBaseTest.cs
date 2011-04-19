@@ -16,16 +16,13 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
   public class SynonymBuilderBaseTest : SchemaGenerationTestBase
   {
-    private ISqlDialect _sqlDialectStub;
     private TestableSynonymBuilder _synonymBuilder;
     private TableDefinition _tableDefinition;
 
@@ -33,8 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp ();
 
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
-      _synonymBuilder = new TestableSynonymBuilder (_sqlDialectStub);
+      _synonymBuilder = new TestableSynonymBuilder ();
 
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -54,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _synonymBuilder.GetCreateTableScript ();
       var dropTableScript = _synonymBuilder.GetDropTableScript ();
 
-      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]");
+      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [Order]");
       Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
     }
 

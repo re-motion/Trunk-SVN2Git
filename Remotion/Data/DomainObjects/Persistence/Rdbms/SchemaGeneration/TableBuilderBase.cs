@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  /// <summary>
+  /// Contains database-independent code for generating tables for the persistence model.
+  /// </summary>
   public abstract class TableBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createTableStringBuilder;

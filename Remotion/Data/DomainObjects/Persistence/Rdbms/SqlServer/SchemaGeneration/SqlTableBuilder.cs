@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
+  /// <summary>
+  /// Generates SQL Server-specific tables for the persistence model.
+  /// </summary>
   public class SqlTableBuilder : TableBuilderBase
   {
     public SqlTableBuilder () : base (SqlDialect.Instance)

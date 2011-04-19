@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -24,21 +23,37 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  // TODO Review 3869: Class summary
+  /// <summary>
+  /// Generates SQL Server-specific synonyms for the persistence model.
+  /// </summary>
   public class SqlSynonymBuilder : SynonymBuilderBase
   {
     public SqlSynonymBuilder ()
-        : base(SqlDialect.Instance)
     {
     }
 
-    // TODO Review 3869: Create three versions of this method: TableDefinition, UnionView, FilterView; for the TableDefinition, add a synonym for table name, the others should use view name
-    public override void AddToCreateSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder createTableStringBuilder)
+    public override void AddToCreateSynonymScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder)
     {
-      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
 
-      AddToCreateSynonymScript(entityDefinition.Synonyms, entityDefinition.ViewName, createTableStringBuilder);
+      AddToCreateSynonymScript (tableDefinition.Synonyms, tableDefinition.TableName, createTableStringBuilder);
+    }
+
+    public override void AddToCreateSynonymScript (FilterViewDefinition filterViewDefinition, StringBuilder createTableStringBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+      ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
+
+      AddToCreateSynonymScript (filterViewDefinition.Synonyms, filterViewDefinition.ViewName, createTableStringBuilder);
+    }
+
+    public override void AddToCreateSynonymScript (UnionViewDefinition unionViewDefinition, StringBuilder createTableStringBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+      ArgumentUtility.CheckNotNull ("createTableStringBuilder", createTableStringBuilder);
+
+      AddToCreateSynonymScript (unionViewDefinition.Synonyms, unionViewDefinition.ViewName, createTableStringBuilder);
     }
 
     private void AddToCreateSynonymScript (
@@ -70,9 +85,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         if (dropTableStringBuilder.Length != 0)
           dropTableStringBuilder.Append ("\r\n");
 
-        // TODO Review 3869: sys.synonyms lowercase, name lowercase
         dropTableStringBuilder.AppendFormat (
-           "IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
+           "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
            +"  DROP SYNONYM [{0}].[{1}]\r\n",
          synonym.SchemaName ?? SqlScriptBuilder.DefaultSchema,
          synonym.EntityName);

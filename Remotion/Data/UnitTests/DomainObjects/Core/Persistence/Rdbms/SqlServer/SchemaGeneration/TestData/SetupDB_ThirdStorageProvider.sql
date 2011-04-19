@@ -5,7 +5,7 @@ USE SchemaGenerationTestDomain3
 GO
 
 -- Drop all synonyms that will be created below
-IF EXISTS (SELECT * FROM SYS.SYNONYMS WHERE NAME = 'Test' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
+IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'Test' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
   DROP SYNONYM [Test].[AddedViewSynonym]
 GO
 
