@@ -19,41 +19,30 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
-  // TODO Review 3882: SqlSecondaryXmlIndexDefinition
-  /// <summary>
-  /// <see cref="SecondaryXmlIndexDefinition"/> represents a secondary xml-column index in a relational database.
-  /// </summary>
-  public class SecondaryXmlIndexDefinition : SqlIndexDefinitionBase
+  public class SqlPrimaryXmlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly IColumnDefinition _xmlColumn;
-    private readonly string _primaryIndexName;
-    private readonly SecondaryXmlIndexKind _kind;
 
-    public SecondaryXmlIndexDefinition (
-        string indexName,
-        EntityNameDefinition objectName,
-        IColumnDefinition xmlColumn,
-        string primaryIndexName,
-        SecondaryXmlIndexKind kind)
+    /// <summary>
+    /// <see cref="SqlPrimaryXmlIndexDefinition"/> represents a priamry xml-column index in a relational database.
+    /// </summary>
+    public SqlPrimaryXmlIndexDefinition (string indexName, EntityNameDefinition objectName, IColumnDefinition xmlColumn)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("indexName", indexName);
       ArgumentUtility.CheckNotNull ("objectName", objectName);
       ArgumentUtility.CheckNotNull ("xmlColumn", xmlColumn);
-      ArgumentUtility.CheckNotNullOrEmpty ("primaryIndexName", primaryIndexName);
 
       _indexName = indexName;
       _objectName = objectName;
       _xmlColumn = xmlColumn;
-      _primaryIndexName = primaryIndexName;
-      _kind = kind;
     }
 
     public override string IndexName
     {
       get { return _indexName; }
-    }
+    } 
 
     public override EntityNameDefinition ObjectName
     {
@@ -65,21 +54,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _xmlColumn; }
     }
 
-    public string PrimaryIndexName
-    {
-      get { return _primaryIndexName; }
-    }
-
-    public SecondaryXmlIndexKind Kind
-    {
-      get { return _kind; }
-    }
-
-    public override void Accept (ISqlIndexDefinitionVisitor visitor)
+    protected override void Accept (ISqlIndexDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      visitor.VisitSecondaryXmlIndexDefinition (this);
+      visitor.VisitPrimaryXmlIndexDefinition (this);
     }
   }
 }

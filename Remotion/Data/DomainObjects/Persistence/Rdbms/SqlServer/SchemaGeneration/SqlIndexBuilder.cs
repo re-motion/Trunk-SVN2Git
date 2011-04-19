@@ -44,14 +44,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       AddToDropIndexScript (sqlIndexDefinition);
     }
 
-    public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)
+    public void VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
     {
       AppendSeparator();
       AddToCreateIndexScript (primaryXmlIndexDefinition);
       AddToDropIndexScript (primaryXmlIndexDefinition);
     }
 
-    public void VisitSecondaryXmlIndexDefinition (SecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
+    public void VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
     {
       AppendSeparator();
       AddToCreateIndexScript (secondaryXmlIndexDefinition);
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           GetCreateIndexOptions (sqlIndexDefinition));
     }
 
-    private void AddToCreateIndexScript (PrimaryXmlIndexDefinition indexDefinition)
+    private void AddToCreateIndexScript (SqlPrimaryXmlIndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.XmlColumn.Name);
     }
 
-    private void AddToCreateIndexScript (SecondaryXmlIndexDefinition indexDefinition)
+    private void AddToCreateIndexScript (SqlSecondaryXmlIndexDefinition indexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
           "CREATE XML INDEX [{0}]\r\n"

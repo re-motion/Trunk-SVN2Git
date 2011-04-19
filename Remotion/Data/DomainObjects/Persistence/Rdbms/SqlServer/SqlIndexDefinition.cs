@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _online; }
     }
 
-    public override void Accept (ISqlIndexDefinitionVisitor visitor)
+    protected override void Accept (ISqlIndexDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 

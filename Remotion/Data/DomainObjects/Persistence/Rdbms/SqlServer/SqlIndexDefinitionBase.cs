@@ -50,6 +50,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     }
 
     // TODO Review 3882: Make protected
-    public abstract void Accept (ISqlIndexDefinitionVisitor visitor);
+    protected abstract void Accept (ISqlIndexDefinitionVisitor visitor);
   }
 }

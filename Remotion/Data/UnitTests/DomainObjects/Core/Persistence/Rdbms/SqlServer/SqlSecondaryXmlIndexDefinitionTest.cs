@@ -22,11 +22,11 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   [TestFixture]
-  public class SecondaryXmlIndexDefinitionTest
+  public class SqlSecondaryXmlIndexDefinitionTest
   {
     private EntityNameDefinition _objectName;
     private SimpleColumnDefinition _xmlColumn;
-    private SecondaryXmlIndexDefinition _indexDefinition;
+    private SqlSecondaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _objectName = new EntityNameDefinition ("_objectSchema", "objectName");
       _xmlColumn = new SimpleColumnDefinition ("xmlColumn", typeof (string), "xml", false, false);
       
-      _indexDefinition = new SecondaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, "PrimaryIndexName", SecondaryXmlIndexKind.Property);
+      _indexDefinition = new SqlSecondaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property);
     }
 
     [Test]
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
       Assert.That (_indexDefinition.PrimaryIndexName, Is.EqualTo("PrimaryIndexName"));
       Assert.That (_indexDefinition.XmlColumn, Is.SameAs (_xmlColumn));
-      Assert.That (_indexDefinition.Kind, Is.EqualTo (SecondaryXmlIndexKind.Property));
+      Assert.That (_indexDefinition.Kind, Is.EqualTo (SqlSecondaryXmlIndexKind.Property));
     }
 
     [Test]

@@ -22,18 +22,18 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   [TestFixture]
-  public class PrimaryXmlIndexDefinitionTest
+  public class SqlPrimaryXmlIndexDefinitionTest
   {
     private EntityNameDefinition _objectName;
     private SimpleColumnDefinition _xmlColumn;
-    private PrimaryXmlIndexDefinition _indexDefinition;
+    private SqlPrimaryXmlIndexDefinition _indexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
       _xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", true, false);
-      _indexDefinition = new PrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn);
+      _indexDefinition = new SqlPrimaryXmlIndexDefinition ("IndexName", _objectName, _xmlColumn);
     }
 
     [Test]

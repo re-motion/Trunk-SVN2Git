@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       DropIndexStringBuilder.AppendLine ("DROP INDEX " + sqlIndexDefinition.IndexName + " (IndexDefinition)");
     }
 
-    public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)
+    public void VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
     {
       CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + primaryXmlIndexDefinition.IndexName + " (PrimaryXmlIndexDefinition)");
       DropIndexStringBuilder.AppendLine ("DROP INDEX " + primaryXmlIndexDefinition.IndexName + " (PrimaryXmlIndexDefinition)");
     }
 
-    public void VisitSecondaryXmlIndexDefinition (SecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
+    public void VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
     {
       CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + secondaryXmlIndexDefinition.IndexName + " (SecondaryXmlIndexDefinition)");
       DropIndexStringBuilder.AppendLine ("DROP INDEX " + secondaryXmlIndexDefinition.IndexName + " (SecondaryXmlIndexDefinition)");

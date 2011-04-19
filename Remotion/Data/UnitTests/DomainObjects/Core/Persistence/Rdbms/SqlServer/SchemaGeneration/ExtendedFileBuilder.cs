@@ -104,13 +104,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           false,
           false);
-      var primaryXmlIndex = new PrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4);
-      var secondaryXmlIndex1 = new SecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex1", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Path);
-      var secondaryXmlIndex2 = new SecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex2", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Value);
-      var secondaryXmlIndex3 = new SecondaryXmlIndexDefinition (
-          "IDX_SecondaryXmlIndex3", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Property);
+      var primaryXmlIndex = new SqlPrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4);
+      var secondaryXmlIndex1 = new SqlSecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex1", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Path);
+      var secondaryXmlIndex2 = new SqlSecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex2", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Value);
+      var secondaryXmlIndex3 = new SqlSecondaryXmlIndexDefinition (
+          "IDX_SecondaryXmlIndex3", tableName, column4, "IDX_PrimaryXmlIndex", SqlSecondaryXmlIndexKind.Property);
 
       return new TableDefinition (
           storageProviderDefinition,

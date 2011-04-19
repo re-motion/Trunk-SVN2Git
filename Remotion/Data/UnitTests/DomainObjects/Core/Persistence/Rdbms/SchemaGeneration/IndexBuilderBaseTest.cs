@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private ISqlDialect _sqlDialectStub;
     private TestableIndexBuilder _indexBuilder;
     private SqlIndexDefinition _sqlIndexDefinition;
-    private PrimaryXmlIndexDefinition _primaryXmlIndexDefinition;
-    private SecondaryXmlIndexDefinition _secondaryXmlIndexDefinition;
+    private SqlPrimaryXmlIndexDefinition _primaryXmlIndexDefinition;
+    private SqlSecondaryXmlIndexDefinition _secondaryXmlIndexDefinition;
     private TableDefinition _tableDefinition;
 
     public override void SetUp ()
@@ -43,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var objectName = new EntityNameDefinition (null, "ObjectName");
       var xmlColumn = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", false, false));
       _sqlIndexDefinition = new SqlIndexDefinition ("IndexDefinitionName", objectName, new[] { xmlColumn }, null, false, false, false, false);
-      _primaryXmlIndexDefinition = new PrimaryXmlIndexDefinition ("PrimaryIndexName", objectName, xmlColumn);
-      _secondaryXmlIndexDefinition = new SecondaryXmlIndexDefinition (
-          "SecondaryIndexName", objectName, xmlColumn, "PrimaryIndexName", SecondaryXmlIndexKind.Property);
+      _primaryXmlIndexDefinition = new SqlPrimaryXmlIndexDefinition ("PrimaryIndexName", objectName, xmlColumn);
+      _secondaryXmlIndexDefinition = new SqlSecondaryXmlIndexDefinition (
+          "SecondaryIndexName", objectName, xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property);
 
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,

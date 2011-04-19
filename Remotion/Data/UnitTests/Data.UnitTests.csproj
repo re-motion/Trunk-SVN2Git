@@ -265,7 +265,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SynonymBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableSynonymBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlIndexDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\PrimaryXmlIndexDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlPrimaryXmlIndexDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\AboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\BelowInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
@@ -280,7 +280,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableViewBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ViewBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSynonymBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SecondaryXmlIndexDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />

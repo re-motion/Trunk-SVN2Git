@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateIndexScript_UnionViewDefinition_OneXmlIndex ()
     {
-      var indexDefinition = new PrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
+      var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           _viewName,
@@ -139,13 +139,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateIndexScript_UnionViewDefinition_TwoXmlIndex ()
     {
-      var primaryIndexDefinition = new PrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
-      var secondaryIndexDefinition = new SecondaryXmlIndexDefinition (
+      var primaryIndexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableName, _column3);
+      var secondaryIndexDefinition = new SqlSecondaryXmlIndexDefinition (
           "SecondaryName",
           _tableName,
           _column2,
           "PrimaryIndexName",
-          SecondaryXmlIndexKind.Property);
+          SqlSecondaryXmlIndexKind.Property);
 
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
