@@ -28,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private NameListColumnDefinitionVisitor _visitorAllowingNulls;
     private ISqlDialect _sqlDialectStub;
-    private NameListColumnDefinitionVisitor _visitorIgnoringClassIDColumns;
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
 
@@ -37,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
       _visitorAllowingNulls = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
-      _visitorIgnoringClassIDColumns = new NameListColumnDefinitionVisitor (true, _sqlDialectStub);
       _column1 = new SimpleColumnDefinition ("C1", typeof (int), "integer", true, false);
       _column2 = new SimpleColumnDefinition ("C2", typeof (int), "integer", true, false);
     }
@@ -75,6 +73,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var result = _visitorAllowingNulls.GetNameList ();
 
       Assert.That (result, Is.EqualTo ("[C1], [C2]"));
+    }
+
+    [Test]
+    public void VisitSqlIndexedColumnDefinition_WithoutIndexOrder ()
+    {
+      var indexedColumnDefinition = new SqlIndexedColumnDefinition (_column1);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+
+      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition);
+
+      var result = _visitorAllowingNulls.GetNameList();
+
+      Assert.That (result, Is.EqualTo ("[C1]"));
+    }
+
+    [Test]
+    public void VisitSqlIndexedColumnDefinition_WithIndexOrder ()
+    {
+      var indexedColumnDefinition1 = new SqlIndexedColumnDefinition (_column1, IndexOrder.Asc);
+      var indexedColumnDefinition2 = new SqlIndexedColumnDefinition (_column2, IndexOrder.Desc);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
+
+      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition1);
+      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition2);
+      
+      var result = _visitorAllowingNulls.GetNameList ();
+
+      Assert.That (result, Is.EqualTo ("[C1] ASC, [C2] DESC"));
     }
     
     [Test]

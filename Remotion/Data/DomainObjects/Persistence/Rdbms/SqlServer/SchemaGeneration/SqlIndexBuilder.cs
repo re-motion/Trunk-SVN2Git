@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -34,13 +35,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return "GO\r\n\r\n"; }
     }
 
-    public void VisitIndexDefinition (IndexDefinition indexDefinition)
+    public void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
     {
-      ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+      ArgumentUtility.CheckNotNull ("sqlIndexDefinition", sqlIndexDefinition);
 
       AppendSeparator();
-      AddToCreateIndexScript (indexDefinition);
-      AddToDropIndexScript (indexDefinition);
+      AddToCreateIndexScript (sqlIndexDefinition);
+      AddToDropIndexScript (sqlIndexDefinition);
     }
 
     public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)
@@ -57,19 +58,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       AddToDropIndexScript (secondaryXmlIndexDefinition);
     }
 
-    private void AddToCreateIndexScript (IndexDefinition indexDefinition)
+    private void AddToCreateIndexScript (SqlIndexDefinition sqlIndexDefinition)
     {
       CreateIndexStringBuilder.AppendFormat (
           "CREATE {0}{1} INDEX [{2}]\r\n"
           + "  ON [{3}].[{4}] ({5})\r\n{6}{7}",
-          indexDefinition.IsUnique ? "UNIQUE " : string.Empty,
-          indexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
-          indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
-          indexDefinition.ObjectName.EntityName,
-          GetColumnList (indexDefinition.Columns, false),
-          indexDefinition.IncludedColumns != null ? "  INCLUDE (" + GetColumnList (indexDefinition.IncludedColumns, false) + ")\r\n" : string.Empty,
-          GetCreateIndexOptions (indexDefinition));
+          sqlIndexDefinition.IsUnique ? "UNIQUE " : string.Empty,
+          sqlIndexDefinition.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
+          sqlIndexDefinition.IndexName,
+          sqlIndexDefinition.ObjectName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
+          sqlIndexDefinition.ObjectName.EntityName,
+          GetColumnList (sqlIndexDefinition.Columns.Cast<IColumnDefinition>(), false),
+          sqlIndexDefinition.IncludedColumns != null ? "  INCLUDE (" + GetColumnList (sqlIndexDefinition.IncludedColumns, false) + ")\r\n" : string.Empty,
+          GetCreateIndexOptions (sqlIndexDefinition));
     }
 
     private void AddToCreateIndexScript (PrimaryXmlIndexDefinition indexDefinition)
@@ -113,15 +114,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     // - Extract another method: IEnumerable<string> GetCreateIndexOptionItems (IndexDefinition indexDefinition); that method returns a list of SQL option fragements
     // - Refactor this method to take an "IEnumerable<string> optionItems" instead
     // - Refactor the call site to call GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))
-    private string GetCreateIndexOptions (IndexDefinition indexDefinition)
+    private string GetCreateIndexOptions (SqlIndexDefinition sqlIndexDefinition)
     {
       var options = new StringBuilder (string.Empty);
-      if (indexDefinition.IgnoreDupKey || indexDefinition.Online)
+      if (sqlIndexDefinition.IgnoreDupKey || sqlIndexDefinition.Online)
       {
         // TODO Review 3883: Use WITH (... = ON/OFF)
-        if (indexDefinition.IgnoreDupKey)
+        if (sqlIndexDefinition.IgnoreDupKey)
           AddOption ("IGNORE_DUP_KEY", options);
-        if (indexDefinition.Online)
+        if (sqlIndexDefinition.Online)
           AddOption ("ONLINE", options);
         options.Insert (0, "  WITH ");
         options.Append ("\r\n");

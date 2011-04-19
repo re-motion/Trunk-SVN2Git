@@ -56,6 +56,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
         _propertyDefinitionsByName[simpleColumnDefinition.Name].Add (_currentProperty);
       }
 
+      public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
+      {
+        indexedColumnDefinition.Columnn.Accept (this);
+      }
+
       void IColumnDefinitionVisitor.VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
       {
         idColumnDefinition.ObjectIDColumn.Accept (this);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -21,27 +22,25 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
-  // TODO Review 3882: SqlIndexDefinition
   /// <summary>
-  /// <see cref="IndexDefinition"/> represents an index on a table or view in a SQL Server database.
+  /// <see cref="SqlIndexDefinition"/> represents an index on a table or view in a SQL Server database.
   /// </summary>
-  public class IndexDefinition : SqlIndexDefinitionBase
+  public class SqlIndexDefinition : SqlIndexDefinitionBase
   {
     private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
-    private readonly ReadOnlyCollection<IColumnDefinition> _columns;
+    private readonly ReadOnlyCollection<SqlIndexedColumnDefinition> _columns;
     private readonly ReadOnlyCollection<IColumnDefinition> _includedColumns;
     private readonly bool _isClustered;
     private readonly bool _isUnique;
     private readonly bool _ignoreDupKey;
     private readonly bool _online;
 
-    // TODO Review 3882: Add SqlIndexedColumnDefinition class => holds on to IColumnDefinition + IndexOrder enum value (Ascending, Descending; nullable); use for Columns property
-    public IndexDefinition (
+    public SqlIndexDefinition (
         string indexName,
         EntityNameDefinition objectName,
-        IColumnDefinition[] columns, // TODO Review 3882: IEnumerable
-        IColumnDefinition[] includedColumns, // TODO Review 3882: IEnumerable
+        IEnumerable<SqlIndexedColumnDefinition> columns,
+        IEnumerable<IColumnDefinition> includedColumns,
         bool isClustered,
         bool isUnique,
         bool ignoreDupKey,
@@ -73,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _objectName; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> Columns
+    public ReadOnlyCollection<SqlIndexedColumnDefinition> Columns
     {
       get { return _columns; }
     }

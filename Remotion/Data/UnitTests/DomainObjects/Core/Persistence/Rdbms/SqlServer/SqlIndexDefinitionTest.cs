@@ -22,42 +22,42 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   [TestFixture]
-  public class IndexDefinitionTest
+  public class SqlIndexDefinitionTest
   {
     private SimpleColumnDefinition[] _includedColumns;
-    private SimpleColumnDefinition[] _columns;
+    private SqlIndexedColumnDefinition[] _columns;
     private EntityNameDefinition _objectName;
-    private IndexDefinition _indexDefinition;
+    private SqlIndexDefinition _sqlIndexDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _objectName = new EntityNameDefinition ("objectSchema", "objectName");
-      _columns = new[] { new SimpleColumnDefinition ("TestColumn1", typeof (string), "varchar", true, false) };
+      _columns = new[] { new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("TestColumn1", typeof (string), "varchar", true, false)) };
       _includedColumns = new[] { new SimpleColumnDefinition ("TestColumn2", typeof (string), "varchar", true, false) };
 
-      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, _includedColumns, true, true, true, true);
+      _sqlIndexDefinition = new SqlIndexDefinition ("IndexName", _objectName, _columns, _includedColumns, true, true, true, true);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_indexDefinition.IndexName, Is.EqualTo("IndexName"));
-      Assert.That (_indexDefinition.ObjectName, Is.SameAs (_objectName));
-      Assert.That (_indexDefinition.Columns, Is.EqualTo (_columns));
-      Assert.That (_indexDefinition.IncludedColumns, Is.EqualTo (_includedColumns));
-      Assert.That (_indexDefinition.IsClustered, Is.True);
-      Assert.That (_indexDefinition.IsUnique, Is.True);
-      Assert.That (_indexDefinition.IgnoreDupKey, Is.True);
-      Assert.That (_indexDefinition.IsUnique, Is.True);
+      Assert.That (_sqlIndexDefinition.IndexName, Is.EqualTo("IndexName"));
+      Assert.That (_sqlIndexDefinition.ObjectName, Is.SameAs (_objectName));
+      Assert.That (_sqlIndexDefinition.Columns, Is.EqualTo (_columns));
+      Assert.That (_sqlIndexDefinition.IncludedColumns, Is.EqualTo (_includedColumns));
+      Assert.That (_sqlIndexDefinition.IsClustered, Is.True);
+      Assert.That (_sqlIndexDefinition.IsUnique, Is.True);
+      Assert.That (_sqlIndexDefinition.IgnoreDupKey, Is.True);
+      Assert.That (_sqlIndexDefinition.IsUnique, Is.True);
     }
 
     [Test]
     public void Initialization_NoIncludedColumns ()
     {
-      _indexDefinition = new IndexDefinition ("IndexName", _objectName, _columns, null, true, true, true, true);
+      _sqlIndexDefinition = new SqlIndexDefinition ("IndexName", _objectName, _columns, null, true, true, true, true);
 
-      Assert.That (_indexDefinition.IncludedColumns, Is.Null);
+      Assert.That (_sqlIndexDefinition.IncludedColumns, Is.Null);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var visitorMock = MockRepository.GenerateStrictMock<IIndexDefinitionVisitor>();
       visitorMock.Replay();
 
-      _indexDefinition.Accept (visitorMock);
+      _sqlIndexDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations();
     }
@@ -75,10 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void Accept_SqlIndexDefinitionVisitor ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ISqlIndexDefinitionVisitor> ();
-      visitorMock.Expect (mock => mock.VisitIndexDefinition (_indexDefinition));
+      visitorMock.Expect (mock => mock.VisitIndexDefinition (_sqlIndexDefinition));
       visitorMock.Replay ();
 
-      _indexDefinition.Accept (visitorMock);
+      _sqlIndexDefinition.Accept (visitorMock);
 
       visitorMock.VerifyAllExpectations ();
     }

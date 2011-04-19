@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
@@ -46,6 +47,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("simpleColumnDefinition", simpleColumnDefinition);
 
       _columnDefinitions.Add (simpleColumnDefinition);
+    }
+
+    public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("indexedColumnDefinition", indexedColumnDefinition);
+
+      indexedColumnDefinition.Columnn.Accept (this);
     }
 
     public void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)

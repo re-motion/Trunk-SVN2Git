@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   {
     private ISqlDialect _sqlDialectStub;
     private TestableIndexBuilder _indexBuilder;
-    private IndexDefinition _indexDefinition;
+    private SqlIndexDefinition _sqlIndexDefinition;
     private PrimaryXmlIndexDefinition _primaryXmlIndexDefinition;
     private SecondaryXmlIndexDefinition _secondaryXmlIndexDefinition;
     private TableDefinition _tableDefinition;
@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _indexBuilder = new TestableIndexBuilder (_sqlDialectStub);
 
       var objectName = new EntityNameDefinition (null, "ObjectName");
-      var xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", false, false);
-      _indexDefinition = new IndexDefinition ("IndexDefinitionName", objectName, new[] { xmlColumn }, null, false, false, false, false);
+      var xmlColumn = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", false, false));
+      _sqlIndexDefinition = new SqlIndexDefinition ("IndexDefinitionName", objectName, new[] { xmlColumn }, null, false, false, false, false);
       _primaryXmlIndexDefinition = new PrimaryXmlIndexDefinition ("PrimaryIndexName", objectName, xmlColumn);
       _secondaryXmlIndexDefinition = new SecondaryXmlIndexDefinition (
           "SecondaryIndexName", objectName, xmlColumn, "PrimaryIndexName", SecondaryXmlIndexKind.Property);
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "viewName"),
           new IColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { _indexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           _tableDefinition,
           new[] { "ClassID" },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { _indexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
 
       _indexBuilder.AddIndexes (filterViewDefinition);
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "UnionViewName"),
           new[] { _tableDefinition },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { _indexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
 
       _indexBuilder.AddIndexes (unionViewDefinition);
 

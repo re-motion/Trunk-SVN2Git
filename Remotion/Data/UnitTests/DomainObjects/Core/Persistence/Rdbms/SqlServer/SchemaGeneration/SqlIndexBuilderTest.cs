@@ -27,12 +27,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   public class SqlIndexBuilderTest : SchemaGenerationTestBase
   {
     private SqlIndexBuilder _indexBuilder;
-    private SimpleColumnDefinition _column1;
-    private SimpleColumnDefinition _column2;
+    private SqlIndexedColumnDefinition _column1;
+    private SqlIndexedColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
     private EntityNameDefinition _tableName;
     private EntityNameDefinition _viewName;
-    private IndexDefinition _indexDefinition;
+    private SqlIndexDefinition _sqlIndexDefinition;
     private TableDefinition _tableDefinition;
 
     // TODO Review 3883: Refactor tests: Rewrite to test the Visit...Definition methods instead of the base class methods. Remove TableDefinition etc. => not needed
@@ -45,13 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _indexBuilder = new SqlIndexBuilder ();
 
-      _column1 = new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true);
-      _column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false);
+      _column1 = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true), IndexOrder.Asc);
+      _column2 = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false), IndexOrder.Desc);
       _column3 = new SimpleColumnDefinition ("Test", typeof (string), "varchar(100)", true, false);
       _tableName = new EntityNameDefinition (null, "TableName");
       _viewName = new EntityNameDefinition (null, "ViewName");
       
-      _indexDefinition = new IndexDefinition (
+      _sqlIndexDefinition = new SqlIndexDefinition (
           "Index1", _tableName, new[] { _column1, _column2 }, null, true, true, false, false);
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _viewName,
           new[] { _column1, _column2 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { _indexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition }, new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -86,14 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var expectedScript =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
-          + "  ON [dbo].[TableName] ([ID], [Name])\r\n";
+          + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 
     [Test]
     public void GetCreateIndexScript_FilterViewDefinition_IndexDefinitionWithIncludedColumns ()
     {
-      var indexDefinition = new IndexDefinition ("Index1", _tableName, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
+      var indexDefinition = new SqlIndexDefinition ("Index1", _tableName, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
 
       var filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var expectedScript =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
-          + "  ON [dbo].[TableName] ([ID], [Name])\r\n"
+          + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "  INCLUDE ([Test])\r\n"
           + "  WITH IGNORE_DUP_KEY, ONLINE\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));

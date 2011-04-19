@@ -33,10 +33,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       get { throw new NotImplementedException (); }
     }
 
-    public void VisitIndexDefinition (IndexDefinition indexDefinition)
+    public void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
     {
-      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + indexDefinition.IndexName + " (IndexDefinition)");
-      DropIndexStringBuilder.AppendLine ("DROP INDEX " + indexDefinition.IndexName + " (IndexDefinition)");
+      CreateIndexStringBuilder.AppendLine ("CREATE INDEX " + sqlIndexDefinition.IndexName + " (IndexDefinition)");
+      DropIndexStringBuilder.AppendLine ("DROP INDEX " + sqlIndexDefinition.IndexName + " (IndexDefinition)");
     }
 
     public void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition)

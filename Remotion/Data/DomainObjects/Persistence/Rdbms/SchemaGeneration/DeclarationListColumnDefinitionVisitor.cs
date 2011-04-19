@@ -68,6 +68,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           simpleColumnDefinition.IsNullable ? " NULL" : " NOT NULL");
     }
 
+    public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("indexedColumnDefinition", indexedColumnDefinition);
+
+      indexedColumnDefinition.Columnn.Accept (this);
+    }
+
     public virtual void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
     {
       ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);

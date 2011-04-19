@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   /// </summary>
   public interface ISqlIndexDefinitionVisitor : IIndexDefinitionVisitor
   {
-    void VisitIndexDefinition (IndexDefinition indexDefinition);
+    void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition);
     void VisitPrimaryXmlIndexDefinition (PrimaryXmlIndexDefinition primaryXmlIndexDefinition);
     void VisitSecondaryXmlIndexDefinition (SecondaryXmlIndexDefinition secondaryXmlIndexDefinition);
   }

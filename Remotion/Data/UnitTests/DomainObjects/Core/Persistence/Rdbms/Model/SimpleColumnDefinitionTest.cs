@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -123,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void Equals_False_Null ()
     {
-      Assert.That (_columnDefinition.Equals ((IColumnDefinition) null), Is.False);
+      Assert.That (_columnDefinition.Equals (null), Is.False);
       Assert.That (_columnDefinition.Equals ((object) null), Is.False);
     }
 

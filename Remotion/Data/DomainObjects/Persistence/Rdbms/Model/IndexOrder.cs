@@ -18,14 +18,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  /// <summary>
-  /// <see cref="IColumnDefinitionVisitor"/> defines the API for all column definition visitors.
-  /// </summary>
-  public interface IColumnDefinitionVisitor
+  public enum IndexOrder
   {
-    void VisitSimpleColumnDefinition (SimpleColumnDefinition simpleColumnDefinition);
-    void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition);
-    void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition);
-    void VisitNullColumnDefinition (NullColumnDefinition nullColumnDefinition);
+    Asc,
+    Desc
   }
 }

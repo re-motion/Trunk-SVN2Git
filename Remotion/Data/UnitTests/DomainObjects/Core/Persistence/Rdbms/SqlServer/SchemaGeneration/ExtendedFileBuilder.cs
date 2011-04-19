@@ -79,8 +79,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           tableDefinition,
           new[] { "ClassID" },
           tableDefinition.Columns,
-          new IIndexDefinition[0], 
-          new[] { new EntityNameDefinition("Test", "AddedViewSynonym")});
+          new IIndexDefinition[0],
+          new[] { new EntityNameDefinition ("Test", "AddedViewSynonym") });
     }
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)
@@ -93,9 +93,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var tableName = new EntityNameDefinition (null, "IndexTestTable");
       var viewName = new EntityNameDefinition (null, "IndexTestView");
 
-      var nonClusteredUniqueIndex = new IndexDefinition ("IDX_NonClusteredUniqueIndex", tableName, new[] { column1 }, null, false, true, true, false);
-      var nonClusteredNonUniqueIndex = new IndexDefinition (
-          "IDX_NonClusteredNonUniqueIndex", tableName, new[] { column2, column3 }, new[] { column1 }, false, false, false, false);
+      var nonClusteredUniqueIndex = new SqlIndexDefinition (
+          "IDX_NonClusteredUniqueIndex", tableName, new[] { new SqlIndexedColumnDefinition (column1) }, null, false, true, true, false);
+      var nonClusteredNonUniqueIndex = new SqlIndexDefinition (
+          "IDX_NonClusteredNonUniqueIndex",
+          tableName,
+          new[] { new SqlIndexedColumnDefinition (column2), new SqlIndexedColumnDefinition (column3) },
+          new[] { column1 },
+          false,
+          false,
+          false,
+          false);
       var primaryXmlIndex = new PrimaryXmlIndexDefinition ("IDX_PrimaryXmlIndex", tableName, column4);
       var secondaryXmlIndex1 = new SecondaryXmlIndexDefinition (
           "IDX_SecondaryXmlIndex1", tableName, column4, "IDX_PrimaryXmlIndex", SecondaryXmlIndexKind.Path);
@@ -113,10 +121,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new IIndexDefinition[]
           {
               nonClusteredUniqueIndex,
-              nonClusteredNonUniqueIndex, 
-              primaryXmlIndex, 
-              secondaryXmlIndex1, 
-              secondaryXmlIndex2, 
+              nonClusteredNonUniqueIndex,
+              primaryXmlIndex,
+              secondaryXmlIndex1,
+              secondaryXmlIndex2,
               secondaryXmlIndex3
           },
           new EntityNameDefinition[0]);
@@ -130,7 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var column1 = new SimpleColumnDefinition ("ID", typeof (Guid), "uniqueidentifier", false, true);
       var column2 = new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", false, false);
 
-      var nonClusteredUniqueIndex = new IndexDefinition ("IDX_ClusteredUniqueIndex", tableName, new[] { column2 }, null, true, true, true, false);
+      var nonClusteredUniqueIndex = new SqlIndexDefinition (
+          "IDX_ClusteredUniqueIndex", tableName, new[] { new SqlIndexedColumnDefinition (column2) }, null, true, true, true, false);
 
       return new TableDefinition (
           storageProviderDefinition,

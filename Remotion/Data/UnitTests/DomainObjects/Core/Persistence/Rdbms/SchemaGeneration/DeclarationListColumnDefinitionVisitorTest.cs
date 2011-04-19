@@ -76,6 +76,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
+    public void VisitSqlIndexedColumnDefinition ()
+    {
+      var innerColumn = new SimpleColumnDefinition ("C1", typeof (int), "integer", false, false);
+      var indexedColumn = new SqlIndexedColumnDefinition (innerColumn);
+
+      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
+
+      _visitor.VisitSqlIndexedColumnDefinition (indexedColumn);
+      var result = _visitor.GetDeclarationList();
+
+      Assert.That (result, Is.EqualTo ("  [C1] integer NOT NULL"));
+    }
+
+    [Test]
     public void VisitIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, false);

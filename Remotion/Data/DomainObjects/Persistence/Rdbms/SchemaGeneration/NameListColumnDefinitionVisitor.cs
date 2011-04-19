@@ -63,6 +63,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _nameList.Append (_sqlDialect.DelimitIdentifier(simpleColumnDefinition.Name));
     }
 
+    public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("indexedColumnDefinition", indexedColumnDefinition);
+
+      indexedColumnDefinition.Columnn.Accept (this);
+      if (indexedColumnDefinition.IndexOrder.HasValue)
+        _nameList.Append (" "+ indexedColumnDefinition.IndexOrder.ToString().ToUpper());
+    }
+
     public virtual void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
     {
       ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);
