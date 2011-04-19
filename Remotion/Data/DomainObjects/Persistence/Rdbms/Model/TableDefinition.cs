@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="TableDefinition"/> defines a table in a relational database.
   /// </summary>
-  public class TableDefinition : EntityDefinitionBase, IEntityDefinition
+  public class TableDefinition : EntityDefinitionBase
   {
     private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly EntityNameDefinition _tableName;
@@ -55,12 +55,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _indexes = indexes.ToList().AsReadOnly();
     }
 
-    public string StorageProviderID
+    public override string StorageProviderID
     {
       get { return StorageProviderDefinition.Name; }
     }
 
-    public StorageProviderDefinition StorageProviderDefinition
+    public override StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
     }
@@ -75,29 +75,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _constraints; }
     }
 
-    public string LegacyEntityName
+    public override string LegacyEntityName
     {
       get { return _tableName.EntityName; }
     }
 
-    public string LegacyViewName
-    {
-      get { return ViewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IIndexDefinition> Indexes
+    public override ReadOnlyCollection<IIndexDefinition> Indexes
     {
       get { return _indexes; }
     }
 
-    public void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitTableDefinition (this);
     }
 
-    public bool IsNull
+    public override bool IsNull
     {
       get { return false; }
     }

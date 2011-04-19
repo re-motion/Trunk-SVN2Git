@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="UnionViewDefinition"/> defines a union view in a relational database.
   /// </summary>
-  public class UnionViewDefinition : EntityDefinitionBase, IEntityDefinition
+  public class UnionViewDefinition : EntityDefinitionBase
   {
     private readonly ReadOnlyCollection<IEntityDefinition> _unionedEntities;
     private readonly StorageProviderDefinition _storageProviderDefinition;
@@ -66,12 +66,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _indexes = indexes.ToList().AsReadOnly();
     }
 
-    public string StorageProviderID
+    public override string StorageProviderID
     {
       get { return _storageProviderDefinition.Name; }
     }
 
-    public StorageProviderDefinition StorageProviderDefinition
+    public override StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
     }
@@ -81,17 +81,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _unionedEntities; }
     }
 
-    public string LegacyEntityName
+    public override string LegacyEntityName
     {
       get { return null; }
     }
 
-    public string LegacyViewName
-    {
-      get { return ViewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IIndexDefinition> Indexes
+    public override ReadOnlyCollection<IIndexDefinition> Indexes
     {
       get { return _indexes; }
     }
@@ -119,14 +114,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
     }
 
-    public void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.VisitUnionViewDefinition (this);
     }
 
-    public bool IsNull
+    public override bool IsNull
     {
       get { return false; }
     }

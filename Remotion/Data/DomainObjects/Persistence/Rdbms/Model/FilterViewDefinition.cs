@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// <summary>
   /// <see cref="FilterViewDefinition"/> defines a filtered view in a relational database.
   /// </summary>
-  public class FilterViewDefinition : EntityDefinitionBase, IEntityDefinition
+  public class FilterViewDefinition : EntityDefinitionBase
   {
     private readonly IEntityDefinition _baseEntity;
     private readonly ReadOnlyCollection<string> _classIDs;
@@ -63,12 +63,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _indexes = indexes.ToList().AsReadOnly();
     }
 
-    public string StorageProviderID
+    public override string StorageProviderID
     {
       get { return _storageProviderDefinition.Name; }
     }
 
-    public StorageProviderDefinition StorageProviderDefinition
+    public override StorageProviderDefinition StorageProviderDefinition
     {
       get { return _storageProviderDefinition; }
     }
@@ -83,17 +83,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _classIDs; }
     }
 
-    public string LegacyEntityName
+    public override string LegacyEntityName
     {
       get { return null; }
     }
 
-    public string LegacyViewName
-    {
-      get { return ViewName.EntityName; }
-    }
-
-    public ReadOnlyCollection<IIndexDefinition> Indexes
+    public override ReadOnlyCollection<IIndexDefinition> Indexes
     {
       get { return _indexes; }
     }
@@ -108,13 +103,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       return (TableDefinition) current;
     }
 
-    public void Accept (IEntityDefinitionVisitor visitor)
+    public override void Accept (IEntityDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFilterViewDefinition (this);
     }
 
-    public bool IsNull
+    public override bool IsNull
     {
       get { return false; }
     }

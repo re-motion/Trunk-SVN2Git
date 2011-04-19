@@ -18,23 +18,23 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  // TODO Review 3869: Implement IEntityDefinition (most members abstract)
   /// <summary>
   /// <see cref="EntityDefinitionBase"/> is the base-class for all entity definitions.
   /// </summary>
-  public abstract class EntityDefinitionBase
+  public abstract class EntityDefinitionBase : IEntityDefinition
   {
     private readonly EntityNameDefinition _viewName;
     private readonly ReadOnlyCollection<IColumnDefinition> _columns;
     private readonly ReadOnlyCollection<EntityNameDefinition> _synonyms;
 
     protected EntityDefinitionBase (
-        EntityNameDefinition viewName, 
-        IEnumerable<IColumnDefinition> columns, 
+        EntityNameDefinition viewName,
+        IEnumerable<IColumnDefinition> columns,
         IEnumerable<EntityNameDefinition> synonyms)
     {
       ArgumentUtility.CheckNotNull ("columns", columns);
@@ -44,6 +44,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _columns = columns.ToList().AsReadOnly();
       _synonyms = synonyms.ToList().AsReadOnly();
     }
+
+    public abstract string LegacyEntityName { get; }
+
+    public abstract string StorageProviderID { get; }
+
+    public abstract StorageProviderDefinition StorageProviderDefinition { get; }
+
+    public abstract ReadOnlyCollection<IIndexDefinition> Indexes { get; }
+
+    public abstract bool IsNull { get; }
+
+    public abstract void Accept (IEntityDefinitionVisitor visitor);
 
     public EntityNameDefinition ViewName
     {
@@ -58,6 +70,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     public ReadOnlyCollection<EntityNameDefinition> Synonyms
     {
       get { return _synonyms; }
+    }
+
+    public string LegacyViewName
+    {
+      get { return _viewName.EntityName; }
     }
   }
 }
