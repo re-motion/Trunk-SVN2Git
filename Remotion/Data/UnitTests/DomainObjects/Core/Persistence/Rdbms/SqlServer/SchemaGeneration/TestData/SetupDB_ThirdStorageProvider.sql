@@ -159,12 +159,13 @@ GO
 -- Create indexes for tables that were created above
 CREATE UNIQUE NONCLUSTERED INDEX [IDX_NonClusteredUniqueIndex]
   ON [dbo].[IndexTestTable] ([ID])
-  WITH IGNORE_DUP_KEY
+  WITH (IGNORE_DUP_KEY = ON, ONLINE = OFF)
 GO
 
 CREATE NONCLUSTERED INDEX [IDX_NonClusteredNonUniqueIndex]
   ON [dbo].[IndexTestTable] ([FirstName], [LastName])
   INCLUDE ([ID])
+  WITH (IGNORE_DUP_KEY = OFF, ONLINE = OFF)
 GO
 
 CREATE PRIMARY XML INDEX [IDX_PrimaryXmlIndex]
@@ -191,7 +192,7 @@ GO
 
 CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
   ON [dbo].[PKTestTable] ([Name])
-  WITH IGNORE_DUP_KEY
+  WITH (IGNORE_DUP_KEY = ON, ONLINE = OFF)
 GO
 
 -- Create synonyms for tables that were created above

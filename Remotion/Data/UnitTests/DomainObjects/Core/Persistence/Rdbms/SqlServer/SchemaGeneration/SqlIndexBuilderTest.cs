@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -52,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewName = new EntityNameDefinition (null, "ViewName");
       
       _sqlIndexDefinition = new SqlIndexDefinition (
-          "Index1", _tableName, new[] { _column1, _column2 }, null, true, true, false, false);
+          "Index1", _tableName, new[] { _column1, _column2 }, null, true, true);
       _tableDefinition = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           _tableName,
@@ -111,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "  INCLUDE ([Test])\r\n"
-          + "  WITH IGNORE_DUP_KEY, ONLINE\r\n";
+          + "  WITH (IGNORE_DUP_KEY = ON, ONLINE = ON)\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
 

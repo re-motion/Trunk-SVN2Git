@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -70,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           sqlIndexDefinition.ObjectName.EntityName,
           GetColumnList (sqlIndexDefinition.Columns.Cast<IColumnDefinition>(), false),
           sqlIndexDefinition.IncludedColumns != null ? "  INCLUDE (" + GetColumnList (sqlIndexDefinition.IncludedColumns, false) + ")\r\n" : string.Empty,
-          GetCreateIndexOptions (sqlIndexDefinition));
+          GetCreateIndexOptions (GetCreateIndexOptionItems (sqlIndexDefinition)));
     }
 
     private void AddToCreateIndexScript (SqlPrimaryXmlIndexDefinition indexDefinition)
@@ -110,31 +111,33 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           indexDefinition.IndexName);
     }
 
-    // TODO Review 3883: Refactor as follows:
-    // - Extract another method: IEnumerable<string> GetCreateIndexOptionItems (IndexDefinition indexDefinition); that method returns a list of SQL option fragements
-    // - Refactor this method to take an "IEnumerable<string> optionItems" instead
-    // - Refactor the call site to call GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))
-    private string GetCreateIndexOptions (SqlIndexDefinition sqlIndexDefinition)
+    private IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinition indexDefinition)
     {
-      var options = new StringBuilder (string.Empty);
-      if ((sqlIndexDefinition.IgnoreDupKey.HasValue && sqlIndexDefinition.IgnoreDupKey.Value) || (sqlIndexDefinition.Online.HasValue && sqlIndexDefinition.Online.Value))
-      {
-        // TODO Review 3883: Use WITH (... = ON/OFF)
-        if (sqlIndexDefinition.IgnoreDupKey.HasValue && sqlIndexDefinition.IgnoreDupKey.Value)
-          AddOption ("IGNORE_DUP_KEY", options);
-        if (sqlIndexDefinition.Online.HasValue && sqlIndexDefinition.Online.Value)
-          AddOption ("ONLINE", options);
-        options.Insert (0, "  WITH ");
-        options.Append ("\r\n");
-      }
-      return options.ToString();
+      if (indexDefinition.IgnoreDupKey.HasValue)
+        yield return string.Format ("IGNORE_DUP_KEY = {0}", indexDefinition.IgnoreDupKey.Value ? "ON" : "OFF");
+      if (indexDefinition.Online.HasValue)
+        yield return string.Format ("ONLINE = {0}", indexDefinition.Online.Value ? "ON" : "OFF");
+      if (indexDefinition.PadIndex.HasValue)
+        yield return string.Format ("PAD_INDEX = {0}", indexDefinition.PadIndex.Value ? "ON" : "OFF");
+      if (indexDefinition.FillFactor.HasValue)
+        yield return string.Format ("FILLFACTOR = {0}", indexDefinition.FillFactor.Value);
+      if (indexDefinition.SortInDb.HasValue)
+        yield return string.Format ("SORT_IN_TEMPDB = {0}", indexDefinition.SortInDb.Value ? "ON" : "OFF");
+      if (indexDefinition.StatisticsNoReCompute.HasValue)
+        yield return string.Format ("STATISTICS_NORECOMPUTE = {0}", indexDefinition.StatisticsNoReCompute.Value ? "ON" : "OFF");
+      if (indexDefinition.DropExisiting.HasValue)
+        yield return string.Format ("DROP_EXISTING = {0}", indexDefinition.DropExisiting.Value ? "ON" : "OFF");
+      if (indexDefinition.AllowRowLocks.HasValue)
+        yield return string.Format ("ALLOW_ROW_LOCKS = {0}", indexDefinition.AllowRowLocks.Value ? "ON" : "OFF");
+      if (indexDefinition.AllowPageLocks.HasValue)
+        yield return string.Format ("ALLOW_PAGE_LOCKS = {0}", indexDefinition.AllowPageLocks.Value ? "ON" : "OFF");
+      if (indexDefinition.MaxDop.HasValue)
+        yield return string.Format ("MAXDOP = {0}", indexDefinition.MaxDop.Value);
     }
 
-    private void AddOption (string option, StringBuilder options)
+    private string GetCreateIndexOptions (IEnumerable<string> optionItems)
     {
-      if (options.Length > 0)
-        options.Append (", ");
-      options.Append (option);
+      return optionItems.Any() ? "  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")\r\n" : string.Empty;
     }
   }
 }
