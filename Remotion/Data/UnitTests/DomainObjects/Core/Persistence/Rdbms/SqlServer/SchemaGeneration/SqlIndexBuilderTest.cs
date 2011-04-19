@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 });
 
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var expectedCreateIndexScript =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -84,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithoutDefaultSchema, new[] { _column1, _column2 }, null, true, true);
 
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var expectedCreateIndexScript =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var indexDefinition = new SqlIndexDefinition ("Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, new[] { _column3 }, false, false, true, true);
 
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var indexDefinition = new SqlIndexDefinition (
           "Index1", _tableNameWithDefaultSchema, new[] { _column1, _column2 }, new[] { _column3 }, true, true, true, true, true, 5, true, true, true, true, true, 2);
 
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           0);
 
-      _indexBuilder.VisitIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableNameWithoutDefaultSchema, _column3);
 
-      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -202,8 +202,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Property);
 
-      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
-      _indexBuilder.VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var indexDefinition = new SqlPrimaryXmlIndexDefinition ("Index1", _tableNameWithDefaultSchema, _column3, true, 10, true, false, true, false, false, 18);
 
-      _indexBuilder.VisitPrimaryXmlIndexDefinition (indexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           false,
           100);
 
-      _indexBuilder.VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
+      ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
 
       var result = _indexBuilder.GetCreateIndexScript();
 

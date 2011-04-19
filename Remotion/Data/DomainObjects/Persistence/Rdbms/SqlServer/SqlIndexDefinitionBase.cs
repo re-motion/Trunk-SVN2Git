@@ -33,16 +33,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     private readonly bool? _allowPageLocks;
     private readonly int? _maxDop;
 
-    // TODO Review 3925: remove default values here
     protected SqlIndexDefinitionBase (
-        bool? padIndex = null,
-        int? fillFactor = null,
-        bool? sortInTempDb = null,
-        bool? statisticsNoReCompute = null,
-        bool? dropExisting = null,
-        bool? allowRowLocks = null,
-        bool? allowPageLocks = null,
-        int? maxDop = null)
+        bool? padIndex,
+        int? fillFactor,
+        bool? sortInTempDb,
+        bool? statisticsNoReCompute,
+        bool? dropExisting,
+        bool? allowRowLocks,
+        bool? allowPageLocks,
+        int? maxDop)
     {
       _padIndex = padIndex;
       _fillFactor = fillFactor;

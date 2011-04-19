@@ -36,8 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return "GO\r\n\r\n"; }
     }
 
-    // TODO Review 3925: Make explicit
-    public void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
+    void ISqlIndexDefinitionVisitor.VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
     {
       ArgumentUtility.CheckNotNull ("sqlIndexDefinition", sqlIndexDefinition);
 
@@ -46,14 +45,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       AddToDropIndexScript (sqlIndexDefinition);
     }
 
-    public void VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
+    void ISqlIndexDefinitionVisitor.VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
     {
       AppendSeparator();
       AddToCreateIndexScript (primaryXmlIndexDefinition);
       AddToDropIndexScript (primaryXmlIndexDefinition);
     }
 
-    public void VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
+    void ISqlIndexDefinitionVisitor.VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
     {
       AppendSeparator();
       AddToCreateIndexScript (secondaryXmlIndexDefinition);
