@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       base.SetUp();
 
       _scriptBuilderMock = MockRepository.GenerateStrictMock<ScriptBuilderBase> (SchemaGenerationFirstStorageProviderDefinition);
-      _fileBuilder = new TestableFileBuilder (_scriptBuilderMock);
+      _fileBuilder = new TestableFileBuilder (() => _scriptBuilderMock);
 
       _classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
       _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));

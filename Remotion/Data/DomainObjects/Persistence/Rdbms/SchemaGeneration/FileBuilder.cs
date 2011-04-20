@@ -21,7 +21,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -71,13 +70,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath, fileName);
     }
 
-    private readonly ScriptBuilderBase _scriptBuilder;
+    private readonly Func<ScriptBuilderBase> _scriptBuilderFactory;
 
-    public FileBuilder (ScriptBuilderBase scriptBuilder)
+    public FileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory)
     {
-      ArgumentUtility.CheckNotNull ("scriptBuilder", scriptBuilder);
+      ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
 
-      _scriptBuilder = scriptBuilder;
+      _scriptBuilderFactory = scriptBuilderFactory;
     }
 
     public void Build (IEnumerable<ClassDefinition> classDefinitions, string fileName)
@@ -93,10 +92,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, _scriptBuilder.RdbmsProviderDefinition);
+      var scriptBuilder = _scriptBuilderFactory();
+
+      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
 
       var entityDefintions = GetEntityDefinitions (classDefinitionsForStorageProvider);
-      return _scriptBuilder.GetScript (entityDefintions);
+      return scriptBuilder.GetScript (entityDefintions);
     }
 
     protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (

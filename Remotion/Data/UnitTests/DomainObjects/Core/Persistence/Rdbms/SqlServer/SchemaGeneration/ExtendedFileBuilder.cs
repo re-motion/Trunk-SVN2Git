@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class ExtendedFileBuilder : FileBuilder
   {
-    public ExtendedFileBuilder (ScriptBuilderBase scriptBuilder)
-        : base (scriptBuilder)
+    public ExtendedFileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory)
+        : base (scriptBuilderFactory)
     {
     }
 
