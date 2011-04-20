@@ -99,7 +99,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _synonymBuilder.AddSynonyms (entityDefinition);
     }
 
-    public override string GetScript (IEnumerable<IEntityDefinition> entityDefinitions)
+    public override string GetCreateScript (IEnumerable<IEntityDefinition> entityDefinitions)
+    {
+      return string.Format (
+          "USE {0}\r\n"
+          + "GO\r\n\r\n"
+          + "-- Create all tables\r\n"
+          + "{1}GO\r\n\r\n"
+          + "-- Create constraints for tables that were created above\r\n"
+          + "{2}GO\r\n\r\n"
+          + "-- Create a view for every class\r\n"
+          + "{3}GO\r\n\r\n"
+          + "-- Create indexes for tables that were created above\r\n"
+          + "{4}GO\r\n\r\n"
+          + "-- Create synonyms for tables that were created above\r\n"
+          + "{5}GO\r\n",
+          GetDatabaseName (),
+          _tableBuilder.GetCreateTableScript (),
+          _constraintBuilder.GetAddConstraintScript (),
+          _viewBuilder.GetCreateViewScript (),
+          _indexBuilder.GetCreateIndexScript (),
+          _synonymBuilder.GetCreateTableScript ());
+    }
+
+    public override string GetDropScript (IEnumerable<IEntityDefinition> entityDefinitions)
     {
       return string.Format (
           "USE {0}\r\n"
@@ -113,28 +136,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "-- Drop foreign keys of all tables that will be created below\r\n"
           + "{4}GO\r\n\r\n"
           + "-- Drop all tables that will be created below\r\n"
-          + "{5}GO\r\n\r\n"
-          + "-- Create all tables\r\n"
-          + "{6}GO\r\n\r\n"
-          + "-- Create constraints for tables that were created above\r\n"
-          + "{7}GO\r\n\r\n"
-          + "-- Create a view for every class\r\n"
-          + "{8}GO\r\n\r\n"
-          + "-- Create indexes for tables that were created above\r\n"
-          + "{9}GO\r\n\r\n"
-          + "-- Create synonyms for tables that were created above\r\n"
-          + "{10}GO\r\n",
-          GetDatabaseName(),
-          _synonymBuilder.GetDropTableScript(),
-          _indexBuilder.GetDropIndexScript(),
-          _viewBuilder.GetDropViewScript(),
-          _constraintBuilder.GetDropConstraintScript(),
-          _tableBuilder.GetDropTableScript(),
-          _tableBuilder.GetCreateTableScript(),
-          _constraintBuilder.GetAddConstraintScript(),
-          _viewBuilder.GetCreateViewScript(),
-          _indexBuilder.GetCreateIndexScript(),
-          _synonymBuilder.GetCreateTableScript());
+          + "{5}GO\r\n",
+          GetDatabaseName (),
+          _synonymBuilder.GetDropTableScript (),
+          _indexBuilder.GetDropIndexScript (),
+          _viewBuilder.GetDropViewScript (),
+          _constraintBuilder.GetDropConstraintScript (),
+          _tableBuilder.GetDropTableScript ());
     }
   }
 }

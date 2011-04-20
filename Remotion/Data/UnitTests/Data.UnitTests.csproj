@@ -1778,6 +1778,10 @@
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_SecondStorageProvider.sql" />
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SchemaGeneration_CreateDB.sql" />
     <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\SetupDB_ThirdStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_FirstStorageProviderWithoutTables.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_FirstStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_SecondStorageProvider.sql" />
+    <EmbeddedResource Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\TestData\TearDownDB_ThirdStorageProvider.sql" />
     <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

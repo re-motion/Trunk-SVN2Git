@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     public abstract void AddEntityDefinition (IEntityDefinition entityDefinition);
-    public abstract string GetScript (IEnumerable<IEntityDefinition> entityDefinitions);
-   
+    public abstract string GetCreateScript (IEnumerable<IEntityDefinition> entityDefinitions);
+    public abstract string GetDropScript (IEnumerable<IEntityDefinition> entityDefinitions);
   }
 }

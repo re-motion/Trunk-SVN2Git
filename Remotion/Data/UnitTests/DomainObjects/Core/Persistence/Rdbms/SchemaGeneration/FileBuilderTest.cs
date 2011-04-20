@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       base.SetUp();
 
       _scriptBuilderMock = MockRepository.GenerateStrictMock<ScriptBuilderBase> (SchemaGenerationFirstStorageProviderDefinition);
-      _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider> ();
+      _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
 
       _fileBuilder = new TestableFileBuilder (() => _scriptBuilderMock, _entityDefinitionProviderMock);
 
@@ -66,11 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (OrderItem));
       _classDefinition3 = ClassDefinitionFactory.CreateClassDefinition (typeof (Customer));
 
-      _firstProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
+      _firstProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
       _firstProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
 
-      _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition> ();
-      _secondProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (SchemaGenerationSecondStorageProviderDefinition);
+      _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+      _secondProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (
+          SchemaGenerationSecondStorageProviderDefinition);
     }
 
     public override void TearDown ()
@@ -84,13 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void Build_Static_ExecutesFileBuilder_WithSingleFile ()
     {
-      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder>();
       Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory = providerDefinition => fileBuilderMock1;
 
       var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
-      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB.sql"));
-      fileBuilderMock1.Replay ();
+      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB.sql", @"TestDirectory\TearDownDB.sql"));
+      fileBuilderMock1.Replay();
 
       FileBuilder.Build (
           classDefinitions,
@@ -98,33 +99,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           "TestDirectory",
           fileBuilderFactory);
 
-      fileBuilderMock1.VerifyAllExpectations ();
+      fileBuilderMock1.VerifyAllExpectations();
     }
 
     [Test]
     public void Build_Static_ExecutesFileBuilders_WithMultipleFiles ()
     {
-      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
-      var fileBuilderMock2 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder>();
+      var fileBuilderMock2 = MockRepository.GenerateStrictMock<IFileBuilder>();
       Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
           providerDefinition => providerDefinition == SchemaGenerationFirstStorageProviderDefinition ? fileBuilderMock1 : fileBuilderMock2;
 
       var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
-      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      fileBuilderMock1.Expect (
+          mock =>
+          mock.Build (
+              classDefinitions,
+              @"TestDirectory\SetupDB_SchemaGenerationFirstStorageProvider.sql",
+              @"TestDirectory\TearDownDB_SchemaGenerationFirstStorageProvider.sql"));
       fileBuilderMock1.Replay();
 
-      fileBuilderMock2.Expect (mock => mock.Build (classDefinitions, @"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql"));
+      fileBuilderMock2.Expect (
+          mock =>
+          mock.Build (
+              classDefinitions,
+              @"TestDirectory\SetupDB_SchemaGenerationSecondStorageProvider.sql",
+              @"TestDirectory\TearDownDB_SchemaGenerationSecondStorageProvider.sql"));
       fileBuilderMock2.Replay();
 
       FileBuilder.Build (
-          classDefinitions, 
-          new[] { SchemaGenerationFirstStorageProviderDefinition, SchemaGenerationSecondStorageProviderDefinition }, 
-          "TestDirectory", 
+          classDefinitions,
+          new[] { SchemaGenerationFirstStorageProviderDefinition, SchemaGenerationSecondStorageProviderDefinition },
+          "TestDirectory",
           fileBuilderFactory);
 
-      fileBuilderMock1.VerifyAllExpectations ();
-      fileBuilderMock2.VerifyAllExpectations ();
+      fileBuilderMock1.VerifyAllExpectations();
+      fileBuilderMock2.VerifyAllExpectations();
     }
 
     [Test]
@@ -133,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
           storageProvider => { throw new InvalidOperationException ("Should not be called."); };
 
-    var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
+      var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
       var fakeStorageProviderDefinition = new UnitTestStorageProviderStubDefinition ("Test");
       FileBuilder.Build (
@@ -149,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.That (Directory.Exists ("TestDirectory"), Is.False);
 
       Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory =
-    storageProvider => { throw new InvalidOperationException ("Should not be called."); };
+          storageProvider => { throw new InvalidOperationException ("Should not be called."); };
 
       var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
@@ -166,13 +177,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void Build_Static_WithEmptyDirectory ()
     {
-      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder> ();
+      var fileBuilderMock1 = MockRepository.GenerateStrictMock<IFileBuilder>();
       Func<RdbmsProviderDefinition, IFileBuilder> fileBuilderFactory = providerDefinition => fileBuilderMock1;
 
       var classDefinitions = new[] { _classDefinition1, _classDefinition2 };
 
-      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"SetupDB.sql"));
-      fileBuilderMock1.Replay ();
+      fileBuilderMock1.Expect (mock => mock.Build (classDefinitions, @"SetupDB.sql", @"TearDownDB.sql"));
+      fileBuilderMock1.Replay();
 
       FileBuilder.Build (
           classDefinitions,
@@ -180,23 +191,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           "",
           fileBuilderFactory);
 
-      fileBuilderMock1.VerifyAllExpectations ();
+      fileBuilderMock1.VerifyAllExpectations();
     }
 
     [Test]
     public void GetFileName ()
     {
-      var result = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", false);
+      var setupDbFileName = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", false, "SetupDB");
+      var tearDownDbFileName = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", false, "TearDownDB");
 
-      Assert.That (result, Is.EqualTo ("TestOutputPath\\SetupDB.sql"));
+      Assert.That (setupDbFileName, Is.EqualTo ("TestOutputPath\\SetupDB.sql"));
+      Assert.That (tearDownDbFileName, Is.EqualTo ("TestOutputPath\\TearDownDB.sql"));
     }
 
     [Test]
     public void GetFileName_MultipleStorageProviders ()
     {
-      var result = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", true);
+      var setupDbFileName = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", true, "SetupDB");
+      var tearDownDbFileName = FileBuilder.GetFileName (SchemaGenerationFirstStorageProviderDefinition, "TestOutputPath", true, "TearDownDB");
 
-      Assert.That (result, Is.EqualTo ("TestOutputPath\\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.That (setupDbFileName, Is.EqualTo ("TestOutputPath\\SetupDB_SchemaGenerationFirstStorageProvider.sql"));
+      Assert.That (tearDownDbFileName, Is.EqualTo ("TestOutputPath\\TearDownDB_SchemaGenerationFirstStorageProvider.sql"));
     }
 
     [Test]
@@ -208,26 +223,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
 
       _scriptBuilderMock
-          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
-          .Return ("Dummy");
+          .Expect (
+              mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Return ("DummyCreate");
+      _scriptBuilderMock
+          .Expect (mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Return ("DummyDrop");
 
       _entityDefinitionProviderMock
-          .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal(new[] { _classDefinition1 })))
+          .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { _classDefinition1 })))
           .Return (new[] { _firstProviderStorageEntityDefinitionStub });
-      
-      _fileBuilder.Build (new[] { _classDefinition1 }, @"FileBuilderTest_Build_InstanceMethod.sql");
 
-      Assert.That (File.Exists (@"FileBuilderTest_Build_InstanceMethod.sql"), Is.True);
+      _fileBuilder.Build (
+          new[] { _classDefinition1 }, @"SetupDB_FileBuilderTest_Build_InstanceMethod.sql", @"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql");
+
+      Assert.That (File.Exists (@"SetupDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.True);
+      Assert.That (File.Exists (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.True);
       try
       {
-        Assert.That (File.ReadAllText (@"FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("Dummy"));
+        Assert.That (File.ReadAllText (@"SetupDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyCreate"));
+        Assert.That (File.ReadAllText (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyDrop"));
       }
       finally
       {
-        File.Delete (@"FileBuilderTest_Build_InstanceMethod.sql");
+        File.Delete (@"SetupDB_FileBuilderTest_Build_InstanceMethod.sql");
+        File.Delete (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql");
       }
     }
-    
+
     [Test]
     public void GetScript_WithIEntityDefinition ()
     {
@@ -236,9 +259,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderMock
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
       _scriptBuilderMock
-          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
-          .Return ("result");
-      _scriptBuilderMock.Replay ();
+          .Expect (
+              mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Return ("CreateResult");
+      _scriptBuilderMock
+          .Expect (
+              mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Return ("DropResult");
+      _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
           .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { _classDefinition1 })))
@@ -247,9 +275,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       var result = _fileBuilder.GetScript (new[] { _classDefinition1 });
 
-      _scriptBuilderMock.VerifyAllExpectations ();
+      _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo ("result"));
+      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult"));
+      Assert.That (result.DropScript, Is.EqualTo ("DropResult"));
     }
 
     [Test]
@@ -258,20 +287,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinition1.SetStorageEntity (_secondProviderStorageEntityDefinitionStub);
 
       _scriptBuilderMock
-          .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
-          .Return ("result");
-      _scriptBuilderMock.Replay ();
+          .Expect (mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
+          .Return ("CreateResult");
+      _scriptBuilderMock
+          .Expect (mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
+          .Return ("DropResult");
+      _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
-          .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal(new ClassDefinition[0])))
+          .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal (new ClassDefinition[0])))
           .Return (new IEntityDefinition[0]);
-      _entityDefinitionProviderMock.Replay ();
+      _entityDefinitionProviderMock.Replay();
 
       var result = _fileBuilder.GetScript (new[] { _classDefinition1 });
 
       _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo ("result"));
+      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult"));
+      Assert.That (result.DropScript, Is.EqualTo ("DropResult"));
     }
 
     [Test]
@@ -287,6 +320,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       Assert.That (classesInFirstStorageProvider, Is.EqualTo (new[] { _classDefinition1, _classDefinition2 }));
     }
-   
   }
 }

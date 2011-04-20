@@ -29,15 +29,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
     }
 
-    public override string GetScript (IEnumerable<ClassDefinition> classDefinitions)
+    public override ScriptPair GetScript (IEnumerable<ClassDefinition> classDefinitions)
     {
-      var script = new StringBuilder (base.GetScript (classDefinitions));
+      var scripts = base.GetScript (classDefinitions);
+      var dropStript = new StringBuilder (scripts.DropScript);
+      var createScript = new StringBuilder (scripts.CreateScript);
 
-      script.Insert (0, "IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END\r\nGO\r\n");
-      script.Insert (0, "--Extendend file-builder comment at the beginning\r\n");
-      script.AppendLine ("--Extendend file-builder comment at the end");
+      dropStript.Insert (0, "IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END\r\nGO\r\n");
+      dropStript.Insert (0, "--Extendend file-builder comment at the beginning\r\n");
+      createScript.AppendLine ("--Extendend file-builder comment at the end");
 
-      return script.ToString();
+      return new ScriptPair(createScript.ToString(), dropStript.ToString());
     }
    
   }

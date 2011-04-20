@@ -88,9 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
 
-      var sqlScript = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
+      var scripts = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
 
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
     }
 
     [Test]
@@ -98,9 +98,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
 
-      var sqlScript = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
+      var scripts = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
 
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
     }
 
     [Test]
@@ -108,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
 
-      var sqlScript = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
+      var scripts = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
 
-      DatabaseAgent.ExecuteBatchString (sqlScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.DropScript+scripts.CreateScript, false);
     }
   }
 }

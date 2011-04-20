@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public interface IFileBuilder
   {
-    void Build (IEnumerable<ClassDefinition> classDefinitions, string fileName);
-    string GetScript (IEnumerable<ClassDefinition> classDefinitions);
+    void Build (IEnumerable<ClassDefinition> classDefinitions, string setupDbFileName, string tearDownDbFileName);
+    FileBuilder.ScriptPair GetScript (IEnumerable<ClassDefinition> classDefinitions);
   }
 }

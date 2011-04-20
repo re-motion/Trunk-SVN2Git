@@ -31,6 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private string _firstStorageProviderSetupDBScript;
     private string _secondStorageProviderSetupDBScript;
     private string _thirdStorageProviderSetupDBScript;
+    private string _firstStorageProviderTearDownDBScript;
+    private string _secondStorageProviderTearDownDBScript;
+    private string _thirdStorageProviderTearDownDBScript;
     private FileBuilder _sqlFileBuilderForFirstStorageProvider;
     private FileBuilder _sqlFileBuilderForSecondStorageProvider;
     private FileBuilder _sqlFileBuilderForThirdStorageProvider;
@@ -64,9 +67,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                         SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
-      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
-      _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
+      _firstStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_FirstStorageProvider.sql");
 
+      _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
+      _secondStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_SecondStorageProvider.sql");
+      
+      _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
+      _thirdStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_ThirdStorageProvider.sql");
+      
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
           .ToArray();
@@ -81,19 +89,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForFirstStorageProvider ()
     {
-      Assert.AreEqual (_firstStorageProviderSetupDBScript, _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider));
+      var scripts = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
+
+      Assert.AreEqual (_firstStorageProviderSetupDBScript, scripts.CreateScript);
+      Assert.AreEqual (_firstStorageProviderTearDownDBScript, scripts.DropScript);
     }
 
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
-      Assert.AreEqual (_secondStorageProviderSetupDBScript, _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider));
+      var scripts = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
+
+      Assert.AreEqual (_secondStorageProviderSetupDBScript, scripts.CreateScript);
+      Assert.AreEqual (_secondStorageProviderTearDownDBScript, scripts.DropScript);
     }
 
     [Test]
     public void GetScriptForThirdStorageProvider ()
     {
-      Assert.AreEqual (_thirdStorageProviderSetupDBScript, _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider));
+      var scripts = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
+
+      Assert.AreEqual (_thirdStorageProviderSetupDBScript, scripts.CreateScript);
+      Assert.AreEqual (_thirdStorageProviderTearDownDBScript, scripts.DropScript);
+
     }
   }
 }

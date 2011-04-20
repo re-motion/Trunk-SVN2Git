@@ -29,12 +29,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlScriptBuilder _scriptBuilderForFirstStorageProvider;
     private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
+    private string _firstStorageProviderTearDownDBScriptWithoutTables;
     private SqlTableBuilder _tableBuilderMock;
     private SqlViewBuilder _viewBuilderMock;
     private SqlConstraintBuilder _constraintBuilderMock;
     private SqlIndexBuilder _indexBuilderMock;
     private SqlSynonymBuilder _synonymBuilderMock;
-
+    
     public override void SetUp ()
     {
       base.SetUp();
@@ -51,6 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
           typeof (SqlScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
+      _firstStorageProviderTearDownDBScriptWithoutTables = ResourceUtility.GetResourceString (
+          typeof (SqlScriptBuilderTest), "TestData.TearDownDB_FirstStorageProviderWithoutTables.sql");
     }
 
     [Test]
@@ -63,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     //TODO: Test for GetScript with entities and AddEntityDefinition as soon as interfaces can be used for partial script builders
 
     [Test]
-    public void GetScript_NoEntities ()
+    public void GetCreateScript_GetDropScript_NoEntities ()
     {
       _tableBuilderMock.Replay();
       _viewBuilderMock.Replay();
@@ -71,9 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _indexBuilderMock.Replay();
       _synonymBuilderMock.Replay();
 
-      var result = _scriptBuilderForFirstStorageProvider.GetScript (new IEntityDefinition[0]);
+      var createScriptResult = _scriptBuilderForFirstStorageProvider.GetCreateScript (new IEntityDefinition[0]);
+      var dropScriptResult = _scriptBuilderForFirstStorageProvider.GetDropScript (new IEntityDefinition[0]);
 
-      Assert.That (result, Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
+      Assert.That (createScriptResult, Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
+      Assert.That (dropScriptResult, Is.EqualTo (_firstStorageProviderTearDownDBScriptWithoutTables));
+
       _tableBuilderMock.VerifyAllExpectations();
       _viewBuilderMock.VerifyAllExpectations();
       _constraintBuilderMock.VerifyAllExpectations();

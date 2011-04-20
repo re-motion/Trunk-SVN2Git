@@ -30,6 +30,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class FileBuilder : IFileBuilder
   {
+    public struct ScriptPair
+    {
+      private readonly string _createScript;
+      private readonly string _dropScript;
+
+      public ScriptPair (string createScript, string dropScript)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("createScript", createScript);
+        ArgumentUtility.CheckNotNullOrEmpty ("dropScript", dropScript);
+
+        _createScript = createScript;
+        _dropScript = dropScript;
+      }
+
+      public string CreateScript
+      {
+        get { return _createScript; }
+      }
+
+      public string DropScript
+      {
+        get { return _dropScript; }
+      }
+    }
+
     public static void Build (
         ICollection<ClassDefinition> classDefinitions,
         ICollection<StorageProviderDefinition> storageProviders,
@@ -50,22 +75,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         if (rdbmsProviderDefinition != null)
         {
           var fileBuilder = fileBuilderFactory (rdbmsProviderDefinition);
-          var fileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles);
-          fileBuilder.Build (classDefinitions, fileName);
+          var setupDbFileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles, "SetupDB");
+          var tearDownDbFileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles, "TearDownDB");
+          fileBuilder.Build (classDefinitions, setupDbFileName, tearDownDbFileName);
         }
       }
     }
 
-    public static string GetFileName (StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders)
+    public static string GetFileName (
+        StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders, string fileNamePrefix)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
+      ArgumentUtility.CheckNotNullOrEmpty ("fileNamePrefix", fileNamePrefix);
 
       string fileName;
       if (multipleStorageProviders)
-        fileName = String.Format ("SetupDB_{0}.sql", storageProviderDefinition.Name);
+        fileName = String.Format ("{0}_{1}.sql", fileNamePrefix, storageProviderDefinition.Name);
       else
-        fileName = "SetupDB.sql";
+        fileName = fileNamePrefix+ ".sql";
 
       return Path.Combine (outputPath, fileName);
     }
@@ -82,16 +110,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _entityDefinitionProvider = entityDefinitionProvider;
     }
 
-    public void Build (IEnumerable<ClassDefinition> classDefinitions, string fileName)
+    public void Build (IEnumerable<ClassDefinition> classDefinitions, string setupDBFileName, string tearDownDBFileName)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("setupDBFileName", setupDBFileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("tearDownDBFileName", tearDownDBFileName);
 
       var script = GetScript (classDefinitions);
-      File.WriteAllText (fileName, script);
+      File.WriteAllText (setupDBFileName, script.CreateScript);
+      File.WriteAllText (tearDownDBFileName, script.DropScript);
     }
 
-    public virtual string GetScript (IEnumerable<ClassDefinition> classDefinitions)
+    public virtual ScriptPair GetScript (IEnumerable<ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
@@ -102,7 +132,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitionsForStorageProvider);
       foreach (var entityDefinition in entityDefintions)
         scriptBuilder.AddEntityDefinition (entityDefinition);
-      return scriptBuilder.GetScript (entityDefintions);
+
+      return new ScriptPair (scriptBuilder.GetCreateScript (entityDefintions), scriptBuilder.GetDropScript (entityDefintions));
     }
 
     protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (
@@ -111,6 +142,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
     }
-    
   }
 }
