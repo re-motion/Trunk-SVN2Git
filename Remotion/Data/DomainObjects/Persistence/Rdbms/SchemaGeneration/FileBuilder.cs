@@ -71,12 +71,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     private readonly Func<ScriptBuilderBase> _scriptBuilderFactory;
+    private readonly IEntityDefinitionProvider _entityDefinitionProvider;
 
-    public FileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory)
+    public FileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
+      ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);
 
       _scriptBuilderFactory = scriptBuilderFactory;
+      _entityDefinitionProvider = entityDefinitionProvider;
     }
 
     public void Build (IEnumerable<ClassDefinition> classDefinitions, string fileName)
@@ -96,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
 
-      var entityDefintions = GetEntityDefinitions (classDefinitionsForStorageProvider);
+      var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitionsForStorageProvider);
       return scriptBuilder.GetScript (entityDefintions);
     }
 
@@ -106,12 +109,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
     }
-
-    protected virtual IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
-    {
-      return classDefinitions
-          .Select (cd => cd.StorageEntityDefinition)
-          .OfType<IEntityDefinition>();
-    }
+    
   }
 }

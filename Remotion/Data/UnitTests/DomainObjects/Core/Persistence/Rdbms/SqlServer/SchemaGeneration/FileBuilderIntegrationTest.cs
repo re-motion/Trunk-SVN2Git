@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Resources;
@@ -50,15 +51,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
               () => new SqlScriptBuilder (
-                  SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
+                        SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder),
+              new EntityDefinitionProvider());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
               () => new SqlScriptBuilder (
-                  SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
+                        SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder),
+              new EntityDefinitionProvider());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
               () => new SqlScriptBuilder (
-                  SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
+                        SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
       _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");

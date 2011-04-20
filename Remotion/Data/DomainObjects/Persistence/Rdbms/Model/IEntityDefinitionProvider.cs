@@ -16,29 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
 {
-  public class ExtendedFileBuilder : FileBuilder
+  /// <summary>
+  /// <see cref="IEntityDefinitionProvider"/> provides a strategy to get all entity definitions for a collection of <see cref="ClassDefinition"/>s. 
+  /// </summary>
+  public interface IEntityDefinitionProvider
   {
-    public ExtendedFileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory)
-        : base (scriptBuilderFactory, new ExtendedEntityDefinitionProvider())
-    {
-    }
-
-    public override string GetScript (IEnumerable<ClassDefinition> classDefinitions)
-    {
-      var script = new StringBuilder (base.GetScript (classDefinitions));
-
-      script.Insert (0, "IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END\r\nGO\r\n");
-      script.Insert (0, "--Extendend file-builder comment at the beginning\r\n");
-      script.AppendLine ("--Extendend file-builder comment at the end");
-
-      return script.ToString();
-    }
-   
+    IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions);
   }
 }

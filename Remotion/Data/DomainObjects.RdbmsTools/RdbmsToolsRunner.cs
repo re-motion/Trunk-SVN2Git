@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
@@ -128,9 +129,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
           _rdbmsToolsParameters.SchemaOutputDirectory,
           pd =>
-          new FileBuilder (() =>
-              new SqlScriptBuilder (
-                  pd, new SqlTableBuilder(), new SqlViewBuilder(), new SqlConstraintBuilder(), new SqlIndexBuilder(), new SqlSynonymBuilder())));
+          new FileBuilder (
+              () => new SqlScriptBuilder (
+                        pd, new SqlTableBuilder(), new SqlViewBuilder(), new SqlConstraintBuilder(), new SqlIndexBuilder(), new SqlSynonymBuilder()),
+              new EntityDefinitionProvider()));
     }
   }
 }

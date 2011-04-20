@@ -216,6 +216,8 @@
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\TypeNotObjectIDRelationEndPointDefinition.cs" />
+    <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
+    <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
     <Compile Include="Persistence\Rdbms\Model\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymBuilderBase.cs" />

@@ -25,8 +25,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableFileBuilder : FileBuilder
   {
-    public TestableFileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory)
-        : base(scriptBuilderFactory)
+    public TestableFileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+        : base(scriptBuilderFactory, entityDefinitionProvider)
     {
     }
 
@@ -35,11 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
         RdbmsProviderDefinition providerDefinition)
     {
       return base.GetClassesInStorageProvider (classDefinitions, providerDefinition);
-    }
-
-    public new IEnumerable<IEntityDefinition> GetEntityDefinitions (IEnumerable<ClassDefinition> classDefinitions)
-    {
-      return base.GetEntityDefinitions (classDefinitions);
     }
   }
 }
