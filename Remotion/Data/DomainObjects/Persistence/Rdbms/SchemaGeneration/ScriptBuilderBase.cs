@@ -40,6 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _rdbmsProviderDefinition; }
     }
 
+    public abstract void AddEntityDefinition (IEntityDefinition entityDefinition);
     public abstract string GetScript (IEnumerable<IEntityDefinition> entityDefinitions);
    
   }

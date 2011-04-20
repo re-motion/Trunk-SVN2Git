@@ -205,6 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinition1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
 
       _scriptBuilderMock
+          .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
+
+      _scriptBuilderMock
           .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
           .Return ("Dummy");
 
@@ -230,6 +233,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _classDefinition1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
 
+      _scriptBuilderMock
+          .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
       _scriptBuilderMock
           .Expect (mock => mock.GetScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
           .Return ("result");

@@ -88,18 +88,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return temp.Substring (0, temp.IndexOf (";"));
     }
 
+    public override void AddEntityDefinition (IEntityDefinition entityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+
+      _viewBuilder.AddView (entityDefinition);
+      _tableBuilder.AddTable (entityDefinition);
+      _constraintBuilder.AddConstraint (entityDefinition);
+      _indexBuilder.AddIndexes (entityDefinition);
+      _synonymBuilder.AddSynonyms (entityDefinition);
+    }
+
     public override string GetScript (IEnumerable<IEntityDefinition> entityDefinitions)
     {
-      // TODO 3874: Add unit tests using mocks for view builder etc.
-      foreach (var entityDefinition in entityDefinitions)
-      {
-        _viewBuilder.AddView (entityDefinition);
-        _tableBuilder.AddTable (entityDefinition);
-        _constraintBuilder.AddConstraint (entityDefinition);
-        _indexBuilder.AddIndexes (entityDefinition);
-        _synonymBuilder.AddSynonyms (entityDefinition);
-      }
-
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"

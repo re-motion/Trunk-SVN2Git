@@ -100,6 +100,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
 
       var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitionsForStorageProvider);
+      foreach (var entityDefinition in entityDefintions)
+        scriptBuilder.AddEntityDefinition (entityDefinition);
       return scriptBuilder.GetScript (entityDefintions);
     }
 

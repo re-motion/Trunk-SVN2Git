@@ -60,6 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual ("SchemaGenerationTestDomain2", _scriptBuilderForSecondStorageProvider.GetDatabaseName());
     }
 
+    //TODO: Test for GetScript with entities and AddEntityDefinition as soon as interfaces can be used for partial script builders
+
     [Test]
     public void GetScript_NoEntities ()
     {
