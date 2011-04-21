@@ -24,7 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class IndexBuilderBaseTest : SchemaGenerationTestBase
+  public class IndexScriptBuilderBaseTest : SchemaGenerationTestBase
   {
     private ISqlDialect _sqlDialectStub;
     private TestableIndexBuilder _indexBuilder;
@@ -57,12 +57,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddIndexes_TableDefinition ()
+    public void AddEntityDefinition_TableDefinition ()
     {
-      _indexBuilder.AddIndexes (_tableDefinition);
+      _indexBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createIndexScript = _indexBuilder.GetCreateIndexScript();
-      var dropIndexScript = _indexBuilder.GetDropIndexScript();
+      var createIndexScript = _indexBuilder.GetCreateScript();
+      var dropIndexScript = _indexBuilder.GetDropScript();
 
       Assert.That (
           createIndexScript,
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddIndexes_FilterViewDefinition ()
+    public void AddEntityDefinition_FilterViewDefinition ()
     {
       var filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new IColumnDefinition[0],
           new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
 
-      _indexBuilder.AddIndexes (filterViewDefinition);
+      _indexBuilder.AddEntityDefinition (filterViewDefinition);
 
-      var createIndexScript = _indexBuilder.GetCreateIndexScript();
-      var dropIndexScript = _indexBuilder.GetDropIndexScript();
+      var createIndexScript = _indexBuilder.GetCreateScript();
+      var dropIndexScript = _indexBuilder.GetDropScript();
 
       Assert.That (
           createIndexScript,
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddIndexes_UnionViewDefinition ()
+    public void AddEntityDefinition_UnionViewDefinition ()
     {
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -118,10 +118,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new IColumnDefinition[0],
           new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
 
-      _indexBuilder.AddIndexes (unionViewDefinition);
+      _indexBuilder.AddEntityDefinition (unionViewDefinition);
 
-      var createIndexScript = _indexBuilder.GetCreateIndexScript();
-      var dropIndexScript = _indexBuilder.GetDropIndexScript();
+      var createIndexScript = _indexBuilder.GetCreateScript();
+      var dropIndexScript = _indexBuilder.GetDropScript();
 
       Assert.That (
           createIndexScript,

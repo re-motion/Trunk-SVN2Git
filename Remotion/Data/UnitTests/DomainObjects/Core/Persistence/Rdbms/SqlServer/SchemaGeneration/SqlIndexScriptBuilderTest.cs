@@ -23,9 +23,9 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlIndexBuilderTest : SchemaGenerationTestBase
+  public class SqlIndexScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlIndexBuilder _indexBuilder;
+    private SqlScriptIndexBuilder _indexBuilder;
     private SqlIndexedColumnDefinition _column1;
     private SqlIndexedColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _indexBuilder = new SqlIndexBuilder();
+      _indexBuilder = new SqlScriptIndexBuilder();
 
       _column1 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true), IndexOrder.Asc);
       _column2 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false), IndexOrder.Desc);
@@ -48,8 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Initialize ()
     {
-      Assert.That (_indexBuilder.GetCreateIndexScript(), Is.Empty);
-      Assert.That (_indexBuilder.GetCreateIndexScript(), Is.Empty);
+      Assert.That (_indexBuilder.GetCreateScript(), Is.Empty);
+      Assert.That (_indexBuilder.GetCreateScript(), Is.Empty);
     }
 
     [Test]
@@ -75,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           +"schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
           +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
       
-      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.EqualTo (expectedCreateIndexScript));
-      Assert.That (_indexBuilder.GetDropIndexScript (), Is.EqualTo (expectedDropIndexScript));
+      Assert.That (_indexBuilder.GetCreateScript (), Is.EqualTo (expectedCreateIndexScript));
+      Assert.That (_indexBuilder.GetDropScript (), Is.EqualTo (expectedDropIndexScript));
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           +"schema_name (so.schema_id)='test' and si.[name] = 'Index1')\r\n"
           +"  DROP INDEX [Index1] ON [test].[TableName]\r\n";
 
-      Assert.That (_indexBuilder.GetCreateIndexScript (), Is.EqualTo (expectedCreateIndexScript));
-      Assert.That (_indexBuilder.GetDropIndexScript (), Is.EqualTo (expectedDropIndexScript));
+      Assert.That (_indexBuilder.GetCreateScript (), Is.EqualTo (expectedCreateIndexScript));
+      Assert.That (_indexBuilder.GetDropScript (), Is.EqualTo (expectedDropIndexScript));
     }
 
     [Test]
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE NONCLUSTERED INDEX [Index1]\r\n"
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE PRIMARY XML INDEX [Index1]\r\n"
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE PRIMARY XML INDEX [Index1]\r\n"
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitPrimaryXmlIndexDefinition (indexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE PRIMARY XML INDEX [Index1]\r\n"
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitSecondaryXmlIndexDefinition (secondaryIndexDefinition);
 
-      var result = _indexBuilder.GetCreateIndexScript();
+      var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
           "CREATE XML INDEX [SecondaryName]\r\n"

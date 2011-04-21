@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlViewBuilderTest : SchemaGenerationTestBase
+  public class SqlViewScriptBuilderTest : SchemaGenerationTestBase
   {
     private TestableViewBuilder _viewBuilderWithSchemaBinding;
     private TestableViewBuilder _viewBuilderWithoutSchemaBinding;
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual (string.Empty, _viewBuilderWithSchemaBinding.GetCreateViewScript());
+      Assert.AreEqual (string.Empty, _viewBuilderWithSchemaBinding.GetCreateScript());
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateViewScript_TableDefinition ()
     {
-      _viewBuilderWithSchemaBinding.AddView (_tableDefinition1);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -91,13 +91,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateScript());
     }
 
     [Test]
     public void GetCreateViewScript_TableDefinition_NoSchemaBinding ()
     {
-      _viewBuilderWithoutSchemaBinding.AddView (_tableDefinition1);
+      _viewBuilderWithoutSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -106,13 +106,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateScript ());
     }
 
     [Test]
     public void GetCreateViewScript_FilterViewDefinition ()
     {
-      _viewBuilderWithSchemaBinding.AddView (_filterViewDefinition);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (_filterViewDefinition);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -122,13 +122,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    WHERE [ClassID] IN ('ClassID')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateScript());
     }
 
     [Test]
     public void GetCreateViewScript_FilterViewDefinition_NoSchemaBinding ()
     {
-      _viewBuilderWithoutSchemaBinding.AddView (_filterViewDefinition);
+      _viewBuilderWithoutSchemaBinding.AddEntityDefinition (_filterViewDefinition);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    WHERE [ClassID] IN ('ClassID')\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateScript ());
     }
 
     [Test]
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new[] { _column1, _column2 },
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
-      _viewBuilderWithSchemaBinding.AddView (unionViewDefinition);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateScript());
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new[] { _column1, _column2 },
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
-      _viewBuilderWithoutSchemaBinding.AddView (unionViewDefinition);
+      _viewBuilderWithoutSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "    FROM [dbo].[Order]\r\n"
           + "  WITH CHECK OPTION\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateViewScript ());
+      Assert.AreEqual (expectedScript, _viewBuilderWithoutSchemaBinding.GetCreateScript ());
     }
 
     [Test]
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new[] { _column1, _column2, _column3 },
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
-      _viewBuilderWithSchemaBinding.AddView (unionViewDefinition);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
           "CREATE VIEW [dbo].[OrderView] ([ID], [Name], [Test])\r\n"
@@ -206,26 +206,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "  SELECT NULL, NULL, [Test]\r\n"
           + "    FROM [dbo].[Customer]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetCreateScript());
     }
 
     [Test]
     public void GetDropViewScript_OneView ()
     {
-      _viewBuilderWithSchemaBinding.AddView (_tableDefinition1);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       var expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetDropViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetDropScript());
     }
 
     [Test]
     public void GetDropViewScript_TwoViews ()
     {
-      _viewBuilderWithSchemaBinding.AddView (_tableDefinition1);
-      _viewBuilderWithSchemaBinding.AddView (_tableDefinition2);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition1);
+      _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition2);
 
       var expectedScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[CustomerView]\r\n";
 
-      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetDropViewScript());
+      Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetDropScript());
     }
   }
 }

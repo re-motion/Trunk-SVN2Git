@@ -25,13 +25,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// Contains database-independent code for generating indexes for the persistence model.
   /// </summary>
-  public abstract class IndexBuilderBase : IIndexDefinitionVisitor
+  public abstract class IndexScriptBuilderBase : IScriptBuilder, IIndexDefinitionVisitor
   {
     private readonly StringBuilder _createIndexStringBuilder;
     private readonly StringBuilder _dropIndexStringBuilder;
     private readonly ISqlDialect _sqlDialect;
 
-    protected IndexBuilderBase (ISqlDialect sqlDialect)
+    protected IndexScriptBuilderBase (ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
@@ -57,17 +57,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _sqlDialect; }
     }
 
-    public string GetCreateIndexScript ()
+    public string GetCreateScript ()
     {
       return _createIndexStringBuilder.ToString ();
     }
 
-    public string GetDropIndexScript ()
+    public string GetDropScript ()
     {
       return _dropIndexStringBuilder.ToString ();
     }
 
-    public void AddIndexes (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 

@@ -105,11 +105,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       return new SqlScriptBuilder (
           storageProviderDefinition,
-          new SqlTableBuilder(),
-          new SqlViewBuilder(),
-          new SqlConstraintBuilder(),
-          new SqlIndexBuilder(),
-          new SqlSynonymBuilder());
+          new SqlScriptTableBuilder(),
+          new SqlScriptViewBuilder(),
+          new SqlScriptConstraintBuilder(),
+          new SqlScriptIndexBuilder(),
+          new SqlScriptSynonymBuilder());
     }
 
     public IStorageNameProvider CreateStorageNameProvider ()

@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class ViewBuilderBaseTest : SchemaGenerationTestBase
+  public class ViewScriptBuilderBaseTest : SchemaGenerationTestBase
   {
     private ISqlDialect _sqlDialectStub;
     private TestableViewBuilder _viewBuilder;
@@ -61,89 +61,89 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddView_TableDefinition_Once ()
+    public void AddEntityDefinition_TableDefinition_Once ()
     {
-      _viewBuilder.AddView (_tableDefinition);
+      _viewBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_TableDefinition_Twice ()
+    public void AddEntityDefinition_TableDefinition_Twice ()
     {
-      _viewBuilder.AddView (_tableDefinition);
-      _viewBuilder.AddView (_tableDefinition);
+      _viewBuilder.AddEntityDefinition (_tableDefinition);
+      _viewBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_UnionViewDefinition_Once ()
+    public void AddEntityDefinition_UnionViewDefinition_Once ()
     {
-      _viewBuilder.AddView (_unionViewDefinition);
+      _viewBuilder.AddEntityDefinition (_unionViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_UnionViewDefinition_Twice ()
+    public void AddEntityDefinition_UnionViewDefinition_Twice ()
     {
-      _viewBuilder.AddView (_unionViewDefinition);
-      _viewBuilder.AddView (_unionViewDefinition);
+      _viewBuilder.AddEntityDefinition (_unionViewDefinition);
+      _viewBuilder.AddEntityDefinition (_unionViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_FilterViewDefinition_Once ()
+    public void AddEntityDefinition_FilterViewDefinition_Once ()
     {
-      _viewBuilder.AddView (_filterViewDefinition);
+      _viewBuilder.AddEntityDefinition (_filterViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_FilterViewDefinition_Twice ()
+    public void AddEntityDefinition_FilterViewDefinition_Twice ()
     {
-      _viewBuilder.AddView (_filterViewDefinition);
-      _viewBuilder.AddView (_filterViewDefinition);
+      _viewBuilder.AddEntityDefinition (_filterViewDefinition);
+      _viewBuilder.AddEntityDefinition (_filterViewDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
       Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
-    public void AddView_NullEntityDefintion ()
+    public void AddEntityDefinition_NullEntityDefintion ()
     {
       var nullEntityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
 
-      _viewBuilder.AddView (nullEntityDefinition);
+      _viewBuilder.AddEntityDefinition (nullEntityDefinition);
 
-      var createViewScript = _viewBuilder.GetCreateViewScript();
-      var dropViewScript = _viewBuilder.GetDropViewScript();
+      var createViewScript = _viewBuilder.GetCreateScript();
+      var dropViewScript = _viewBuilder.GetDropScript();
 
       Assert.IsEmpty (createViewScript);
       Assert.IsEmpty (dropViewScript);

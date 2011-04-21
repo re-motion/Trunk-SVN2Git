@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class ConstraintBuilderBaseTest : SchemaGenerationTestBase
+  public class ConstraintScriptBuilderBaseTest : SchemaGenerationTestBase
   {
     private ISqlDialect _sqlDialectStub;
     private TestableConstraintBuilder _constraintBuilder;
@@ -70,61 +70,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddConstraint ()
+    public void AddEntityDefinition ()
     {
-      _constraintBuilder.AddConstraint (_tableDefinition1);
+      _constraintBuilder.AddEntityDefinition (_tableDefinition1);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]");
       Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]");
     }
 
     [Test]
-    public void AddConstraint_Twice ()
+    public void AddEntityDefinition_Twice ()
     {
-      _constraintBuilder.AddConstraint (_tableDefinition1);
-      _constraintBuilder.AddConstraint (_tableDefinition2);
+      _constraintBuilder.AddEntityDefinition (_tableDefinition1);
+      _constraintBuilder.AddEntityDefinition (_tableDefinition2);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]\r\nADD CONSTRAINT [FK_Customer_ID]");
       Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]\r\nDROP CONSTRAINT [FK_Customer_ID]");
     }
 
     [Test]
-    public void AddConstraint_UnionViewDefinition ()
+    public void AddEntityDefinition_UnionViewDefinition ()
     {
-      _constraintBuilder.AddConstraint (_unionViewDefinition);
+      _constraintBuilder.AddEntityDefinition (_unionViewDefinition);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);
     }
 
     [Test]
-    public void AddConstraint_FilterViewDefinition ()
+    public void AddEntityDefinition_FilterViewDefinition ()
     {
-      _constraintBuilder.AddConstraint (_filterViewDefinition);
+      _constraintBuilder.AddEntityDefinition (_filterViewDefinition);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);
     }
 
     [Test]
-    public void AddConstraint_NullEntityDefinition ()
+    public void AddEntityDefinition_NullEntityDefinition ()
     {
-      _constraintBuilder.AddConstraint (_nullEntityDefinition);
+      _constraintBuilder.AddEntityDefinition (_nullEntityDefinition);
 
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);
@@ -133,8 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoConstraintsAdded ()
     {
-      var createTableScript = _constraintBuilder.GetAddConstraintScript();
-      var dropTableScript = _constraintBuilder.GetDropConstraintScript();
+      var createTableScript = _constraintBuilder.GetCreateScript();
+      var dropTableScript = _constraintBuilder.GetDropScript();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);

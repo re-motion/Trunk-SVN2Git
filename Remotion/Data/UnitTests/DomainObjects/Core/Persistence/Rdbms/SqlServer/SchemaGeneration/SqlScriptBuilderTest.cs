@@ -30,21 +30,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
     private string _firstStorageProviderTearDownDBScriptWithoutTables;
-    private SqlTableBuilder _tableBuilderMock;
-    private SqlViewBuilder _viewBuilderMock;
-    private SqlConstraintBuilder _constraintBuilderMock;
-    private SqlIndexBuilder _indexBuilderMock;
-    private SqlSynonymBuilder _synonymBuilderMock;
+    private SqlScriptTableBuilder _tableBuilderMock;
+    private SqlScriptViewBuilder _viewBuilderMock;
+    private SqlScriptConstraintBuilder _constraintBuilderMock;
+    private SqlScriptIndexBuilder _indexBuilderMock;
+    private SqlScriptSynonymBuilder _synonymBuilderMock;
     
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilderMock = MockRepository.GenerateStrictMock<SqlTableBuilder>();
-      _viewBuilderMock = MockRepository.GenerateStrictMock<SqlViewBuilder>();
-      _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlConstraintBuilder>();
-      _indexBuilderMock = MockRepository.GenerateStrictMock<SqlIndexBuilder>();
-      _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlSynonymBuilder>();
+      _tableBuilderMock = MockRepository.GenerateStrictMock<SqlScriptTableBuilder>();
+      _viewBuilderMock = MockRepository.GenerateStrictMock<SqlScriptViewBuilder>();
+      _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlScriptConstraintBuilder>();
+      _indexBuilderMock = MockRepository.GenerateStrictMock<SqlScriptIndexBuilder>();
+      _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlScriptSynonymBuilder>();
 
       _scriptBuilderForFirstStorageProvider = new SqlScriptBuilder (
           SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);

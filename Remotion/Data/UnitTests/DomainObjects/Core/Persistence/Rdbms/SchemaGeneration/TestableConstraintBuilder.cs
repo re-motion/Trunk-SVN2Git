@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public class TestableConstraintBuilder : ConstraintBuilderBase
+  public class TestableConstraintBuilder : ConstraintScriptBuilderBase
   {
     public TestableConstraintBuilder (ISqlDialect sqlDialect)
         : base (sqlDialect)

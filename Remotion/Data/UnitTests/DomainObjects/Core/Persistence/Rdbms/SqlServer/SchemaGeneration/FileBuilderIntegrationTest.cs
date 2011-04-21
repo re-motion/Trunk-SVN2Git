@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      var tableBuilder = new SqlTableBuilder();
+      var tableBuilder = new SqlScriptTableBuilder();
       var viewBuilder = new ExtendedViewBuilder();
-      var constraintBuilder = new SqlConstraintBuilder();
-      var indexBuilder = new SqlIndexBuilder();
-      var synonymBuilder = new SqlSynonymBuilder();
+      var constraintBuilder = new SqlScriptConstraintBuilder();
+      var indexBuilder = new SqlScriptIndexBuilder();
+      var synonymBuilder = new SqlScriptSynonymBuilder();
 
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (

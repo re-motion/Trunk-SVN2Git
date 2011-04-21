@@ -24,9 +24,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// Generates SQL Server-specific tables for the persistence model.
   /// </summary>
-  public class SqlTableBuilder : TableBuilderBase
+  public class SqlScriptTableBuilder : TableScriptBuilderBase
   {
-    public SqlTableBuilder () : base (SqlDialect.Instance)
+    public SqlScriptTableBuilder () : base (SqlDialect.Instance)
     {
     }
 

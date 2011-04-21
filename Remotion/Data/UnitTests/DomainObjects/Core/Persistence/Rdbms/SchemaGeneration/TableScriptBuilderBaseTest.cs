@@ -24,9 +24,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class TableBuilderBaseTest : SchemaGenerationTestBase
+  public class TableScriptBuilderBaseTest : SchemaGenerationTestBase
   {
-    private TableBuilderBase _tableBuilder;
+    private TableScriptBuilderBase _tableBuilder;
     private ISqlDialect _sqlDialectStub;
     private TableDefinition _tableDefinition;
 
@@ -49,10 +49,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTable ()
     {
-      _tableBuilder.AddTable (_tableDefinition);
+      _tableBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createTableScript = _tableBuilder.GetCreateTableScript();
-      var dropTableScript = _tableBuilder.GetDropTableScript();
+      var createTableScript = _tableBuilder.GetCreateScript();
+      var dropTableScript = _tableBuilder.GetDropScript();
 
       Assert.AreEqual (createTableScript, "CREATE TABLE [Order]");
       Assert.AreEqual (dropTableScript, "DROP TABLE [Order]");
@@ -61,11 +61,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void AddTableTwice ()
     {
-      _tableBuilder.AddTable (_tableDefinition);
-      _tableBuilder.AddTable (_tableDefinition);
+      _tableBuilder.AddEntityDefinition (_tableDefinition);
+      _tableBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createTableScript = _tableBuilder.GetCreateTableScript();
-      var dropTableScript = _tableBuilder.GetDropTableScript();
+      var createTableScript = _tableBuilder.GetCreateScript();
+      var dropTableScript = _tableBuilder.GetDropScript();
 
       Assert.AreEqual (createTableScript, "CREATE TABLE [Order]\r\nCREATE TABLE [Order]");
       Assert.AreEqual (dropTableScript, "DROP TABLE [Order]\r\nDROP TABLE [Order]");
@@ -80,10 +80,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new[] { _tableDefinition },
           new IColumnDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
-      _tableBuilder.AddTable (unionViewDefinition);
+      _tableBuilder.AddEntityDefinition (unionViewDefinition);
 
-      var actualCreateTableScript = _tableBuilder.GetCreateTableScript();
-      var actualDropTableScript = _tableBuilder.GetDropTableScript();
+      var actualCreateTableScript = _tableBuilder.GetCreateScript();
+      var actualDropTableScript = _tableBuilder.GetDropScript();
 
       Assert.IsEmpty (actualCreateTableScript);
       Assert.IsEmpty (actualDropTableScript);
@@ -92,8 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
     {
-      var createTableScript = _tableBuilder.GetCreateTableScript ();
-      var dropTableScript = _tableBuilder.GetDropTableScript ();
+      var createTableScript = _tableBuilder.GetCreateScript ();
+      var dropTableScript = _tableBuilder.GetDropScript ();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);

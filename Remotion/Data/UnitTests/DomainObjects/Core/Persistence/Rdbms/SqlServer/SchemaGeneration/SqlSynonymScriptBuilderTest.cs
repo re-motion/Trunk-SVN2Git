@@ -23,9 +23,9 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlSynonymBuilderTest : SchemaGenerationTestBase
+  public class SqlSynonymScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlSynonymBuilder _synonymBuilder;
+    private SqlScriptSynonymBuilder _synonymBuilder;
     private StringBuilder _stringBuilder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _synonymBuilder = new SqlSynonymBuilder();
+      _synonymBuilder = new SqlScriptSynonymBuilder();
       _stringBuilder = new StringBuilder();
 
       _tableDefinition1 = new TableDefinition (

@@ -185,29 +185,29 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }
 
-    protected virtual SqlTableBuilder CreateTableBuilder ()
+    protected virtual SqlScriptTableBuilder CreateTableBuilder ()
     {
-      return new SqlTableBuilder();
+      return new SqlScriptTableBuilder();
     }
 
-    protected virtual SqlViewBuilder CreateViewBuilder ()
+    protected virtual SqlScriptViewBuilder CreateViewBuilder ()
     {
-      return new SqlViewBuilder();
+      return new SqlScriptViewBuilder();
     }
 
-    protected virtual SqlConstraintBuilder CreateConstraintBuilder ()
+    protected virtual SqlScriptConstraintBuilder CreateConstraintBuilder ()
     {
-      return new SqlConstraintBuilder();
+      return new SqlScriptConstraintBuilder();
     }
 
-    protected virtual SqlIndexBuilder CreateIndexBuilder ()
+    protected virtual SqlScriptIndexBuilder CreateIndexBuilder ()
     {
-      return new SqlIndexBuilder();
+      return new SqlScriptIndexBuilder();
     }
 
-    protected virtual SqlSynonymBuilder CreateSynonymBuilder ()
+    protected virtual SqlScriptSynonymBuilder CreateSynonymBuilder ()
     {
-      return new SqlSynonymBuilder();
+      return new SqlScriptSynonymBuilder();
     }
   }
 }

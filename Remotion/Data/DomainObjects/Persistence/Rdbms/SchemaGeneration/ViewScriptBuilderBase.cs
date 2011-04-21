@@ -26,13 +26,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// Contains database-independent code for generating views for the persistence model.
   /// </summary>
-  public abstract class ViewBuilderBase : IEntityDefinitionVisitor
+  public abstract class ViewScriptBuilderBase : IScriptBuilder, IEntityDefinitionVisitor
   { 
     private readonly StringBuilder _createViewStringBuilder;
     private readonly StringBuilder _dropViewStringBuilder;
     private readonly ISqlDialect _sqlDialect;
 
-    protected ViewBuilderBase (ISqlDialect sqlDialect)
+    protected ViewScriptBuilderBase (ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
@@ -48,17 +48,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     
     public abstract string CreateViewSeparator { get; }
 
-    public string GetCreateViewScript ()
+    public string GetCreateScript ()
     {
       return _createViewStringBuilder.ToString ();
     }
 
-    public string GetDropViewScript ()
+    public string GetDropScript ()
     {
       return _dropViewStringBuilder.ToString ();
     }
 
-    public void AddView (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 

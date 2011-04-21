@@ -24,15 +24,15 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerat
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlTableBuilderTest : SchemaGenerationTestBase
+  public class SqlTableScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlTableBuilder _tableBuilder;
+    private SqlScriptTableBuilder _tableBuilder;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilder = new SqlTableBuilder();
+      _tableBuilder = new SqlScriptTableBuilder();
     }
 
     [Test]
@@ -73,8 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void IntegrationTest ()
     {
-      _tableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
-      _tableBuilder.AddTable ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
+      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
+      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
 
       string expectedCreateTableScript = "CREATE TABLE [dbo].[Customer]\r\n"
                                          + "(\r\n"
@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                                          + "  CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])\r\n"
                                          + ")\r\n";
 
-      Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateTableScript());
+      Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateScript());
 
       string expectedDropTableScript =
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP TABLE [dbo].[Order]\r\n";
 
-      Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropTableScript());
+      Assert.AreEqual (expectedDropTableScript, _tableBuilder.GetDropScript());
     }
 
   }

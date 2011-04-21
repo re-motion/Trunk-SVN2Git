@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public class TestableIndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
+  public class TestableIndexBuilder : IndexScriptBuilderBase, ISqlIndexDefinitionVisitor
   {
     public TestableIndexBuilder (ISqlDialect sqlDialect)
         : base(sqlDialect)

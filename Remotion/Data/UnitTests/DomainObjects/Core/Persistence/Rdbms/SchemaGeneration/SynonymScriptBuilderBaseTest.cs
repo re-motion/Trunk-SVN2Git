@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
-  public class SynonymBuilderBaseTest : SchemaGenerationTestBase
+  public class SynonymScriptBuilderBaseTest : SchemaGenerationTestBase
   {
     private TestableSynonymBuilder _synonymBuilder;
     private TableDefinition _tableDefinition;
@@ -43,19 +43,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void AddSynonyms_TableDefinition()
+    public void AddEntityDefinition_TableDefinition ()
     {
-      _synonymBuilder.AddSynonyms (_tableDefinition);
+      _synonymBuilder.AddEntityDefinition (_tableDefinition);
 
-      var createTableScript = _synonymBuilder.GetCreateTableScript ();
-      var dropTableScript = _synonymBuilder.GetDropTableScript ();
+      var createTableScript = _synonymBuilder.GetCreateScript ();
+      var dropTableScript = _synonymBuilder.GetDropScript ();
 
       Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [Order]");
       Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
     }
 
     [Test]
-    public void AddSynonyms_FilterViewDefinition ()
+    public void AddEntityDefinition_FilterViewDefinition ()
     {
       var filterViewDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -66,17 +66,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "SynonymName") });
 
-      _synonymBuilder.AddSynonyms (filterViewDefinition);
+      _synonymBuilder.AddEntityDefinition (filterViewDefinition);
 
-      var createTableScript = _synonymBuilder.GetCreateTableScript ();
-      var dropTableScript = _synonymBuilder.GetDropTableScript ();
+      var createTableScript = _synonymBuilder.GetCreateScript ();
+      var dropTableScript = _synonymBuilder.GetDropScript ();
 
       Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]");
       Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
     }
 
     [Test]
-    public void AddSynonyms_UnionViewDefinition ()
+    public void AddEntityDefinition_UnionViewDefinition ()
     {
       var unionViewDefinition = new UnionViewDefinition (
           SchemaGenerationInternalStorageProviderDefinition,
@@ -86,20 +86,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "SynonymName") });
 
-      _synonymBuilder.AddSynonyms (unionViewDefinition);
+      _synonymBuilder.AddEntityDefinition (unionViewDefinition);
 
-      var createTableScript = _synonymBuilder.GetCreateTableScript ();
-      var dropTableScript = _synonymBuilder.GetDropTableScript ();
+      var createTableScript = _synonymBuilder.GetCreateScript ();
+      var dropTableScript = _synonymBuilder.GetDropScript ();
 
       Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]");
       Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
     }
 
     [Test]
-    public void GetCreateTableScript_GetDropTableScript_NoTableAdded ()
+    public void GetCreateScript_GetDropScript_NoTableAdded ()
     {
-      var createTableScript = _synonymBuilder.GetCreateTableScript ();
-      var dropTableScript = _synonymBuilder.GetDropTableScript ();
+      var createTableScript = _synonymBuilder.GetCreateScript ();
+      var dropTableScript = _synonymBuilder.GetDropScript ();
 
       Assert.IsEmpty (createTableScript);
       Assert.IsEmpty (dropTableScript);

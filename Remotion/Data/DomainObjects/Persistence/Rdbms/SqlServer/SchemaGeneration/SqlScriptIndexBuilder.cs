@@ -24,9 +24,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class SqlIndexBuilder : IndexBuilderBase, ISqlIndexDefinitionVisitor
+  public class SqlScriptIndexBuilder : IndexScriptBuilderBase, ISqlIndexDefinitionVisitor
   {
-    public SqlIndexBuilder ()
+    public SqlScriptIndexBuilder ()
         : base (SqlServer.SqlDialect.Instance)
     {
     }

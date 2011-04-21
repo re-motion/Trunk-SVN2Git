@@ -26,9 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// Generates SQL Server-specific synonyms for the persistence model.
   /// </summary>
-  public class SqlSynonymBuilder : SynonymBuilderBase
+  public class SqlScriptSynonymBuilder : SynonymScriptBuilderBase
   {
-    public SqlSynonymBuilder ()
+    public SqlScriptSynonymBuilder ()
     {
     }
 

@@ -15,28 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  public class TestableTableBuilder : TableScriptBuilderBase
+  /// <summary>
+  /// Defines an interface for classes generating script files for several <see cref="IEntityDefinition"/>s.
+  /// </summary>
+  public interface IScriptBuilder
   {
-    public TestableTableBuilder (ISqlDialect sqlDialect)
-        : base(sqlDialect)
-    {
-    }
-
-    public override void AddToCreateTableScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder)
-    {
-      createTableStringBuilder.Append ("CREATE TABLE ["+tableDefinition.TableName.EntityName+"]");
-    }
-
-    public override void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder)
-    {
-      dropTableStringBuilder.Append ("DROP TABLE [" + tableDefinition.TableName.EntityName + "]");
-    }
+    void AddEntityDefinition (IEntityDefinition entityDefinition);
+    string GetCreateScript ();
+    string GetDropScript ();
   }
 }

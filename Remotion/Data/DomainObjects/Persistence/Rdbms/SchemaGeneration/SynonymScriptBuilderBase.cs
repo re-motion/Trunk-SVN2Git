@@ -24,12 +24,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// Contains database-independent code for generating synonyms for the persistence model.
   /// </summary>
-  public abstract class SynonymBuilderBase : IEntityDefinitionVisitor
+  public abstract class SynonymScriptBuilderBase : IScriptBuilder, IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createSynonymStringBuilder;
     private readonly StringBuilder _dropSynonymStringBuilder;
     
-    protected SynonymBuilderBase ()
+    protected SynonymScriptBuilderBase ()
     {
       _createSynonymStringBuilder = new StringBuilder();
       _dropSynonymStringBuilder = new StringBuilder();
@@ -40,17 +40,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     public abstract void AddToCreateSynonymScript (UnionViewDefinition unionViewDefinition, StringBuilder createTableStringBuilder);
     public abstract void AddToDropSynonymScript (EntityDefinitionBase entityDefinition, StringBuilder dropTableStringBuilder);
 
-    public string GetCreateTableScript ()
+    public string GetCreateScript ()
     {
       return _createSynonymStringBuilder.ToString ();
     }
 
-    public string GetDropTableScript ()
+    public string GetDropScript ()
     {
       return _dropSynonymStringBuilder.ToString ();
     }
 
-    public void AddSynonyms (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 

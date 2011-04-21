@@ -21,81 +21,83 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  public abstract class ConstraintBuilderBase : IEntityDefinitionVisitor
+  /// <summary>
+  /// Contains database-independent code for generating tables for the persistence model.
+  /// </summary>
+  public abstract class TableScriptBuilderBase : IScriptBuilder, IEntityDefinitionVisitor
   {
-    private readonly StringBuilder _createConstraintStringBuilder;
-    private readonly StringBuilder _dropConstraintStringBuilder;
+    private readonly StringBuilder _createTableStringBuilder;
+    private readonly StringBuilder _dropTableStringBuilder;
     private readonly ISqlDialect _sqlDialect;
 
-    protected ConstraintBuilderBase (ISqlDialect sqlDialect)
+    protected TableScriptBuilderBase (ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       _sqlDialect = sqlDialect;
-      _createConstraintStringBuilder = new StringBuilder();
-      _dropConstraintStringBuilder = new StringBuilder();
+      _createTableStringBuilder = new StringBuilder();
+      _dropTableStringBuilder = new StringBuilder();
     }
 
-    public abstract void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder);
-    public abstract void AddToDropConstraintScript (TableDefinition tableDefinition, StringBuilder dropConstraintStringBuilder);
+    public abstract void AddToCreateTableScript (TableDefinition tableDefinition, StringBuilder createTableStringBuilder);
+    public abstract void AddToDropTableScript (TableDefinition tableDefinition, StringBuilder dropTableStringBuilder);
 
-    public string GetAddConstraintScript ()
+    public string GetCreateScript ()
     {
-      return _createConstraintStringBuilder.ToString();
+      return _createTableStringBuilder.ToString();
     }
 
-    public string GetDropConstraintScript ()
+    public string GetDropScript ()
     {
-      return _dropConstraintStringBuilder.ToString();
+      return _dropTableStringBuilder.ToString();
     }
 
-    public void AddConstraint (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
       entityDefinition.Accept (this);
     }
 
-    protected string GetForeignKeyConstraintStatement (TableDefinition tableDefinition)
+    private void AddToCreateTableScript (TableDefinition tableDefinition)
     {
-      var visitor = new ForeignKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialect);
+      if (_createTableStringBuilder.Length != 0)
+        _createTableStringBuilder.Append ("\r\n");
+
+      AddToCreateTableScript (tableDefinition, _createTableStringBuilder);
+    }
+
+    private void AddToDropTableScript (TableDefinition tableDefinition)
+    {
+      if (_dropTableStringBuilder.Length != 0)
+        _dropTableStringBuilder.Append ("\r\n");
+
+      AddToDropTableScript (tableDefinition, _dropTableStringBuilder);
+    }
+
+    protected string GetColumnList (TableDefinition tableDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+
+      return DeclarationListColumnDefinitionVisitor.GetDeclarationList (tableDefinition.Columns, _sqlDialect);
+    }
+
+    protected string GetPrimaryKeyConstraintStatement (TableDefinition tableDefinition)
+    {
+      var visitor = new PrimaryKeyDeclarationTableConstraintDefinitionVisitor (_sqlDialect);
 
       foreach (var constraint in tableDefinition.Constraints)
         constraint.Accept (visitor);
 
-      return visitor.GetConstraintStatement ();
-    }
-
-    private void AddToCreateConstraintScript (TableDefinition tableDefinition)
-    {
-      if (_createConstraintStringBuilder.Length != 0)
-        _createConstraintStringBuilder.Append ("\r\n");
-      var length = _createConstraintStringBuilder.Length;
-
-      AddToCreateConstraintScript (tableDefinition, _createConstraintStringBuilder);
-
-      if (_createConstraintStringBuilder.Length == length && length > 1)
-        _createConstraintStringBuilder.Remove (length - 2, 2);
-    }
-
-    private void AddToDropConstraintScript (TableDefinition tableDefinition)
-    {
-      if (_dropConstraintStringBuilder.Length != 0)
-        _dropConstraintStringBuilder.Append ("\r\n");
-      var length = _dropConstraintStringBuilder.Length;
-
-      AddToDropConstraintScript (tableDefinition, _dropConstraintStringBuilder);
-
-      if (_dropConstraintStringBuilder.Length == length && length > 1)
-        _dropConstraintStringBuilder.Remove (length - 2, 2);
+      return visitor.GetConstraintStatement();
     }
 
     void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-      
-      AddToCreateConstraintScript (tableDefinition);
-      AddToDropConstraintScript (tableDefinition);
+
+      AddToCreateTableScript (tableDefinition);
+      AddToDropTableScript (tableDefinition);
     }
 
     void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)

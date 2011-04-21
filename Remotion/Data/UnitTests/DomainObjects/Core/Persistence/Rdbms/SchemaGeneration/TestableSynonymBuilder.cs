@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
-  public class TestableSynonymBuilder : SynonymBuilderBase
+  public class TestableSynonymBuilder : SynonymScriptBuilderBase
   {
     public TestableSynonymBuilder ()
     {

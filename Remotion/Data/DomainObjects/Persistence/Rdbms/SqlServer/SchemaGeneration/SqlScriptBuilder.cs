@@ -24,21 +24,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class SqlScriptBuilder : ScriptBuilderBase
   {
-    private readonly SqlTableBuilder _tableBuilder;
-    private readonly SqlViewBuilder _viewBuilder;
-    private readonly SqlConstraintBuilder _constraintBuilder;
-    private readonly SqlIndexBuilder _indexBuilder;
-    private readonly SqlSynonymBuilder _synonymBuilder;
+    private readonly SqlScriptTableBuilder _tableBuilder;
+    private readonly SqlScriptViewBuilder _viewBuilder;
+    private readonly SqlScriptConstraintBuilder _constraintBuilder;
+    private readonly SqlScriptIndexBuilder _indexBuilder;
+    private readonly SqlScriptSynonymBuilder _synonymBuilder;
     public const string DefaultSchema = "dbo";
 
     // TODO: Add tests using mocks as soon as interfaces can be used for partial script builders
     public SqlScriptBuilder (
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        SqlTableBuilder tableBuilder,
-        SqlViewBuilder viewBuilder,
-        SqlConstraintBuilder constraintBuilder,
-        SqlIndexBuilder indexBuilder,
-        SqlSynonymBuilder synonymBuilder)
+        SqlScriptTableBuilder tableBuilder,
+        SqlScriptViewBuilder viewBuilder,
+        SqlScriptConstraintBuilder constraintBuilder,
+        SqlScriptIndexBuilder indexBuilder,
+        SqlScriptSynonymBuilder synonymBuilder)
       : base (ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition))
     {
       ArgumentUtility.CheckNotNull ("tableBuilder", tableBuilder);
@@ -54,27 +54,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _synonymBuilder = synonymBuilder;
     }
 
-    public SqlTableBuilder TableBuilder
+    public SqlScriptTableBuilder TableBuilder
     {
       get { return _tableBuilder; }
     }
 
-    public SqlViewBuilder ViewBuilder
+    public SqlScriptViewBuilder ViewBuilder
     {
       get { return _viewBuilder; }
     }
 
-    public SqlConstraintBuilder ConstraintBuilder
+    public SqlScriptConstraintBuilder ConstraintBuilder
     {
       get { return _constraintBuilder; }
     }
 
-    public SqlIndexBuilder IndexBuilder
+    public SqlScriptIndexBuilder IndexBuilder
     {
       get { return _indexBuilder; }
     }
 
-    public SqlSynonymBuilder SynonymBuilder
+    public SqlScriptSynonymBuilder SynonymBuilder
     {
       get { return _synonymBuilder; }
     }
@@ -92,11 +92,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
-      _viewBuilder.AddView (entityDefinition);
-      _tableBuilder.AddTable (entityDefinition);
-      _constraintBuilder.AddConstraint (entityDefinition);
-      _indexBuilder.AddIndexes (entityDefinition);
-      _synonymBuilder.AddSynonyms (entityDefinition);
+      _viewBuilder.AddEntityDefinition (entityDefinition);
+      _tableBuilder.AddEntityDefinition (entityDefinition);
+      _constraintBuilder.AddEntityDefinition (entityDefinition);
+      _indexBuilder.AddEntityDefinition (entityDefinition);
+      _synonymBuilder.AddEntityDefinition (entityDefinition);
     }
 
     public override string GetCreateScript (IEnumerable<IEntityDefinition> entityDefinitions)
@@ -115,11 +115,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "-- Create synonyms for tables that were created above\r\n"
           + "{5}GO\r\n",
           GetDatabaseName (),
-          _tableBuilder.GetCreateTableScript (),
-          _constraintBuilder.GetAddConstraintScript (),
-          _viewBuilder.GetCreateViewScript (),
-          _indexBuilder.GetCreateIndexScript (),
-          _synonymBuilder.GetCreateTableScript ());
+          _tableBuilder.GetCreateScript (),
+          _constraintBuilder.GetCreateScript (),
+          _viewBuilder.GetCreateScript (),
+          _indexBuilder.GetCreateScript (),
+          _synonymBuilder.GetCreateScript ());
     }
 
     public override string GetDropScript (IEnumerable<IEntityDefinition> entityDefinitions)
@@ -138,11 +138,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "-- Drop all tables that will be created below\r\n"
           + "{5}GO\r\n",
           GetDatabaseName (),
-          _synonymBuilder.GetDropTableScript (),
-          _indexBuilder.GetDropIndexScript (),
-          _viewBuilder.GetDropViewScript (),
-          _constraintBuilder.GetDropConstraintScript (),
-          _tableBuilder.GetDropTableScript ());
+          _synonymBuilder.GetDropScript (),
+          _indexBuilder.GetDropScript (),
+          _viewBuilder.GetDropScript (),
+          _constraintBuilder.GetDropScript (),
+          _tableBuilder.GetDropScript ());
     }
   }
 }
