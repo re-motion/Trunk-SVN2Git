@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly IListInfo ListInfo;
       public readonly bool IsRequired;
       public readonly bool IsReadOnly;
-      public IDefaultValueStrategy DefaultValueStrategy;
+      public readonly IDefaultValueStrategy DefaultValueStrategy;
 
       public Parameters (
           BindableObjectProvider businessObjectProvider,
@@ -71,8 +71,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly bool _isNullable;
     private BindableObjectClass _reflectedClass;
     private readonly IDefaultValueStrategy _defaultValueStrategy;
-    private readonly Func<object, object> _valueGetter = null;
-    private readonly Action<object, object> _valueSetter = null;
+    private readonly Func<object, object> _valueGetter;
+    private readonly Action<object, object> _valueSetter;
 
     protected PropertyBase (Parameters parameters)
     {
