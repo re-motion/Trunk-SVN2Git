@@ -82,13 +82,35 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ThirdClass
 GO
 
 -- Drop foreign keys of all tables that will be created below
-DECLARE @statement nvarchar (max)
-SET @statement = ''
-SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
-FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id 
-WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('dbo.Address', 'dbo.Ceo', 'dbo.TableWithAllDataTypes', 'dbo.TableWithoutProperties', 'dbo.TableWithRelations', 'dbo.Customer', 'dbo.AbstractClass', 'dbo.ConcreteClass', 'dbo.DevelopmentPartner', 'dbo.Employee', 'dbo.FirstClass', 'dbo.Order', 'dbo.OrderItem', 'dbo.SecondClass', 'dbo.SiblingOfTableWithRelations', 'dbo.ThirdClass') 
-ORDER BY t.name, fk.name
-exec sp_executesql @statement
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_TableWithRelations_DerivedClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'TableWithRelations')
+  ALTER TABLE [dbo].[TableWithRelations] DROP CONSTRAINT FK_TableWithRelations_DerivedClassID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_Customer_AddressID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'Customer')
+  ALTER TABLE [dbo].[Customer] DROP CONSTRAINT FK_Customer_AddressID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_ConcreteClass_ClassWithRelationsInDerivedOfDerivedClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'ConcreteClass')
+  ALTER TABLE [dbo].[ConcreteClass] DROP CONSTRAINT FK_ConcreteClass_ClassWithRelationsInDerivedOfDerivedClassID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_ConcreteClass_ClassWithRelationsInSecondDerivedClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'ConcreteClass')
+  ALTER TABLE [dbo].[ConcreteClass] DROP CONSTRAINT FK_ConcreteClass_ClassWithRelationsInSecondDerivedClassID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_DevelopmentPartner_AddressID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'DevelopmentPartner')
+  ALTER TABLE [dbo].[DevelopmentPartner] DROP CONSTRAINT FK_DevelopmentPartner_AddressID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_Employee_SupervisorID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'Employee')
+  ALTER TABLE [dbo].[Employee] DROP CONSTRAINT FK_Employee_SupervisorID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_FirstClass_SecondClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'FirstClass')
+  ALTER TABLE [dbo].[FirstClass] DROP CONSTRAINT FK_FirstClass_SecondClassID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_FirstClass_ThirdClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'FirstClass')
+  ALTER TABLE [dbo].[FirstClass] DROP CONSTRAINT FK_FirstClass_ThirdClassID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_Order_CustomerID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'Order')
+  ALTER TABLE [dbo].[Order] DROP CONSTRAINT FK_Order_CustomerID
+
+IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')
+  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID
 GO
 
 -- Drop all tables that will be created below

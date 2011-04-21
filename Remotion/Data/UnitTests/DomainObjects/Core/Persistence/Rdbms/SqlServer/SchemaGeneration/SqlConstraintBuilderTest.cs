@@ -105,14 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _constraintBuilder.AddConstraint (_tableDefinition1);
 
-      string expectedScript =
-          "DECLARE @statement nvarchar (max)\r\n"
-          + "SET @statement = ''\r\n"
-          + "SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
-          + "FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id \r\n"
-          + "WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('dbo.OrderItem') \r\n"
-          + "ORDER BY t.name, fk.name\r\n"
-          + "exec sp_executesql @statement\r\n";
+      var expectedScript =
+          "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')\r\n"
+          +"  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropConstraintScript());
     }
@@ -123,14 +119,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddConstraint (_tableDefinition1);
       _constraintBuilder.AddConstraint (_tableDefinition2);
 
-      string expectedScript =
-          "DECLARE @statement nvarchar (max)\r\n"
-          + "SET @statement = ''\r\n"
-          + "SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
-          + "FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id \r\n"
-          + "WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('dbo.OrderItem', 'Test.Customer') \r\n"
-          + "ORDER BY t.name, fk.name\r\n"
-          + "exec sp_executesql @statement\r\n";
+      var expectedScript =
+          "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')\r\n"
+          +"  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID\r\n\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'Test' AND t.name = 'Customer')\r\n"
+          +"  ALTER TABLE [Test].[Customer] DROP CONSTRAINT FK_OrderItem_OrderID\r\n\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          +"fk.name = 'FK_OrderItem_CustomerID' AND schema_name (t.schema_id) = 'Test' AND t.name = 'Customer')\r\n"
+          +"  ALTER TABLE [Test].[Customer] DROP CONSTRAINT FK_OrderItem_CustomerID\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropConstraintScript());
     }

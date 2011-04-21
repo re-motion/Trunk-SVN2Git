@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
@@ -45,20 +44,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       }
     }
 
-    public override void AddToDropConstraintScript (List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
+    public override void AddToDropConstraintScript (TableDefinition tableDefinition, StringBuilder dropConstraintStringBuilder)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("entityNamesForDropConstraintScript", entityNamesForDropConstraintScript);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       ArgumentUtility.CheckNotNull ("dropConstraintStringBuilder", dropConstraintStringBuilder);
 
-      dropConstraintStringBuilder.AppendFormat (
-          "DECLARE @statement nvarchar (max)\r\n"
-          + "SET @statement = ''\r\n"
-          + "SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' \r\n"
-          + "FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id \r\n"
-          + "WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('{0}') \r\n"
-          + "ORDER BY t.name, fk.name\r\n"
-          + "exec sp_executesql @statement\r\n",
-          string.Join("', '", entityNamesForDropConstraintScript.Select(en=>(en.SchemaName ?? SqlScriptBuilder.DefaultSchema)+"."+en.EntityName).ToArray()));
+      var count = 0;
+      foreach (var foreignKeyConstraintDefinition in tableDefinition.Constraints.OfType<ForeignKeyConstraintDefinition>())
+      {
+        dropConstraintStringBuilder.AppendFormat (
+            "{0}IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+            +"fk.name = '{3}' AND schema_name (t.schema_id) = '{1}' AND t.name = '{2}')\r\n"
+            +"  ALTER TABLE [{1}].[{2}] DROP CONSTRAINT {3}\r\n",
+            count>0 ? "\r\n" : string.Empty,
+            tableDefinition.TableName.SchemaName ?? SqlScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.EntityName,
+            foreignKeyConstraintDefinition.ConstraintName);
+        count++;
+      }
     }
   
   }

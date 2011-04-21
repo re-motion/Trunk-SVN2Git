@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -37,10 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     public override void AddToDropConstraintScript (
-        List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder)
+        TableDefinition tableDefinition, StringBuilder dropConstraintStringBuilder)
     {
-      dropConstraintStringBuilder.Append (
-          "DROP CONSTRAINT [" + string.Join (", ", entityNamesForDropConstraintScript.Select (en => en.EntityName).ToArray()) + "]");
+      dropConstraintStringBuilder.Append ("DROP CONSTRAINT [FK_" + tableDefinition.TableName.EntityName + "_ID]");
     }
   }
 }

@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]");
-      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [Order]");
+      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]");
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var dropTableScript = _constraintBuilder.GetDropConstraintScript();
 
       Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]\r\nADD CONSTRAINT [FK_Customer_ID]");
-      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [Order, Customer]");
+      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]\r\nDROP CONSTRAINT [FK_Customer_ID]");
     }
 
     [Test]

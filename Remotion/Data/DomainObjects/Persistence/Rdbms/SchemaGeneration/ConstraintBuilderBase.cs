@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
@@ -25,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public abstract class ConstraintBuilderBase : IEntityDefinitionVisitor
   {
     private readonly StringBuilder _createConstraintStringBuilder;
-    private readonly List<EntityNameDefinition> _entityNamesForDropConstraintScript;
+    private readonly StringBuilder _dropConstraintStringBuilder;
     private readonly ISqlDialect _sqlDialect;
 
     protected ConstraintBuilderBase (ISqlDialect sqlDialect)
@@ -34,11 +33,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       _sqlDialect = sqlDialect;
       _createConstraintStringBuilder = new StringBuilder();
-      _entityNamesForDropConstraintScript = new List<EntityNameDefinition>();
+      _dropConstraintStringBuilder = new StringBuilder();
     }
 
     public abstract void AddToCreateConstraintScript (TableDefinition tableDefinition, StringBuilder createConstraintStringBuilder);
-    public abstract void AddToDropConstraintScript (List<EntityNameDefinition> entityNamesForDropConstraintScript, StringBuilder dropConstraintStringBuilder);
+    public abstract void AddToDropConstraintScript (TableDefinition tableDefinition, StringBuilder dropConstraintStringBuilder);
 
     public string GetAddConstraintScript ()
     {
@@ -47,12 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetDropConstraintScript ()
     {
-      if (_entityNamesForDropConstraintScript.Count == 0)
-        return string.Empty;
-
-      StringBuilder dropConstraintStringBuilder = new StringBuilder();
-      AddToDropConstraintScript (_entityNamesForDropConstraintScript, dropConstraintStringBuilder);
-      return dropConstraintStringBuilder.ToString();
+      return _dropConstraintStringBuilder.ToString();
     }
 
     public void AddConstraint (IEntityDefinition entityDefinition)
@@ -76,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       if (_createConstraintStringBuilder.Length != 0)
         _createConstraintStringBuilder.Append ("\r\n");
-      int length = _createConstraintStringBuilder.Length;
+      var length = _createConstraintStringBuilder.Length;
 
       AddToCreateConstraintScript (tableDefinition, _createConstraintStringBuilder);
 
@@ -84,12 +78,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         _createConstraintStringBuilder.Remove (length - 2, 2);
     }
 
+    private void AddToDropConstraintScript (TableDefinition tableDefinition)
+    {
+      if (_dropConstraintStringBuilder.Length != 0)
+        _dropConstraintStringBuilder.Append ("\r\n");
+      var length = _dropConstraintStringBuilder.Length;
+
+      AddToDropConstraintScript (tableDefinition, _dropConstraintStringBuilder);
+
+      if (_dropConstraintStringBuilder.Length == length && length > 1)
+        _dropConstraintStringBuilder.Remove (length - 2, 2);
+    }
+
     void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
       
       AddToCreateConstraintScript (tableDefinition);
-      _entityNamesForDropConstraintScript.Add (tableDefinition.TableName);
+      AddToDropConstraintScript (tableDefinition);
     }
 
     void IEntityDefinitionVisitor.VisitUnionViewDefinition (UnionViewDefinition unionViewDefinition)

@@ -111,7 +111,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.AreEqual (_thirdStorageProviderSetupDBScript, scripts.CreateScript);
       Assert.AreEqual (_thirdStorageProviderTearDownDBScript, scripts.DropScript);
-
     }
   }
 }

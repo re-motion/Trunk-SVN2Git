@@ -16,13 +16,6 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SpecialOff
 GO
 
 -- Drop foreign keys of all tables that will be created below
-DECLARE @statement nvarchar (max)
-SET @statement = ''
-SELECT @statement = @statement + 'ALTER TABLE [' + schema_name(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
-FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id 
-WHERE fk.type = 'F' AND schema_name (t.schema_id) + '.' + t.name IN ('dbo.Official') 
-ORDER BY t.name, fk.name
-exec sp_executesql @statement
 GO
 
 -- Drop all tables that will be created below
