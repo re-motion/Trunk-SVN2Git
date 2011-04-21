@@ -54,8 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _tableBuilder.GetCreateScript();
       var dropTableScript = _tableBuilder.GetDropScript();
 
-      Assert.AreEqual (createTableScript, "CREATE TABLE [Order]");
-      Assert.AreEqual (dropTableScript, "DROP TABLE [Order]");
+      Assert.AreEqual (createTableScript, "-- Create all tables\r\nCREATE TABLE [Order]");
+      Assert.AreEqual (dropTableScript, "-- Drop all tables that will be created below\r\nDROP TABLE [Order]");
     }
 
     [Test]
@@ -67,8 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _tableBuilder.GetCreateScript();
       var dropTableScript = _tableBuilder.GetDropScript();
 
-      Assert.AreEqual (createTableScript, "CREATE TABLE [Order]\r\nCREATE TABLE [Order]");
-      Assert.AreEqual (dropTableScript, "DROP TABLE [Order]\r\nDROP TABLE [Order]");
+      Assert.AreEqual (createTableScript, "-- Create all tables\r\nCREATE TABLE [Order]\r\nCREATE TABLE [Order]");
+      Assert.AreEqual (dropTableScript, "-- Drop all tables that will be created below\r\nDROP TABLE [Order]\r\nDROP TABLE [Order]");
     }
 
     [Test]
@@ -85,8 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var actualCreateTableScript = _tableBuilder.GetCreateScript();
       var actualDropTableScript = _tableBuilder.GetDropScript();
 
-      Assert.IsEmpty (actualCreateTableScript);
-      Assert.IsEmpty (actualDropTableScript);
+      Assert.That (actualCreateTableScript, Is.EqualTo ("-- Create all tables\r\n"));
+      Assert.That (actualDropTableScript, Is.EqualTo ("-- Drop all tables that will be created below\r\n"));
     }
 
     [Test]
@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _tableBuilder.GetCreateScript ();
       var dropTableScript = _tableBuilder.GetDropScript ();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo("-- Create all tables\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop all tables that will be created below\r\n"));
     }
   }
 }

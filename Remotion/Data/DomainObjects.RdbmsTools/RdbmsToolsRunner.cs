@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
           pd =>
           new FileBuilder (
               () => new SqlScriptBuilder (
-                        pd, new SqlScriptTableBuilder(), new SqlScriptViewBuilder(), new SqlScriptConstraintBuilder(), new SqlScriptIndexBuilder(), new SqlScriptSynonymBuilder()),
+                        pd, new SqlTableScriptBuilder(), new SqlViewScriptBuilder(), new SqlConstraintScriptBuilder(), new SqlIndexScriptBuilder(), new SqlSynonymScriptBuilder()),
               new EntityDefinitionProvider()));
     }
   }

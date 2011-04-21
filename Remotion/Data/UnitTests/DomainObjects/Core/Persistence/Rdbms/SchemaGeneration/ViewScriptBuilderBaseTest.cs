@@ -68,8 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -81,8 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -93,8 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -106,8 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -131,8 +131,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.That (createViewScript, Is.EqualTo ("CREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
-      Assert.That (dropViewScript, Is.EqualTo ("DROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\nCREATE VIEW [OrderView]\r\nCREATE VIEW [OrderView]"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\nDROP VIEW [OrderView]\r\nDROP VIEW [OrderView]"));
     }
 
     [Test]
@@ -145,8 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createViewScript = _viewBuilder.GetCreateScript();
       var dropViewScript = _viewBuilder.GetDropScript();
 
-      Assert.IsEmpty (createViewScript);
-      Assert.IsEmpty (dropViewScript);
+      Assert.That (createViewScript, Is.EqualTo ("-- Create a view for every class\r\n"));
+      Assert.That (dropViewScript, Is.EqualTo ("-- Drop all views that will be created below\r\n"));
     }
   }
 }

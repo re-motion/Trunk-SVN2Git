@@ -77,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]");
-      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]");
+      Assert.AreEqual (createTableScript, "-- Create constraints for tables that were created above\r\nADD CONSTRAINT [FK_Order_ID]");
+      Assert.AreEqual (dropTableScript, "-- Drop foreign keys of all tables that will be created below\r\nDROP CONSTRAINT [FK_Order_ID]");
     }
 
     [Test]
@@ -90,8 +90,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.AreEqual (createTableScript, "ADD CONSTRAINT [FK_Order_ID]\r\nADD CONSTRAINT [FK_Customer_ID]");
-      Assert.AreEqual (dropTableScript, "DROP CONSTRAINT [FK_Order_ID]\r\nDROP CONSTRAINT [FK_Customer_ID]");
+      Assert.AreEqual (createTableScript, "-- Create constraints for tables that were created above\r\n"
+        +"ADD CONSTRAINT [FK_Order_ID]\r\nADD CONSTRAINT [FK_Customer_ID]");
+      Assert.AreEqual (dropTableScript, "-- Drop foreign keys of all tables that will be created below\r\n"
+        +"DROP CONSTRAINT [FK_Order_ID]\r\nDROP CONSTRAINT [FK_Customer_ID]");
     }
 
     [Test]
@@ -102,8 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop foreign keys of all tables that will be created below\r\n"));
     }
 
     [Test]
@@ -114,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop foreign keys of all tables that will be created below\r\n"));
     }
 
     [Test]
@@ -126,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop foreign keys of all tables that will be created below\r\n"));
     }
 
     [Test]
@@ -136,8 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _constraintBuilder.GetCreateScript();
       var dropTableScript = _constraintBuilder.GetDropScript();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop foreign keys of all tables that will be created below\r\n"));
     }
   }
 }

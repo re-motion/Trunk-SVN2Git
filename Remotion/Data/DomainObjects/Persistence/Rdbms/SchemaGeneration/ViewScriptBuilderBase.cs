@@ -50,11 +50,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetCreateScript ()
     {
+      _createViewStringBuilder.Insert (0, "-- Create a view for every class\r\n");
       return _createViewStringBuilder.ToString ();
     }
 
     public string GetDropScript ()
     {
+      _dropViewStringBuilder.Insert (0, "-- Drop all views that will be created below\r\n");
       return _dropViewStringBuilder.ToString ();
     }
 

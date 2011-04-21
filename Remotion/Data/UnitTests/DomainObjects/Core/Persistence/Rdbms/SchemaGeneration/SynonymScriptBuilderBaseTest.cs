@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _synonymBuilder.GetCreateScript ();
       var dropTableScript = _synonymBuilder.GetDropScript ();
 
-      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [Order]");
-      Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
+      Assert.AreEqual (createTableScript, "-- Create synonyms for tables that were created above\r\nCREATE SYNONYM [SynonymName] FOR [Order]");
+      Assert.AreEqual (dropTableScript, "-- Drop all synonyms that will be created below\r\nDROP SYNONYM [SynonymName]");
     }
 
     [Test]
@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _synonymBuilder.GetCreateScript ();
       var dropTableScript = _synonymBuilder.GetDropScript ();
 
-      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]");
-      Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
+      Assert.AreEqual (createTableScript, "-- Create synonyms for tables that were created above\r\nCREATE SYNONYM [SynonymName] FOR [OrderView]");
+      Assert.AreEqual (dropTableScript, "-- Drop all synonyms that will be created below\r\nDROP SYNONYM [SynonymName]");
     }
 
     [Test]
@@ -91,8 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _synonymBuilder.GetCreateScript ();
       var dropTableScript = _synonymBuilder.GetDropScript ();
 
-      Assert.AreEqual (createTableScript, "CREATE SYNONYM [SynonymName] FOR [OrderView]");
-      Assert.AreEqual (dropTableScript, "DROP SYNONYM [SynonymName]");
+      Assert.AreEqual (createTableScript, "-- Create synonyms for tables that were created above\r\nCREATE SYNONYM [SynonymName] FOR [OrderView]");
+      Assert.AreEqual (dropTableScript, "-- Drop all synonyms that will be created below\r\nDROP SYNONYM [SynonymName]");
     }
 
     [Test]
@@ -101,8 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var createTableScript = _synonymBuilder.GetCreateScript ();
       var dropTableScript = _synonymBuilder.GetDropScript ();
 
-      Assert.IsEmpty (createTableScript);
-      Assert.IsEmpty (dropTableScript);
+      Assert.That (createTableScript, Is.EqualTo ("-- Create synonyms for tables that were created above\r\n"));
+      Assert.That (dropTableScript, Is.EqualTo ("-- Drop all synonyms that will be created below\r\n"));
     }
 
   }

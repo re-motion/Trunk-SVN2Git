@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual (string.Empty, _viewBuilderWithSchemaBinding.GetCreateScript());
+      Assert.That (_viewBuilderWithSchemaBinding.GetCreateScript (), Is.EqualTo ("-- Create a view for every class\r\n"));
     }
 
     [Test]
@@ -85,7 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -100,7 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithoutSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -115,7 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (_filterViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -131,7 +134,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithoutSchemaBinding.AddEntityDefinition (_filterViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -154,7 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          + "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -176,7 +181,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithoutSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name])\r\n"
           + "  AS\r\n"
           + "  SELECT [ID], [Name]\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -198,7 +204,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (unionViewDefinition);
 
       string expectedScript =
-          "CREATE VIEW [dbo].[OrderView] ([ID], [Name], [Test])\r\n"
+          "-- Create a view for every class\r\n"
+          +"CREATE VIEW [dbo].[OrderView] ([ID], [Name], [Test])\r\n"
           + "  WITH SCHEMABINDING AS\r\n"
           + "  SELECT [ID], [Name], NULL\r\n"
           + "    FROM [dbo].[Order]\r\n"
@@ -215,7 +222,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition1);
 
       var expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          "-- Drop all views that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n";
 
       Assert.AreEqual (expectedScript, _viewBuilderWithSchemaBinding.GetDropScript());
@@ -228,7 +236,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _viewBuilderWithSchemaBinding.AddEntityDefinition (_tableDefinition2);
 
       var expectedScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
+          "-- Drop all views that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[OrderView]\r\n\r\n"
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP VIEW [dbo].[CustomerView]\r\n";

@@ -120,11 +120,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var tableBuilderStub = MockRepository.GenerateStub<SqlScriptTableBuilder>();
-      var viewBuilderStub = MockRepository.GenerateStub<SqlScriptViewBuilder>();
-      var constraintBuilderStub = MockRepository.GenerateStub<SqlScriptConstraintBuilder>();
-      var indexBuilderStub = MockRepository.GenerateStub<SqlScriptIndexBuilder>();
-      var synonymBuilderStub = MockRepository.GenerateStub<SqlScriptSynonymBuilder>();
+      var tableBuilderStub = MockRepository.GenerateStub<SqlTableScriptBuilder>();
+      var viewBuilderStub = MockRepository.GenerateStub<SqlViewScriptBuilder>();
+      var constraintBuilderStub = MockRepository.GenerateStub<SqlConstraintScriptBuilder>();
+      var indexBuilderStub = MockRepository.GenerateStub<SqlIndexScriptBuilder>();
+      var synonymBuilderStub = MockRepository.GenerateStub<SqlSynonymScriptBuilder>();
 
       var sqlProviderFactory = new TestableSqlStorageObjectFactory (
           tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub, synonymBuilderStub);

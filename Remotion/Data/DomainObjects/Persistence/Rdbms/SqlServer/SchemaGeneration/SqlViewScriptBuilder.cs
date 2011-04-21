@@ -24,9 +24,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// Generates SQL Server-specific views for the persistence model.
   /// </summary>
-  public class SqlScriptViewBuilder : ViewScriptBuilderBase
+  public class SqlViewScriptBuilder : ViewScriptBuilderBase
   {
-    public SqlScriptViewBuilder () : base(SqlDialect.Instance)
+    public SqlViewScriptBuilder () : base(SqlDialect.Instance)
     {
     }
 

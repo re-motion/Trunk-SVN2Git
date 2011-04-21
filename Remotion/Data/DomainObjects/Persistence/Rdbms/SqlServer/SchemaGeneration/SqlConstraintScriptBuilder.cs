@@ -22,9 +22,9 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  public class SqlScriptConstraintBuilder : ConstraintScriptBuilderBase
+  public class SqlConstraintScriptBuilder : ConstraintScriptBuilderBase
   {
-    public SqlScriptConstraintBuilder () : base (SqlDialect.Instance)
+    public SqlConstraintScriptBuilder () : base (SqlDialect.Instance)
     {
     }
 

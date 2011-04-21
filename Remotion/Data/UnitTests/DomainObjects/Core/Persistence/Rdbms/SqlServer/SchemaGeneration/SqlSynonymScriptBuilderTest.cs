@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlSynonymScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlScriptSynonymBuilder _synonymBuilder;
+    private SqlSynonymScriptBuilder _synonymBuilder;
     private StringBuilder _stringBuilder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _synonymBuilder = new SqlScriptSynonymBuilder();
+      _synonymBuilder = new SqlSynonymScriptBuilder();
       _stringBuilder = new StringBuilder();
 
       _tableDefinition1 = new TableDefinition (
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder.AddToCreateSynonymScript (_tableDefinition2, _stringBuilder);
 
       var expectedResult =
-          "CREATE SYNONYM [test].[Synonym1] FOR [test].[Order]\r\n\r\n"
+           "CREATE SYNONYM [test].[Synonym1] FOR [test].[Order]\r\n\r\n"
           + "CREATE SYNONYM [test].[Synonym2] FOR [test].[Order]\r\n\r\n"
           + "CREATE SYNONYM [test].[Synonym3] FOR [test].[Order]\r\n";
       Assert.That (_stringBuilder.ToString(), Is.EqualTo (expectedResult));

@@ -30,21 +30,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
     private string _firstStorageProviderTearDownDBScriptWithoutTables;
-    private SqlScriptTableBuilder _tableBuilderMock;
-    private SqlScriptViewBuilder _viewBuilderMock;
-    private SqlScriptConstraintBuilder _constraintBuilderMock;
-    private SqlScriptIndexBuilder _indexBuilderMock;
-    private SqlScriptSynonymBuilder _synonymBuilderMock;
+    private SqlTableScriptBuilder _tableBuilderMock;
+    private SqlViewScriptBuilder _viewBuilderMock;
+    private SqlConstraintScriptBuilder _constraintBuilderMock;
+    private SqlIndexScriptBuilder _indexBuilderMock;
+    private SqlSynonymScriptBuilder _synonymBuilderMock;
     
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilderMock = MockRepository.GenerateStrictMock<SqlScriptTableBuilder>();
-      _viewBuilderMock = MockRepository.GenerateStrictMock<SqlScriptViewBuilder>();
-      _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlScriptConstraintBuilder>();
-      _indexBuilderMock = MockRepository.GenerateStrictMock<SqlScriptIndexBuilder>();
-      _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlScriptSynonymBuilder>();
+      _tableBuilderMock = MockRepository.GenerateStrictMock<SqlTableScriptBuilder>();
+      _viewBuilderMock = MockRepository.GenerateStrictMock<SqlViewScriptBuilder>();
+      _constraintBuilderMock = MockRepository.GenerateStrictMock<SqlConstraintScriptBuilder>();
+      _indexBuilderMock = MockRepository.GenerateStrictMock<SqlIndexScriptBuilder>();
+      _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlSynonymScriptBuilder>();
 
       _scriptBuilderForFirstStorageProvider = new SqlScriptBuilder (
           SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);

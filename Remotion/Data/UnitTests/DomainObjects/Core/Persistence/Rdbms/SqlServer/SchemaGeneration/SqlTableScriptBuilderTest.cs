@@ -26,13 +26,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlTableScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlScriptTableBuilder _tableBuilder;
+    private SqlTableScriptBuilder _tableBuilder;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _tableBuilder = new SqlScriptTableBuilder();
+      _tableBuilder = new SqlTableScriptBuilder();
     }
 
     [Test]
@@ -76,7 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
       _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
 
-      string expectedCreateTableScript = "CREATE TABLE [dbo].[Customer]\r\n"
+      string expectedCreateTableScript = "-- Create all tables\r\n"
+                                         + "CREATE TABLE [dbo].[Customer]\r\n"
                                          + "(\r\n"
                                          + "  [ID] uniqueidentifier NOT NULL,\r\n"
                                          + "  [ClassID] varchar (100) NOT NULL,\r\n"
@@ -106,7 +107,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (expectedCreateTableScript, _tableBuilder.GetCreateScript());
 
       string expectedDropTableScript =
-          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
+          "-- Drop all tables that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Customer' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP TABLE [dbo].[Customer]\r\n\r\n"
           + "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Order' AND TABLE_SCHEMA = 'dbo')\r\n"
           + "  DROP TABLE [dbo].[Order]\r\n";

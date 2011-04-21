@@ -22,18 +22,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    private readonly SqlScriptTableBuilder _tableBuilder;
-    private readonly SqlScriptViewBuilder _viewBuilder;
-    private readonly SqlScriptConstraintBuilder _constraintBuilder;
-    private readonly SqlScriptIndexBuilder _indexBuilder;
-    private readonly SqlScriptSynonymBuilder _synonymBuilder;
+    private readonly SqlTableScriptBuilder _tableBuilder;
+    private readonly SqlViewScriptBuilder _viewBuilder;
+    private readonly SqlConstraintScriptBuilder _constraintBuilder;
+    private readonly SqlIndexScriptBuilder _indexBuilder;
+    private readonly SqlSynonymScriptBuilder _synonymBuilder;
 
     public TestableSqlStorageObjectFactory (
-        SqlScriptTableBuilder tableBuilder,
-        SqlScriptViewBuilder viewBuilder,
-        SqlScriptConstraintBuilder constraintBuilder,
-        SqlScriptIndexBuilder indexBuilder,
-        SqlScriptSynonymBuilder synonymBuilder)
+        SqlTableScriptBuilder tableBuilder,
+        SqlViewScriptBuilder viewBuilder,
+        SqlConstraintScriptBuilder constraintBuilder,
+        SqlIndexScriptBuilder indexBuilder,
+        SqlSynonymScriptBuilder synonymBuilder)
     {
       _indexBuilder = indexBuilder;
       _constraintBuilder = constraintBuilder;
@@ -42,27 +42,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder = synonymBuilder;
     }
 
-    protected override SqlScriptTableBuilder CreateTableBuilder ()
+    protected override SqlTableScriptBuilder CreateTableBuilder ()
     {
       return _tableBuilder;
     }
 
-    protected override SqlScriptViewBuilder CreateViewBuilder ()
+    protected override SqlViewScriptBuilder CreateViewBuilder ()
     {
       return _viewBuilder;
     }
 
-    protected override SqlScriptConstraintBuilder CreateConstraintBuilder ()
+    protected override SqlConstraintScriptBuilder CreateConstraintBuilder ()
     {
       return _constraintBuilder;
     }
 
-    protected override SqlScriptIndexBuilder CreateIndexBuilder ()
+    protected override SqlIndexScriptBuilder CreateIndexBuilder ()
     {
       return _indexBuilder;
     }
 
-    protected override SqlScriptSynonymBuilder CreateSynonymBuilder ()
+    protected override SqlSynonymScriptBuilder CreateSynonymBuilder ()
     {
       return _synonymBuilder;
     }

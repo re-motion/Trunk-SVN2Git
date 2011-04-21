@@ -59,11 +59,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetCreateScript ()
     {
+      _createIndexStringBuilder.Insert (0, "-- Create indexes for tables that were created above\r\n");
       return _createIndexStringBuilder.ToString ();
     }
 
     public string GetDropScript ()
     {
+      _dropIndexStringBuilder.Insert (0, "-- Drop all indexes that will be created below\r\n");
       return _dropIndexStringBuilder.ToString ();
     }
 

@@ -24,21 +24,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   public class SqlScriptBuilder : ScriptBuilderBase
   {
-    private readonly SqlScriptTableBuilder _tableBuilder;
-    private readonly SqlScriptViewBuilder _viewBuilder;
-    private readonly SqlScriptConstraintBuilder _constraintBuilder;
-    private readonly SqlScriptIndexBuilder _indexBuilder;
-    private readonly SqlScriptSynonymBuilder _synonymBuilder;
+    private readonly SqlTableScriptBuilder _tableBuilder;
+    private readonly SqlViewScriptBuilder _viewBuilder;
+    private readonly SqlConstraintScriptBuilder _constraintBuilder;
+    private readonly SqlIndexScriptBuilder _indexBuilder;
+    private readonly SqlSynonymScriptBuilder _synonymBuilder;
     public const string DefaultSchema = "dbo";
 
     // TODO: Add tests using mocks as soon as interfaces can be used for partial script builders
     public SqlScriptBuilder (
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        SqlScriptTableBuilder tableBuilder,
-        SqlScriptViewBuilder viewBuilder,
-        SqlScriptConstraintBuilder constraintBuilder,
-        SqlScriptIndexBuilder indexBuilder,
-        SqlScriptSynonymBuilder synonymBuilder)
+        SqlTableScriptBuilder tableBuilder,
+        SqlViewScriptBuilder viewBuilder,
+        SqlConstraintScriptBuilder constraintBuilder,
+        SqlIndexScriptBuilder indexBuilder,
+        SqlSynonymScriptBuilder synonymBuilder)
       : base (ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition))
     {
       ArgumentUtility.CheckNotNull ("tableBuilder", tableBuilder);
@@ -54,27 +54,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _synonymBuilder = synonymBuilder;
     }
 
-    public SqlScriptTableBuilder TableBuilder
+    public SqlTableScriptBuilder TableBuilder
     {
       get { return _tableBuilder; }
     }
 
-    public SqlScriptViewBuilder ViewBuilder
+    public SqlViewScriptBuilder ViewBuilder
     {
       get { return _viewBuilder; }
     }
 
-    public SqlScriptConstraintBuilder ConstraintBuilder
+    public SqlConstraintScriptBuilder ConstraintBuilder
     {
       get { return _constraintBuilder; }
     }
 
-    public SqlScriptIndexBuilder IndexBuilder
+    public SqlIndexScriptBuilder IndexBuilder
     {
       get { return _indexBuilder; }
     }
 
-    public SqlScriptSynonymBuilder SynonymBuilder
+    public SqlSynonymScriptBuilder SynonymBuilder
     {
       get { return _synonymBuilder; }
     }
@@ -104,15 +104,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"
-          + "-- Create all tables\r\n"
           + "{1}GO\r\n\r\n"
-          + "-- Create constraints for tables that were created above\r\n"
           + "{2}GO\r\n\r\n"
-          + "-- Create a view for every class\r\n"
           + "{3}GO\r\n\r\n"
-          + "-- Create indexes for tables that were created above\r\n"
           + "{4}GO\r\n\r\n"
-          + "-- Create synonyms for tables that were created above\r\n"
           + "{5}GO\r\n",
           GetDatabaseName (),
           _tableBuilder.GetCreateScript (),
@@ -127,15 +122,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return string.Format (
           "USE {0}\r\n"
           + "GO\r\n\r\n"
-          + "-- Drop all synonyms that will be created below\r\n"
           + "{1}GO\r\n\r\n"
-          + "-- Drop all indexes that will be created below\r\n"
           + "{2}GO\r\n\r\n"
-          + "-- Drop all views that will be created below\r\n"
           + "{3}GO\r\n\r\n"
-          + "-- Drop foreign keys of all tables that will be created below\r\n"
           + "{4}GO\r\n\r\n"
-          + "-- Drop all tables that will be created below\r\n"
           + "{5}GO\r\n",
           GetDatabaseName (),
           _synonymBuilder.GetDropScript (),

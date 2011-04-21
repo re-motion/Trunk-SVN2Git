@@ -42,11 +42,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetCreateScript ()
     {
+      _createSynonymStringBuilder.Insert (0, "-- Create synonyms for tables that were created above\r\n");
       return _createSynonymStringBuilder.ToString ();
     }
 
     public string GetDropScript ()
     {
+      _dropSynonymStringBuilder.Insert (0, "-- Drop all synonyms that will be created below\r\n");
       return _dropSynonymStringBuilder.ToString ();
     }
 

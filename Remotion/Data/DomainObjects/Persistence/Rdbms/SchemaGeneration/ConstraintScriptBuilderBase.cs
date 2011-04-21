@@ -41,11 +41,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetCreateScript ()
     {
+      _createConstraintStringBuilder.Insert(0, "-- Create constraints for tables that were created above\r\n");
       return _createConstraintStringBuilder.ToString();
     }
 
     public string GetDropScript ()
     {
+      _dropConstraintStringBuilder.Insert (0, "-- Drop foreign keys of all tables that will be created below\r\n");
       return _dropConstraintStringBuilder.ToString();
     }
 

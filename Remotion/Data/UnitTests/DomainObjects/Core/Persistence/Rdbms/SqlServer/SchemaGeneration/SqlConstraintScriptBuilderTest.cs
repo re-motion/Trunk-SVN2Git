@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlConstraintScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlScriptConstraintBuilder _constraintBuilder;
+    private SqlConstraintScriptBuilder _constraintBuilder;
     private SimpleColumnDefinition _referencedColumn1;
     private SimpleColumnDefinition _referencedColumn2;
     private SimpleColumnDefinition _referencingColumn;
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public override void SetUp ()
     {
       base.SetUp();
-      _constraintBuilder = new SqlScriptConstraintBuilder();
+      _constraintBuilder = new SqlConstraintScriptBuilder();
 
       _referencedColumn1 = new SimpleColumnDefinition ("OrderID", typeof (int), "integer", true, false);
       _referencedColumn2 = new SimpleColumnDefinition ("CustomerID", typeof (int), "integer", true, false);
@@ -69,7 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
 
       var expectedScript =
-          "ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+          "-- Create constraints for tables that were created above\r\n"
+          +"ALTER TABLE [dbo].[OrderItem] ADD\r\n"
           + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetCreateScript());
@@ -81,7 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
 
       var expectedScript =
-          "ALTER TABLE [Test].[Customer] ADD\r\n"
+          "-- Create constraints for tables that were created above\r\n"
+          +"ALTER TABLE [Test].[Customer] ADD\r\n"
           + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID]),\r\n"
           + "  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n"; //TODO 3862: wrong references schema - must be also changed in ExtendedFileBuilder!?
 
@@ -91,13 +93,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetAddConstraintScript_NoConstraint ()
     {
-      Assert.IsEmpty (_constraintBuilder.GetCreateScript());
+      Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
     }
 
     [Test]
     public void GetAddConstraintScript_NoConstraintsAdded ()
     {
-      Assert.IsEmpty (_constraintBuilder.GetCreateScript());
+      Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
     }
 
     [Test]
@@ -106,7 +108,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
 
       var expectedScript =
-          "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          "-- Drop foreign keys of all tables that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
           +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')\r\n"
           +"  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID\r\n";
 
@@ -120,7 +123,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
 
       var expectedScript =
-          "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          "-- Drop foreign keys of all tables that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
           +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')\r\n"
           +"  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID\r\n\r\n"
           +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "

@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlIndexScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlScriptIndexBuilder _indexBuilder;
+    private SqlIndexScriptBuilder _indexBuilder;
     private SqlIndexedColumnDefinition _column1;
     private SqlIndexedColumnDefinition _column2;
     private SimpleColumnDefinition _column3;
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _indexBuilder = new SqlScriptIndexBuilder();
+      _indexBuilder = new SqlIndexScriptBuilder();
 
       _column1 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("ID", typeof (int), "integer", false, true), IndexOrder.Asc);
       _column2 = new SqlIndexedColumnDefinition (new SimpleColumnDefinition ("Name", typeof (string), "varchar(100)", true, false), IndexOrder.Desc);
@@ -48,8 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void Initialize ()
     {
-      Assert.That (_indexBuilder.GetCreateScript(), Is.Empty);
-      Assert.That (_indexBuilder.GetCreateScript(), Is.Empty);
+      Assert.That (_indexBuilder.GetCreateScript(), Is.EqualTo("-- Create indexes for tables that were created above\r\n"));
+      Assert.That (_indexBuilder.GetDropScript (), Is.EqualTo ("-- Drop all indexes that will be created below\r\n"));
     }
 
     [Test]
@@ -68,10 +68,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var expectedCreateIndexScript =
-          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n";
       var expectedDropIndexScript =
-          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
+          "-- Drop all indexes that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
           +"schema_name (so.schema_id)='dbo' and si.[name] = 'Index1')\r\n"
           +"  DROP INDEX [Index1] ON [dbo].[TableName]\r\n";
       
@@ -88,13 +90,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ((ISqlIndexDefinitionVisitor) _indexBuilder).VisitIndexDefinition (indexDefinition);
 
       var expectedCreateIndexScript =
-          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
           + "  ON [test].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "GO\r\n\r\n"
           + "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
           + "  ON [test].[TableName] ([ID] ASC, [Name] DESC)\r\n";
       var expectedDropIndexScript =
-          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
+          "-- Drop all indexes that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName' and "
           +"schema_name (so.schema_id)='test' and si.[name] = 'Index1')\r\n"
           +"  DROP INDEX [Index1] ON [test].[TableName]\r\n"
           +"GO\r\n\r\n"
@@ -116,7 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "  INCLUDE ([Test])\r\n"
           + "  WITH (IGNORE_DUP_KEY = ON, ONLINE = ON)\r\n";
@@ -134,7 +139,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE UNIQUE CLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "  INCLUDE ([Test])\r\n"
           + "  WITH (IGNORE_DUP_KEY = ON, ONLINE = ON, PAD_INDEX = ON, FILLFACTOR = 5, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = ON, "
@@ -168,7 +174,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE NONCLUSTERED INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE NONCLUSTERED INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([ID] ASC, [Name] DESC)\r\n"
           + "  INCLUDE ([Test])\r\n"
           + "  WITH (IGNORE_DUP_KEY = OFF, ONLINE = OFF, PAD_INDEX = OFF, FILLFACTOR = 0, SORT_IN_TEMPDB = OFF, STATISTICS_NORECOMPUTE = OFF, "
@@ -186,7 +193,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE PRIMARY XML INDEX [Index1]\r\n"
           + "  ON [test].[TableName] ([Test])\r\n";
       Assert.That (result, Is.EqualTo (expectedScript));
     }
@@ -208,7 +216,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE PRIMARY XML INDEX [Index1]\r\n"
           + "  ON [dbo].[TableName] ([Test])\r\n"
           + "GO\r\n\r\n"
           + "CREATE XML INDEX [SecondaryName]\r\n"
@@ -228,7 +237,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE PRIMARY XML INDEX [Index1]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE PRIMARY XML INDEX [Index1]\r\n"
           +"  ON [dbo].[TableName] ([Test])\r\n"
           +"  WITH (PAD_INDEX = ON, FILLFACTOR = 10, SORT_IN_TEMPDB = ON, STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = ON, ALLOW_ROW_LOCKS = OFF, "
           +"ALLOW_PAGE_LOCKS = OFF, MAXDOP = 18)\r\n";
@@ -258,7 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _indexBuilder.GetCreateScript();
 
       var expectedScript =
-          "CREATE XML INDEX [SecondaryName]\r\n"
+          "-- Create indexes for tables that were created above\r\n"
+          +"CREATE XML INDEX [SecondaryName]\r\n"
           +"  ON [dbo].[TableName] ([Name])\r\n"
           +"  USING XML INDEX [PrimaryIndexName]\r\n"
           +"  FOR Property\r\n"

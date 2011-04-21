@@ -44,11 +44,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public string GetCreateScript ()
     {
+      _createTableStringBuilder.Insert (0, "-- Create all tables\r\n");
       return _createTableStringBuilder.ToString();
     }
 
     public string GetDropScript ()
     {
+      _dropTableStringBuilder.Insert (0, "-- Drop all tables that will be created below\r\n");
       return _dropTableStringBuilder.ToString();
     }
 
