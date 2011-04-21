@@ -478,7 +478,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>cd ..\..\
-.\GenerateSetupDBScript.cmd $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>REM cd ..\..\
+REM .\GenerateSetupDBScript.cmd $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>
