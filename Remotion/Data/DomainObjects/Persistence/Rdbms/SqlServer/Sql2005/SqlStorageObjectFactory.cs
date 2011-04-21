@@ -125,11 +125,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new SqlScriptBuilder (
+      return new SqlCompositeScriptBuilder (
           storageProviderDefinition,
           CreateTableBuilder(),
-          CreateViewBuilder(),
           CreateConstraintBuilder(),
+          CreateViewBuilder(),
           CreateIndexBuilder(),
           CreateSynonymBuilder());
     }

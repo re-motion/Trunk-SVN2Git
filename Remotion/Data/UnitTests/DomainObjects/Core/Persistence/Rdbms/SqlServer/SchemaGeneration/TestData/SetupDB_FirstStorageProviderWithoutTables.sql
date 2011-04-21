@@ -15,3 +15,4 @@ GO
 
 -- Create synonyms for tables that were created above
 GO
+

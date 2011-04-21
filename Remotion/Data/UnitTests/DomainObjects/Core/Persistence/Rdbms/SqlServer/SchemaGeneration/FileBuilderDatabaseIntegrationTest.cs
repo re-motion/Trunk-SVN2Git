@@ -49,18 +49,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
-              () => new SqlScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder),
+              () => new SqlCompositeScriptBuilder (
+                        SchemaGenerationFirstStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
-              () => new SqlScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder),
+              () => new SqlCompositeScriptBuilder (
+                        SchemaGenerationSecondStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
-              () => new SqlScriptBuilder (
-                        SchemaGenerationThirdStorageProviderDefinition, tableBuilder, viewBuilder, constraintBuilder, indexBuilder, synonymBuilder));
+              () => new SqlCompositeScriptBuilder (
+                        SchemaGenerationThirdStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder));
 
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)

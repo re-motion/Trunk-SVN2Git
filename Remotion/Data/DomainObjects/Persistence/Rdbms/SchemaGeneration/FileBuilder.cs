@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var entityDefinition in entityDefintions)
         scriptBuilder.AddEntityDefinition (entityDefinition);
 
-      return new ScriptPair (scriptBuilder.GetCreateScript (entityDefintions), scriptBuilder.GetDropScript (entityDefintions));
+      return new ScriptPair (scriptBuilder.GetCreateScript (), scriptBuilder.GetDropScript ());
     }
 
     protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (

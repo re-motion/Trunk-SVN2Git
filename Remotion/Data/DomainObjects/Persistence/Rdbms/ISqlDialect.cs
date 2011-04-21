@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Text;
+
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
@@ -29,5 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     string GetParameterName (string name);
     /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
     string DelimitIdentifier (string identifier);
+
+    void AddBatchForScript (StringBuilder createScript);
   }
 }

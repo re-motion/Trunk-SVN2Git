@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Resources;
 using Rhino.Mocks;
@@ -24,10 +23,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class SqlScriptBuilderTest : SchemaGenerationTestBase
+  public class SqlCompositeScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlScriptBuilder _scriptBuilderForFirstStorageProvider;
-    private SqlScriptBuilder _scriptBuilderForSecondStorageProvider;
+    private SqlCompositeScriptBuilder _scriptBuilderForFirstStorageProvider;
+    private SqlCompositeScriptBuilder _scriptBuilderForSecondStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
     private string _firstStorageProviderTearDownDBScriptWithoutTables;
     private SqlTableScriptBuilder _tableBuilderMock;
@@ -46,14 +45,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _indexBuilderMock = MockRepository.GenerateStrictMock<SqlIndexScriptBuilder>();
       _synonymBuilderMock = MockRepository.GenerateStrictMock<SqlSynonymScriptBuilder>();
 
-      _scriptBuilderForFirstStorageProvider = new SqlScriptBuilder (
-          SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);
-      _scriptBuilderForSecondStorageProvider = new SqlScriptBuilder (
-          SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _viewBuilderMock, _constraintBuilderMock, _indexBuilderMock, _synonymBuilderMock);
+      _scriptBuilderForFirstStorageProvider = new SqlCompositeScriptBuilder (
+          SchemaGenerationFirstStorageProviderDefinition, _tableBuilderMock, _constraintBuilderMock, _viewBuilderMock, _indexBuilderMock, _synonymBuilderMock);
+      _scriptBuilderForSecondStorageProvider = new SqlCompositeScriptBuilder (
+          SchemaGenerationSecondStorageProviderDefinition, _tableBuilderMock, _constraintBuilderMock, _viewBuilderMock, _indexBuilderMock, _synonymBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
-          typeof (SqlScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
+          typeof (SqlCompositeScriptBuilderTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
       _firstStorageProviderTearDownDBScriptWithoutTables = ResourceUtility.GetResourceString (
-          typeof (SqlScriptBuilderTest), "TestData.TearDownDB_FirstStorageProviderWithoutTables.sql");
+          typeof (SqlCompositeScriptBuilderTest), "TestData.TearDownDB_FirstStorageProviderWithoutTables.sql");
     }
 
     [Test]
@@ -74,8 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _indexBuilderMock.Replay();
       _synonymBuilderMock.Replay();
 
-      var createScriptResult = _scriptBuilderForFirstStorageProvider.GetCreateScript (new IEntityDefinition[0]);
-      var dropScriptResult = _scriptBuilderForFirstStorageProvider.GetDropScript (new IEntityDefinition[0]);
+      var createScriptResult = _scriptBuilderForFirstStorageProvider.GetCreateScript ();
+      var dropScriptResult = _scriptBuilderForFirstStorageProvider.GetDropScript ();
 
       Assert.That (createScriptResult, Is.EqualTo (_firstStorageProviderSetupDBScriptWithoutTables));
       Assert.That (dropScriptResult, Is.EqualTo (_firstStorageProviderTearDownDBScriptWithoutTables));

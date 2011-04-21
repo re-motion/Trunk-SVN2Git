@@ -129,4 +129,5 @@ GO
 -- Create synonyms for tables that were created above
 CREATE SYNONYM [Test].[AddedViewSynonym] FOR [Test].[AddedView]
 GO
+
 --Extendend file-builder comment at the end

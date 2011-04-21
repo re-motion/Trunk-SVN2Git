@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
@@ -27,12 +26,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public abstract class ScriptBuilderBase
   {
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+    private readonly ISqlDialect _sqlDialect;
 
-    protected ScriptBuilderBase (RdbmsProviderDefinition rdbmsProviderDefinition)
+    protected ScriptBuilderBase (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
+      _sqlDialect = sqlDialect;
     }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
@@ -40,8 +42,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _rdbmsProviderDefinition; }
     }
 
+    public ISqlDialect SqlDialect
+    {
+      get { return _sqlDialect; }
+    }
+
     public abstract void AddEntityDefinition (IEntityDefinition entityDefinition);
-    public abstract string GetCreateScript (IEnumerable<IEntityDefinition> entityDefinitions);
-    public abstract string GetDropScript (IEnumerable<IEntityDefinition> entityDefinitions);
+    public abstract string GetCreateScript ();
+    public abstract string GetDropScript ();
   }
 }

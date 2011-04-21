@@ -131,13 +131,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (SqlScriptBuilder)));
+      Assert.That (result, Is.TypeOf (typeof (SqlCompositeScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (((SqlScriptBuilder) result).TableBuilder, Is.SameAs (tableBuilderStub));
-      Assert.That (((SqlScriptBuilder) result).ViewBuilder, Is.SameAs (viewBuilderStub));
-      Assert.That (((SqlScriptBuilder) result).ConstraintBuilder, Is.SameAs (constraintBuilderStub));
-      Assert.That (((SqlScriptBuilder) result).IndexBuilder, Is.SameAs (indexBuilderStub));
-      Assert.That (((SqlScriptBuilder) result).SynonymBuilder, Is.SameAs (synonymBuilderStub));
+      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[0], Is.SameAs (tableBuilderStub));
+      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[1], Is.SameAs (constraintBuilderStub));
+      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[2], Is.SameAs (viewBuilderStub));
+      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[3], Is.SameAs (indexBuilderStub));
+      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[4], Is.SameAs (synonymBuilderStub));
     }
 
     [Test]

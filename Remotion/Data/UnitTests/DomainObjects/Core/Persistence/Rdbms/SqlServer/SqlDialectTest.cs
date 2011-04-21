@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 
@@ -47,6 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       Assert.That (_dialect.GetParameterName ("parameter"), Is.EqualTo ("@parameter"));
       Assert.That (_dialect.GetParameterName ("@parameter"), Is.EqualTo ("@parameter"));
+    }
+
+    [Test]
+    public void AddBatchForScript ()
+    {
+      var script = new StringBuilder ("test");
+
+      _dialect.AddBatchForScript (script);
+
+      Assert.That (script.ToString(), Is.EqualTo ("testGO\r\n\r\n"));
     }
   }
 }

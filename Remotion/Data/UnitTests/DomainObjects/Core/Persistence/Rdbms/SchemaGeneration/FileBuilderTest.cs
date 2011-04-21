@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -57,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _scriptBuilderMock = MockRepository.GenerateStrictMock<ScriptBuilderBase> (SchemaGenerationFirstStorageProviderDefinition);
+      _scriptBuilderMock = MockRepository.GenerateStrictMock<ScriptBuilderBase> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance);
       _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
 
       _fileBuilder = new TestableFileBuilder (() => _scriptBuilderMock, _entityDefinitionProviderMock);
@@ -224,10 +225,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock
           .Expect (
-              mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+              mock => mock.GetCreateScript ())
           .Return ("DummyCreate");
       _scriptBuilderMock
-          .Expect (mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+          .Expect (mock => mock.GetDropScript ())
           .Return ("DummyDrop");
 
       _entityDefinitionProviderMock
@@ -260,11 +261,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
       _scriptBuilderMock
           .Expect (
-              mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+              mock => mock.GetCreateScript ())
           .Return ("CreateResult");
       _scriptBuilderMock
           .Expect (
-              mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new[] { _firstProviderStorageEntityDefinitionStub })))
+              mock => mock.GetDropScript ())
           .Return ("DropResult");
       _scriptBuilderMock.Replay();
 
@@ -287,10 +288,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinition1.SetStorageEntity (_secondProviderStorageEntityDefinitionStub);
 
       _scriptBuilderMock
-          .Expect (mock => mock.GetCreateScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
+          .Expect (mock => mock.GetCreateScript ())
           .Return ("CreateResult");
       _scriptBuilderMock
-          .Expect (mock => mock.GetDropScript (Arg<IEnumerable<IEntityDefinition>>.List.Equal (new IEntityDefinition[0])))
+          .Expect (mock => mock.GetDropScript ())
           .Return ("DropResult");
       _scriptBuilderMock.Replay();
 
