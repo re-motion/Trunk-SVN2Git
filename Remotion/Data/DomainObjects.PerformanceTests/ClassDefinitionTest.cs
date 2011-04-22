@@ -136,8 +136,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
       var tableDefinition = new TableDefinition (
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
-          "Test",
-          "TestView",
+          new EntityNameDefinition (null, "Test"),
+          new EntityNameDefinition (null, "TestView"),
           new SimpleColumnDefinition[] { },
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
