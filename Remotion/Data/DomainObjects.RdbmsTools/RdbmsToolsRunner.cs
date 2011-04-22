@@ -83,6 +83,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
       InitializeConfiguration();
 
+      if (!string.IsNullOrEmpty (_rdbmsToolsParameters.SchemaFileBuilderTypeName))
+      {
+        throw new NotSupportedException (
+            "The schemaBuilder parameter is obsolete and should no longer be used. "
+            + "(The schema file builder is now retrieved from the storage provider definition.)");
+      }
+
       if ((_rdbmsToolsParameters.Mode & OperationMode.BuildSchema) != 0)
         BuildSchema();
     }
@@ -117,13 +124,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected virtual void BuildSchema ()
     {
-      if (!string.IsNullOrEmpty (_rdbmsToolsParameters.SchemaFileBuilderTypeName))
-      {
-        throw new NotSupportedException (
-            "The schemaBuilder parameter is obsolete and should no longer be used. "
-            + "(The schema file builder is now retrieved from the storage provider definition.)");
-      }
-
       FileBuilder.Build (
           MappingConfiguration.Current.ClassDefinitions.Cast<ClassDefinition>().ToList(),
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
