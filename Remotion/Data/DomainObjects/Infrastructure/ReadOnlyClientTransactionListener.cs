@@ -40,22 +40,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public virtual void SubTransactionCreating (ClientTransaction clientTransaction)
+    public void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       EnsureWriteable (clientTransaction, "SubTransactionCreating");
     }
 
-    public virtual void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       Assertion.IsTrue (clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
     }
 
-    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       EnsureWriteable (clientTransaction, "NewObjectCreating");
     }
 
-    public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       EnsureWriteable (clientTransaction, "ObjectsLoading");
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "ObjectsUnloaded");
     }
 
-    public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "ObjectsLoaded");
     }
@@ -75,17 +75,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "ObjectsUnloading");
     }
 
-    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       EnsureWriteable (clientTransaction, "ObjectDeleting");
     }
 
-    public virtual void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       EnsureWriteable (clientTransaction, "ObjectDeleted");
     }
 
-    public virtual void PropertyValueReading (
+    public void PropertyValueReading (
         ClientTransaction clientTransaction,
         DataContainer dataContainer,
         PropertyValue propertyValue,
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void PropertyValueRead (
+    public void PropertyValueRead (
         ClientTransaction clientTransaction,
         DataContainer dataContainer,
         PropertyValue propertyValue,
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void PropertyValueChanging (
+    public void PropertyValueChanging (
         ClientTransaction clientTransaction,
         DataContainer dataContainer,
         PropertyValue propertyValue,
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "PropertyValueChanging");
     }
 
-    public virtual void PropertyValueChanged (
+    public void PropertyValueChanged (
         ClientTransaction clientTransaction,
         DataContainer dataContainer,
         PropertyValue propertyValue,
@@ -122,11 +122,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "PropertyValueChanged");
     }
 
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
     }
 
-    public virtual void RelationRead (
+    public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationRead (
+    public void RelationRead (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationChanging (
+    public void RelationChanging (
         ClientTransaction clientTransaction,
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -154,7 +154,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationChanging");
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
     {
       EnsureWriteable (clientTransaction, "RelationChanged");
     }
@@ -164,32 +164,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "TransactionCommitting");
     }
 
-    public virtual void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "TransactionCommitted");
     }
 
-    public virtual void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "TransactionRollingBack");
     }
 
-    public virtual void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "TransactionRolledBack");
     }
 
-    public virtual void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
       EnsureWriteable (clientTransaction, "RelationEndPointMapRegistering");
     }
 
-    public virtual void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       EnsureWriteable (clientTransaction, "RelationEndPointMapUnregistering");
     }
@@ -199,17 +199,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
     }
 
-    public virtual void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
     {
       // also allowed for read-only transactions
     }
 
-    public virtual void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
+    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       EnsureWriteable (clientTransaction, "DataContainerMapRegistering");
     }
 
-    public virtual void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
+    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       EnsureWriteable (clientTransaction, "DataContainerMapUnregistering");
     }
