@@ -31,6 +31,10 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// Manages the data (<see cref="DataContainer"/> instances, <see cref="IRelationEndPoint"/> instances, and invalid objects) for a 
+  /// <see cref="ClientTransaction"/>.
+  /// </summary>
   [Serializable]
   public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader, IRelationEndPointProvider
   {
