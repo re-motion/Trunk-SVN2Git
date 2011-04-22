@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return (IVirtualEndPoint) this[endPointID] ?? RegisterVirtualEndPoint (endPointID);
     }
 
-    // When registering a DataContainer, its real end-points are always registered, too. This will indirectly register opposite virtual end-points.
+    // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
     {
@@ -279,9 +279,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // When unregistering a DataContainer, its real end-points are always unregistered. This will indirectly unregister opposite virtual end-points.
+    // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are unregistered as well.
-    // If the DataContainer is not New, virtual object end-points with a null Original value are also unregistered because they are owned by this DataContainer.
     public void UnregisterEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
