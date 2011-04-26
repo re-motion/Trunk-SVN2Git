@@ -76,37 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void VisitSqlIndexedColumnDefinition_WithoutIndexOrder ()
-    {
-      var indexedColumnDefinition = new SqlIndexedColumnDefinition (_column1);
-
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
-
-      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition);
-
-      var result = _visitorAllowingNulls.GetNameList();
-
-      Assert.That (result, Is.EqualTo ("[C1]"));
-    }
-
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_WithIndexOrder ()
-    {
-      var indexedColumnDefinition1 = new SqlIndexedColumnDefinition (_column1, IndexOrder.Asc);
-      var indexedColumnDefinition2 = new SqlIndexedColumnDefinition (_column2, IndexOrder.Desc);
-
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C1")).Return ("[C1]");
-      _sqlDialectStub.Stub (stub => stub.DelimitIdentifier ("C2")).Return ("[C2]");
-
-      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition1);
-      _visitorAllowingNulls.VisitSqlIndexedColumnDefinition (indexedColumnDefinition2);
-      
-      var result = _visitorAllowingNulls.GetNameList ();
-
-      Assert.That (result, Is.EqualTo ("[C1] ASC, [C2] DESC"));
-    }
-    
-    [Test]
     public void VisitIDColumnDefinition ()
     {
       var objectIDColumn = new SimpleColumnDefinition ("C1ID", typeof (int), "integer", false, false);

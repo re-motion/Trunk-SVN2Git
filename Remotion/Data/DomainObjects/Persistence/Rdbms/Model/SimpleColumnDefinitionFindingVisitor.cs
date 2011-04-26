@@ -49,13 +49,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       _columnDefinitions.Add (simpleColumnDefinition);
     }
 
-    public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("indexedColumnDefinition", indexedColumnDefinition);
-
-      indexedColumnDefinition.Columnn.Accept (this);
-    }
-
     public void VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
     {
       ArgumentUtility.CheckNotNull ("idColumnDefinition", idColumnDefinition);

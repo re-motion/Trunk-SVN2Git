@@ -34,19 +34,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         _foundColumn = new NullColumnDefinition ();
     }
 
-    public void VisitSqlIndexedColumnDefinition (SqlIndexedColumnDefinition indexedColumnDefinition)
-    {
-      if (_availableColumns.Contains (indexedColumnDefinition))
-      {
-        _foundColumn = indexedColumnDefinition;
-      }
-      else
-      {
-        var innerColumn = FindColumn (indexedColumnDefinition.Columnn);
-        _foundColumn = new SqlIndexedColumnDefinition (innerColumn, indexedColumnDefinition.IndexOrder);
-      }
-    }
-
     void IColumnDefinitionVisitor.VisitIDColumnDefinition (IDColumnDefinition idColumnDefinition)
     {
       if (_availableColumns.Contains (idColumnDefinition))

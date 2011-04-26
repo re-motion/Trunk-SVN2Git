@@ -31,8 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private SimpleColumnDefinition _simpleColumn4;
     private IDColumnDefinition _idColumn1;
     private IDColumnDefinition _idColumn2;
-    private SqlIndexedColumnDefinition _indexedColumn1;
-    private SqlIndexedColumnDefinition _indexedColumn2;
 
     [SetUp]
     public void SetUp ()
@@ -41,8 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _simpleColumn2 = new SimpleColumnDefinition ("Simple2", typeof (int), "integer", false, false);
       _simpleColumn3 = new SimpleColumnDefinition ("Simple3", typeof (int), "integer", false, false);
       _simpleColumn4 = new SimpleColumnDefinition ("Simple4", typeof (int), "integer", false, false);
-      _indexedColumn1 = new SqlIndexedColumnDefinition (_simpleColumn1, IndexOrder.Asc);
-      _indexedColumn2 = new SqlIndexedColumnDefinition (_simpleColumn2, IndexOrder.Desc);
       _idColumn1 = new IDColumnDefinition (_simpleColumn1, _simpleColumn2);
       _idColumn2 = new IDColumnDefinition (_simpleColumn3, _simpleColumn4);
 
@@ -65,30 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       _visitor.VisitSimpleColumnDefinition (_simpleColumn1);
       _visitor.VisitSimpleColumnDefinition (_simpleColumn2);
-
-      var result = _visitor.GetSimpleColumns ().ToArray ();
-
-      Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (result[0], Is.SameAs (_simpleColumn1));
-      Assert.That (result[1], Is.SameAs (_simpleColumn2));
-    }
-
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_Once ()
-    {
-      _visitor.VisitSqlIndexedColumnDefinition (_indexedColumn1);
-
-      var result = _visitor.GetSimpleColumns ().ToArray ();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.SameAs (_simpleColumn1));
-    }
-
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_Twice ()
-    {
-      _visitor.VisitSqlIndexedColumnDefinition (_indexedColumn1);
-      _visitor.VisitSqlIndexedColumnDefinition (_indexedColumn2);
 
       var result = _visitor.GetSimpleColumns ().ToArray ();
 

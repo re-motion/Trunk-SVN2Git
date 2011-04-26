@@ -262,7 +262,7 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionProviderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\SqlIndexedColumnDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TestableSynonymBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedEntityDefinitionProvider.cs" />

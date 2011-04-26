@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
-  public class SqlIndexedColumnDefinition : IColumnDefinition
+  /// <summary>
+  /// <see cref="SqlIndexedColumnDefinition"/> represents an indexed-column in a SQL-server database.
+  /// </summary>
+  public class SqlIndexedColumnDefinition
   {
     private readonly IColumnDefinition _columnn;
     private readonly IndexOrder? _indexOrder;
@@ -41,41 +44,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       get { return _indexOrder; }
     }
-
-    public string Name
-    {
-      get { return _columnn.Name; }
-    }
-
-    public void Accept (IColumnDefinitionVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      visitor.VisitSqlIndexedColumnDefinition (this);
-    }
-
-    public bool Equals (IColumnDefinition other)
-    {
-      if (other == null || other.GetType () != GetType ())
-        return false;
-
-      var castOther = (SqlIndexedColumnDefinition) other;
-      return Equals (castOther.Columnn, Columnn) && Equals(castOther.IndexOrder, IndexOrder);
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Equals (obj as SqlIndexedColumnDefinition);
-    }
-
-    public override int GetHashCode ()
-    {
-      return EqualityUtility.GetRotatedHashCode (Columnn, IndexOrder);
-    }
-
-    public bool IsNull
-    {
-      get { return false; }
-    }
+    
   }
 }

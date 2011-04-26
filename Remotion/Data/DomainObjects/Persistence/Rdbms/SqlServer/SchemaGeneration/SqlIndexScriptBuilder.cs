@@ -69,9 +69,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           sqlIndexDefinition.IndexName,
           sqlIndexDefinition.ObjectName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
           sqlIndexDefinition.ObjectName.EntityName,
-          GetColumnList (sqlIndexDefinition.Columns.Cast<IColumnDefinition>(), false),
-          sqlIndexDefinition.IncludedColumns != null ? "  INCLUDE (" + GetColumnList (sqlIndexDefinition.IncludedColumns, false) + ")\r\n" : string.Empty,
+          GetIndexedColumnNames (sqlIndexDefinition.Columns),
+          sqlIndexDefinition.IncludedColumns != null
+              ? "  INCLUDE (" + GetColumnList (sqlIndexDefinition.IncludedColumns, false) + ")\r\n"
+              : string.Empty,
           GetCreateIndexOptions (GetCreateIndexOptionItems (sqlIndexDefinition)));
+    }
+
+    private string GetIndexedColumnNames (IEnumerable<SqlIndexedColumnDefinition> indexedColumnDefinitions)
+    {
+      return SeparatedStringBuilder.Build (
+          ", ",
+          indexedColumnDefinitions.Select (
+              cd =>
+              SqlDialect.DelimitIdentifier (cd.Columnn.Name) + (cd.IndexOrder.HasValue ? " " + cd.IndexOrder.ToString().ToUpper() : string.Empty)));
     }
 
     private void AddToCreateIndexScript (SqlPrimaryXmlIndexDefinition indexDefinition)
@@ -115,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
     private string GetCreateIndexOptions (IEnumerable<string> optionItems)
     {
-      return optionItems.Any () ? "  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")\r\n" : string.Empty;
+      return optionItems.Any() ? "  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")\r\n" : string.Empty;
     }
 
     private IEnumerable<string> GetCreateIndexOptionItemsBase (SqlIndexDefinitionBase indexDefinition)
@@ -147,6 +158,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       foreach (var optionItem in GetCreateIndexOptionItemsBase (indexDefinition))
         yield return optionItem;
     }
-    
   }
 }

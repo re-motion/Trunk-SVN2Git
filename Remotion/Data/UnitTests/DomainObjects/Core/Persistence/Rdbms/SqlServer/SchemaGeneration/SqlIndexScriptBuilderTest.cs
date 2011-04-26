@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var secondaryIndexDefinition = new SqlSecondaryXmlIndexDefinition (
           "SecondaryName",
           _tableNameWithDefaultSchema,
-          _column2,
+          _column2.Columnn,
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Property);
 
@@ -251,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var secondaryIndexDefinition = new SqlSecondaryXmlIndexDefinition (
           "SecondaryName",
           _tableNameWithDefaultSchema,
-          _column2,
+          _column2.Columnn,
           "PrimaryIndexName",
           SqlSecondaryXmlIndexKind.Property,
           false,

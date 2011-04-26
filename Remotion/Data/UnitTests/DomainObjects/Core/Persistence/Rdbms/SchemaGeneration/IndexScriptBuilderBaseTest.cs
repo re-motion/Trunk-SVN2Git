@@ -41,8 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _indexBuilder = new TestableIndexBuilder (_sqlDialectStub);
 
       var objectName = new EntityNameDefinition (null, "ObjectName");
-      var xmlColumn = new SqlIndexedColumnDefinition(new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", false, false));
-      _sqlIndexDefinition = new SqlIndexDefinition ("IndexDefinitionName", objectName, new[] { xmlColumn }, null, false, false, false, false);
+      var xmlColumn = new SimpleColumnDefinition ("XmlColumn", typeof (string), "xml", false, false);
+      _sqlIndexDefinition = new SqlIndexDefinition (
+          "IndexDefinitionName", objectName, new[] { new SqlIndexedColumnDefinition (xmlColumn) }, null, false, false, false, false);
       _primaryXmlIndexDefinition = new SqlPrimaryXmlIndexDefinition ("PrimaryIndexName", objectName, xmlColumn);
       _secondaryXmlIndexDefinition = new SqlSecondaryXmlIndexDefinition (
           "SecondaryIndexName", objectName, xmlColumn, "PrimaryIndexName", SqlSecondaryXmlIndexKind.Property);
@@ -53,7 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "viewName"),
           new IColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
+          new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -68,16 +70,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           createIndexScript,
           Is.EqualTo (
               "-- Create indexes for tables that were created above\r\n"
-              +"CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
       Assert.That (
           dropIndexScript,
           Is.EqualTo (
               "-- Drop all indexes that will be created below\r\n"
-              +"DROP INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "DROP INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
     }
 
     [Test]
@@ -89,7 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           _tableDefinition,
           new[] { "ClassID" },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
+          new EntityNameDefinition[0]);
 
       _indexBuilder.AddEntityDefinition (filterViewDefinition);
 
@@ -100,16 +103,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           createIndexScript,
           Is.EqualTo (
               "-- Create indexes for tables that were created above\r\n"
-              +"CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
       Assert.That (
           dropIndexScript,
           Is.EqualTo (
               "-- Drop all indexes that will be created below\r\n"
-              +"DROP INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "DROP INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
     }
 
     [Test]
@@ -120,7 +123,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "UnionViewName"),
           new[] { _tableDefinition },
           new IColumnDefinition[0],
-          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition }, new EntityNameDefinition[0]);
+          new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
+          new EntityNameDefinition[0]);
 
       _indexBuilder.AddEntityDefinition (unionViewDefinition);
 
@@ -131,16 +135,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           createIndexScript,
           Is.EqualTo (
               "-- Create indexes for tables that were created above\r\n"
-              +"CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "CREATE INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "CREATE INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "CREATE INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
       Assert.That (
           dropIndexScript,
           Is.EqualTo (
               "-- Drop all indexes that will be created below\r\n"
-              +"DROP INDEX IndexDefinitionName (IndexDefinition)\r\n" 
-              +"DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n" 
-              +"DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
+              + "DROP INDEX IndexDefinitionName (IndexDefinition)\r\n"
+              + "DROP INDEX PrimaryIndexName (PrimaryXmlIndexDefinition)\r\n"
+              + "DROP INDEX SecondaryIndexName (SecondaryXmlIndexDefinition)\r\n"));
     }
   }
 }

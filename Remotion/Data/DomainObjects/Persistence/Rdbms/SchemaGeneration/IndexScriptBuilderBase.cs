@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -30,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly StringBuilder _createIndexStringBuilder;
     private readonly StringBuilder _dropIndexStringBuilder;
     private readonly ISqlDialect _sqlDialect;
+    private readonly StringBuilder _nameList = new StringBuilder ();
 
     protected IndexScriptBuilderBase (ISqlDialect sqlDialect)
     {

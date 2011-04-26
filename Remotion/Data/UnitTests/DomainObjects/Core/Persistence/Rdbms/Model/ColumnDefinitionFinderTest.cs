@@ -30,24 +30,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     private IDColumnDefinition _availableIdColumn;
     private IDColumnDefinition _notAvailableIdColumn1;
     private IDColumnDefinition _notAvailableIdColumn2;
-    private SqlIndexedColumnDefinition _availableIndexedColum;
-    private SqlIndexedColumnDefinition _notAvailableIndexedColumn1;
-    private SqlIndexedColumnDefinition _notAvailableIndexedColumn2;
-
+    
     [SetUp]
     public void SetUp ()
     {
       _availableColumn1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
       _availableColumn2 = new SimpleColumnDefinition ("Column2", typeof (string), "varchar", false, false);
       _notAvailableColumn = new SimpleColumnDefinition ("Column3", typeof (string), "varchar", false, false);
-      _availableIndexedColum = new SqlIndexedColumnDefinition (_availableColumn1);
-      _notAvailableIndexedColumn1 = new SqlIndexedColumnDefinition (_availableColumn2);
-      _notAvailableIndexedColumn2 = new SqlIndexedColumnDefinition (_notAvailableColumn);
       _availableIdColumn = new IDColumnDefinition (_availableColumn1, _availableColumn2);
       _notAvailableIdColumn1 = new IDColumnDefinition (_availableColumn2, _availableColumn1 );
       _notAvailableIdColumn2 = new IDColumnDefinition (_notAvailableColumn, _notAvailableColumn);
       
-      _finder = new ColumnDefinitionFinder (new IColumnDefinition[] { _availableIndexedColum, _availableIdColumn, _availableColumn1, _availableColumn2 });
+      _finder = new ColumnDefinitionFinder (new IColumnDefinition[] { _availableIdColumn, _availableColumn1, _availableColumn2 });
     }
 
     [Test]
@@ -67,35 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       Assert.That (result, Is.TypeOf(typeof (NullColumnDefinition)));
     }
 
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_ColumnDefinitonIsAvailable_ColumnIsReturned ()
-    {
-      var result = _finder.FindColumn (_availableIndexedColum);
-
-      Assert.That (result, Is.SameAs (_availableIndexedColum));
-    }
-
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_InnerColumnsAreAvailable_NewSqlIndexedColumnWithAvailableColumnsIsReturned ()
-    {
-      var result = _finder.FindColumn (_notAvailableIndexedColumn1);
-
-      Assert.That (result, Is.Not.SameAs (_notAvailableIndexedColumn1));
-      Assert.That (result, Is.TypeOf (typeof (SqlIndexedColumnDefinition)));
-      Assert.That (((SqlIndexedColumnDefinition) result).Columnn, Is.SameAs (_availableColumn2));
-    }
-
-    [Test]
-    public void VisitSqlIndexedColumnDefinition_InnerColumnIsNotAvailable_NewSqlIndexedColumnWithNullColumnsIsReturned ()
-    {
-      var result = _finder.FindColumn (_notAvailableIndexedColumn2);
-
-      Assert.That (result, Is.Not.SameAs (_notAvailableIndexedColumn2));
-      Assert.That (result, Is.TypeOf (typeof (SqlIndexedColumnDefinition)));
-      Assert.That (((SqlIndexedColumnDefinition) result).Columnn, Is.Not.SameAs (_notAvailableColumn));
-      Assert.That (((SqlIndexedColumnDefinition) result).Columnn, Is.TypeOf (typeof (NullColumnDefinition)));
-    }
-    
     [Test]
     public void VisitIDColumnDefinition_ColumnDefinitonIsAvailable_ColumnIsReturned ()
     {
