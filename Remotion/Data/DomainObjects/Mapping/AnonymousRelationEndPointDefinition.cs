@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public override object GetRealObject (StreamingContext context)
     {
-      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions.GetMandatory (_serializedRelationID);
+      var relationDefinition = MappingConfiguration.Current.RelationDefinitions[_serializedRelationID];
       if (relationDefinition.EndPointDefinitions[0].IsAnonymous)
         return relationDefinition.EndPointDefinitions[0];
       else

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
@@ -76,8 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var configuration = new MappingConfiguration (
           _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
-      ClassDefinitionCollection actualClassDefinitionCollection = configuration.ClassDefinitions;
-      RelationDefinitionCollection actualRelationDefinitionCollection = configuration.RelationDefinitions;
+      var actualClassDefinitionCollection = configuration.ClassDefinitions;
+      var actualRelationDefinitionCollection = configuration.RelationDefinitions;
 
       _mockRepository.VerifyAll();
 
@@ -86,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
       Assert.That (configuration.ClassDefinitions.IsReadOnly, Is.True);
-      Assert.That (configuration.RelationDefinitions.IsReadOnly, Is.True);
+      Assert.That (((ICollection<KeyValuePair<string, RelationDefinition>>) configuration.RelationDefinitions).IsReadOnly, Is.True);
     }
 
     [Test]

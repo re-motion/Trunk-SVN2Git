@@ -197,7 +197,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public override object GetRealObject (StreamingContext context)
     {
-      return MappingConfiguration.Current.RelationDefinitions.GetMandatory (_id);
+      return MappingConfiguration.Current.RelationDefinitions[_id];
     }
 
     protected override bool IsPartOfMapping

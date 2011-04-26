@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -72,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     // member fields
 
     private readonly ClassDefinitionCollection _classDefinitions;
-    private readonly RelationDefinitionCollection _relationDefinitions;
+    private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
     private readonly bool _resolveTypes;
     private readonly IMappingNameResolver _nameResolver;
 
@@ -92,7 +93,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         ValidateClassDefinitions (mappingLoader);
         ValidatePropertyDefinitions (mappingLoader);
 
-        _relationDefinitions = new RelationDefinitionCollection (mappingLoader.GetRelationDefinitions (_classDefinitions), true);
+        var relationDefinitions = mappingLoader.GetRelationDefinitions (_classDefinitions);
+        _relationDefinitions = new ReadOnlyDictionary<string, RelationDefinition> (relationDefinitions.ToDictionary (rd => rd.ID));
 
         ValidateRelationDefinitions (mappingLoader);
 
@@ -151,7 +153,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _classDefinitions; }
     }
 
-    public RelationDefinitionCollection RelationDefinitions
+    public ReadOnlyDictionary<string, RelationDefinition> RelationDefinitions
     {
       get { return _relationDefinitions; }
     }
@@ -186,7 +188,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
 
-      return _relationDefinitions.Contains (relationDefinition);
+      RelationDefinition existingRelationDefinition;
+      if (_relationDefinitions.TryGetValue (relationDefinition.ID, out existingRelationDefinition))
+        return object.ReferenceEquals (existingRelationDefinition, relationDefinition);
+      else
+        return false;
     }
 
     public bool Contains (IRelationEndPointDefinition relationEndPointDefinition)
@@ -208,7 +214,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       foreach (ClassDefinition classDefinition in _classDefinitions)
         classDefinition.SetReadOnly();
       _classDefinitions.SetReadOnly();
-      _relationDefinitions.SetReadOnly();
     }
 
     private void ValidateClassDefinitions (IMappingLoader mappingLoader)
@@ -226,13 +231,13 @@ namespace Remotion.Data.DomainObjects.Mapping
     private void ValidateRelationDefinitions (IMappingLoader mappingLoader)
     {
       var relationDefinitionValidator = mappingLoader.CreateRelationDefinitionValidator();
-      AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
+      AnalyzeMappingValidationResults (relationDefinitionValidator.Validate (_relationDefinitions.Values));
     }
 
     private void ValidateSortExpression (IMappingLoader mappingLoader)
     {
       var sortExpressionValidator = mappingLoader.CreateSortExpressionValidator();
-      AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Cast<RelationDefinition>()));
+      AnalyzeMappingValidationResults (sortExpressionValidator.Validate (_relationDefinitions.Values));
     }
 
     private void ValidatePersistenceMapping (IPersistenceMappingValidator validator, ClassDefinition rootClass)

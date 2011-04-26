@@ -94,13 +94,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
       Assert.That (
-          mappingConfiguration.RelationDefinitions[0].ID,
-          Is.EqualTo (
+          mappingConfiguration.RelationDefinitions.ContainsKey (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
       Assert.That (
-          mappingConfiguration.RelationDefinitions[1].ID,
-          Is.EqualTo (
+          mappingConfiguration.RelationDefinitions.ContainsKey (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
     }

@@ -276,27 +276,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void RelationDefinition_InMapping ()
     {
-      RelationDefinition relationDefinition =
-          MappingConfiguration.Current.RelationDefinitions.GetMandatory (
+      var relationDefinition =
+          MappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:"
-              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+              + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"];
       var deserializedRelationDefinition = (RelationDefinition) SerializeAndDeserialize (relationDefinition);
 
       Assert.That (deserializedRelationDefinition, Is.SameAs (relationDefinition));
-    }
-
-    [Test]
-    public void SimpleRelationDefinitionCollection ()
-    {
-      var definitions = new RelationDefinitionCollection();
-      definitions.Add (MappingConfiguration.Current.RelationDefinitions[0]);
-      definitions.Add (MappingConfiguration.Current.RelationDefinitions[1]);
-
-      var deserializedDefinitions = (RelationDefinitionCollection) SerializeAndDeserialize (definitions);
-
-      Assert.That (ReferenceEquals (definitions, deserializedDefinitions), Is.False);
-      Assert.That (deserializedDefinitions[0], Is.SameAs (definitions[0]));
-      Assert.That (deserializedDefinitions[1], Is.SameAs (definitions[1]));
     }
 
     [Test]
