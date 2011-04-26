@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Resources;
 
@@ -54,27 +55,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
+                        SchemaGenerationFirstStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
+                        SchemaGenerationSecondStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationThirdStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder));
+                        SchemaGenerationThirdStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
-      _firstStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_FirstStorageProvider.sql");
+      _firstStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_FirstStorageProvider.sql");
 
       _secondStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_SecondStorageProvider.sql");
-      _secondStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_SecondStorageProvider.sql");
-      
+      _secondStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_SecondStorageProvider.sql");
+
       _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
-      _thirdStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType (), "TestData.TearDownDB_ThirdStorageProvider.sql");
-      
+      _thirdStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_ThirdStorageProvider.sql");
+
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
           .ToArray();

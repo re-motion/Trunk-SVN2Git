@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
@@ -133,11 +134,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (SqlCompositeScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[0], Is.SameAs (tableBuilderStub));
-      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[1], Is.SameAs (constraintBuilderStub));
-      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[2], Is.SameAs (viewBuilderStub));
-      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[3], Is.SameAs (indexBuilderStub));
-      Assert.That (((SqlCompositeScriptBuilder) result).ScriptBuilders[4], Is.SameAs (synonymBuilderStub));
+      Assert.That (result.ScriptBuilders[0], Is.SameAs (tableBuilderStub));
+      Assert.That (result.ScriptBuilders[1], Is.SameAs (constraintBuilderStub));
+      Assert.That (result.ScriptBuilders[2], Is.SameAs (viewBuilderStub));
+      Assert.That (result.ScriptBuilders[3], Is.SameAs (indexBuilderStub));
+      Assert.That (result.ScriptBuilders[4], Is.SameAs (synonymBuilderStub));
     }
 
     [Test]

@@ -69,6 +69,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return _dropIndexStringBuilder.ToString ();
     }
 
+    public RdbmsProviderDefinition RdbmsProviderDefinition
+    {
+      get { throw new NotSupportedException(); }
+    }
+
     public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

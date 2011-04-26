@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableFileBuilder : FileBuilder
   {
-    public TestableFileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+    public TestableFileBuilder (Func<IScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
         : base(scriptBuilderFactory, entityDefinitionProvider)
     {
     }

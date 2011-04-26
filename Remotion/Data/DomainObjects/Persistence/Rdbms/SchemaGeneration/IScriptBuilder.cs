@@ -24,6 +24,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public interface IScriptBuilder
   {
+    RdbmsProviderDefinition RdbmsProviderDefinition { get; } 
+
     void AddEntityDefinition (IEntityDefinition entityDefinition);
     string GetCreateScript ();
     string GetDropScript ();

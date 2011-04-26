@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
@@ -50,17 +51,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
+                        SchemaGenerationFirstStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder),
+                        SchemaGenerationSecondStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder),
               new EntityDefinitionProvider());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
               () => new SqlCompositeScriptBuilder (
-                        SchemaGenerationThirdStorageProviderDefinition, tableBuilder, constraintBuilder, viewBuilder, indexBuilder, synonymBuilder));
+                        SchemaGenerationThirdStorageProviderDefinition,
+                        SqlDialect.Instance,
+                        tableBuilder,
+                        constraintBuilder,
+                        viewBuilder,
+                        indexBuilder,
+                        synonymBuilder));
 
       _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
@@ -110,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       var scripts = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
 
-      DatabaseAgent.ExecuteBatchString (scripts.DropScript+scripts.CreateScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
     }
   }
 }

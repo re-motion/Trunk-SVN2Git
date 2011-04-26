@@ -15,28 +15,44 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Utilities;
-using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
-  public class SqlCompositeScriptBuilder : ScriptBuilderBase, IScriptBuilder
+  /// <summary>
+  /// Acts as an abstract base class for implementations generating a setup script for a list of entity definitions.
+  /// </summary>
+  public class SqlCompositeScriptBuilder : IScriptBuilder
   {
-    private readonly IScriptBuilder[] _scriptBuilders;
     public const string DefaultSchema = "dbo";
-
-    // TODO: Add tests using mocks as soon as interfaces can be used for partial script builders
+    
+    private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
+    private readonly ISqlDialect _sqlDialect;
+    private readonly IScriptBuilder[] _scriptBuilders;
+    
     public SqlCompositeScriptBuilder (
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        params IScriptBuilder[] scriptBuilders)
-      : base (ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition), SqlServer.SqlDialect.Instance)
+        RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder[] scriptBuilders)
     {
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("scriptBuilders", scriptBuilders);
-     
+
+      _rdbmsProviderDefinition = rdbmsProviderDefinition;
+      _sqlDialect = sqlDialect;
       _scriptBuilders = scriptBuilders;
+    }
+
+    public RdbmsProviderDefinition RdbmsProviderDefinition
+    {
+      get { return _rdbmsProviderDefinition; }
+    }
+
+    public ISqlDialect SqlDialect
+    {
+      get { return _sqlDialect; }
     }
 
     public IScriptBuilder[] ScriptBuilders
@@ -44,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return _scriptBuilders; }
     }
 
-    public override void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
@@ -52,34 +68,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         scriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
-    public override string GetCreateScript ()
+    public string GetCreateScript ()
     {
       var createScript = new StringBuilder();
       SqlDialect.CreateScriptForConnectionString (createScript, RdbmsProviderDefinition.ConnectionString);
-      SqlDialect.AddBatchForScript(createScript);
+      SqlDialect.AddBatchForScript (createScript);
 
       foreach (var scriptBuilder in ScriptBuilders)
       {
-        createScript.Append(scriptBuilder.GetCreateScript());
+        createScript.Append (scriptBuilder.GetCreateScript());
         SqlDialect.AddBatchForScript (createScript);
       }
 
       return createScript.ToString();
     }
 
-    public override string GetDropScript ()
+    public string GetDropScript ()
     {
-      var dropScript = new StringBuilder ();
+      var dropScript = new StringBuilder();
       SqlDialect.CreateScriptForConnectionString (dropScript, RdbmsProviderDefinition.ConnectionString);
       SqlDialect.AddBatchForScript (dropScript);
 
       foreach (var scriptBuilder in ScriptBuilders.Reverse())
       {
-        dropScript.Append (scriptBuilder.GetDropScript ());
+        dropScript.Append (scriptBuilder.GetDropScript());
         SqlDialect.AddBatchForScript (dropScript);
       }
 
-      return dropScript.ToString ();
+      return dropScript.ToString();
     }
   }
 }

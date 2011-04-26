@@ -98,10 +98,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath, fileName);
     }
 
-    private readonly Func<ScriptBuilderBase> _scriptBuilderFactory;
+    private readonly Func<IScriptBuilder> _scriptBuilderFactory;
     private readonly IEntityDefinitionProvider _entityDefinitionProvider;
 
-    public FileBuilder (Func<ScriptBuilderBase> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+    public FileBuilder (Func<IScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
       ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);
@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       // TODO Review 3932: Add a test showing that when GetScript is called twice, the _scriptBuilderFactory is also called twice.
-      var scriptBuilder = _scriptBuilderFactory();
+      var scriptBuilder =  _scriptBuilderFactory();
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
 

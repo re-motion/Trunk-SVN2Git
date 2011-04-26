@@ -121,12 +121,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return ObjectFactory.Create<DomainObjectQueryExecutor> (ctorParameters);
     }
 
-    public virtual ScriptBuilderBase CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public virtual SqlCompositeScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       return new SqlCompositeScriptBuilder (
           storageProviderDefinition,
+          SqlDialect.Instance,
           CreateTableBuilder(),
           CreateConstraintBuilder(),
           CreateViewBuilder(),
