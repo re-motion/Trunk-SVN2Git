@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types);
     PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos);
-    RelationDefinitionCollection CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions);
+    IEnumerable<RelationDefinition> CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions);
     RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition);
   }
 }

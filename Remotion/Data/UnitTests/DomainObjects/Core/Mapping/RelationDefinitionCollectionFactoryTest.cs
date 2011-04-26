@@ -66,12 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock.Replay();
 
-      
+
       var result = _factory.CreateRelationDefinitionCollection (classDefinitions);
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
-      Assert.That (result.Count, Is.EqualTo (1));
-      Assert.That (result[0], Is.SameAs (_fakeRelationDefinition1));
+      Assert.That (result, Is.EqualTo (new[] { _fakeRelationDefinition1 }));
     }
 
     [Test]
@@ -115,14 +114,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].
                       PropertyInfo))
           .Return (_fakeRelationDefinition2);
-      _mappingObjectFactoryMock.Replay ();
-      
+      _mappingObjectFactoryMock.Replay();
+
       var result = _factory.CreateRelationDefinitionCollection (classDefinitions);
 
-      _mappingObjectFactoryMock.VerifyAllExpectations ();
-      Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0], Is.SameAs (_fakeRelationDefinition1));
-      Assert.That (result[1], Is.SameAs (_fakeRelationDefinition2));
+      _mappingObjectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo (new[] { _fakeRelationDefinition1, _fakeRelationDefinition2 }));
     }
 
     [Test]
@@ -180,10 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreateRelationDefinitionCollection (classDefinitions);
 
       _mappingObjectFactoryMock.VerifyAllExpectations ();
-      Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0], Is.SameAs (_fakeRelationDefinition1));
-      Assert.That (result[1], Is.SameAs (_fakeRelationDefinition2));
+      Assert.That (result, Is.EqualTo (new[] { _fakeRelationDefinition1, _fakeRelationDefinition2 }));
     }
-
   }
 }

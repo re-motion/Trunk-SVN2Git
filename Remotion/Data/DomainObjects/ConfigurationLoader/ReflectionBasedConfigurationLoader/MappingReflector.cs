@@ -79,12 +79,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         var relationDefinitions = MappingObjectFactory.CreateRelationDefinitionCollection(classDefinitions);
         return relationDefinitions
-            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count))
-            .Cast<RelationDefinition> ();
+            .ToArray()
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Length));
       }
     }
 
-    protected IEnumerable<Type> GetDomainObjectTypes ()
+    private IEnumerable<Type> GetDomainObjectTypes ()
     {
       return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
               where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)

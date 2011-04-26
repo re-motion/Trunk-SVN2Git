@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -35,19 +36,19 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public RelationDefinitionCollection CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    public IEnumerable<RelationDefinition> CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      var relationDefinitions = new RelationDefinitionCollection();
+      var relationDefinitions = new Dictionary<string, RelationDefinition>();
       foreach (ClassDefinition classDefinition in classDefinitions)
         GetRelationDefinitions (classDefinitions, classDefinition, relationDefinitions);
       
-      return relationDefinitions;
+      return relationDefinitions.Values;
     }
 
     private void GetRelationDefinitions (
-        ClassDefinitionCollection classDefinitions, ClassDefinition classDefinition, RelationDefinitionCollection relationDefinitions)
+        ClassDefinitionCollection classDefinitions, ClassDefinition classDefinition, Dictionary<string, RelationDefinition> relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
@@ -55,12 +56,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       foreach (var endPoint in classDefinition.MyRelationEndPointDefinitions)
       {
         var relationDefinition = _mappingObjectFactory.CreateRelationDefinition (classDefinitions, classDefinition, endPoint.PropertyInfo);
-        if (!relationDefinitions.Contains (relationDefinition.ID))
+        if (!relationDefinitions.ContainsKey (relationDefinition.ID))
         {
           relationDefinition.EndPointDefinitions[0].SetRelationDefinition (relationDefinition);
           relationDefinition.EndPointDefinitions[1].SetRelationDefinition (relationDefinition);
 
-          relationDefinitions.Add (relationDefinition);
+          relationDefinitions.Add (relationDefinition.ID, relationDefinition);
         }
       }
     }

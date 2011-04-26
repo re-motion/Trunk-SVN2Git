@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -135,13 +136,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var endPoint = new RelationEndPointDefinition (propertyDefinition, false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));
-      
+
       var result = _factory.CreateRelationDefinitionCollection (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
 
-      Assert.That (result.Count, Is.EqualTo (1));
-      Assert.That (result[0].ID,
-        Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
-        +"Mapping.TestDomain.Integration.OrderItem.Order"));
+      Assert.That (result.Count(), Is.EqualTo (1));
+      Assert.That (
+          result.First().ID,
+          Is.EqualTo (
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core."
+              + "Mapping.TestDomain.Integration.OrderItem.Order"));
     }
 
     [Test]
