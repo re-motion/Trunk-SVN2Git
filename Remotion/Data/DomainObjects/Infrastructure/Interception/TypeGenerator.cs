@@ -118,37 +118,37 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       MethodInfo getMethod = property.GetGetMethod (true);
       MethodInfo setMethod = property.GetSetMethod (true);
 
-      MethodInfo topMostGetOverride = getMethod != null ? GetTopMostOverrideOfMethod (getMethod) : null;
-      MethodInfo topMostSetOverride = setMethod != null ? GetTopMostOverrideOfMethod (setMethod) : null;
+      MethodInfo mostDerivedGetOverride = getMethod != null ? GetMostDerivedMethodOverride (getMethod) : null;
+      MethodInfo mostDerivedSetOverride = setMethod != null ? GetMostDerivedMethodOverride (setMethod) : null;
 
-      if (InterceptedPropertyCollector.IsOverridable (topMostGetOverride))
+      if (InterceptedPropertyCollector.IsOverridable (mostDerivedGetOverride))
       {
-        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (topMostGetOverride))
-          ImplementAbstractGetAccessor (topMostGetOverride, propertyIdentifier);
+        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (mostDerivedGetOverride))
+          ImplementAbstractGetAccessor (mostDerivedGetOverride, propertyIdentifier);
         else
-          OverrideAccessor (topMostGetOverride, propertyIdentifier);
+          OverrideAccessor (mostDerivedGetOverride, propertyIdentifier);
       }
 
-      if (InterceptedPropertyCollector.IsOverridable (topMostSetOverride))
+      if (InterceptedPropertyCollector.IsOverridable (mostDerivedSetOverride))
       {
-        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (topMostSetOverride))
-          ImplementAbstractSetAccessor (topMostSetOverride, propertyIdentifier, property.PropertyType);
+        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (mostDerivedSetOverride))
+          ImplementAbstractSetAccessor (mostDerivedSetOverride, propertyIdentifier, property.PropertyType);
         else
-          OverrideAccessor (topMostSetOverride, propertyIdentifier);
+          OverrideAccessor (mostDerivedSetOverride, propertyIdentifier);
       }
     }
 
-    private MethodInfo GetTopMostOverrideOfMethod (MethodInfo method)
+    private MethodInfo GetMostDerivedMethodOverride (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsTrue (method.DeclaringType.IsAssignableFrom (_baseType), "only methods declared on the base type (or below) are processed");
       if (method.DeclaringType == _baseType)
         return method;
       else
-        return GetTopMostOverrideOfMethod (method.GetBaseDefinition(), _baseType);
+        return GetMostDerivedMethodOverride (method.GetBaseDefinition(), _baseType);
     }
 
-    private MethodInfo GetTopMostOverrideOfMethod (MethodInfo baseDefinition, Type typeToSearch)
+    private MethodInfo GetMostDerivedMethodOverride (MethodInfo baseDefinition, Type typeToSearch)
     {
       if (baseDefinition.DeclaringType == typeToSearch)
         return baseDefinition;
@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
         }
 
         Assertion.IsNotNull (typeToSearch.BaseType, "we have to get to the base definition at some point");
-        return GetTopMostOverrideOfMethod (baseDefinition, typeToSearch.BaseType);
+        return GetMostDerivedMethodOverride (baseDefinition, typeToSearch.BaseType);
       }
     }
 
