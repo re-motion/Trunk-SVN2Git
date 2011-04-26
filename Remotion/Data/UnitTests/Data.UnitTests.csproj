@@ -443,7 +443,6 @@
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedPropertyResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\VirtualRelationEndPointDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionChecker.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionWithAnonymousRelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionExtensionsTest.cs" />

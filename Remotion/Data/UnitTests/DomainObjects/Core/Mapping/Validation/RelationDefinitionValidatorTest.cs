@@ -18,8 +18,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
@@ -39,12 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [SetUp]
     public void SetUp ()
     {
-      _relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket"];
-      _relationDefinition3 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
+      _relationDefinition1 = CreateRelationDefinition ("RelationDefinition1");
+      _relationDefinition2 = CreateRelationDefinition ("RelationDefinition2");
+      _relationDefinition3 = CreateRelationDefinition ("RelationDefinition3");
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IRelationDefinitionValidatorRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IRelationDefinitionValidatorRule> ();
@@ -140,5 +135,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       Assert.That (mappingValidationResults[8], Is.SameAs (_fakeInvalidMappingValidationResult));
     }
 
+    private RelationDefinition CreateRelationDefinition (string id)
+    {
+      return new RelationDefinition (
+          id, MockRepository.GenerateStub<IRelationEndPointDefinition> (), MockRepository.GenerateStub<IRelationEndPointDefinition> ());
+    }
   }
 }

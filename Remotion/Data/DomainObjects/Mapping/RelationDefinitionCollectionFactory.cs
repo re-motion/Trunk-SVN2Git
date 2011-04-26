@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
-  /// The <see cref="RelationDefinitionCollectionFactory"/> is used to get a <see cref="RelationDefinitionCollection"/> for a set of 
+  /// The <see cref="RelationDefinitionCollectionFactory"/> is used to get a sequence of <see cref="RelationDefinition"/> objects for a set of 
   /// <see cref="ClassDefinition"/>s.
   /// sets base classes and derived classes correctly.
   /// </summary>

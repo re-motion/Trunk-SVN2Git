@@ -36,12 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [SetUp]
     public void SetUp ()
     {
-      _relationDefinition1 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"];
-      _relationDefinition2 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket"];
-      _relationDefinition3 = FakeMappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Official"];
+      _relationDefinition1 = CreateRelationDefinition ("RelationDefinition1");
+      _relationDefinition2 = CreateRelationDefinition ("RelationDefinition2");
+      _relationDefinition3 = CreateRelationDefinition ("RelationDefinition3");
 
       _validationRuleMock = MockRepository.GenerateStrictMock<IRelationDefinitionValidatorRule> ();
       _fakeValidMappingValidationResult = MappingValidationResult.CreateValidResult();
@@ -108,5 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
       Assert.That (mappingValidationResults.Length, Is.EqualTo (3));
     }
 
+    private RelationDefinition CreateRelationDefinition (string id)
+    {
+      return new RelationDefinition (
+          id, MockRepository.GenerateStub<IRelationEndPointDefinition> (), MockRepository.GenerateStub<IRelationEndPointDefinition> ());
+    }
   }
 }

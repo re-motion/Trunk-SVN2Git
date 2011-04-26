@@ -718,9 +718,6 @@
     <Compile Include="Mapping\RelationDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mapping\RelationDefinitionCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Mapping\RelationEndPointDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

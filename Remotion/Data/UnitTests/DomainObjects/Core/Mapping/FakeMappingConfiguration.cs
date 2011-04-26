@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
@@ -45,16 +46,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     // member fields
 
-    private ClassDefinitionCollection _classDefinitions;
-    private RelationDefinitionCollection _relationDefinitions;
-    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private readonly ClassDefinitionCollection _classDefinitions;
+    private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
+    private readonly UnitTestStorageProviderStubDefinition _storageProviderDefinition;
 
     // construction and disposing
 
     private FakeMappingConfiguration ()
     {
       _classDefinitions = CreateClassDefinitions();
-      _relationDefinitions = CreateRelationDefinitions();
+      _relationDefinitions = new ReadOnlyDictionary<string, RelationDefinition> (CreateRelationDefinitions());
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       foreach (ClassDefinition classDefinition in _classDefinitions)
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       get { return _classDefinitions; }
     }
 
-    public RelationDefinitionCollection RelationDefinitions
+    public ReadOnlyDictionary<string, RelationDefinition> RelationDefinitions
     {
       get { return _relationDefinitions; }
     }
@@ -1135,9 +1136,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     #region Methods for creating relation definitions
 
-    private RelationDefinitionCollection CreateRelationDefinitions ()
+    private Dictionary<string, RelationDefinition> CreateRelationDefinitions ()
     {
-      RelationDefinitionCollection relationDefinitions = new RelationDefinitionCollection();
+      var relationDefinitions = new List<RelationDefinition>();
 
       relationDefinitions.Add (CreateCustomerToOrderRelationDefinition());
 
@@ -1169,13 +1170,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       relationDefinitions.Add (CreateTargetClassForPersistentMixinMixedCollectionPropertyNSideRelationDefinition());
 
       CalculateAndSetRelationEndPointDefinitions (relationDefinitions);
-      
-      return relationDefinitions;
+
+      return relationDefinitions.ToDictionary (rd => rd.ID);
     }
 
-    private void CalculateAndSetRelationEndPointDefinitions (RelationDefinitionCollection relationDefinitions)
+    private void CalculateAndSetRelationEndPointDefinitions (ICollection<RelationDefinition> relationDefinitions)
     {
-      var relationsByClass = (from relationDefinition in relationDefinitions.Cast<RelationDefinition> ()
+      var relationsByClass = (from relationDefinition in relationDefinitions
                               from endPoint in relationDefinition.EndPointDefinitions
                               where !endPoint.IsAnonymous
                               group endPoint by endPoint.ClassDefinition)

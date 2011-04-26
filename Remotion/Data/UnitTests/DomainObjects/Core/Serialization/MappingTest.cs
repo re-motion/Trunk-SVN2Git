@@ -266,10 +266,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         + "the current mapping.")]
     public void RelationDefinition_NotInMapping ()
     {
-      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory (
+      RelationDefinition relationDefinition = FakeMappingConfiguration.Current.RelationDefinitions[
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
           + "TestDomain.Integration.OrderTicket.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-          + "TestDomain.Integration.Order.OrderTicket");
+          + "TestDomain.Integration.Order.OrderTicket"];
       SerializeAndDeserialize (relationDefinition);
     }
 

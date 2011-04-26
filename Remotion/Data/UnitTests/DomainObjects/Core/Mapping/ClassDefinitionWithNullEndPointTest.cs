@@ -42,9 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _clientClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
       _locationClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
 
-      RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions.GetMandatory (
+      RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions[
         "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        +"TestDomain.Integration.Location.Client");
+        +"TestDomain.Integration.Location.Client"];
       _clientEndPoint = (AnonymousRelationEndPointDefinition) relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) relation.EndPointDefinitions[1];
     }

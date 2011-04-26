@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
@@ -25,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection.TypeDiscovery;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -61,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
       var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
-      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
+      var actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions).ToDictionary (rd => rd.ID);
 
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (FakeMappingConfiguration.Current.RelationDefinitions, actualRelationDefinitions, true);
@@ -73,8 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assembly assembly = GetType().Assembly;
       MappingReflector expectedMappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly));
       var expectedClassDefinitions = new ClassDefinitionCollection (expectedMappingReflector.GetClassDefinitions(), true, true);
-      var expectedRelationDefinitions = new RelationDefinitionCollection (
-          expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions), true);
+      var expectedRelationDefinitions = expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions).ToDictionary (rd => rd.ID);
 
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
       var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
 
-      var actualRelationDefinitions = new RelationDefinitionCollection (mappingReflector.GetRelationDefinitions (actualClassDefinitions), true);
+      var actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions).ToDictionary (rd => rd.ID);
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (expectedRelationDefinitions, actualRelationDefinitions, false);
     }
