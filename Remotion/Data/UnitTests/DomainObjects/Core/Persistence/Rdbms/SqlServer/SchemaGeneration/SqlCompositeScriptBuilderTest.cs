@@ -55,13 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           typeof (SqlCompositeScriptBuilderTest), "TestData.TearDownDB_FirstStorageProviderWithoutTables.sql");
     }
 
-    [Test]
-    public void GetDatabaseName ()
-    {
-      Assert.AreEqual ("SchemaGenerationTestDomain1", _scriptBuilderForFirstStorageProvider.GetDatabaseName());
-      Assert.AreEqual ("SchemaGenerationTestDomain2", _scriptBuilderForSecondStorageProvider.GetDatabaseName());
-    }
-
     //TODO: Test for GetScript with entities and AddEntityDefinition as soon as interfaces can be used for partial script builders
 
     [Test]

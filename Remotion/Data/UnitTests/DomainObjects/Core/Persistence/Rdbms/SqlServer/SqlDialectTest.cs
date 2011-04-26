@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
@@ -58,6 +59,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _dialect.AddBatchForScript (script);
 
       Assert.That (script.ToString(), Is.EqualTo ("testGO\r\n\r\n"));
+    }
+
+    [Test]
+    public void CreateScriptForConnectioString ()
+    {
+      var script = new StringBuilder("test");
+      var connectionString = "Data Source=myServerAddress;Initial Catalog=MyDataBase;User Id=myUsername;Password=myPassword;";
+
+      _dialect.CreateScriptForConnectionString (script, connectionString);
+
+      Assert.That (script.ToString(), Is.EqualTo ("USE MyDataBase\r\ntest"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
+    public void CreateScriptForConnectionString_NoMarkerFound ()
+    {
+      _dialect.CreateScriptForConnectionString (new StringBuilder("test"), "Teststring");
     }
   }
 }

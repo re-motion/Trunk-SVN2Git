@@ -44,15 +44,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       get { return _scriptBuilders; }
     }
 
-    public string GetDatabaseName ()
-    {
-      //TODO improve this logic
-      var initialCatalogMarker = "Initial Catalog=";
-      var startIndex = RdbmsProviderDefinition.ConnectionString.IndexOf (initialCatalogMarker) + initialCatalogMarker.Length;
-      string temp = RdbmsProviderDefinition.ConnectionString.Substring (startIndex);
-      return temp.Substring (0, temp.IndexOf (";"));
-    }
-
     public override void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
@@ -64,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     public override string GetCreateScript ()
     {
       var createScript = new StringBuilder();
-      createScript.AppendFormat ("USE {0}\r\n", GetDatabaseName());
+      SqlDialect.CreateScriptForConnectionString (createScript, RdbmsProviderDefinition.ConnectionString);
       SqlDialect.AddBatchForScript(createScript);
 
       foreach (var scriptBuilder in ScriptBuilders)
@@ -79,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     public override string GetDropScript ()
     {
       var dropScript = new StringBuilder ();
-      dropScript.AppendFormat ("USE {0}\r\n", GetDatabaseName ());
+      SqlDialect.CreateScriptForConnectionString (dropScript, RdbmsProviderDefinition.ConnectionString);
       SqlDialect.AddBatchForScript (dropScript);
 
       foreach (var scriptBuilder in ScriptBuilders.Reverse())

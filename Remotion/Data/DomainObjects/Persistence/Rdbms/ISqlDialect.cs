@@ -29,9 +29,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     string ConstraintDelimiter { get; }
     
     string GetParameterName (string name);
+    
     /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
     string DelimitIdentifier (string identifier);
 
+    /// <summary> Appends a GO-statement to the script. </summary>
     void AddBatchForScript (StringBuilder createScript);
+
+    void CreateScriptForConnectionString (StringBuilder script, string connectionString);
   }
 }
