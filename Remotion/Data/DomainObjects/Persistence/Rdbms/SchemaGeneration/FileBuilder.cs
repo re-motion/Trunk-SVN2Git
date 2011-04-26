@@ -125,6 +125,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
+      // TODO Review 3932: Add a test showing that when GetScript is called twice, the _scriptBuilderFactory is also called twice.
       var scriptBuilder = _scriptBuilderFactory();
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
