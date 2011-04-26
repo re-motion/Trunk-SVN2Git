@@ -31,7 +31,7 @@ namespace Remotion.Globalization
 [AttributeUsage (AttributeTargets.Class | AttributeTargets.Enum, AllowMultiple = true, Inherited = false)]
 public class MultiLingualResourcesAttribute: Attribute, IResourcesAttribute
 {
-	// types
+  // types
 
   // member fields
 
@@ -78,10 +78,10 @@ public class MultiLingualResourcesAttribute: Attribute, IResourcesAttribute
     _resourceAssembly = resourceAssembly;
   }
 
-	public override string ToString ()
-	{
-		return BaseName;
-	}
+  public override string ToString ()
+  {
+    return BaseName;
+  }
 }
 
 }
