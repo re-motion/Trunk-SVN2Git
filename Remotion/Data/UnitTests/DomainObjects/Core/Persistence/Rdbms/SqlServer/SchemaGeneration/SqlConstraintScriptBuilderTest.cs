@@ -64,7 +64,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetAddConstraintScript_OneConstraint ()
+    public void GetCreateScript_DefaultSchema ()
+    {
+      _constraintBuilder.AddEntityDefinition (_tableDefinition1);
+
+      var expectedScript =
+          "-- Create constraints for tables that were created above\r\n"
+          +"ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+          +"  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n";
+
+      Assert.AreEqual (expectedScript, _constraintBuilder.GetCreateScript ());
+    }
+
+    [Test]
+    public void GetCreateScript_OneConstraint ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
 
@@ -77,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetAddConstraintScript_MultipleConstraints ()
+    public void GetCreateScript_WithMultipleConstraints ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
 
@@ -85,30 +98,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "-- Create constraints for tables that were created above\r\n"
           +"ALTER TABLE [Test].[Customer] ADD\r\n"
           + "  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID]),\r\n"
-          + "  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n"; //TODO 3862: wrong references schema - must be also changed in ExtendedFileBuilder!?
+          + "  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetCreateScript());
     }
 
     [Test]
-    public void GetAddConstraintScript_NoConstraint ()
+    public void GetCreateScript_WithMultipleEntities ()
+    {
+      _constraintBuilder.AddEntityDefinition (_tableDefinition1);
+      _constraintBuilder.AddEntityDefinition (_tableDefinition2);
+
+      var expectedScript =
+          "-- Create constraints for tables that were created above\r\n"
+         +"ALTER TABLE [dbo].[OrderItem] ADD\r\n"
+         +"  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])\r\n\r\n"
+         +"ALTER TABLE [Test].[Customer] ADD\r\n"
+         +"  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID]),\r\n"
+         +"  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
+
+      Assert.AreEqual (expectedScript, _constraintBuilder.GetCreateScript ());
+    }
+
+    [Test]
+    public void GetCreateScript_NoConstraintsAdded ()
     {
       Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
     }
 
-    // TODO Review 3936: Duplicate test; should be changed to GetDropScript?
+    
     [Test]
-    public void GetAddConstraintScript_NoConstraintsAdded ()
-    {
-      Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
-    }
-
-    // TODO Review 3936: Also add tests for GetDropConstraintsScript_OneConstraint, MultipleConstraints
-    // TODO Review 3936: Make the tests for GetAddConstraintScript and GetDropConstraintScript symmetrical (equal test cases, equal names for both script variants)
-
-    // TODO Review 3936: Also add test for GetAddConstraintsScript_DefaultSchema
-    [Test]
-    public void GetDropConstraintScript_DefaultSchema ()
+    public void GetDropScript_DefaultSchema ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
 
@@ -121,9 +141,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropScript());
     }
 
-    // TODO Review 3936: Also add test for GetAddConstraintsScript_WithMultipleEntities
     [Test]
-    public void GetDropConstraintsScript_WithMultipleEntities ()
+    public void GetDropScript_OneConstraint ()
+    {
+      _constraintBuilder.AddEntityDefinition (_tableDefinition1);
+
+      var expectedScript =
+          "-- Drop foreign keys of all tables that will be created below\r\n"
+          +"IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+          +"fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')\r\n"
+          +"  ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID\r\n";
+
+      Assert.AreEqual (expectedScript, _constraintBuilder.GetDropScript ());
+    }
+
+    [Test]
+    public void GetDropScript_WithMultipleConstraints ()
+    {
+      _constraintBuilder.AddEntityDefinition (_tableDefinition2);
+
+      var expectedScript =
+          "-- Create constraints for tables that were created above\r\n"
+          +"ALTER TABLE [Test].[Customer] ADD\r\n"
+          +"  CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID]),\r\n"
+          +"  CONSTRAINT [FK_OrderItem_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])\r\n";
+      
+      Assert.AreEqual (expectedScript, _constraintBuilder.GetCreateScript ());
+    }
+    
+    [Test]
+    public void GetDropScript_WithMultipleEntities ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
@@ -141,6 +188,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           +"  ALTER TABLE [Test].[Customer] DROP CONSTRAINT FK_OrderItem_CustomerID\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropScript());
+    }
+
+    [Test]
+    public void GetDropScript_NoConstraintsAdded ()
+    {
+      Assert.That (_constraintBuilder.GetDropScript (), Is.EqualTo ("-- Drop foreign keys of all tables that will be created below\r\n"));
     }
   }
 }
