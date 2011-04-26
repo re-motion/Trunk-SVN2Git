@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void GetAddConstraintScript_Constraints ()
+    public void GetAddConstraintScript_MultipleConstraints ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
 
@@ -96,12 +96,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
     }
 
+    // TODO Review 3936: Duplicate test; should be changed to GetDropScript?
     [Test]
     public void GetAddConstraintScript_NoConstraintsAdded ()
     {
       Assert.That (_constraintBuilder.GetCreateScript (), Is.EqualTo ("-- Create constraints for tables that were created above\r\n"));
     }
 
+    // TODO Review 3936: Also add tests for GetDropConstraintsScript_OneConstraint, MultipleConstraints
+    // TODO Review 3936: Make the tests for GetAddConstraintScript and GetDropConstraintScript symmetrical (equal test cases, equal names for both script variants)
+
+    // TODO Review 3936: Also add test for GetAddConstraintsScript_DefaultSchema
     [Test]
     public void GetDropConstraintScript_DefaultSchema ()
     {
@@ -116,8 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropScript());
     }
 
+    // TODO Review 3936: Also add test for GetAddConstraintsScript_WithMultipleEntities
     [Test]
-    public void GetDropConstraintsScriptWithMultipleEntities ()
+    public void GetDropConstraintsScript_WithMultipleEntities ()
     {
       _constraintBuilder.AddEntityDefinition (_tableDefinition1);
       _constraintBuilder.AddEntityDefinition (_tableDefinition2);
