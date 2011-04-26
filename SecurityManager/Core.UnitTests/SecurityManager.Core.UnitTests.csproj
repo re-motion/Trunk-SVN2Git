@@ -324,6 +324,12 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerTearDownDB.sql">
+      <Link>SecurityManagerTearDownDB.sql</Link>
+    </DatabaseFiles>
+    <DatabaseFiles Include="..\Core\Database\SecurityManagerTearDownDBSpecialTables.sql">
+      <Link>SecurityManagerTearDownDBSpecialTables.sql</Link>
+    </DatabaseFiles>
     <Content Include="AclTools\Code Repository.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

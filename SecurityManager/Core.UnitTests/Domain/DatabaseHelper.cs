@@ -28,8 +28,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 {
   public class DatabaseHelper
   {
+    public const string TearDownDBScript = "SecurityManagerTearDownDB.sql";
     public const string SetupDBScript = "SecurityManagerSetupDB.sql";
     public const string SetupConstraintsScript = "SecurityManagerSetupConstraints.sql";
+    public const string TearDownDBSpecialTablesScript = "SecurityManagerTearDownDBSpecialTables.sql";
     public const string SetupDBSpecialTablesScript = "SecurityManagerSetupDBSpecialTables.sql";
 
     public void SetupDB ()
@@ -39,6 +41,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
       try
       {
+        ExecuteSql (ReadFile (TearDownDBSpecialTablesScript), connection, transaction);
+        ExecuteSql (ReadFile (TearDownDBScript), connection, transaction);
         ExecuteSql (ReadFile (SetupDBScript), connection, transaction);
         ExecuteSql (ReadFile (SetupConstraintsScript), connection, transaction);
         ExecuteSql (ReadFile (SetupDBSpecialTablesScript), connection, transaction);

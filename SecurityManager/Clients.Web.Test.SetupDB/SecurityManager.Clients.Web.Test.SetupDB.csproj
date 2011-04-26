@@ -65,8 +65,11 @@
     <Compile Include="SetupDB.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="SecurityManagerTearDownDB.sql" />
+    <None Include="SecurityManagerTearDownDBSpecialTables.sql" />
     <None Include="App.config" />
     <None Include="CreateDB.sql" />
+    <None Include="TearDownDB.sql" />
     <Content Include="SecurityManagerSetupConstraints.sql" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>

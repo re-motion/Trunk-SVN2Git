@@ -85,6 +85,7 @@ public class SetupDB
             connection.Open();
 
             Console.WriteLine ("Ensure DB exists...");
+            DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "TearDownDB.sql"), connection, _databaseName, databaseFilesPath);  
             DBUtility.ExecuteSqlFile (Path.Combine (databaseSetupFilesPath, "CreateDB.sql"), connection, _databaseName, databaseFilesPath);  
           }
         }

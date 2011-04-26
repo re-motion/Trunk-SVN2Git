@@ -447,6 +447,7 @@
     </EmbeddedResource>
     <Content Include="Database\SecurityManagerSetupConstraints.sql">
     </Content>
+    <None Include="Database\SecurityManagerTearDownDB.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -478,7 +479,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>REM cd ..\..\
-REM .\GenerateSetupDBScript.cmd $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>cd ..\..\
+.\GenerateSetupDBScript.cmd $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

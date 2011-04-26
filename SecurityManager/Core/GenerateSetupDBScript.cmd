@@ -15,6 +15,8 @@ echo.
 
 del Database\SecurityManagerSetupDB.sql 2> NUL
 ren Database\SetupDB.sql SecurityManagerSetupDB.sql
+del Database\SecurityManagerTearDownDB.sql 2> NUL
+ren Database\TearDownDB.sql SecurityManagerTearDownDB.sql
 
 if not %ERRORLEVEL%==0 goto ren_error
 
@@ -27,7 +29,7 @@ exit /b 1
 
 :ren_error
 echo.
-echo There was an error renaming SetupDB.sql to SecurityManagerSetupDB.sql.
+echo There was an error renaming SetupDB.sql to SecurityManagerSetupDB.sql or renaming TearDownDB.sql to SecurityManagerTearDownDB.sql
 exit /b 2
 
 :end

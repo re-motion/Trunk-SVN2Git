@@ -1,158 +1,6 @@
 USE RemotionSecurityManager
 GO
 
--- Drop all views that will be created below
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessControlEntryView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AccessControlEntryView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PermissionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[PermissionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateCombinationView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StateCombinationView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessControlListView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AccessControlListView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatefulAccessControlListView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StatefulAccessControlListView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatelessAccessControlListView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StatelessAccessControlListView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateUsageView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StateUsageView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'MetadataObjectView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[MetadataObjectView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EnumValueDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[EnumValueDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AbstractRoleDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AbstractRoleDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessTypeDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AccessTypeDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessTypeReferenceView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AccessTypeReferenceView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CultureView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[CultureView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'LocalizedNameView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[LocalizedNameView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SecurableClassDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[SecurableClassDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StateDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatePropertyDefinitionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StatePropertyDefinitionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatePropertyReferenceView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[StatePropertyReferenceView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'GroupView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[GroupView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'GroupTypeView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[GroupTypeView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'GroupTypePositionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[GroupTypePositionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PositionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[PositionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'RoleView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[RoleView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SubstitutionView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[SubstitutionView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TenantView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[TenantView]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'UserView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[UserView]
-GO
-
--- Drop foreign keys of all tables that will be created below
-DECLARE @statement nvarchar (max)
-SET @statement = ''
-SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
-    FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('AccessControlEntry', 'Permission', 'StateCombination', 'AccessControlList', 'StateUsage', 'EnumValueDefinition', 'AccessTypeReference', 'Culture', 'LocalizedName', 'SecurableClassDefinition', 'StatePropertyDefinition', 'StatePropertyReference', 'Group', 'GroupType', 'GroupTypePosition', 'Position', 'Role', 'Substitution', 'Tenant', 'User')
-    ORDER BY t.name, fk.name
-exec sp_executesql @statement
-GO
-
--- Drop all tables that will be created below
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessControlEntry' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[AccessControlEntry]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Permission' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Permission]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StateCombination' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[StateCombination]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessControlList' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[AccessControlList]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StateUsage' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[StateUsage]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'EnumValueDefinition' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[EnumValueDefinition]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessTypeReference' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[AccessTypeReference]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Culture' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Culture]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'LocalizedName' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[LocalizedName]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SecurableClassDefinition' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[SecurableClassDefinition]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StatePropertyDefinition' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[StatePropertyDefinition]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StatePropertyReference' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[StatePropertyReference]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Group' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Group]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'GroupType' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[GroupType]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'GroupTypePosition' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[GroupTypePosition]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Position' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Position]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Role' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Role]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Substitution' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Substitution]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Tenant' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[Tenant]
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'User' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[User]
-GO
-
 -- Create all tables
 CREATE TABLE [dbo].[AccessControlEntry]
 (
@@ -405,75 +253,6 @@ CREATE TABLE [dbo].[User]
 )
 GO
 
--- Create constraints for tables that were created above
-ALTER TABLE [dbo].[AccessControlEntry] ADD
-  CONSTRAINT [FK_AccessControlEntry_SpecificTenantID] FOREIGN KEY ([SpecificTenantID]) REFERENCES [dbo].[Tenant] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_SpecificGroupID] FOREIGN KEY ([SpecificGroupID]) REFERENCES [dbo].[Group] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_SpecificGroupTypeID] FOREIGN KEY ([SpecificGroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_SpecificPositionID] FOREIGN KEY ([SpecificPositionID]) REFERENCES [dbo].[Position] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_SpecificUserID] FOREIGN KEY ([SpecificUserID]) REFERENCES [dbo].[User] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_SpecificAbstractRoleID] FOREIGN KEY ([SpecificAbstractRoleID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
-
-ALTER TABLE [dbo].[Permission] ADD
-  CONSTRAINT [FK_Permission_AccessTypeDefinitionID] FOREIGN KEY ([AccessTypeDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
-  CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID])
-
-ALTER TABLE [dbo].[StateCombination] ADD
-  CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
-
-ALTER TABLE [dbo].[AccessControlList] ADD
-  CONSTRAINT [FK_AccessControlList_StatefulAcl_ClassID] FOREIGN KEY ([StatefulAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
-  CONSTRAINT [FK_AccessControlList_StatelessAcl_ClassID] FOREIGN KEY ([StatelessAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
-
-ALTER TABLE [dbo].[StateUsage] ADD
-  CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
-  CONSTRAINT [FK_StateUsage_StateCombinationID] FOREIGN KEY ([StateCombinationID]) REFERENCES [dbo].[StateCombination] ([ID])
-
-ALTER TABLE [dbo].[EnumValueDefinition] ADD
-  CONSTRAINT [FK_EnumValueDefinition_StatePropertyID] FOREIGN KEY ([StatePropertyID]) REFERENCES [dbo].[StatePropertyDefinition] ([ID])
-
-ALTER TABLE [dbo].[AccessTypeReference] ADD
-  CONSTRAINT [FK_AccessTypeReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
-  CONSTRAINT [FK_AccessTypeReference_AccessTypeID] FOREIGN KEY ([AccessTypeID]) REFERENCES [dbo].[EnumValueDefinition] ([ID])
-
-ALTER TABLE [dbo].[LocalizedName] ADD
-  CONSTRAINT [FK_LocalizedName_CultureID] FOREIGN KEY ([CultureID]) REFERENCES [dbo].[Culture] ([ID])
-
-ALTER TABLE [dbo].[SecurableClassDefinition] ADD
-  CONSTRAINT [FK_SecurableClassDefinition_BaseSecurableClassID] FOREIGN KEY ([BaseSecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
-
-ALTER TABLE [dbo].[StatePropertyReference] ADD
-  CONSTRAINT [FK_StatePropertyReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
-  CONSTRAINT [FK_StatePropertyReference_StatePropertyID] FOREIGN KEY ([StatePropertyID]) REFERENCES [dbo].[StatePropertyDefinition] ([ID])
-
-ALTER TABLE [dbo].[Group] ADD
-  CONSTRAINT [FK_Group_TenantID] FOREIGN KEY ([TenantID]) REFERENCES [dbo].[Tenant] ([ID]),
-  CONSTRAINT [FK_Group_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Group] ([ID]),
-  CONSTRAINT [FK_Group_GroupTypeID] FOREIGN KEY ([GroupTypeID]) REFERENCES [dbo].[GroupType] ([ID])
-
-ALTER TABLE [dbo].[GroupTypePosition] ADD
-  CONSTRAINT [FK_GroupTypePosition_GroupTypeID] FOREIGN KEY ([GroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
-  CONSTRAINT [FK_GroupTypePosition_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID])
-
-ALTER TABLE [dbo].[Role] ADD
-  CONSTRAINT [FK_Role_GroupID] FOREIGN KEY ([GroupID]) REFERENCES [dbo].[Group] ([ID]),
-  CONSTRAINT [FK_Role_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID]),
-  CONSTRAINT [FK_Role_UserID] FOREIGN KEY ([UserID]) REFERENCES [dbo].[User] ([ID])
-
-ALTER TABLE [dbo].[Substitution] ADD
-  CONSTRAINT [FK_Substitution_SubstitutingUserID] FOREIGN KEY ([SubstitutingUserID]) REFERENCES [dbo].[User] ([ID]),
-  CONSTRAINT [FK_Substitution_SubstitutedUserID] FOREIGN KEY ([SubstitutedUserID]) REFERENCES [dbo].[User] ([ID]),
-  CONSTRAINT [FK_Substitution_SubstitutedRoleID] FOREIGN KEY ([SubstitutedRoleID]) REFERENCES [dbo].[Role] ([ID])
-
-ALTER TABLE [dbo].[Tenant] ADD
-  CONSTRAINT [FK_Tenant_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Tenant] ([ID])
-
-ALTER TABLE [dbo].[User] ADD
-  CONSTRAINT [FK_User_TenantID] FOREIGN KEY ([TenantID]) REFERENCES [dbo].[Tenant] ([ID]),
-  CONSTRAINT [FK_User_OwningGroupID] FOREIGN KEY ([OwningGroupID]) REFERENCES [dbo].[Group] ([ID])
-GO
-
 -- Create a view for every class
 CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantCondition], [TenantHierarchyCondition], [GroupCondition], [GroupHierarchyCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
   WITH SCHEMABINDING AS
@@ -666,3 +445,79 @@ CREATE VIEW [dbo].[UserView] ([ID], [ClassID], [Timestamp], [Title], [FirstName]
     FROM [dbo].[User]
   WITH CHECK OPTION
 GO
+
+-- Create constraints for tables that were created above
+ALTER TABLE [dbo].[AccessControlEntry] ADD
+  CONSTRAINT [FK_AccessControlEntry_SpecificTenantID] FOREIGN KEY ([SpecificTenantID]) REFERENCES [dbo].[Tenant] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificGroupID] FOREIGN KEY ([SpecificGroupID]) REFERENCES [dbo].[Group] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificGroupTypeID] FOREIGN KEY ([SpecificGroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificPositionID] FOREIGN KEY ([SpecificPositionID]) REFERENCES [dbo].[Position] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificUserID] FOREIGN KEY ([SpecificUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificAbstractRoleID] FOREIGN KEY ([SpecificAbstractRoleID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
+
+ALTER TABLE [dbo].[Permission] ADD
+  CONSTRAINT [FK_Permission_AccessTypeDefinitionID] FOREIGN KEY ([AccessTypeDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID])
+
+ALTER TABLE [dbo].[StateCombination] ADD
+  CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
+
+ALTER TABLE [dbo].[AccessControlList] ADD
+  CONSTRAINT [FK_AccessControlList_StatefulAcl_ClassID] FOREIGN KEY ([StatefulAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
+  CONSTRAINT [FK_AccessControlList_StatelessAcl_ClassID] FOREIGN KEY ([StatelessAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
+
+ALTER TABLE [dbo].[StateUsage] ADD
+  CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_StateUsage_StateCombinationID] FOREIGN KEY ([StateCombinationID]) REFERENCES [dbo].[StateCombination] ([ID])
+
+ALTER TABLE [dbo].[EnumValueDefinition] ADD
+  CONSTRAINT [FK_EnumValueDefinition_StatePropertyID] FOREIGN KEY ([StatePropertyID]) REFERENCES [dbo].[StatePropertyDefinition] ([ID])
+
+ALTER TABLE [dbo].[AccessTypeReference] ADD
+  CONSTRAINT [FK_AccessTypeReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
+  CONSTRAINT [FK_AccessTypeReference_AccessTypeID] FOREIGN KEY ([AccessTypeID]) REFERENCES [dbo].[EnumValueDefinition] ([ID])
+
+ALTER TABLE [dbo].[LocalizedName] ADD
+  CONSTRAINT [FK_LocalizedName_CultureID] FOREIGN KEY ([CultureID]) REFERENCES [dbo].[Culture] ([ID])
+
+ALTER TABLE [dbo].[SecurableClassDefinition] ADD
+  CONSTRAINT [FK_SecurableClassDefinition_BaseSecurableClassID] FOREIGN KEY ([BaseSecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
+
+ALTER TABLE [dbo].[StatePropertyReference] ADD
+  CONSTRAINT [FK_StatePropertyReference_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
+  CONSTRAINT [FK_StatePropertyReference_StatePropertyID] FOREIGN KEY ([StatePropertyID]) REFERENCES [dbo].[StatePropertyDefinition] ([ID])
+
+ALTER TABLE [dbo].[Group] ADD
+  CONSTRAINT [FK_Group_TenantID] FOREIGN KEY ([TenantID]) REFERENCES [dbo].[Tenant] ([ID]),
+  CONSTRAINT [FK_Group_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Group] ([ID]),
+  CONSTRAINT [FK_Group_GroupTypeID] FOREIGN KEY ([GroupTypeID]) REFERENCES [dbo].[GroupType] ([ID])
+
+ALTER TABLE [dbo].[GroupTypePosition] ADD
+  CONSTRAINT [FK_GroupTypePosition_GroupTypeID] FOREIGN KEY ([GroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
+  CONSTRAINT [FK_GroupTypePosition_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID])
+
+ALTER TABLE [dbo].[Role] ADD
+  CONSTRAINT [FK_Role_GroupID] FOREIGN KEY ([GroupID]) REFERENCES [dbo].[Group] ([ID]),
+  CONSTRAINT [FK_Role_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID]),
+  CONSTRAINT [FK_Role_UserID] FOREIGN KEY ([UserID]) REFERENCES [dbo].[User] ([ID])
+
+ALTER TABLE [dbo].[Substitution] ADD
+  CONSTRAINT [FK_Substitution_SubstitutingUserID] FOREIGN KEY ([SubstitutingUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_Substitution_SubstitutedUserID] FOREIGN KEY ([SubstitutedUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_Substitution_SubstitutedRoleID] FOREIGN KEY ([SubstitutedRoleID]) REFERENCES [dbo].[Role] ([ID])
+
+ALTER TABLE [dbo].[Tenant] ADD
+  CONSTRAINT [FK_Tenant_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Tenant] ([ID])
+
+ALTER TABLE [dbo].[User] ADD
+  CONSTRAINT [FK_User_TenantID] FOREIGN KEY ([TenantID]) REFERENCES [dbo].[Tenant] ([ID]),
+  CONSTRAINT [FK_User_OwningGroupID] FOREIGN KEY ([OwningGroupID]) REFERENCES [dbo].[Group] ([ID])
+GO
+
+-- Create indexes for tables that were created above
+GO
+
+-- Create synonyms for tables that were created above
+GO
+
