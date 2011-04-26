@@ -170,6 +170,8 @@
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
     <Compile Include="Collections\ListAdapterTest.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttributeExtensions.cs" />
     <Compile Include="FunctionalProgramming\Element.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionaryTest.cs" />

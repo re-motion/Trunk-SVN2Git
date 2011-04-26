@@ -288,6 +288,14 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetCustomAttributes_EqualAttributes_ExtensionTypesAreFiltered ()
+    {
+      var customAttributes = ExtensibleEnumWithDuplicateAttribute.Values.GetCustomAttributes<IResourcesAttribute> ();
+
+      Assert.That (customAttributes.Length, Is.EqualTo (2));
+    }
+
+    [Test]
     public void GetValueInfos_NonGeneric ()
     {
       var definition = CreateDefinition (_red, _green);

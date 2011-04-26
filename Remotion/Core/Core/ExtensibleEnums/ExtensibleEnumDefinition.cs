@@ -160,15 +160,11 @@ namespace Remotion.ExtensibleEnums
     {
       ArgumentUtility.CheckNotNull ("attributeType", attributeType);
 
-      // TODO Review 3840: This implementation is not correct: we do not want to filter out equal attributes, we want to filter out if the 
-      // extensionType occurs more than once.
-      // Add a test case showing this problem (e.g., with an extensible enum class that has two "equal" attributes) => both attributes should be returned.
-      // Then fix, by applying the Distinct to the list of extensionTypes.
-      var extensionTypes = from info in GetValueInfos()
-                           select info.DefiningMethod.DeclaringType;
-      var attributes = (from extensionType in extensionTypes
+      var extensionTypes = (from info in GetValueInfos()
+                           select info.DefiningMethod.DeclaringType).Distinct();
+      var attributes = from extensionType in extensionTypes
                        from attribute in AttributeUtility.GetCustomAttributes (extensionType, attributeType, false)
-                       select attribute).Distinct();
+                       select attribute;
       var list = attributes.ToList ();
       
       var array = (object[]) Array.CreateInstance (attributeType, list.Count);
