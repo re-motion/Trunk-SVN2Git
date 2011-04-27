@@ -225,7 +225,6 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\ISqlIndexDefinitionVisitor.cs" />
-    <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\Model\ColumnDefinitionResolver.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionBase.cs" />
     <Compile Include="Persistence\Rdbms\Model\EntityNameDefinition.cs" />
@@ -356,7 +355,6 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\FileBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IFileBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexScriptBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\DeclarationListColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\NameListColumnDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewScriptBuilder.cs" />
