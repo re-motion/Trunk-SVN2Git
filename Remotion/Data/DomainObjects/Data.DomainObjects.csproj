@@ -212,6 +212,7 @@
     <Compile Include="Linq\FetchResultOperatorHandler.cs" />
     <Compile Include="Linq\IStorageSpecificExpressionResolver.cs" />
     <Compile Include="Mapping\InvalidRelationEndPointDefinitionBase.cs" />
+    <Compile Include="Mapping\MappingExtensions.cs" />
     <Compile Include="Mapping\PropertyDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationDefinitionCollectionFactory.cs" />
     <Compile Include="Mapping\RelationEndPointDefinitionCollectionFactory.cs" />
