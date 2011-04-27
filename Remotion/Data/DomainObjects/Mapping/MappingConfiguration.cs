@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions (mappingLoader);
 
-        foreach (ClassDefinition rootClass in _classDefinitions.GetInheritanceRootClasses())
+        foreach (var rootClass in GetInheritanceRootClasses(_classDefinitions))
         {
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
           VerifyPersistenceModelApplied (rootClass);
@@ -114,30 +114,6 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateSortExpression(mappingLoader);
       }
-    }
-
-    private void VerifyPersistenceModelApplied (ClassDefinition classDefinition)
-    {
-      if (classDefinition.StorageEntityDefinition == null)
-      {
-        var message = string.Format ("The persistence model loader did not assign a storage entity to class '{0}'.", classDefinition.ID);
-        throw new InvalidOperationException (message);
-      }
-
-      foreach (PropertyDefinition propDef in classDefinition.MyPropertyDefinitions)
-      {
-        if (propDef.StorageClass == StorageClass.Persistent && propDef.StoragePropertyDefinition == null)
-        {
-          var message = string.Format (
-              "The persistence model loader did not assign a storage property to property '{0}' of class '{1}'.",
-              propDef.PropertyName,
-              classDefinition.ID);
-          throw new InvalidOperationException (message);
-        }
-      }
-
-      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
-        VerifyPersistenceModelApplied (derivedClass);
     }
 
     /// <summary>
@@ -207,6 +183,43 @@ namespace Remotion.Data.DomainObjects.Mapping
         return false;
 
       return foundRelationDefinition.Contains (relationEndPointDefinition);
+    }
+
+    private IEnumerable<ClassDefinition> GetInheritanceRootClasses (ClassDefinitionCollection classDefinitions)
+    {
+      var rootClasses = new Set<ClassDefinition> ();
+      foreach (ClassDefinition classDefinition in classDefinitions)
+      {
+        var rootClassDefinition = classDefinition.GetInheritanceRootClass ();
+        if (!rootClasses.Contains (rootClassDefinition))
+          rootClasses.Add (rootClassDefinition);
+      }
+
+      return rootClasses;
+    }
+
+    private void VerifyPersistenceModelApplied (ClassDefinition classDefinition)
+    {
+      if (classDefinition.StorageEntityDefinition == null)
+      {
+        var message = string.Format ("The persistence model loader did not assign a storage entity to class '{0}'.", classDefinition.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      foreach (PropertyDefinition propDef in classDefinition.MyPropertyDefinitions)
+      {
+        if (propDef.StorageClass == StorageClass.Persistent && propDef.StoragePropertyDefinition == null)
+        {
+          var message = string.Format (
+              "The persistence model loader did not assign a storage property to property '{0}' of class '{1}'.",
+              propDef.PropertyName,
+              classDefinition.ID);
+          throw new InvalidOperationException (message);
+        }
+      }
+
+      foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
+        VerifyPersistenceModelApplied (derivedClass);
     }
 
     private void SetMappingReadOnly ()

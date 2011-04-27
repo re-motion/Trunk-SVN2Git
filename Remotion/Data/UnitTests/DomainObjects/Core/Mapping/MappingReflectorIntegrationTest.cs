@@ -42,8 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
       Assert.That (actualClassDefinitions, Is.Not.Null);
 
+      var inheritanceRootClasses = actualClassDefinitions.Cast<ClassDefinition>().Select (cd => cd.GetInheritanceRootClass()).Distinct();
       var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      foreach (ClassDefinition classDefinition in actualClassDefinitions.GetInheritanceRootClasses())
+      foreach (ClassDefinition classDefinition in inheritanceRootClasses)
       {
         DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Factory.CreatePersistenceModelLoader (
             storageProviderDefinitionFinder, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition).

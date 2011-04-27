@@ -63,7 +63,7 @@ public class ClassDefinitionCollection : CommonCollection
     SetIsReadOnly (true);
   }
 
-  public ClassDefinitionCollection GetInheritanceRootClasses ()
+  private ClassDefinitionCollection GetInheritanceRootClasses ()
   {
     ClassDefinitionCollection rootClasses = new ClassDefinitionCollection (this.AreResolvedTypesRequired);
     foreach (ClassDefinition classDefinition in this)
