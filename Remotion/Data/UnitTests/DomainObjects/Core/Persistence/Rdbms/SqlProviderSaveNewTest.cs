@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void AllDataTypes ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
 
       DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void AllDataTypes_DefaultValues ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
 
       DataContainer classWithAllDataTypes = CreateAndRegisterNewDataContainer (classDefinition);
       ObjectID newID = classWithAllDataTypes.ID;
@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);
@@ -355,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ObjectID newID;
       using (Provider)
       {
-        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)]);
+        DataContainer dataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)]);
         newID = dataContainer.ID;
 
         SetDefaultValues (dataContainer);

@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToCreateTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Ceo)].StorageEntityDefinition, stringBuilder);
+          (TableDefinition) MappingConfiguration.TypeDefinitions[typeof (Ceo)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedStatement, stringBuilder.ToString());
     }
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       StringBuilder stringBuilder = new StringBuilder();
 
       _tableBuilder.AddToDropTableScript (
-          (TableDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
+          (TableDefinition) MappingConfiguration.TypeDefinitions[typeof (Customer)].StorageEntityDefinition, stringBuilder);
 
       Assert.AreEqual (expectedScript, stringBuilder.ToString());
     }
@@ -73,8 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void IntegrationTest ()
     {
-      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Customer)].StorageEntityDefinition);
-      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.ClassDefinitions[typeof (Order)].StorageEntityDefinition);
+      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.TypeDefinitions[typeof (Customer)].StorageEntityDefinition);
+      _tableBuilder.AddEntityDefinition ((IEntityDefinition) MappingConfiguration.TypeDefinitions[typeof (Order)].StorageEntityDefinition);
 
       string expectedCreateTableScript = "-- Create all tables\r\n"
                                          + "CREATE TABLE [dbo].[Customer]\r\n"

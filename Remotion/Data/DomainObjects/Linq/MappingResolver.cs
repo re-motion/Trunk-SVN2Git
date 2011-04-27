@@ -17,6 +17,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Linq;
@@ -53,11 +54,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       var classDefinition = GetClassDefinition (tableInfo.ItemType);
-      if (classDefinition == null)
-      {
-        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
-        throw new UnmappedItemException (message);
-      }
       return _storageSpecificExpressionResolver.ResolveTable (classDefinition, generator.GetUniqueIdentifier ("t"));
     }
 
@@ -67,12 +63,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       var classDefinition = GetClassDefinition (joinInfo.OriginatingEntity.Type);
-      if (classDefinition == null)
-      {
-        string message = string.Format (
-            "The type '{0}' does not identify a queryable table.", joinInfo.OriginatingEntity.Type);
-        throw new UnmappedItemException (message);
-      }
 
       var property = joinInfo.MemberInfo as PropertyInfo;
       var leftEndPointDefinition = property != null ? classDefinition.ResolveRelationEndPoint (new PropertyInfoAdapter (property)) : null;
@@ -96,7 +86,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      return _storageSpecificExpressionResolver.ResolveEntity (GetClassDefinition (tableInfo.ItemType), tableInfo.TableAlias);
+      var classDefinition = GetClassDefinition (tableInfo.ItemType);
+      return _storageSpecificExpressionResolver.ResolveEntity (classDefinition, tableInfo.TableAlias);
     }
 
     public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo)
@@ -115,12 +106,6 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       var classDefinition = GetClassDefinition (originatingEntity.Type);
-      if (classDefinition == null)
-      {
-        string message = string.Format (
-            "The type '{0}' does not identify a queryable table.", originatingEntity.Type);
-        throw new UnmappedItemException (message);
-      }
 
       if (property.Name == _storageNameProvider.IDColumnName && property.DeclaringType == typeof (DomainObject))
         return _storageSpecificExpressionResolver.ResolveIDColumn (originatingEntity, classDefinition);
@@ -182,13 +167,6 @@ namespace Remotion.Data.DomainObjects.Linq
         }
 
         var classDefinition = GetClassDefinition (desiredType);
-        if (classDefinition == null)
-        {
-          string message = string.Format (
-              "The type '{0}' does not identify a queryable table.", desiredType.Name);
-          throw new UnmappedItemException (message);
-        }
-
         var idExpression = Expression.MakeMemberAccess (checkedExpression, typeof (DomainObject).GetProperty ("ID"));
         var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
         return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
@@ -199,7 +177,13 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private ClassDefinition GetClassDefinition (Type type)
     {
-      return MappingConfiguration.Current.ClassDefinitions[type];
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault (type);
+      if (classDefinition == null)
+      {
+        string message = string.Format ("The type '{0}' does not identify a queryable table.", type);
+        throw new UnmappedItemException (message);
+      }
+      return classDefinition;
     }
   }
 }

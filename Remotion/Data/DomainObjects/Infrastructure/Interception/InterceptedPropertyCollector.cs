@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ArgumentUtility.CheckNotNull ("baseType", baseType);
       _baseType = baseType;
 
-      _classDefinition = MappingConfiguration.Current.ClassDefinitions[_baseType];
+      _classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault (_baseType);
       ValidateClassDefinition ();
       
       AnalyzeAndValidateBaseType ();

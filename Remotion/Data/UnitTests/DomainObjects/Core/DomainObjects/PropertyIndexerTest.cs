@@ -41,9 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
       Assert.That (accessor, Is.Not.Null);
       Assert.That (
-                  accessor.PropertyData.PropertyDefinition, Is.SameAs (
-                            MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
-                                          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
+          accessor.PropertyData.PropertyDefinition,
+          Is.SameAs (
+              MappingConfiguration.Current.TypeDefinitions[typeof (IndustrialSector)]
+                  .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 
     [Test]
@@ -90,20 +91,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Item_WithShortNotation ()
     {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
       IndustrialSector sector;
-      using (bindingTransaction.EnterNonDiscardingScope ())
+      using (bindingTransaction.EnterNonDiscardingScope())
       {
-        sector = IndustrialSector.NewObject ();
+        sector = IndustrialSector.NewObject();
       }
 
       var indexer = new PropertyIndexer (sector);
       var accessor = indexer[typeof (IndustrialSector), "Name"];
       Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
       Assert.That (
-                  accessor.PropertyData.PropertyDefinition, Is.SameAs (
-                            MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
-                                          .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
+          accessor.PropertyData.PropertyDefinition,
+          Is.SameAs (
+              MappingConfiguration.Current.TypeDefinitions[typeof (IndustrialSector)]
+                  .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 
     [Test]

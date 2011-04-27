@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Guid guid1 = new Guid ("11111111111111111111111111111111");
       Guid guid2 = new Guid ("22222222222222222222222222222222");
       _persistenceManager.LoadDataContainers (
-          new ObjectID[] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, true);
+          new [] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, true);
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Guid guid1 = new Guid ("11111111111111111111111111111111");
       Guid guid2 = new Guid ("22222222222222222222222222222222");
       DataContainerCollection dataContainers = _persistenceManager.LoadDataContainers (
-          new ObjectID[] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, false);
+          new [] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, false);
       Assert.AreEqual (1, dataContainers.Count);
       Assert.AreEqual (DomainObjectIDs.Order1, dataContainers[0].ID);
     }
@@ -442,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewObjectID ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       ObjectID id1 = _persistenceManager.CreateNewObjectID (orderClass);
       Assert.IsNotNull (id1);
       ObjectID id2 = _persistenceManager.CreateNewObjectID (orderClass);
@@ -453,7 +453,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       DataContainer container = CreateDataContainer (orderClass);
 
       Assert.IsNotNull (container);

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
@@ -73,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public static QueryResult<T> CreateTestQueryResult<T> (T[] collection) where T: DomainObject
     {
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (T)];
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault(typeof (T));
       var storageProviderDefinition = classDefinition != null
                                   ? classDefinition.StorageEntityDefinition.StorageProviderDefinition
                                   : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;

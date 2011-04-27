@@ -35,7 +35,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class MappingResolverTest
+  public class MappingResolverTest : StandardMappingTest
   {
     private MappingResolver _resolver;
     private UniqueIdentifierGenerator _generator;
@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private ResolvedJoinInfo _fakeJoinInfo;
     private IStorageNameProvider _storageNameProviderStub;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _storageSpecificExpressionResolverStub = MockRepository.GenerateStub<IStorageSpecificExpressionResolver>();
       _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageNameProviderStub.Stub (stub => stub.IDColumnName).Return ("ID");
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fakeEntityExpression = CreateFakeEntityExpression (typeof (Order));
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveEntity (MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "o"))
+          .Stub (stub => stub.ResolveEntity (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], "o"))
           .Return (fakeEntityExpression);
 
       var sqlEntityExpression =
@@ -78,11 +78,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException))]
+    public void ResolveSimpleTableInfo_NoDomainObject_ThrowsException ()
+    {
+      var simpleTableInfo = new ResolvedSimpleTableInfo(typeof (Student), "StudentTable", "StudentTableAlias");
+
+      _resolver.ResolveSimpleTableInfo (simpleTableInfo, _generator);
+    }
+
+    [Test]
     public void ResolveTableInfo ()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveTable (MappingConfiguration.Current.ClassDefinitions[typeof (Order)], "t0"))
+          .Stub (stub => stub.ResolveTable (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], "t0"))
           .Return (_fakeSimpleTableInfo);
 
       var resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
@@ -109,9 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var property = typeof (Customer).GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
-      var leftEndPoint =
-          MappingConfiguration.Current.ClassDefinitions[typeof (Customer)].GetMandatoryRelationEndPointDefinition (
-              property.DeclaringType.FullName + "." + property.Name);
+      var leftEndPoint = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)]
+          .GetMandatoryRelationEndPointDefinition (property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
@@ -132,9 +140,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
-      var leftEndPoint = MappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)].GetMandatoryRelationEndPointDefinition
-          (
-              typeof (MixinAddingPersistentProperties).FullName + "." + memberInfo.Name);
+      var leftEndPoint = MappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)]
+          .GetMandatoryRelationEndPointDefinition (typeof (MixinAddingPersistentProperties).FullName + "." + memberInfo.Name);
 
       _storageSpecificExpressionResolverStub
           .Stub (stub => stub.ResolveJoin (entityExpression, leftEndPoint, leftEndPoint.GetOppositeEndPointDefinition(), "t0"))
@@ -146,9 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPersistentProperties' "
-                          + "does not identify a queryable table.")]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "The type 'Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.IMixinAddingPersistentProperties' "
+        + "does not identify a queryable table.")]
     public void ResolveJoinInfo_UnknownType ()
     {
       var entityExpression = new SqlEntityDefinitionExpression (
@@ -255,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fakeIDColumnExpression = new SqlColumnDefinitionExpression (typeof (ObjectID), "c", "ID", true);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.ClassDefinitions[typeof (Order)]))
+          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.TypeDefinitions[typeof (Order)]))
           .Return (fakeIDColumnExpression);
 
       var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);

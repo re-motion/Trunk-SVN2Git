@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreaeStoragePropertyDefinition_NonRelationProperty_GetsNoClassIdColumn ()
     {
-      var classDefinition = Configuration.ClassDefinitions[typeof (Order)];
+      var classDefinition = Configuration.TypeDefinitions[typeof (Order)];
       var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (Order).FullName + ".OrderNumber"];
       StubStorageCalculators (propertyDefinition);
 
@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionThatISNotPartOfTheMapping_GetsNotClassIDColumn ()
     {
-      var classDefinition = Configuration.ClassDefinitions[typeof (ClassWithManySideRelationProperties)];
+      var classDefinition = Configuration.TypeDefinitions[typeof (ClassWithManySideRelationProperties)];
       var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (ClassWithManySideRelationProperties).FullName + ".BidirectionalOneToOne"];
       StubStorageCalculators (propertyDefinition);
       
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionWithBaseClassAndNoDerivedClasses_GetsClassIDColumn ()
     {
-      var classDefinition = Configuration.ClassDefinitions[typeof (ClassWithoutRelatedClassIDColumn)];
+      var classDefinition = Configuration.TypeDefinitions[typeof (ClassWithoutRelatedClassIDColumn)];
       var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (ClassWithoutRelatedClassIDColumn).FullName + ".Distributor"];
       StubStorageCalculators (propertyDefinition);
       
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreaeStoragePropertyDefinition_RelationPropertyToAClassDefinitionWithoutBaseClassAndWithDerivedClasses_GetsClassIDColumn ()
     {
-      var classDefinition = Configuration.ClassDefinitions[typeof (Ceo)];
+      var classDefinition = Configuration.TypeDefinitions[typeof (Ceo)];
       var propertyDefinition = classDefinition.MyPropertyDefinitions[typeof (Ceo).FullName + ".Company"];
       StubStorageCalculators (propertyDefinition);
 

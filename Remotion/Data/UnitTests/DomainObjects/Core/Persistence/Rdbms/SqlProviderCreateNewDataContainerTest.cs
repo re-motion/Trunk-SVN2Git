@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateNewDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       DataContainer newContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (orderClass));
 
       Assert.IsNotNull (newContainer, "New DataContainer is null.");
@@ -51,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateClassWithAllDataTypes ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
       DataContainer newContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
 
       Assert.AreEqual (false, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
@@ -106,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ClassDefinition does not match with this StorageProvider's ID 'TestDomain'.\r\nParameter name: classDefinition")]
     public void ClassDefinitionOfOtherStorageProvider ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Official)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Official)];
       Provider.CreateNewObjectID (classDefinition);
     }
   }

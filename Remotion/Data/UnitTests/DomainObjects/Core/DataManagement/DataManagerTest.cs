@@ -873,7 +873,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var nullEndPoint = endPoints.OfType<NullObjectEndPoint>().SingleOrDefault();
       Assert.That (nullEndPoint, Is.Not.Null);
       var expectedEndPointDefinition = 
-          Configuration.ClassDefinitions[typeof (OrderTicket)].GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+          Configuration.TypeDefinitions[typeof (OrderTicket)].GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
       Assert.That (nullEndPoint.Definition, Is.EqualTo (expectedEndPointDefinition));
     }
 

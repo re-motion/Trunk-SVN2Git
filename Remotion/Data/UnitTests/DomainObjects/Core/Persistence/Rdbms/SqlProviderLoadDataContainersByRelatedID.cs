@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -30,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Loading ()
     {
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.ClassDefinitions[typeof (Order)],
+          MappingConfiguration.Current.TypeDefinitions[typeof (Order)],
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
           DomainObjectIDs.Customer1);
 
@@ -46,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer personContainer = Provider.LoadDataContainer (DomainObjectIDs.Person6);
 
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.ClassDefinitions[typeof (Distributor)],
+          MappingConfiguration.Current.TypeDefinitions[typeof (Distributor)],
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson",
           DomainObjectIDs.Person6);
 

@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
     private ObjectID CreateObjectID (Type classType, Guid id)
     {
-      return new ObjectID (_mappingConfiguration.ClassDefinitions[classType], id);
+      return new ObjectID (_mappingConfiguration.TypeDefinitions[classType], id);
     }
   }
 }
