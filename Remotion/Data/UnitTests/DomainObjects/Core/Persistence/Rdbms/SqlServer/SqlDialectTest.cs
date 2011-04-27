@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
@@ -59,6 +61,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _dialect.AddBatchForScript (script);
 
       Assert.That (script.ToString(), Is.EqualTo ("testGO\r\n\r\n"));
+    }
+
+    [Test]
+    public void AddBatchSeparatorIfNeeded()
+    {
+      var statement = new ScriptStatement ("Some Statement");
+      var statements = new List<ScriptStatement> () { statement };
+
+      _dialect.AddBatchSeparatorIfNeeded (statements);
+
+      Assert.That (statements.Count, Is.EqualTo(2));
+      Assert.That (statements[0], Is.SameAs(statement));
+      Assert.That (statements[1].Statement, Is.EqualTo ("GO"));
+    }
+
+    [Test]
+    public void AddBatchSeparatorIfNeeded_NoStatements ()
+    {
+      var statements = new List<ScriptStatement>();
+
+      _dialect.AddBatchSeparatorIfNeeded (statements);
+
+      Assert.That (statements, Is.Empty);
+    }
+
+    [Test]
+    public void AddBatchSeparatorIfNeeded_LastStatementIsGoStatement ()
+    {
+      var statement = new ScriptStatement("GO");
+      var statements = new List<ScriptStatement> () { statement };
+
+      _dialect.AddBatchSeparatorIfNeeded (statements);
+
+      Assert.That (statements.Count, Is.EqualTo(1));
+      Assert.That (statements[0], Is.SameAs(statement));
     }
 
     [Test]

@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Text;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
@@ -35,6 +37,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     /// <summary> Appends a GO-statement to the script. </summary>
     void AddBatchForScript (StringBuilder createScript);
+
+    /// <summary> Appends a GO script-statement to the passed script-statements if needed. </summary>
+    void AddBatchSeparatorIfNeeded (List<ScriptStatement> statements);
 
     void CreateScriptForConnectionString (StringBuilder script, string connectionString);
   }

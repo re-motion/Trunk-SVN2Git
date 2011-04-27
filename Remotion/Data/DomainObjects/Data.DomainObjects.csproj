@@ -220,6 +220,10 @@
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\IScriptElement.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementBatch.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBase.cs" />
