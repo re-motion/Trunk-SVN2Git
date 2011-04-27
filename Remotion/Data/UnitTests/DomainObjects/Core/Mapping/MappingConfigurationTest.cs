@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
@@ -71,19 +70,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, true);
+      var classDefinitions = new[]
+                             {
+                                 new ClassDefinition ("CID1", typeof (Ceo), false, null, null, MockRepository.GenerateStub<IPersistentMixinFinder>()),
+                                 new ClassDefinition (
+                                     "CID2", typeof (Order), false, null, null, MockRepository.GenerateStub<IPersistentMixinFinder>())
+                             };
+      foreach (var classDefinition in classDefinitions)
+      {
+        classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+        classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+        classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      }
+
+      var relationDefinitions = new[]
+                                {
+                                    new RelationDefinition (
+                                        "RID1",
+                                        MockRepository.GenerateStub<IRelationEndPointDefinition>(),
+                                        MockRepository.GenerateStub<IRelationEndPointDefinition>()),
+                                    new RelationDefinition (
+                                        "RID2",
+                                        MockRepository.GenerateStub<IRelationEndPointDefinition>(),
+                                        MockRepository.GenerateStub<IRelationEndPointDefinition>())
+                                };
+
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (Arg<ClassDefinitionCollection>.Is.Anything)).Return (relationDefinitions);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
 
       _mockRepository.ReplayAll();
 
       var configuration = new MappingConfiguration (
           _mockMappingLoader, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
-      var actualClassDefinitionCollection = configuration.ClassDefinitions;
-      var actualRelationDefinitionCollection = configuration.RelationDefinitions;
 
       _mockRepository.VerifyAll();
 
-      Assert.That (actualClassDefinitionCollection, Is.EqualTo (_emptyClassDefinitions));
-      Assert.That (actualRelationDefinitionCollection, Is.EqualTo (_emptyRelationDefinitions));
+      Assert.That (configuration.ClassDefinitions, Is.EqualTo (classDefinitions));
+      Assert.That (configuration.RelationDefinitions.Values, Is.EqualTo (relationDefinitions));
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
       Assert.That (configuration.ClassDefinitions.IsReadOnly, Is.True);
