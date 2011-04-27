@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
-      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
+      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true);
       var actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions).ToDictionary (rd => rd.ID);
 
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
@@ -74,11 +74,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assembly assembly = GetType().Assembly;
       MappingReflector expectedMappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly));
-      var expectedClassDefinitions = new ClassDefinitionCollection (expectedMappingReflector.GetClassDefinitions(), true, true);
+      var expectedClassDefinitions = new ClassDefinitionCollection (expectedMappingReflector.GetClassDefinitions(), true);
       var expectedRelationDefinitions = expectedMappingReflector.GetRelationDefinitions (expectedClassDefinitions).ToDictionary (rd => rd.ID);
 
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
-      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
+      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true);
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker ();
       classDefinitionChecker.Check (expectedClassDefinitions, actualClassDefinitions, false, false);
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       Assembly assembly = GetType ().Assembly;
       var mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
-      var classDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true, true);
+      var classDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true);
 
       Assert.That (classDefinitions.Count, Is.GreaterThan (0));
     }

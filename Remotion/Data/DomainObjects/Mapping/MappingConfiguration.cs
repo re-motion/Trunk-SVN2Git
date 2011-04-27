@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true, true);
+        _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true);
 
         ValidateClassDefinitions (mappingLoader);
         ValidatePropertyDefinitions (mappingLoader);

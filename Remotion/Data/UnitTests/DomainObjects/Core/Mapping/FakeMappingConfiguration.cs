@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
           derivedClasses = Enumerable.Empty<ClassDefinition> ();
 
-        classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true, true));
+        classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true));
       }
     }
 

@@ -67,8 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false,
           _baseOfBaseClass);
 
-      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1, _derivedClass }, true, true));
-      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass2 }, true, true));
+      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1, _derivedClass }, true));
+      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass2 }, true));
       _derivedBaseClass2.SetDerivedClasses (new ClassDefinitionCollection());
       _derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
     }

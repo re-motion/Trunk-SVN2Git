@@ -398,7 +398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      companyClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { partnerClass }, true, true));
+      companyClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { partnerClass }, true));
 
       Assert.That (companyClass.StorageEntityDefinition, Is.Null);
       Assert.That (partnerClass.StorageEntityDefinition, Is.Null);

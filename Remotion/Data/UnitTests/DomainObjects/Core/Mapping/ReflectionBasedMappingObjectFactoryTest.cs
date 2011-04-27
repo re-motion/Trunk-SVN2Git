@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var result =
           _factory.CreateRelationDefinition (
-              new ClassDefinitionCollection (new[] { orderClassDefinition, orderItemClassDefinition }, true, true),
+              new ClassDefinitionCollection (new[] { orderClassDefinition, orderItemClassDefinition }, true),
               orderItemClassDefinition,
               orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));
 
-      var result = _factory.CreateRelationDefinitionCollection (new ClassDefinitionCollection (new[] { classDefinition }, true, true));
+      var result = _factory.CreateRelationDefinitionCollection (new ClassDefinitionCollection (new[] { classDefinition }, true));
 
       Assert.That (result.Count(), Is.EqualTo (1));
       Assert.That (

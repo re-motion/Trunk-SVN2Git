@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_OneClassDefinitionWithOneEndPoint ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderItemClassDefinition }, true, true);
+      var classDefinitions = new ClassDefinitionCollection (new[] { _orderItemClassDefinition }, true);
 
       _mappingObjectFactoryMock
           .Expect (
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_OneClassDefinitionWithSeveralEndPoints_DuplicatedRelationDefinitionsGetFiltered ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition }, true, true);
+      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition }, true);
 
       _mappingObjectFactoryMock
           .Expect (
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_SeveralClassDefinitionWithSeveralEndPoints_DuplicatedRelationDefinitionsGetFiltered ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition, _orderItemClassDefinition }, true, true);
+      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition, _orderItemClassDefinition }, true);
 
       _mappingObjectFactoryMock
           .Expect (

@@ -31,24 +31,17 @@ public class ClassDefinitionCollection : CommonCollection
   // member fields
 
   private Hashtable _types = new Hashtable ();
-  private bool _areResolvedTypesRequired;
+  private bool _areResolvedTypesRequired = true;
   
   // construction and disposing
 
-  public ClassDefinitionCollection () : this (true)
+  public ClassDefinitionCollection ()
   {
   }
 
-  public ClassDefinitionCollection (bool areResolvedTypesRequired)
-  {
-    _areResolvedTypesRequired = areResolvedTypesRequired;
-  }
-
-  public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOnly, bool areResolvedTypeRequired)
+  public ClassDefinitionCollection (IEnumerable<ClassDefinition> collection, bool makeCollectionReadOnly)
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
-
-    _areResolvedTypesRequired = areResolvedTypeRequired;
 
     foreach (var classDefinition in collection)
       Add (classDefinition);
@@ -61,19 +54,6 @@ public class ClassDefinitionCollection : CommonCollection
   public void SetReadOnly ()
   {
     SetIsReadOnly (true);
-  }
-
-  private ClassDefinitionCollection GetInheritanceRootClasses ()
-  {
-    ClassDefinitionCollection rootClasses = new ClassDefinitionCollection (this.AreResolvedTypesRequired);
-    foreach (ClassDefinition classDefinition in this)
-    {
-      ClassDefinition rootClassDefinition = classDefinition.GetInheritanceRootClass ();
-      if (!rootClasses.Contains (rootClassDefinition))
-        rootClasses.Add (rootClassDefinition);
-    }
-
-    return rootClasses;
   }
 
   public ClassDefinition GetMandatory (Type classType)
@@ -102,11 +82,6 @@ public class ClassDefinitionCollection : CommonCollection
       throw CreateMappingException ("Mapping does not contain class '{0}'.", classID);
 
     return classDefinition;
-  }
-
-  public bool AreResolvedTypesRequired
-  {
-    get { return _areResolvedTypesRequired; }
   }
 
   #region Standard implementation for "add-only" collections

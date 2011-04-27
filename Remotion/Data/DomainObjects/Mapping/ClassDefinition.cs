@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ClassDefinitionCollection GetAllDerivedClasses ()
     {
-      var allDerivedClasses = new ClassDefinitionCollection (IsClassTypeResolved);
+      var allDerivedClasses = new ClassDefinitionCollection ();
       FillAllDerivedClasses (allDerivedClasses);
       return allDerivedClasses;
     }

@@ -56,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _collection = new ClassDefinitionCollection();
     }
 
-    [Test]
-    public void Initialize ()
-    {
-      Assert.IsTrue (_collection.AreResolvedTypesRequired);
-    }
+    //[Test]
+    //public void Initialize ()
+    //{
+    //  Assert.IsTrue (_collection.AreResolvedTypesRequired);
+    //}
 
     [Test]
     public void AddWithResolvedType ()
@@ -163,11 +163,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CopyConstructor_IEnumerableCollection ()
     {
-      var copiedCollection = new ClassDefinitionCollection (new[] { _classDefinition }, false, true);
+      var copiedCollection = new ClassDefinitionCollection (new[] { _classDefinition }, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_classDefinition, copiedCollection[0]);
-      Assert.AreEqual (true, copiedCollection.AreResolvedTypesRequired);
+      //Assert.AreEqual (true, copiedCollection.AreResolvedTypesRequired);
     }
 
     [Test]

@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false,
           _derivedBaseClass1);
 
-      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1 }, true, true));
-      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedClass }, true, true));
+      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1 }, true));
+      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedClass }, true));
       _derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
 
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");

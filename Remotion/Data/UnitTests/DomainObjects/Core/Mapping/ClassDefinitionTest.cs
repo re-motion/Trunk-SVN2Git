@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false,
           _domainBaseClass);
 
-      _domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass, _organizationalUnitClass }, true, true));
+      _domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass, _organizationalUnitClass }, true));
 
       _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
       _distributorClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
@@ -90,13 +90,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void Initialize ()
     {
       var actual = new ClassDefinition ("Order", typeof (Order), false, null, null, new PersistentMixinFinder (typeof (Order)));
-      actual.SetDerivedClasses (new ClassDefinitionCollection (true));
+      actual.SetDerivedClasses (new ClassDefinitionCollection ());
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
       Assert.That (actual.StorageEntityDefinition, Is.Null);
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));
       Assert.That (actual.BaseClass, Is.Null);
-      Assert.That (actual.DerivedClasses.AreResolvedTypesRequired, Is.True);
+      //Assert.That (actual.DerivedClasses.AreResolvedTypesRequired, Is.True);
       Assert.That (actual.IsReadOnly, Is.False);
     }
 
@@ -289,7 +289,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetDerivedClasses ()
     {
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false));
 
       Assert.That (_personClass.DerivedClasses.Count, Is.EqualTo (1));
       Assert.That (_personClass.DerivedClasses[0], Is.SameAs (_customerClass));
@@ -299,8 +299,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The derived-classes for class 'Person' have already been set.")]
     public void SetDerivedClasses_Twice_ThrowsException ()
     {
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _customerClass }, false));
     }
 
     [Test]
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void SetDerivedClasses_ClasssIsReadOnly ()
     {
       _personClass.SetReadOnly();
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false));
     }
 
     [Test]
@@ -316,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Derived class 'Order' cannot be added to class 'Person', because it has no base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasNoBaseClassDefined ()
     {
-      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false, true));
+      _personClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _orderClass }, false));
     }
 
     [Test]
@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Derived class 'Person' cannot be added to class 'Customer', because it has class 'DomainBase' as its base class definition defined.")]
     public void SetDerivedClasses_DerivedClassHasWrongBaseClassDefined ()
     {
-      _customerClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass }, false, true));
+      _customerClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass }, false));
     }
 
     [Test]
@@ -374,7 +374,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinitionFactory.CreateClassDefinition (
           "Customer", "TableInheritance_Person", UnitTestDomainStorageProviderDefinition, typeof (Customer), false, personClass);
 
-      domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass }, true, true));
+      domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass }, true));
 
       string[] entityNames = domainBaseClass.GetAllConcreteEntityNames();
       Assert.IsNotNull (entityNames);
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       ClassDefinition actual = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      actual.SetDerivedClasses (new ClassDefinitionCollection (true));
+      actual.SetDerivedClasses (new ClassDefinitionCollection ());
       Assert.That (actual.IsReadOnly, Is.False);
 
       actual.SetReadOnly();
@@ -567,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -576,6 +576,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (result, Is.Not.Null);
     }
 
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void GetAllPropertyDefinitions_ThrowsWhenPropertiesNotSet ()
@@ -595,7 +596,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
       var propertyDefinition = PropertyDefinitionFactory.CreateForFakePropertyInfo (classDefinition, "Test", "Test");
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetReadOnly();
 
@@ -610,7 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new PropertyDefinition[0], true));
       classDefinition.SetReadOnly();
 
@@ -703,7 +704,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));
@@ -729,7 +730,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));
@@ -746,7 +747,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Order", "OrderTable", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (true));
+      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           classDefinition, "Test", false, CardinalityType.One, typeof (DomainObject), null, typeof (Order).GetProperty ("OrderNumber"));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPointDefinition }, true));

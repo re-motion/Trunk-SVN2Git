@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           "Person", "TableInheritance_Person", StorageProviderDefinition, typeof (Person), false, domainBaseClass);
       var organizationalUnitClass = ClassDefinitionFactory.CreateClassDefinition (
           "OrganizationalUnit", "TableInheritance_OrganizationalUnit", StorageProviderDefinition, typeof (OrganizationalUnit), false, domainBaseClass);
-      domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass, organizationalUnitClass }, true, true));
+      domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { personClass, organizationalUnitClass }, true));
 
       var clientClass = ClassDefinitionFactory.CreateClassDefinition (
           "Client", "TableInheritance_Client", StorageProviderDefinition, typeof (Client), false);
