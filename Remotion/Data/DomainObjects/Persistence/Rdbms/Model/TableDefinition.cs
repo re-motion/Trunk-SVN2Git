@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition tableName,
         EntityNameDefinition viewName,
-        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<ITableConstraintDefinition> constraints,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)

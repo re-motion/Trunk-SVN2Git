@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         EntityNameDefinition viewName,
         IEntityDefinition baseEntity,
         IEnumerable<string> classIDs,
-        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
         : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))

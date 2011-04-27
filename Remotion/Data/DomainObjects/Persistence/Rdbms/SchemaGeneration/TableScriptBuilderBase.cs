@@ -17,7 +17,8 @@
 using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Utilities;
+using Remotion.Text;
+using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
@@ -86,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      return DeclarationListColumnDefinitionVisitor.GetDeclarationList (tableDefinition.Columns, _sqlDialect);
+      return SeparatedStringBuilder.Build (",\r\n", tableDefinition.Columns, GetColumnDeclaration);
     }
 
     protected string GetPrimaryKeyConstraintStatement (TableDefinition tableDefinition)
@@ -126,6 +127,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("nullEntityDefinition", nullEntityDefinition);
 
       //Nothing to do here
+    }
+
+    private string GetColumnDeclaration (SimpleColumnDefinition column)
+    {
+      return string.Format ("  {0} {1}{2}",
+         _sqlDialect.DelimitIdentifier (column.Name),
+          column.StorageType,
+          column.IsNullable ? " NULL" : " NOT NULL");
     }
   }
 }

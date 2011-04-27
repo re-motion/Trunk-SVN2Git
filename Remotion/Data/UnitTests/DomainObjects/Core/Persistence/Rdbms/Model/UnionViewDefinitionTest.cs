@@ -52,14 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "View1"),
           new[] { _column1 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
           new[] { _column2, _column3 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       _unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
@@ -82,14 +84,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     public void Initialization_ViewNameNull ()
     {
       var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition, null, new[] { _tableDefinition1, _tableDefinition2 }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _storageProviderDefinition,
+          null,
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       Assert.That (unionViewDefinition.ViewName, Is.Null);
     }
 
     [Test]
     public void Initialization_WithUnionedUnionEntity ()
     {
-      new UnionViewDefinition (_storageProviderDefinition, null, new[] { _unionViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
+      new UnionViewDefinition (
+          _storageProviderDefinition,
+          null,
+          new[] { _unionViewDefinition },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -102,8 +115,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "ViewName"),
           _tableDefinition1,
           new[] { "x" },
-          new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
-      new UnionViewDefinition (_storageProviderDefinition, null, new[] { filterViewDefinition }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+      new UnionViewDefinition (
+          _storageProviderDefinition,
+          null,
+          new[] { filterViewDefinition },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -152,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
 
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0], Is.SameAs (_column1));
-      Assert.That (result[1], Is.TypeOf (typeof (NullColumnDefinition)));
+      Assert.That (result[1], Is.Null);
       Assert.That (result[2], Is.SameAs (_column3));
     }
 
@@ -169,77 +190,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList_WithNullColumnDefinition ()
+    public void CreateFullColumnList_WithNullColumn ()
     {
       var unionViewDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new[] { _tableDefinition1, _tableDefinition2 },
-          new[] { new NullColumnDefinition() },
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[] { null },
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
 
       var availableColumns = new[] { _column1 };
 
       var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.TypeOf (typeof (NullColumnDefinition)));
-    }
-
-    [Test]
-    public void CreateFullColumnList_WithObjectIDWithClassIDColumnDefinition_NotFound ()
-    {
-      var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new[] { _tableDefinition1, _tableDefinition2 },
-          new[] { new IDColumnDefinition (_column1, _column2) },
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-
-      var availableColumns = new[] { _column1 };
-
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.TypeOf (typeof (IDColumnDefinition)));
-      Assert.That (((IDColumnDefinition) result[0]).ObjectIDColumn, Is.SameAs (_column1));
-      Assert.That (((IDColumnDefinition) result[0]).ClassIDColumn, Is.TypeOf (typeof (NullColumnDefinition)));
-    }
-
-    [Test]
-    public void CreateFullColumnList_WithObjectIDWithClassIDColumnDefinition_Found ()
-    {
-      var columnDefinition = new IDColumnDefinition (_column1, _column2);
-      var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new[] { _tableDefinition1, _tableDefinition2 },
-          new[] { columnDefinition },
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-
-      var availableColumns = new[] { columnDefinition };
-
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.SameAs (columnDefinition));
-    }
-
-    [Test]
-    public void CreaeFullColumnList_NullColumn ()
-    {
-      var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new[] { _tableDefinition1, _tableDefinition2 },
-          new IColumnDefinition[] { null },
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
-
-      var result =
-          unionViewDefinition.CreateFullColumnList (new[] { new SimpleColumnDefinition ("Test", typeof (string), "varchar", false, false) }).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.Null);
+    }
+
+    [Test]
+    public void CreateFullColumnList_OneColumnNotFound ()
+    {
+      var unionViewDefinition = new UnionViewDefinition (
+          _storageProviderDefinition,
+          new EntityNameDefinition (null, "Test"),
+          new[] { _tableDefinition1, _tableDefinition2 },
+          new[] { _column1, _column2 },
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+
+      var availableColumns = new[] { _column1 };
+
+      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result[0], Is.SameAs(_column1));
+      Assert.That (result[1], Is.Null);
     }
 
     [Test]
@@ -257,15 +243,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Table3"),
           new EntityNameDefinition (null, "View"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       var baseUnionDefinition = new UnionViewDefinition (
           _storageProviderDefinition,
-          new EntityNameDefinition(null, "UnionView"),
+          new EntityNameDefinition (null, "UnionView"),
           new IEntityDefinition[] { _unionViewDefinition, tableDefinition3 },
-          new IColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
 
       var result = baseUnionDefinition.GetAllTables().ToArray();
 

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   public interface IEntityDefinition : IStorageEntityDefinition, INullObject
   {
     EntityNameDefinition ViewName { get; }
-    ReadOnlyCollection<IColumnDefinition> Columns { get; }
+    ReadOnlyCollection<SimpleColumnDefinition> Columns { get; }
     ReadOnlyCollection<IIndexDefinition> Indexes { get; }
     ReadOnlyCollection<EntityNameDefinition> Synonyms { get; }
 

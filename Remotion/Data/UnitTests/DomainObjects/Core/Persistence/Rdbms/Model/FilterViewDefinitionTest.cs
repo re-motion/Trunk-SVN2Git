@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "View"),
           new[] { _column1, _column2, _column3 },
           new ITableConstraintDefinition[0],
-          new IIndexDefinition[0], 
+          new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
       _indexes = new[] { MockRepository.GenerateStub<IIndexDefinition>() };
@@ -83,8 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           _filterViewDefinition,
           new[] { "x" },
-          new IColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
     }
 
     [Test]
@@ -101,26 +102,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
               _storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
               null,
-              new IColumnDefinition[0],
+              new SimpleColumnDefinition[0],
               new ITableConstraintDefinition[0],
-              new IIndexDefinition[0], new EntityNameDefinition[0])
+              new IIndexDefinition[0],
+              new EntityNameDefinition[0])
           },
-          new IColumnDefinition[0], 
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       new FilterViewDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           unionViewDefinition,
           new[] { "x" },
-          new IColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
     }
 
     [Test]
     public void Initialization_ViewNameNull ()
     {
       var filterViewDefinition = new FilterViewDefinition (
-          _storageProviderDefinition, null, _entityDefinition, new[] { "ClassId" }, new IColumnDefinition[0], new IIndexDefinition[0], new EntityNameDefinition[0]);
+          _storageProviderDefinition,
+          null,
+          _entityDefinition,
+          new[] { "ClassId" },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       Assert.That (filterViewDefinition.ViewName, Is.Null);
     }
 
@@ -176,8 +186,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           new EntityNameDefinition (null, "Test"),
           _filterViewDefinition,
           new[] { "x" },
-          new IColumnDefinition[0],
-          new IIndexDefinition[0], new EntityNameDefinition[0]);
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
 
       var table = derivedFilterViewDefinition.GetBaseTable();
 

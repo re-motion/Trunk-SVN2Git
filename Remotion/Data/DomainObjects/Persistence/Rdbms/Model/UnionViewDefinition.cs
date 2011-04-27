@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         StorageProviderDefinition storageProviderDefinition,
         EntityNameDefinition viewName,
         IEnumerable<IEntityDefinition> unionedEntities,
-        IEnumerable<IColumnDefinition> columns,
+        IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
         : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
@@ -91,12 +91,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _indexes; }
     }
 
-    public IColumnDefinition[] CreateFullColumnList (IEnumerable<IColumnDefinition> availableColumns)
+    public SimpleColumnDefinition[] CreateFullColumnList (IEnumerable<SimpleColumnDefinition> availableColumns)
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
-      var finder = new ColumnDefinitionFinder (availableColumns);
-      return Columns.Select (finder.FindColumn).ToArray();
+      var fullColumnList = new List<SimpleColumnDefinition>();
+      foreach (var column in Columns)
+      {
+        if (availableColumns.Contains (column))
+          fullColumnList.Add (column);
+        else
+          fullColumnList.Add (null);
+      }
+      return fullColumnList.ToArray();
     }
 
     // Always returns at least one table

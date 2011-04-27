@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Order"),
           new EntityNameDefinition(null, "OrderView"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], 
           new[]{new EntityNameDefinition(null, "SynonymName")});
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "OrderView"),
           _tableDefinition,
           new[] { "ClassID" },
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "SynonymName") });
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationInternalStorageProviderDefinition,
           new EntityNameDefinition (null, "OrderView"),
           new[] { _tableDefinition },
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "SynonymName") });
 

@@ -62,12 +62,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var columns = GetColumnsDefinitionForEntity (classDefinition);
+      var columns = SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions(GetColumnsDefinitionForEntity (classDefinition));
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
           _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
           true,
-          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns).Where (c => c.IsPartOfPrimaryKey).ToArray());
+          columns.Where (c => c.IsPartOfPrimaryKey).ToArray());
 
       var foreignKeyConstraints =
           _foreignKeyConstraintDefinitionFactory.CreateForeignKeyConstraints (classDefinition).Cast<ITableConstraintDefinition>();
@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          columns,
+          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns),
           new IIndexDefinition[0], 
           new EntityNameDefinition[0]);
     }
@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          columns,
+          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions(columns),
           new IIndexDefinition[0], 
           new EntityNameDefinition[0]);
     }

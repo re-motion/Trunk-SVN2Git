@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Order"),
           new EntityNameDefinition (null, "OrderView"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "Synonym1") });
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("test", "Order"),
           new EntityNameDefinition ("test", "OrderView"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new[]
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           new EntityNameDefinition (null, "FilterView"),
           _tableDefinition1,
           new[] { "ClassID" },
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "Synonym1") });
 
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
           new[]{_tableDefinition1},
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new[] { new EntityNameDefinition (null, "Synonym1") });
 

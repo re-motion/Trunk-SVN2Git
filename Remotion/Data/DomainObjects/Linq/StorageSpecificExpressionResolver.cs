@@ -44,8 +44,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
       var entityDefinition = (IEntityDefinition) classDefinition.StorageEntityDefinition;
-      var tableColumns =
-          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (entityDefinition.Columns).Select (
+      var tableColumns = entityDefinition.Columns.Select (
               cd => new SqlColumnDefinitionExpression (cd.PropertyType, tableAlias, cd.Name, cd.IsPartOfPrimaryKey)).ToArray();
 
       return new SqlEntityDefinitionExpression (

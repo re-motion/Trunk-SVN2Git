@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
               storageProviderDefinition,
               new EntityNameDefinition (null, "Test"),
               null,
-              new IColumnDefinition[0],
+              new SimpleColumnDefinition[0],
               new ITableConstraintDefinition[0],
               new IIndexDefinition[0], new EntityNameDefinition[0])
           },

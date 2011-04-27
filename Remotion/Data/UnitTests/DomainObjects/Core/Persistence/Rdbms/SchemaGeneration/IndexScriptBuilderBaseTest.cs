@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "tableName"),
           new EntityNameDefinition (null, "viewName"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
           new EntityNameDefinition[0]);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition (null, "filterViewName"),
           _tableDefinition,
           new[] { "ClassID" },
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
           new EntityNameDefinition[0]);
 
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionViewName"),
           new[] { _tableDefinition },
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new IIndexDefinition[] { _sqlIndexDefinition, _primaryXmlIndexDefinition, _secondaryXmlIndexDefinition },
           new EntityNameDefinition[0]);
 

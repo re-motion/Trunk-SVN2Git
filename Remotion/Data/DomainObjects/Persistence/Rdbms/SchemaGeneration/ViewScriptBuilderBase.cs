@@ -72,9 +72,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       entityDefinition.Accept (this);
     }
 
-    protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions, bool allowNulls)
+    protected string GetColumnList (IEnumerable<SimpleColumnDefinition> columnDefinitions, bool allowNulls)
     {
-      return NameListColumnDefinitionVisitor.GetNameList (columnDefinitions, allowNulls, _sqlDialect);
+      return SeparatedStringBuilder.Build (", ", columnDefinitions, cd => cd != null ? _sqlDialect.DelimitIdentifier(cd.Name) : "NULL");
     }
 
     protected string GetClassIDList (IEnumerable<string> classIDs)

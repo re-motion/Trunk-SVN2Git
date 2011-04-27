@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderID,
           "FakeTableName",
           "FakeViewName",
-          new IColumnDefinition[] { _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
+          new[] { _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1 },
           new ITableConstraintDefinition[]
           { new PrimaryKeyConstraintDefinition ("FakePrimaryKeyName", true, new[] { _fakeIDColumnDefinition }), _fakeForeignKeyConstraint },
           new IIndexDefinition[0],
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
@@ -159,9 +159,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "FakeViewName",
           fakeBaseEntityDefiniton,
           new[] { "Derived1Class" },
-          new IColumnDefinition[]
+          new[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test"),
           new EntityNameDefinition (null, "TestView"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
@@ -202,9 +202,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           "FakeViewName",
           fakeBaseEntityDefiniton,
           new[] { "Derived2Class", "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
-          new IColumnDefinition[]
+          new[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -217,14 +217,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test1"),
           new EntityNameDefinition (null, "TestView1"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
       var fakeUnionEntity2 = new TableDefinition (
           _storageProviderDefinition,
           new EntityNameDefinition (null, "Test2"),
           new EntityNameDefinition (null, "TestView2"),
-          new IColumnDefinition[0],
+          new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
 
@@ -253,9 +253,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           _storageProviderID,
           "FakeViewName",
           new[] { fakeUnionEntity1, fakeUnionEntity2 },
-          new IColumnDefinition[]
+          new[]
           {
-              _fakeObjectIDColumnDefinition, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
+              _fakeIDColumnDefinition, _fakeColumnDefinition1, _fakeTimestampColumnDefinition, _fakeColumnDefinition1
           },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         string expectedStorageProviderID,
         string expectedTableName,
         string expectedViewName,
-        IColumnDefinition[] expectedColumnDefinitions,
+        SimpleColumnDefinition[] expectedColumnDefinitions,
         ITableConstraintDefinition[] expectedTableConstraintDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         string expectedViewName,
         IStorageEntityDefinition expectedBaseEntity,
         string[] expectedClassIDs,
-        IColumnDefinition[] expectedColumnDefinitions,
+        SimpleColumnDefinition[] expectedColumnDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
     {
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         string expectedStorageProviderID,
         string expectedViewName,
         IStorageEntityDefinition[] expectedStorageEntityDefinitions,
-        IColumnDefinition[] expectedColumnDefinitions,
+        SimpleColumnDefinition[] expectedColumnDefinitions,
         IIndexDefinition[] expectedIndexDefinitions,
         EntityNameDefinition[] expectedSynonyms)
     {

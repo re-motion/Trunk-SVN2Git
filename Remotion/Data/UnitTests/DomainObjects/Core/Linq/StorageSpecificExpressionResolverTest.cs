@@ -48,29 +48,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveEntity ()
     {
-      var idColumnDefinition = new IDColumnDefinition (
-          new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true),
-          new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false));
-      var idColumnDefinitionWithoutClassIDColumn = new IDColumnDefinition (
-          new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false, false), null);
+      var primaryKeyColumn = new SimpleColumnDefinition ("ID", typeof (ObjectID), "uniqueidentifier", false, true);
+      var classIDColumn = new SimpleColumnDefinition ("ClassID", typeof (string), "varchar", false, false);
+      var foreignKeyColumn = new SimpleColumnDefinition ("ForeignKey", typeof (int), "integer", false, false);
       var simpleColumn = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", true, false);
       var tableDefinition = new TableDefinition (
           TestDomainStorageProviderDefinition,
           new EntityNameDefinition(null, "Test"),
           null,
-          new IColumnDefinition[] { idColumnDefinition, idColumnDefinitionWithoutClassIDColumn, simpleColumn }, new ITableConstraintDefinition[0],
+          new[] { primaryKeyColumn, classIDColumn, foreignKeyColumn, simpleColumn }, new ITableConstraintDefinition[0],
           new IIndexDefinition[0], new EntityNameDefinition[0]);
       _classDefinition.SetStorageEntity (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
-      var idColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
-      var classIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
-      var foreignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "o", "ForeignKey", false);
-      var column = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
+      var expectedIdColumn = new SqlColumnDefinitionExpression (typeof (ObjectID), "o", "ID", true);
+      var expectedClassIdColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "ClassID", false);
+      var expectedForeignKeyColumn = new SqlColumnDefinitionExpression (typeof (int), "o", "ForeignKey", false);
+      var expectedColumn = new SqlColumnDefinitionExpression (typeof (string), "o", "Column1", false);
 
       var expectedExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, idColumn, new[] { idColumn, classIdColumn, foreignKeyColumn, column });
+          typeof (Order), "o", null, expectedIdColumn, new[] { expectedIdColumn, expectedClassIdColumn, expectedForeignKeyColumn, expectedColumn });
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 

@@ -60,9 +60,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return null; }
     }
 
-    public ReadOnlyCollection<IColumnDefinition> Columns
+    public ReadOnlyCollection<SimpleColumnDefinition> Columns
     {
-      get { return new ReadOnlyCollection<IColumnDefinition> (new IColumnDefinition[0]); }
+      get { return new ReadOnlyCollection<SimpleColumnDefinition> (new SimpleColumnDefinition[0]); }
     }
 
     public ReadOnlyCollection<IIndexDefinition> Indexes
