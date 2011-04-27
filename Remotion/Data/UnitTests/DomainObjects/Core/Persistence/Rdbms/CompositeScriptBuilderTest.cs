@@ -26,9 +26,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class SqlCompositeScriptBuilderTest : SchemaGenerationTestBase
+  public class CompositeScriptBuilderTest : SchemaGenerationTestBase
   {
-    private SqlCompositeScriptBuilder _scriptBuilderForFirstStorageProvider;
+    private CompositeScriptBuilder _scriptBuilderForFirstStorageProvider;
     private string _firstStorageProviderSetupDBScriptWithoutTables;
     private string _firstStorageProviderTearDownDBScriptWithoutTables;
     private IScriptBuilder _tableBuilderMock;
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _indexBuilderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _synonymBuilderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
 
-      _scriptBuilderForFirstStorageProvider = new SqlCompositeScriptBuilder (
+      _scriptBuilderForFirstStorageProvider = new CompositeScriptBuilder (
           SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, _tableBuilderMock, _constraintBuilderMock, _viewBuilderMock, _indexBuilderMock, _synonymBuilderMock);
       _firstStorageProviderSetupDBScriptWithoutTables = ResourceUtility.GetResourceString (
           typeof (FileBuilderIntegrationTest), "TestData.SetupDB_FirstStorageProviderWithoutTables.sql");

@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _sqlFileBuilderForFirstStorageProvider =
           new FileBuilder (
-              () => new SqlCompositeScriptBuilder (
+              () => new CompositeScriptBuilder (
                         SchemaGenerationFirstStorageProviderDefinition,
                         SqlDialect.Instance,
                         tableBuilder,
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new EntityDefinitionProvider());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
-              () => new SqlCompositeScriptBuilder (
+              () => new CompositeScriptBuilder (
                         SchemaGenerationSecondStorageProviderDefinition,
                         SqlDialect.Instance,
                         tableBuilder,
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               new EntityDefinitionProvider());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
-              () => new SqlCompositeScriptBuilder (
+              () => new CompositeScriptBuilder (
                         SchemaGenerationThirdStorageProviderDefinition,
                         SqlDialect.Instance,
                         tableBuilder,

@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           sqlIndexDefinition.IsUnique.HasValue && sqlIndexDefinition.IsUnique.Value ? "UNIQUE " : string.Empty,
           sqlIndexDefinition.IsClustered.HasValue && sqlIndexDefinition.IsClustered.Value ? "CLUSTERED" : "NONCLUSTERED",
           sqlIndexDefinition.IndexName,
-          sqlIndexDefinition.ObjectName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+          sqlIndexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           sqlIndexDefinition.ObjectName.EntityName,
           GetIndexedColumnNames (sqlIndexDefinition.Columns),
           sqlIndexDefinition.IncludedColumns != null
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}])\r\n{4}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           GetCreateIndexOptions (GetCreateIndexOptionItemsBase (indexDefinition)));
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  USING XML INDEX [{4}]\r\n"
           + "  FOR {5}\r\n{6}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           indexDefinition.PrimaryIndexName,
@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
           + "  DROP INDEX [{2}] ON [{1}].[{0}]\r\n",
           indexDefinition.ObjectName.EntityName,
-          indexDefinition.ObjectName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           indexDefinition.IndexName);
     }
 

@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           " CONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}.{3} ({4})",
           _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ConstraintName),
           referencedColumnNameList,
-          _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema),
+          _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema),
           _sqlDialect.DelimitIdentifier (foreignKeyConstraintDefinition.ReferencedTableName.EntityName),
           referencingColumnNameList);
     }

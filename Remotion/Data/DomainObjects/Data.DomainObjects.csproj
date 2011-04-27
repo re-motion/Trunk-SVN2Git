@@ -344,7 +344,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlPrimaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ConstraintScriptBuilderBase.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilderBase.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\SqlCompositeScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\CompositeScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSynonymScriptBuilder.cs" />

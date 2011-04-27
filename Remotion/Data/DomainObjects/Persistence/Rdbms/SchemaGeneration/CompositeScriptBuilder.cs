@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// Acts as an abstract base class for implementations generating a setup script for a list of entity definitions.
   /// </summary>
-  public class SqlCompositeScriptBuilder : IScriptBuilder
+  public class CompositeScriptBuilder : IScriptBuilder
   {
     public const string DefaultSchema = "dbo";
     
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly ISqlDialect _sqlDialect;
     private readonly IScriptBuilder[] _scriptBuilders;
     
-    public SqlCompositeScriptBuilder (
+    public CompositeScriptBuilder (
         RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder[] scriptBuilders)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);

@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
           _rdbmsToolsParameters.SchemaOutputDirectory,
           pd =>
           new FileBuilder (
-              () => new SqlCompositeScriptBuilder (
+              () => new CompositeScriptBuilder (
                         pd,
                         SqlDialect.Instance,
                         new SqlTableScriptBuilder(),

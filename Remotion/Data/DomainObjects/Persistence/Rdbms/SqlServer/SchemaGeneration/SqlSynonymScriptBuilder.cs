@@ -68,9 +68,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
         createTableStringBuilder.AppendFormat (
             "CREATE SYNONYM [{0}].[{1}] FOR [{2}].[{3}]\r\n",
-            synonym.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+            synonym.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
             synonym.EntityName,
-            referencedEntityName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+            referencedEntityName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
             referencedEntityName.EntityName);
       }
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         dropTableStringBuilder.AppendFormat (
            "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
            +"  DROP SYNONYM [{0}].[{1}]\r\n",
-         synonym.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+         synonym.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
          synonym.EntityName);
       }
     }

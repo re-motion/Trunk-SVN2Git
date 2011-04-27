@@ -762,7 +762,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\UnionViewDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlConstraintScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\NameListColumnDefinitionVisitorTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlCompositeScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableScriptBuilderBaseTest.cs" />

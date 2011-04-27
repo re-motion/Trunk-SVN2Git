@@ -100,11 +100,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new DomainObjectQueryExecutor (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
     }
 
-    public SqlCompositeScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public CompositeScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new SqlCompositeScriptBuilder (
+      return new CompositeScriptBuilder (
           storageProviderDefinition,
           SqlDialect.Instance,
           new SqlTableScriptBuilder(),

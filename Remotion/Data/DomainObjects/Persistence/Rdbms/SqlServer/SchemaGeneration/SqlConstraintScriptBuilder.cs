@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       {
         createConstraintStringBuilder.AppendFormat (
             "ALTER TABLE [{0}].[{1}] ADD\r\n {2}\r\n",
-            tableDefinition.TableName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
             tableDefinition.TableName.EntityName,
             constraintStatement);
       }
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             +"fk.name = '{3}' AND schema_name (t.schema_id) = '{1}' AND t.name = '{2}')\r\n"
             +"  ALTER TABLE [{1}].[{2}] DROP CONSTRAINT {3}\r\n",
             count>0 ? "\r\n" : string.Empty,
-            tableDefinition.TableName.SchemaName ?? SqlCompositeScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
             tableDefinition.TableName.EntityName,
             foreignKeyConstraintDefinition.ConstraintName);
         count++;
