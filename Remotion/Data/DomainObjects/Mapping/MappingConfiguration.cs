@@ -72,6 +72,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // member fields
 
+    private readonly ReadOnlyDictionary<Type, ClassDefinition> _typeDefinitions;
     private readonly ClassDefinitionCollection _classDefinitions;
     private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
     private readonly bool _resolveTypes;
@@ -88,7 +89,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
-        _classDefinitions = new ClassDefinitionCollection (mappingLoader.GetClassDefinitions(), true);
+        var typeDefinitions = mappingLoader.GetClassDefinitions();
+        _typeDefinitions = new ReadOnlyDictionary<Type, ClassDefinition> (typeDefinitions.ToDictionary (td => td.ClassType));
+        _classDefinitions = new ClassDefinitionCollection (_typeDefinitions.Values, true);
 
         ValidateClassDefinitions (mappingLoader);
         ValidatePropertyDefinitions (mappingLoader);
@@ -127,6 +130,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public ClassDefinitionCollection ClassDefinitions
     {
       get { return _classDefinitions; }
+    }
+
+    public ReadOnlyDictionary<Type, ClassDefinition> TypeDefinitions
+    {
+      get { return _typeDefinitions; }
     }
 
     public ReadOnlyDictionary<string, RelationDefinition> RelationDefinitions
@@ -231,8 +239,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidateClassDefinitions (IMappingLoader mappingLoader)
     {
-      var classDefinitionValidator = mappingLoader.CreateClassDefinitionValidator();
-      AnalyzeMappingValidationResults (classDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
+      var typeDefinitionValidator = mappingLoader.CreateClassDefinitionValidator();
+      AnalyzeMappingValidationResults (typeDefinitionValidator.Validate (_typeDefinitions.Values));
     }
 
     private void ValidatePropertyDefinitions (IMappingLoader mappingLoader)
