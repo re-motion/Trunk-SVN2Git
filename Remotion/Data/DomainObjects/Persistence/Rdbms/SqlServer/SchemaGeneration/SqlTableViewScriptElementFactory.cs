@@ -16,7 +16,9 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -27,7 +29,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     public override IScriptElement GetCreateElement (TableDefinition tableDefinition)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+
+      var statements = new ScriptElementCollection ();
+      statements.AddElement (new BatchSeparatorStatement ());
+      statements.AddElement (new ScriptStatement (
+       string.Format (
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
+          + "  {3}AS\r\n"
+          + "  SELECT {2}\r\n"
+          + "    FROM [{4}].[{5}]\r\n"
+          + "  WITH CHECK OPTION",
+          tableDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          tableDefinition.ViewName.EntityName,
+          GetColumnList (tableDefinition.Columns),
+          UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
+          tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          tableDefinition.TableName.EntityName)));
+      statements.AddElement (new BatchSeparatorStatement ());
+      return statements;
     }
   }
 }

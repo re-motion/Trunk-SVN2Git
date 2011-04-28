@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private TableDefinition _tableDefinitionWithNonClusteredPrimaryKeyConstraint;
     private SimpleColumnDefinition _column1;
     private SimpleColumnDefinition _column2;
-    private SimpleColumnDefinition _column3;
 
     public override void SetUp ()
     {
@@ -41,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
       _column2 = new SimpleColumnDefinition ("Column2", typeof (bool), "bit", true, false);
-      _column3 = new SimpleColumnDefinition ("Column3", typeof (int), "integer", true, false);
 
       _tableDefinitionWithoutPrimaryKeyConstraint = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,

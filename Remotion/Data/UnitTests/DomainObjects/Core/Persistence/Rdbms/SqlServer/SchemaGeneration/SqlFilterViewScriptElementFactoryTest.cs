@@ -35,37 +35,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlFilterViewScriptElementFactory();
 
-      var tableDefinition = new TableDefinition (
+      var tableDefinitionWithCustomSchema = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
-          new EntityNameDefinition (null, "TableName"),
+          new EntityNameDefinition (null, "TableName1"),
+          null,
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+      var tableDefinitionWithDefaultSchema = new TableDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "TableName2"),
           null,
           new SimpleColumnDefinition[0],
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
 
+      var column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
+      var column2 = new SimpleColumnDefinition ("Column2", typeof (int), "integer", true, false);
+
       _filterViewDefinitionWithCustomSchema = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "FilterView1"),
-          tableDefinition,
-          new[] { "ClassID" },
-          new SimpleColumnDefinition[0],
+          tableDefinitionWithCustomSchema,
+          new[] { "ClassID1" },
+          new[] { column1 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
       _filterViewDefinitionWithDefaultSchema = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView2"),
-          tableDefinition,
-          new[] { "ClassID" },
-          new SimpleColumnDefinition[0],
+          tableDefinitionWithDefaultSchema,
+          new[] { "ClassID1", "ClassID2" },
+          new[] { column1, column2 },
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
 
     [Test]
-    public void GetCreateElement ()
+    public void GetCreateElement_CustomSchema_WithSchemaBinding ()
     {
+      var result = _factory.GetCreateElement (_filterViewDefinitionWithCustomSchema);
 
+      Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
+      var elements = ((ScriptElementCollection) result).Elements;
+      Assert.That (elements.Count, Is.EqualTo(3));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[1], Is.TypeOf (typeof(ScriptStatement)));
+      var expectedResult =
+          "CREATE VIEW [SchemaName].[FilterView1] ([Column1])\r\n"
+         +"  WITH SCHEMABINDING AS\r\n"
+         +"  SELECT [Column1]\r\n"
+         +"    FROM [dbo].[TableName1]\r\n"
+         +"    WHERE [ClassID] IN ('ClassID1')\r\n"
+         +"  WITH CHECK OPTION";
+      Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo(expectedResult));
+    }
+
+    [Test]
+    public void GetCreateElement_DefaultSchema_WithoutSchemaBinding ()
+    {
+      var factory = new ExtendedSqlFilterViewScriptElementFactory();
+
+      var result = factory.GetCreateElement (_filterViewDefinitionWithDefaultSchema);
+
+      Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
+      var elements = ((ScriptElementCollection) result).Elements;
+      Assert.That (elements.Count, Is.EqualTo (3));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
+      var expectedResult =
+          "CREATE VIEW [dbo].[FilterView2] ([Column1], [Column2])\r\n"
+          +"  AS\r\n"
+          +"  SELECT [Column1], [Column2]\r\n"
+          +"    FROM [dbo].[TableName2]\r\n"
+          +"    WHERE [ClassID] IN ('ClassID1', 'ClassID2')\r\n"
+          +"  WITH CHECK OPTION";
+      Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
     }
 
     [Test]

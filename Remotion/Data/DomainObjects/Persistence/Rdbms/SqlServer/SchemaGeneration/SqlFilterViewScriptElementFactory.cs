@@ -15,8 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Text;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -27,7 +31,32 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     public override IScriptElement GetCreateElement (FilterViewDefinition filterViewDefinition)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+
+      var statements = new ScriptElementCollection();
+      statements.AddElement (new BatchSeparatorStatement());
+      statements.AddElement(new ScriptStatement(
+       string.Format (
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
+          + "  {3}AS\r\n"
+          + "  SELECT {2}\r\n"
+          + "    FROM [{4}].[{5}]\r\n"
+          + "    WHERE [ClassID] IN ({6})\r\n"
+          + "  WITH CHECK OPTION",
+          filterViewDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          filterViewDefinition.ViewName.EntityName,
+          GetColumnList (filterViewDefinition.Columns),
+          UseSchemaBinding (filterViewDefinition) ? "WITH SCHEMABINDING " : string.Empty,
+          filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          filterViewDefinition.GetBaseTable ().TableName.EntityName,
+          GetClassIDList (filterViewDefinition.ClassIDs))));
+      statements.AddElement (new BatchSeparatorStatement());
+      return statements;
+    }
+
+    protected string GetClassIDList (IEnumerable<string> classIDs)
+    {
+      return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
     }
   }
 }

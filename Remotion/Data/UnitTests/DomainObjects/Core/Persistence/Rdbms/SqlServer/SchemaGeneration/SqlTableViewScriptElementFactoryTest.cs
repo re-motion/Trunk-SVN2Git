@@ -35,11 +35,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _factory = new SqlTableViewScriptElementFactory();
 
+      var column1 = new SimpleColumnDefinition ("Column1", typeof (string), "varchar", false, true);
+      var column2 = new SimpleColumnDefinition ("Column2", typeof (int), "integer", true, false);
+
       _tableDefinitionWithCustomSchema = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition ("SchemaName", "Table1"),
           new EntityNameDefinition ("SchemaName", "View1"),
-          new SimpleColumnDefinition[0],
+          new[] {column1},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
@@ -47,16 +50,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "Table2"),
           new EntityNameDefinition (null, "View2"),
-          new SimpleColumnDefinition[0],
+          new[] {column1, column2},
           new ITableConstraintDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
     }
 
     [Test]
-    public void GetCreateElement ()
+    public void GetCreateElement_CustomSchema_WithSchemaBinding ()
     {
+      var result = _factory.GetCreateElement (_tableDefinitionWithCustomSchema);
 
+      Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
+      var elements = ((ScriptElementCollection) result).Elements;
+      Assert.That (elements.Count, Is.EqualTo (3));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
+      var expectedResult =
+          "CREATE VIEW [SchemaName].[View1] ([Column1])\r\n"
+         + "  WITH SCHEMABINDING AS\r\n"
+         + "  SELECT [Column1]\r\n"
+         + "    FROM [SchemaName].[Table1]\r\n"
+         + "  WITH CHECK OPTION";
+      Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void GetCreateElement_DefaultSchema_WithoutSchemaBinding ()
+    {
+      var factory = new ExtendedSqlTableViewScriptElementFactory();
+
+      var result = factory.GetCreateElement (_tableDefinitionWithDefaultSchema);
+
+      Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
+      var elements = ((ScriptElementCollection) result).Elements;
+      Assert.That (elements.Count, Is.EqualTo (3));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
+      var expectedResult =
+          "CREATE VIEW [dbo].[View2] ([Column1], [Column2])\r\n"
+          + "  AS\r\n"
+          + "  SELECT [Column1], [Column2]\r\n"
+          + "    FROM [dbo].[Table2]\r\n"
+          + "  WITH CHECK OPTION";
+      Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
     }
 
     [Test]

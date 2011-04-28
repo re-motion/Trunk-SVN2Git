@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -27,7 +30,43 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   {
     public override IScriptElement GetCreateElement (UnionViewDefinition unionViewDefinition)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+
+      var statements = new ScriptElementCollection ();
+      statements.AddElement (new BatchSeparatorStatement ());
+
+      var createViewStringBuilder = new StringBuilder();
+      createViewStringBuilder.AppendFormat (
+          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
+          + "  {3}AS\r\n",
+          unionViewDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          unionViewDefinition.ViewName.EntityName,
+          GetColumnList (unionViewDefinition.Columns),
+          UseSchemaBinding (unionViewDefinition) ? "WITH SCHEMABINDING " : string.Empty);
+
+      int numberOfSelects = 0;
+      foreach (var tableDefinition in unionViewDefinition.GetAllTables ())
+      {
+        if (numberOfSelects > 0)
+          createViewStringBuilder.AppendFormat ("  UNION ALL\r\n");
+
+        var availableTableColumns = tableDefinition.Columns;
+        var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
+        createViewStringBuilder.AppendFormat (
+            "  SELECT {0}\r\n"
+            + "    FROM [{1}].[{2}]",
+            GetColumnList (unionedColumns),
+            tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.EntityName);
+
+        numberOfSelects++;
+      }
+      if (numberOfSelects == 1)
+        createViewStringBuilder.Append ("\r\n  WITH CHECK OPTION");
+      statements.AddElement (new ScriptStatement (createViewStringBuilder.ToString()));
+
+      statements.AddElement (new BatchSeparatorStatement ());
+      return statements;
     }
   }
 }
