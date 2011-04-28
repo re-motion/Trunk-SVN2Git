@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   public static class MappingExtensions
   {
-    public static ClassDefinition GetMandatory2 (this IDictionary<Type,ClassDefinition> classDefinitions, Type classType)
+    public static ClassDefinition GetMandatory (this IDictionary<Type,ClassDefinition> classDefinitions, Type classType)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("classType", classType);
@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinition;
     }
 
-    public static ClassDefinition GetMandatory2 (this IDictionary<string, ClassDefinition> classDefinitions, string classID)
+    public static ClassDefinition GetMandatory (this IDictionary<string, ClassDefinition> classDefinitions, string classID)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);

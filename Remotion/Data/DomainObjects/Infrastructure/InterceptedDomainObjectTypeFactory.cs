@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("baseType", baseType, typeof (DomainObject));
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (baseType);
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (baseType);
       Type concreteBaseType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (baseType);
       
       return GetConcreteDomainObjectType (classDefinition, concreteBaseType, "baseType");

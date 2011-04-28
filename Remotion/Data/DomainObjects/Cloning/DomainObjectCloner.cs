@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Cloning
         where T : DomainObject
     {
       var classType = source.ID.ClassDefinition.ClassType;
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classType);
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (classType);
 
       var cloneObjectID = CloneTransaction.CreateNewObjectID (classDefinition);
 

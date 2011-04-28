@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Queries
     public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
         where T: DomainObject
     {
-      var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      var startingClassDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (T));
       var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var executor = providerDefinition.Factory.CreateLinqQueryExecutor (
           startingClassDefinition, 

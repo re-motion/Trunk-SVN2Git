@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = new Dictionary<Type, ClassDefinition>();
       classDefinitions.Add (typeof (DomainObject), classDefinition);
 
-      Assert.That (classDefinitions.GetMandatory2 (typeof (DomainObject)), Is.SameAs (classDefinition));
+      Assert.That (classDefinitions.GetMandatory (typeof (DomainObject)), Is.SameAs (classDefinition));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = new Dictionary<Type, ClassDefinition>();
 
       Assert.That (
-          () => classDefinitions.GetMandatory2 (typeof (DomainObject)),
+          () => classDefinitions.GetMandatory (typeof (DomainObject)),
           Throws.Exception.InstanceOf<MappingException>()
               .And.Message.EqualTo (string.Format ("Mapping does not contain class '{0}'.", typeof (DomainObject))));
     }
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = new Dictionary<string, ClassDefinition>();
       classDefinitions.Add ("ID", classDefinition);
 
-      Assert.That (classDefinitions.GetMandatory2 ("ID"), Is.SameAs (classDefinition));
+      Assert.That (classDefinitions.GetMandatory ("ID"), Is.SameAs (classDefinition));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = new Dictionary<string, ClassDefinition>();
 
       Assert.That (
-          () => classDefinitions.GetMandatory2 ("ID"),
+          () => classDefinitions.GetMandatory ("ID"),
           Throws.Exception.InstanceOf<MappingException>()
               .And.Message.EqualTo ("Mapping does not contain class 'ID'."));
     }

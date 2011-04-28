@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (domainObjectType);
       classDefinition.ValidateCurrentMixinConfiguration ();
 
       Type concreteType = Factory.GetConcreteDomainObjectType (domainObjectType);
