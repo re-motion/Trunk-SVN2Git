@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
@@ -30,6 +32,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public IRelationEndPoint AffectedEndPoint
     {
       get { return _affectedEndPoint; }
+    }
+
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return Enumerable.Empty<Exception> ();
     }
 
     public void Begin ()

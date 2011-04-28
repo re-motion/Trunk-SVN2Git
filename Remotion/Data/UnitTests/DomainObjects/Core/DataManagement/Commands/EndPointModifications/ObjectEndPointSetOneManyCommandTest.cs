@@ -194,11 +194,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // oldOrder.OrderItems.Remove (orderItem)
       var fakeRemoveCommand = MockRepository.GenerateStub<IDataManagementCommand>();
+      fakeRemoveCommand.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
       oldRelatedEndPointMock.Expect (mock => mock.CreateRemoveCommand (_domainObject)).Return (fakeRemoveCommand);
       oldRelatedEndPointMock.Replay();
 
       // newOrder.OrderItems.Add (orderItem);
       var fakeAddCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      fakeAddCommand.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
       newRelatedEndPointMock.Expect (mock => mock.CreateAddCommand (_domainObject)).Return (fakeAddCommand);
       newRelatedEndPointMock.Replay ();
 

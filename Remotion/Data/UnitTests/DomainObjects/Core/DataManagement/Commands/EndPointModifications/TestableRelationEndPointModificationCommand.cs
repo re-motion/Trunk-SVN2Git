@@ -15,43 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 
-namespace Remotion.Data.DomainObjects.DataManagement.Commands
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
-  /// <summary>
-  /// Implements a command that performs no operation.
-  /// </summary>
-  public class NopCommand : IDataManagementCommand
+  public class TestableRelationEndPointModificationCommand : RelationEndPointModificationCommand
   {
-    public IEnumerable<Exception> GetAllExceptions ()
-    {
-      return new Exception[0];
-    }
-
-    public void NotifyClientTransactionOfBegin ()
+    public TestableRelationEndPointModificationCommand (
+        IRelationEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+        : base (modifiedEndPoint, oldRelatedObject, newRelatedObject)
     {
     }
 
-    public void Begin ()
+    public override void Perform ()
     {
+      throw new NotImplementedException();
     }
 
-    public void Perform ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
-    }
-
-    public void End ()
-    {
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-    }
-
-    public ExpandedCommand ExpandToAllRelatedObjects ()
-    {
-      return new ExpandedCommand (this);
+      throw new NotImplementedException();
     }
   }
 }

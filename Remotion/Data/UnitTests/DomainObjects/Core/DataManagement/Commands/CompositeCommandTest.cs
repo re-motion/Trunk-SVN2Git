@@ -26,10 +26,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   public class CompositeCommandTest
   {
     private MockRepository _mockRepository;
+
     private IDataManagementCommand _commandMock1;
     private IDataManagementCommand _commandMock2;
     private IDataManagementCommand _commandMock3;
-    private CompositeCommand _composite;
+
+    private IDataManagementCommand _nonExecutableCommandMock1;
+    private IDataManagementCommand _nonExecutableCommandMock2;
+
+    private Exception _exception1;
+    private Exception _exception2;
+    private Exception _exception3;
 
     [SetUp]
     public void SetUp ()
@@ -37,130 +44,272 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _mockRepository = new MockRepository();
 
       _commandMock1 = _mockRepository.StrictMock<IDataManagementCommand>();
-      _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand>();
-      _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand>();
+      _commandMock1.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
 
-      _composite = new CompositeCommand (_commandMock1, _commandMock2, _commandMock3);
+      _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand>();
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _commandMock3.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _nonExecutableCommandMock1 = _mockRepository.StrictMock<IDataManagementCommand>();
+      _nonExecutableCommandMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
+
+      _exception1 = new Exception ("1");
+      _exception2 = new Exception ("2");
+      _exception3 = new Exception ("3");
+
+      _nonExecutableCommandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new[] { _exception1, _exception2 });
+      _nonExecutableCommandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new[] { _exception3 });
     }
 
     [Test]
     public void GetNestedCommands ()
     {
-      Assert.That (_composite.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
+      _mockRepository.ReplayAll();
+
+      var compositeCommand = CreateComposite();
+      Assert.That (compositeCommand.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
+    }
+
+    [Test]
+    public void GetAllExceptions_None ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var compositeCommand = CreateComposite ();
+      Assert.That (compositeCommand.GetAllExceptions (), Is.Empty);
+    }
+
+    [Test]
+    public void GetAllExceptions_Some ()
+    {
+      _mockRepository.ReplayAll();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.That (nonExecutableComposite.GetAllExceptions (), Is.EqualTo (new[] { _exception1, _exception2, _exception3 }));
     }
 
     [Test]
     public void Begin ()
     {
-      _commandMock1.Begin();
-      _commandMock2.Begin();
-      _commandMock3.Begin();
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.Begin());
+        _commandMock2.Expect (mock => mock.Begin());
+        _commandMock3.Expect (mock => mock.Begin());
+      }
 
       _mockRepository.ReplayAll();
 
-      _composite.Begin();
+      var compositeCommand = CreateComposite();
+      compositeCommand.Begin();
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Begin_NonExecutable ()
+    {
+      _mockRepository.ReplayAll();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.Throws<Exception> (nonExecutableComposite.Begin);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Begin ());
     }
 
     [Test]
     public void Perform ()
     {
-      _commandMock1.Perform();
-      _commandMock2.Perform();
-      _commandMock3.Perform();
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.Perform());
+        _commandMock2.Expect (mock => mock.Perform());
+        _commandMock3.Expect (mock => mock.Perform());
+      }
 
       _mockRepository.ReplayAll();
 
-      _composite.Perform();
+      var compositeCommand = CreateComposite();
+      compositeCommand.Perform();
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Perform_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.Throws<Exception> (nonExecutableComposite.Perform);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.Perform ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Perform());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Perform());
     }
 
     [Test]
     public void End ()
     {
-      _commandMock1.End();
-      _commandMock2.End();
-      _commandMock3.End();
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock3.Expect (mock => mock.End());
+        _commandMock2.Expect (mock => mock.End());
+        _commandMock1.Expect (mock => mock.End());
+      }
 
       _mockRepository.ReplayAll();
 
-      _composite.End();
+      var compositeCommand = CreateComposite();
+      compositeCommand.End();
 
       _mockRepository.VerifyAll();
     }
+
+    [Test]
+    public void End_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.Throws<Exception> (nonExecutableComposite.End);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.End ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.End ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.End ());
+    }
+
 
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      _commandMock1.NotifyClientTransactionOfBegin();
-      _commandMock2.NotifyClientTransactionOfBegin();
-      _commandMock3.NotifyClientTransactionOfBegin();
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfBegin());
+      }
 
       _mockRepository.ReplayAll();
 
-      _composite.NotifyClientTransactionOfBegin();
+      var compositeCommand = CreateComposite();
+      compositeCommand.NotifyClientTransactionOfBegin();
 
       _mockRepository.VerifyAll();
     }
+
+    [Test]
+    public void NotifyClientTransactionOfBegin_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.Throws<Exception> (nonExecutableComposite.NotifyClientTransactionOfBegin);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+    }
+
 
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      _commandMock1.NotifyClientTransactionOfEnd();
-      _commandMock2.NotifyClientTransactionOfEnd();
-      _commandMock3.NotifyClientTransactionOfEnd();
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
+      }
 
       _mockRepository.ReplayAll();
 
-      _composite.NotifyClientTransactionOfEnd();
+      var compositeCommand = CreateComposite();
+      compositeCommand.NotifyClientTransactionOfEnd();
 
       _mockRepository.VerifyAll();
     }
 
     [Test]
-    public void ExtendToRelatedObjects ()
+    public void NotifyClientTransactionOfEnd_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      Assert.Throws<Exception> (nonExecutableComposite.NotifyClientTransactionOfEnd);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+    }
+
+    [Test]
+    public void ExpandToAllRelatedObjects ()
     {
       var expandedStub1A = MockRepository.GenerateStub<IDataManagementCommand>();
+      expandedStub1A.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
       var expandedStub1B = MockRepository.GenerateStub<IDataManagementCommand>();
-      var expandedStub2A = MockRepository.GenerateStub<IDataManagementCommand>();
-      var expandedStub2B = MockRepository.GenerateStub<IDataManagementCommand>();
-      var expandedStub3A = MockRepository.GenerateStub<IDataManagementCommand>();
-      var expandedStub3B = MockRepository.GenerateStub<IDataManagementCommand>();
+      expandedStub1B.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      var expandedStub2A = MockRepository.GenerateStub<IDataManagementCommand> ();
+      expandedStub2A.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      var expandedStub2B = MockRepository.GenerateStub<IDataManagementCommand> ();
+      expandedStub2B.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      var expandedStub3A = MockRepository.GenerateStub<IDataManagementCommand> ();
+      expandedStub3A.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      var expandedStub3B = MockRepository.GenerateStub<IDataManagementCommand> ();
+      expandedStub3B.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
 
       _commandMock1.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub1A, expandedStub1B));
       _commandMock2.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub2A, expandedStub2B));
       _commandMock3.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub3A, expandedStub3B));
 
-      _commandMock1.Replay();
-      _commandMock2.Replay();
-      _commandMock3.Replay();
+      _mockRepository.ReplayAll ();
 
-      var result = _composite.ExpandToAllRelatedObjects();
+      var compositeCommand = CreateComposite();
+      var result = compositeCommand.ExpandToAllRelatedObjects();
 
+      _mockRepository.VerifyAll ();
       Assert.That (
           result.GetNestedCommands(),
           Is.EqualTo (new[] { expandedStub1A, expandedStub1B, expandedStub2A, expandedStub2B, expandedStub3A, expandedStub3B }));
-
-      _commandMock1.VerifyAllExpectations();
-      _commandMock2.VerifyAllExpectations();
-      _commandMock3.VerifyAllExpectations();
     }
-
+    
     [Test]
     public void CombineWith ()
     {
-      var otherCommandStub = MockRepository.GenerateStub<IDataManagementCommand>();
-      var result = _composite.CombineWith (otherCommandStub);
+      _mockRepository.ReplayAll ();
 
-      Assert.That (result, Is.Not.SameAs (_composite));
+      var otherCommandStub = MockRepository.GenerateStub<IDataManagementCommand> ();
+      otherCommandStub.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
+      
+      var compositeCommand = CreateComposite();
+      var result = compositeCommand.CombineWith (otherCommandStub);
+
+      Assert.That (result, Is.Not.SameAs (compositeCommand));
       Assert.That (result.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3, otherCommandStub }));
-      Assert.That (_composite.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
+      Assert.That (compositeCommand.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
     }
 
     [Test]
-    public void NotifyAndPerform ()
+    public void CombineWith_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+      var compositeCommand = CreateComposite ();
+      var result = compositeCommand.CombineWith (_commandMock1, _nonExecutableCommandMock1, _nonExecutableCommandMock2);
+
+      Assert.That (result, Is.Not.SameAs (compositeCommand));
+      Assert.That (
+          result.GetNestedCommands(),
+          Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3, _commandMock1, _nonExecutableCommandMock1, _nonExecutableCommandMock2 }));
+      Assert.That (result.GetAllExceptions (), Is.EqualTo (new[] { _exception1, _exception2, _exception3 }));
+    }
+
+    [Test]
+    public void NotifyAndPerform_IntegrationTest ()
     {
       using (_mockRepository.Ordered())
       {
@@ -187,9 +336,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _mockRepository.ReplayAll();
 
-      _composite.NotifyAndPerform();
+      var compositeCommand = CreateComposite();
+      compositeCommand.NotifyAndPerform();
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void NotifyAndPerform_NonExecutable_IntegrationTest ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableComposite();
+      var exception = Assert.Throws<Exception> (nonExecutableComposite.NotifyAndPerform);
+
+      Assert.That (exception, Is.SameAs (_exception1));
+
+      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
+
+      _commandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Begin ());
+
+      _commandMock1.AssertWasNotCalled (mock => mock.Perform ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Perform ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Perform ());
+
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.End ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.End ());
+      _commandMock1.AssertWasNotCalled (mock => mock.End ());
+
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
+    }
+
+    private CompositeCommand CreateComposite ()
+    {
+      return new CompositeCommand (_commandMock1, _commandMock2, _commandMock3);
+    }
+
+    private CompositeCommand CreateNonExecutableComposite ()
+    {
+      return new CompositeCommand (_commandMock1, _nonExecutableCommandMock1, _nonExecutableCommandMock2);
     }
   }
 }

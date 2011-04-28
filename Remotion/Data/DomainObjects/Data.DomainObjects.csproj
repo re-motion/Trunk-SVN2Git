@@ -174,6 +174,10 @@
     <Compile Include="DataManagement\CollectionData\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionData\CopyOnWriteDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\RealObjectEndPointRegistrationCommandDecorator.cs" />
+    <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
+    <Compile Include="DataManagement\Commands\ExceptionCommand.cs" />
+    <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
+    <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\IVirtualObjectEndPoint.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
@@ -303,11 +307,9 @@
     <Compile Include="DataManagement\VirtualEndPoints\CollectionEndPoints\ChangeCachingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionData\DomainObjectCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\IVirtualEndPointStateUpdateListener.cs" />
-    <Compile Include="DataManagement\Commands\AdHocCommand.cs" />
     <Compile Include="DataManagement\Commands\DeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\ExpandedCommand.cs" />
     <Compile Include="DataManagement\Commands\NopCommand.cs" />
-    <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />

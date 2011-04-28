@@ -15,59 +15,69 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Provides the possibility to implement <see cref="IDataManagementCommand"/> ad-hoc using delegates and lambdas, without having to create a 
-  /// new class.
+  /// Unregisters a <see cref="DataContainer"/> from a <see cref="DataContainerMap"/>.
   /// </summary>
-  public class AdHocCommand : IDataManagementCommand
+  public class UnregisterDataContainerCommand : IDataManagementCommand
   {
-    public Action NotifyClientTransactionOfBeginHandler { get; set; }
-    public Action BeginHandler { get; set; }
-    public Action PerformHandler { get; set; }
-    public Action EndHandler { get; set; }
-    public Action NotifyClientTransactionOfEndHandler { get; set; }
-    
-    public Func<AdHocCommand, ExpandedCommand> Expander { get; set; }
+    private readonly ObjectID _objectID;
+    private readonly DataContainerMap _map;
+
+    public UnregisterDataContainerCommand (ObjectID objectID, DataContainerMap map)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("map", map);
+
+      _objectID = objectID;
+      _map = map;
+    }
+
+    public ObjectID ObjectID
+    {
+      get { return _objectID; }
+    }
+
+    public DataContainerMap Map
+    {
+      get { return _map; }
+    }
+
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return new Exception[0];
+    }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      if (NotifyClientTransactionOfBeginHandler != null)
-        NotifyClientTransactionOfBeginHandler ();
+      // Nothing to do here
     }
 
     public void Begin ()
     {
-      if (BeginHandler != null)
-        BeginHandler ();
+      // Nothing to do here
     }
 
     public void Perform ()
     {
-      if (PerformHandler != null)
-        PerformHandler ();
+      _map.Remove (_objectID);
     }
 
     public void End ()
     {
-      if (EndHandler != null)
-        EndHandler ();
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      if (NotifyClientTransactionOfEndHandler != null)
-        NotifyClientTransactionOfEndHandler ();
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      if (Expander != null)
-        return Expander (this);
-      else
-        return new ExpandedCommand (this);
+      return new ExpandedCommand (this);
     }
   }
 }

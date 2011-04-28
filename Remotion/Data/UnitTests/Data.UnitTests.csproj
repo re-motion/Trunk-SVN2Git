@@ -210,7 +210,13 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\UnregisterEndPointsCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RealObjectEndPointRegistrationCommandDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\TestableRelationEndPointModificationCommand.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\ExceptionCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\NopCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\UnregisterDataContainerCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualObjectEndPointDataKeeperFactoryFake.cs" />
@@ -248,6 +254,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
+    <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesInSubtransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesTest.cs" />
@@ -310,7 +317,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExpandedCommandTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\DomainObjectCollectionDataDecoratorBaseTest.cs" />

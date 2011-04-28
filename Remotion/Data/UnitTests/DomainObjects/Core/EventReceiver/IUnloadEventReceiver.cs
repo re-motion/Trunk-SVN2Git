@@ -14,44 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.DomainObjects.DataManagement.Commands
+namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
-  /// <summary>
-  /// Implements a command that performs no operation.
-  /// </summary>
-  public class NopCommand : IDataManagementCommand
+  public interface IUnloadEventReceiver
   {
-    public IEnumerable<Exception> GetAllExceptions ()
-    {
-      return new Exception[0];
-    }
-
-    public void NotifyClientTransactionOfBegin ()
-    {
-    }
-
-    public void Begin ()
-    {
-    }
-
-    public void Perform ()
-    {
-    }
-
-    public void End ()
-    {
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-    }
-
-    public ExpandedCommand ExpandToAllRelatedObjects ()
-    {
-      return new ExpandedCommand (this);
-    }
+    void OnUnloading (DomainObject domainObject);
+    void OnUnloaded (DomainObject domainObject);
   }
 }

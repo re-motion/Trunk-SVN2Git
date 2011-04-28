@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -43,9 +44,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// a relation end point modification command can be extended to include changes to all affected opposite objects via 
   /// <see cref="ExpandToAllRelatedObjects"/>.
   /// </para>
+  /// <para>
+  /// Some commands throw an exception when they are executed. Check whether the command can be executed via <see cref="GetAllExceptions"/>,
+  /// <see cref="DataManagementCommandExtensions.CanExecute"/>, and <see cref="DataManagementCommandExtensions.EnsureCanExecute"/>.
+  /// </para>
+  /// <para>
+  /// Execute commands immediately after retrieving them. Do not change the state of the <see cref="ClientTransaction"/> while holding on to a command,
+  /// as this will cause the command to become inconsistent with the <see cref="ClientTransaction"/>. Executing a command that has become inconsistent
+  /// can lead to undefined behavior and may destroy transaction consistency.
+  /// </para>
   /// </remarks>
   public interface IDataManagementCommand
   {
+    /// <summary>
+    /// Gets a sequence of exceptions indicating why this command cannot be executed. If the command can be executed, the sequence is empty.
+    /// </summary>
+    /// <returns>A sequence of exceptions indicating why this command cannot be executed. If the command can be executed, the sequence is empty.</returns>
+    /// <remarks>
+    /// Implementations should implement this method as efficiently as possible, especially in the case of an empty exception sequence.
+    /// If a lengthier calculation is needed, the calculation should be performed in the command's constructor. (Commands are supposed to be executed 
+    /// immediately after construction, so the sequence returned by <see cref="GetAllExceptions"/> is not supposed to change anyway.)
+    /// </remarks>
+    IEnumerable<Exception> GetAllExceptions ();
+
     /// <summary>
     /// Notifies the client transaction that the operation is about to begin. The operation can be canceled at this point of time if an event 
     /// handler throws an exception.

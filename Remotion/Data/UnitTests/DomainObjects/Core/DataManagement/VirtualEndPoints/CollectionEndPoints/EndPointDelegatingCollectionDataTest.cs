@@ -48,7 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
     private OrderItem _orderItem1;
     private OrderItem _orderItem2;
-    private OrderItem _orderItem3;
 
     public override void SetUp ()
     {
@@ -69,13 +68,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       _commandStub = MockRepository.GenerateStub<IDataManagementCommand>();
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
+      _nestedCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
       _delegatingData = new EndPointDelegatingCollectionData (_endPointID, _endPointProviderStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
-      _orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
 
       ClientTransactionScope.EnterNullScope(); // no active transaction
     }
@@ -226,44 +225,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.VirtualEndPo
 
       var removeCommandStub1 = mockRepository.Stub<IDataManagementCommand> ();
       var removeCommandStub2 = mockRepository.Stub<IDataManagementCommand> ();
-      var removeCommandStub3 = mockRepository.Stub<IDataManagementCommand> ();
 
       var nestedCommandMock1 = mockRepository.StrictMock<IDataManagementCommand> ();
       var nestedCommandMock2 = mockRepository.StrictMock<IDataManagementCommand> ();
-      var nestedCommandMock3 = mockRepository.StrictMock<IDataManagementCommand> ();
+
+      nestedCommandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      nestedCommandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      nestedCommandMock1.Replay ();
+      nestedCommandMock2.Replay ();
 
       removeCommandStub1.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (nestedCommandMock1));
       removeCommandStub2.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (nestedCommandMock2));
-      removeCommandStub3.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (nestedCommandMock3));
 
-      _endPointDataStub.Stub (stub => stub.Count).Return (3);
-      _endPointDataStub.Stub (stub => stub.GetObject (2)).Return (_orderItem3);
+      nestedCommandMock1.BackToRecord();
+      nestedCommandMock2.BackToRecord ();
+
+      _endPointDataStub.Stub (stub => stub.Count).Return (2);
       _endPointDataStub.Stub (stub => stub.GetObject (1)).Return (_orderItem2);
       _endPointDataStub.Stub (stub => stub.GetObject (0)).Return (_orderItem1);
 
       _collectionEndPointMock.Expect (mock => mock.GetData ()).Return (_endPointDataDecorator).Repeat.Any();
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
-      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
 
       using (mockRepository.Ordered ())
       {
-        nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock3.NotifyClientTransactionOfBegin");
         nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock2.NotifyClientTransactionOfBegin");
         nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock1.NotifyClientTransactionOfBegin");
-        nestedCommandMock3.Expect (mock => mock.Begin ()).Message ("nestedCommandMock3.Begin");
         nestedCommandMock2.Expect (mock => mock.Begin ()).Message ("nestedCommandMock2.Begin");
         nestedCommandMock1.Expect (mock => mock.Begin ()).Message ("nestedCommandMock1.Begin");
-        nestedCommandMock3.Expect (mock => mock.Perform ()).Message ("nestedCommandMock3.Perform");
         nestedCommandMock2.Expect (mock => mock.Perform ()).Message ("nestedCommandMock2.Perform");
         nestedCommandMock1.Expect (mock => mock.Perform ()).Message ("nestedCommandMock1.Perform");
         _collectionEndPointMock.Expect (mock => mock.Touch ()).Message ("endPoint.Touch");
         nestedCommandMock1.Expect (mock => mock.End ()).Message ("nestedCommandMock1.End");
         nestedCommandMock2.Expect (mock => mock.End ()).Message ("nestedCommandMock2.End");
-        nestedCommandMock3.Expect (mock => mock.End ()).Message ("nestedCommandMock3.End");
         nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock1.NotifyClientTransactionOfEnd");
         nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock2.NotifyClientTransactionOfEnd");
-        nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock3.NotifyClientTransactionOfEnd");
       }
 
       mockRepository.ReplayAll ();

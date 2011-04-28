@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           delegate (ClientTransaction tx)
           {
             var command = tx.DataManager.CreateUnloadCommand (objectID);
-            if (!command.CanUnload)
+            if (!command.CanExecute())
               return false;
 
             command.NotifyAndPerform();
@@ -264,7 +264,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
               var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
               var command = tx.DataManager.CreateUnloadCommand (unloadedIDs);
-              if (!command.CanUnload)
+              if (!command.CanExecute())
                 return false;
 
               command.NotifyAndPerform();

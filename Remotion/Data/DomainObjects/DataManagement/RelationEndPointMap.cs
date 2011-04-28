@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
@@ -281,42 +282,37 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are unregistered as well.
-    public void UnregisterEndPointsForDataContainer (DataContainer dataContainer)
+    public IDataManagementCommand GetUnregisterCommandForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      var unregisterableEndPoints = GetNonUnregisterableEndPointsForDataContainer (dataContainer);
-      if (unregisterableEndPoints.Length > 0)
+      var loadedEndPoints = GetEndPointIDsOwnedByDataContainer (dataContainer).Select (id => this[id]).Where (endPoint => endPoint != null).ToArray();
+      var endPointIDs = new List<RelationEndPointID>();
+      var notUnregisterableEndPointIDs = new List<RelationEndPointID> ();
+
+      foreach (var endPoint in loadedEndPoints)
+      {
+        endPointIDs.Add (endPoint.ID);
+
+        if (!IsUnregisterable (endPoint))
+          notUnregisterableEndPointIDs.Add (endPoint.ID);
+      }
+
+      if (notUnregisterableEndPointIDs.Count > 0)
       {
         var message = string.Format (
-            "Cannot unregister the following relation end-points: {0}. Relation end-points can only be removed when they are unchanged.",
-            SeparatedStringBuilder.Build (", ", unregisterableEndPoints, endPoint => "'" + endPoint + "'"));
-        throw new InvalidOperationException (message);
+            "Object '{0}' cannot be unloaded because its relations have been changed. Only unchanged objects that are not part of changed "
+            + "relations can be unloaded."
+            + Environment.NewLine
+            + "Changed relations: {1}.",
+            dataContainer.ID,
+            SeparatedStringBuilder.Build (", ", notUnregisterableEndPointIDs.Select (id => "'" + id.Definition.PropertyName + "'")));
+        return new ExceptionCommand (new InvalidOperationException (message));
       }
-
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      else
       {
-        if (!endPointID.Definition.IsVirtual)
-        {
-          UnregisterRealObjectEndPoint (endPointID);
-        }
-        else
-        {
-          var endPoint = this[endPointID];
-          Assertion.IsTrue (IsUnregisterable (endPoint));
-          RemoveEndPoint (endPointID);
-        }
+        return new UnregisterEndPointsCommand (endPointIDs, this);
       }
-    }
-
-    public IRelationEndPoint[] GetNonUnregisterableEndPointsForDataContainer (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      return (from endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer)
-              let loadedEndPoint = this[endPointID]
-              where loadedEndPoint != null && !IsUnregisterable (loadedEndPoint)
-              select loadedEndPoint).ToArray();
     }
 
     public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)

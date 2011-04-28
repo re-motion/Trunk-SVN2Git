@@ -19,6 +19,7 @@ using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
@@ -39,6 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       return GetObject<TestDomainBase> (id, includeDeleted);
     }
+
+    [NonSerialized]
+    private IUnloadEventReceiver _unloadEventReceiver;
 
     [NonSerialized]
     public bool CtorCalled;
@@ -190,6 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       }
 
       UnloadingState = State;
+      if (_unloadEventReceiver != null)
+        _unloadEventReceiver.OnUnloading (this);
     }
 
     protected override void OnUnloaded ()
@@ -204,6 +210,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       }
 
       UnloadedState = State;
+      if (_unloadEventReceiver != null)
+        _unloadEventReceiver.OnUnloaded (this);
+    }
+
+    public void SetUnloadEventReceiver (IUnloadEventReceiver unloadEventReceiver)
+    {
+      _unloadEventReceiver = unloadEventReceiver;
     }
   }
 }

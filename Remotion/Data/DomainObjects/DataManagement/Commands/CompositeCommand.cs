@@ -34,11 +34,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   public class CompositeCommand : IDataManagementCommand
   {
     private readonly ReadOnlyCollection<IDataManagementCommand> _commands;
+    private readonly ReadOnlyCollection<Exception> _exceptions;
 
     public CompositeCommand (IEnumerable<IDataManagementCommand> commands)
     {
       ArgumentUtility.CheckNotNull ("commands", commands);
-      _commands = new List<IDataManagementCommand> (commands).AsReadOnly();
+
+      // Manual iteration instead of List ctor + LINQ to avoid having to iterate the commands twice
+      var commandList = new List<IDataManagementCommand> ();
+      var exceptionList = new List<Exception>();
+      foreach (var command in commands)
+      {
+        commandList.Add (command);
+        var exceptions = Assertion.IsNotNull (command.GetAllExceptions(), "GetAllExceptions must return a non-null sequence.");
+        exceptionList.AddRange (exceptions);
+      }
+      _commands = commandList.AsReadOnly();
+      _exceptions = exceptionList.AsReadOnly();
     }
 
     public CompositeCommand (params IDataManagementCommand[] commands)
@@ -51,32 +63,47 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return _commands;
     }
 
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return _exceptions;
+    }
+
     public void Begin ()
     {
+      this.EnsureCanExecute();
+
       foreach (var command in _commands)
         command.Begin ();
     }
 
     public void Perform ()
     {
+      this.EnsureCanExecute ();
+
       foreach (var command in _commands)
         command.Perform ();
     }
 
     public void End ()
     {
+      this.EnsureCanExecute ();
+
       for (int i = _commands.Count - 1; i >= 0; i--)
         _commands[i].End();
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
+      this.EnsureCanExecute ();
+
       foreach (var command in _commands)
         command.NotifyClientTransactionOfBegin ();
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
+      this.EnsureCanExecute ();
+
       for (int i = _commands.Count - 1; i >= 0; i--)
         _commands[i].NotifyClientTransactionOfEnd ();
     }

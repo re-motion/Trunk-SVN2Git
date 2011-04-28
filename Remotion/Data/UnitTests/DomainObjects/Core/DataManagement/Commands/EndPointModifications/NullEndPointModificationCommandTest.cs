@@ -59,6 +59,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
+    public void GetAllExceptions ()
+    {
+      Assert.That (_command.GetAllExceptions (), Is.Empty);
+    }
+
+    [Test]
     public void BeginDoesNothing ()
     {
       _mockRepository.ReplayAll ();

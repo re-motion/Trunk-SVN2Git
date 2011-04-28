@@ -49,6 +49,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void GetAllExceptions ()
+    {
+      Assert.That (_deleteOrder1Command.GetAllExceptions(), Is.Empty);
+    }
+
+    [Test]
     public void NotifyClientTransactionOfBegin ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
@@ -79,11 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
+      endPointCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
       
-      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
-      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
-      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
-
       using (mockRepository.Ordered ())
       {
         listenerMock.Expect (mock => mock.ObjectDeleting (_transaction, _order1));
@@ -91,6 +94,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       }
 
       mockRepository.ReplayAll ();
+
+      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
+      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
@@ -129,9 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
-      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
-      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
-      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
+      endPointCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
 
       using (mockRepository.Ordered ())
       {
@@ -140,6 +145,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       }
 
       mockRepository.ReplayAll ();
+
+      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
+      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 

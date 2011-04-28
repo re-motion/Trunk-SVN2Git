@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -67,6 +68,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _newRelatedEndPoint; }
     }
 
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return _decoratedCommand.GetAllExceptions();
+    }
+
     public void NotifyClientTransactionOfBegin ()
     {
       _decoratedCommand.NotifyClientTransactionOfBegin();
@@ -79,6 +85,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public void Perform ()
     {
+      this.EnsureCanExecute();
+
       _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (_realObjectEndPoint);
       _decoratedCommand.Perform();
       _newRelatedEndPoint.RegisterCurrentOppositeEndPoint (_realObjectEndPoint);

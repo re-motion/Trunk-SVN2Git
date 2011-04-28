@@ -660,24 +660,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relation: "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket:Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order->"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'.")]
     public void UnloadData_ChangedVirtualEndPoint ()
     {
+      var newTicket = OrderTicket.NewObject ();
+
       var domainObject = Order.GetObject (DomainObjectIDs.Order1);
-      domainObject.OrderTicket = OrderTicket.NewObject ();
+      domainObject.OrderTicket = newTicket;
+
       UnloadService.UnloadData (ClientTransactionMock, domainObject.ID);
+
+      Assert.That (domainObject.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (domainObject.OrderTicket, Is.SameAs (newTicket));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relation: "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer:Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee->"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.")]
     public void UnloadData_ChangedVirtualNullEndPoint ()
     {
       var domainObject = Employee.GetObject (DomainObjectIDs.Employee3);
@@ -685,14 +681,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       domainObject.Computer = null;
       
       UnloadService.UnloadData (ClientTransactionMock, domainObject.ID);
+
+      Assert.That (domainObject.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (domainObject.Computer, Is.Null);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relation: "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem:Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order->"
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
+        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because its relations have been changed. Only "
+        + "unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relations: "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order'.")]
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject ());

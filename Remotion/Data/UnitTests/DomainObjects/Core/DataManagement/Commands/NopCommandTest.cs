@@ -15,43 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 
-namespace Remotion.Data.DomainObjects.DataManagement.Commands
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
-  /// <summary>
-  /// Implements a command that performs no operation.
-  /// </summary>
-  public class NopCommand : IDataManagementCommand
+  [TestFixture]
+  public class NopCommandTest
   {
-    public IEnumerable<Exception> GetAllExceptions ()
+    private NopCommand _command;
+
+    [SetUp]
+    public void SetUp ()
     {
-      return new Exception[0];
+      _command = new NopCommand();
     }
 
-    public void NotifyClientTransactionOfBegin ()
+    [Test]
+    public void GetAllExceptions ()
     {
-    }
-
-    public void Begin ()
-    {
-    }
-
-    public void Perform ()
-    {
-    }
-
-    public void End ()
-    {
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-    }
-
-    public ExpandedCommand ExpandToAllRelatedObjects ()
-    {
-      return new ExpandedCommand (this);
+      Assert.That (_command.GetAllExceptions(), Is.Empty);
     }
   }
 }

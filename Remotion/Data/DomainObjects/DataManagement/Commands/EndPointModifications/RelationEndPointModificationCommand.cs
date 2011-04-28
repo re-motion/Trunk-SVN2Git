@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -78,6 +80,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// <returns>A new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
     /// <see cref="RelationEndPointModificationCommand"/>.</returns>
     public abstract ExpandedCommand ExpandToAllRelatedObjects ();
+
+    public virtual IEnumerable<Exception> GetAllExceptions ()
+    {
+      return Enumerable.Empty<Exception> ();
+    }
 
     public void Begin ()
     {

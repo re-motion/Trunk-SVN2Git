@@ -35,6 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     
     private RealObjectEndPointRegistrationCommandDecorator _decorator;
 
+    private Exception _exception1;
+    private Exception _exception2;
+
     [SetUp]
     public void SetUp ()
     {
@@ -50,11 +53,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           _realObjectEndPointStub, 
           _oldRelatedEndPointMock, 
           _newRelatedEndPointMock);
+
+      _exception1 = new Exception ("1");
+      _exception2 = new Exception ("2");
+    }
+
+    [Test]
+    public void GetAllExceptions ()
+    {
+      _decoratedCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new[] { _exception1, _exception2 });
+      _mockRepository.ReplayAll();
+
+      var result = _decorator.GetAllExceptions();
+
+      Assert.That (result, Is.EqualTo (new[] { _exception1, _exception2 }));
     }
 
     [Test]
     public void Perform ()
     {
+      _decoratedCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
       using (_mockRepository.Ordered ())
       {
         _oldRelatedEndPointMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_realObjectEndPointStub));
@@ -67,6 +85,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _decorator.Perform ();
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Perform_NonExecutable ()
+    {
+      _decoratedCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new[] { _exception1 });
+      _mockRepository.ReplayAll ();
+
+      var exception = Assert.Throws<Exception> (_decorator.Perform);
+      Assert.That (exception, Is.SameAs (_exception1));
+
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -104,6 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private void CheckOperationIsDelegated (Action<IDataManagementCommand> action)
     {
+      _decoratedCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
       _decoratedCommandMock.Expect (action);
       _mockRepository.ReplayAll();
 

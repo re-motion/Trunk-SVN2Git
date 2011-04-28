@@ -17,182 +17,113 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Remotion.Collections;
-using Remotion.Text;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Encapsulates all logic that is required to unload a <see cref="DomainObject"/>'s data from a <see cref="DataManager"/>.
+  /// Unloads a <see cref="DomainObject"/> instance.
   /// </summary>
   public class UnloadCommand : IDataManagementCommand
   {
-    private readonly ObjectID[] _objectIDs;
     private readonly ClientTransaction _clientTransaction;
-    private readonly DataContainerMap _dataContainerMap;
-    private readonly RelationEndPointMap _relationEndPointMap;
-
-    private readonly DataContainer[] _unloadedDataContainers;
-    private readonly string[] _unloadProblems;
-
-    private readonly ReadOnlyCollection<DomainObject> _unloadedDomainObjects;
+    private readonly DomainObject[] _domainObjects;
+    private readonly IDataManagementCommand _unloadDataCommand;
 
     public UnloadCommand (
-        ObjectID[] objectIDs,
         ClientTransaction clientTransaction,
-        DataContainerMap dataContainerMap,
-        RelationEndPointMap relationEndPointMap)
+        ICollection<DomainObject> domainObjects,
+        IDataManagementCommand unloadDataCommand)
     {
-      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("dataContainerMap", dataContainerMap);
-      ArgumentUtility.CheckNotNull ("relationEndPointMap", relationEndPointMap);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNull ("unloadDataCommand", unloadDataCommand);
 
-      _objectIDs = objectIDs;
       _clientTransaction = clientTransaction;
-      _dataContainerMap = dataContainerMap;
-      _relationEndPointMap = relationEndPointMap;
+      _domainObjects = domainObjects.ToArray();
+      _unloadDataCommand = unloadDataCommand;
 
-      var unloadProblems = new List<string>();
-
-      _unloadedDataContainers = GetAndCheckUnloadedDataContainers (_objectIDs, unloadProblems);
-      CheckAffectedEndPoints (_unloadedDataContainers, unloadProblems);
-
-      _unloadProblems = unloadProblems.ToArray();
-
-      _unloadedDomainObjects = ListAdapter.AdaptReadOnly (_unloadedDataContainers, dc => dc.DomainObject);
+      if (_domainObjects.Length == 0)
+        throw new ArgumentEmptyException ("domainObjects");
     }
 
-    public DataContainer[] UnloadedDataContainers
+    public ClientTransaction ClientTransaction
     {
-      get { return _unloadedDataContainers; }
+      get { return _clientTransaction; }
     }
 
-    public bool CanUnload
+    public ReadOnlyCollection<DomainObject> DomainObjects
     {
-      get { return _unloadProblems.Length == 0; }
+      get { return Array.AsReadOnly (_domainObjects); }
     }
 
-    public void EnsureCanUnload ()
+    public IDataManagementCommand UnloadDataCommand
     {
-      if (!CanUnload)
-        throw new InvalidOperationException (_unloadProblems[0]);
+      get { return _unloadDataCommand; }
+    }
+
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return _unloadDataCommand.GetAllExceptions ();
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      EnsureCanUnload();
+      this.EnsureCanExecute ();
 
-      if (_unloadedDomainObjects.Count > 0)
-        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, _unloadedDomainObjects));
+      _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, Array.AsReadOnly (_domainObjects)));
+
+      _unloadDataCommand.NotifyClientTransactionOfBegin ();
     }
 
     public void Begin ()
     {
-      EnsureCanUnload();
+      this.EnsureCanExecute();
 
       _clientTransaction.Execute (
           delegate
           {
-            for (int i = 0; i < _unloadedDomainObjects.Count; i++)
-              _unloadedDomainObjects[i].OnUnloading();
+            for (int i = 0; i < _domainObjects.Length; i++)
+              _domainObjects[i].OnUnloading ();
           });
+
+      _unloadDataCommand.Begin ();
     }
 
     public void Perform ()
     {
-      EnsureCanUnload();
+      this.EnsureCanExecute ();
 
-      // UnregisterEndPoints (_unloadedEndPoints);
-      UnregisterDataContainers (_unloadedDataContainers);
+      _unloadDataCommand.Perform ();
     }
 
     public void End ()
     {
-      EnsureCanUnload();
+      this.EnsureCanExecute ();
+
+      _unloadDataCommand.End ();
 
       _clientTransaction.Execute (
           delegate
           {
-            for (int i = _unloadedDomainObjects.Count - 1; i >= 0; i--)
-              _unloadedDomainObjects[i].OnUnloaded();
+            for (int i = _domainObjects.Length - 1; i >= 0; i--)
+              _domainObjects[i].OnUnloaded ();
           });
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      EnsureCanUnload();
+      this.EnsureCanExecute ();
 
-      if (_unloadedDomainObjects.Count > 0)
-        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, _unloadedDomainObjects));
+      _unloadDataCommand.NotifyClientTransactionOfEnd ();
+
+      _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, Array.AsReadOnly (_domainObjects)));
     }
 
-    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       return new ExpandedCommand (this);
-    }
-
-    // The affected DataContainers are all DataContainers to be unloaded. The DataContainers must be unchanged.
-    private DataContainer[] GetAndCheckUnloadedDataContainers (IEnumerable<ObjectID> unloadedObjectIDs, ICollection<string> problemAggregator)
-    {
-      var affectedDataContainers = unloadedObjectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
-      var notUnchangedDataContainers = affectedDataContainers.Where (dc => dc.State != StateType.Unchanged);
-      if (notUnchangedDataContainers.Any())
-      {
-        var message =
-            "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
-            + SeparatedStringBuilder.Build (", ", notUnchangedDataContainers, dc => String.Format ("'{0}' ({1})", dc.ID, dc.State))
-            + ".";
-        problemAggregator.Add (message);
-      }
-
-      return affectedDataContainers;
-    }
-
-    private void CheckAffectedEndPoints (IEnumerable<DataContainer> unloadedDataContainers, ICollection<string> problemAggregator)
-    {
-      // All end-points associated with a DataContainer to be unloaded must be unchanged, even if they are not unloaded. This is to avoid "mixed" 
-      // States where an object is in state Changed and NotLoadedYet at the same time.
-      var changedAssociatedEndPoints = from dataContainer in unloadedDataContainers
-                                       from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                       let associatedEndPoint = GetLoadedEndPoint (associatedEndPointID)
-                                       where associatedEndPoint != null && associatedEndPoint.HasChanged
-                                       select new { DataContainer = dataContainer, EndPoint = associatedEndPoint };
-      
-      // These are the "technically required" end-points
-      var nonUnregisterableEndPoints = from dataContainer in unloadedDataContainers
-                                       from endPoint in _relationEndPointMap.GetNonUnregisterableEndPointsForDataContainer (dataContainer)
-                                       select new { DataContainer = dataContainer, EndPoint = endPoint };
-      
-      foreach (var problematicEndPoint in changedAssociatedEndPoints.Union (nonUnregisterableEndPoints))
-      {
-        var message = String.Format (
-            "Object '{0}' cannot be unloaded because one of its relations has been changed. Only unchanged objects that are not part of changed "
-            + "relations can be unloaded." + Environment.NewLine + "Changed relation: '{1}'.",
-            problematicEndPoint.DataContainer.ID,
-            problematicEndPoint.EndPoint.RelationDefinition.ID);
-        problemAggregator.Add (message);
-      }
-    }
-
-    private IRelationEndPoint GetLoadedEndPoint (RelationEndPointID endPointID)
-    {
-      var loadedEndPoint = _relationEndPointMap[endPointID];
-      Assertion.IsTrue (
-          loadedEndPoint != null || endPointID.Definition.IsVirtual,
-          "We can be sure that real end points always exist in the RelationEndPointMap.");
-      return loadedEndPoint;
-    }
-
-    private void UnregisterDataContainers (IEnumerable<DataContainer> dataContainers)
-    {
-      foreach (var dataContainer in dataContainers)
-      {
-        _relationEndPointMap.UnregisterEndPointsForDataContainer (dataContainer);
-        _dataContainerMap.Remove (dataContainer.ID);
-      }
     }
   }
 }

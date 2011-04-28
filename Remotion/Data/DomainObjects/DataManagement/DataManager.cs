@@ -389,9 +389,52 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new DeleteCommand (ClientTransaction, deletedObject);
     }
 
-    public UnloadCommand CreateUnloadCommand (params ObjectID[] objectIDs)
+    public IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs)
     {
-      return new UnloadCommand (objectIDs, ClientTransaction, _dataContainerMap, _relationEndPointMap);
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+      var domainObjects = new List<DomainObject>();
+      var problematicDataContainers = new List<DataContainer>();
+      var commands = new List<IDataManagementCommand>();
+
+      foreach (var objectID in objectIDs)
+      {
+        var dataContainer = GetDataContainerWithoutLoading (objectID);
+        if (dataContainer != null)
+        {
+          domainObjects.Add (dataContainer.DomainObject);
+
+          if (dataContainer.State != StateType.Unchanged)
+          {
+            problematicDataContainers.Add (dataContainer);
+          }
+          else
+          {
+            commands.Add (new UnregisterDataContainerCommand (objectID, _dataContainerMap));
+            commands.Add (_relationEndPointMap.GetUnregisterCommandForDataContainer (dataContainer));
+          }
+        }
+      }
+
+      if (problematicDataContainers.Count != 0)
+      {
+        var itemList = SeparatedStringBuilder.Build (", ", problematicDataContainers.Select (dc => string.Format ("'{0}' ({1})", dc.ID, dc.State)));
+        var message = string.Format (
+            "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: {0}.",
+            itemList);
+        return new ExceptionCommand (new InvalidOperationException (message));
+      }
+
+      if (domainObjects.Count == 0)
+      {
+        Assertion.IsTrue (commands.Count == 0);
+        return new NopCommand();
+      }
+      else
+      {
+        var compositeCommand = new CompositeCommand (commands);
+        return new UnloadCommand (_clientTransaction, domainObjects, compositeCommand);
+      }
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

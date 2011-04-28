@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -39,6 +40,28 @@ namespace Remotion.Data.DomainObjects.DataManagement
       command.Perform ();
       command.End ();
       command.NotifyClientTransactionOfEnd ();
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this command can be executed (i.e., it has no associated exceptions).
+    /// </summary>
+    /// <value>
+    /// 	<see langword="true"/> if this instance command can be execute; otherwise, <see langword="false"/>.
+    /// </value>
+    public static bool CanExecute (this IDataManagementCommand command)
+    {
+      return !command.GetAllExceptions().Any();
+    }
+
+    /// <summary>
+    /// Ensures the given command can be executed (i.e., it has no associated exceptions). If it can't, this method throws the first of the command's
+    /// associated exceptions
+    /// </summary>
+    public static void EnsureCanExecute (this IDataManagementCommand command)
+    {
+      var exception = command.GetAllExceptions().FirstOrDefault();
+      if (exception != null)
+        throw exception;
     }
   }
 }

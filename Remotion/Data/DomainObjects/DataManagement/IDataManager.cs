@@ -52,6 +52,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
     DataContainer GetDataContainerWithoutLoading (ObjectID id);
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
-    UnloadCommand CreateUnloadCommand (params ObjectID[] objectIDs);
+    IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs);
   }
 }

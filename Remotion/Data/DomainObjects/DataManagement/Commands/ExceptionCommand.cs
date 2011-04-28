@@ -16,58 +16,60 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Represents a command that touches, but does not change the modified end point.
+  /// Implements <see cref="IDataManagementCommand"/> by returning an exception in <see cref="GetAllExceptions"/>, and throwing that exception when 
+  /// it is to be executed.
   /// </summary>
-  public class RelationEndPointTouchCommand : IDataManagementCommand
+  public class ExceptionCommand : IDataManagementCommand
   {
-    private readonly IRelationEndPoint _endPoint;
+    private readonly Exception _exception;
 
-    public RelationEndPointTouchCommand (IRelationEndPoint endPoint)
+    public ExceptionCommand (Exception exception)
     {
-      _endPoint = endPoint;
+      ArgumentUtility.CheckNotNull ("exception", exception);
+      _exception = exception;
     }
 
-    public IRelationEndPoint EndPoint
+    public Exception Exception
     {
-      get { return _endPoint; }
+      get { return _exception; }
     }
 
     public IEnumerable<Exception> GetAllExceptions ()
     {
-      return Enumerable.Empty<Exception> ();
+      return new[] { _exception };
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      // do not issue any notifications
+      throw _exception;
     }
 
     public void Begin ()
     {
-      // do not issue any notifications
+      throw _exception;
     }
 
     public void Perform ()
     {
-      _endPoint.Touch ();
+      throw _exception;
     }
 
     public void End ()
     {
-      // do not issue any notifications
+      throw _exception;
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      // do not issue any notifications
+      throw _exception;
     }
 
-    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       return new ExpandedCommand (this);
     }

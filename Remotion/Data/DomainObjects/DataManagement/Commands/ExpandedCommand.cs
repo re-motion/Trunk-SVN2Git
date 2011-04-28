@@ -52,6 +52,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return _compositeCommand.GetNestedCommands();
     }
 
+    public IEnumerable<Exception> GetAllExceptions ()
+    {
+      return _compositeCommand.GetAllExceptions();
+    }
+
     public void Begin ()
     {
       _compositeCommand.Begin();

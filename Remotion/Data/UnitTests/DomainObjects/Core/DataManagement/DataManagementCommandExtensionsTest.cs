@@ -24,25 +24,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class DataManagementCommandExtensionsTest
   {
+    private IDataManagementCommand _commandMock;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _commandMock = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
+    }
+
     [Test]
     public void NotifyAndPerform ()
     {
-      var commandMock = new MockRepository ().StrictMock<IDataManagementCommand> ();
-
-      using (commandMock.GetMockRepository ().Ordered ())
+      using (_commandMock.GetMockRepository ().Ordered ())
       {
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
-        commandMock.Expect (mock => mock.Begin());
-        commandMock.Expect (mock => mock.Perform());
-        commandMock.Expect (mock => mock.End());
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock.Expect (mock => mock.Begin());
+        _commandMock.Expect (mock => mock.Perform());
+        _commandMock.Expect (mock => mock.End());
+        _commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
       }
 
-      commandMock.Replay ();
+      _commandMock.Replay ();
 
-      commandMock.NotifyAndPerform ();
+      _commandMock.NotifyAndPerform ();
 
-      commandMock.VerifyAllExpectations ();
+      _commandMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CanExecute_True ()
+    {
+      _commandMock.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
+      Assert.That (_commandMock.CanExecute(), Is.True);
+    }
+
+    [Test]
+    public void CanExecute_False ()
+    {
+      var exception1 = new Exception ("1");
+      var exception2 = new Exception ("2");
+
+      _commandMock.Stub (stub => stub.GetAllExceptions()).Return (new[] { exception1, exception2 });
+      Assert.That (_commandMock.CanExecute(), Is.False);
+    }
+
+    [Test]
+    public void EnsureCanExecute_NoExceptions ()
+    {
+      _commandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      _commandMock.EnsureCanExecute ();
+    }
+
+    [Test]
+    public void EnsureCanExecute_WithExceptions ()
+    {
+      var exception1 = new Exception ("1");
+      var exception2 = new Exception ("2");
+      _commandMock.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception1, exception2 });
+
+      var exception = Assert.Throws<Exception> (() => _commandMock.EnsureCanExecute());
+      Assert.That (exception, Is.SameAs (exception1));
     }
   }
 }

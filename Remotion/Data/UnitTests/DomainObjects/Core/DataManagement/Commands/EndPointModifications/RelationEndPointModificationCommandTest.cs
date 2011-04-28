@@ -34,6 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private IRelationEndPoint _endPointMock;
     private OrderTicket _oldRelatedObject;
     private OrderTicket _newRelatedObject;
+    private RelationEndPointModificationCommand _command;
+    private RelationEndPointModificationCommand _commandPartialMock;
 
     public override void SetUp ()
     {
@@ -48,71 +50,77 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _oldRelatedObject = _transaction.Execute (() => OrderTicket.NewObject ());
       _newRelatedObject = _transaction.Execute (() => OrderTicket.NewObject ());
+
+      _command = CreateTestableCommand ();
+      _commandPartialMock = CreateCommandPartialMock ();
+    }
+
+    [Test]
+    public void GetAllExceptions ()
+    {
+      Assert.That (_command.GetAllExceptions (), Is.Empty);
     }
     
     [Test]
     public void NotifyClientTransactionOfBegin_SetsCurrentTransaction ()
     {
-      var commandMock = CreateCommandPartialMock ();
-
-      commandMock
+      _commandPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedNotifyClientTransactionOfBegin"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      commandMock.Replay ();
+      _commandPartialMock.Replay ();
 
-      commandMock.NotifyClientTransactionOfBegin ();
+      _commandPartialMock.NotifyClientTransactionOfBegin ();
 
-      commandMock.VerifyAllExpectations ();
+      _commandPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd_SetsCurrentTransaction ()
     {
-      var commandMock = CreateCommandPartialMock ();
-
-      commandMock
+      _commandPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedNotifyClientTransactionOfEnd"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      commandMock.Replay ();
+      _commandPartialMock.Replay ();
 
-      commandMock.NotifyClientTransactionOfEnd ();
+      _commandPartialMock.NotifyClientTransactionOfEnd ();
 
-      commandMock.VerifyAllExpectations ();
+      _commandPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Begin_SetsCurrentTransaction ()
     {
-      var commandMock = CreateCommandPartialMock ();
-
-      commandMock
+      _commandPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedBegin"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      commandMock.Replay ();
+      _commandPartialMock.Replay ();
 
-      commandMock.Begin ();
+      _commandPartialMock.Begin ();
 
-      commandMock.VerifyAllExpectations ();
+      _commandPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void End_SetsCurrentTransaction ()
     {
-      var commandMock = CreateCommandPartialMock ();
-
-      commandMock
+      _commandPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedEnd"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      commandMock.Replay ();
+      _commandPartialMock.Replay ();
 
-      commandMock.End ();
+      _commandPartialMock.End ();
 
-      commandMock.VerifyAllExpectations ();
+      _commandPartialMock.VerifyAllExpectations ();
     }
 
     private RelationEndPointModificationCommand CreateCommandPartialMock ()
     {
       return MockRepository.GeneratePartialMock<RelationEndPointModificationCommand> (_endPointMock, _oldRelatedObject, _newRelatedObject);
+    }
+
+    private RelationEndPointModificationCommand CreateTestableCommand ()
+    {
+      return new TestableRelationEndPointModificationCommand (_endPointMock, _oldRelatedObject, _newRelatedObject);
     }
   }
 }

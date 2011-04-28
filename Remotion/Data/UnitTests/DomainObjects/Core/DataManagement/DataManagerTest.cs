@@ -743,6 +743,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateUnloadCommand_NoObjects ()
+    {
+      var result = _dataManager.CreateUnloadCommand();
+
+      Assert.That (result, Is.TypeOf<NopCommand>());
+    }
+
+    [Test]
+    public void CreateUnloadCommand_NoLoadedObjects ()
+    {
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+
+      Assert.That (result, Is.TypeOf<NopCommand> ());
+    }
+
+    [Test]
+    public void CreateUnloadCommand_WithLoadedObjects ()
+    {
+      var loadedDataContainer1 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
+      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order2);
+
+      var loadedObject1 = loadedDataContainer1.DomainObject;
+      var loadedObject2 = loadedDataContainer2.DomainObject;
+
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+
+      Assert.That (result, Is.TypeOf<UnloadCommand>());
+      var unloadCommand = (UnloadCommand) result;
+      Assert.That (unloadCommand.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
+      Assert.That (unloadCommand.DomainObjects, Is.EqualTo (new[] { loadedObject1, loadedObject2 }));
+      Assert.That (unloadCommand.UnloadDataCommand, Is.TypeOf<CompositeCommand> ());
+
+      var unloadDataCommandSteps = ((CompositeCommand) unloadCommand.UnloadDataCommand).GetNestedCommands();
+      Assert.That (unloadDataCommandSteps, Has.Count.EqualTo (4));
+
+      Assert.That (unloadDataCommandSteps[0], Is.TypeOf<UnregisterDataContainerCommand> ());
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).Map, Is.SameAs (_dataManager.DataContainerMap));
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
+
+      Assert.That (unloadDataCommandSteps[1], Is.TypeOf<UnregisterEndPointsCommand> ());
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).Map, Is.SameAs (_dataManager.RelationEndPointMap));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).EndPointIDs, Has.Count.EqualTo (2));
+
+      Assert.That (unloadDataCommandSteps[2], Is.TypeOf<UnregisterDataContainerCommand> ());
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).Map, Is.SameAs (_dataManager.DataContainerMap));
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).ObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+
+      Assert.That (unloadDataCommandSteps[3], Is.TypeOf<UnregisterEndPointsCommand> ());
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).Map, Is.SameAs (_dataManager.RelationEndPointMap));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPointIDs, Has.Count.EqualTo (2));
+    }
+
+    [Test]
+    public void CreateUnloadCommand_WithChangedObjects ()
+    {
+      _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1);
+      var loadedDataContainer2 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order2);
+      var loadedDataContainer3 = _dataManager.GetDataContainerWithLazyLoad (DomainObjectIDs.Order3);
+
+      loadedDataContainer2.MarkAsChanged ();
+      loadedDataContainer3.Delete();
+
+      var result = _dataManager.CreateUnloadCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+
+      Assert.That (result, Is.TypeOf<ExceptionCommand> ());
+      var exceptionCommand = (ExceptionCommand) result;
+      Assert.That (exceptionCommand.Exception.Message, Is.EqualTo (
+          "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
+          + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' (Changed), 'Order|3c0fb6ed-de1c-4e70-8d80-218e0bf58df3|System.Guid' (Deleted)."));
+    }
+
+    [Test]
     public void CheckMandatoryRelations_AllRelationsOk ()
     {
       var dataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;

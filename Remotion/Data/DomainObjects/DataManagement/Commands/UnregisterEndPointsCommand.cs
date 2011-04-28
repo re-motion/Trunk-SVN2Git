@@ -16,58 +16,80 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Represents a command that touches, but does not change the modified end point.
+  /// Unregisters a set of end-points from a <see cref="RelationEndPointMap"/>.
   /// </summary>
-  public class RelationEndPointTouchCommand : IDataManagementCommand
+  public class UnregisterEndPointsCommand : IDataManagementCommand
   {
-    private readonly IRelationEndPoint _endPoint;
+    private readonly RelationEndPointID[] _endPointIDs;
+    private readonly RelationEndPointMap _map;
 
-    public RelationEndPointTouchCommand (IRelationEndPoint endPoint)
+    public UnregisterEndPointsCommand (IEnumerable<RelationEndPointID> endPointIDs, RelationEndPointMap map)
     {
-      _endPoint = endPoint;
+      ArgumentUtility.CheckNotNull ("endPointIDs", endPointIDs);
+      ArgumentUtility.CheckNotNull ("map", map);
+
+      _endPointIDs = endPointIDs.ToArray();
+      _map = map;
     }
 
-    public IRelationEndPoint EndPoint
+    public ReadOnlyCollection<RelationEndPointID> EndPointIDs
     {
-      get { return _endPoint; }
+      get { return Array.AsReadOnly (_endPointIDs); }
+    }
+
+    public RelationEndPointMap Map
+    {
+      get { return _map; }
     }
 
     public IEnumerable<Exception> GetAllExceptions ()
     {
-      return Enumerable.Empty<Exception> ();
+      return new Exception[0];
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      // do not issue any notifications
+      // Nothing to do
     }
 
     public void Begin ()
     {
-      // do not issue any notifications
+      // Nothing to do
     }
 
     public void Perform ()
     {
-      _endPoint.Touch ();
+      foreach (var endPointID in _endPointIDs)
+      {
+        if (!endPointID.Definition.IsVirtual)
+        {
+          _map.UnregisterRealObjectEndPoint (endPointID);
+        }
+        else
+        {
+          _map.RemoveEndPoint (endPointID);
+        }
+      }
     }
 
     public void End ()
     {
-      // do not issue any notifications
+      // Nothing to do
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      // do not issue any notifications
+      // Nothing to do
     }
 
-    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       return new ExpandedCommand (this);
     }
