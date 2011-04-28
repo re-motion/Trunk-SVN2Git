@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
     }
 
-    public IEnumerable<RelationDefinition> CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 

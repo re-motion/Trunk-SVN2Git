@@ -79,7 +79,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         var relationDefinitions = MappingObjectFactory.CreateRelationDefinitionCollection(classDefinitions);
         return relationDefinitions
-            .ToArray()
             .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Length));
       }
     }

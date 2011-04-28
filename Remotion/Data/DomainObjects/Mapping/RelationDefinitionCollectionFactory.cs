@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -36,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public IEnumerable<RelationDefinition> CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
@@ -44,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       foreach (ClassDefinition classDefinition in classDefinitions)
         GetRelationDefinitions (classDefinitions, classDefinition, relationDefinitions);
       
-      return relationDefinitions.Values;
+      return relationDefinitions.Values.ToArray();
     }
 
     private void GetRelationDefinitions (
