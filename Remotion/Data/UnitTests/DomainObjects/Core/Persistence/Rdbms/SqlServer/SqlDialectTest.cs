@@ -47,6 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
+    public void BatchSeparator ()
+    {
+      Assert.That (_dialect.BatchSeparator, Is.EqualTo ("GO"));
+    }
+
+    [Test]
     public void GetParameterName ()
     {
       Assert.That (_dialect.GetParameterName ("parameter"), Is.EqualTo ("@parameter"));

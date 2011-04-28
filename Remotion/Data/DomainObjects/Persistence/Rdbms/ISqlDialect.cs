@@ -29,9 +29,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     string StatementDelimiter { get; }
     /// <summary> A delimiter to split constraints in a SQL statement if the database requires one, an empty string otherwise. </summary>
     string ConstraintDelimiter { get; }
+    /// <summary> Returns the batch-separator.</summary>
+    string BatchSeparator { get; }
     
     string GetParameterName (string name);
-    
+
     /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
     string DelimitIdentifier (string identifier);
 

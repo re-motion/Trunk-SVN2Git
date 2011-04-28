@@ -16,43 +16,21 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
   /// <summary>
-  /// The <see cref="ScriptStatement"/> represents a script-statement batch command for a relational database.
+  /// The <see cref="BatchSeparatorStatement"/> adds a batch-separator to a script-statement for a relational database.
   /// </summary>
-  public class ScriptStatementBatch : IScriptElement
+  public class BatchSeparatorStatement : IScriptElement
   {
-    private readonly List<ScriptStatement> _statements;
-
-    public ScriptStatementBatch ()
-    {
-      _statements = new List<ScriptStatement>();
-    }
-
-    public ReadOnlyCollection<ScriptStatement> Statements
-    {
-      get { return _statements.AsReadOnly(); }
-    }
-
     public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("script", script);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      sqlDialect.AddBatchSeparatorIfNeeded (script);
-      script.AddRange (_statements);
-      sqlDialect.AddBatchSeparatorIfNeeded (script);
-    }
-
-    public void AddStatement (ScriptStatement statement)
-    {
-      ArgumentUtility.CheckNotNull ("statement", statement);
-
-      _statements.Add (statement);
+      script.Add (new ScriptStatement (sqlDialect.BatchSeparator));
     }
   }
 }

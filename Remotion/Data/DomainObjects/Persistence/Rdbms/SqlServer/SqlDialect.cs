@@ -44,6 +44,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return ","; }
     }
 
+    public string BatchSeparator
+    {
+      get { return "GO"; }
+    }
+
     public virtual string GetParameterName (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
@@ -65,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     {
       ArgumentUtility.CheckNotNull ("createScript", createScript);
 
-      createScript.Append ("GO\r\n\r\n");
+      createScript.Append (BatchSeparator + "\r\n\r\n");
     }
 
     public void AddBatchSeparatorIfNeeded (List<ScriptStatement> statements)
@@ -73,8 +78,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       ArgumentUtility.CheckNotNull ("statements", statements);
 
       var lastStatement = statements.LastOrDefault();
-      if (lastStatement != null && lastStatement.Statement != "GO")
-        statements.Add (new ScriptStatement ("GO"));
+      if (lastStatement != null && lastStatement.Statement != BatchSeparator)
+        statements.Add (new ScriptStatement (BatchSeparator));
     }
 
     public void CreateScriptForConnectionString (StringBuilder script, string connectionString)

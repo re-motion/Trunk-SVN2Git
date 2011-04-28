@@ -19,54 +19,50 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
   [TestFixture]
-  public class ScriptStatementTest
+  public class BatchSeparatorStatementTest
   {
-    private ScriptStatement _statement;
-    private ISqlDialect _sqlDialectMock;
+    private BatchSeparatorStatement _batchSeparatorStatement;
+    private ISqlDialect _sqlDialectStub;
+    private List<ScriptStatement> _script;
 
     [SetUp]
     public void SetUp ()
     {
-      _statement = new ScriptStatement ("Test");
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
+      _batchSeparatorStatement = new BatchSeparatorStatement();
+      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
+      _sqlDialectStub.Stub (stub => stub.BatchSeparator).Return ("SEPARATOR");
+      _script = new List<ScriptStatement> ();
     }
 
     [Test]
-    public void Initialization ()
+    public void AppendToScript_EmptyScript ()
     {
-      Assert.That (_statement.Statement, Is.EqualTo ("Test"));
+      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
+
+      Assert.That (_script.Count, Is.EqualTo (1));
+      Assert.That (_script[0].Statement, Is.EqualTo ("SEPARATOR"));
     }
 
     [Test]
-    public void AppendToScript_ScriptNotEmpty ()
+    public void AppendToScript_NoEmptyScript ()
     {
-      var scriptStatement = new ScriptStatement("Test");
-      var script = new List<ScriptStatement> { scriptStatement };
-      _sqlDialectMock.Replay();
-      Assert.That (script.Count, Is.EqualTo (1));
+      var statement1 = new ScriptStatement ("1");
+      var statement2 = new ScriptStatement ("2");
+      _script.Add (statement1);
+      _script.Add (statement2);
 
-      _statement.AppendToScript (script, _sqlDialectMock);
+      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
 
-      _sqlDialectMock.VerifyAllExpectations();
-      Assert.That (script, Is.EqualTo (new[] { scriptStatement, _statement }));
-    }
-
-    [Test]
-    public void AppendToScript_ScriptEmpty ()
-    {
-      var script = new List<ScriptStatement> ();
-      _sqlDialectMock.Replay();
-      Assert.That (script.Count, Is.EqualTo (0));
-
-      _statement.AppendToScript (script, _sqlDialectMock);
-
-      _sqlDialectMock.VerifyAllExpectations();
-      Assert.That (script, Is.EqualTo (new[] { _statement }));
+      Assert.That (_script.Count, Is.EqualTo (3));
+      Assert.That (_script[0], Is.SameAs(statement1));
+      Assert.That (_script[1], Is.EqualTo (statement2));
+      Assert.That (_script[2].Statement, Is.EqualTo ("SEPARATOR"));
     }
   }
 }
