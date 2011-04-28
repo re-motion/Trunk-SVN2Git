@@ -16,6 +16,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -37,14 +38,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _clientClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
-      _locationClass = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
+      _clientClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Client)];
+      _locationClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Location)];
 
       RelationDefinition relation = FakeMappingConfiguration.Current.RelationDefinitions[
-        "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-        +"TestDomain.Integration.Location.Client"];
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
+          + "TestDomain.Integration.Location.Client"];
       _clientEndPoint = (AnonymousRelationEndPointDefinition) relation.EndPointDefinitions[0];
       _locationEndPoint = (RelationEndPointDefinition) relation.EndPointDefinitions[1];
     }

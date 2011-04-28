@@ -52,8 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       }
 
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
-      classDefinitionChecker.Check (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
-      classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions);
+      classDefinitionChecker.Check (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions, false, true);
+      classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions);
       Assert.That (actualClassDefinitions.Contains (typeof (TestDomainBase)), Is.False);
     }
 

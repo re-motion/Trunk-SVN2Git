@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Linq.Utilities;
@@ -68,18 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       CheckPropertyDefinitions (expectedDefinition.MyPropertyDefinitions, actualDefinition.MyPropertyDefinitions, expectedDefinition);
     }
 
-    public void Check (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
-    {
-      Check (expectedDefinitions, actualDefinitions, true, false);
-    }
-
-    public void Check (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions, bool checkRelations)
-    {
-      Check (expectedDefinitions, actualDefinitions, checkRelations, false);
-    }
-
     public void Check (
-        ClassDefinitionCollection expectedDefinitions,
+        IEnumerable<ClassDefinition> expectedDefinitions,
         ClassDefinitionCollection actualDefinitions,
         bool checkRelations,
         bool ignoreUnknown)
@@ -88,16 +80,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);
 
       if (!ignoreUnknown)
-        Assert.AreEqual (expectedDefinitions.Count, actualDefinitions.Count, "Number of class definitions does not match.");
+        Assert.AreEqual (expectedDefinitions.Count(), actualDefinitions.Count, "Number of class definitions does not match.");
 
-      //Assert.AreEqual (
-      //    expectedDefinitions.AreResolvedTypesRequired,
-      //    actualDefinitions.AreResolvedTypesRequired,
-      //    "AreResolvedTypesRequired does not match.");
-
-      foreach (ClassDefinition expectedDefinition in expectedDefinitions)
+      foreach (var expectedDefinition in expectedDefinitions)
       {
-        ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
+        var actualDefinition = actualDefinitions[expectedDefinition.ClassType];
         Check (expectedDefinition, actualDefinition);
         CheckDerivedClasses (expectedDefinition, actualDefinition);
       }
@@ -106,27 +93,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         CheckRelationEndPoints(expectedDefinitions, actualDefinitions);
     }
 
-    public void CheckRelationEndPoints (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    public void CheckRelationEndPoints (IEnumerable<ClassDefinition> expectedDefinitions, ClassDefinitionCollection actualDefinitions)
     {
-      foreach (ClassDefinition expectedDefinition in expectedDefinitions)
+      ArgumentUtility.CheckNotNull ("expectedDefinitions", expectedDefinitions);
+      ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);
+      
+      foreach (var expectedDefinition in expectedDefinitions)
       {
-        ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
+        var actualDefinition = actualDefinitions[expectedDefinition.ClassType];
         var endPointDefinitionChecker = new RelationEndPointDefinitionChecker ();
         endPointDefinitionChecker.Check (expectedDefinition.MyRelationEndPointDefinitions, actualDefinition.MyRelationEndPointDefinitions, true);
       }
     }
 
-    public void CheckPersistenceModel (ClassDefinitionCollection expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    public void CheckPersistenceModel (IEnumerable<ClassDefinition> expectedDefinitions, ClassDefinitionCollection actualDefinitions)
     {
-      foreach (ClassDefinition expectedDefinition in expectedDefinitions)
+      ArgumentUtility.CheckNotNull ("expectedDefinitions", expectedDefinitions);
+      ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);
+      
+      foreach (var expectedDefinition in expectedDefinitions)
       {
-        ClassDefinition actualDefinition = actualDefinitions[expectedDefinition.ClassType];
+        var actualDefinition = actualDefinitions[expectedDefinition.ClassType];
         CheckPersistenceModel (expectedDefinition, actualDefinition);
       }
     }
 
     public void CheckPersistenceModel (ClassDefinition expectedDefinition, ClassDefinition actualDefinition)
     {
+      ArgumentUtility.CheckNotNull ("expectedDefinition", expectedDefinition);
+      ArgumentUtility.CheckNotNull ("actualDefinition", actualDefinition);
+  
       Assert.AreEqual (
           expectedDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
           actualDefinition.StorageEntityDefinition.StorageProviderDefinition.Name,
@@ -159,6 +155,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public void CheckDerivedClasses (ClassDefinition expectedDefinition, ClassDefinition actualDefinition)
     {
+      ArgumentUtility.CheckNotNull ("expectedDefinition", expectedDefinition);
+      ArgumentUtility.CheckNotNull ("actualDefinition", actualDefinition);
+      
       CheckDerivedClasses (expectedDefinition.DerivedClasses, actualDefinition.DerivedClasses, expectedDefinition);
     }
 
@@ -172,12 +171,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           actualDerivedClasses.Count,
           "Number of derived classes of class definition '{0}' does not match.",
           expectedClassDefinition.ID);
-
-      //Assert.AreEqual (
-      //    expectedDerivedClasses.AreResolvedTypesRequired,
-      //    actualDerivedClasses.AreResolvedTypesRequired,
-      //    "AreResolvedTypeNamesRequired of DerivedClasses collection of class definition '{0}' does not match",
-      //    expectedClassDefinition.ID);
 
       foreach (ClassDefinition expectedDerivedClass in expectedDerivedClasses)
       {

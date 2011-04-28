@@ -305,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ClassDefinition 'Partner' cannot be serialized because is is not part of the current mapping.")]
     public void ClassDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
+      ClassDefinition classDefinition = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Mapping.TestDomain.Integration.Partner)];
 
       SerializeAndDeserialize (classDefinition);
     }
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void ClassDefinition_InMapping ()
     {
       // Note: Partner has a base class and several derived classes.
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions["Partner"];
 
       var deserializedClassDefinition = (ClassDefinition) SerializeAndDeserialize (classDefinition);
 

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       _validationRule = new RdbmsRelationEndPointCombinationIsSupportedValidationRule();
 
-      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _orderClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."

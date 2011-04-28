@@ -77,13 +77,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _domainBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _personClass, _organizationalUnitClass }, true));
 
-      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
-      _distributorClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
+      _orderClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      _distributorClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Distributor)];
 
       _targetClassForPersistentMixinClass =
-          FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-          FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.TypeDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
     }
 
     [Test]
@@ -1175,14 +1175,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetInheritanceRootClass ()
     {
-      ClassDefinition expected = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition expected = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Company)];
       Assert.AreSame (expected, _distributorClass.GetInheritanceRootClass());
     }
 
     [Test]
     public void GetAllDerivedClasses ()
     {
-      ClassDefinition companyClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Company)];
       ClassDefinitionCollection allDerivedClasses = companyClass.GetAllDerivedClasses();
       Assert.IsNotNull (allDerivedClasses);
       Assert.AreEqual (4, allDerivedClasses.Count);
@@ -1208,7 +1208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsSameOrBaseClassOfTrueWithBaseClass ()
     {
-      ClassDefinition companyClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Company)];
+      ClassDefinition companyClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Company)];
 
       Assert.IsTrue (companyClass.IsSameOrBaseClassOf (_distributorClass));
     }

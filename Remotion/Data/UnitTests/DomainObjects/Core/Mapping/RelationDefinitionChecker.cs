@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     // methods and properties
 
     public void Check (
-        IDictionary<string, RelationDefinition> expectedDefinitions, 
+        IEnumerable<RelationDefinition> expectedDefinitions, 
         IDictionary<string, RelationDefinition> actualDefinitions,
         bool ignoreUnknown)
     {
@@ -46,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);
 
       if (!ignoreUnknown)
-        Assert.AreEqual (expectedDefinitions.Count, actualDefinitions.Count, "Number of relation definitions does not match.");
+        Assert.AreEqual (expectedDefinitions.Count(), actualDefinitions.Count, "Number of relation definitions does not match.");
 
-      foreach (RelationDefinition expectedDefinition in expectedDefinitions.Values)
+      foreach (RelationDefinition expectedDefinition in expectedDefinitions)
       {
         RelationDefinition actualDefinition = actualDefinitions[expectedDefinition.ID];
         Assert.IsNotNull (actualDefinition, "Relation '{0}' was not found.", expectedDefinition.ID);

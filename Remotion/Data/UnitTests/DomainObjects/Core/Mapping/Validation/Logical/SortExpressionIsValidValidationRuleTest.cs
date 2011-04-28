@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void SetUp ()
     {
       _validationRule = new SortExpressionIsValidValidationRule();
-      _classDefinition = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _classDefinition = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
     }
 
     [Test]

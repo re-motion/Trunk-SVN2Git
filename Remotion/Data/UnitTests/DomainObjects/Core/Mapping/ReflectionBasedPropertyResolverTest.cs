@@ -45,12 +45,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _orderClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
 
       _targetClassForPersistentMixinClass =
-          FakeMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)];
       _derivedTargetClassForPersistentMixinClass =
-          FakeMappingConfiguration.Current.ClassDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
+          FakeMappingConfiguration.Current.TypeDefinitions[typeof (DerivedTargetClassForPersistentMixin)];
       
       _classWithInterface = CreateDefinitionForClassWithInterface();
       _classDerivedFromClassWithInterface = CreateDefinitionForClassDerivedFromClassWithInterface(_classWithInterface);

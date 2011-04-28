@@ -170,20 +170,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       //Assert.AreEqual (true, copiedCollection.AreResolvedTypesRequired);
     }
 
-    [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassDefinitionCollectionTest'.")]
-    public void GetMandatoryForInvalidClass ()
-    {
-      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType());
-    }
+    //[Test]
+    //[ExpectedException (typeof (MappingException),
+    //    ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.ClassDefinitionCollectionTest'.")]
+    //public void GetMandatoryForInvalidClass ()
+    //{
+    //  FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType());
+    //}
 
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Zaphod'.")]
-    public void GetMandatoryForInvalidClassID ()
-    {
-      FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Zaphod");
-    }
+    //[Test]
+    //[ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Zaphod'.")]
+    //public void GetMandatoryForInvalidClassID ()
+    //{
+    //  FakeMappingConfiguration.Current.ClassDefinitions.GetMandatory ("Zaphod");
+    //}
 
     [Test]
     public void ContainsClassDefinition ()

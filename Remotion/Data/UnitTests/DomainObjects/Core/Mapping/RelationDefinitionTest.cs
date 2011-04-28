@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp();
 
-      _customerClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Customer)];
-      _orderClass = FakeMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _customerClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
+      _orderClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
