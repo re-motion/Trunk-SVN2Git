@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
@@ -30,7 +31,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
       ArgumentUtility.CheckNotNull ("script", script);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
-      script.Add (new ScriptStatement (sqlDialect.BatchSeparator));
+      var lastStatement = script.LastOrDefault();
+      if(lastStatement!=null && lastStatement.Statement!=sqlDialect.BatchSeparator)
+        script.Add (new ScriptStatement (sqlDialect.BatchSeparator));
     }
   }
 }

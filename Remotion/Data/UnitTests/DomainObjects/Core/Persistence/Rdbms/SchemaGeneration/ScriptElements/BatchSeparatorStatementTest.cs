@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.ScriptElements
@@ -45,12 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
 
-      Assert.That (_script.Count, Is.EqualTo (1));
-      Assert.That (_script[0].Statement, Is.EqualTo ("SEPARATOR"));
+      Assert.That (_script, Is.Empty);
     }
 
     [Test]
-    public void AppendToScript_NoEmptyScript ()
+    public void AppendToScript_NonEmptyScript ()
     {
       var statement1 = new ScriptStatement ("1");
       var statement2 = new ScriptStatement ("2");
@@ -63,6 +61,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.That (_script[0], Is.SameAs(statement1));
       Assert.That (_script[1], Is.EqualTo (statement2));
       Assert.That (_script[2].Statement, Is.EqualTo ("SEPARATOR"));
+    }
+
+    [Test]
+    public void AppendToScript_NonEmptyScript_LastStatementIsBatchStatement ()
+    {
+      var statement1 = new ScriptStatement ("1");
+      var statement2 = new ScriptStatement ("SEPARATOR");
+      _script.Add (statement1);
+      _script.Add (statement2);
+
+      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
+
+      Assert.That (_script.Count, Is.EqualTo (2));
+      Assert.That (_script[0], Is.SameAs (statement1));
+      Assert.That (_script[1], Is.EqualTo (statement2));
     }
   }
 }
