@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -33,7 +35,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
     }
 
-    public RelationDefinition GetMetadata (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition GetMetadata (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
@@ -63,7 +65,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    private IRelationEndPointDefinition GetOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)
+    private IRelationEndPointDefinition GetOppositeEndPointDefinition (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       if (!IsBidirectionalRelation)
         return CreateOppositeAnonymousRelationEndPointDefinition (classDefinitions);
@@ -81,7 +83,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
-    private AnonymousRelationEndPointDefinition CreateOppositeAnonymousRelationEndPointDefinition (ClassDefinitionCollection classDefinitions)
+    private AnonymousRelationEndPointDefinition CreateOppositeAnonymousRelationEndPointDefinition (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       var oppositeClassDefinition = GetOppositeClassDefinition (classDefinitions, null);
       return new AnonymousRelationEndPointDefinition (oppositeClassDefinition);
@@ -96,11 +98,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new PropertyNotFoundRelationEndPointDefinition (classDefinition, propertyInfo.Name);
     }
 
-    private ClassDefinition GetOppositeClassDefinition (
-        ClassDefinitionCollection classDefinitions, PropertyInfo optionalOppositePropertyInfo)
+    private ClassDefinition GetOppositeClassDefinition (IDictionary<Type,ClassDefinition> classDefinitions, PropertyInfo optionalOppositePropertyInfo)
     {
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
-      var oppositeClassDefinition = classDefinitions[type];
+      var oppositeClassDefinition = classDefinitions.GetValueOrDefault (type);
       if (oppositeClassDefinition == null)
       {
         var notFoundClassDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (type.Name, type, PropertyInfo);

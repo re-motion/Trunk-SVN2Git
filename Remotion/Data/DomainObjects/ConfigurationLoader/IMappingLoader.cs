@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation;
@@ -22,8 +23,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader
 {
   public interface IMappingLoader
   {
-    IEnumerable<ClassDefinition> GetClassDefinitions();
-    IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions);
+    ClassDefinition[] GetClassDefinitions();
+    RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions);
     bool ResolveTypes { get; }
     IMappingNameResolver NameResolver { get; }
 

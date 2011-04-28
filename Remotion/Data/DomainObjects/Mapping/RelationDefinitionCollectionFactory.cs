@@ -37,23 +37,22 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public RelationDefinition[] CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] CreateRelationDefinitionCollection (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       var relationDefinitions = new Dictionary<string, RelationDefinition>();
-      foreach (ClassDefinition classDefinition in classDefinitions)
+      foreach (var classDefinition in classDefinitions.Values)
         GetRelationDefinitions (classDefinitions, classDefinition, relationDefinitions);
-      
+
       return relationDefinitions.Values.ToArray();
     }
 
     private void GetRelationDefinitions (
-        ClassDefinitionCollection classDefinitions, ClassDefinition classDefinition, Dictionary<string, RelationDefinition> relationDefinitions)
+        IDictionary<Type, ClassDefinition> classDefinitions,
+        ClassDefinition classDefinition,
+        IDictionary<string, RelationDefinition> relationDefinitions)
     {
-      ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
-
       foreach (var endPoint in classDefinition.MyRelationEndPointDefinitions)
       {
         var relationDefinition = _mappingObjectFactory.CreateRelationDefinition (classDefinitions, classDefinition, endPoint.PropertyInfo);

@@ -38,11 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       MappingReflector mappingReflector = new MappingReflector (TestMappingConfiguration.GetTypeDiscoveryService());
 
-      var actualClassDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true);
+      var actualClassDefinitions = mappingReflector.GetClassDefinitions().ToDictionary (cd => cd.ClassType);
       mappingReflector.GetRelationDefinitions (actualClassDefinitions);
       Assert.That (actualClassDefinitions, Is.Not.Null);
 
-      var inheritanceRootClasses = actualClassDefinitions.Cast<ClassDefinition>().Select (cd => cd.GetInheritanceRootClass()).Distinct();
+      var inheritanceRootClasses = actualClassDefinitions.Values.Select (cd => cd.GetInheritanceRootClass()).Distinct();
       var storageProviderDefinitionFinder = new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
       foreach (ClassDefinition classDefinition in inheritanceRootClasses)
       {
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
       classDefinitionChecker.Check (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions, false, true);
       classDefinitionChecker.CheckPersistenceModel (FakeMappingConfiguration.Current.TypeDefinitions.Values, actualClassDefinitions);
-      Assert.That (actualClassDefinitions.Contains (typeof (TestDomainBase)), Is.False);
+      Assert.That (actualClassDefinitions.ContainsKey (typeof (TestDomainBase)), Is.False);
     }
 
     [Test]

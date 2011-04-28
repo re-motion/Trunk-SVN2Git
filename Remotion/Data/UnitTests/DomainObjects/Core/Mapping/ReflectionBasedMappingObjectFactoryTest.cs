@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var result =
           _factory.CreateRelationDefinition (
-              new ClassDefinitionCollection (new[] { orderClassDefinition, orderItemClassDefinition }, true),
+              new[] { orderClassDefinition, orderItemClassDefinition }.ToDictionary (cd => cd.ClassType),
               orderItemClassDefinition,
               orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
 
@@ -108,9 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var result = _factory.CreateClassDefinitionCollection (new[] { typeof (Order), typeof (Company) });
 
-      Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result.Contains (typeof (Order)), Is.True);
-      Assert.That (result.Contains (typeof (Company)), Is.True);
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result.Any (cd=>cd.ClassType == typeof (Order)));
+      Assert.That (result.Any (cd=>cd.ClassType == typeof (Company)));
     }
     
     [Test]
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection (new[] { endPoint }, true));
 
-      var result = _factory.CreateRelationDefinitionCollection (new ClassDefinitionCollection (new[] { classDefinition }, true));
+      var result = _factory.CreateRelationDefinitionCollection (new[] { classDefinition }.ToDictionary (cd => cd.ClassType));
 
       Assert.That (result.Count(), Is.EqualTo (1));
       Assert.That (

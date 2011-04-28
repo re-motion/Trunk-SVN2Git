@@ -16,15 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -36,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _multiMixinRelatedClassDefinition;
     private ClassDefinition _relatedClassDefinition;
     private ClassDefinition _inheritanceRootInheritingMixinClassDefinition;
-    private ClassDefinitionCollection _classDefinitions;
+    private Dictionary<Type, ClassDefinition> _classDefinitions;
 
     public override void SetUp ()
     {
@@ -64,7 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               false,
               new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
-      _classDefinitions = new ClassDefinitionCollection { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition };
+      _classDefinitions = new[] { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition }
+          .ToDictionary (cd => cd.ClassType);
     }
 
     [Test]
@@ -250,8 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           _inheritanceRootInheritingMixinClassDefinition,
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot),
           "PersistentRelationProperty");
-      _classDefinitions.Add (
-          classAboveInheritanceRoot);
+      _classDefinitions.Add (classAboveInheritanceRoot.ClassType, classAboveInheritanceRoot);
 
       Assert.That (relationReflector.GetMetadata (_classDefinitions), Is.Not.Null);
     }

@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
@@ -27,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class ClassDefinitionCollectionFactoryTest
   {
-    private ClassDefinitionCollection _classDefinitions;
+    private Dictionary<Type, ClassDefinition> _classDefinitions;
     private ClassDefinitionCollectionFactory _classDefinitionCollectionFactory;
     private IMappingObjectFactory _mappingObjectFactoryMock;
     private ClassDefinition _fakeClassDefinition;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [SetUp]
     public void SetUp ()
     {
-      _classDefinitions = new ClassDefinitionCollection();
+      _classDefinitions = new Dictionary<Type, ClassDefinition>();
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
       _classDefinitionCollectionFactory = new ClassDefinitionCollectionFactory (_mappingObjectFactoryMock);
       _fakeClassDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
@@ -52,9 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new[] { typeof (Order) });
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
-      
-      Assert.That (classDefinitions.Count, Is.EqualTo (1));
-      Assert.That (classDefinitions[0], Is.SameAs (_fakeClassDefinition));
+
+      Assert.That (classDefinitions, Is.EqualTo (new[] { _fakeClassDefinition }));
     }
 
     [Test]
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinitions = _classDefinitionCollectionFactory.CreateClassDefinitionCollection (new Type[0]);
 
-      Assert.That (classDefinitions.Count, Is.EqualTo (0));
+      Assert.That (classDefinitions, Is.Empty);
     }
 
     [Test]
@@ -92,9 +92,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mappingObjectFactoryMock.VerifyAllExpectations();
       
-      Assert.That (classDefinitions.Count, Is.EqualTo (4));
-      Assert.That (classDefinitions["Order"].DerivedClasses.Count, Is.EqualTo (0));
-      Assert.That (classDefinitions["Company"].DerivedClasses, Is.EquivalentTo (new[] { fakeClassDefinitionPartner, fakeClassDefinitionCustomer }));
+      Assert.That (classDefinitions.Length, Is.EqualTo (4));
+      
+      var orderClassDefinition = classDefinitions.Single (cd => cd.ClassType == typeof (Order));
+      Assert.That (orderClassDefinition.DerivedClasses.Count, Is.EqualTo (0));
+
+      var companyClassDefinition = classDefinitions.Single (cd => cd.ClassType == typeof (Company));
+      Assert.That (companyClassDefinition.DerivedClasses, Is.EquivalentTo (new[] { fakeClassDefinitionPartner, fakeClassDefinitionCustomer }));
     }
     
     [Test]
@@ -161,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetClassDefinition_ForDerivedClass_WithBaseClassAlreadyInClassDefinitionCollection ()
     {
       var expectedBaseClass = ClassDefinitionFactory.CreateClassDefinition (typeof (ClassWithDifferentProperties));
-      _classDefinitions.Add (expectedBaseClass);
+      _classDefinitions.Add (expectedBaseClass.ClassType, expectedBaseClass);
 
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreateClassDefinition (typeof (DerivedClassWithDifferentProperties), expectedBaseClass))
@@ -180,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetClassDefinition_ForDerivedClass_WithDerivedClassAlreadyInClassDefinitionCollection ()
     {
       var existing = ClassDefinitionFactory.CreateClassDefinition (typeof (Order));
-      _classDefinitions.Add (existing);
+      _classDefinitions.Add (existing.ClassType, existing);
 
       _mappingObjectFactoryMock.Replay();
 
@@ -191,50 +195,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.AreEqual (1, _classDefinitions.Count);
       Assert.AreSame (actual, _classDefinitions[typeof (Order)]);
       Assert.AreSame (existing, actual);
-    }
-
-    [Test]
-    public void GetClassDefinition_ForClassesWithSameClassID ()
-    {
-      Type type1 = typeof (ClassWithSameClassID);
-      Type type2 = typeof (OtherClassWithSameClassID);
-      
-      var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (
-          "ClassID",
-          "Entity1",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
-          type1,
-          false);
-      var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (
-          "ClassID",
-          "Entity2",
-          new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider"),
-          type2,
-          false);
-
-      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (type1, null)).Return (classDefinition1);
-      _mappingObjectFactoryMock.Expect (mock => mock.CreateClassDefinition (type2, null)).Return (classDefinition2);
-      _mappingObjectFactoryMock.Replay();
-
-      _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, type1);
-      try
-      {
-        _classDefinitionCollectionFactory.GetClassDefinition (_classDefinitions, type2);
-
-        Assert.Fail ("exception expected");
-      }
-      catch (MappingException ex)
-      {
-        var expectedMessage = string.Format (
-            "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.ClassWithSameClassID' "
-            + "and 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors.OtherClassWithSameClassID' "
-            + "both have the same class ID 'ClassID'. Use the ClassIDAttribute to define unique IDs for these classes. "
-            + "The assemblies involved are '{0}' and '{1}'.",
-            type1.Assembly.GetName().FullName,
-            type2.Assembly.GetName ().FullName);
-
-        Assert.AreEqual (expectedMessage, ex.Message);
-      }
     }
   }
 }

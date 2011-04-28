@@ -55,29 +55,28 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _typeDiscoveryService; }
     }
 
-    public IEnumerable<ClassDefinition> GetClassDefinitions ()
+    public ClassDefinition[] GetClassDefinitions ()
     {
       s_log.Info ("Reflecting class definitions...");
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
-        var types = GetDomainObjectTypesSorted ();
+        var types = GetDomainObjectTypesSorted();
         var classDefinitions = MappingObjectFactory.CreateClassDefinitionCollection (types);
-        
+
         return classDefinitions
-            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count))
-            .Cast<ClassDefinition> ();
+            .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Length));
       }
     }
 
-    public IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       s_log.InfoFormat ("Reflecting relation definitions of {0} class definitions...", classDefinitions.Count);
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {elapsed}."))
       {
-        var relationDefinitions = MappingObjectFactory.CreateRelationDefinitionCollection(classDefinitions);
+        var relationDefinitions = MappingObjectFactory.CreateRelationDefinitionCollection (classDefinitions);
         return relationDefinitions
             .LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Length));
       }

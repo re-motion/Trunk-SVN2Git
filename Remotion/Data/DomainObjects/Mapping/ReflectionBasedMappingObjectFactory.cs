@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     public RelationDefinition CreateRelationDefinition (
-        ClassDefinitionCollection classDefinitions, ClassDefinition classDefinition, PropertyInfo propertyInfo)
+        IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return relationEndPointReflector.GetMetadata();
     }
 
-    public ClassDefinitionCollection CreateClassDefinitionCollection (IEnumerable<Type> types)
+    public ClassDefinition[] CreateClassDefinitionCollection (IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return factory.CreatePropertyDefinitions (classDefinition, propertyInfos);
     }
 
-    public RelationDefinition[] CreateRelationDefinitionCollection (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] CreateRelationDefinitionCollection (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 

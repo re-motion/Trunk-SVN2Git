@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public void Check (
         IEnumerable<ClassDefinition> expectedDefinitions,
-        ClassDefinitionCollection actualDefinitions,
+        IDictionary<Type, ClassDefinition> actualDefinitions,
         bool checkRelations,
         bool ignoreUnknown)
     {
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         CheckRelationEndPoints(expectedDefinitions, actualDefinitions);
     }
 
-    public void CheckRelationEndPoints (IEnumerable<ClassDefinition> expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    public void CheckRelationEndPoints (IEnumerable<ClassDefinition> expectedDefinitions, IDictionary<Type, ClassDefinition> actualDefinitions)
     {
       ArgumentUtility.CheckNotNull ("expectedDefinitions", expectedDefinitions);
       ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       }
     }
 
-    public void CheckPersistenceModel (IEnumerable<ClassDefinition> expectedDefinitions, ClassDefinitionCollection actualDefinitions)
+    public void CheckPersistenceModel (IEnumerable<ClassDefinition> expectedDefinitions, IDictionary<Type, ClassDefinition> actualDefinitions)
     {
       ArgumentUtility.CheckNotNull ("expectedDefinitions", expectedDefinitions);
       ArgumentUtility.CheckNotNull ("actualDefinitions", actualDefinitions);

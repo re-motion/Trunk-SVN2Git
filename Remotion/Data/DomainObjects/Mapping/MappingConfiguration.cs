@@ -91,12 +91,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         var typeDefinitions = mappingLoader.GetClassDefinitions();
         _typeDefinitions = new ReadOnlyDictionary<Type, ClassDefinition> (typeDefinitions.ToDictionary (td => td.ClassType));
-        _classDefinitions = new ClassDefinitionCollection (_typeDefinitions.Values, true);
-
+        _classDefinitions = new ClassDefinitionCollection (typeDefinitions, true);// new ReadOnlyDictionary<string, ClassDefinition> (typeDefinitions.ToDictionary (td => td.ID));
+        
         ValidateClassDefinitions (mappingLoader);
         ValidatePropertyDefinitions (mappingLoader);
 
-        var relationDefinitions = mappingLoader.GetRelationDefinitions (_classDefinitions);
+        var relationDefinitions = mappingLoader.GetRelationDefinitions (_typeDefinitions);
         _relationDefinitions = new ReadOnlyDictionary<string, RelationDefinition> (relationDefinitions.ToDictionary (rd => rd.ID));
 
         ValidateRelationDefinitions (mappingLoader);
@@ -234,7 +234,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       foreach (ClassDefinition classDefinition in _classDefinitions)
         classDefinition.SetReadOnly();
-      _classDefinitions.SetReadOnly();
     }
 
     private void ValidateClassDefinitions (IMappingLoader mappingLoader)

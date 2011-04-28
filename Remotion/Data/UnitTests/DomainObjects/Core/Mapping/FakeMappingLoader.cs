@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
     }
 
-    public IEnumerable<ClassDefinition> GetClassDefinitions ()
+    public ClassDefinition[] GetClassDefinitions ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (
           "Fake",
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       return new[] { classDefinition };
     }
 
-    public IEnumerable<RelationDefinition> GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
+    public RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions)
     {
       return new RelationDefinition[0];
     }

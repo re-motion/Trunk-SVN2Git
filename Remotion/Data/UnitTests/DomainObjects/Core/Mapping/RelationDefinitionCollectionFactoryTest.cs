@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Rhino.Mocks;
@@ -53,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_OneClassDefinitionWithOneEndPoint ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderItemClassDefinition }, true);
+      var classDefinitions = new[] { _orderItemClassDefinition }.ToDictionary (cd => cd.ClassType);
 
       _mappingObjectFactoryMock
           .Expect (
@@ -76,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_OneClassDefinitionWithSeveralEndPoints_DuplicatedRelationDefinitionsGetFiltered ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition }, true);
+      var classDefinitions = new[] { _orderClassDefinition }.ToDictionary (cd => cd.ClassType);
 
       _mappingObjectFactoryMock
           .Expect (
@@ -125,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinitionCollection_SeveralClassDefinitionWithSeveralEndPoints_DuplicatedRelationDefinitionsGetFiltered ()
     {
-      var classDefinitions = new ClassDefinitionCollection (new[] { _orderClassDefinition, _orderItemClassDefinition }, true);
+      var classDefinitions = new[] { _orderClassDefinition, _orderItemClassDefinition }.ToDictionary (cd => cd.ClassType);
 
       _mappingObjectFactoryMock
           .Expect (
