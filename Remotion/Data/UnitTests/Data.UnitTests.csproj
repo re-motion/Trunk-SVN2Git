@@ -274,6 +274,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableScriptBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ViewScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlFilterViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlTableViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlUnionViewScriptElementFactory.cs" />
