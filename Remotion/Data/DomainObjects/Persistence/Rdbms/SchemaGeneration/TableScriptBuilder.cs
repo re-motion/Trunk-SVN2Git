@@ -36,15 +36,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       public EntityDefinitionVisitor (TableScriptBuilder builder)
       {
-        ArgumentUtility.CheckNotNull ("builder", builder);
-
         _builder = builder;
       }
 
       void IEntityDefinitionVisitor.VisitTableDefinition (TableDefinition tableDefinition)
       {
-        ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
-
         _builder.AddTableDefinition (tableDefinition);
       }
 
