@@ -31,10 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
 {
   public class ValidationIntegrationTestBase
   {
-    public void ValidateMapping (string testDomainNamespaceSuffix)
+    protected void ValidateMapping (string testDomainNamespaceSuffix)
     {
       var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration." + testDomainNamespaceSuffix;
-      var temp = new MappingConfiguration (
+      new MappingConfiguration (
           new MappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType().Assembly)),
           new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
     }

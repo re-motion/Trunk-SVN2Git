@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     // member fields
 
     private readonly ReadOnlyDictionary<Type, ClassDefinition> _typeDefinitions;
-    private readonly ClassDefinitionCollection _classDefinitions;
+    private readonly ReadOnlyDictionary<string, ClassDefinition> _classDefinitions;
     private readonly ReadOnlyDictionary<string, RelationDefinition> _relationDefinitions;
     private readonly bool _resolveTypes;
     private readonly IMappingNameResolver _nameResolver;
@@ -91,7 +91,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         var typeDefinitions = mappingLoader.GetClassDefinitions();
         _typeDefinitions = new ReadOnlyDictionary<Type, ClassDefinition> (typeDefinitions.ToDictionary (td => td.ClassType));
-        _classDefinitions = new ClassDefinitionCollection (typeDefinitions, true);// new ReadOnlyDictionary<string, ClassDefinition> (typeDefinitions.ToDictionary (td => td.ID));
+        ValidateDuplicateClassIDs (typeDefinitions.OfType<ClassDefinition>());
+        _classDefinitions = new ReadOnlyDictionary<string, ClassDefinition> (typeDefinitions.ToDictionary (cd => cd.ID));
         
         ValidateClassDefinitions (mappingLoader);
         ValidatePropertyDefinitions (mappingLoader);
@@ -101,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         ValidateRelationDefinitions (mappingLoader);
 
-        foreach (var rootClass in GetInheritanceRootClasses(_classDefinitions))
+        foreach (var rootClass in GetInheritanceRootClasses (_typeDefinitions.Values))
         {
           persistenceModelLoader.ApplyPersistenceModelToHierarchy (rootClass);
           VerifyPersistenceModelApplied (rootClass);
@@ -127,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _resolveTypes; }
     }
 
-    public ClassDefinitionCollection ClassDefinitions
+    public ReadOnlyDictionary<string, ClassDefinition> ClassDefinitions
     {
       get { return _classDefinitions; }
     }
@@ -151,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      return _classDefinitions.Contains (classDefinition);
+      return _typeDefinitions.Values.Contains (classDefinition);
     }
 
     public bool Contains (PropertyDefinition propertyDefinition)
@@ -161,7 +162,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (propertyDefinition.ClassDefinition == null)
         return false;
 
-      ClassDefinition foundClassDefinition = _classDefinitions[propertyDefinition.ClassDefinition.ID];
+      var foundClassDefinition = _typeDefinitions.GetValueOrDefault (propertyDefinition.ClassDefinition.ClassType);
       if (foundClassDefinition == null)
         return false;
 
@@ -186,17 +187,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (relationEndPointDefinition.RelationDefinition == null)
         return false;
 
-      RelationDefinition foundRelationDefinition = _relationDefinitions[relationEndPointDefinition.RelationDefinition.ID];
+      var foundRelationDefinition = _relationDefinitions.GetValueOrDefault (relationEndPointDefinition.RelationDefinition.ID);
       if (foundRelationDefinition == null)
         return false;
 
       return foundRelationDefinition.Contains (relationEndPointDefinition);
     }
 
-    private IEnumerable<ClassDefinition> GetInheritanceRootClasses (ClassDefinitionCollection classDefinitions)
+    private IEnumerable<ClassDefinition> GetInheritanceRootClasses (IEnumerable<ClassDefinition> classDefinitions)
     {
       var rootClasses = new Set<ClassDefinition> ();
-      foreach (ClassDefinition classDefinition in classDefinitions)
+      foreach (var classDefinition in classDefinitions)
       {
         var rootClassDefinition = classDefinition.GetInheritanceRootClass ();
         if (!rootClasses.Contains (rootClassDefinition))
@@ -232,7 +233,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void SetMappingReadOnly ()
     {
-      foreach (ClassDefinition classDefinition in _classDefinitions)
+      foreach (var classDefinition in _typeDefinitions.Values)
         classDefinition.SetReadOnly();
     }
 
@@ -245,7 +246,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private void ValidatePropertyDefinitions (IMappingLoader mappingLoader)
     {
       var propertyDefinitionValidator = mappingLoader.CreatePropertyDefinitionValidator();
-      AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_classDefinitions.Cast<ClassDefinition>()));
+      AnalyzeMappingValidationResults (propertyDefinitionValidator.Validate (_typeDefinitions.Values));
     }
 
     private void ValidateRelationDefinitions (IMappingLoader mappingLoader)
@@ -284,6 +285,27 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
 
       return new MappingException (messages.ToString().Trim());
+    }
+
+    private void ValidateDuplicateClassIDs (IEnumerable<ClassDefinition> classDefinitions)
+    {
+      var duplicateGroups = from cd in classDefinitions
+                            group cd by cd.ID
+                              into cdGroups
+                              where cdGroups.Count () > 1
+                              select cdGroups;
+      foreach (var duplicateGroup in duplicateGroups)
+      {
+        var duplicates = duplicateGroup.ToArray ();
+        throw new MappingException (string.Format (
+            "Class '{0}' and '{1}' both have the same class ID '{2}'. Use the ClassIDAttribute to define unique IDs for these "
+            + "classes. The assemblies involved are '{3}' and '{4}'.",
+            duplicates[0].ClassType.FullName,
+            duplicates[1].ClassType.FullName,
+            duplicates[0].ID,
+            duplicates[0].ClassType.Assembly.FullName,
+            duplicates[1].ClassType.Assembly.FullName));
+      }
     }
   }
 }

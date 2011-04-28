@@ -112,14 +112,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _mockRepository.VerifyAll();
 
-      Assert.That (configuration.ClassDefinitions, Is.EqualTo (typeDefinitions));
       Assert.That (configuration.TypeDefinitions, Is.EqualTo (typeDefinitions.ToDictionary (td => td.ClassType)));
+      Assert.That (configuration.ClassDefinitions, Is.EqualTo (typeDefinitions.ToDictionary (cd => cd.ID)));
       Assert.That (configuration.RelationDefinitions, Is.EqualTo (relationDefinitions.ToDictionary (rd => rd.ID)));
       Assert.That (configuration.ResolveTypes, Is.True);
       Assert.That (configuration.NameResolver, Is.SameAs (_nameResolver));
-      Assert.That (configuration.ClassDefinitions.IsReadOnly, Is.True);
-      Assert.That (((ICollection<KeyValuePair<Type, ClassDefinition>>) configuration.TypeDefinitions).IsReadOnly, Is.True);
-      Assert.That (((ICollection<KeyValuePair<string, RelationDefinition>>) configuration.RelationDefinitions).IsReadOnly, Is.True);
+      Assert.That (((IDictionary<Type, ClassDefinition>) configuration.TypeDefinitions).IsReadOnly, Is.True);
+      Assert.That (((IDictionary<string, ClassDefinition>) configuration.ClassDefinitions).IsReadOnly, Is.True);
+      Assert.That (((IDictionary<string, RelationDefinition>) configuration.RelationDefinitions).IsReadOnly, Is.True);
     }
 
     [Test]

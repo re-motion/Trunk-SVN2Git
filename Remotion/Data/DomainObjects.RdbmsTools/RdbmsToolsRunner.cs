@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
     protected virtual void BuildSchema ()
     {
       FileBuilder.Build (
-          MappingConfiguration.Current.ClassDefinitions.Cast<ClassDefinition>().ToList(),
+          MappingConfiguration.Current.TypeDefinitions.Values,
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
           _rdbmsToolsParameters.SchemaOutputDirectory,
           pd =>

@@ -286,21 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void SimpleClassDefinitionCollection ()
-    {
-      var definitions = new ClassDefinitionCollection();
-      definitions.Add (MappingConfiguration.Current.ClassDefinitions[0]);
-      definitions.Add (MappingConfiguration.Current.ClassDefinitions[1]);
-
-      var deserializedDefinitions = (ClassDefinitionCollection) SerializeAndDeserialize (definitions);
-
-      Assert.That (ReferenceEquals (definitions, deserializedDefinitions), Is.False);
-      Assert.That (deserializedDefinitions[0], Is.SameAs (definitions[0]));
-      Assert.That (deserializedDefinitions[1], Is.SameAs (definitions[1]));
-      Assert.That (deserializedDefinitions.Contains (definitions[0].ID), Is.True);
-    }
-
-    [Test]
     [ExpectedException (typeof (SerializationException),
         ExpectedMessage = "The ClassDefinition 'Partner' cannot be serialized because is is not part of the current mapping.")]
     public void ClassDefinition_NotInMapping ()

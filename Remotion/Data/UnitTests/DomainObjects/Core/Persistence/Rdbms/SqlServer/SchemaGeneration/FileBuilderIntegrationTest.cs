@@ -94,13 +94,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
       _thirdStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_ThirdStorageProvider.sql");
 
-      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
+      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Values
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
           .ToArray();
-      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
+      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Values
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
           .ToArray();
-      _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Cast<ClassDefinition>()
+      _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Values
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
           .ToArray();
     }

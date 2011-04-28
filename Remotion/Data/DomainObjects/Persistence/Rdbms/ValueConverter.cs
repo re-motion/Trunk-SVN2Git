@@ -17,6 +17,7 @@
 using System;
 using System.Data;
 using System.Globalization;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.ExtensibleEnums;
@@ -146,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       string classID = GetClassID (dataReader);
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[classID];
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetValueOrDefault (classID);
       if (classDefinition == null)
         throw _provider.CreateRdbmsProviderException ("Invalid ClassID '{0}' for ID '{1}' encountered.", classID, idValue);
 
