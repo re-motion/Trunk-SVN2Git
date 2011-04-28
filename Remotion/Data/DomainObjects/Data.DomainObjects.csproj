@@ -226,6 +226,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementBatch.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />

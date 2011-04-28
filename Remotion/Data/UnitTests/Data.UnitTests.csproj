@@ -266,6 +266,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementBatchTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\TableScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBaseTest.cs" />
