@@ -209,8 +209,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var derivedClass = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Distributor), classDefinition);
 
       derivedClass.SetStorageEntity (new NullEntityDefinition (_storageProviderDefinition));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { derivedClass }, true));
-      derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new[] { derivedClass });
+      derivedClass.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 

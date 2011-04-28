@@ -162,20 +162,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     private void CheckDerivedClasses (
-        ClassDefinitionCollection expectedDerivedClasses,
-        ClassDefinitionCollection actualDerivedClasses,
+        IEnumerable<ClassDefinition> expectedDerivedClasses,
+        IEnumerable<ClassDefinition> actualDerivedClasses,
         ClassDefinition expectedClassDefinition)
     {
       Assert.AreEqual (
-          expectedDerivedClasses.Count,
-          actualDerivedClasses.Count,
+          expectedDerivedClasses.Count(),
+          actualDerivedClasses.Count(),
           "Number of derived classes of class definition '{0}' does not match.",
           expectedClassDefinition.ID);
 
+      var actualDerivedClassesDictionary = actualDerivedClasses.ToDictionary (cd => cd.ID);
       foreach (ClassDefinition expectedDerivedClass in expectedDerivedClasses)
       {
         Assert.IsNotNull (
-            actualDerivedClasses[expectedDerivedClass.ID],
+            actualDerivedClassesDictionary[expectedDerivedClass.ID],
             "Actual class definition '{0}' does not contain expected derived class '{1}'.",
             expectedClassDefinition.ID,
             expectedDerivedClass.ID);

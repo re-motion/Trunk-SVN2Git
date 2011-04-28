@@ -365,7 +365,6 @@
     <Compile Include="DomainObjects\Core\Mapping\AnonymousRelationEndPointDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionChecker.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionFactory.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTest.cs" />

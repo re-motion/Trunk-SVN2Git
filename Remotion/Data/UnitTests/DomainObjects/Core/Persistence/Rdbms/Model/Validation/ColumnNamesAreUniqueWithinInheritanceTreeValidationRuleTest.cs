@@ -67,10 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           false,
           _baseOfBaseClass);
 
-      _baseOfBaseClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass1, _derivedClass }, true));
-      _derivedBaseClass1.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedBaseClass2 }, true));
-      _derivedBaseClass2.SetDerivedClasses (new ClassDefinitionCollection());
-      _derivedClass.SetDerivedClasses (new ClassDefinitionCollection());
+      _baseOfBaseClass.SetDerivedClasses (new[] { _derivedBaseClass1, _derivedClass });
+      _derivedBaseClass1.SetDerivedClasses (new[] { _derivedBaseClass2 });
+      _derivedBaseClass2.SetDerivedClasses (new ClassDefinition[0]);
+      _derivedClass.SetDerivedClasses (new ClassDefinition[0]);
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           new SimpleColumnDefinition ("Property", typeof (string), "varchar", true, false));
 
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
       classDefinition.SetReadOnly ();
 
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
           typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
           new SimpleColumnDefinition ("Property2", typeof (string), "varchar", true, false));
 
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition1, propertyDefinition2}, true));
       classDefinition.SetReadOnly();
 

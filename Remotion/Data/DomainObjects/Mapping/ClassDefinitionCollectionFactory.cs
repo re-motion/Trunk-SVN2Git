@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
-  /// The <see cref="ClassDefinitionCollectionFactory"/> is used to get a <see cref="ClassDefinitionCollection"/> for a set of types. It automatically
+  /// The <see cref="ClassDefinitionCollectionFactory"/> is used to get the list of <see cref="ClassDefinition"/>s for a set of types. It automatically
   /// sets base classes and derived classes correctly.
   /// </summary>
   public class ClassDefinitionCollectionFactory
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (!classesByBaseClass.TryGetValue (classDefinition, out derivedClasses))
           derivedClasses = Enumerable.Empty<ClassDefinition> ();
 
-        classDefinition.SetDerivedClasses (new ClassDefinitionCollection (derivedClasses, true));
+        classDefinition.SetDerivedClasses (derivedClasses);
       }
     }
   }

@@ -705,9 +705,6 @@
     <Compile Include="Mapping\ClassDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mapping\ClassDefinitionCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Mapping\IRelationEndPointDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

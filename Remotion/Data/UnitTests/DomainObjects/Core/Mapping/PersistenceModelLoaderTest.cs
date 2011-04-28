@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void ApplyPersistenceModelToHierarchy ()
     {
-      _classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      _classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       Assert.That (_classDefinition.StorageEntityDefinition, Is.Null);

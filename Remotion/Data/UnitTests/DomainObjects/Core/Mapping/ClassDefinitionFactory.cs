@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinition = CreateClassDefinition (classType, baseClass);
 
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var fileClassDefinition = CreateFinishedClassDefinition (typeof (File), fileSystemItemClassDefinition);
       var folderClassDefinition = CreateFinishedClassDefinition (typeof (Folder), fileSystemItemClassDefinition);
 
-      fileSystemItemClassDefinition.SetDerivedClasses (new ClassDefinitionCollection { fileClassDefinition, folderClassDefinition });
+      fileSystemItemClassDefinition.SetDerivedClasses (new [] { fileClassDefinition, folderClassDefinition });
       fileSystemItemClassDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 

@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                              };
       foreach (var typeDefinition in typeDefinitions)
       {
-        typeDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+        typeDefinition.SetDerivedClasses (new ClassDefinition[0]);
         typeDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
         typeDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       }
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           false);
       classDefinition.SetStorageEntity (unionViewDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
       StubMockMappingLoader (classDefinition);
 
@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (Order).GetProperty ("DeliveryDate"),
           new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      companyClass.SetDerivedClasses (new ClassDefinitionCollection (new[] { partnerClass }, true));
+      companyClass.SetDerivedClasses (new[] { partnerClass });
 
       Assert.That (companyClass.StorageEntityDefinition, Is.Null);
       Assert.That (partnerClass.StorageEntityDefinition, Is.Null);

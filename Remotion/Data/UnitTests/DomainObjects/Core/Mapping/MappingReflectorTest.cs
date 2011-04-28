@@ -91,9 +91,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var assembly = GetType ().Assembly;
       var mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (assembly, assembly));
-      var classDefinitions = new ClassDefinitionCollection (mappingReflector.GetClassDefinitions(), true);
+      var classDefinitions = mappingReflector.GetClassDefinitions();
 
-      Assert.That (classDefinitions.Count, Is.GreaterThan (0));
+      Assert.That (classDefinitions, Is.Not.Empty);
     }
 
     [Test]

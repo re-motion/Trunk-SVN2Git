@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -67,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private IStorageEntityDefinition _storageEntityDefinition;
 
     [NonSerialized]
-    private ClassDefinitionCollection _derivedClasses;
+    private ReadOnlyCollection<ClassDefinition> _derivedClasses;
 
     [NonSerialized]
     private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
@@ -163,11 +164,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       return allConcreteEntityNames.ToArray();
     }
 
-    public ClassDefinitionCollection GetAllDerivedClasses ()
+    public ClassDefinition[] GetAllDerivedClasses ()
     {
-      var allDerivedClasses = new ClassDefinitionCollection ();
+      var allDerivedClasses = new List<ClassDefinition> ();
       FillAllDerivedClasses (allDerivedClasses);
-      return allDerivedClasses;
+      return allDerivedClasses.ToArray();
     }
 
     public ClassDefinition GetInheritanceRootClass ()
@@ -341,7 +342,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _relationEndPoints.SetReadOnly();
     }
 
-    public void SetDerivedClasses (ClassDefinitionCollection derivedClasses)
+    public void SetDerivedClasses (IEnumerable<ClassDefinition> derivedClasses)
     {
       ArgumentUtility.CheckNotNull ("derivedClasses", derivedClasses);
 
@@ -351,10 +352,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_isReadOnly)
         throw new NotSupportedException (string.Format ("Class '{0}' is read-only.", ID));
 
-      CheckDerivedClass (derivedClasses);
+      var derivedClassesReadOnly = derivedClasses.ToList ().AsReadOnly ();
+      CheckDerivedClass (derivedClassesReadOnly);
 
-      _derivedClasses = derivedClasses;
-      _derivedClasses.SetReadOnly();
+      _derivedClasses = derivedClassesReadOnly;
     }
 
     public PropertyDefinition GetMandatoryPropertyDefinition (string propertyName)
@@ -456,7 +457,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    public ClassDefinitionCollection DerivedClasses
+    public ReadOnlyCollection<ClassDefinition> DerivedClasses
     {
       get
       {
@@ -529,7 +530,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         derivedClass.FillAllConcreteEntityNames (allConcreteEntityNames);
     }
 
-    private void FillAllDerivedClasses (ClassDefinitionCollection allDerivedClasses)
+    private void FillAllDerivedClasses (List<ClassDefinition> allDerivedClasses)
     {
       foreach (ClassDefinition derivedClass in DerivedClasses)
       {
@@ -592,9 +593,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private void CheckDerivedClass (ClassDefinitionCollection derivedClasses)
+    private void CheckDerivedClass (IEnumerable<ClassDefinition> derivedClasses)
     {
-      foreach (ClassDefinition derivedClass in derivedClasses)
+      foreach (var derivedClass in derivedClasses)
       {
         if (derivedClass.BaseClass == null)
         {

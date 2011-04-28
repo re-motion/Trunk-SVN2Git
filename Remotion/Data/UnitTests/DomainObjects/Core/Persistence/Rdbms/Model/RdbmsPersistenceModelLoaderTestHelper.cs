@@ -74,15 +74,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       _derivedDerivedDerivedClassDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (
           typeof (DerivedDerivedDerivedClass), _derivedDerivedClassDefinition);
 
-      _baseBaseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _baseClassDefinition }, true));
-      _baseClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _tableClassDefinition1, _tableClassDefinition2 }, true));
-      _tableClassDefinition2.SetDerivedClasses (
-          new ClassDefinitionCollection (new[] { _derivedClassDefinition1, _derivedClassDefinition2 }, true));
-      _derivedClassDefinition2.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedClassDefinition }, true));
-      _tableClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
-      _derivedClassDefinition1.SetDerivedClasses (new ClassDefinitionCollection());
-      _derivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection (new[] { _derivedDerivedDerivedClassDefinition }, true));
-      _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      _baseBaseClassDefinition.SetDerivedClasses (new[] { _baseClassDefinition });
+      _baseClassDefinition.SetDerivedClasses (new[] { _tableClassDefinition1, _tableClassDefinition2 });
+      _tableClassDefinition2.SetDerivedClasses (new[] { _derivedClassDefinition1, _derivedClassDefinition2 });
+      _derivedClassDefinition2.SetDerivedClasses (new[] { _derivedDerivedClassDefinition });
+      _tableClassDefinition1.SetDerivedClasses (new ClassDefinition[0]);
+      _derivedClassDefinition1.SetDerivedClasses (new ClassDefinition[0]);
+      _derivedDerivedClassDefinition.SetDerivedClasses (new[] { _derivedDerivedDerivedClassDefinition });
+      _derivedDerivedDerivedClassDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
       _baseBaseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       _baseClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection ());

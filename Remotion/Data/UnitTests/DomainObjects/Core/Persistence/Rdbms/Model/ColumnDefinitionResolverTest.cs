@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
       var nonPersistentProperty = PropertyDefinitionFactory.CreateForFakePropertyInfo (
           classDefinition, "NonPersistentProperty", "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
       var columns = _resolver.GetColumnDefinitionsForHierarchy (classDefinition).ToArray ();
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           propertyInfo,
           null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       propertyDefinition1.SetStorageProperty (_fakeColumnDefinition1);
       propertyDefinition2.SetStorageProperty (_fakeColumnDefinition2);
 
@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
           propertyInfo,
           null);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection ());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
       _resolver.GetColumnDefinition (propertyDefinition1);
     }

@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (Company),
           false);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      classDefinition.SetDerivedClasses (new ClassDefinitionCollection());
+      classDefinition.SetDerivedClasses (new ClassDefinition[0]);
       return new[] { classDefinition };
     }
 
