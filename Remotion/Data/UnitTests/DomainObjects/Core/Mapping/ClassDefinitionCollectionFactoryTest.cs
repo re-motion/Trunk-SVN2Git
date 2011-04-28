@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, _classDefinitions.Count);
-      Assert.AreSame (actual, _classDefinitions.GetMandatory (typeof (Order)));
+      Assert.AreSame (actual, _classDefinitions[typeof (Order)]);
       Assert.AreSame (existing, actual);
     }
 

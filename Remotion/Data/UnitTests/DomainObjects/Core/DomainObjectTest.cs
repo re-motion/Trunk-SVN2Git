@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var instance = _transaction.Execute (() => Order.NewObject ());
 
       Assert.That (instance.ID, Is.Not.Null);
-      Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
+      Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
     }
 
     [Test]

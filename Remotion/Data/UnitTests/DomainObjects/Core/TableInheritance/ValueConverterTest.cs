@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetObjectIDValue ()
     {
-      ClassDefinition personClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Person));
+      ClassDefinition personClass = MappingConfiguration.Current.TypeDefinitions[typeof (Person)];
       PropertyDefinition clientProperty = personClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
       ObjectID expectedID = DomainObjectIDs.Client;
 
@@ -120,8 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'DomainBaseIDClassID' defined, because opposite class 'TI_DomainBase' is part of an inheritance hierarchy.")]
     public void GetValueWithMissingRelationClassIDColumn ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          typeof (DerivedClassWithInvalidRelationClassIDColumns));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -146,8 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'ClientIDClassID', because opposite class 'TI_Client' is not part of an inheritance hierarchy.")]
     public void GetValueWithInvalidRelationClassIDColumn ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          typeof (DerivedClassWithInvalidRelationClassIDColumns));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -167,13 +165,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException),
-        ExpectedMessage = "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDValueIDClassID' of entity"
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDValueIDClassID' of entity"
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain a value.")]
     public void GetValueWithInvalidRelationClassIDColumnValue ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          typeof (DerivedClassWithInvalidRelationClassIDColumns));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -193,13 +190,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException),
-        ExpectedMessage = "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDNullValueIDClassID' of entity"
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+        "Incorrect database value encountered. Column 'DomainBaseWithInvalidClassIDNullValueIDClassID' of entity"
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain null.")]
     public void GetValueWithInvalidRelationClassIDColumnNullValue ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          typeof (DerivedClassWithInvalidRelationClassIDColumns));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 

@@ -19,9 +19,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -40,14 +38,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (objectID, deserializedObjectID);
       Assert.AreEqual (objectID.Value.GetType (), deserializedObjectID.Value.GetType ());
       Assert.AreSame (objectID.ClassDefinition, deserializedObjectID.ClassDefinition);
-      Assert.AreSame (MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Company"), deserializedObjectID.ClassDefinition);
+      Assert.AreSame (MappingConfiguration.Current.TypeDefinitions[typeof (Company)], deserializedObjectID.ClassDefinition);
     }
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "not marked as serializable", MatchType = MessageMatch.Contains)]
     public void PropertyValueTest ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions["Customer"];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
       PropertyDefinition propertyDefinition = classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerSince"];
       PropertyValue value = new PropertyValue (propertyDefinition);
 
@@ -58,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "not marked as serializable", MatchType = MessageMatch.Contains)]
     public void PropertyValueCollection ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions["Customer"];
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
       PropertyDefinition propertyDefinition = classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerSince"];
       PropertyValue value = new PropertyValue (propertyDefinition);
 

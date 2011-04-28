@@ -467,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ContainsClassDefinition ()
     {
       Assert.IsFalse (MappingConfiguration.Current.Contains (FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
-      Assert.IsTrue (MappingConfiguration.Current.Contains (MappingConfiguration.Current.ClassDefinitions[typeof (Order)]));
+      Assert.IsTrue (MappingConfiguration.Current.Contains (MappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
     }
 
     [Test]
@@ -486,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                   "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
       Assert.IsTrue (
           MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.ClassDefinitions[typeof (Order)][
+              MappingConfiguration.Current.TypeDefinitions[typeof (Order)][
                   "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
     }
 

@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       _typeConversionProvider = TypeConversionProvider.Create();
       _stubValueConverterBase = new StubValueConverterBase (_typeConversionProvider);
 
-      _customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer");
-      _classWithAllDataTypesDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      _customerDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
+      _classWithAllDataTypesDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void GetObjectID_WithInt32Value()
     {
       var expectedID = new ObjectID ("Official", 1);
-      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Official"), 1);
+      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.TypeDefinitions[typeof (Official)], 1);
 
       Assert.AreEqual (expectedID, actualID);
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void GetObjectID_WithStringValue()
     {
       var expectedID = new ObjectID ("Official", "StringValue");
-      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Official"), "StringValue");
+      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.TypeDefinitions[typeof (Official)], "StringValue");
 
       Assert.AreEqual (expectedID, actualID);
     }
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       Guid value = Guid.NewGuid();
       var expectedID = new ObjectID ("Order", value);
-      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Order"), value);
+      ObjectID actualID = _stubValueConverterBase.GetObjectID (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], value);
 
       Assert.AreEqual (expectedID, actualID);
     }

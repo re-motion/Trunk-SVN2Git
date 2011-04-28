@@ -45,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       _mockRepository = new MockRepository ();
       _readerMock = _mockRepository.StrictMock<IDataReader> ();
 
-      _regionDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Region));
-      _customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer));
-      _fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
-      _folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
-      _specificFolderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (SpecificFolder));
+      _regionDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Region)];
+      _customerDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
+      _fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      _folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      _specificFolderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (SpecificFolder)];
 
       _parentFolderPropertyDefinition = _fileSystemItemDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (FileSystemItem), "ParentFolder"));
       _regionPropertyDefinition = _customerDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (Customer), "Region"));

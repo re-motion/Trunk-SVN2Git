@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       provider.Connect ();
       _connection = provider.Connection;
 
-      _ceoDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Ceo");
+      _ceoDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Ceo)];
       _converter = new ValueConverter (provider, new ReflectionBasedStorageNameProvider(), TypeConversionProvider.Create ());
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ConverterException), ExpectedMessage = "Invalid null value for not-nullable property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type' encountered. Class: 'Customer'.")]
     public void GetValue_ForEnum_Null ()
     {
-      ClassDefinition customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer");
+      ClassDefinition customerDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
       PropertyDefinition enumProperty = customerDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
 
       _converter.GetValue (customerDefinition, enumProperty, DBNull.Value);
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + " entity 'TableWithOptionalOneToOneRelationAndOppositeDerivedClass' must not contain a value.")]
     public void GetValue_ForClassWithOptionalOneToOneRelation_AndOppositeDerivedClass_WithCompanyIDClassIDNotNull ()
     {
-      ClassDefinition classWithOptionalOneToOneRelationAndOppositeDerivedClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          "ClassWithOptionalOneToOneRelationAndOppositeDerivedClass");
+      var classWithOptionalOneToOneRelationAndOppositeDerivedClass = 
+          MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass)];
 
       IDbCommand command = CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassCommand (new Guid ("{5115A733-5CD1-46C5-81EE-0B50EF0A5858}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         Assert.IsTrue (reader.Read ());
 
-        ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Folder");
+        ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
         PropertyDefinition parentFolderProperty = folderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder");
 
         Assert.IsNull (_converter.GetValue (folderDefinition, parentFolderProperty, reader));
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         Assert.IsTrue (reader.Read ());
 
-        ClassDefinition fileDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("File");
+        ClassDefinition fileDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (File)];
         PropertyDefinition parentFolderProperty = fileDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder");
 
         Assert.IsNull (_converter.GetValue (fileDefinition, parentFolderProperty, reader));
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         Assert.IsTrue (reader.Read ());
 
-        ClassDefinition fileDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("File");
+        ClassDefinition fileDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (File)];
         PropertyDefinition parentFolderProperty = fileDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder");
 
         Assert.IsNull (_converter.GetValue (fileDefinition, parentFolderProperty, reader));

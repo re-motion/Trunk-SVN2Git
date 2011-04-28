@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _clientDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Client));
+      _clientDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
       _definition = new AnonymousRelationEndPointDefinition (_clientDefinition);
     }
 

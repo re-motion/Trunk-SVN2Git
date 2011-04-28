@@ -32,11 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void TableInheritanceMapping ()
     {
-      MappingConfiguration mappingConfiguration =
+      var mappingConfiguration =
           new MappingConfiguration (
               new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly)),
               new PersistenceModelLoader(new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
-      ClassDefinition domainBaseClass = mappingConfiguration.ClassDefinitions.GetMandatory (typeof (DomainBase));
+      var domainBaseClass = mappingConfiguration.TypeDefinitions[typeof (DomainBase)];
       Assert.IsNull (StorageModelTestHelper.GetEntityName (domainBaseClass));
     }
 

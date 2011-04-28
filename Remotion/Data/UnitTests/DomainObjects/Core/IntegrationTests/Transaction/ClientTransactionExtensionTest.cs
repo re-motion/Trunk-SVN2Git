@@ -584,7 +584,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyReadWithoutDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       PropertyDefinition orderNumberDefinition =
           orderClass.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
 

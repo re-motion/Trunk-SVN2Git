@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       base.SetUp();
 
-      _domainBaseClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
+      _domainBaseClass = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
 
       _loader = new ConcreteTableInheritanceRelationLoader (
           Provider,
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         ExpectedMessage = "Invalid ClassID 'InvalidClassID' for ID '1b5ba13a-f6ad-4390-87bb-d85a1c098d1c' encountered.")]
     public void LoadDataContainerWithInvalidClassID ()
     {
-      ConcreteTableInheritanceRelationLoader loader = new ConcreteTableInheritanceRelationLoader (
+      var loader = new ConcreteTableInheritanceRelationLoader (
           Provider,
           StorageNameProvider,
           _domainBaseClass,
@@ -94,10 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadDataContainersWithNoConcreteEntity ()
     {
-      ClassDefinition abstractClassWithoutDerivationsClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
-          typeof (AbstractClassWithoutDerivations));
+      var abstractClassWithoutDerivationsClass = MappingConfiguration.Current.TypeDefinitions[typeof (AbstractClassWithoutDerivations)];
 
-      ConcreteTableInheritanceRelationLoader loader = new ConcreteTableInheritanceRelationLoader (
+      var loader = new ConcreteTableInheritanceRelationLoader (
           Provider,
           StorageNameProvider,
           abstractClassWithoutDerivationsClass,

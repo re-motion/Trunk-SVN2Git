@@ -38,11 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     public override void SetUp ()
     {
       base.SetUp();
-      _orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      _orderItemClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
       _productPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
       _positionPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
 
-      _customerClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer));
+      _customerClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
       _customerSincePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".CustomerSince");
       _customerTypePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".Type");
     }
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
         + "('Byte[]') does not implement IComparable.")]
     public void Initialization_NoIComparableType ()
     {
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
       var propertyDefinition = classDefinition.GetPropertyDefinition (typeof (ClassWithAllDataTypes).FullName + ".BinaryProperty");
 
       new SortedPropertySpecification (propertyDefinition, SortOrder.Ascending);
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     [Test]
     public void Initialization_NotResolvedType ()
     {
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
       var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (
           classDefinition, typeof (string).GetProperty ("Length"), "BinaryProperty", typeof (int), false, null, StorageClass.Persistent);
       Assert.That (fakePropertyDefinition.IsPropertyTypeResolved, Is.False);

@@ -334,8 +334,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void PropertyDefinitionWithEnumType ()
     {
       PropertyDefinition enumPropertyDefinition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer").MyPropertyDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
+          MappingConfiguration.Current.TypeDefinitions[typeof (Customer)]
+              .MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
 
       var deserializedEnumPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (enumPropertyDefinition);
 

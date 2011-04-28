@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadObjectIDsFromCommandBuilder ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
       PropertyDefinition propertyDefinition = classDefinition.GetMandatoryPropertyDefinition (ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order"));
       UnionSelectCommandBuilder builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
           Provider, StorageNameProvider, classDefinition, propertyDefinition, DomainObjectIDs.Order1);

@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static StorageProvider CreateStorageProviderMockForOfficial ()
     {
       var storageProviderID =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageEntityDefinition.StorageProviderDefinition.Name;
+          MappingConfiguration.Current.TypeDefinitions[typeof (Official)].StorageEntityDefinition.StorageProviderDefinition.Name;
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       return MockRepository.GenerateMock<StorageProvider> (

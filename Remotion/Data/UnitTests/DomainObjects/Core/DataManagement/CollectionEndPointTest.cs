@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (MissingMethodException))]
     public void Initialize_WithoutCollectionCtorTakingData_Throws ()
     {
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainObjectWithCollectionMissingCtor));
+      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DomainObjectWithCollectionMissingCtor)];
 
       var endPointID = RelationEndPointID.Create(new ObjectID (classDefinition, Guid.NewGuid ()), 
                               typeof (DomainObjectWithCollectionMissingCtor) + ".OppositeObjects");

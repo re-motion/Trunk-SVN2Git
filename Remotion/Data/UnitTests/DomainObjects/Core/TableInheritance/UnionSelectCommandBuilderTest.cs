@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       base.SetUp();
 
-      var domainBaseClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
+      var domainBaseClass = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
       _builder = UnionSelectCommandBuilder.CreateForRelatedIDLookup (
           Provider,
           StorageNameProvider,

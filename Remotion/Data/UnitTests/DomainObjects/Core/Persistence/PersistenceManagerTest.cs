@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainerByNonOptionalNullID ()
     {
-      ClassDefinition classWithValidRelations = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("ClassWithValidRelations");
+      ClassDefinition classWithValidRelations = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithValidRelations)];
       DataContainer dataContainer = CreateDataContainer (classWithValidRelations);
 
       try
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainerByNonOptionalNullIDWithInheritance ()
     {
-      ClassDefinition distributorClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Distributor");
+      ClassDefinition distributorClass = MappingConfiguration.Current.TypeDefinitions[typeof (Distributor)];
       DataContainer dataContainer = CreateDataContainer (distributorClass);
 
       try

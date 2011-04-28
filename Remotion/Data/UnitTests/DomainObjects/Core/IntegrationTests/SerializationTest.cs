@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void ObjectsFromPartnerClassDefinition ()
     {
-      ClassDefinition companyClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Company");
-      ClassDefinition supplierClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Supplier");
-      ClassDefinition partnerClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Partner");
+      ClassDefinition companyClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Company)];
+      ClassDefinition supplierClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Supplier)];
+      ClassDefinition partnerClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Partner)];
       PropertyDefinition partnerContactPersonPropertyDefinition =
           partnerClassDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson");
       IRelationEndPointDefinition partnerToPersonRelationEndPointDefinition =
@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void RelationDefinitionsFromClientClassDefinition ()
     {
-      ClassDefinition clientClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Client");
+      ClassDefinition clientClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
       IRelationEndPointDefinition parentClientToChildClientRelationEndPointDefinition = clientClassDefinition.GetRelationEndPointDefinition (
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient");
-      ClassDefinition locationClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Location");
+      ClassDefinition locationClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Location)];
       IRelationEndPointDefinition clientToLocationRelationEndPointDefinition = locationClassDefinition.GetRelationEndPointDefinition (
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
 
