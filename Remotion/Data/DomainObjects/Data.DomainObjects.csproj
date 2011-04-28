@@ -227,7 +227,11 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementBatch.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlUnionViewScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewScriptElementBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBase.cs" />
