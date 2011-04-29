@@ -75,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationDefinition ()
     {
-      var orderClassDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
-      var orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions["OrderItem"];
+      var orderClassDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
+      var orderItemClassDefinition = MappingConfiguration.Current.GetClassDefinition ("OrderItem");
 
       var result =
           _factory.CreateRelationDefinition (

@@ -39,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
       _factory = new RelationDefinitionCollectionFactory(_mappingObjectFactoryMock);
-      _orderClassDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
-      _orderItemClassDefinition = MappingConfiguration.Current.ClassDefinitions["OrderItem"];
+      _orderClassDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
+      _orderItemClassDefinition = MappingConfiguration.Current.GetClassDefinition ("OrderItem");
       _fakeRelationDefinition1 = new RelationDefinition (
           "Fake1",
           new AnonymousRelationEndPointDefinition (_orderClassDefinition),

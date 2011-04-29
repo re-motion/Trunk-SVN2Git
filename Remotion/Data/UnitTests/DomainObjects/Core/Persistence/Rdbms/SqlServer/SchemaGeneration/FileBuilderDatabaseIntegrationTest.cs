@@ -81,13 +81,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
                         indexBuilder,
                         synonymBuilder));
 
-      _classesInFirstStorageProvider = MappingConfiguration.ClassDefinitions.Values
+      _classesInFirstStorageProvider = MappingConfiguration.GetTypeDefinitions()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
           .ToArray();
-      _classesInSecondStorageProvider = MappingConfiguration.ClassDefinitions.Values
+      _classesInSecondStorageProvider = MappingConfiguration.GetTypeDefinitions()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
           .ToArray();
-      _classesInThirdStorageProvider = MappingConfiguration.ClassDefinitions.Values
+      _classesInThirdStorageProvider = MappingConfiguration.GetTypeDefinitions()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
           .ToArray();
     }

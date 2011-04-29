@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void NewDataContainer ()
     {
-      DataContainer newDataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.ClassDefinitions["Computer"]);
+      DataContainer newDataContainer = CreateAndRegisterNewDataContainer (MappingConfiguration.Current.GetClassDefinition ("Computer"));
 
       newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber"] = "123";
 

@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var propertyDefinition =
-          MappingConfiguration.Current.ClassDefinitions["Order"].GetMandatoryPropertyDefinition (
+          MappingConfiguration.Current.GetClassDefinition ("Order").GetMandatoryPropertyDefinition (
               property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var entityExpression = new SqlEntityDefinitionExpression (
           typeof (StorageGroupClass), "s", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var propertyDefinition =
-          MappingConfiguration.Current.ClassDefinitions["StorageGroupClass"].GetMandatoryPropertyDefinition (
+          MappingConfiguration.Current.GetClassDefinition ("StorageGroupClass").GetMandatoryPropertyDefinition (
               property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub

@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Guid value = Guid.NewGuid ();
       var expectedID = new ObjectID ("Order", value);
-      ObjectID actualID = _converter.GetObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], value);
+      ObjectID actualID = _converter.GetObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), value);
 
       Assert.AreEqual (expectedID, actualID);
     }

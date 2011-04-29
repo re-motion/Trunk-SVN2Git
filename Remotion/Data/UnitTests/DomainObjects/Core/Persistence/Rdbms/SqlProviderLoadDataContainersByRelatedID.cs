@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadWithOrderBy ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
+      ClassDefinition orderDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
 
       DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (
           orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", DomainObjectIDs.Customer1);
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedIDOfDifferentStorageProvider ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
+      ClassDefinition orderDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
 
       DataContainerCollection orderContainers = Provider.LoadDataContainersByRelatedID (orderDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official", DomainObjectIDs.Official1);
       Assert.IsNotNull (orderContainers);

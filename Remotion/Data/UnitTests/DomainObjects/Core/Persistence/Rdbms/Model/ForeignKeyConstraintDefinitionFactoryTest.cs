@@ -62,9 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateForeignKeyConstraints ()
     {
-      var orderClassDefinition = Configuration.ClassDefinitions["Order"];
-      var customerClassDefintion = Configuration.ClassDefinitions["Customer"];
-      var officialClassDefinition = Configuration.ClassDefinitions["Official"];
+      var orderClassDefinition = Configuration.GetClassDefinition ("Order");
+      var customerClassDefintion = Configuration.GetClassDefinition ("Customer");
+      var officialClassDefinition = Configuration.GetClassDefinition ("Official");
       
       _columnDefintionFactoryMock
           .Expect (mock => mock.CreateIDColumnDefinition())
@@ -116,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateForeignKeyConstraints_StorageClassTransactionPropertiesAreIgnored ()
     {
-      var computerClassDefinition = Configuration.ClassDefinitions["Computer"];
-      var employeeClassDefinition = Configuration.ClassDefinitions["Employee"];
+      var computerClassDefinition = Configuration.GetClassDefinition ("Computer");
+      var employeeClassDefinition = Configuration.GetClassDefinition ("Employee");
 
       _columnDefintionFactoryMock
           .Expect (mock => mock.CreateIDColumnDefinition ())
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     [Test]
     public void CreateForeignKeyConstraints_NoEntityName_NoForeignKeyConstrainedIsCreated ()
     {
-      var orderClassDefinition = Configuration.ClassDefinitions["Order"];
+      var orderClassDefinition = Configuration.GetClassDefinition ("Order");
       
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (Arg<ClassDefinition>.Is.Anything))
@@ -180,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
         "The non virtual constraint column definition has to be an ID column definition.")]
     public void CreateForeignKeyConstraints_NonVirtualColumnDefinitionIsNoIDColumnDefinition_ThrowsException ()
     {
-      var orderClassDefinition = Configuration.ClassDefinitions["Order"];
-      var officialClassDefinition = Configuration.ClassDefinitions["Official"];
+      var orderClassDefinition = Configuration.GetClassDefinition ("Order");
+      var officialClassDefinition = Configuration.GetClassDefinition ("Official");
 
       _storageNameProviderMock
           .Expect (mock => mock.GetTableName (officialClassDefinition))

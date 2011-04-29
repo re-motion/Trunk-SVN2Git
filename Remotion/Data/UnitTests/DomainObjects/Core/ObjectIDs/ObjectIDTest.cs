@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     [Test]
     public void InitializeWithClassDefinition ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
+      ClassDefinition orderDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
       var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
       var id = new ObjectID (orderDefinition, value);
@@ -226,14 +226,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void InitializeWithEmptyGuid ()
     {
-      new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], Guid.Empty);
+      new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), Guid.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void InitializeWithEmptyString ()
     {
-      new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], string.Empty);
+      new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), string.Empty);
     }
 
     [Test]

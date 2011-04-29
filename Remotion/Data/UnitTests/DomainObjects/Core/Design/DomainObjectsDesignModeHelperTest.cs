@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Design
         Assert.That (oldConfigurationWrapper, Is.Not.SameAs (ConfigurationWrapper.Current));
         Assert.That (oldDomainObjectsConfiguration, Is.Not.SameAs (DomainObjectsConfiguration.Current));
         Assert.That (oldMappingConfiguration, Is.Not.SameAs (MappingConfiguration.Current));
-        Assert.That (MappingConfiguration.Current.ClassDefinitions.ContainsKey ("Fake"), Is.True);
+        Assert.That (MappingConfiguration.Current.ContainsClassDefinition ("Fake"), Is.True);
       }
     }
 
