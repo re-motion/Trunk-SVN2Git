@@ -230,6 +230,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\IScriptElement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
