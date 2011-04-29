@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 
@@ -28,11 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
   [TestFixture]
   public class ObjectIDTest : StandardMappingTest
   {
-    [DBTable]
-    private class InvalidDomainObject : DomainObject
-    {
-    }
-
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Value cannot contain '&amp;pipe;'.\r\nParameter name: value")]
     public void EscapedDelimiterPlaceholderInValue ()
