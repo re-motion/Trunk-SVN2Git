@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects
   /// <b>ObjectID</b> supports values of type <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
   /// </remarks>
   [Serializable]
-  public sealed class ObjectID : IComparable
+  public sealed class ObjectID : IComparable, ISerializable
   {
     // types
 
@@ -115,10 +116,8 @@ namespace Remotion.Data.DomainObjects
       return ObjectIDStringSerializer.Instance.TryParse (objectIDString, out result);
     }
 
-    private readonly ClassDefinition _classDefinition;
     private readonly object _value;
-
-    [NonSerialized]
+    private readonly ClassDefinition _classDefinition;
     private int _cachedHashCode;
     
     /// <summary>
@@ -356,5 +355,29 @@ namespace Remotion.Data.DomainObjects
     {
       return new ArgumentException (string.Format (message, args), argumentName);
     }
+
+    #region Serialization
+
+    private ObjectID (SerializationInfo info, StreamingContext context)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      var value = info.GetValue ("Value", typeof (object));
+      var classID = info.GetString ("ClassID");
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classID);
+
+      _value = value;
+      _classDefinition = classDefinition;
+    }
+
+    void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddValue ("Value", _value);
+      info.AddValue ("ClassID", _classDefinition.ID);
+    }
+
+    #endregion
   }
 }

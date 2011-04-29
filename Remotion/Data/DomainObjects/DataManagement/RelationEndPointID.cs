@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -28,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// Identifies a relation end point on a given object (<see cref="ObjectID"/>) of a given kind (<see cref="Definition"/>).
   /// </summary>
   [Serializable]
-  public sealed class RelationEndPointID : IFlattenedSerializable
+  public sealed class RelationEndPointID : IFlattenedSerializable, ISerializable
   {
     public static RelationEndPointID Create (ObjectID objectID, IRelationEndPointDefinition definition)
     {
@@ -135,16 +136,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private readonly IRelationEndPointDefinition _definition;
     private readonly ObjectID _objectID;
-
-    [NonSerialized]
     private int _cachedHashCode;
 
     private RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
     {
       _objectID = objectID;
       _definition = definition;
-
-      _cachedHashCode = CalculateHashCode();
     }
 
     public IRelationEndPointDefinition Definition
@@ -203,17 +200,42 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     #region Serialization
 
+    private RelationEndPointID (SerializationInfo info, StreamingContext context)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      var objectID = (ObjectID) info.GetValue ("ObjectID", typeof (ObjectID));
+      var classDefinitionID = info.GetString ("ClassID");
+      var propertyName = info.GetString ("PropertyName");
+      
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID);
+      var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+
+      _objectID = objectID;
+      _definition = relationEndPointDefinition;
+    }
+
+    void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddValue ("ObjectID", _objectID);
+      info.AddValue ("ClassID", _definition.ClassDefinition.ID);
+      info.AddValue ("PropertyName", _definition.PropertyName);
+    }
+
     // ReSharper disable UnusedMember.Local
     private RelationEndPointID (FlattenedDeserializationInfo info)
     {
       var classDefinitionID = info.GetValueForHandle<string> ();
       var propertyName = info.GetValueForHandle<string> ();
+      var objectID = info.GetValueForHandle<ObjectID> ();
 
-      _definition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
-      _objectID = info.GetValueForHandle<ObjectID> ();
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID);
+      var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
 
-      _cachedHashCode = CalculateHashCode ();
+      _objectID = objectID;
+      _definition = relationEndPointDefinition;
     }
     // ReSharper restore UnusedMember.Local
 
