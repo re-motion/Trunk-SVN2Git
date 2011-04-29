@@ -31,9 +31,21 @@ namespace Remotion.Data.DomainObjects.Mapping
 {
   public class MappingConfiguration
   {
-    // types
+    #region Obsolete
 
-    // static members and constants
+    [Obsolete ("Use MappingConfiguration.GetClassDefinition (...) or MappingConfiguration.GetTypeDefinition (...) instead. (Version 1.13.105)", true)]
+    public CommonCollection ClassDefinitions
+    {
+      get { throw new NotSupportedException ("Use MappingConfiguration.GetClassDefinition (...) or MappingConfiguration.GetTypeDefinition (...) instead."); }
+    }
+
+    [Obsolete ("This method is no longer supported. Access the RelationDefinition by first getting the ClassDefinition, retrieving the RelationDefintionEndPoint and finally the RelationDefintion. (Version 1.13.105)", true)]
+    public CommonCollection RelationDefinitions
+    {
+      get { throw new NotSupportedException ("This method is no longer supported. Access the RelationDefinition by first getting the ClassDefinition, retrieving the RelationDefintionEndPoint and finally the RelationDefintion."); }
+    }
+
+    #endregion
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingConfiguration));
 
@@ -183,21 +195,6 @@ namespace Remotion.Data.DomainObjects.Mapping
         throw missingClassDefinitionExceptionFactory (classID);
 
       return classDefinition;
-    }
-
-    public ReadOnlyDictionary<string, ClassDefinition> ClassDefinitions
-    {
-      get { return _classDefinitions; }
-    }
-
-    public ReadOnlyDictionary<Type, ClassDefinition> TypeDefinitions
-    {
-      get { return _typeDefinitions; }
-    }
-
-    public ReadOnlyDictionary<string, RelationDefinition> RelationDefinitions
-    {
-      get { return _relationDefinitions; }
     }
 
     public IMappingNameResolver NameResolver
