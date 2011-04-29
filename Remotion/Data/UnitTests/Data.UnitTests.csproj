@@ -270,6 +270,7 @@
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestablePropertyDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\EntityDefinitionProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ForeignConstraintScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\BatchDelimiterStatementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatementTest.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlTableViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlUnionViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlUnionViewScriptElementFactoryTest.cs" />

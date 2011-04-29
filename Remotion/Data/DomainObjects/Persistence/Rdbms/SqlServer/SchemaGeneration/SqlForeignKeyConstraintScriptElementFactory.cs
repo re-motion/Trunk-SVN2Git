@@ -1,0 +1,79 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Collections.Generic;
+using Remotion.Collections;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Text;
+using Remotion.Utilities;
+
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
+{
+  /// <summary>
+  /// The <see cref="SqlForeignKeyConstraintScriptElementFactory"/> is responsible to create script-elements for foreign-key constraints in a 
+  /// sql-server database.
+  /// </summary>
+  public class SqlForeignKeyConstraintScriptElementFactory : IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>>
+  {
+    public IScriptElement GetCreateElement (Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> item)
+    {
+      ArgumentUtility.CheckNotNull ("item", item);
+
+      return new ScriptStatement(
+        string.Format (
+            "ALTER TABLE [{0}].[{1}] ADD\r\n{2}",
+            item.Item2.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            item.Item2.EntityName,
+            GetConstraintDeclaration(item.Item1)));
+    }
+
+    public IScriptElement GetDropElement (Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> item)
+    {
+      ArgumentUtility.CheckNotNull ("item", item);
+
+      return new ScriptStatement (
+          string.Format (
+              "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' AND "
+              + "fk.name = '{2}' AND schema_name (t.schema_id) = '{0}' AND t.name = '{1}')\r\n"
+              + "  ALTER TABLE [{0}].[{1}] DROP CONSTRAINT {2}",
+              item.Item2.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+              item.Item2.EntityName,
+              item.Item1.ConstraintName));
+    }
+
+    private string GetConstraintDeclaration (ForeignKeyConstraintDefinition foreignKeyConstraintDefinition)
+    {
+      var referencedColumnNameList = GetColumnNameList (foreignKeyConstraintDefinition.ReferencedColumns);
+      var referencingColumnNameList = GetColumnNameList (foreignKeyConstraintDefinition.ReferencingColumns);
+
+      return string.Format (
+          "  CONSTRAINT [{0}] FOREIGN KEY ({1}) REFERENCES [{2}].[{3}] ({4})",
+          foreignKeyConstraintDefinition.ConstraintName,
+          referencedColumnNameList,
+          foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          foreignKeyConstraintDefinition.ReferencedTableName.EntityName,
+          referencingColumnNameList);
+    }
+
+    private string GetColumnNameList (IEnumerable<SimpleColumnDefinition> columns)
+    {
+      return SeparatedStringBuilder.Build (", ", columns, c => "[" + c.Name + "]");
+    }
+  }
+}
