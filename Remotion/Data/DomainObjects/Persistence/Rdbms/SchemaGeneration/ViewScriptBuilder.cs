@@ -67,6 +67,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         IScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
         IScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
     {
+      ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
+      ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
+      ArgumentUtility.CheckNotNull ("filterViewElementFactory", filterViewElementFactory);
+      
       _tableViewElementFactory = tableViewElementFactory;
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
