@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return statements;
     }
 
-    protected string GetClassIDList (IEnumerable<string> classIDs)
+    private string GetClassIDList (IEnumerable<string> classIDs)
     {
       return SeparatedStringBuilder.Build (", ", classIDs, id => "'" + id + "'");
     }
