@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -27,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 {
   /// <summary>
   /// <see cref="SqlViewScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script elements 
-  /// for a  relational database.
+  /// for creating views in a relational database.
   /// </summary>
   public abstract class SqlViewScriptElementFactoryBase<T> : IScriptElementFactory<T> where T : IEntityDefinition
   {
@@ -52,8 +51,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return true;
     }
 
-    protected virtual string GetColumnList (IEnumerable<SimpleColumnDefinition> columns)
+    protected string GetColumnList (IEnumerable<SimpleColumnDefinition> columns)
     {
+      ArgumentUtility.CheckNotNull ("columns", columns);
       return SeparatedStringBuilder.Build (", ", columns, cd => cd != null ? ("["+ cd.Name + "]") : "NULL");
     }
   }
