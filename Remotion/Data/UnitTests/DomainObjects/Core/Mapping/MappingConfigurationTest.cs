@@ -32,6 +32,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.DomainObjectTypeIsNotGenericValidationRule;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -96,14 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
                                         MockRepository.GenerateStub<IRelationEndPointDefinition>())
                                 };
 
-      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (typeDefinitions);
-      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments ().Return (relationDefinitions);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
-      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
-      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
-      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
-      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
-      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
+      StubMockMappingLoader (typeDefinitions, relationDefinitions);
 
       _mockRepository.ReplayAll();
 
@@ -127,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       try
       {
-        StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, true);
+        StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
 
         _mockRepository.ReplayAll();
 
@@ -144,6 +138,134 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void GetTypeDefinitions ()
+    {
+      var classDefinition1 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition1.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition1.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
+
+      var classDefinition2 = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass1));
+      classDefinition2.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition2.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
+
+      StubMockMappingLoader (new[] { classDefinition1, classDefinition2 }, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.GetTypeDefinitions(), Is.EquivalentTo (new[] { classDefinition1, classDefinition2 }));
+    }
+
+    [Test]
+    public void ContainsTypeDefinition_ValueFound ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
+      StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.ContainsTypeDefinition (typeof (RelationEndPointPropertyClass)), Is.True);
+    }
+
+    [Test]
+    public void ContainsTypeDefinition_ValueNotFound ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.ContainsTypeDefinition (typeof (RelationEndPointPropertyClass)), Is.False);
+    }
+
+    [Test]
+    public void GetTypeDefinition_ValueFound ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
+      classDefinition.SetDerivedClasses(Enumerable.Empty<ClassDefinition>());
+      StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.GetTypeDefinition (typeof (RelationEndPointPropertyClass)), Is.SameAs (classDefinition));
+    }
+
+    [Test]
+    public void GetTypeDefinition_ValueNotFound ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (
+          () => configuration.GetTypeDefinition (typeof (DomainObject)),
+          Throws.Exception.TypeOf<MappingException>()
+              .And.Message.EqualTo (string.Format ("Mapping does not contain class '{0}'.", typeof (DomainObject))));
+    }
+
+    [Test]
+    public void GetTypeDefinition_ValueNotFound_CustomException ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (
+          () => configuration.GetTypeDefinition (typeof (DomainObject), t =>new ApplicationException (t.Name)),
+          Throws.Exception.TypeOf<ApplicationException> ()
+              .And.Message.EqualTo (typeof (DomainObject).Name));
+    }
+
+    [Test]
+    public void GetClassDefinition_ValueFound ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
+      StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.GetClassDefinition (classDefinition.ID), Is.SameAs (classDefinition));
+    }
+
+    [Test]
+    public void GetClassDefinition_ValueNotFound ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (
+          () => configuration.GetClassDefinition ("ID"),
+          Throws.Exception.TypeOf<MappingException> ()
+              .And.Message.EqualTo ("Mapping does not contain class 'ID'."));
+    }
+
+    [Test]
+    public void GetClassDefinition_ValueNotFound_CustomException ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (
+          () => configuration.GetClassDefinition ("ID", id =>new ApplicationException (id)),
+          Throws.Exception.TypeOf<ApplicationException> ()
+              .And.Message.EqualTo ("ID"));
+    }
+
+    [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "Generic domain objects are not supported.\r\n\r\n"
         + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
@@ -153,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var type = typeof (GenericTypeDomainObject<string>);
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (type);
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -175,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition = new TestablePropertyDefinition (classDefinition, propertyInfo, 20, StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -196,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
               + "TestDomain.Integration.Order.Customer->Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"];
 
-      StubMockMappingLoader (new[] { classDefinition }, new[] { relationDefinition }, true);
+      StubMockMappingLoaderWithValidation (new[] { classDefinition }, new[] { relationDefinition });
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -235,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoaderWithValidation (new[] { classDefinition }, new RelationDefinition[0]);
 
       var persistenceModelLoaderStub = _mockRepository.Stub<IPersistenceModelLoader>();
       persistenceModelLoaderStub
@@ -279,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       validatorMock1.Replay();
       validatorMock2.Replay();
 
-      StubMockMappingLoader (new[] { rootClass1, rootClass2 }, new RelationDefinition[0], true);
+      StubMockMappingLoaderWithValidation (new[] { rootClass1, rootClass2 }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderMock);
@@ -315,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           .Return (new MappingValidationResult[0]);
       validatorMock.Replay();
 
-      StubMockMappingLoader (new[] { rootClass, derivedClass1, derivedClass2 }, new RelationDefinition[0], true);
+      StubMockMappingLoaderWithValidation (new[] { rootClass, derivedClass1, derivedClass2 }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderMock);
@@ -354,7 +476,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoader (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (
@@ -385,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoader (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       new MappingConfiguration (_mockMappingLoader, persistenceModelStub);
@@ -408,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
-      StubMockMappingLoader (classDefinition);
+      StubMockMappingLoader (new[] { classDefinition }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (classDefinition)).WhenCalled (
@@ -437,7 +559,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var persistenceModelStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
 
-      StubMockMappingLoader (companyClass, partnerClass);
+      StubMockMappingLoader (new[] { companyClass }, new RelationDefinition[0]);
       _mockRepository.ReplayAll();
 
       persistenceModelStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (companyClass)).WhenCalled (
@@ -451,7 +573,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "Argument 'mappingConfiguration' must have property 'ResolveTypes' set.\r\nParameter name: mappingConfiguration")]
     public void SetCurrentRejectsUnresolvedTypes ()
     {
-      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions, false);
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (_emptyClassDefinitions);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (_emptyRelationDefinitions);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (false);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
 
       _mockRepository.ReplayAll();
 
@@ -463,133 +592,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       MappingConfiguration.SetCurrent (configuration);
     }
 
-    [Test]
-    public void ContainsClassDefinition ()
-    {
-      Assert.IsFalse (MappingConfiguration.Current.Contains (FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
-      Assert.IsTrue (MappingConfiguration.Current.Contains (MappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
-    public void ContainsNull ()
-    {
-      MappingConfiguration.Current.Contains ((ClassDefinition) null);
-    }
-
-    [Test]
-    public void ContainsPropertyDefinition ()
-    {
-      Assert.IsFalse (
-          MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)][
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
-      Assert.IsTrue (
-          MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.TypeDefinitions[typeof (Order)][
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderNumber"]));
-    }
-
-    [Test]
-    public void ContainsRelationDefinition ()
-    {
-      Assert.IsFalse (
-          MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions[
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.Order.OrderItems"]));
-      Assert.IsTrue (
-          MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-                                                               +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-                                                               +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
-                  ]));
-    }
-
-    [Test]
-    public void ContainsRelationEndPointDefinition ()
-    {
-      Assert.IsFalse (
-          MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions[
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.Order.OrderItems"].
-                  EndPointDefinitions[0]));
-      Assert.IsFalse (
-          MappingConfiguration.Current.Contains (
-              FakeMappingConfiguration.Current.RelationDefinitions[
-                  "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.OrderItem.Order->Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-                  + "TestDomain.Integration.Order.OrderItems"].
-                  EndPointDefinitions[1]));
-
-      Assert.IsTrue (
-          MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-                                                               +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-                                                               +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
-                  ]
-                  .EndPointDefinitions[0]));
-      Assert.IsTrue (
-          MappingConfiguration.Current.Contains (
-              MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-                                                               +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->" +
-                                                               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems"
-                  ].EndPointDefinitions[1]));
-    }
-
-    [Test]
-    public void ContainsRelationEndPointDefinitionNotInMapping ()
-    {
-      ClassDefinition orderDefinition = ClassDefinitionFactory.CreateClassDefinition (
-          "Order", "Order", UnitTestDomainStorageProviderDefinition, typeof (Order), false);
-      ClassDefinition orderTicketDefinition =
-          ClassDefinitionFactory.CreateClassDefinition (
-              "OrderTicket", "OrderTicket", UnitTestDomainStorageProviderDefinition, typeof (OrderTicket), false);
-      orderTicketDefinition.SetPropertyDefinitions (
-          new PropertyDefinitionCollection (
-              new[]
-              {
-                  PropertyDefinitionFactory.Create (
-                      orderTicketDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID), false)
-              },
-              true));
-
-      VirtualRelationEndPointDefinition orderEndPointDefinition =
-          VirtualRelationEndPointDefinitionFactory.CreateVirtualRelationEndPointDefinition (
-              orderDefinition,
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket",
-              true,
-              CardinalityType.One,
-              typeof (OrderTicket));
-
-      var orderTicketEndPointdefinition =
-          new RelationEndPointDefinition (
-              orderTicketDefinition["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"], true);
-
-      new RelationDefinition ("RelationIDNotInMapping", orderEndPointDefinition, orderTicketEndPointdefinition);
-
-      Assert.IsFalse (MappingConfiguration.Current.Contains (orderEndPointDefinition));
-    }
-
-    private void StubMockMappingLoader (params ClassDefinition[] classDefinitions)
-    {
-      StubMockMappingLoader (classDefinitions, new RelationDefinition[0], true);
-    }
-
-    private void StubMockMappingLoader (
-        ClassDefinition[] classDefinitions, RelationDefinition[] relationDefinitions, bool resolveTypes)
+    private void StubMockMappingLoader (ClassDefinition[] classDefinitions, RelationDefinition[] relationDefinitions)
     {
       SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
       SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
-      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (resolveTypes);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
+      SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
+      SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
+      SetupResult.For (_mockMappingLoader.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
+    }
+
+    private void StubMockMappingLoaderWithValidation (ClassDefinition[] classDefinitions, RelationDefinition[] relationDefinitions)
+    {
+      SetupResult.For (_mockMappingLoader.GetClassDefinitions()).Return (classDefinitions);
+      SetupResult.For (_mockMappingLoader.GetRelationDefinitions (null)).IgnoreArguments().Return (relationDefinitions);
+      SetupResult.For (_mockMappingLoader.ResolveTypes).Return (true);
       SetupResult.For (_mockMappingLoader.NameResolver).Return (_nameResolver);
       SetupResult.For (_mockMappingLoader.CreateClassDefinitionValidator()).Return (CreateClassDefinitionValidator());
       SetupResult.For (_mockMappingLoader.CreatePropertyDefinitionValidator()).Return (CreatePropertyDefinitionValidator());
@@ -615,6 +634,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private SortExpressionValidator CreateSortExpressionValidator ()
     {
       return new SortExpressionValidator (new SortExpressionIsValidValidationRule());
+    }
+
+    private IPersistenceModelLoader CreatePersistenceModelLoaderStub ()
+    {
+      var persistenceModelLoaderStub = _mockRepository.Stub<IPersistenceModelLoader>();
+      persistenceModelLoaderStub
+          .Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything));
+      persistenceModelLoaderStub
+          .Stub (stub => stub.CreatePersistenceMappingValidator (Arg<ClassDefinition>.Is.Anything))
+          .Return (new PersistenceMappingValidator());
+      return persistenceModelLoaderStub;
     }
   }
 }

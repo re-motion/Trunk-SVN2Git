@@ -128,6 +128,56 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _resolveTypes; }
     }
 
+    public ClassDefinition[] GetTypeDefinitions ()
+    {
+      return _typeDefinitions.Values.ToArray();
+    }
+
+    public bool ContainsTypeDefinition (Type classType)
+    {
+      ArgumentUtility.CheckNotNull ("classType", classType);
+
+      return _typeDefinitions.ContainsKey (classType);
+    }
+
+    public ClassDefinition GetTypeDefinition (Type classType)
+    {
+      ArgumentUtility.CheckNotNull ("classType", classType);
+
+      return GetTypeDefinition (classType, type => CreateMappingException ("Mapping does not contain class '{0}'.", type));
+    }
+
+    public ClassDefinition GetTypeDefinition (Type classType, Func<Type, Exception> missingTypeDefinitionExceptionFactory)
+    {
+      ArgumentUtility.CheckNotNull ("classType", classType);
+      ArgumentUtility.CheckNotNull ("missingTypeDefinitionExceptionFactory", missingTypeDefinitionExceptionFactory);
+
+      var classDefinition = _typeDefinitions.GetValueOrDefault (classType);
+      if (classDefinition == null)
+        throw missingTypeDefinitionExceptionFactory (classType);
+
+      return classDefinition;
+    }
+
+    public ClassDefinition GetClassDefinition (string classID)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
+
+      return GetClassDefinition (classID, id => CreateMappingException ("Mapping does not contain class '{0}'.", id));
+    }
+
+    public ClassDefinition GetClassDefinition (string classID, Func<string, Exception> missingClassDefinitionExceptionFactory)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
+      ArgumentUtility.CheckNotNull ("missingClassDefinitionExceptionFactory", missingClassDefinitionExceptionFactory);
+
+      var classDefinition = _classDefinitions.GetValueOrDefault (classID);
+      if (classDefinition == null)
+        throw missingClassDefinitionExceptionFactory (classID);
+
+      return classDefinition;
+    }
+
     public ReadOnlyDictionary<string, ClassDefinition> ClassDefinitions
     {
       get { return _classDefinitions; }
@@ -146,52 +196,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public IMappingNameResolver NameResolver
     {
       get { return _nameResolver; }
-    }
-
-    public bool Contains (ClassDefinition classDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      return _typeDefinitions.Values.Contains (classDefinition);
-    }
-
-    public bool Contains (PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
-
-      if (propertyDefinition.ClassDefinition == null)
-        return false;
-
-      var foundClassDefinition = _typeDefinitions.GetValueOrDefault (propertyDefinition.ClassDefinition.ClassType);
-      if (foundClassDefinition == null)
-        return false;
-
-      return foundClassDefinition.Contains (propertyDefinition);
-    }
-
-    public bool Contains (RelationDefinition relationDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
-
-      RelationDefinition existingRelationDefinition;
-      if (_relationDefinitions.TryGetValue (relationDefinition.ID, out existingRelationDefinition))
-        return object.ReferenceEquals (existingRelationDefinition, relationDefinition);
-      else
-        return false;
-    }
-
-    public bool Contains (IRelationEndPointDefinition relationEndPointDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-
-      if (relationEndPointDefinition.RelationDefinition == null)
-        return false;
-
-      var foundRelationDefinition = _relationDefinitions.GetValueOrDefault (relationEndPointDefinition.RelationDefinition.ID);
-      if (foundRelationDefinition == null)
-        return false;
-
-      return foundRelationDefinition.Contains (relationEndPointDefinition);
     }
 
     private IEnumerable<ClassDefinition> GetInheritanceRootClasses (IEnumerable<ClassDefinition> classDefinitions)
@@ -263,7 +267,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private void ValidatePersistenceMapping (IPersistenceMappingValidator validator, ClassDefinition rootClass)
     {
-      var classDefinitionsToValidate = new[] { rootClass }.Concat (rootClass.GetAllDerivedClasses().Cast<ClassDefinition>());
+      var classDefinitionsToValidate = new[] { rootClass }.Concat (rootClass.GetAllDerivedClasses());
       AnalyzeMappingValidationResults (validator.Validate (classDefinitionsToValidate));
     }
 
@@ -284,7 +288,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         messages.AppendLine (validationResult.Message);
       }
 
-      return new MappingException (messages.ToString().Trim());
+      return CreateMappingException (messages.ToString().Trim());
     }
 
     private void ValidateDuplicateClassIDs (IEnumerable<ClassDefinition> classDefinitions)
@@ -297,15 +301,20 @@ namespace Remotion.Data.DomainObjects.Mapping
       foreach (var duplicateGroup in duplicateGroups)
       {
         var duplicates = duplicateGroup.ToArray ();
-        throw new MappingException (string.Format (
+        throw CreateMappingException (
             "Class '{0}' and '{1}' both have the same class ID '{2}'. Use the ClassIDAttribute to define unique IDs for these "
             + "classes. The assemblies involved are '{3}' and '{4}'.",
             duplicates[0].ClassType.FullName,
             duplicates[1].ClassType.FullName,
             duplicates[0].ID,
             duplicates[0].ClassType.Assembly.FullName,
-            duplicates[1].ClassType.Assembly.FullName));
+            duplicates[1].ClassType.Assembly.FullName);
       }
+    }
+
+    private static MappingException CreateMappingException (string message, params object[] args)
+    {
+      return new MappingException (string.Format (message, args));
     }
   }
 }
