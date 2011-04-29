@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected void Application_Start (Object sender, EventArgs e)
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
-      Trace.WriteLine (mappingConfiguration.TypeDefinitions.Count);
+      Trace.WriteLine (mappingConfiguration.GetTypeDefinitions().Length);
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
     }

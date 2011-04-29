@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
       else
       {
-        ClassDefinition baseTypeClassDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (publicDomainObjectType);
+        ClassDefinition baseTypeClassDefinition = MappingConfiguration.Current.GetTypeDefinition (publicDomainObjectType);
         Func<Type, Type> transformer =
             mixedType => InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (baseTypeClassDefinition, mixedType);
 

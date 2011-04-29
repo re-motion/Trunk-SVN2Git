@@ -48,25 +48,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ArgumentUtility.CheckNotNull ("baseType", baseType);
       _baseType = baseType;
 
-      _classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault (_baseType);
-      ValidateClassDefinition ();
-      
-      AnalyzeAndValidateBaseType ();
+      _classDefinition = MappingConfiguration.Current.GetTypeDefinition (
+          _baseType,
+          t => new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is not part of the mapping.", t.FullName), t));
+
+      if (_classDefinition.IsAbstract)
+      {
+        throw new NonInterceptableTypeException (
+            string.Format ("Cannot instantiate type {0} as it is abstract and not instantiable.", _baseType.FullName),
+            _baseType);
+      }
+
+      AnalyzeAndValidateBaseType();
     }
 
     public Set<Tuple<PropertyInfo, string>> GetProperties()
     {
       return _properties;
-    }
-
-    private void ValidateClassDefinition ()
-    {
-      if (_classDefinition == null)
-        throw new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is not part of the mapping.", _baseType.FullName),
-            _baseType);
-      else if (_classDefinition.IsAbstract)
-        throw new NonInterceptableTypeException (string.Format ("Cannot instantiate type {0} as it is abstract and not instantiable.", _baseType.FullName),
-         _baseType);
     }
 
     private void AnalyzeAndValidateBaseType ()

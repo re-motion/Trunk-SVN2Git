@@ -147,9 +147,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       string classID = GetClassID (dataReader);
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetValueOrDefault (classID);
-      if (classDefinition == null)
-        throw _provider.CreateRdbmsProviderException ("Invalid ClassID '{0}' for ID '{1}' encountered.", classID, idValue);
+      var classDefinition = MappingConfiguration.Current.GetClassDefinition (
+          classID,
+          delegate { return _provider.CreateRdbmsProviderException ("Invalid ClassID '{0}' for ID '{1}' encountered.", classID, idValue); });
 
       if (classDefinition.IsAbstract)
       {

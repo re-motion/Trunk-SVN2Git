@@ -177,12 +177,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private ClassDefinition GetClassDefinition (Type type)
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault (type);
-      if (classDefinition == null)
-      {
-        string message = string.Format ("The type '{0}' does not identify a queryable table.", type);
-        throw new UnmappedItemException (message);
-      }
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (
+          type,
+          t => new UnmappedItemException (string.Format ("The type '{0}' does not identify a queryable table.", t)));
       return classDefinition;
     }
   }

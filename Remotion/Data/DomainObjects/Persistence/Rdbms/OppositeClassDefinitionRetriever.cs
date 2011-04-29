@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (dataReader.IsDBNull (classIDColumnOrdinal))
         return _relatedClassDefinition;
       else
-        return MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataReader.GetString (classIDColumnOrdinal));
+        return MappingConfiguration.Current.GetClassDefinition (dataReader.GetString (classIDColumnOrdinal));
     }
 
     private int TryGetClassIDColumnOrdinal (IDataReader dataReader, string classIDColumnName)

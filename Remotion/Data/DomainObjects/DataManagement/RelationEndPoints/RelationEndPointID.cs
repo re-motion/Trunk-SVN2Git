@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       var classDefinitionID = info.GetString ("ClassID");
       var propertyName = info.GetString ("PropertyName");
       
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID);
+      var classDefinition = MappingConfiguration.Current.GetClassDefinition (classDefinitionID);
       var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
 
       _objectID = objectID;
@@ -231,7 +231,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       var propertyName = info.GetValueForHandle<string> ();
       var objectID = info.GetValueForHandle<ObjectID> ();
 
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID);
+      var classDefinition = MappingConfiguration.Current.GetClassDefinition (classDefinitionID);
       var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
 
       _objectID = objectID;

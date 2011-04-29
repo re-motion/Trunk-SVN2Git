@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
@@ -132,13 +131,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization
         return errorHandler (message);
       }
       
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetValueOrDefault (parts[0]);
-      if (classDefinition == null)
+      if (!MappingConfiguration.Current.ContainsClassDefinition (parts[0]))
       {
         var message = string.Format ("Serialized ObjectID '{0}' is invalid: '{1}' is not a valid class ID.", objectIDString, parts[0]);
         return errorHandler (message);
       }
 
+      var classDefinition = MappingConfiguration.Current.GetClassDefinition (parts[0]);
       return new ObjectID (classDefinition, value);
     }
 

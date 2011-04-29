@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         domainObjectsDesignModeHelper.InitializeConfiguration();
       }
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (targetType);
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (targetType);
       string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
       _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
       _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);

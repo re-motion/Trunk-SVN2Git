@@ -224,6 +224,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void ContainsClassDefinition_ValueFound ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));
+      classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition> ());
+      StubMockMappingLoader (new[] { classDefinition }, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.ContainsClassDefinition (classDefinition.ID), Is.True);
+    }
+
+    [Test]
+    public void ContainsClassDefinition_ValueNotFound ()
+    {
+      StubMockMappingLoader (_emptyClassDefinitions, _emptyRelationDefinitions);
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub ();
+      _mockRepository.ReplayAll ();
+      var configuration = new MappingConfiguration (_mockMappingLoader, persistenceModelLoaderStub);
+
+      Assert.That (configuration.ContainsClassDefinition ("ID"), Is.False);
+    }
+
+    [Test]
     public void GetClassDefinition_ValueFound ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (RelationEndPointPropertyClass));

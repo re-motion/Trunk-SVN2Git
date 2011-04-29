@@ -921,7 +921,7 @@ public class ClientTransaction
 
     using (EnterNonDiscardingScope ())
     {
-      var creator = MappingConfiguration.Current.TypeDefinitions.GetMandatory (domainObjectType).GetDomainObjectCreator ();
+      var creator = MappingConfiguration.Current.GetTypeDefinition (domainObjectType).GetDomainObjectCreator ();
       var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
 
       var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);

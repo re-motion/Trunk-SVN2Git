@@ -264,7 +264,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesInSubtransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\SyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadedCollectionRelationTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\MappingExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />

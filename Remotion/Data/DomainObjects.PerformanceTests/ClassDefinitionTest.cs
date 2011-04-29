@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       Console.WriteLine ("Expected average duration of GetOppositeClassDefinition on reference system: ~0,25 탎");
 
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       Console.WriteLine ("Expected average duration of GetMandatoryOppositeClassDefinition on reference system: ~0,25 탎");
 
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       Console.WriteLine ("Expected average duration of GetOppositeEndPointDefinition on reference system: ~0,25 탎");
 
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       Console.WriteLine ("Expected average duration of GetMandatoryOppositeEndPointDefinition on reference system: ~0,25 탎");
 
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
 
       bool found = true;
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void SetStorageEntity ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetMandatory (typeof (ClassWithRelationProperties));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var tableDefinition = new TableDefinition (
           DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition,
           new EntityNameDefinition (null, "Test"),

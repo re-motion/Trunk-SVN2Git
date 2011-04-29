@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="Mapping.MappingException"/>The specified <paramref name="classID"/> could not be found in the mapping configuration.
     public ObjectID (string classID, object value)
-      : this (MappingConfiguration.Current.ClassDefinitions.GetMandatory (ArgumentUtility.CheckNotNullOrEmpty ("classID", classID)), value)
+      : this (MappingConfiguration.Current.GetClassDefinition (ArgumentUtility.CheckNotNullOrEmpty ("classID", classID)), value)
     {
     }
 
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     /// <exception cref="Mapping.MappingException"/>The specified <paramref name="classType"/> could not be found in the mapping configuration.
     public ObjectID (Type classType, object value)
-      : this (MappingConfiguration.Current.TypeDefinitions.GetMandatory (ArgumentUtility.CheckNotNull ("classType", classType)), value)
+      : this (MappingConfiguration.Current.GetTypeDefinition (ArgumentUtility.CheckNotNull ("classType", classType)), value)
     {
     }
 
@@ -364,7 +364,7 @@ namespace Remotion.Data.DomainObjects
 
       var value = info.GetValue ("Value", typeof (object));
       var classID = info.GetString ("ClassID");
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classID);
+      var classDefinition = MappingConfiguration.Current.GetClassDefinition (classID);
 
       _value = value;
       _classDefinition = classDefinition;

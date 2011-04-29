@@ -159,6 +159,13 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinition;
     }
 
+    public bool ContainsClassDefinition (string classID)
+    {
+      ArgumentUtility.CheckNotNull ("classID", classID);
+
+      return _classDefinitions.ContainsKey (classID);
+    }
+
     public ClassDefinition GetClassDefinition (string classID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);

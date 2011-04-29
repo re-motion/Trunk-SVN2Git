@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("propertyValues", propertyValues);
 
       // TODO: Remove this check, it doesn't provide any value
-      if (id.ClassDefinition != MappingConfiguration.Current.ClassDefinitions.GetMandatory (id.ClassID))
+      if (id.ClassDefinition != MappingConfiguration.Current.GetClassDefinition (id.ClassID))
       {
         string message = string.Format ("The ClassDefinition '{0}' of the ObjectID '{1}' is not part of the current mapping.", id.ClassDefinition, id);
         throw new ArgumentException (message, "id");
