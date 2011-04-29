@@ -103,8 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _factory.GetDropElement (_tableDefinitionWithCustomSchema);
 
-      var expectedResult = "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'View1' AND TABLE_SCHEMA = 'SchemaName')\r\n"
-                         + "  DROP VIEW [SchemaName].[View1]";
+      var expectedResult =
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'View1' AND TABLE_SCHEMA = 'SchemaName')\r\n"
+          + "  DROP VIEW [SchemaName].[View1]";
 
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
       Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
@@ -115,8 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = _factory.GetDropElement (_tableDefinitionWithDefaultSchema);
 
-      var expectedResult = "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'View2' AND TABLE_SCHEMA = 'dbo')\r\n"
-                         + "  DROP VIEW [dbo].[View2]";
+      var expectedResult =
+          "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'View2' AND TABLE_SCHEMA = 'dbo')\r\n"
+          + "  DROP VIEW [dbo].[View2]";
 
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
       Assert.That (((ScriptStatement) result).Statement, Is.EqualTo (expectedResult));
