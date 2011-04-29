@@ -31,11 +31,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly ReadOnlyCollection<IPersistenceMappingValidationRule> _validationRules;
 
-    public PersistenceMappingValidator (params IPersistenceMappingValidationRule[] classDefinitionValidationRules)
+    public PersistenceMappingValidator (params IPersistenceMappingValidationRule[] validationRules)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classDefinitionValidationRules", classDefinitionValidationRules);
+      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
 
-      _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
+      _validationRules = Array.AsReadOnly (validationRules);
     }
 
     public ReadOnlyCollection<IPersistenceMappingValidationRule> ValidationRules

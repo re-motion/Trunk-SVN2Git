@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation
@@ -33,11 +31,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly ReadOnlyCollection<IClassDefinitionValidationRule> _validationRules;
 
-    public ClassDefinitionValidator (params IClassDefinitionValidationRule[] classDefinitionValidationRules)
+    public ClassDefinitionValidator (params IClassDefinitionValidationRule[] validationRules)
     {
-      ArgumentUtility.CheckNotNull ("classDefinitionValidationRules", classDefinitionValidationRules);
+      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
 
-      _validationRules = Array.AsReadOnly (classDefinitionValidationRules);
+      _validationRules = Array.AsReadOnly (validationRules);
     }
 
     public ReadOnlyCollection<IClassDefinitionValidationRule> ValidationRules

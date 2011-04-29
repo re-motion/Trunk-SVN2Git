@@ -31,11 +31,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
   {
     private readonly ReadOnlyCollection<IRelationDefinitionValidatorRule> _validationRules;
 
-    public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] relationDefinitionValidatorRules)
+    public RelationDefinitionValidator (params IRelationDefinitionValidatorRule[] validationRules)
     {
-      ArgumentUtility.CheckNotNull ("relationDefinitionValidatorRules", relationDefinitionValidatorRules);
+      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
 
-      _validationRules = Array.AsReadOnly (relationDefinitionValidatorRules);
+      _validationRules = Array.AsReadOnly (validationRules);
     }
 
     public ReadOnlyCollection<IRelationDefinitionValidatorRule> ValidationRules

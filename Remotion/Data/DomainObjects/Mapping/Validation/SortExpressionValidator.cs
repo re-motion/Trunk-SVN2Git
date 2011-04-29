@@ -33,6 +33,8 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation
 
     public SortExpressionValidator (params IRelationDefinitionValidatorRule[] validationRules)
     {
+      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
+
       _validationRules = Array.AsReadOnly (validationRules);
     }
 
