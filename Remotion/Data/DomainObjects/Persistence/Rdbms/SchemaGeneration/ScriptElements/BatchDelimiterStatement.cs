@@ -16,15 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Utilities;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
   /// <summary>
-  /// The <see cref="BatchSeparatorStatement"/> adds a batch-separator to a script-statement for a relational database.
+  /// The <see cref="BatchDelimiterStatement"/> adds a batch delimiter to a script-statement for a relational database.
   /// </summary>
-  public class BatchSeparatorStatement : IScriptElement
+  public class BatchDelimiterStatement : IScriptElement
   {
     public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
     {
@@ -32,8 +32,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       var lastStatement = script.LastOrDefault();
-      if(lastStatement!=null && lastStatement.Statement!=sqlDialect.BatchSeparator)
-        script.Add (new ScriptStatement (sqlDialect.BatchSeparator));
+      if (lastStatement != null && lastStatement.Statement != sqlDialect.BatchDelimiter)
+        script.Add (new ScriptStatement (sqlDialect.BatchDelimiter));
     }
   }
 }

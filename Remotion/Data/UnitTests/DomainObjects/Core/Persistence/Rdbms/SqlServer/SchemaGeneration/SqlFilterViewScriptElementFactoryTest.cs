@@ -81,8 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
       var elements = ((ScriptElementCollection) result).Elements;
       Assert.That (elements.Count, Is.EqualTo(3));
-      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
-      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchDelimiterStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof(ScriptStatement)));
       var expectedResult =
           "CREATE VIEW [SchemaName].[FilterView1] ([Column1])\r\n"
@@ -104,8 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (result, Is.TypeOf (typeof (ScriptElementCollection)));
       var elements = ((ScriptElementCollection) result).Elements;
       Assert.That (elements.Count, Is.EqualTo (3));
-      Assert.That (elements[0], Is.TypeOf (typeof (BatchSeparatorStatement)));
-      Assert.That (elements[2], Is.TypeOf (typeof (BatchSeparatorStatement)));
+      Assert.That (elements[0], Is.TypeOf (typeof (BatchDelimiterStatement)));
+      Assert.That (elements[2], Is.TypeOf (typeof (BatchDelimiterStatement)));
       Assert.That (elements[1], Is.TypeOf (typeof (ScriptStatement)));
       var expectedResult =
           "CREATE VIEW [dbo].[FilterView2] ([Column1], [Column2])\r\n"

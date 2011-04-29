@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
       var statements = new ScriptElementCollection ();
-      statements.AddElement (new BatchSeparatorStatement ());
+      statements.AddElement (new BatchDelimiterStatement ());
 
       var createViewStringBuilder = new StringBuilder();
       createViewStringBuilder.AppendFormat (
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         createViewStringBuilder.Append ("\r\n  WITH CHECK OPTION");
       statements.AddElement (new ScriptStatement (createViewStringBuilder.ToString()));
 
-      statements.AddElement (new BatchSeparatorStatement ());
+      statements.AddElement (new BatchDelimiterStatement ());
       return statements;
     }
   }

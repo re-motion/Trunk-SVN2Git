@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
@@ -27,10 +25,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   {
     /// <summary> A delimiter to end a SQL statement if the database requires one, an empty string otherwise. </summary>
     string StatementDelimiter { get; }
+    
     /// <summary> A delimiter to split constraints in a SQL statement if the database requires one, an empty string otherwise. </summary>
     string ConstraintDelimiter { get; }
-    /// <summary> Returns the batch-separator.</summary>
-    string BatchSeparator { get; }
+
+    /// <summary> A delimiter to end a SQL batch if the database. </summary>
+    string BatchDelimiter { get; }
     
     string GetParameterName (string name);
 
@@ -39,9 +39,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     /// <summary> Appends a GO-statement to the script. </summary>
     void AddBatchForScript (StringBuilder createScript);
-
-    /// <summary> Appends a GO script-statement to the passed script-statements if needed. </summary>
-    void AddBatchSeparatorIfNeeded (List<ScriptStatement> statements);
 
     void CreateScriptForConnectionString (StringBuilder script, string connectionString);
   }

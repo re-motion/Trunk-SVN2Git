@@ -24,25 +24,25 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
   [TestFixture]
-  public class BatchSeparatorStatementTest
+  public class BatchDelimiterStatementTest
   {
-    private BatchSeparatorStatement _batchSeparatorStatement;
+    private BatchDelimiterStatement _batchDelimiterStatement;
     private ISqlDialect _sqlDialectStub;
     private List<ScriptStatement> _script;
 
     [SetUp]
     public void SetUp ()
     {
-      _batchSeparatorStatement = new BatchSeparatorStatement();
+      _batchDelimiterStatement = new BatchDelimiterStatement();
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _sqlDialectStub.Stub (stub => stub.BatchSeparator).Return ("SEPARATOR");
+      _sqlDialectStub.Stub (stub => stub.BatchDelimiter).Return ("SEPARATOR");
       _script = new List<ScriptStatement> ();
     }
 
     [Test]
     public void AppendToScript_EmptyScript ()
     {
-      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
 
       Assert.That (_script, Is.Empty);
     }
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _script.Add (statement1);
       _script.Add (statement2);
 
-      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
 
       Assert.That (_script.Count, Is.EqualTo (3));
       Assert.That (_script[0], Is.SameAs(statement1));
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _script.Add (statement1);
       _script.Add (statement2);
 
-      _batchSeparatorStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
 
       Assert.That (_script.Count, Is.EqualTo (2));
       Assert.That (_script[0], Is.SameAs (statement1));

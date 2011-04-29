@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
       var statements = new ScriptElementCollection ();
-      statements.AddElement (new BatchSeparatorStatement ());
+      statements.AddElement (new BatchDelimiterStatement ());
       statements.AddElement (new ScriptStatement (
        string.Format (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
           tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName)));
-      statements.AddElement (new BatchSeparatorStatement ());
+      statements.AddElement (new BatchDelimiterStatement ());
       return statements;
     }
   }

@@ -15,11 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Linq.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 {
@@ -44,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return ","; }
     }
 
-    public string BatchSeparator
+    public string BatchDelimiter
     {
       get { return "GO"; }
     }
@@ -70,16 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     {
       ArgumentUtility.CheckNotNull ("createScript", createScript);
 
-      createScript.Append (BatchSeparator + "\r\n\r\n");
-    }
-
-    public void AddBatchSeparatorIfNeeded (List<ScriptStatement> statements)
-    {
-      ArgumentUtility.CheckNotNull ("statements", statements);
-
-      var lastStatement = statements.LastOrDefault();
-      if (lastStatement != null && lastStatement.Statement != BatchSeparator)
-        statements.Add (new ScriptStatement (BatchSeparator));
+      createScript.Append (BatchDelimiter + "\r\n\r\n");
     }
 
     public void CreateScriptForConnectionString (StringBuilder script, string connectionString)
