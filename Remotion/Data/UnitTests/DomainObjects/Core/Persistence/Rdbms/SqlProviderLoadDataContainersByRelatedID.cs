@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Loading ()
     {
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.TypeDefinitions[typeof (Order)],
+          MappingConfiguration.Current.GetTypeDefinition (typeof (Order)),
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
           DomainObjectIDs.Customer1);
 
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer personContainer = Provider.LoadDataContainer (DomainObjectIDs.Person6);
 
       DataContainerCollection collection = Provider.LoadDataContainersByRelatedID (
-          MappingConfiguration.Current.TypeDefinitions[typeof (Distributor)],
+          MappingConfiguration.Current.GetTypeDefinition (typeof (Distributor)),
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson",
           DomainObjectIDs.Person6);
 

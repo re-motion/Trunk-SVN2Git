@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       base.SetUp();
 
-      _domainBaseClass = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
+      _domainBaseClass = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
 
       _loader = new ConcreteTableInheritanceRelationLoader (
           Provider,
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadDataContainersWithNoConcreteEntity ()
     {
-      var abstractClassWithoutDerivationsClass = MappingConfiguration.Current.TypeDefinitions[typeof (AbstractClassWithoutDerivations)];
+      var abstractClassWithoutDerivationsClass = MappingConfiguration.Current.GetTypeDefinition (typeof (AbstractClassWithoutDerivations));
 
       var loader = new ConcreteTableInheritanceRelationLoader (
           Provider,

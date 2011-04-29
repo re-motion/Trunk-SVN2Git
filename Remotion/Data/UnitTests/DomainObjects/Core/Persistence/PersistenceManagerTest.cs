@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainerByNonOptionalNullID ()
     {
-      ClassDefinition classWithValidRelations = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithValidRelations)];
+      ClassDefinition classWithValidRelations = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithValidRelations));
       DataContainer dataContainer = CreateDataContainer (classWithValidRelations);
 
       try
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void LoadRelatedDataContainerByNonOptionalNullIDWithInheritance ()
     {
-      ClassDefinition distributorClass = MappingConfiguration.Current.TypeDefinitions[typeof (Distributor)];
+      ClassDefinition distributorClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Distributor));
       DataContainer dataContainer = CreateDataContainer (distributorClass);
 
       try
@@ -443,7 +443,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewObjectID ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       ObjectID id1 = _persistenceManager.CreateNewObjectID (orderClass);
       Assert.IsNotNull (id1);
       ObjectID id2 = _persistenceManager.CreateNewObjectID (orderClass);
@@ -454,7 +454,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void CreateNewDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       DataContainer container = CreateDataContainer (orderClass);
 
       Assert.IsNotNull (container);

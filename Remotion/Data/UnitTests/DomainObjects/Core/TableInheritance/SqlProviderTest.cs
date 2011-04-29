@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void LoadDataContainersByRelatedIDWithAbstractBaseClass ()
     {
-      ClassDefinition domainBaseClass = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
+      ClassDefinition domainBaseClass = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
 
       DataContainerCollection loadedDataContainers = Provider.LoadDataContainersByRelatedID (domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", DomainObjectIDs.Client);
 

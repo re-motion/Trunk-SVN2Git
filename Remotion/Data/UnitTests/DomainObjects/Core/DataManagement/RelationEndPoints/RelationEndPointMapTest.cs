@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateNullEndPoint_RealObjectEndPoint ()
     {
       var orderTicketDefinition =
-          Configuration.TypeDefinitions[typeof (OrderTicket)].GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+          Configuration.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
 
       var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateNullEndPoint_VirtualObjectEndPoint ()
     {
       var orderTicketDefinition =
-          Configuration.TypeDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
 
       var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateNullEndPoint_CollectionEndPoint ()
     {
       var orderItemsDefinition = 
-          Configuration.TypeDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
 
       var nullObjectEndPoint = RelationEndPointMap.CreateNullEndPoint (ClientTransactionMock, orderItemsDefinition);
 
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void GetRelationEndPointWithLazyLoad_NullObjectEndPoint ()
     {
       var endPointDefinition =
-          Configuration.TypeDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       var relationEndPointID = RelationEndPointID.Create (null, endPointDefinition);
 
       var result = _map.GetRelationEndPointWithLazyLoad (relationEndPointID);
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void GetRelationEndPointWithLazyLoad_NullCollectionEndPoint ()
     {
       var endPointDefinition = 
-          Configuration.TypeDefinitions[typeof (Order)].GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       var relationEndPointID = RelationEndPointID.Create (null, endPointDefinition);
 
       var result = _map.GetRelationEndPointWithLazyLoad (relationEndPointID);

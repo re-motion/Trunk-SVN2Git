@@ -264,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     private PropertyAccessorDataCache CreatePropertyAccessorDataCache (Type classType)
     {
-      return new PropertyAccessorDataCache (MappingConfiguration.Current.TypeDefinitions[classType]);
+      return new PropertyAccessorDataCache (MappingConfiguration.Current.GetTypeDefinition (classType));
     }
   }
 }

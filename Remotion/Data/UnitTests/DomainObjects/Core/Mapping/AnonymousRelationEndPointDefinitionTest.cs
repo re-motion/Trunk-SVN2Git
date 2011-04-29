@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _clientDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
+      _clientDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
       _definition = new AnonymousRelationEndPointDefinition (_clientDefinition);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void RelationDefinitionNull ()
     {
-      AnonymousRelationEndPointDefinition definition = new AnonymousRelationEndPointDefinition (MappingConfiguration.Current.TypeDefinitions[typeof (Client)]);
+      AnonymousRelationEndPointDefinition definition = new AnonymousRelationEndPointDefinition (MappingConfiguration.Current.GetTypeDefinition (typeof (Client)));
 
       Assert.IsNull (definition.RelationDefinition);
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void SetRelationDefinition ()
     {
-      var propertyDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Location)]
+      var propertyDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Location))
         ["Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"];
       var oppositeEndPoint = new RelationEndPointDefinition (propertyDefinition, true);
       var relationDefinition = new RelationDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client", _definition, oppositeEndPoint);

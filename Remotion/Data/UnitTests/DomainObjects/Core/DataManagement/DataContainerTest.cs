@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
       
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
-      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.TypeDefinitions[typeof (Order)]));
+      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
       DataContainer.CreateNew (id);
     }
 

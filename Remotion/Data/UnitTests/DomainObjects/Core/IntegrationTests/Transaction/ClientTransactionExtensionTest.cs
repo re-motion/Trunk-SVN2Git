@@ -585,7 +585,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void PropertyReadWithoutDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       PropertyDefinition orderNumberDefinition =
           orderClass.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
 
@@ -804,7 +804,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (var persistanceManager = new PersistenceManager(NullPersistenceListener.Instance))
       {
-        ClassDefinition orderTicketDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderTicket)];
+        ClassDefinition orderTicketDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket));
         IRelationEndPointDefinition orderEndPointDefinition =
             orderTicketDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
         persistanceManager.LoadRelatedDataContainer (
@@ -822,7 +822,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (var persistenceManager = new PersistenceManager(NullPersistenceListener.Instance))
       {
-        ClassDefinition orderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+        ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         IRelationEndPointDefinition orderTicketEndPointDefinition =
             orderDefinition.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
         persistenceManager.LoadRelatedDataContainer (

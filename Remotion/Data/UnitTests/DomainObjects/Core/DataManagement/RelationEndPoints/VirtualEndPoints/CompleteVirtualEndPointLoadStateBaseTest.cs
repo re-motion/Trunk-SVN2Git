@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _definition = Configuration.TypeDefinitions[typeof (Customer)].GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
+      _definition = Configuration.GetTypeDefinition (typeof (Customer)).GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
 
       _virtualEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint<object>> ();
       _dataKeeperMock = MockRepository.GenerateStrictMock<IVirtualEndPointDataKeeper>();

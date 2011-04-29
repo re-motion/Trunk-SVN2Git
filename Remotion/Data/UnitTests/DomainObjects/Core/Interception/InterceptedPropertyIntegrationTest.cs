@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "Order does not support the requested constructor with signature (System.String, System.String, System.String, System.Object).")]
     public void WrongConstructorCannotBeInstantiated ()
     {
-      var creator = MappingConfiguration.Current.TypeDefinitions[typeof (Order)].GetDomainObjectCreator ();
+      var creator = MappingConfiguration.Current.GetTypeDefinition (typeof (Order)).GetDomainObjectCreator ();
       var constructorLookupInfo = creator.GetConstructorLookupInfo (typeof (Order));
       
       var paramList = ParamList.Create ("foo", "bar", "foobar", (object) null);

@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (
           accessor.PropertyData.PropertyDefinition,
           Is.SameAs (
-              MappingConfiguration.Current.TypeDefinitions[typeof (IndustrialSector)]
+              MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
                   .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (
           accessor.PropertyData.PropertyDefinition,
           Is.SameAs (
-              MappingConfiguration.Current.TypeDefinitions[typeof (IndustrialSector)]
+              MappingConfiguration.Current.GetTypeDefinition (typeof (IndustrialSector))
                   .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name")));
     }
 

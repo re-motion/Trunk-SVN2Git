@@ -838,7 +838,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetDerivedClassesWithInheritance ()
     {
-      ClassDefinition companyDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Company)];
+      ClassDefinition companyDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Company));
 
       Assert.IsNotNull (companyDefinition.DerivedClasses);
       Assert.AreEqual (2, companyDefinition.DerivedClasses.Count);
@@ -850,7 +850,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsPartOfInheritanceHierarchy ()
     {
-      ClassDefinition companyDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Company)];
+      ClassDefinition companyDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Company));
 
       Assert.IsTrue (companyDefinition.IsPartOfInheritanceHierarchy);
       Assert.IsTrue (_distributorClass.IsPartOfInheritanceHierarchy);
@@ -860,7 +860,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsRelationEndPointWithAnonymousRelationEndPointDefinition ()
     {
-      ClassDefinition clientDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
+      ClassDefinition clientDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
 
       RelationDefinition parentClient =
           MappingConfiguration.Current.RelationDefinitions[
@@ -874,7 +874,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void MyPropertyDefinitions ()
     {
-      var clientDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
+      var clientDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
 
       var propertyDefinitions = clientDefinition.MyPropertyDefinitions.ToArray();
 
@@ -896,7 +896,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void MyRelationEndPointDefinitions ()
     {
-      var clientDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)];
+      var clientDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
 
       IRelationEndPointDefinition[] endPointDefinitions = clientDefinition.MyRelationEndPointDefinitions.ToArray();
 
@@ -918,7 +918,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void MyRelationEndPointDefinitionsCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       IRelationEndPointDefinition[] endPointDefinitions = fileSystemItemDefinition.MyRelationEndPointDefinitions.ToArray();
 
@@ -932,7 +932,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsMyRelationEndPoint ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       IRelationEndPointDefinition folderEndPoint =
           folderDefinition.GetRelationEndPointDefinition (
@@ -948,7 +948,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void MyRelationEndPointDefinitionsCompositeDerivedClass ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       IRelationEndPointDefinition[] endPointDefinitions = folderDefinition.MyRelationEndPointDefinitions.ToArray();
 
@@ -961,7 +961,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitionsCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       var endPointDefinitions = fileSystemItemDefinition.GetRelationEndPointDefinitions();
 
@@ -975,7 +975,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitionsCompositeDerivedClass ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       var endPointDefinitions = folderDefinition.GetRelationEndPointDefinitions();
 
@@ -992,7 +992,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitionCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.IsNotNull (
           fileSystemItemDefinition.GetRelationEndPointDefinition (
@@ -1005,7 +1005,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationEndPointDefinitionCompositeDerivedClass ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       Assert.IsNotNull (
           folderDefinition.GetRelationEndPointDefinition (
@@ -1018,8 +1018,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeClassDefinitionCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       Assert.AreSame (
           folderDefinition,
@@ -1033,8 +1033,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeClassDefinitionCompositeDerivedClass ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.AreSame (
           folderDefinition,
@@ -1049,7 +1049,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMandatoryOppositeEndPointDefinitionCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.IsNotNull (
           fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition (
@@ -1060,7 +1060,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'Invalid'.")]
     public void GetMandatoryOppositeEndPointDefinition_InvalidProperty ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition ("Invalid");
     }
@@ -1068,7 +1068,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeEndPointDefinitionCompositeBaseClass ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.IsNotNull (
           fileSystemItemDefinition.GetOppositeEndPointDefinition (
@@ -1081,7 +1081,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetOppositeEndPointDefinition_InvalidProperty ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.IsNull (fileSystemItemDefinition.GetOppositeEndPointDefinition ("Invalid"));
     }
@@ -1089,7 +1089,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMandatoryOppositeEndPointDefinitionCompositeDerivedClass ()
     {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       Assert.IsNotNull (
           folderDefinition.GetMandatoryOppositeEndPointDefinition (
@@ -1103,7 +1103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'InvalidProperty'.")]
     public void GetMandatoryOppositeEndPointDefinitionWithInvalidPropertyName ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       Assert.IsNotNull (fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition ("InvalidProperty"));
     }
@@ -1111,8 +1111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetMandatoryOppositeClassDefinition ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
-      ClassDefinition folderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Folder)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
+      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
 
       Assert.AreSame (
           folderDefinition,
@@ -1124,7 +1124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'InvalidProperty'.")]
     public void GetMandatoryOppositeClassDefinitionWithInvalidPropertyName ()
     {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (FileSystemItem)];
+      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
 
       fileSystemItemDefinition.GetMandatoryOppositeClassDefinition ("InvalidProperty");
     }

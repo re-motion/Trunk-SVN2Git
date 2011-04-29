@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       List<DataContainer> collection = new List<DataContainer> ();
       if (query.ID == "GetSecurableObjects")
-        collection.Add (DataContainer.CreateNew (CreateNewObjectID (MappingConfiguration.Current.TypeDefinitions[typeof (SecurableObject)])));
+        collection.Add (DataContainer.CreateNew (CreateNewObjectID (MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableObject)))));
 
       return collection.ToArray ();
       ;

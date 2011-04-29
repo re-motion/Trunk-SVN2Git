@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
     public static SortExpressionDefinition CreateOrderItemSortExpressionPositionAscProductDesc ()
     {
-      var orderItemClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      var orderItemClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       var positionPropertyDefinition = orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
       var productPropertyDefinition = orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
     public static SortExpressionDefinition ParseSortExpression (Type domainObjectType, string sortExpressionString)
     {
-      return ParseSortExpression (MappingConfiguration.Current.TypeDefinitions[domainObjectType], sortExpressionString);
+      return ParseSortExpression (MappingConfiguration.Current.GetTypeDefinition (domainObjectType), sortExpressionString);
     }
   }
 }

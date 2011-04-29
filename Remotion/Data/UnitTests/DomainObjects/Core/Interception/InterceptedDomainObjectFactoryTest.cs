@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     public void GetConcreteDomainObjectTypeForSpecificBaseType ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedDO)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedDO));
       Type concreteType = Factory.GetConcreteDomainObjectType (classDefinition, typeof (SpecificDerivedDO));
       Assert.AreNotEqual (typeof (DerivedDO), concreteType.BaseType);
       Assert.AreEqual (typeof (SpecificDerivedDO), concreteType.BaseType);
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.\r\nParameter name: concreteBaseType")]
     public void GetConcreteDomainObjectTypeForSpecificBaseType_ThrowsOnInvalidSpecificType ()
     {
-      ClassDefinition orderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       Factory.GetConcreteDomainObjectType (orderDefinition, typeof (Official));
     }
 
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void AbstractWithoutInstantiableAttributeCannotBeInstantiated_WithSpecificType ()
     {
       Factory.GetConcreteDomainObjectType (
-          MappingConfiguration.Current.TypeDefinitions[typeof (AbstractClass)], typeof (AbstractClass));
+          MappingConfiguration.Current.GetTypeDefinition (typeof (AbstractClass)), typeof (AbstractClass));
     }
 
     [Test]

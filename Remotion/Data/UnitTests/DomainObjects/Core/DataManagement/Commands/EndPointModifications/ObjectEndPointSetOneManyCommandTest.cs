@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         + "is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalCommand instead.\r\nParameter name: modifiedEndPoint")]
     public void Initialization_Unidirectional ()
     {
-      var definition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)]
+      var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client))
           .GetMandatoryRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
       var relationEndPointID = RelationEndPointID.Create (Client.GetObject (DomainObjectIDs.Client1).ID, definition);
       var endPoint = (IRealObjectEndPoint)
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         + "is from a 1:1 relation - use a ObjectEndPointSetOneOneCommand instead.\r\nParameter name: modifiedEndPoint")]
     public void Initialization_Bidirectional_OneOne ()
     {
-      var definition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderTicket)]
+      var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
       var relationEndPointID = RelationEndPointID.Create (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
       var endPoint = (IRealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);

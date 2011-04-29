@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         + "is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalCommand instead.\r\nParameter name: modifiedEndPoint")]
     public void Initialization_Unidirectional ()
     {
-      var definition = MappingConfiguration.Current.TypeDefinitions[typeof (Client)]
+      var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client))
           .GetMandatoryRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
       var client = Client.GetObject (DomainObjectIDs.Client1);
       var id = RelationEndPointID.Create (client.ID, definition);
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         + "is from a 1:n relation - use a ObjectEndPointSetOneManyCommand instead.\r\nParameter name: modifiedEndPoint")]
     public void Initialization_Bidirectional_OneMany ()
     {
-      var definition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)]
+      var definition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
       var relationEndPointID = RelationEndPointID.Create (OrderItem.GetObject (DomainObjectIDs.OrderItem1).ID, definition);
       var endPoint =

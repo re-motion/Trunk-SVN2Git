@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     {
       base.SetUp();
 
-      _orderItemClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      _orderItemClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       _productPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Product");
       _positionPropertyDefinition = _orderItemClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderItem).FullName + ".Position");
     }

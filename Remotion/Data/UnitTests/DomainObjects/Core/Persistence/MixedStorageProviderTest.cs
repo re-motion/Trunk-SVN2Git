@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
-        ClassDefinition orderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+        ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name];
         Assert.IsNotNull (Mixin.Get<StorageProviderWithFixedGuidMixin> (provider));
       }
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
-        ClassDefinition orderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+        ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name];
         ObjectID id1 = provider.CreateNewObjectID (orderDefinition);
         ObjectID id2 = provider.CreateNewObjectID (orderDefinition);
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (StorageProvider)).Clear().AddMixins (typeof (StorageProviderWithFixedGuidMixin)).EnterScope())
       {
-        ClassDefinition orderDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+        ClassDefinition orderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
         StorageProvider provider = new StorageProviderManager (NullPersistenceListener.Instance)[orderDefinition.StorageEntityDefinition.StorageProviderDefinition.Name];
         
         Guid fixedGuid = Guid.NewGuid ();

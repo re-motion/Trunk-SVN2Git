@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void GetObjectIDValue ()
     {
-      ClassDefinition personClass = MappingConfiguration.Current.TypeDefinitions[typeof (Person)];
+      ClassDefinition personClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Person));
       PropertyDefinition clientProperty = personClass.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client");
       ObjectID expectedID = DomainObjectIDs.Client;
 
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'DomainBaseIDClassID' defined, because opposite class 'TI_DomainBase' is part of an inheritance hierarchy.")]
     public void GetValueWithMissingRelationClassIDColumn ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'ClientIDClassID', because opposite class 'TI_Client' is not part of an inheritance hierarchy.")]
     public void GetValueWithInvalidRelationClassIDColumn ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain a value.")]
     public void GetValueWithInvalidRelationClassIDColumnValue ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain null.")]
     public void GetValueWithInvalidRelationClassIDColumnNullValue ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DerivedClassWithInvalidRelationClassIDColumns)];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
       var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 

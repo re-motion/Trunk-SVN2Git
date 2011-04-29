@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp ();
 
       _generator = new SortExpressionSqlGenerator (SqlDialect.Instance);
-      _orderClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      _orderClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
     
       _orderNumberPropertyDefinition = _orderClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
       _deliveryDatePropertyDefinition = _orderClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".DeliveryDate");

@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fakeEntityExpression = CreateFakeEntityExpression (typeof (Order));
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveEntity (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], "o"))
+          .Stub (stub => stub.ResolveEntity (MappingConfiguration.Current.GetTypeDefinition (typeof (Order)), "o"))
           .Return (fakeEntityExpression);
 
       var sqlEntityExpression =
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveTable (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], "t0"))
+          .Stub (stub => stub.ResolveTable (MappingConfiguration.Current.GetTypeDefinition (typeof (Order)), "t0"))
           .Return (_fakeSimpleTableInfo);
 
       var resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
       var property = typeof (Customer).GetProperty ("Orders");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, property, JoinCardinality.Many);
-      var leftEndPoint = MappingConfiguration.Current.TypeDefinitions[typeof (Customer)]
+      var leftEndPoint = MappingConfiguration.Current.GetTypeDefinition (typeof (Customer))
           .GetMandatoryRelationEndPointDefinition (property.DeclaringType.FullName + "." + property.Name);
 
       _storageSpecificExpressionResolverStub
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnDefinitionExpression (typeof (int), "m", "ID", false));
       var memberInfo = typeof (IMixinAddingPersistentProperties).GetProperty ("RelationProperty");
       var unresolvedJoinInfo = new UnresolvedJoinInfo (entityExpression, memberInfo, JoinCardinality.One);
-      var leftEndPoint = MappingConfiguration.Current.TypeDefinitions[typeof (TargetClassForPersistentMixin)]
+      var leftEndPoint = MappingConfiguration.Current.GetTypeDefinition (typeof (TargetClassForPersistentMixin))
           .GetMandatoryRelationEndPointDefinition (typeof (MixinAddingPersistentProperties).FullName + "." + memberInfo.Name);
 
       _storageSpecificExpressionResolverStub
@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fakeIDColumnExpression = new SqlColumnDefinitionExpression (typeof (ObjectID), "c", "ID", true);
 
       _storageSpecificExpressionResolverStub
-          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.TypeDefinitions[typeof (Order)]))
+          .Stub (stub => stub.ResolveIDColumn (entityExpression, MappingConfiguration.Current.GetTypeDefinition (typeof (Order))))
           .Return (fakeIDColumnExpression);
 
       var result = (SqlColumnExpression) _resolver.ResolveMemberExpression (entityExpression, property);

@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)
     {
-      return Configuration.TypeDefinitions[classType].GetRelationEndPointDefinition (classType.FullName + "." + shortPropertyName);
+      return Configuration.GetTypeDefinition (classType).GetRelationEndPointDefinition (classType.FullName + "." + shortPropertyName);
     }
 
     private Action<DomainObject> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)

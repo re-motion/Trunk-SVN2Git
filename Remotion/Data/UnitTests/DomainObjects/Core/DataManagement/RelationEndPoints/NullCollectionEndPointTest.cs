@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public override void SetUp ()
     {
       base.SetUp();
-      _definition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)]
+      _definition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order))
           .GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _nullEndPoint = new NullCollectionEndPoint (ClientTransactionMock, _definition);
       _relatedObject = OrderItem.NewObject();

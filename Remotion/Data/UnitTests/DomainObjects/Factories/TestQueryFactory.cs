@@ -74,11 +74,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     public static QueryResult<T> CreateTestQueryResult<T> (T[] collection) where T: DomainObject
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions.GetValueOrDefault(typeof (T));
-      var storageProviderDefinition = classDefinition != null
-                                  ? classDefinition.StorageEntityDefinition.StorageProviderDefinition
-                                  : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
-      var query = QueryFactory.CreateCollectionQuery ("test", storageProviderDefinition, "TEST", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      var storageProviderDefinition =
+          MappingConfiguration.Current.ContainsTypeDefinition (typeof (T))
+              ? MappingConfiguration.Current.GetTypeDefinition (typeof (T)).StorageEntityDefinition.StorageProviderDefinition
+              : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      var query = QueryFactory.CreateCollectionQuery (
+          "test", storageProviderDefinition, "TEST", new QueryParameterCollection(), typeof (DomainObjectCollection));
       return CreateTestQueryResult (query, collection);
     }
 

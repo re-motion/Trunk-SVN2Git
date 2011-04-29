@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public static IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[declaringType];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (declaringType);
       var propertyAccessorData = classDefinition.PropertyAccessorDataCache.FindPropertyAccessorData (declaringType, shortPropertyName);
       Assert.That (propertyAccessorData, Is.Not.Null);
       return propertyAccessorData.RelationEndPointDefinition;

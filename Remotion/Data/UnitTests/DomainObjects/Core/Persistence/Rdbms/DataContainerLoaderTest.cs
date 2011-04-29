@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       DataContainer dataContainer = _loader.LoadDataContainerFromID (DomainObjectIDs.Order1);
       Assert.AreEqual (DomainObjectIDs.Order1, dataContainer.ID);
 
-      Assert.AreEqual (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], dataContainer.ClassDefinition);
+      Assert.AreEqual (MappingConfiguration.Current.GetTypeDefinition (typeof (Order)), dataContainer.ClassDefinition);
       Assert.AreEqual (dataContainer.ClassDefinition.GetPropertyDefinitions().Count, dataContainer.PropertyValues.Count);
 
       Assert.AreEqual (
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.AreEqual (DomainObjectIDs.Order2, dataContainers[1].ID);
       Assert.AreEqual (DomainObjectIDs.Order3, dataContainers[2].ID);
 
-      Assert.AreEqual (MappingConfiguration.Current.TypeDefinitions[typeof (Order)], dataContainers[0].ClassDefinition);
+      Assert.AreEqual (MappingConfiguration.Current.GetTypeDefinition (typeof (Order)), dataContainers[0].ClassDefinition);
       Assert.AreEqual (dataContainers[0].ClassDefinition.GetPropertyDefinitions().Count, dataContainers[0].PropertyValues.Count);
 
       Assert.AreEqual (
@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersFromCommandBuilder ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       var builder = new MultiIDLookupCommandBuilder (
           Provider,
           StorageNameProvider,
@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_WithEntityName ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       Assert.IsNotNull (classDefinition.GetEntityName());
 
       DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
@@ -335,7 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_WithEntityName_CallsProviderLoadDataContainers_WithAllowNullsFalse ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       Assert.IsNotNull (classDefinition.GetEntityName());
 
       CreateLoaderAndExpectProviderCall (
@@ -356,10 +356,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_WithEntityName_UsesSelectCommandBuilder ()
     {
-      var classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (OrderItem)];
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem));
       Assert.IsNotNull (classDefinition.GetEntityName());
 
-      var relatedClassDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      var relatedClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       var relationPropertyName = ReflectionMappingHelper.GetPropertyName (typeof (OrderItem), "Order");
       var relationPropertyDefinition = classDefinition.GetPropertyDefinition (relationPropertyName);
       
@@ -383,7 +383,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersByRelatedID_WithStorageClassTransaction ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Computer)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Computer));
       Assert.IsNotNull (classDefinition.GetEntityName());
 
       DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         provider.Connect();
 
-        ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
+        ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
         Assert.IsNull (classDefinition.GetEntityName());
 
         var loader = new DataContainerLoader (provider);
@@ -436,7 +436,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         provider.Connect();
 
-        ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (DomainBase)];
+        ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainBase));
         Assert.IsNull (classDefinition.GetEntityName());
 
         IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>(StorageNameProvider);

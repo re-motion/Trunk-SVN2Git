@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateNewDataContainer ()
     {
-      ClassDefinition orderClass = MappingConfiguration.Current.TypeDefinitions[typeof (Order)];
+      ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       DataContainer newContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (orderClass));
 
       Assert.IsNotNull (newContainer, "New DataContainer is null.");
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateClassWithAllDataTypes ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (ClassWithAllDataTypes)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithAllDataTypes));
       DataContainer newContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
 
       Assert.AreEqual (false, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ExpectedMessage = "The StorageProviderID 'UnitTestStorageProviderStub' of the provided ClassDefinition does not match with this StorageProvider's ID 'TestDomain'.\r\nParameter name: classDefinition")]
     public void ClassDefinitionOfOtherStorageProvider ()
     {
-      ClassDefinition classDefinition = MappingConfiguration.Current.TypeDefinitions[typeof (Official)];
+      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Official));
       Provider.CreateNewObjectID (classDefinition);
     }
   }
