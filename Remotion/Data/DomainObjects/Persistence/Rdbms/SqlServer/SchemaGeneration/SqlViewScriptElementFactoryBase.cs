@@ -26,10 +26,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="SqlViewScriptElementBase{T}"/> represents the base-class for all factory classes that are responsible to create new script elements 
+  /// <see cref="SqlViewScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script elements 
   /// for a  relational database.
   /// </summary>
-  public abstract class SqlViewScriptElementBase<T> : IScriptElementFactory<T> where T : IEntityDefinition
+  public abstract class SqlViewScriptElementFactoryBase<T> : IScriptElementFactory<T> where T : IEntityDefinition
   {
     public abstract IScriptElement GetCreateElement (T entityDefinition);
 

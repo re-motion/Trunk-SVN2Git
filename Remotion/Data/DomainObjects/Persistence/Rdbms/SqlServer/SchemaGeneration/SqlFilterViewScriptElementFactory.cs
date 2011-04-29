@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlTableViewScriptElementFactory"/> is responsible to create script-elements for filter-views in a sql-server database.
   /// </summary>
-  public class SqlFilterViewScriptElementFactory : SqlViewScriptElementBase<FilterViewDefinition>
+  public class SqlFilterViewScriptElementFactory : SqlViewScriptElementFactoryBase<FilterViewDefinition>
   {
     public override IScriptElement GetCreateElement (FilterViewDefinition filterViewDefinition)
     {

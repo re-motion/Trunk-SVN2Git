@@ -236,7 +236,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlUnionViewScriptElementFactory.cs" />
-    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewScriptElementBase.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlViewScriptElementFactoryBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlIndexedColumnDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilderBase.cs" />

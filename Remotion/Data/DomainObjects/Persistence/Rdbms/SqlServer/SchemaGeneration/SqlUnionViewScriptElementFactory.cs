@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlUnionViewScriptElementFactory"/> is responsible to create script-elements for union-views in a sql-server database.
   /// </summary>
-  public class SqlUnionViewScriptElementFactory : SqlViewScriptElementBase<UnionViewDefinition>
+  public class SqlUnionViewScriptElementFactory : SqlViewScriptElementFactoryBase<UnionViewDefinition>
   {
     public override IScriptElement GetCreateElement (UnionViewDefinition unionViewDefinition)
     {

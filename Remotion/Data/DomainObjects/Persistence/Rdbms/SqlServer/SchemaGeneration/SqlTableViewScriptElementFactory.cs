@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlTableViewScriptElementFactory"/> is responsible to create script-elements for table-views in a sql-server database.
   /// </summary>
-  public class SqlTableViewScriptElementFactory : SqlViewScriptElementBase<TableDefinition>
+  public class SqlTableViewScriptElementFactory : SqlViewScriptElementFactoryBase<TableDefinition>
   {
     public override IScriptElement GetCreateElement (TableDefinition tableDefinition)
     {
