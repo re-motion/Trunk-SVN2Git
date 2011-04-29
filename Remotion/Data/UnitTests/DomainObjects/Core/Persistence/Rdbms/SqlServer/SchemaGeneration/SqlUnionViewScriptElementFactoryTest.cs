@@ -129,7 +129,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE VIEW [dbo].[UnionView2] ([Column1], [Column2])\r\n"
           +"  WITH SCHEMABINDING AS\r\n"
           +"  SELECT [Column1], NULL\r\n"
-          +"    FROM [SchemaName].[TableName1]  UNION ALL\r\n"
+          +"    FROM [SchemaName].[TableName1]\r\n"
+          +"  UNION ALL\r\n"
           +"  SELECT [Column1], [Column2]\r\n"
           +"    FROM [dbo].[TableName2]";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));
@@ -153,7 +154,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           "CREATE VIEW [dbo].[UnionView2] ([Column1], [Column2])\r\n"
           + "  AS\r\n"
           + "  SELECT [Column1], NULL\r\n"
-          + "    FROM [SchemaName].[TableName1]  UNION ALL\r\n"
+          + "    FROM [SchemaName].[TableName1]\r\n"
+          + "  UNION ALL\r\n"
           + "  SELECT [Column1], [Column2]\r\n"
           + "    FROM [dbo].[TableName2]";
       Assert.That (((ScriptStatement) elements[1]).Statement, Is.EqualTo (expectedResult));

@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       foreach (var tableDefinition in unionViewDefinition.GetAllTables ())
       {
         if (numberOfSelects > 0)
-          createViewStringBuilder.AppendFormat ("  UNION ALL\r\n");
+          createViewStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
 
         var availableTableColumns = tableDefinition.Columns;
         var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
