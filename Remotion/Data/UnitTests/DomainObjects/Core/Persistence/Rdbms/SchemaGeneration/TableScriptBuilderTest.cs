@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [TestFixture]
   public class TableScriptBuilderTest : SchemaGenerationTestBase
   {
-    private IScriptElementFactory<TableDefinition> _elementFactory;
+    private IScriptElementFactory<TableDefinition> _factoryStub;
     private TableScriptBuilder _builder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -39,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _elementFactory = MockRepository.GenerateStrictMock<IScriptElementFactory<TableDefinition>>();
-      _builder = new TableScriptBuilder (_elementFactory);
+      _factoryStub = MockRepository.GenerateStub<IScriptElementFactory<TableDefinition>>();
+      _builder = new TableScriptBuilder (_factoryStub);
 
       _tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -75,52 +75,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      _elementFactory.Replay();
-
       Assert.That (_builder.GetCreateScript().Elements, Is.Empty);
       Assert.That (_builder.GetDropScript().Elements, Is.Empty);
-      _elementFactory.VerifyAllExpectations();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
-      _elementFactory.Expect (mock => mock.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
-      _elementFactory.Expect (mock => mock.GetDropElement (_tableDefinition1)).Return (_fakeElement2);
-      _elementFactory.Replay();
-
+      _factoryStub.Stub(stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
+      _factoryStub.Stub(stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement2);
+      
       _builder.AddEntityDefinition (_tableDefinition1);
 
       Assert.That (_builder.GetCreateScript().Elements, Is.EqualTo (new[] { _fakeElement1 }));
       Assert.That (_builder.GetDropScript().Elements, Is.EqualTo (new[] { _fakeElement2 }));
-      _elementFactory.VerifyAllExpectations();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsAdded ()
     {
-      _elementFactory.Expect (mock => mock.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
-      _elementFactory.Expect (mock => mock.GetDropElement (_tableDefinition1)).Return (_fakeElement3);
-      _elementFactory.Expect (mock => mock.GetCreateElement (_tableDefinition2)).Return (_fakeElement2);
-      _elementFactory.Expect (mock => mock.GetDropElement (_tableDefinition2)).Return (_fakeElement2);
-      _elementFactory.Expect (mock => mock.GetCreateElement (_tableDefinition3)).Return (_fakeElement3);
-      _elementFactory.Expect (mock => mock.GetDropElement (_tableDefinition3)).Return (_fakeElement1);
-      _elementFactory.Replay();
-
+      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
+      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement3);
+      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition2)).Return (_fakeElement2);
+      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition2)).Return (_fakeElement2);
+      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition3)).Return (_fakeElement3);
+      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition3)).Return (_fakeElement1);
+      
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
       _builder.AddEntityDefinition (_tableDefinition3);
 
       Assert.That (_builder.GetCreateScript().Elements, Is.EqualTo (new[] { _fakeElement1, _fakeElement2, _fakeElement3 }));
       Assert.That (_builder.GetDropScript().Elements, Is.EqualTo (new[] { _fakeElement3, _fakeElement2, _fakeElement1 }));
-      _elementFactory.VerifyAllExpectations();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_FilterViewDefinitionAdded ()
     {
-      _elementFactory.Replay ();
-
       var entityDefinition = new FilterViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "FilterView"),
@@ -133,14 +124,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       
       Assert.That (_builder.GetCreateScript().Elements, Is.Empty);
       Assert.That (_builder.GetDropScript().Elements, Is.Empty);
-      _elementFactory.VerifyAllExpectations();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_UnionViewDefinitionAdded ()
     {
-      _elementFactory.Replay ();
-
       var entityDefinition = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView"),
@@ -152,20 +140,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       Assert.That (_builder.GetCreateScript().Elements, Is.Empty);
       Assert.That (_builder.GetDropScript().Elements, Is.Empty);
-      _elementFactory.VerifyAllExpectations();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_NullEntityDefinitionAdded ()
     {
-      _elementFactory.Replay ();
-
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
       Assert.That (_builder.GetCreateScript ().Elements, Is.Empty);
       Assert.That (_builder.GetDropScript ().Elements, Is.Empty);
-      _elementFactory.VerifyAllExpectations ();
     }
   }
 }
