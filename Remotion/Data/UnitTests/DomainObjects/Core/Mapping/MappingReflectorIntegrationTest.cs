@@ -94,12 +94,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var mappingConfiguration = new MappingConfiguration (
           reflector, new PersistenceModelLoader (new StorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage)));
 
+      var derivedClass1 = mappingConfiguration.GetTypeDefinition (typeof (DerivedInheritanceRootClass1));
+      var derivedClass2 = mappingConfiguration.GetTypeDefinition (typeof (DerivedInheritanceRootClass2));
+
+      var derivedClass1RelationEndPoint =
+          derivedClass1.GetRelationEndPointDefinition (typeof (AboveInheritanceRootClassWithRelation).FullName + ".RelationClass");
+      var derivedClass2RelationEndPoint =
+          derivedClass2.GetRelationEndPointDefinition (typeof (AboveInheritanceRootClassWithRelation).FullName + ".RelationClass");
+
+      Assert.That (derivedClass1RelationEndPoint.RelationDefinition, Is.Not.SameAs (derivedClass2RelationEndPoint.RelationDefinition));
       Assert.That (
-          mappingConfiguration.RelationDefinitions.ContainsKey (
+          derivedClass1RelationEndPoint.RelationDefinition.ID,
+          Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass1:"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
       Assert.That (
-          mappingConfiguration.RelationDefinitions.ContainsKey (
+          derivedClass2RelationEndPoint.RelationDefinition.ID,
+          Is.EqualTo (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.DerivedInheritanceRootClass2:"
               + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations.AboveInheritanceRootClassWithRelation.RelationClass"));
     }

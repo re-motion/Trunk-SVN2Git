@@ -319,7 +319,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    private static MappingException CreateMappingException (string message, params object[] args)
+    private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (string.Format (message, args));
     }

@@ -860,15 +860,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void IsRelationEndPointWithAnonymousRelationEndPointDefinition ()
     {
-      ClassDefinition clientDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Client));
+      var relationDefinition = classDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient").RelationDefinition;
+      var anonymousEndPointDefinition = (AnonymousRelationEndPointDefinition) relationDefinition.GetEndPointDefinition ("Client", null);
 
-      RelationDefinition parentClient =
-          MappingConfiguration.Current.RelationDefinitions[
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Client:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
-              + "TestDomain.Integration.Client.ParentClient"];
-      var clientAnonymousEndPointDefinition = (AnonymousRelationEndPointDefinition) parentClient.GetEndPointDefinition ("Client", null);
-
-      Assert.IsFalse (clientDefinition.IsRelationEndPoint (clientAnonymousEndPointDefinition));
+      Assert.IsFalse (classDefinition.IsRelationEndPoint (anonymousEndPointDefinition));
     }
 
     [Test]
