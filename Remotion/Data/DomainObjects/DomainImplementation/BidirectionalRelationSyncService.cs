@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -91,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </para>
   /// <para>
   /// The <see cref="BidirectionalRelationSyncService"/> class allows users to check whether a relation is out-of-sync (<see cref="IsSynchronized"/>)
-  /// and, if so, get re-store to synchronize the opposite sides in the relation (<see cref="Synchronize(Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.DataManagement.RelationEndPointID)"/>):
+  /// and, if so, get re-store to synchronize the opposite sides in the relation (<see cref="Synchronize(Remotion.Data.DomainObjects.ClientTransaction,RelationEndPointID)"/>):
   /// <code>
   /// var endPointID = RelationEndPointID.Create (newOrderItem, oi => oi.Order);
   /// 

@@ -19,10 +19,12 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 

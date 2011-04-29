@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;

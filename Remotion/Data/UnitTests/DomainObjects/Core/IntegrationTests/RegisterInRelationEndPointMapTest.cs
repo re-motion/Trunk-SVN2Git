@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {

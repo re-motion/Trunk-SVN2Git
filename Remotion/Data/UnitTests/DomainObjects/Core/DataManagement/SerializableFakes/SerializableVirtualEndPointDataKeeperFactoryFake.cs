@@ -16,7 +16,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {

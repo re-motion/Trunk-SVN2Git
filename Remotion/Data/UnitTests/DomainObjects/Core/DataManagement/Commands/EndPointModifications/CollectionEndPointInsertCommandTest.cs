@@ -18,6 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 

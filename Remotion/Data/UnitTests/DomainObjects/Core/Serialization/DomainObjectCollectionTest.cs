@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;

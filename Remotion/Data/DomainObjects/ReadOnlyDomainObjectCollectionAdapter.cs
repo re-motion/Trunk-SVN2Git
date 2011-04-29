@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
 using System.Linq;
 

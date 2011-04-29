@@ -17,8 +17,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
 

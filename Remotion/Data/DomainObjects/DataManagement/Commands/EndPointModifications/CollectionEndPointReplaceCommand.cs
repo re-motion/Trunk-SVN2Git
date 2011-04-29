@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications

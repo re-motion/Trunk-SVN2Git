@@ -4,7 +4,8 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {

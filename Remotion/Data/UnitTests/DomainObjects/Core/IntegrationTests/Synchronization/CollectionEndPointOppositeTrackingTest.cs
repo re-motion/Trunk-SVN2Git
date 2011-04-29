@@ -17,8 +17,10 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization

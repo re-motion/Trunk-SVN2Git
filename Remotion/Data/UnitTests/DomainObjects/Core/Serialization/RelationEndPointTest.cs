@@ -18,7 +18,9 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -39,7 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.RelationEndPoint' in Assembly "
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = 
+        "Type 'Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RelationEndPoint' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void RelationEndPointIsNotSerializable ()
     {

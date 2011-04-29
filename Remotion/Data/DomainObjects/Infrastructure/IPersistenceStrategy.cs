@@ -16,6 +16,7 @@
 // 
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -89,21 +90,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
 
     /// <summary>
-    /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
+    /// Loads the related <see cref="DataContainer"/> for a given <see cref="RelationEndPointID"/>.
     /// </summary>
     /// <param name="originatingDataContainer">
     ///   A <see cref="DataContainer"/> representing the object whose related object's <see cref="DataContainer"/> should be loaded.
     /// </param>
-    /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
+    /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be evaluated.
     ///   <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
     /// <returns>The related <see cref="DataContainer"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
     /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
-    /// <see cref="DataManagement.ObjectEndPoint"/></exception>
+    /// <see cref="ObjectEndPoint"/></exception>
     /// <exception cref="Persistence.PersistenceException">
     ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
     ///   The relation refers to non-existing object.<br /> -or- <br />
-    ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/>.
+    ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="ObjectEndPoint"/>.
     /// </exception>
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
@@ -123,9 +124,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DataContainer LoadRelatedDataContainer (DataContainer originatingDataContainer, RelationEndPointID relationEndPointID);
 
     /// <summary>
-    /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
+    /// Loads all related <see cref="DataContainer"/>s of a given <see cref="RelationEndPointID"/>.
     /// </summary>
-    /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
+    /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> of the end point that should be evaluated.
     /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
     /// <returns>
     /// A <see cref="DataContainerCollection"/> containing all related <see cref="DataContainer"/>s.

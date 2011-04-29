@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
@@ -996,12 +997,12 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the related object of a given <see cref="DataManagement.RelationEndPointID"/>.
+  /// Gets the related object of a given <see cref="RelationEndPointID"/>.
   /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> to evaluate. It must refer to a <see cref="DataManagement.ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> to evaluate. It must refer to a <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
   /// <returns>The <see cref="DomainObject"/> that is the current related object.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/></exception>
+  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="ObjectEndPoint"/></exception>
   protected internal virtual DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -1019,12 +1020,12 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the original related object of a given <see cref="DataManagement.RelationEndPointID"/> at the point of instantiation, loading, commit or rollback.
+  /// Gets the original related object of a given <see cref="RelationEndPointID"/> at the point of instantiation, loading, commit or rollback.
   /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> to evaluate. It must refer to a <see cref="DataManagement.ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> to evaluate. It must refer to a <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
   /// <returns>The <see cref="DomainObject"/> that is the original related object.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/></exception>
+  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to an <see cref="ObjectEndPoint"/></exception>
   protected internal virtual DomainObject GetOriginalRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -1041,12 +1042,12 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the related objects of a given <see cref="DataManagement.RelationEndPointID"/>.
+  /// Gets the related objects of a given <see cref="RelationEndPointID"/>.
   /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> to evaluate. It must refer to a <see cref="DataManagement.CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> to evaluate. It must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
   /// <returns>A <see cref="DomainObjectCollection"/> containing the current related objects.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to a <see cref="DataManagement.CollectionEndPoint"/></exception>
+  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to a <see cref="CollectionEndPoint"/></exception>
   protected internal virtual DomainObjectCollection GetRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
@@ -1064,12 +1065,12 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Gets the original related objects of a given <see cref="DataManagement.RelationEndPointID"/> at the point of instantiation, loading, commit or rollback.
+  /// Gets the original related objects of a given <see cref="RelationEndPointID"/> at the point of instantiation, loading, commit or rollback.
   /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> to evaluate. It must refer to a <see cref="DataManagement.CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <param name="relationEndPointID">The <see cref="RelationEndPointID"/> to evaluate. It must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
   /// <returns>A <see cref="DomainObjectCollection"/> containing the original related objects.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to a <see cref="DataManagement.CollectionEndPoint"/></exception>
+  /// <exception cref="System.ArgumentException"><paramref name="relationEndPointID"/> does not refer to a <see cref="CollectionEndPoint"/></exception>
   protected internal virtual DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using System.Linq;
 using Remotion.Development.UnitTesting;
