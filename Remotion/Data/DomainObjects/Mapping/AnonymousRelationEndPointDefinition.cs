@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -25,37 +24,17 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// <summary>
   /// Represents the non-existing side of a unidirectional relationship.
   /// </summary>
-  [Serializable]
   [DebuggerDisplay ("{GetType().Name}: Cardinality: {Cardinality}")]
-  public class AnonymousRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
+  public class AnonymousRelationEndPointDefinition : IRelationEndPointDefinition
   {
-    // types
-
-    // static members and constants
-
-    // serialized member fields
-    // Note: RelationEndPointDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
-    private string _serializedRelationID;
-
-    // nonserialized member fields
-
-    [NonSerialized]
     private RelationDefinition _relationDefinition;
-
-    [NonSerialized]
     private readonly ClassDefinition _classDefinition;
-
-    // construction and disposing
 
     public AnonymousRelationEndPointDefinition (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       _classDefinition = classDefinition;
     }
-
-    // methods and properties
 
     public RelationDefinition RelationDefinition
     {
@@ -119,30 +98,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
 
       _relationDefinition = relationDefinition;
-      _serializedRelationID = _relationDefinition.ID;
     }
-
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      var relationDefinition = MappingConfiguration.Current.RelationDefinitions[_serializedRelationID];
-      if (relationDefinition.EndPointDefinitions[0].IsAnonymous)
-        return relationDefinition.EndPointDefinitions[0];
-      else
-        return relationDefinition.EndPointDefinitions[1];
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return "<anonymous>"; }
-    }
-
-    #endregion
   }
 }

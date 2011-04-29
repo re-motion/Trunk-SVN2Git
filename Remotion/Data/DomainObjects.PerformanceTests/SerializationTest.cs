@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void SerializeRelationPropertyObjects10250 ()
     {
-      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205", 55000, 3000, 10444211, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205",6000, 3000, 10444211, CreateAndFillRelationPropertyObject);
     }
 
     [Test]

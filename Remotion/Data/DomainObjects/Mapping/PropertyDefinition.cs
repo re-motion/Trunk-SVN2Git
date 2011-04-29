@@ -18,50 +18,23 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}")]
-  public class PropertyDefinition : SerializableMappingObject
+  public class PropertyDefinition
   {
-    // types
-
-    // static members and constants
-
-    // serialized member fields
-    // Note: PropertyDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
     private readonly string _propertyName;
-    private readonly string _serializedClassDefinitionID;
-
-    // nonserialized member fields
-
-    [NonSerialized]
     private readonly ClassDefinition _classDefinition;
-    [NonSerialized]
     private readonly int? _maxLength;
-    [NonSerialized]
     private readonly StorageClass _storageClass;
-    
-    [NonSerialized]
     private IStoragePropertyDefinition _storagePropertyDefinition;
-
-    [NonSerialized]
     private readonly PropertyInfo _propertyInfo;
-
-    [NonSerialized]
     private readonly Type _propertyType;
-
-    [NonSerialized]
     private readonly bool _isNullable;
-
-    // construction and disposing
 
     public PropertyDefinition (
         ClassDefinition classDefinition,
@@ -78,7 +51,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       _classDefinition = classDefinition;
-      _serializedClassDefinitionID = classDefinition.ID;
       _propertyName = propertyName;
       _maxLength = maxLength;
       _storageClass = storageClass;
@@ -97,8 +69,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyType = propertyType;
       _isNullable = isNullable;
     }
-
-    // methods and properties
 
     public ClassDefinition ClassDefinition
     {
@@ -195,29 +165,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return GetType ().FullName + ": " + _propertyName;
     }
-    
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      // Note: A PropertyDefinition must know its ClassDefinition to correctly deserialize itself and a 
-      // ClassDefinition knows its PropertyDefintions. For bi-directional relationships
-      // with two classes implementing IObjectReference.GetRealObject the order of calling this method is unpredictable.
-      // Therefore the member _classDefinition cannot be used here, because it could point to the wrong instance. 
-      return MappingConfiguration.Current.ClassDefinitions.GetMandatory (_serializedClassDefinitionID)[_propertyName];
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return PropertyName; }
-    }
-
-    #endregion
 
     private ArgumentException CreateArgumentException (string propertyName, string message, params object[] args)
     {

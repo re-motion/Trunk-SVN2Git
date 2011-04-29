@@ -17,34 +17,18 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   // Note: No properties and methods of this class are inheritance-aware!
-  [Serializable]
   [DebuggerDisplay (
       "{GetType().Name}: {_id}/{_endPointDefinitions[0].PropertyName} ({_endPointDefinitions[0].Cardinality})-{_endPointDefinitions[1].PropertyName} ({_endPointDefinitions[1].Cardinality})"
       )]
-  public class RelationDefinition : SerializableMappingObject
+  public class RelationDefinition
   {
-    // types
-
-    // static members and constants
-
-    // serialized member fields
-    // Note: RelationEndPointDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
     private readonly string _id;
-
-    // nonserialized member fields
-
     private readonly IRelationEndPointDefinition[] _endPointDefinitions = new IRelationEndPointDefinition[2];
-
-    // construction and disposing
 
     public RelationDefinition (
         string id,
@@ -60,8 +44,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _endPointDefinitions[0] = endPointDefinition1;
       _endPointDefinitions[1] = endPointDefinition2;
     }
-
-    // methods and properties
 
     public IRelationEndPointDefinition GetMandatoryOppositeRelationEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
     {
@@ -192,24 +174,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return new MappingException (string.Format (message, args));
     }
-
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      return MappingConfiguration.Current.RelationDefinitions[_id];
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return ID; }
-    }
-
-    #endregion
   }
 }

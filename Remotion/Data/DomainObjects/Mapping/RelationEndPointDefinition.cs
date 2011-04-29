@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -25,29 +24,12 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// <summary>
   /// Represents the non-anonymous, foreign-key side of a bidirectional or unidirectional relationship.
   /// </summary>
-  [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
-  public class RelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
+  public class RelationEndPointDefinition : IRelationEndPointDefinition
   {
-    // serialized member fields
-    // Note: RelationEndPointDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
-    private readonly string _serializedClassDefinitionID;
-    private readonly string _serializedPropertyName;
-
-    // nonserialized member fields
-
-    [NonSerialized]
     private RelationDefinition _relationDefinition;
-
-    [NonSerialized]
     private readonly ClassDefinition _classDefinition;
-
-    [NonSerialized]
     private readonly PropertyDefinition _propertyDefinition;
-
-    [NonSerialized]
     private readonly bool _isMandatory;
 
     public RelationEndPointDefinition (PropertyDefinition propertyDefinition, bool isMandatory)
@@ -65,10 +47,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
 
       _classDefinition = propertyDefinition.ClassDefinition;
-      _serializedClassDefinitionID = _classDefinition.ID;
       _isMandatory = isMandatory;
       _propertyDefinition = propertyDefinition;
-      _serializedPropertyName = _propertyDefinition.PropertyName;
     }
 
     public bool CorrespondsTo (string classID, string propertyName)
@@ -144,28 +124,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return new MappingException (string.Format (message, args));
     }
-
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      // Note: A EndPointDefinition knows its ClassDefinition and a ClassDefinition implicitly knows 
-      // its RelationEndPointDefinitions via its RelationDefinitions. For bi-directional relationships 
-      // with two classes implementing IObjectReference.GetRealObject the order of calling this method is unpredictable.
-      // Therefore the members _classDefinition and _propertyDefinition cannot be used here, because they could point to the wrong instances. 
-      return MappingConfiguration.Current.ClassDefinitions.GetMandatory (_serializedClassDefinitionID).GetMandatoryRelationEndPointDefinition (_serializedPropertyName);
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return PropertyName; }
-    }
-
-    #endregion
   }
 }

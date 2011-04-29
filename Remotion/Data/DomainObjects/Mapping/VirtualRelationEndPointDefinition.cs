@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Utilities;
@@ -27,45 +26,17 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// <summary>
   /// Represents the non-foreign-key side of a unidirectional relationship.
   /// </summary>
-  [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
-  public class VirtualRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
+  public class VirtualRelationEndPointDefinition : IRelationEndPointDefinition
   {
-    // types
-
-    // static members and constants
-
-    // serialized member fields
-    // Note: RelationEndPointDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
     private readonly string _propertyName;
-    private readonly string _serializedClassDefinitionID;
-
-    // nonserialized member fields
-
-    [NonSerialized]
     private RelationDefinition _relationDefinition;
-
-    [NonSerialized]
     private readonly ClassDefinition _classDefinition;
-
-    [NonSerialized]
     private readonly bool _isMandatory;
-
-    [NonSerialized]
     private readonly CardinalityType _cardinality;
-
-    [NonSerialized]
     private readonly Type _propertyType;
-
-    [NonSerialized]
     private readonly string _sortExpressionText;
-
-    [NonSerialized]
     private readonly DoubleCheckedLockingContainer<SortExpressionDefinition> _sortExpression;
-
-    [NonSerialized]
     private readonly PropertyInfo _propertyInfo;
 
     public VirtualRelationEndPointDefinition (
@@ -84,7 +55,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
       _classDefinition = classDefinition;
-      _serializedClassDefinitionID = _classDefinition.ID;
       _cardinality = cardinality;
       _isMandatory = isMandatory;
       _propertyName = propertyName;
@@ -166,31 +136,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return _sortExpression.Value;
     }
-
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      // Note: A EndPointDefinition knows its ClassDefinition and a ClassDefinition implicitly knows 
-      // its RelationEndPointDefinitions via its RelationDefinitions. For bi-directional relationships 
-      // with two classes implementing IObjectReference.GetRealObject the order of calling this method is unpredictable.
-      // Therefore the members _classDefinition and _relationDefinition cannot be used here, because they could point to the wrong instance. 
-      return
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (_serializedClassDefinitionID).GetMandatoryRelationEndPointDefinition (
-              _propertyName);
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return PropertyName; }
-    }
-    
-    #endregion
 
     private SortExpressionDefinition ParseSortExpression (string sortExpressionText)
     {

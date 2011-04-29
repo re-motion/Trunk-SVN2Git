@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -28,61 +27,24 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  [Serializable]
   [DebuggerDisplay ("{GetType().Name} for {ClassType.FullName}")]
-  public class ClassDefinition : SerializableMappingObject
+  public class ClassDefinition
   {
-    // types
-
-    // serialized member fields
-    // Note: ClassDefinitions can only be serialized if they are part of the current mapping configuration. Only the fields listed below
-    // will be serialized; these are used to retrieve the "real" object at deserialization time.
-
     private readonly string _id;
-
-    [NonSerialized]
     private bool _isReadOnly;
-
-    [NonSerialized]
     private readonly Type _storageGroupType;
-
-    [NonSerialized]
     private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
-
-    [NonSerialized]
     private readonly DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> _cachedRelationEndPointDefinitions;
-
-    [NonSerialized]
     private readonly DoubleCheckedLockingContainer<PropertyDefinitionCollection> _cachedPropertyDefinitions;
-
-    [NonSerialized]
     private readonly ClassDefinition _baseClass;
-
-    [NonSerialized]
     private PropertyDefinitionCollection _propertyDefinitions;
-
-    [NonSerialized]
     private RelationEndPointDefinitionCollection _relationEndPoints;
-
-    [NonSerialized]
     private IStorageEntityDefinition _storageEntityDefinition;
-
-    [NonSerialized]
     private ReadOnlyCollection<ClassDefinition> _derivedClasses;
-
-    [NonSerialized]
     private readonly InterlockedCache<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
-
-    [NonSerialized]
     private readonly InterlockedCache<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
-
-    [NonSerialized]
     private readonly bool _isAbstract;
-
-    [NonSerialized]
     private readonly Type _classType;
-
-    [NonSerialized]
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
     public ClassDefinition (
@@ -613,24 +575,5 @@ namespace Remotion.Data.DomainObjects.Mapping
         }
       }
     }
-
-    #region Serialization
-
-    public override object GetRealObject (StreamingContext context)
-    {
-      return MappingConfiguration.Current.ClassDefinitions.GetMandatory (_id);
-    }
-
-    protected override bool IsPartOfMapping
-    {
-      get { return MappingConfiguration.Current.Contains (this); }
-    }
-
-    protected override string IDForExceptions
-    {
-      get { return ID; }
-    }
-
-    #endregion
   }
 }

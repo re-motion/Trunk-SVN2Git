@@ -22,7 +22,6 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
   /// <summary>
   /// Defines how a property is to be sorted.
   /// </summary>
-  [Serializable]
   public sealed class SortedPropertySpecification
   {
     public readonly PropertyDefinition PropertyDefinition;

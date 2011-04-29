@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Compares two <see cref="DomainObject"/> instances based on a <see cref="SortedPropertySpecification"/>. The property values are retrieved
   /// without raising any events. If the <see cref="DomainObject"/> instances are not loaded, their data is lazily loaded.
   /// </summary>
-  [Serializable]
   public class SortedPropertyComparer : IComparer<DomainObject>
   {
     public static IComparer<DomainObject> CreateCompoundComparer (IEnumerable<SortedPropertySpecification> sortedPropertySpecifications, IDataManager dataManager)

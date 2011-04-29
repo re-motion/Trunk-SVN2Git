@@ -111,16 +111,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       Assert.That (specification1.GetHashCode(), Is.EqualTo (specification2.GetHashCode()));
     }
-
-    [Test]
-    public void Serialization ()
-    {
-      var specification = new SortedPropertySpecification (_customerTypePropertyDefinition, SortOrder.Ascending);
-
-      var result = Serializer.SerializeAndDeserialize (specification);
-
-      Assert.That (result.PropertyDefinition, Is.EqualTo (_customerTypePropertyDefinition));
-      Assert.That (result.Order, Is.EqualTo (SortOrder.Ascending));
-    }
   }
 }
