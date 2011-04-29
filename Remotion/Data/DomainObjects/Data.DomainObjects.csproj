@@ -235,6 +235,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSynonymScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlUnionViewScriptElementFactory.cs" />
