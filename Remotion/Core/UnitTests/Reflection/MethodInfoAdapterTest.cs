@@ -491,6 +491,14 @@ namespace Remotion.UnitTests.Reflection
       Assert.That (_adapter.ToString(), Is.EqualTo ("Void TestMethod()"));
     }
 
+    [Test]
+    public void IsSupportedByTypeConversionProvider ()
+    {
+      var typeConversionProvider = TypeConversionProvider.Create();
+
+      Assert.That (typeConversionProvider.CanConvert (typeof (MethodInfoAdapter), typeof (MethodInfo)), Is.True);
+    }
+
     private void CheckProperty (Type expectedDeclaringType, string expectedName, IPropertyInformation actualProperty)
     {
       Assert.That (actualProperty.Name, Is.EqualTo (expectedName));
