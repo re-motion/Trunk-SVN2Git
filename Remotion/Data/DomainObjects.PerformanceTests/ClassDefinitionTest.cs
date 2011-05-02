@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= classDefinition.GetOppositeClassDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
+        found &= classDefinition.GetMandatoryOppositeClassDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);

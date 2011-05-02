@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
       else
       {
-        relatedClassDefinition = classDefinition.GetOppositeClassDefinition (propertyValue.Name);
+        relatedClassDefinition = classDefinition.GetMandatoryOppositeClassDefinition (propertyValue.Name);
         relatedIDValue = null;
       }
 
