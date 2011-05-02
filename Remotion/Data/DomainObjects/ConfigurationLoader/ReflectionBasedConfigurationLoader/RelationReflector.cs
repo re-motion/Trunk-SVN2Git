@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       var endPoints = isFirstEndPointReal ? new { Left = first, Right = second } : new { Left = second, Right = first };
       
       var nameGivingEndPoint = endPoints.Left.PropertyInfo != null ? endPoints.Left : endPoints.Right;
-      var leftPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (nameGivingEndPoint.PropertyInfo));
+      var leftPropertyName = NameResolver.GetPropertyName (nameGivingEndPoint.PropertyInfo);
 
       if (endPoints.Right.PropertyInfo == null)
       {
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
       else
       {
-        var rightPropertyName = NameResolver.GetPropertyName (new PropertyInfoAdapter (endPoints.Right.PropertyInfo));
+        var rightPropertyName = NameResolver.GetPropertyName (endPoints.Right.PropertyInfo);
         return string.Format ("{0}:{1}->{2}", nameGivingEndPoint.ClassDefinition.ClassType.FullName, leftPropertyName, rightPropertyName);
       }
     }

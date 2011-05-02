@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -55,7 +56,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       foreach (var endPoint in classDefinition.MyRelationEndPointDefinitions)
       {
-        var relationDefinition = _mappingObjectFactory.CreateRelationDefinition (classDefinitions, classDefinition, endPoint.PropertyInfo);
+        //TODO RM-3977
+        var relationDefinition = _mappingObjectFactory.CreateRelationDefinition (classDefinitions, classDefinition, ((PropertyInfoAdapter)endPoint.PropertyInfo).PropertyInfo);
         if (!relationDefinitions.ContainsKey (relationDefinition.ID))
         {
           relationDefinition.EndPointDefinitions[0].SetRelationDefinition (relationDefinition);

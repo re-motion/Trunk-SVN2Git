@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly Type _propertyType;
     private readonly string _sortExpressionText;
     private readonly DoubleCheckedLockingContainer<SortExpressionDefinition> _sortExpression;
-    private readonly PropertyInfo _propertyInfo;
+    private readonly IPropertyInformation _propertyInfo;
 
     public VirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,
@@ -61,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyType = propertyType;
       _sortExpressionText = sortExpressionText;
       _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
-      _propertyInfo = propertyInfo;
+      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
     }
 
     public bool CorrespondsTo (string classID, string propertyName)
@@ -107,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyType; }
     }
 
-    public PropertyInfo PropertyInfo
+    public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
     }

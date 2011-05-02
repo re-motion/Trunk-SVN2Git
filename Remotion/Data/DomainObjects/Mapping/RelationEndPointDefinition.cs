@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -95,9 +95,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyDefinition.PropertyType; }
     }
 
-    public PropertyInfo PropertyInfo 
+    public IPropertyInformation PropertyInfo 
     {
-      get { return _propertyDefinition.PropertyInfo; }
+      get { return new PropertyInfoAdapter (_propertyDefinition.PropertyInfo); }
     }
 
     public bool IsVirtual

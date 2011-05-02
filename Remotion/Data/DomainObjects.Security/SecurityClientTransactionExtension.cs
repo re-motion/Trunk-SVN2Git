@@ -17,11 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -31,19 +29,9 @@ namespace Remotion.Data.DomainObjects.Security
   [Serializable]
   public class SecurityClientTransactionExtension : IClientTransactionExtension
   {
-    // types
-
-    // static members
-
-    // member fields
-
     private bool _isActive;
     [NonSerialized]
     private SecurityClient _securityClient;
-
-    // construction and disposing
-
-    // methods and properties
 
     public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
@@ -59,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Security
         return queryResult;
 
       var queryResultList = new List<T> (queryResult.AsEnumerable ());
-      SecurityClient securityClient = GetSecurityClient ();
+      var securityClient = GetSecurityClient ();
       
       clientTransaction.Execute (() =>
       {
@@ -103,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Security
       if (SecurityFreeSection.IsActive)
         return;
 
-      SecurityClient securityClient = GetSecurityClient ();
+      var securityClient = GetSecurityClient ();
       try
       {
         _isActive = true;
@@ -132,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Security
       if (securableObject == null)
         return;
 
-      SecurityClient securityClient = GetSecurityClient ();
+      var securityClient = GetSecurityClient ();
       try
       {
         _isActive = true;
@@ -149,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
+      PropertyReading (clientTransaction, dataContainer.DomainObject, new PropertyInfoAdapter (propertyValue.Definition.PropertyInfo));
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
@@ -160,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyInfo propertyInfo)
+    private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
     {
       if (_isActive)
         return;
@@ -172,12 +160,11 @@ namespace Remotion.Data.DomainObjects.Security
       if (securableObject == null)
         return;
 
-      SecurityClient securityClient = GetSecurityClient();
+      var securityClient = GetSecurityClient();
       try
       {
         _isActive = true;
-        var methodInformation = Maybe.ForValue (propertyInfo.GetGetMethod (true))
-                                    .Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)).ValueOrDefault() ?? new NullMethodInformation();
+        var methodInformation = propertyInfo.GetGetMethod (true) ?? new NullMethodInformation();
         clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, methodInformation));
       }
       finally
@@ -191,7 +178,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
+      PropertyChanging (clientTransaction, dataContainer.DomainObject, new PropertyInfoAdapter (propertyValue.Definition.PropertyInfo));
     }
 
     public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
@@ -202,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Security
       PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
 
-    private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyInfo propertyInfo)
+    private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
     {
       if (_isActive)
         return;
@@ -214,12 +201,11 @@ namespace Remotion.Data.DomainObjects.Security
       if (securableObject == null)
         return;
 
-      SecurityClient securityClient = GetSecurityClient ();
+      var securityClient = GetSecurityClient ();
       try
       {
         _isActive = true;
-        var methodInformation = Maybe.ForValue (propertyInfo.GetSetMethod (true))
-                                    .Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)).ValueOrDefault() ?? new NullMethodInformation();
+        var methodInformation = propertyInfo.GetSetMethod (true) ?? new NullMethodInformation ();
         clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, methodInformation));
       }
       finally

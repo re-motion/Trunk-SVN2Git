@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       if (relationEndPointAsReflectionBasedVirtualRelationEndPoint != null)
       {
         var propertyInfo = relationEndPointAsReflectionBasedVirtualRelationEndPoint.PropertyInfo;
-        var hasRelationAttribute = AttributeUtility.IsDefined<BidirectionalRelationAttribute> (propertyInfo, true);
+        var hasRelationAttribute = propertyInfo.IsDefined<BidirectionalRelationAttribute> (true);
         if (!hasRelationAttribute && !ReflectionUtility.IsDomainObject (propertyInfo.PropertyType))
         {
           return MappingValidationResult.CreateInvalidResultForProperty (

@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Interception
@@ -82,10 +83,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         if (endPointDefinition.IsVirtual)
         {
-          Assertion.IsTrue (endPointDefinition is VirtualRelationEndPointDefinition);
+          Assertion.IsNotNull (endPointDefinition.PropertyInfo);
 
           string propertyIdentifier = endPointDefinition.PropertyName;
-          PropertyInfo property = ((VirtualRelationEndPointDefinition) endPointDefinition).PropertyInfo;
+          //TODO RM-3977
+          var property = ((PropertyInfoAdapter) endPointDefinition.PropertyInfo).PropertyInfo;
 
           AnalyzeAndValidateProperty (property, propertyIdentifier);
         }

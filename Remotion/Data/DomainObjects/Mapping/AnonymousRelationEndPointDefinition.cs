@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return null; }
     }
 
-    public PropertyInfo PropertyInfo 
+    public IPropertyInformation PropertyInfo 
     {
       get { return null; }
     }

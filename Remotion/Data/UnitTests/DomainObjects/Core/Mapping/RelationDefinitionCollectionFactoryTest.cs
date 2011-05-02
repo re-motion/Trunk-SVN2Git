@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -56,14 +57,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinitions = new[] { _orderItemClassDefinition }.ToDictionary (cd => cd.ClassType);
 
+      //TODO RM-3977
       _mappingObjectFactoryMock
           .Expect (
               mock =>
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderItemClassDefinition,
-                  _orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock.Replay();
 
@@ -79,14 +82,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinitions = new[] { _orderClassDefinition }.ToDictionary (cd => cd.ClassType);
 
+      //TODO RM-3977
       _mappingObjectFactoryMock
           .Expect (
               mock =>
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock
           .Expect (
@@ -94,8 +99,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock
           .Expect (
@@ -103,8 +109,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition2);
       _mappingObjectFactoryMock
           .Expect (
@@ -112,8 +119,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition2);
       _mappingObjectFactoryMock.Replay();
 
@@ -128,14 +136,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var classDefinitions = new[] { _orderClassDefinition, _orderItemClassDefinition }.ToDictionary (cd => cd.ClassType);
 
+      //TODO RM-3977
       _mappingObjectFactoryMock
           .Expect (
               mock =>
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock
           .Expect (
@@ -143,8 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
       _mappingObjectFactoryMock
           .Expect (
@@ -152,8 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition2);
       _mappingObjectFactoryMock
           .Expect (
@@ -161,8 +173,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderClassDefinition,
-                  _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition2);
       _mappingObjectFactoryMock
           .Expect (
@@ -170,14 +183,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               mock.CreateRelationDefinition (
                   classDefinitions,
                   _orderItemClassDefinition,
-                  _orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"].
-                      PropertyInfo))
+                  ((PropertyInfoAdapter)
+                   _orderItemClassDefinition.MyRelationEndPointDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]
+                       .PropertyInfo).PropertyInfo))
           .Return (_fakeRelationDefinition1);
-      _mappingObjectFactoryMock.Replay ();
+      _mappingObjectFactoryMock.Replay();
 
       var result = _factory.CreateRelationDefinitionCollection (classDefinitions);
 
-      _mappingObjectFactoryMock.VerifyAllExpectations ();
+      _mappingObjectFactoryMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (new[] { _fakeRelationDefinition1, _fakeRelationDefinition2 }));
     }
   }

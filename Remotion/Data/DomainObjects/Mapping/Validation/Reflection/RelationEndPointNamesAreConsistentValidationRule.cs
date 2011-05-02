@@ -46,13 +46,13 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       if (relationEndPointDefinition.PropertyInfo!=null)
       {
-        var relationAttribute = AttributeUtility.GetCustomAttribute<BidirectionalRelationAttribute> (relationEndPointDefinition.PropertyInfo, true);
+        var relationAttribute = relationEndPointDefinition.PropertyInfo.GetCustomAttribute<BidirectionalRelationAttribute> (true);
         if (relationAttribute != null)
         {
           var oppositeProperty = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
           if (oppositeProperty != null)
           {
-            var oppositeRelationAttribute = AttributeUtility.GetCustomAttribute<BidirectionalRelationAttribute> (oppositeProperty, true);
+            var oppositeRelationAttribute = oppositeProperty.GetCustomAttribute<BidirectionalRelationAttribute> (true);
 
             if (oppositeRelationAttribute == null)
             {

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -45,15 +46,14 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
 
       if (relationEndPointDefinition.PropertyInfo != null)
       {
-        var relationAttribute =
-            (BidirectionalRelationAttribute)
-            AttributeUtility.GetCustomAttribute (relationEndPointDefinition.PropertyInfo, typeof (BidirectionalRelationAttribute), true);
+        var relationAttribute = relationEndPointDefinition.PropertyInfo.GetCustomAttribute<BidirectionalRelationAttribute> (true);
         var oppositePropertyInfo = relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyInfo;
         if (oppositePropertyInfo != null && relationAttribute!=null)
         {
           var classDefinition = relationEndPointDefinition.ClassDefinition;
-          var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
-          var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
+          //TODO RM-3977
+          var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (((PropertyInfoAdapter) oppositePropertyInfo).PropertyInfo);
+          var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (((PropertyInfoAdapter) relationEndPointDefinition.PropertyInfo).PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;
           if (isPropertyDeclaredByThisClassDefinition)
           {

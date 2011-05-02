@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -78,11 +79,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var orderClassDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
       var orderItemClassDefinition = MappingConfiguration.Current.GetClassDefinition ("OrderItem");
 
+      //TODO RM-3977
       var result =
           _factory.CreateRelationDefinition (
               new[] { orderClassDefinition, orderItemClassDefinition }.ToDictionary (cd => cd.ClassType),
               orderItemClassDefinition,
-              orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
+              ((PropertyInfoAdapter) orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo).PropertyInfo);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.EndPointDefinitions[0], 
@@ -100,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
 
       Assert.That (result, Is.TypeOf (typeof (VirtualRelationEndPointDefinition)));
-      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (propertyInfo)));
     }
 
     [Test]

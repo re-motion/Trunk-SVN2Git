@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationRefl
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_AboveInheritanceRoot;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Class1 =
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot.
         Class1;
@@ -391,9 +392,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
       var result = relationReflector.GetMetadata (classDefinitions);
 
-      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
+      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (originatingProperty)));
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
-      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs(oppositeProperty));
+      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (oppositeProperty)));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (classDeclaringOppositeProperty));
     }
 
@@ -439,9 +440,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
       var result = relationReflector.GetMetadata (classDefinitions);
 
-      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
+      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (originatingProperty)));
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
-      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs(oppositeProperty));
+      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (oppositeProperty)));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (classDeclaringOppositeProperty));
     }
 
@@ -473,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
       var result = relationReflector.GetMetadata (classDefinitions);
 
-      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
+      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (originatingProperty)));
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
       Assert.That (result.EndPointDefinitions[1].PropertyInfo.Name, Is.EqualTo ("RelationPropertyOnClassAboveInheritanceRoot"));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (derivedOfClassDeclaringOppositeProperty));
@@ -523,9 +524,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
       var result = relationReflector.GetMetadata (classDefinitions);
 
-      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
+      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (originatingProperty)));
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
-      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs(oppositeProperty));
+      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (oppositeProperty)));
       Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (oppositeClass));
     }
 
