@@ -224,6 +224,7 @@
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignConstraintScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder2.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\BatchDelimiterStatement.cs" />
@@ -233,8 +234,13 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\ISqlIndexDefinitionScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexDefinitionScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexScriptElementFactoryBase.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlPrimaryXmlIndexDefinitionScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSecondaryXmlIndexDefinitionScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSynonymScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactory.cs" />

@@ -281,6 +281,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedSqlUnionViewScriptElementFactory.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexDefinitionScriptElementFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlPrimaryXmlIndexDefinitionScriptElementFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSecondaryXmlIndexDefinitionScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSynonymScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableScriptElementFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\SqlTableViewScriptElementFactoryTest.cs" />
