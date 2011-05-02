@@ -26,7 +26,6 @@ public interface IRelationEndPointDefinition
   string PropertyName { get; }
   Type PropertyType { get; }
   PropertyInfo PropertyInfo { get; }
-  bool IsPropertyInfoResolved { get; }
   bool IsMandatory { get; }
   CardinalityType Cardinality { get; }
   bool IsVirtual { get; }

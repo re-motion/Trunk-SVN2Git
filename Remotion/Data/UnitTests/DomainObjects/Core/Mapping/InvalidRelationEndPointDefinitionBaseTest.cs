@@ -42,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (_invalidEndPointDefinition.PropertyType, Is.SameAs(typeof(string)));
       Assert.That (_invalidEndPointDefinition.IsVirtual, Is.False);
       Assert.That (_invalidEndPointDefinition.IsAnonymous, Is.False);
-      Assert.That (_invalidEndPointDefinition.IsPropertyInfoResolved, Is.False);
     }
 
     [Test]

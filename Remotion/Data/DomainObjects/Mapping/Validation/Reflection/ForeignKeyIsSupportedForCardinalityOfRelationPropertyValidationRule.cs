@@ -46,10 +46,10 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       if (relationEndPointDefinition.IsAnonymous)
         return MappingValidationResult.CreateValidResult();
 
-      if (!relationEndPointDefinition.IsPropertyInfoResolved)
+      var propertyInfo = relationEndPointDefinition.PropertyInfo;
+      if (propertyInfo == null)
         return MappingValidationResult.CreateValidResult();
 
-      var propertyInfo = relationEndPointDefinition.PropertyInfo;
       var relationAttribute = AttributeUtility.GetCustomAttribute<DBBidirectionalRelationAttribute> (propertyInfo, true);
       if (relationAttribute != null && relationAttribute.ContainsForeignKey && ReflectionUtility.IsObjectList (propertyInfo.PropertyType))
       {

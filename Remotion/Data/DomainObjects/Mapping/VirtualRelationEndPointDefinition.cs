@@ -112,11 +112,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyInfo; }
     }
 
-    public bool IsPropertyInfoResolved
-    {
-      get { return true; }
-    }
-
     public bool IsVirtual
     {
       get { return true; }

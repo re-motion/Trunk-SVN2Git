@@ -46,11 +46,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return null; }
     }
 
-    public bool IsPropertyInfoResolved
-    {
-      get { return false; }
-    }
-
     public bool IsMandatory
     {
       get { throw new NotImplementedException(); }

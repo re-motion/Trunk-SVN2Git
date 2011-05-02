@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
       var endPoint2Stub = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
       var relationDefinition = new RelationDefinition ("Test", endPoint1Stub, endPoint2Stub);
 
-      endPoint1Stub.Stub (stub => stub.IsPropertyInfoResolved).Return (false);
-      endPoint2Stub.Stub (stub => stub.IsPropertyInfoResolved).Return (false);
+      endPoint1Stub.Stub (stub => stub.PropertyInfo).Return (null);
+      endPoint2Stub.Stub (stub => stub.PropertyInfo).Return (null);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
