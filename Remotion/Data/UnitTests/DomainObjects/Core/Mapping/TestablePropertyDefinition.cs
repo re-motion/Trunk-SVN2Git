@@ -22,8 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public class TestablePropertyDefinition : PropertyDefinition
   {
-    private readonly PropertyInfo _propertyInfo;
-
     public TestablePropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
         : base (classDefinition, typeof(string).GetProperty("Length"), propertyName, typeof(object), false, maxLength, storageClass)
     {
@@ -32,18 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
       : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
-      _propertyInfo = propertyInfo;
     }
-
-    public override bool IsPropertyTypeResolved
-    {
-      get { return _propertyInfo != null; }
-    }
-
-    public override bool IsPropertyInfoResolved
-    {
-      get { return true; }
-    }
-
   }
 }

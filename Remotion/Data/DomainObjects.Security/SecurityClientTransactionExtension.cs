@@ -149,12 +149,6 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      if (!propertyValue.Definition.IsPropertyInfoResolved)
-      {
-        var message = "The propertyValue does not contain a resolved property information. Security checks are only supported if the mapping can provide the IPropertyInformation object associated with the propertyValue";
-        throw new InvalidOperationException (message);
-      }
-
       PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
@@ -162,12 +156,6 @@ namespace Remotion.Data.DomainObjects.Security
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-
-      if (!relationEndPointDefinition.IsPropertyInfoResolved)
-      {
-        var message = "The relationEndPointDefinition does not contain a resolved property information. Security checks are only supported if the mapping can provide the IPropertyInformation object associated with the relationEndPointDefinition";
-        throw new InvalidOperationException (message);
-      }
 
       PropertyReading (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }
@@ -203,12 +191,6 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      if (!propertyValue.Definition.IsPropertyInfoResolved)
-      {
-        var message = "The propertyValue does not contain a resolved property information. Security checks are only supported if the mapping can provide the IPropertyInformation object associated with the propertyValue";
-        throw new InvalidOperationException (message);
-      }
-
       PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
@@ -216,12 +198,6 @@ namespace Remotion.Data.DomainObjects.Security
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-
-      if (!relationEndPointDefinition.IsPropertyInfoResolved)
-      {
-        var message = "The relationEndPointDefinition does not contain a resolved property information. Security checks are only supported if the mapping can provide the IPropertyInformation object associated with the relationEndPointDefinition";
-        throw new InvalidOperationException (message);
-      }
 
       PropertyChanging (clientTransaction, domainObject, relationEndPointDefinition.PropertyInfo);
     }

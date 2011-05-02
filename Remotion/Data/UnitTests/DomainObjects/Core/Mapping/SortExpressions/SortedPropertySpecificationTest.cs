@@ -19,8 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 {
@@ -33,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
     private ClassDefinition _customerClassDefinition;
     private PropertyDefinition _customerSincePropertyDefinition;
-    private PropertyDefinition _customerTypePropertyDefinition;
 
     public override void SetUp ()
     {
@@ -44,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
 
       _customerClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Customer));
       _customerSincePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".CustomerSince");
-      _customerTypePropertyDefinition = _customerClassDefinition.GetMandatoryPropertyDefinition (typeof (Customer).FullName + ".Type");
     }
 
     [Test]
@@ -67,20 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
-    public void Initialization_NotResolvedType ()
-    {
-      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithAllDataTypes));
-      var fakePropertyDefinition = MockRepository.GenerateStub<PropertyDefinition> (
-          classDefinition, typeof (string).GetProperty ("Length"), "BinaryProperty", typeof (int), false, null, StorageClass.Persistent);
-      Assert.That (fakePropertyDefinition.IsPropertyTypeResolved, Is.False);
-
-      var result = new SortedPropertySpecification (fakePropertyDefinition, SortOrder.Ascending);
-
-      Assert.That (result.PropertyDefinition, Is.SameAs (fakePropertyDefinition));
-    }
-
-    [Test]
-    public new void ToString ()
+    public void To_String ()
     {
       var specificationAsc = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Ascending);
       var specificationDesc = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Descending);
@@ -104,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.SortExpressions
     }
 
     [Test]
-    public new void GetHashCode ()
+    public void Get_HashCode ()
     {
       var specification1 = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Ascending);
       var specification2 = new SortedPropertySpecification (_productPropertyDefinition, SortOrder.Ascending);

@@ -31,9 +31,7 @@ namespace Remotion.Data.DomainObjects.Mapping.SortExpressions
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      var underlyingType = propertyDefinition.IsPropertyTypeResolved
-        ? Nullable.GetUnderlyingType (propertyDefinition.PropertyType) ?? propertyDefinition.PropertyType
-        : null;
+      var underlyingType = Nullable.GetUnderlyingType (propertyDefinition.PropertyType) ?? propertyDefinition.PropertyType;
 
       if (underlyingType != null && !typeof (IComparable).IsAssignableFrom (underlyingType))
       {

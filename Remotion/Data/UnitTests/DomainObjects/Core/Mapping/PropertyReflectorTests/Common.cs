@@ -37,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       Assert.IsNotNull (actual);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ClassWithAllDataTypes.BooleanProperty", actual.PropertyName);
       Assert.AreEqual ("Boolean", StorageModelTestHelper.GetColumnName(actual));
-      Assert.IsTrue (actual.IsPropertyTypeResolved);
       Assert.AreSame (typeof (bool), actual.PropertyType);
     }
   }

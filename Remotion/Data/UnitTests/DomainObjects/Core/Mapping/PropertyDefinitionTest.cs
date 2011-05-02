@@ -50,7 +50,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.MaxLength, Is.Null);
       Assert.That (actual.PropertyName, Is.EqualTo ("Test"));
       Assert.That (actual.PropertyType, Is.EqualTo (typeof (string)));
-      Assert.That (actual.IsPropertyTypeResolved, Is.True);
       Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
       Assert.That (actual.IsObjectID, Is.False);
       Assert.That (actual.PropertyInfo, Is.SameAs (_propertyInfo));

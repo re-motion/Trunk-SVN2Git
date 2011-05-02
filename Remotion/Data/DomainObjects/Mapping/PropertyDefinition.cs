@@ -96,19 +96,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _propertyInfo; }
     }
 
-    public virtual bool IsPropertyInfoResolved
-    {
-      get { return true; }
-    }
-
     public Type PropertyType
     {
       get { return _propertyType; }
-    }
-
-    public virtual bool IsPropertyTypeResolved
-    {
-      get { return true; }
     }
 
     public object DefaultValue
