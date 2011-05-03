@@ -50,6 +50,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
+    public void Initialization_IEnumerableOverload ()
+    {
+      var element1 = new ScriptStatement ("Test1");
+      var element2 = new ScriptStatement ("Test2");
+
+      var elements = new List<IScriptElement>();
+      elements.Add (element1);
+      elements.Add (element2);
+
+      var elementCollection = new ScriptElementCollection (elements);
+
+      Assert.That(elementCollection.Elements, Is.EqualTo(new[]{element1, element2}));
+    }
+
+    [Test]
     public void AppendToScript_NoElements ()
     {
       var script = new List<ScriptStatement>();

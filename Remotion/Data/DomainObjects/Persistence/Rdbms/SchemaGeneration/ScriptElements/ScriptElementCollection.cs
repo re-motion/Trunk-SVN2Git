@@ -33,6 +33,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
       _elements = new List<IScriptElement>();
     }
 
+    public ScriptElementCollection (IEnumerable<IScriptElement> elements)
+    {
+      _elements = new List<IScriptElement> (elements);
+    }
+
     public ReadOnlyCollection<IScriptElement> Elements
     {
       get { return _elements.AsReadOnly(); }

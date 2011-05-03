@@ -20,6 +20,7 @@ using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Linq.SqlBackend.SqlStatementModel;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
@@ -67,6 +68,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _dialect.AddBatchForScript (script);
 
       Assert.That (script.ToString(), Is.EqualTo ("testGO\r\n\r\n"));
+    }
+
+    [Test]
+    public void AdjustForConnectionString ()
+    {
+      var script = new List<ScriptStatement>();
+      var connectionString = "Data Source=myServerAddress;Initial Catalog=MyDataBase;User Id=myUsername;Password=myPassword;";
+      script.Add (new ScriptStatement ("Test"));
+
+      _dialect.AdjustForConnectionString (script, connectionString);
+
+      Assert.That (script.Count, Is.EqualTo (2));
+      Assert.That (script[0].Statement, Is.EqualTo ("USE MyDataBase"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
+    public void AdjustForConnectionString_NoMarkerFound ()
+    {
+      _dialect.AdjustForConnectionString (new List<ScriptStatement> (), "Teststring");
     }
 
     [Test]
