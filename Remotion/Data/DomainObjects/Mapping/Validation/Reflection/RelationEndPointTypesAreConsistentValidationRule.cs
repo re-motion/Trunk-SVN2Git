@@ -50,7 +50,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         if (oppositePropertyInfo != null && relationAttribute!=null)
         {
           var classDefinition = relationEndPointDefinition.ClassDefinition;
-          //TODO RM-3977
           var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
           var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;
