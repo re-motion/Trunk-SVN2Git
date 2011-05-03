@@ -56,17 +56,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         _elementFactory = elementFactory;
       }
 
-      public void VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
+      void ISqlIndexDefinitionVisitor.VisitIndexDefinition (SqlIndexDefinition sqlIndexDefinition)
       {
         _elementFactory.AddIndexDefinition (sqlIndexDefinition);
       }
 
-      public void VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
+      void ISqlIndexDefinitionVisitor.VisitPrimaryXmlIndexDefinition (SqlPrimaryXmlIndexDefinition primaryXmlIndexDefinition)
       {
         _elementFactory.AddPrimaryXmlIndexDefinition (primaryXmlIndexDefinition);
       }
 
-      public void VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
+      void ISqlIndexDefinitionVisitor.VisitSecondaryXmlIndexDefinition (SqlSecondaryXmlIndexDefinition secondaryXmlIndexDefinition)
       {
         _elementFactory.AddSecondaryXmlIndexDefinition (secondaryXmlIndexDefinition);
       }
