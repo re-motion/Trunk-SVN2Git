@@ -223,7 +223,7 @@
     <Compile Include="Persistence\Rdbms\Model\EntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignConstraintScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder2.cs" />

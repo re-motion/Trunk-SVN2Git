@@ -24,10 +24,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="ForeignConstraintScriptBuilder"/> contains database-independent code to generate scripts to create and drop foreign constraints in 
+  /// <see cref="ForeignKeyConstraintScriptBuilder"/> contains database-independent code to generate scripts to create and drop foreign constraints in 
   /// a relational database.
   /// </summary>
-  public class ForeignConstraintScriptBuilder : IScriptBuilder2
+  public class ForeignKeyConstraintScriptBuilder : IScriptBuilder2
   {
     private readonly IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>> _foreignKeyConstraintElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
@@ -35,9 +35,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     private class EntityDefinitionVisitor : IEntityDefinitionVisitor
     {
-      private readonly ForeignConstraintScriptBuilder _builder;
+      private readonly ForeignKeyConstraintScriptBuilder _builder;
 
-      public EntityDefinitionVisitor (ForeignConstraintScriptBuilder builder)
+      public EntityDefinitionVisitor (ForeignKeyConstraintScriptBuilder builder)
       {
         _builder = builder;
       }
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    public ForeignConstraintScriptBuilder (
+    public ForeignKeyConstraintScriptBuilder (
         IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>> foreignKeyConstraintElementFactory)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintElementFactory", foreignKeyConstraintElementFactory);

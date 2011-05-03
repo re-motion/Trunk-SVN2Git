@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _table1));
 
       var expectedResult =
-        "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' "
+        "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' "
         +"AND fk.name = 'FK1' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'TableName1')\r\n"
         +"  ALTER TABLE [dbo].[TableName1] DROP CONSTRAINT FK1";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint2, _table2));
 
       var expectedResult = 
-        "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id where fk.type = 'F' "
+        "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' "
         +"AND fk.name = 'FK2' AND schema_name (t.schema_id) = 'SchemaName' AND t.name = 'TableName2')\r\n"
         +"  ALTER TABLE [SchemaName].[TableName2] DROP CONSTRAINT FK2";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
