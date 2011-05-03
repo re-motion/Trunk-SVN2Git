@@ -238,6 +238,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexDefinitionScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexScriptElementFactoryBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlPrimaryXmlIndexDefinitionScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlSecondaryXmlIndexDefinitionScriptElementFactory.cs" />
