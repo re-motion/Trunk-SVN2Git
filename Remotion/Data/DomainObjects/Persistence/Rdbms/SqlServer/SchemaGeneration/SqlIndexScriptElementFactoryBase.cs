@@ -29,7 +29,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <see cref="SqlIndexScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script 
   /// elements for creating indexes in a relational database.
   /// </summary>
-  public abstract class SqlIndexScriptElementFactoryBase<T> : ISqlIndexDefinitionScriptElementFactory<T> where T:SqlIndexDefinitionBase
+  public abstract class SqlIndexScriptElementFactoryBase<T> : ISqlIndexDefinitionScriptElementFactory<T>
+      where T: SqlIndexDefinitionBase
   {
     public abstract IScriptElement GetCreateElement (T indexDefinition);
 
@@ -40,12 +41,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return new ScriptStatement (
           string.Format (
               "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] "
-              + "WHERE so.[name] = '{0}' and schema_name (so.schema_id)='{1}' and si.[name] = '{2}')\r\n"
+              + "WHERE so.[name] = '{0}' AND schema_name (so.schema_id)='{1}' AND si.[name] = '{2}')\r\n"
               + "  DROP INDEX [{2}] ON [{1}].[{0}]",
               indexDefinition.ObjectName.EntityName,
               indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
               indexDefinition.IndexName));
-    
     }
 
     protected string GetColumnList (IEnumerable<IColumnDefinition> columnDefinitions)
@@ -58,32 +58,41 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return SeparatedStringBuilder.Build (
           ", ",
           indexedColumnDefinitions.Select (
-              cd => "["+cd.Columnn.Name+"]"+ (cd.IndexOrder.HasValue ? " " + cd.IndexOrder.ToString ().ToUpper () : string.Empty)));
+              cd => "[" + cd.Columnn.Name + "]" + (cd.IndexOrder.HasValue ? " " + cd.IndexOrder.ToString().ToUpper() : string.Empty)));
     }
 
     protected virtual string GetCreateIndexOptions (IEnumerable<string> optionItems)
     {
-      return optionItems.Any () ? "\r\n  WITH (" + SeparatedStringBuilder.Build (", ", optionItems) + ")" : string.Empty;
+      var filteredItems = optionItems.Where (oi => !string.IsNullOrEmpty (oi)).ToList();
+      return filteredItems.Any() ? "\r\n  WITH (" + SeparatedStringBuilder.Build (", ", filteredItems) + ")" : string.Empty;
     }
 
-    protected virtual IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinitionBase indexDefinition)
+    protected virtual IEnumerable<string> GetCreateIndexOptionItems (T indexDefinition)
     {
-      if (indexDefinition.PadIndex.HasValue)
-        yield return string.Format ("PAD_INDEX = {0}", indexDefinition.PadIndex.Value ? "ON" : "OFF");
-      if (indexDefinition.FillFactor.HasValue)
-        yield return string.Format ("FILLFACTOR = {0}", indexDefinition.FillFactor.Value);
-      if (indexDefinition.SortInDb.HasValue)
-        yield return string.Format ("SORT_IN_TEMPDB = {0}", indexDefinition.SortInDb.Value ? "ON" : "OFF");
-      if (indexDefinition.StatisticsNoReCompute.HasValue)
-        yield return string.Format ("STATISTICS_NORECOMPUTE = {0}", indexDefinition.StatisticsNoReCompute.Value ? "ON" : "OFF");
-      if (indexDefinition.DropExisiting.HasValue)
-        yield return string.Format ("DROP_EXISTING = {0}", indexDefinition.DropExisiting.Value ? "ON" : "OFF");
-      if (indexDefinition.AllowRowLocks.HasValue)
-        yield return string.Format ("ALLOW_ROW_LOCKS = {0}", indexDefinition.AllowRowLocks.Value ? "ON" : "OFF");
-      if (indexDefinition.AllowPageLocks.HasValue)
-        yield return string.Format ("ALLOW_PAGE_LOCKS = {0}", indexDefinition.AllowPageLocks.Value ? "ON" : "OFF");
-      if (indexDefinition.MaxDop.HasValue)
-        yield return string.Format ("MAXDOP = {0}", indexDefinition.MaxDop.Value);
+      yield return GetIndexOption("PAD_INDEX", indexDefinition.PadIndex);
+      yield return GetIndexOption ("FILLFACTOR", indexDefinition.FillFactor);
+      yield return GetIndexOption ("SORT_IN_TEMPDB", indexDefinition.SortInDb);
+      yield return GetIndexOption ("STATISTICS_NORECOMPUTE", indexDefinition.StatisticsNoReCompute);
+      yield return GetIndexOption ("DROP_EXISTING", indexDefinition.DropExisiting);
+      yield return GetIndexOption ("ALLOW_ROW_LOCKS", indexDefinition.AllowRowLocks);
+      yield return GetIndexOption ("ALLOW_PAGE_LOCKS", indexDefinition.AllowPageLocks);
+      yield return GetIndexOption ("MAXDOP", indexDefinition.MaxDop);
+    }
+
+    protected string GetIndexOption (string optionName , bool? optionValue)
+    {
+      if (optionValue.HasValue)
+        return string.Format ("{0} = {1}", optionName, optionValue.Value ? "ON" : "OFF");
+      else
+        return string.Empty;
+    }
+
+    protected string GetIndexOption (string optionName , int? optionValue)
+    {
+      if (optionValue.HasValue)
+        return string.Format ("{0} = {1}", optionName, optionValue.Value);
+      else
+        return string.Empty;
     }
   }
 }

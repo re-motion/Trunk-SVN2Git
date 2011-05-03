@@ -48,19 +48,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
          GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))));
     }
 
-    protected override IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinitionBase indexDefinition)
+    protected override IEnumerable<string> GetCreateIndexOptionItems (SqlIndexDefinition indexDefinition)
     {
-      var indexDefinitionAsIndexDefinition = indexDefinition as SqlIndexDefinition;
-      if (indexDefinitionAsIndexDefinition != null)
-      {
-        if (indexDefinitionAsIndexDefinition.IgnoreDupKey.HasValue)
-          yield return string.Format ("IGNORE_DUP_KEY = {0}", indexDefinitionAsIndexDefinition.IgnoreDupKey.Value ? "ON" : "OFF");
-        if (indexDefinitionAsIndexDefinition.Online.HasValue)
-          yield return string.Format ("ONLINE = {0}", indexDefinitionAsIndexDefinition.Online.Value ? "ON" : "OFF");
-      }
-
-      foreach (var option in base.GetCreateIndexOptionItems (indexDefinition).ToList())
-        yield return option;
+      var options = new List<string>();
+      options.Add (GetIndexOption ("IGNORE_DUP_KEY", indexDefinition.IgnoreDupKey));
+      options.Add (GetIndexOption ("ONLINE", indexDefinition.Online));
+      options.AddRange (base.GetCreateIndexOptionItems (indexDefinition));
+      return options;
     }
   }
 }

@@ -72,17 +72,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       }
     }
 
-    public IScriptElement GetCreateElement (IIndexDefinition table)
+    public IScriptElement GetCreateElement (IIndexDefinition indexDefinition)
     {
+      ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+
       var visitor = new IndexDefinitionVisitor (this);
-      table.Accept (visitor);
+      indexDefinition.Accept (visitor);
       return _createScriptElement;
     }
 
-    public IScriptElement GetDropElement (IIndexDefinition table)
+    public IScriptElement GetDropElement (IIndexDefinition indexDefinition)
     {
+      ArgumentUtility.CheckNotNull ("indexDefinition", indexDefinition);
+
       var visitor = new IndexDefinitionVisitor (this);
-      table.Accept (visitor);
+      indexDefinition.Accept (visitor);
       return _dropScriptElement;
     }
 

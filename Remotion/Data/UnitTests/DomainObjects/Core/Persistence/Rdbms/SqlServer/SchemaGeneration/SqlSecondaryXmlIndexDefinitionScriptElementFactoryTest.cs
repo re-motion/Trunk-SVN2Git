@@ -141,8 +141,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.GetDropElement (_indexDefinitionWithCustomSchema);
 
       var expectedResult =
-          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName1' and "
-          + "schema_name (so.schema_id)='SchemaName' and si.[name] = 'Index1')\r\n"
+          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName1' AND "
+          + "schema_name (so.schema_id)='SchemaName' AND si.[name] = 'Index1')\r\n"
           + "  DROP INDEX [Index1] ON [SchemaName].[TableName1]";
 
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -155,8 +155,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _factory.GetDropElement (_indexDefinitionWithDefaultSchema);
 
       var expectedResult =
-          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName2' and "
-          + "schema_name (so.schema_id)='dbo' and si.[name] = 'Index2')\r\n"
+          "IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'TableName2' AND "
+          + "schema_name (so.schema_id)='dbo' AND si.[name] = 'Index2')\r\n"
           + "  DROP INDEX [Index2] ON [dbo].[TableName2]";
 
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));

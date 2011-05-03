@@ -27,9 +27,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class SqlIndexScriptElementFactoryTest : SchemaGenerationTestBase
   {
-    private ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition> _indexDefinitionElementFactoryStub;
-    private ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition> _primaryIndexDefinitionElementFactoryStub;
-    private ISqlIndexDefinitionScriptElementFactory<SqlSecondaryXmlIndexDefinition> _secondaryIndexDefinitionElementFactoryStub;
+    private ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition> _indexDefinitionElementFactoryMock;
+    private ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition> _primaryIndexDefinitionElementFactoryMock;
+    private ISqlIndexDefinitionScriptElementFactory<SqlSecondaryXmlIndexDefinition> _secondaryIndexDefinitionElementFactoryMock;
     private SqlIndexDefinition _indexDefinition;
     private SqlPrimaryXmlIndexDefinition _primaryIndexDefinition;
     private SqlSecondaryXmlIndexDefinition _secondaryIndexDefinition;
@@ -40,13 +40,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp();
 
-      _indexDefinitionElementFactoryStub = MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition>>();
-      _primaryIndexDefinitionElementFactoryStub = MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition>> ();
-      _secondaryIndexDefinitionElementFactoryStub =
+      _indexDefinitionElementFactoryMock = MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition>>();
+      _primaryIndexDefinitionElementFactoryMock = MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition>> ();
+      _secondaryIndexDefinitionElementFactoryMock =
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlSecondaryXmlIndexDefinition>>();
 
       _factory = new SqlIndexScriptElementFactory (
-          _indexDefinitionElementFactoryStub, _primaryIndexDefinitionElementFactoryStub, _secondaryIndexDefinitionElementFactoryStub);
+          _indexDefinitionElementFactoryMock, _primaryIndexDefinitionElementFactoryMock, _secondaryIndexDefinitionElementFactoryMock);
 
       var simpleColumn = new SimpleColumnDefinition ("Column", typeof (int), "integer", false, false);
       var indexedColumn = new SqlIndexedColumnDefinition (simpleColumn, IndexOrder.Desc);
@@ -62,8 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_IndexDefinition ()
     {
-      _indexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetCreateElement (_indexDefinition))
+      _indexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetCreateElement (_indexDefinition))
           .Return (_fakeScriptElement);
       
       var result = _factory.GetCreateElement (_indexDefinition);
@@ -74,8 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_PrimaryIndexDefinition ()
     {
-      _primaryIndexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetCreateElement (_primaryIndexDefinition))
+      _primaryIndexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetCreateElement (_primaryIndexDefinition))
           .Return (_fakeScriptElement);
 
       var result = _factory.GetCreateElement (_primaryIndexDefinition);
@@ -86,8 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_SecondaryIndexDefinition ()
     {
-      _secondaryIndexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetCreateElement (_secondaryIndexDefinition))
+      _secondaryIndexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetCreateElement (_secondaryIndexDefinition))
           .Return (_fakeScriptElement);
 
       var result = _factory.GetCreateElement (_secondaryIndexDefinition);
@@ -98,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_IndexDefinition ()
     {
-      _indexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetDropElement (_indexDefinition))
+      _indexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetDropElement (_indexDefinition))
           .Return (_fakeScriptElement);
 
       var result = _factory.GetDropElement (_indexDefinition);
@@ -110,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_PrimaryIndexDefinition ()
     {
-      _primaryIndexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetDropElement (_primaryIndexDefinition))
+      _primaryIndexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetDropElement (_primaryIndexDefinition))
           .Return (_fakeScriptElement);
 
       var result = _factory.GetDropElement (_primaryIndexDefinition);
@@ -122,8 +122,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_SecondaryIndexDefinition ()
     {
-      _secondaryIndexDefinitionElementFactoryStub
-          .Expect (stub => stub.GetDropElement (_secondaryIndexDefinition))
+      _secondaryIndexDefinitionElementFactoryMock
+          .Stub (stub => stub.GetDropElement (_secondaryIndexDefinition))
           .Return (_fakeScriptElement);
 
       var result = _factory.GetDropElement (_secondaryIndexDefinition);
