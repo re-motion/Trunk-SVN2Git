@@ -20,14 +20,8 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
@@ -94,7 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Contains_True ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      _map.RegisterRealObjectEndPoint (endPointID, RelationEndPointTestHelper.CreateNewDataContainer (endPointID));
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointStub);
 
       Assert.That (_map.Contains (endPointID), Is.True);
     }
@@ -342,17 +338,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void GetRelationEndPointWithMinimumLoading_EndPointAlreadyAvailable ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var endPoint = CallRegisterVirtualObjectEndPoint (_map, endPointID);
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Replay ();
+
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointMock);
 
       Assert.That (_map[endPointID], Is.Not.Null);
-      Assert.That (_map[endPointID], Is.SameAs (endPoint));
-      Assert.That (endPoint.IsDataComplete, Is.False);
+      Assert.That (_map[endPointID], Is.SameAs (endPointMock));
 
       var result = _map.GetRelationEndPointWithMinimumLoading (endPointID);
       
-      Assert.That (result, Is.SameAs (endPoint));
-      Assert.That (_map[endPointID], Is.SameAs (endPoint));
-      Assert.That (endPoint.IsDataComplete, Is.False);
+      Assert.That (result, Is.SameAs (endPointMock));
+      Assert.That (_map[endPointID], Is.SameAs (endPointMock));
     }
 
     [Test]
@@ -383,384 +381,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[endPointID.ObjectID], Is.Not.Null);
       Assert.That (_map[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void RegisterVirtualObjectEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-
-      var objectEndPoint = CallRegisterVirtualObjectEndPoint (_map, id);
-
-      Assert.That (objectEndPoint.ID, Is.EqualTo (id));
-      Assert.That (objectEndPoint.IsDataComplete, Is.False);
-      Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
-      Assert.That (objectEndPoint.DataKeeperFactory, Is.SameAs (_map.VirtualObjectEndPointDataKeeperFactory));
-
-      Assert.That (_map[id], Is.SameAs (objectEndPoint));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"]));
-      Assert.That (objectEndPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
-
-      Assert.That (_map[id], Is.SameAs (objectEndPoint));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersOppositeVirtualObjectEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      var expectedOppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var oppositeEndPoint = (VirtualObjectEndPoint) _map[expectedOppositeEndPointID];
-      Assert.That (oppositeEndPoint, Is.Not.Null);
-      Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_WithNullValue ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, null);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualEndPointAlreadyRegistered_NotComplete_RootTransaction_MarkedComplete ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-
-      var domainObjectReference = LifetimeService.GetObjectReference (ClientTransactionMock, id.ObjectID);
-
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
-      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
-      virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
-      virtualObjectEndPointMock.Expect (mock => mock.MarkDataComplete (domainObjectReference));
-      virtualObjectEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointMock);
-
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      virtualObjectEndPointMock.VerifyAllExpectations ();
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualEndPointAlreadyRegistered_NotComplete_SubTransaction_LeftIncomplete ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
-      var subTransactionMap = (RelationEndPointMap) ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap;
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
-      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
-      virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
-      virtualObjectEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (subTransactionMap, virtualObjectEndPointMock);
-
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = subTransactionMap.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (Arg<DomainObject>.Is.Anything));
-      virtualObjectEndPointMock.VerifyAllExpectations ();
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualEndPointAlreadyRegistered_AlreadyComplete ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (virtualObjectEndPointID);
-      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
-      virtualObjectEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
-      virtualObjectEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, virtualObjectEndPointMock);
-
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      virtualObjectEndPointMock.VerifyAllExpectations ();
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualObjectEndPoint_VirtualObjectNotRegisteredYet ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var virtualObjectEndPoint = (VirtualObjectEndPoint) _map[virtualObjectEndPointID];
-      Assert.That (virtualObjectEndPoint.IsDataComplete, Is.True);
-      Assert.That (
-          ((CompleteVirtualObjectEndPointLoadState) VirtualObjectEndPointTestHelper.GetLoadState (virtualObjectEndPoint)).DataKeeper.
-              CurrentOppositeEndPoint,
-          Is.SameAs (realObjectEndPoint));
-
-      Assert.That (
-          RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
-          Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)),
-          "Because real end-point was registered with virtual end-point.");
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionAlreadyRegistered ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-
-      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
-      collectionEndPointMock.Stub (stub => stub.ID).Return (collectionEndPointID);
-      collectionEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Matches (endPoint => endPoint.ID == id)));
-      collectionEndPointMock.Replay();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointMock);
-
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      collectionEndPointMock.VerifyAllExpectations();
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_RegistersReferenceWithOppositeVirtualCollectionEndPoint_CollectionNotRegisteredYet ()
-    {
-      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      var collectionEndPoint = (CollectionEndPoint) _map[collectionEndPointID];
-      Assert.That (collectionEndPoint.IsDataComplete, Is.False);
-
-      Assert.That (
-          ((IncompleteCollectionEndPointLoadState) CollectionEndPointTestHelper.GetLoadState (collectionEndPoint)).OriginalOppositeEndPoints,
-          Has.Member (realObjectEndPoint));
-
-      Assert.That (
-          RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint),
-          Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)),
-          "Because collection's state is incomplete.");
-    }
-
-    [Test]
-    public void RegisterRealObjectEndPoint_WithOppositeAnonymousEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
-
-      var realObjectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-
-      Assert.That (RealObjectEndPointTestHelper.GetSyncState (realObjectEndPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_UnregistersEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      Assert.That (_map[id], Is.Not.Null);
-
-      _map.UnregisterRealObjectEndPoint (id);
-
-      Assert.That (_map[id], Is.Null);
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_UnregistersFromOppositeVirtualObjectEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      var realEndPoint = new RealObjectEndPoint (
-          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
-      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
-
-      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
-      oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
-      oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      oppositeEndPointMock.Stub (stub => stub.CanBeCollected).Return (false);
-      oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
-      oppositeEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
-      
-      _map.UnregisterRealObjectEndPoint (id);
-
-      oppositeEndPointMock.VerifyAllExpectations();
-      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_UnregistersFromOppositeVirtualCollectionEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      var realEndPoint = new RealObjectEndPoint (
-          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
-      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
-
-      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
-      oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
-      oppositeEndPointMock.Stub (stub => stub.HasChanged).Return (false);
-      oppositeEndPointMock.Stub (stub => stub.CanBeCollected).Return (false);
-      oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (realEndPoint));
-      oppositeEndPointMock.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointMock);
-
-      _map.UnregisterRealObjectEndPoint (id);
-
-      oppositeEndPointMock.VerifyAllExpectations();
-      Assert.That (_map[oppositeEndPointID], Is.Not.Null);
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_RemovesOppositeVirtualObjectEndPoint_IfCanBeCollected ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-      var realEndPoint = new RealObjectEndPoint (
-          ClientTransactionMock, id, foreignKeyDataContainer, ClientTransactionMock.DataManager, ClientTransactionMock.DataManager);
-      RelationEndPointMapTestHelper.AddEndPoint (_map, realEndPoint);
-
-      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
-      oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
-      oppositeEndPointStub.Stub (stub => stub.HasChanged).Return (false);
-      oppositeEndPointStub.Stub (stub => stub.CanBeCollected).Return (true);
-      oppositeEndPointStub.Replay ();
-
-      RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPointStub);
-
-      _map.UnregisterRealObjectEndPoint (id);
-
-      oppositeEndPointStub.VerifyAllExpectations ();
-      Assert.That (_map[oppositeEndPointID], Is.Null);
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_OppositeVirtualCollectionEndPointNotLoaded ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      RelationEndPointMapTestHelper.RemoveEndPoint (_map, oppositeEndPointID);
-      Assert.That (_map[oppositeEndPointID], Is.Null);
-
-      _map.UnregisterRealObjectEndPoint (id);
-
-      Assert.That (_map[oppositeEndPointID], Is.Null);
-    }
-
-    [Test]
-    public void UnregisterRealObjectEndPoint_OppositeAnonymousEndPoint ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Client1);
-
-      _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      var oppositeEndPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, id.Definition.GetOppositeEndPointDefinition());
-      Assert.That (_map[oppositeEndPointID], Is.Null);
-
-      _map.UnregisterRealObjectEndPoint (id);
-
-      Assert.That (_map[oppositeEndPointID], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The given end-point is not part of this map.\r\nParameter name: endPointID")]
-    public void UnregisterRealObjectEndPoint_ThrowsWhenNotRegistered ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-
-      _map.UnregisterRealObjectEndPoint (id);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot remove end-point "
-        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' because "
-        + "it has changed. End-points can only be unregistered when they are unchanged.")]
-    public void UnregisterRealObjectEndPoint_ThrowsWhenChanged ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyDataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (id, DomainObjectIDs.Order1);
-
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
-      Assert.That (_map[id], Is.Not.Null);
-
-      Assert.That (objectEndPoint.OppositeObjectID, Is.Not.Null);
-      RealObjectEndPointTestHelper.SetOppositeObjectID (objectEndPoint, null);
-      Assert.That (objectEndPoint.HasChanged, Is.True);
-
-      try
-      {
-        _map.UnregisterRealObjectEndPoint (id);
-      }
-      finally
-      {
-        Assert.That (_map[id], Is.SameAs (objectEndPoint));
-      }
-    }
-
-    [Test]
-    public void RegisterCollectionEndPoint_RegistersEndPoint ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-
-      Assert.That (_map[endPointID], Is.Not.Null);
-      Assert.That (_map[endPointID], Is.SameAs (endPoint));
-
-      Assert.That (endPoint.IsDataComplete, Is.False);
-      Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (endPoint.ID, Is.EqualTo (endPointID));
-      Assert.That (endPoint.LazyLoader, Is.SameAs (_map.LazyLoader));
-      Assert.That (endPoint.EndPointProvider, Is.SameAs (_map.EndPointProvider));
-      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_map.CollectionEndPointDataKeeperFactory));
     }
 
     [Test]
@@ -891,10 +511,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand>());
-      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_map));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.Member (realEndPointID));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.No.Member (virtualObjectEndPointID));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.No.Member (collectionEndPointID));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (_map[realEndPointID]));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.No.Member (virtualObjectEndPointStub));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.No.Member (collectionEndPointStub));
     }
 
     [Test]
@@ -913,10 +533,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_map));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.Member (realEndPointID));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.Member (virtualObjectEndPointID));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Has.Member (collectionEndPointID));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (_map[realEndPointID]));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (_map[virtualObjectEndPointID]));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (_map[collectionEndPointID]));
     }
 
     [Test]
@@ -926,8 +546,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_map));
-      Assert.That (((UnregisterEndPointsCommand) command).EndPointIDs, Is.Empty);
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Is.Empty);
     }
     
     [Test]
@@ -1074,76 +694,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CommitAllEndPoints_CommitsEndPoints ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-      endPoint.MarkDataComplete (new DomainObject[0]);
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint>();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.Commit());
+      endPointMock.Replay();
 
-      var addedObject = Order.NewObject();
-      endPoint.Collection.Add (addedObject);
-      Assert.That (endPoint.HasChanged, Is.True);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointMock);
 
       _map.CommitAllEndPoints();
 
-      Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.Collection, Is.EqualTo (new[] { addedObject }));
+      endPointMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void RollbackAllEndPoints_RollsBackEndPoints ()
+    public void RollbackAllEndPoints_RollsbackEndPoints ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPoint = _map.RegisterCollectionEndPoint (endPointID);
-      endPoint.MarkDataComplete (new DomainObject[0]);
+      RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.Commit ());
+      endPointMock.Replay ();
 
-      var addedObject = Order.NewObject();
-      endPoint.Collection.Add (addedObject);
-      Assert.That (endPoint.HasChanged, Is.True);
+      RelationEndPointMapTestHelper.AddEndPoint (_map, endPointMock);
 
-      _map.RollbackAllEndPoints();
+      _map.CommitAllEndPoints ();
 
-      Assert.That (endPoint.HasChanged, Is.False);
-      Assert.That (endPoint.Collection, Is.Empty);
-    }
-
-    [Test]
-    public void RemoveEndPoint_RemovesEndPoint ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RegisterCollectionEndPoint (endPointID);
-      Assert.That (_map[endPointID], Is.Not.Null);
-
-      _map.RemoveEndPoint (endPointID);
-
-      Assert.That (_map[endPointID], Is.Null);
-    }
-
-    [Test]
-    public void RemoveEndPoint_RaisesNotification_BeforeRemoving ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RegisterCollectionEndPoint (endPointID);
-      Assert.That (_map[endPointID], Is.Not.Null);
-
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      listenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (ClientTransactionMock, endPointID))
-          .WhenCalled (mi => Assert.That (_map[endPointID], Is.Not.Null));
-      ClientTransactionMock.AddListener (listenerMock);
-
-      listenerMock.Replay();
-
-      _map.RemoveEndPoint (endPointID);
-
-      listenerMock.VerifyAllExpectations();
-      listenerMock.BackToRecord(); // For Discard
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "End point 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is "
-        + "not part of this map.\r\nParameter name: endPointID")]
-    public void RemoveEndPoint_NonExistingEndPoint ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RemoveEndPoint (endPointID);
+      endPointMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -1222,11 +798,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       RelationEndPointMapTestHelper.AddEndPoint (_map, objectEndPointStub);
 
       _map.GetOppositeEndPointWithLazyLoad (objectEndPointStub, DomainObjectIDs.Client1);
-    }
-
-    private VirtualObjectEndPoint CallRegisterVirtualObjectEndPoint (RelationEndPointMap relationEndPointMap, RelationEndPointID id)
-    {
-      return (VirtualObjectEndPoint) PrivateInvoke.InvokeNonPublicMethod (relationEndPointMap, "RegisterVirtualObjectEndPoint", id);
     }
   }
 }

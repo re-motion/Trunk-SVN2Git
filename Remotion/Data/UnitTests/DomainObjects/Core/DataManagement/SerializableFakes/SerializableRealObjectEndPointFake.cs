@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     public SerializableRealObjectEndPointFake (FlattenedDeserializationInfo info)
     {
       _owningObject = info.GetValue<DomainObject>();
+      _id = info.GetValue<RelationEndPointID>();
     }
 
     public bool IsNull
@@ -48,6 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddValue (_owningObject);
+      info.AddValue (_id);
     }
 
     public RelationEndPointID ID

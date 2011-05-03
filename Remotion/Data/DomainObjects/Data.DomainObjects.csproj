@@ -178,7 +178,10 @@
     <Compile Include="DataManagement\Commands\ExceptionCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualObjectEndPoint.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointMap2.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CompleteVirtualEndPointLoadStateBase.cs" />

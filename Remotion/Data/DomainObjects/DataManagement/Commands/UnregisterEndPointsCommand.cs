@@ -28,26 +28,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   /// </summary>
   public class UnregisterEndPointsCommand : IDataManagementCommand
   {
-    private readonly RelationEndPointID[] _endPointIDs;
-    private readonly RelationEndPointMap _map;
+    private readonly IRelationEndPoint[] _endPoints;
+    private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
-    public UnregisterEndPointsCommand (IEnumerable<RelationEndPointID> endPointIDs, RelationEndPointMap map)
+    public UnregisterEndPointsCommand (IEnumerable<IRelationEndPoint> endPoints, IRelationEndPointRegistrationAgent registrationAgent)
     {
-      ArgumentUtility.CheckNotNull ("endPointIDs", endPointIDs);
-      ArgumentUtility.CheckNotNull ("map", map);
+      ArgumentUtility.CheckNotNull ("endPoints", endPoints);
+      ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
 
-      _endPointIDs = endPointIDs.ToArray();
-      _map = map;
+      _endPoints = endPoints.ToArray ();
+      _registrationAgent = registrationAgent;
     }
 
-    public ReadOnlyCollection<RelationEndPointID> EndPointIDs
+    public ReadOnlyCollection<IRelationEndPoint> EndPoints
     {
-      get { return Array.AsReadOnly (_endPointIDs); }
+      get { return Array.AsReadOnly (_endPoints); }
     }
 
-    public RelationEndPointMap Map
+    public IRelationEndPointRegistrationAgent RegistrationAgent
     {
-      get { return _map; }
+      get { return _registrationAgent; }
     }
 
     public IEnumerable<Exception> GetAllExceptions ()
@@ -67,16 +67,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Perform ()
     {
-      foreach (var endPointID in _endPointIDs)
+      foreach (var endPoint in _endPoints)
       {
-        if (!endPointID.Definition.IsVirtual)
-        {
-          _map.UnregisterRealObjectEndPoint (endPointID);
-        }
-        else
-        {
-          _map.RemoveEndPoint (endPointID);
-        }
+        _registrationAgent.UnregisterEndPoint (endPoint);
       }
     }
 

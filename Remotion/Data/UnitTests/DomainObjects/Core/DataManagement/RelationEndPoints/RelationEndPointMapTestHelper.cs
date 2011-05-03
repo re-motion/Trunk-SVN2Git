@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Development.UnitTesting;
 
@@ -24,7 +23,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     public static void AddEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
     {
-      PrivateInvoke.InvokeNonPublicMethod (endPointMap, "Add", endPoint);
+      var map = GetMap (endPointMap);
+      map.AddEndPoint (endPoint);
     }
 
     public static void ReplaceEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
@@ -36,6 +36,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public static void RemoveEndPoint (RelationEndPointMap map, RelationEndPointID relationEndPointID)
     {
       map.RemoveEndPoint (relationEndPointID);
+    }
+
+    public static IRelationEndPointRegistrationAgent GetRegistrationAgent (RelationEndPointMap map)
+    {
+      return (IRelationEndPointRegistrationAgent) PrivateInvoke.GetNonPublicField (map, "_registrationAgent");
+    }
+
+    public static RelationEndPointMap2 GetMap (RelationEndPointMap map)
+    {
+      return (RelationEndPointMap2) PrivateInvoke.GetNonPublicField (map, "_relationEndPoints");
     }
   }
 }

@@ -24,11 +24,9 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections.Generic;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
@@ -54,8 +52,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
 
-    private readonly IClientTransactionListener _transactionEventSink;
-    private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
+    private readonly RelationEndPointMap2 _relationEndPoints;
+    private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
     public RelationEndPointMap (
         ClientTransaction clientTransaction,
@@ -79,15 +77,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
       _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
 
-      _transactionEventSink = clientTransaction.TransactionEventSink;
-      _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
+      _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
+      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
     }
 
+    // TODO 3642: To method: GetRelationEndPointWithoutLoading
     public IRelationEndPoint this[RelationEndPointID endPointID]
     {
-      get { return _relationEndPoints.GetValueOrDefault (endPointID); }
+      get { return _relationEndPoints[endPointID]; }
     }
 
+    // TODO 3642: Remove
     public int Count
     {
       get { return _relationEndPoints.Count; }
@@ -125,19 +125,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public bool Contains (RelationEndPointID id)
     {
-      return this[id] != null;
+      return _relationEndPoints[id] != null;
     }
 
     public void CommitAllEndPoints ()
     {
-      foreach (IRelationEndPoint endPoint in _relationEndPoints.Values)
-        endPoint.Commit ();
+      _relationEndPoints.CommitAllEndPoints();
     }
 
     public void RollbackAllEndPoints ()
     {
-      foreach (IRelationEndPoint endPoint in _relationEndPoints.Values)
-        endPoint.Rollback ();
+      _relationEndPoints.RollbackAllEndPoints();
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
@@ -176,85 +174,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
-    // When registering a non-virtual end-point, the opposite virtual object end-point (if any) is registered as well.
-    public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, DataContainer foreignKeyDataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
-      CheckCardinality (endPointID, CardinalityType.One, "RegisterRealObjectEndPoint", "endPointID");
-      CheckVirtuality (endPointID, false, "RegisterRealObjectEndPoint", "endPointID");
-      
-      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer, _lazyLoader, _endPointProvider);
-      Add (objectEndPoint);
-
-      RegisterOppositeForRealObjectEndPoint (objectEndPoint);
-      return objectEndPoint;
-    }
-
-    // When unregistering a non-virtual end-point, the opposite virtual object end-point (if any) is unregistered as well.
-    // If the opposite end-point is a collection, that collection is put into incomplete state.
-    public void UnregisterRealObjectEndPoint (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "UnregisterRealObjectEndPoint", "endPointID");
-      CheckVirtuality (endPointID, false, "UnregisterRealObjectEndPoint", "endPointID");
-
-      var objectEndPoint = (IRealObjectEndPoint) this[endPointID];
-      if (objectEndPoint == null)
-        throw new ArgumentException ("The given end-point is not part of this map.", "endPointID");
-
-      CheckUnchangedForUnregister (endPointID, objectEndPoint);
-
-      RemoveEndPoint (endPointID);
-
-      UnregisterOppositeForRealObjectEndPoint(objectEndPoint);
-    }
-
-    private VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID)
-    {
-      var objectEndPoint = new VirtualObjectEndPoint (
-          _clientTransaction,
-          endPointID,
-          _lazyLoader,
-          _endPointProvider,
-          _virtualObjectEndPointDataKeeperFactory);
-      
-      Add (objectEndPoint);
-      
-      return objectEndPoint;
-    }
-
-    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.Many, "RegisterCollectionEndPoint", "endPointID");
-      
-      var collectionEndPoint = new CollectionEndPoint (
-          _clientTransaction, 
-          endPointID, 
-          _lazyLoader,
-          _endPointProvider,
-          _collectionEndPointDataKeeperFactory);
-      Add (collectionEndPoint);
-
-      return collectionEndPoint;
-    }
-
-    private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
-    {
-      IVirtualEndPoint endPoint;
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-        endPoint = RegisterVirtualObjectEndPoint (endPointID);
-      else
-        endPoint = RegisterCollectionEndPoint (endPointID);
-      return endPoint;
-    }
-
-    private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
-    {
-      return (IVirtualEndPoint) this[endPointID] ?? RegisterVirtualEndPoint (endPointID);
-    }
-
     // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
@@ -263,20 +182,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
+        IRelationEndPoint endPoint;
         if (!endPointID.Definition.IsVirtual)
-        {
-          RegisterRealObjectEndPoint (endPointID, dataContainer);
-        }
-        else if (endPointID.Definition.Cardinality == CardinalityType.One)
-        {
-          var endPoint = RegisterVirtualObjectEndPoint (endPointID);
-          endPoint.MarkDataComplete (null);
-        }
+          endPoint = CreateRealObjectEndPoint (endPointID, dataContainer);
         else
-        {
-          var endPoint = RegisterCollectionEndPoint (endPointID);
-          endPoint.MarkDataComplete (new DomainObject[0]);
-        }
+          endPoint = CreateVirtualEndPoint (endPointID, true);
+
+        _registrationAgent.RegisterEndPoint (endPoint);
       }
     }
 
@@ -286,19 +198,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      var loadedEndPoints = GetEndPointIDsOwnedByDataContainer (dataContainer).Select (id => this[id]).Where (endPoint => endPoint != null).ToArray();
-      var endPointIDs = new List<RelationEndPointID>();
-      var notUnregisterableEndPointIDs = new List<RelationEndPointID> ();
+      var loadedEndPoints = new List<IRelationEndPoint>();
+      var notUnregisterableEndPoints = new List<IRelationEndPoint>();
 
-      foreach (var endPoint in loadedEndPoints)
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
-        endPointIDs.Add (endPoint.ID);
+        var endPoint = this[endPointID];
+        if (endPoint != null)
+        {
+          loadedEndPoints.Add (endPoint);
 
-        if (!IsUnregisterable (endPoint))
-          notUnregisterableEndPointIDs.Add (endPoint.ID);
+          if (!_registrationAgent.IsUnregisterable (endPoint))
+            notUnregisterableEndPoints.Add (endPoint);
+        }
       }
 
-      if (notUnregisterableEndPointIDs.Count > 0)
+      if (notUnregisterableEndPoints.Count > 0)
       {
         var message = string.Format (
             "Object '{0}' cannot be unloaded because its relations have been changed. Only unchanged objects that are not part of changed "
@@ -306,12 +221,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             + Environment.NewLine
             + "Changed relations: {1}.",
             dataContainer.ID,
-            SeparatedStringBuilder.Build (", ", notUnregisterableEndPointIDs.Select (id => "'" + id.Definition.PropertyName + "'")));
+            SeparatedStringBuilder.Build (", ", notUnregisterableEndPoints.Select (endPoint => "'" + endPoint.Definition.PropertyName + "'")));
         return new ExceptionCommand (new InvalidOperationException (message));
       }
       else
       {
-        return new UnregisterEndPointsCommand (endPointIDs, this);
+        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent);
       }
     }
 
@@ -343,8 +258,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         IVirtualEndPoint endPoint = RegisterVirtualEndPoint (endPointID);
         endPoint.EnsureDataComplete();
-
-        Assertion.IsTrue (_relationEndPoints.ContainsKey (endPointID));
         return endPoint;
       }
       else
@@ -368,36 +281,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
-    private void Add (IRelationEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      _transactionEventSink.RelationEndPointMapRegistering (_clientTransaction, endPoint);
-      _relationEndPoints.Add (endPoint.ID, endPoint);
-    }
-
-    public void RemoveEndPoint (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-
-      if (!Contains (endPointID))
-      {
-        var message = string.Format ("End point '{0}' is not part of this map.", endPointID);
-        throw new ArgumentException (message, "endPointID");
-      }
-
-      _transactionEventSink.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
-      _relationEndPoints.Remove (endPointID);
-    }
-
     public IEnumerator<IRelationEndPoint> GetEnumerator ()
     {
-      return _relationEndPoints.Values.GetEnumerator ();
+      return _relationEndPoints.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
+    }
+
+    // TODO: Remove
+    public void RemoveEndPoint (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      _relationEndPoints.RemoveEndPoint (endPointID);
     }
 
     public IRelationEndPoint GetOppositeEndPointWithLazyLoad (IObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
@@ -411,11 +309,58 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (oppositeEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("The end-point is not part of a bidirectional relation.", "objectEndPoint");
 
-      var oppositeEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
-      if (oppositeEndPointID.ObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, oppositeEndPointID.Definition);
+      if (oppositeObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, oppositeEndPointDefinition);
 
+      var oppositeEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
       return GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+    }
+
+    private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
+    {
+      return (IVirtualEndPoint) this[endPointID] ?? RegisterVirtualEndPoint (endPointID);
+    }
+
+    private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
+    {
+      var endPoint = CreateVirtualEndPoint (endPointID, false);
+      _registrationAgent.RegisterEndPoint (endPoint);
+      return endPoint;
+    }
+
+    private IRelationEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
+    {
+      return new RealObjectEndPoint (_clientTransaction, endPointID, dataContainer, _lazyLoader, _endPointProvider);
+    }
+
+    private IVirtualEndPoint CreateVirtualEndPoint (RelationEndPointID endPointID, bool markComplete)
+    {
+      if (endPointID.Definition.Cardinality == CardinalityType.One)
+      {
+        var virtualObjectEndPoint = CreateVirtualObjectEndPoint (endPointID);
+        if (markComplete)
+          virtualObjectEndPoint.MarkDataComplete (null);
+        return virtualObjectEndPoint;
+      }
+      else
+      {
+        var collectionEndPoint = CreateCollectionEndPoint (endPointID);
+        if (markComplete)
+          collectionEndPoint.MarkDataComplete (new DomainObject[0]);
+        return collectionEndPoint;
+      }
+    }
+
+    private VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID)
+    {
+      return new VirtualObjectEndPoint (_clientTransaction,
+                                        endPointID, _lazyLoader, _endPointProvider, _virtualObjectEndPointDataKeeperFactory);
+    }
+
+    private CollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID)
+    {
+      return new CollectionEndPoint (_clientTransaction,
+                                     endPointID, _lazyLoader, _endPointProvider, _collectionEndPointDataKeeperFactory);
     }
 
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
@@ -438,114 +383,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
-    private void CheckVirtuality (
-        RelationEndPointID endPointID,
-        bool expectedVirtualness,
-        string methodName,
-        string argumentName)
-    {
-      if (endPointID.Definition.IsVirtual != expectedVirtualness)
-      {
-        if (expectedVirtualness)
-        {
-          var message = string.Format ("{0} can only be called for virtual end points.", methodName);
-          throw new ArgumentException (message, argumentName);
-        }
-        else
-        {
-          var message = string.Format ("{0} can only be called for non-virtual end points.", methodName);
-          throw new ArgumentException (message, argumentName);
-        }
-      }
-    }
-
     private void CheckNotAnonymous (RelationEndPointID endPointID, string methodName, string argumentName)
     {
       if (endPointID.Definition.IsAnonymous)
       {
         var message = string.Format ("{0} cannot be called for anonymous end points.", methodName);
         throw new ArgumentException (message, argumentName);
-      }
-    }
-
-    private void CheckUnchangedForUnregister (RelationEndPointID endPointID, IRelationEndPoint endPoint)
-    {
-      if (!IsUnregisterable(endPoint))
-      {
-        var message = string.Format (
-            "Cannot remove end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
-            endPointID);
-        throw new InvalidOperationException (message);
-      }
-    }
-
-    private bool IsUnregisterable (IRelationEndPoint endPoint)
-    {
-      // An end-point must be unchanged to be unregisterable.
-      if (endPoint.HasChanged)
-        return false;
-
-      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
-      // must be unchanged. Virtual end-points cannot exist in changed state without their opposite real end-points.
-      // (This only affects 1:n relations: for those, the opposite virtual end-point can be changed although the (one of many) real end-point is 
-      // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
-      var maybeOppositeEndPoint =
-          Maybe.ForValue (endPoint)
-              .Select (ep => ep as IRealObjectEndPoint)
-              .Where (ep => ep.OppositeObjectID != null)
-              .Select (ep => RelationEndPointID.Create (ep.OppositeObjectID, ep.Definition.GetOppositeEndPointDefinition ()))
-              .Select (oppositeID => this[oppositeID]);
-      if (maybeOppositeEndPoint.Where (oppositeEndPoint => oppositeEndPoint.HasChanged).HasValue)
-        return false;
-
-      return true;
-    }
-
-    private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
-    {
-      var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
-      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-      if (realObjectEndPoint.OppositeObjectID == null || oppositeVirtualEndPointDefinition.IsAnonymous)
-      {
-        realObjectEndPoint.MarkSynchronized ();
-        return;
-      }
-
-      var oppositeVirtualEndPointID = RelationEndPointID.Create (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-      var oppositeEndPoint = GetVirtualEndPointOrRegisterEmpty(oppositeVirtualEndPointID);
-      oppositeEndPoint.RegisterOriginalOppositeEndPoint (realObjectEndPoint);
-
-      // Optimization for 1:1 relations: to avoid a database query, we'll mark the virtual end-point complete when the first opposite foreign key
-      // is registered with it. We can only do this in root transactions; in sub-transactions we need the query to occur so that we get the same
-      // relation state in the sub-transaction as in the root transaction even in the case of unsynchronized end-points.
-
-      var oppositeVirtualObjectEndPoint = oppositeEndPoint as IVirtualObjectEndPoint;
-      if (_clientTransaction.ParentTransaction == null && oppositeVirtualObjectEndPoint != null && !oppositeVirtualObjectEndPoint.IsDataComplete)
-        oppositeVirtualObjectEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference());
-    }
-
-    private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
-    {
-      Assertion.IsFalse (realObjectEndPoint.HasChanged, "Deregistration currently only works for unchanged end-points");
-
-      var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
-      Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-      if (realObjectEndPoint.OppositeObjectID != null)
-      {
-        var oppositeVirtualEndPointID = RelationEndPointID.Create(realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-        var oppositeEndPoint = (IVirtualEndPoint) this[oppositeVirtualEndPointID];
-        if (oppositeEndPoint != null)
-        {
-          Assertion.IsFalse (oppositeVirtualEndPointDefinition.IsAnonymous);
-          oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
-          if (oppositeEndPoint.CanBeCollected)
-          {
-            Assertion.IsTrue (IsUnregisterable (oppositeEndPoint), "Caller checks that this end-point is unregisterable.");
-            RemoveEndPoint (oppositeEndPoint.ID);
-          }
-        }
       }
     }
 
@@ -561,13 +404,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())
     {
-      ArgumentUtility.CheckNotNull ("info", info);
-      using (_clientTransaction.EnterNonDiscardingScope())
-      {
-        IRelationEndPoint[] endPointArray = info.GetArray<IRelationEndPoint> ();
-        foreach (IRelationEndPoint endPoint in endPointArray)
-          _relationEndPoints.Add (endPoint.ID, endPoint);
-      }
+      _relationEndPoints = info.GetValue<RelationEndPointMap2> ();
+      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -579,10 +417,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_endPointProvider);
       info.AddHandle (_collectionEndPointDataKeeperFactory);
       info.AddHandle (_virtualObjectEndPointDataKeeperFactory);
-
-      var endPointArray = new IRelationEndPoint[Count];
-      _relationEndPoints.Values.CopyTo (endPointArray, 0);
-      info.AddArray (endPointArray);
+      info.AddValue (_relationEndPoints);
     }
 
     #endregion

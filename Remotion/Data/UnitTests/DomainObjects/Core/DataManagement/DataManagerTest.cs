@@ -785,16 +785,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
 
       Assert.That (unloadDataCommandSteps[1], Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).Map, Is.SameAs (_dataManager.RelationEndPointMap));
-      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).EndPointIDs, Has.Count.EqualTo (2));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).RegistrationAgent, 
+          Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent ((RelationEndPointMap) _dataManager.RelationEndPointMap)));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).EndPoints, Has.Count.EqualTo (2));
 
       Assert.That (unloadDataCommandSteps[2], Is.TypeOf<UnregisterDataContainerCommand> ());
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).Map, Is.SameAs (_dataManager.DataContainerMap));
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).ObjectID, Is.EqualTo (DomainObjectIDs.Order2));
 
       Assert.That (unloadDataCommandSteps[3], Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).Map, Is.SameAs (_dataManager.RelationEndPointMap));
-      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPointIDs, Has.Count.EqualTo (2));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).RegistrationAgent, 
+          Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent ((RelationEndPointMap) _dataManager.RelationEndPointMap)));
+      Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPoints, Has.Count.EqualTo (2));
     }
 
     [Test]
@@ -1067,11 +1069,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void LoadLazyCollectionEndPoint_AlreadyLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = ((RelationEndPointMap) _dataManager.RelationEndPointMap).RegisterCollectionEndPoint (endPointID);
-      endPoint.MarkDataComplete (new DomainObject[0]);
-      Assert.That (endPoint.IsDataComplete, Is.True);
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.IsDataComplete).Return (true);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, endPointStub);
 
-      _dataManager. LoadLazyCollectionEndPoint (endPoint);
+      _dataManager.LoadLazyCollectionEndPoint (endPointStub);
     }
 
     [Test]

@@ -17,8 +17,8 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -67,8 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);
 
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"), 
-          Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
+      var deserializedAgent = (RelationEndPointRegistrationAgent) RelationEndPointMapTestHelper.GetRegistrationAgent (deserializedMap);
+      Assert.That (deserializedAgent, Is.Not.Null);
+      Assert.That (deserializedAgent.EndPointProvider, Is.SameAs (deserializedMap.EndPointProvider));
+      Assert.That (deserializedAgent.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedAgent, "_relationEndPoints"), Is.SameAs (RelationEndPointMapTestHelper.GetMap (deserializedMap)));
       Assert.That (deserializedMap.ObjectLoader, Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedMap.ClientTransaction, "_objectLoader")));
       Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
