@@ -86,16 +86,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new AnonymousRelationEndPointDefinition (oppositeClassDefinition);
     }
 
-    private IRelationEndPointDefinition GetEndPointDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo)
+    private IRelationEndPointDefinition GetEndPointDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo)
     {
-      var endPointDefinition = classDefinition.GetRelationEndPointDefinition (NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)));
+      var endPointDefinition = classDefinition.GetRelationEndPointDefinition (NameResolver.GetPropertyName (propertyInfo));
       if (endPointDefinition != null)
         return endPointDefinition;
 
       return new PropertyNotFoundRelationEndPointDefinition (classDefinition, propertyInfo.Name);
     }
 
-    private ClassDefinition GetOppositeClassDefinition (IDictionary<Type,ClassDefinition> classDefinitions, PropertyInfo optionalOppositePropertyInfo)
+    private ClassDefinition GetOppositeClassDefinition (
+        IDictionary<Type, ClassDefinition> classDefinitions, 
+        IPropertyInformation optionalOppositePropertyInfo)
     {
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
       var oppositeClassDefinition = classDefinitions.GetValueOrDefault (type);

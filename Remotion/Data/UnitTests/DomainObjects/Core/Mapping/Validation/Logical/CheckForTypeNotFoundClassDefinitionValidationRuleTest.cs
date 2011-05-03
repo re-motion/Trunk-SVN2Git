@@ -18,9 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
       var classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (
           "Test",
           typeof (ClassOutOfInheritanceHierarchy),
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
       var endPoint = new VirtualRelationEndPointDefinition (
           classDefinition,
           "RelationProperty",
@@ -61,18 +61,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
           CardinalityType.One,
           typeof (ClassNotInMapping),
           null,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("Property"));
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("Property")));
       var relationDefinition = new RelationDefinition ("ID", endPoint, endPoint);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
       var expectedMessage =
-          "The relation property 'Property' has return type 'String', which is not a part of the mapping. Relation properties must not point to classes above the inheritance root.\r\n\r\n"
+          "The relation property 'Property' has return type 'String', which is not a part of the mapping. "
+          + "Relation properties must not point to classes above the inheritance root.\r\n\r\n"
           + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.DerivedValidationDomainObjectClass\r\n"
-          +"Property: Property";
+          + "Property: Property";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
-    
   }
 }

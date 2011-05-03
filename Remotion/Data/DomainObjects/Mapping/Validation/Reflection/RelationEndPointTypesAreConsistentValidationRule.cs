@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
         {
           var classDefinition = relationEndPointDefinition.ClassDefinition;
           //TODO RM-3977
-          var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (((PropertyInfoAdapter) oppositePropertyInfo).PropertyInfo);
+          var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
           var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (((PropertyInfoAdapter) relationEndPointDefinition.PropertyInfo).PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;
           if (isPropertyDeclaredByThisClassDefinition)

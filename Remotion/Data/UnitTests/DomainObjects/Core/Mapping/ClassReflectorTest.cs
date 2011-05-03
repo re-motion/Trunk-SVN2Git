@@ -379,9 +379,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyInfo = GetPropertyInfo (declaringType, shortPropertyName);
 
-      return
-          new RelationEndPointDefinition (
-              classDefinition[MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo))],
+      return new RelationEndPointDefinition (
+              classDefinition[MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo)],
               isMandatory);
     }
 
@@ -397,7 +396,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       return new VirtualRelationEndPointDefinition (
           classDefinition,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (new PropertyInfoAdapter (propertyInfo)),
+          MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo),
           isMandatory,
           cardinality,
           propertyInfo.PropertyType,
@@ -405,13 +404,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           propertyInfo);
     }
 
-    private PropertyInfo GetPropertyInfo (Type declaringType, string shortPropertyName)
+    private IPropertyInformation GetPropertyInfo (Type declaringType, string shortPropertyName)
     {
       var propertyInfo = declaringType.GetProperty (
           shortPropertyName,
           BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
       Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
-      return propertyInfo;
+      return new PropertyInfoAdapter (propertyInfo);
     }
   }
 }

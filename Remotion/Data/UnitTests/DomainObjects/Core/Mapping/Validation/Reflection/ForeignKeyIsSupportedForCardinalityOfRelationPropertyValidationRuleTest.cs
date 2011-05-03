@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using
     Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.
         ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
@@ -80,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     }
 
     [Test]
-    public void PropertyWithNoDbBidirectionalRelationAttribute ()
+    public void PropertyWithNoDBBidirectionalRelationAttribute ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
           _classDefinition,
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("PropertyWithNoDbBidirectionalRelationAttribute"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("PropertyWithNoDbBidirectionalRelationAttribute")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -107,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsForeignKey"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -125,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsNoForeignKey"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("NoCollectionProperty_ContainsNoForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
@@ -143,14 +144,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        + "ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.ForeignKeyIsSupportedClass\r\nProperty: CollectionProperty_ContainsForeignKey";
+      var expectedMessage =
+          "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+          + "ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.ForeignKeyIsSupportedClass\r\n"
+          + "Property: CollectionProperty_ContainsForeignKey";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -164,14 +167,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
-        + "ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.ForeignKeyIsSupportedClass\r\nProperty: CollectionProperty_ContainsForeignKey";
+      var expectedMessage =
+          "Only relation end points with a property type of 'DomainObject' can contain the foreign key.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection."
+          + "ForeignKeyIsSupportedForCardinalityOfRelationPropertyValidationRule.ForeignKeyIsSupportedClass\r\n"
+          + "Property: CollectionProperty_ContainsForeignKey";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
 
@@ -185,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
           CardinalityType.One,
           typeof (string),
           null,
-          typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsNoForeignKey"));
+          new PropertyInfoAdapter (typeof (ForeignKeyIsSupportedClass).GetProperty ("CollectionProperty_ContainsNoForeignKey")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);

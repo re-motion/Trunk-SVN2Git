@@ -19,7 +19,8 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
-using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -39,11 +40,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     [Test]
     public void ValidSortExpressionWithSortingDirection ()
     {
-       var endPointDefinition = new VirtualRelationEndPointDefinition (
-          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber desc", typeof (Customer).GetProperty ("Orders"));
+      var endPointDefinition = new VirtualRelationEndPointDefinition (
+          _classDefinition,
+          "Orders",
+          false,
+          CardinalityType.Many,
+          typeof (Order),
+          "OrderNumber desc",
+          MockRepository.GenerateStub<IPropertyInformation>());
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
-      
+
       var validationResult = _validationRule.Validate (relationDefinition);
 
       AssertMappingValidationResult (validationResult, true, null);
@@ -53,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void ValidSortExpressionWithoutSortingDirection ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-         _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber", typeof (Customer).GetProperty ("Orders"));
+          _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "OrderNumber", MockRepository.GenerateStub<IPropertyInformation>());
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
 
@@ -66,18 +73,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     public void InvalidSortExpression ()
     {
       var endPointDefinition = new VirtualRelationEndPointDefinition (
-         _classDefinition, "Orders", false, CardinalityType.Many, typeof (Order), "Test", typeof (Customer).GetProperty ("Orders"));
+          _classDefinition,
+          "Orders",
+          false,
+          CardinalityType.Many,
+          typeof (Order),
+          "Test",
+          new PropertyInfoAdapter (typeof (Customer).GetProperty ("Orders")));
       var relationDefinition = new RelationDefinition ("Test", endPointDefinition, endPointDefinition);
       endPointDefinition.SetRelationDefinition (relationDefinition);
 
       var validationResult = _validationRule.Validate (relationDefinition);
 
-      var expectedMessage = "SortExpression 'Test' cannot be parsed: 'Test' is not a valid mapped property name. Expected the .NET property name of a "+
-        "property declared by the 'Order' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin or "
-        +"a derived class of 'Order', the full unique re-store property identifier can be specified.\r\n\r\n"
-        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\nProperty: Orders";
+      var expectedMessage =
+          "SortExpression 'Test' cannot be parsed: 'Test' is not a valid mapped property name. Expected the .NET property name of a property "
+          + "declared by the 'Order' class or its base classes. Alternatively, to resolve ambiguities or to use a property declared by a mixin "
+          + "or a derived class of 'Order', the full unique re-store property identifier can be specified.\r\n\r\n"
+          + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer\r\nProperty: Orders";
       AssertMappingValidationResult (validationResult, false, expectedMessage);
     }
-
   }
 }

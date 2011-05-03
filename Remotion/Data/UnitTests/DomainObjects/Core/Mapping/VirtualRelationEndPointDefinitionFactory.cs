@@ -15,15 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public static class VirtualRelationEndPointDefinitionFactory
   {
-    private static readonly PropertyInfo s_dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
+    private static readonly IPropertyInformation s_dummyPropertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderNumber"));
 
     public static VirtualRelationEndPointDefinition CreateVirtualRelationEndPointDefinition (
         ClassDefinition classDefinition,

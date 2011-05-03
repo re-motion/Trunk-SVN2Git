@@ -18,8 +18,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
     /// <returns>the domain object type of the given property.</returns>
-    public static Type GetRelatedObjectTypeFromRelationProperty (PropertyInfo propertyInfo)
+    public static Type GetRelatedObjectTypeFromRelationProperty (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 

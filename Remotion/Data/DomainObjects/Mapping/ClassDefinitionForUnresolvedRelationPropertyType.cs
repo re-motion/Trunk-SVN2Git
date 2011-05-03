@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   public class ClassDefinitionForUnresolvedRelationPropertyType : ClassDefinition
   {
-    private readonly PropertyInfo _relationProperty;
+    private readonly IPropertyInformation _relationProperty;
 
     public ClassDefinitionForUnresolvedRelationPropertyType (
-        string id, Type classType, PropertyInfo relationProperty)
+        string id, Type classType, IPropertyInformation relationProperty)
         : base (id, classType, false, null, null, new PersistentMixinFinder (classType))
     {
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _relationProperty = relationProperty;
     }
 
-    public PropertyInfo RelationProperty
+    public IPropertyInformation RelationProperty
     {
       get { return _relationProperty; }
     }
@@ -42,6 +42,5 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get { return false; }
     }
-
   }
 }

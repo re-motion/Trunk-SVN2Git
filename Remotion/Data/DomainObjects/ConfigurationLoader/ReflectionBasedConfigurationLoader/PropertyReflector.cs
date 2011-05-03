@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -38,11 +37,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     public PropertyDefinition GetMetadata ()
     {
-      var propertyInfo = new PropertyInfoAdapter (PropertyInfo);
-      
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          propertyInfo,
+          PropertyInfo,
           GetPropertyName(),
           ReflectionUtility.IsDomainObject (PropertyInfo.PropertyType) ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
@@ -64,7 +61,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private int? GetMaxLength()
     {
-      var attribute = AttributeUtility.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (PropertyInfo, true);
+      var attribute = PropertyInfo.GetCustomAttribute<ILengthConstrainedPropertyAttribute> (true);
       if (attribute != null)
         return attribute.MaximumLength;
       return null;

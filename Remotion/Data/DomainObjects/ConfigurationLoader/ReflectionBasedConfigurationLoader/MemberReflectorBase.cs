@@ -16,7 +16,6 @@
 // 
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -27,7 +26,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     public const StorageClass DefaultStorageClass = StorageClass.Persistent;
 
-    private readonly PropertyInfo _propertyInfo;
+    private readonly IPropertyInformation _propertyInfo;
     private readonly IMappingNameResolver _nameResolver;
     private readonly StorageClassAttribute _storageClassAttribute;
 
@@ -35,12 +34,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
-      _propertyInfo = propertyInfo;
+      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
       _nameResolver = nameResolver;
-      _storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (PropertyInfo, true);
+      _storageClassAttribute = PropertyInfo.GetCustomAttribute<StorageClassAttribute> (true);
     }
 
-    public PropertyInfo PropertyInfo
+    public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
     }
@@ -62,12 +61,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected virtual string GetPropertyName ()
     {
-      return _nameResolver.GetPropertyName (new PropertyInfoAdapter(PropertyInfo));
+      return _nameResolver.GetPropertyName (PropertyInfo);
     }
 
     protected bool IsNullableFromAttribute ()
     {
-      INullablePropertyAttribute attribute = AttributeUtility.GetCustomAttribute<INullablePropertyAttribute> (PropertyInfo, true);
+      var attribute = PropertyInfo.GetCustomAttribute<INullablePropertyAttribute> (true);
       if (attribute != null)
         return attribute.IsNullable;
       return true;

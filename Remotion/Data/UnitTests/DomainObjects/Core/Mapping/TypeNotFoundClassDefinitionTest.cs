@@ -17,8 +17,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -27,13 +28,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private ClassDefinitionForUnresolvedRelationPropertyType _classDefinition;
     private Type _classType;
+    private IPropertyInformation _relationProperty;
 
     [SetUp]
     public void SetUp ()
     {
       _classType = typeof (ClassNotInMapping);
-      _classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType (
-          "Test", _classType, typeof (string).GetProperty ("Length"));
+      _relationProperty = MockRepository.GenerateStub<IPropertyInformation>();
+      _classDefinition = new ClassDefinitionForUnresolvedRelationPropertyType ("Test", _classType, _relationProperty);
     }
 
     [Test]
@@ -43,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (_classDefinition.BaseClass, Is.Null);
       Assert.That (_classDefinition.IsClassTypeResolved, Is.False);
       Assert.That (_classDefinition.IsAbstract, Is.False);
+      Assert.That (_classDefinition.RelationProperty, Is.SameAs (_relationProperty));
     }
   }
 }

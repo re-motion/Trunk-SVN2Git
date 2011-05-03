@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Mapping.Validation;
 using Remotion.Reflection;
@@ -47,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         CardinalityType cardinality,
         Type propertyType,
         string sortExpressionText,
-        PropertyInfo propertyInfo)
+        IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -62,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyType = propertyType;
       _sortExpressionText = sortExpressionText;
       _sortExpression = new DoubleCheckedLockingContainer<SortExpressionDefinition> (() => ParseSortExpression (_sortExpressionText));
-      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
+      _propertyInfo = propertyInfo;
     }
 
     public bool CorrespondsTo (string classID, string propertyName)

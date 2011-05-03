@@ -16,6 +16,8 @@
 // 
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -30,7 +32,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       ClassDefinition = classDefinition;
-      BidirectionalRelationAttribute = AttributeUtility.GetCustomAttribute<T> (PropertyInfo, true);
+      BidirectionalRelationAttribute = PropertyInfo.GetCustomAttribute<T> (true);
     }
 
     public ClassDefinition ClassDefinition { get; private set; }
@@ -41,7 +43,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return BidirectionalRelationAttribute != null; }
     }
 
-    protected PropertyInfo GetOppositePropertyInfo ()
+    protected IPropertyInformation GetOppositePropertyInfo ()
     {
       var type = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (PropertyInfo);
       var propertyFinder = new NameBasedPropertyFinder (
@@ -52,7 +54,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           NameResolver, 
           new PersistentMixinFinder (type, true));
       
-      return propertyFinder.FindPropertyInfos().LastOrDefault();
+      return Maybe.ForValue (propertyFinder.FindPropertyInfos().LastOrDefault()).Select (pi => new PropertyInfoAdapter (pi)).ValueOrDefault();
     }
   }
 }
