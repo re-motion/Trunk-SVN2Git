@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Logical;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
-using System.Linq;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
 {
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent")),
           "PropertyWithStorageClassPersistent",
           typeof (string),
           true,
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent")),
           "PropertyWithTypeObjectWithStorageClassPersistent",
           typeof (object),
           true,
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Logical
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("RelationPropertyWithStorageClassPersistent")),
           "RelationPropertyWithStorageClassPersistent",
           typeof (ObjectID),
           true,

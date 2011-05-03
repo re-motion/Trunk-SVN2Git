@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassNone"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassNone")),
           "PropertyWithStorageClassNone",
           typeof (string),
           true,
@@ -62,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithStorageClassPersistent")),
           "PropertyWithStorageClassPersistent",
           typeof (string),
           true,
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var propertyDefinition = new PropertyDefinition (
           _classDefinition,
-          typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent"),
+          new PropertyInfoAdapter (typeof (DerivedValidationDomainObjectClass).GetProperty ("PropertyWithTypeObjectWithStorageClassPersistent")),
           "PropertyWithTypeObjectWithStorageClassPersistent",
           typeof (object),
           true,

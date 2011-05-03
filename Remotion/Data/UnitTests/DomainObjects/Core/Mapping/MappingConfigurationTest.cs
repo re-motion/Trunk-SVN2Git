@@ -35,6 +35,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.R
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointNamesAreConsistentValidationRule;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.RelationEndPointPropertyTypeIsSupportedValidationRule;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -472,23 +473,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           classDefinition,
-          typeof (Order),
           "OrderNumber",
           typeof (int),
           false,
           null,
           StorageClass.Persistent,
-          typeof (Order).GetProperty ("OrderNumber"),
+          MockRepository.GenerateStub<IPropertyInformation>(),
           new SimpleColumnDefinition ("FakeColumn1", typeof (string), "varchar", true, false));
       var propertyDefinition2 = PropertyDefinitionFactory.Create (
           classDefinition,
-          typeof (Order),
           "DeliveryDate",
           typeof (DateTime),
           false,
           null,
           StorageClass.Persistent,
-          typeof (Order).GetProperty ("DeliveryDate"),
+          MockRepository.GenerateStub<IPropertyInformation> (),
           new SimpleColumnDefinition ("FakeColumn2", typeof (string), "varchar", true, false));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);

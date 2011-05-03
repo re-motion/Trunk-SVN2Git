@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   public class PropertyDefinitionTest : StandardMappingTest
   {
     private ClassDefinition _classDefinition;
-    private PropertyInfo _propertyInfo;
+    private IPropertyInformation _propertyInfo;
 
     public override void SetUp ()
     {
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition (
            "Order", "OrderTable", TestDomainStorageProviderDefinition, typeof (Order), false);
-      _propertyInfo = typeof (Order).GetProperty ("OrderNumber");
+      _propertyInfo = MockRepository.GenerateStub<IPropertyInformation>();
     }
 
     [Test]
@@ -53,14 +53,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.PropertyType, Is.EqualTo (typeof (string)));
       Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
       Assert.That (actual.IsObjectID, Is.False);
-      Assert.That (actual.PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (_propertyInfo)));
+      Assert.That (actual.PropertyInfo, Is.SameAs (_propertyInfo));
     }
 
     [Test]
     public void Initialize_WithReferenceType_IsNullableFalse ()
     {
-      var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), false, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.False);
     }
@@ -68,8 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithReferenceType_IsNullableTrue ()
     {
-      var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
 
       Assert.That (actual.IsNullable, Is.True);
     }
@@ -118,8 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithString_MaxLengthNotSet ()
     {
-      var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (string), true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }
@@ -135,8 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize_WithByteArrayString_MaxLengthNotSet ()
     {
-      var actual = new PropertyDefinition (
-          _classDefinition, _propertyInfo, "Test", typeof (byte[]), true, null, StorageClass.Persistent);
+      var actual = new PropertyDefinition (_classDefinition, _propertyInfo, "Test", typeof (byte[]), true, null, StorageClass.Persistent);
 
       Assert.That (actual.MaxLength, Is.Null);
     }

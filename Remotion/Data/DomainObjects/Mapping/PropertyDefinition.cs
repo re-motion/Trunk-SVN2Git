@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.ExtensibleEnums;
 using Remotion.Reflection;
@@ -39,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyDefinition (
         ClassDefinition classDefinition,
-        PropertyInfo propertyInfo,
+        IPropertyInformation propertyInfo,
         string propertyName,
         Type propertyType,
         bool isNullable,
@@ -51,11 +50,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      _classDefinition = classDefinition;
-      _propertyName = propertyName;
-      _maxLength = maxLength;
-      _storageClass = storageClass;
-
       if (propertyType.IsValueType && Nullable.GetUnderlyingType (propertyType) == null && isNullable)
         throw CreateArgumentException (propertyName, "Properties cannot be nullable when they have a non-nullable value type.");
 
@@ -66,9 +60,13 @@ namespace Remotion.Data.DomainObjects.Mapping
             propertyName, "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type '{0}'.", propertyType);
       }
 
-      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
+      _classDefinition = classDefinition;
+      _propertyInfo = propertyInfo;
       _propertyType = propertyType;
+      _propertyName = propertyName;
       _isNullable = isNullable;
+      _maxLength = maxLength;
+      _storageClass = storageClass;
     }
 
     public ClassDefinition ClassDefinition

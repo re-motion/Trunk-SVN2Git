@@ -17,18 +17,19 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public class TestablePropertyDefinition : PropertyDefinition
   {
     public TestablePropertyDefinition (ClassDefinition classDefinition, string propertyName, int? maxLength, StorageClass storageClass)
-        : base (classDefinition, typeof(string).GetProperty("Length"), propertyName, typeof(object), false, maxLength, storageClass)
+        : base (classDefinition, new PropertyInfoAdapter (typeof(string).GetProperty("Length")), propertyName, typeof(object), false, maxLength, storageClass)
     {
     }
     
     public TestablePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo, int? maxLength, StorageClass storageClass)
-      : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
+      : base (classDefinition, new PropertyInfoAdapter (propertyInfo), propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
     }
   }

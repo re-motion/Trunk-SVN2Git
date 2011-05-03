@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -24,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -188,10 +188,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         int? maxLength,
         StorageClass storageClass)
     {
-      PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("OrderNumber");
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          dummyPropertyInfo,
+          MockRepository.GenerateStub<IPropertyInformation>(),
           propertyName,
           propertyType,
           isNullable,

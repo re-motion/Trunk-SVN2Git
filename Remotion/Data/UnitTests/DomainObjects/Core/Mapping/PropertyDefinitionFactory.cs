@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -129,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          propertyInfo,
+          new PropertyInfoAdapter (propertyInfo),
           fullPropertyName,
           propertyType,
           isNullable,
@@ -145,13 +146,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition Create (
         ClassDefinition classDefinition,
-        Type declaringClassType,
         string propertyName,
         Type propertyType,
         bool isNullable,
         int? maxLength,
         StorageClass storageClass,
-        PropertyInfo propertyInfo,
+        IPropertyInformation propertyInfo,
         IStoragePropertyDefinition columnDefinition)
     {
       var propertyDefinition = new PropertyDefinition (
@@ -228,23 +228,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static PropertyDefinition Create (
         ClassDefinition classDefinition,
-        StorageClass storageClass,
-        PropertyInfo propertyInfo,
-        string columnName)
-    {
-      return Create (
-          classDefinition,
-          propertyInfo.Name,
-          propertyInfo.PropertyType,
-          IsNullable (propertyInfo.PropertyType),
-          null,
-          storageClass,
-          propertyInfo,
-          GetFakeStorageProperty (columnName));
-    }
-
-    public static PropertyDefinition Create (
-        ClassDefinition classDefinition,
         string propertyName,
         Type propertyType,
         bool isNullable,
@@ -255,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          propertyInfo,
+          new PropertyInfoAdapter (propertyInfo),
           propertyName,
           propertyType,
           isNullable,
