@@ -81,6 +81,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+
       var visitor = new EntityDefinitionVisitor (this);
       entityDefinition.Accept (visitor);
     }
