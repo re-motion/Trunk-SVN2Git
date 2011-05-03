@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.ExtensibleEnums;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly int? _maxLength;
     private readonly StorageClass _storageClass;
     private IStoragePropertyDefinition _storagePropertyDefinition;
-    private readonly PropertyInfo _propertyInfo;
+    private readonly IPropertyInformation _propertyInfo;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
 
@@ -65,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Mapping
             propertyName, "MaxLength parameter can only be supplied for strings and byte arrays but the property is of type '{0}'.", propertyType);
       }
 
-      _propertyInfo = propertyInfo;
+      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
       _propertyType = propertyType;
       _isNullable = isNullable;
     }
@@ -91,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    public PropertyInfo PropertyInfo
+    public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
     }

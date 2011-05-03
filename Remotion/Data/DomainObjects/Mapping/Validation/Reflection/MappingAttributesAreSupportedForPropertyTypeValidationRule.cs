@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.ExtensibleEnums;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -97,11 +97,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     //    return new MappingValidationResult (true);
     //  }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      foreach (Attribute attribute in AttributeUtility.GetCustomAttributes<Attribute> (propertyInfo, true))
+      foreach (var attribute in propertyInfo.GetCustomAttributes<Attribute> (true))
       {
         var constraint = GetAttributeConstraint (attribute.GetType());
         if (constraint != null && !Array.Exists (constraint.PropertyTypes, t => IsPropertyTypeSupported (propertyInfo, t)))
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
       return MappingValidationResult.CreateValidResult();
     }
 
-    private bool IsPropertyTypeSupported (PropertyInfo propertyInfo, Type type)
+    private bool IsPropertyTypeSupported (IPropertyInformation propertyInfo, Type type)
     {
       if (type == typeof (ObjectList<>))
         return ReflectionUtility.IsObjectList (propertyInfo.PropertyType);

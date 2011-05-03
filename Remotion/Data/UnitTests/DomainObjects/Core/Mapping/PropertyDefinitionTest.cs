@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -52,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       Assert.That (actual.PropertyType, Is.EqualTo (typeof (string)));
       Assert.That (actual.StorageClass, Is.EqualTo (StorageClass.Persistent));
       Assert.That (actual.IsObjectID, Is.False);
-      Assert.That (actual.PropertyInfo, Is.SameAs (_propertyInfo));
+      Assert.That (actual.PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (_propertyInfo)));
     }
 
     [Test]

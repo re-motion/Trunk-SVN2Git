@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
       var validationResults = new List<MappingValidationResult>();
       if (classDefinition.BaseClass == null) //if class definition is inheritance root class
       {
-        var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()
+        var derivedPropertyDefinitions = classDefinition.GetAllDerivedClasses()
             .SelectMany (cd => cd.MyPropertyDefinitions);
         var allPropertyDefinitions =
             classDefinition.MyPropertyDefinitions.Concat(derivedPropertyDefinitions).Where (pd => pd.StorageClass == StorageClass.Persistent);
@@ -96,13 +96,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation
       if (propertyDefinitions.Count > 1)
       {
         var referenceProperty = propertyDefinitions[0];
-        var differentProperties = propertyDefinitions.Where (pd => pd.PropertyInfo != referenceProperty.PropertyInfo);
-        if (differentProperties.Any ())
+        var differentProperties = propertyDefinitions.Where (pd => !pd.PropertyInfo.Equals (referenceProperty.PropertyInfo));
+        if (differentProperties.Any())
         {
           foreach (var differentProperty in differentProperties)
           {
             yield return MappingValidationResult.CreateInvalidResultForProperty (
-                propertyDefinitions[0].PropertyInfo,
+                referenceProperty.PropertyInfo,
                 "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
                 + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
                 differentProperty.PropertyInfo.Name,

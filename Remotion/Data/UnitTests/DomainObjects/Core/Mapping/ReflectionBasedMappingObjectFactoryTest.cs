@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (result.PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo)));
     }
 
     [Test]
@@ -125,8 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var result = _factory.CreatePropertyDefinitionCollection (classDefinition, new[] { propertyInfo1, propertyInfo2 });
 
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
-      Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
+      Assert.That (result[0].PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo1)));
+      Assert.That (result[1].PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo2)));
     }
 
     [Test]

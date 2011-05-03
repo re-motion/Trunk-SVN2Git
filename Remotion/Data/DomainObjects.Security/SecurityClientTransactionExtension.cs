@@ -137,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyReading (clientTransaction, dataContainer.DomainObject, new PropertyInfoAdapter (propertyValue.Definition.PropertyInfo));
+      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      PropertyChanging (clientTransaction, dataContainer.DomainObject, new PropertyInfoAdapter (propertyValue.Definition.PropertyInfo));
+      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
     }
 
     public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)

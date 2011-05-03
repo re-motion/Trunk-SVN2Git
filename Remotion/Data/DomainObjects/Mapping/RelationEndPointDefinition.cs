@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public IPropertyInformation PropertyInfo 
     {
-      get { return new PropertyInfoAdapter (_propertyDefinition.PropertyInfo); }
+      get { return _propertyDefinition.PropertyInfo; }
     }
 
     public bool IsVirtual

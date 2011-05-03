@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
@@ -75,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyDefinition2 =
           classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
 
-      Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (property1));
-      Assert.That (propertyDefinition2.PropertyInfo, Is.EqualTo (property2));
+      Assert.That (propertyDefinition1.PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (property1)));
+      Assert.That (propertyDefinition2.PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (property2)));
     }
 
     [Test]

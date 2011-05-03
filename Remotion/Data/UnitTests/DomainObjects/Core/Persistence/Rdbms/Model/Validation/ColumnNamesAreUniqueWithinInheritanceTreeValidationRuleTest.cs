@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInDifferentInheritanceHierarchieLevel ()
+    public void InheritanceRoot_PersistentPropertiesWithSameStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedClass,
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     }
 
     [Test]
-    public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInDifferentInheritanceHierarchieLevel ()
+    public void InheritanceRoot_PersistentPropertiesWithDifferentStorageSpecificPropertyNameInDifferentLeavesOfInheritanceTree ()
     {
       var propertyDefinition1 = PropertyDefinitionFactory.Create (
           _derivedClass,
@@ -364,6 +364,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[]{propertyDefinition2}, true));
       _derivedClass.SetReadOnly();
       _derivedBaseClass2.SetReadOnly();
+
+      var validationResult = _validationRule.Validate (_baseOfBaseClass);
+
+      AssertMappingValidationResult (validationResult, true, null);
+    }
+
+    [Test]
+    public void InheritanceRoot_PersistentPropertiesFromSameMixinInDifferentLeavesOfInheritanceTree ()
+    {
+      var propertyDefinition1 = PropertyDefinitionFactory.Create (
+          _derivedClass,
+          "Length",
+          typeof (int),
+          false,
+          null,
+          StorageClass.Persistent,
+          typeof (string).GetProperty ("Length"),
+          new SimpleColumnDefinition ("Length", typeof (int), "integer", false, false));
+      var propertyDefinition2 = PropertyDefinitionFactory.Create (
+          _derivedBaseClass2,
+          "Length",
+          typeof (int),
+          false,
+          null,
+          StorageClass.Persistent,
+          typeof (string).GetProperty ("Length"),
+          new SimpleColumnDefinition ("Length", typeof (int), "integer", false, false));
+
+      _baseOfBaseClass.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      _derivedBaseClass1.SetPropertyDefinitions (new PropertyDefinitionCollection ());
+      _derivedClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1 }, true));
+      _derivedBaseClass2.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition2 }, true));
+      _derivedClass.SetReadOnly ();
+      _derivedBaseClass2.SetReadOnly ();
 
       var validationResult = _validationRule.Validate (_baseOfBaseClass);
 

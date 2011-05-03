@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
@@ -39,11 +39,11 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Logical
       return from PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions select Validate (propertyDefinition.PropertyInfo);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, true);
+      var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (true);
 
       if (storageClassAttribute != null && storageClassAttribute.StorageClass != StorageClass.Persistent
           && storageClassAttribute.StorageClass != StorageClass.Transaction)

@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var allClassesInHierarchy = classDefinition
           .CreateSequence (cd => cd.BaseClass)
           .Reverse ()
-          .Concat (classDefinition.GetAllDerivedClasses ().Cast<ClassDefinition> ());
+          .Concat (classDefinition.GetAllDerivedClasses ());
 
-      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<PropertyInfo, IColumnDefinition>> (
-          (tuple1, tuple2) => tuple1.Item1 == tuple2.Item1,
+      var equalityComparer = new DelegateBasedEqualityComparer<Tuple<IPropertyInformation, IColumnDefinition>> (
+          (tuple1, tuple2) => tuple1.Item1.Equals (tuple2.Item1),
           tuple => tuple.Item1.GetHashCode ());
 
       var columnDefinitions =

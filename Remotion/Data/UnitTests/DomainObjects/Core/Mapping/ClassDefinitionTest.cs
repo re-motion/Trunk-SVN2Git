@@ -1219,7 +1219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       PropertyInfo property = typeof (Order).GetProperty ("OrderNumber");
       var propertyDefinition = _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
-      Assert.AreEqual (property, propertyDefinition.PropertyInfo);
+      Assert.AreEqual (new PropertyInfoAdapter (property), propertyDefinition.PropertyInfo);
     }
 
     [Test]

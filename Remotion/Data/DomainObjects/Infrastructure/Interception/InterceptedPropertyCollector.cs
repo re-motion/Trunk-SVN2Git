@@ -72,22 +72,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     {
       ValidateBaseType ();
 
-      foreach (PropertyDefinition propertyDefinition in _classDefinition.GetPropertyDefinitions ())
+      foreach (var propertyDefinition in _classDefinition.GetPropertyDefinitions ())
       {
-        PropertyInfo property = propertyDefinition.PropertyInfo;
+        var property = propertyDefinition.PropertyInfo;
         string propertyIdentifier = propertyDefinition.PropertyName;
         AnalyzeAndValidateProperty (property, propertyIdentifier);
       }
 
-      foreach (IRelationEndPointDefinition endPointDefinition in _classDefinition.GetRelationEndPointDefinitions ())
+      foreach (var endPointDefinition in _classDefinition.GetRelationEndPointDefinitions ())
       {
         if (endPointDefinition.IsVirtual)
         {
           Assertion.IsNotNull (endPointDefinition.PropertyInfo);
 
           string propertyIdentifier = endPointDefinition.PropertyName;
-          //TODO RM-3977
-          var property = ((PropertyInfoAdapter) endPointDefinition.PropertyInfo).PropertyInfo;
+          var property = ( endPointDefinition.PropertyInfo);
 
           AnalyzeAndValidateProperty (property, propertyIdentifier);
         }
@@ -96,8 +95,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ValidateRemainingMethods (_baseType);
     }
 
-    private void AnalyzeAndValidateProperty (PropertyInfo property, string propertyIdentifier)
+    private void AnalyzeAndValidateProperty (IPropertyInformation propertyInformation, string propertyIdentifier)
     {
+      //TODO RM-3977
+      var property = ((PropertyInfoAdapter) propertyInformation).PropertyInfo;
+
       if (!property.DeclaringType.IsAssignableFrom (_baseType)) // we cannot intercept properties added from another class (mixin)
         return;
         
