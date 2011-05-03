@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
@@ -27,16 +26,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class SynonymScriptBuilder : IScriptBuilder2
   {
-    private readonly IScriptElementFactory<Tuple<TableDefinition, EntityNameDefinition>> _tableViewElementFactory;
-    private readonly IScriptElementFactory<Tuple<UnionViewDefinition, EntityNameDefinition>> _unionViewElementFactory;
-    private readonly IScriptElementFactory<Tuple<FilterViewDefinition, EntityNameDefinition>> _filterViewElementFactory;
+    private readonly ISynonymScriptElementFactory<TableDefinition> _tableViewElementFactory;
+    private readonly ISynonymScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
+    private readonly ISynonymScriptElementFactory<FilterViewDefinition> _filterViewElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
     public SynonymScriptBuilder (
-        IScriptElementFactory<Tuple<TableDefinition, EntityNameDefinition>> tableViewElementFactory,
-        IScriptElementFactory<Tuple<UnionViewDefinition, EntityNameDefinition>> unionViewElementFactory,
-        IScriptElementFactory<Tuple<FilterViewDefinition, EntityNameDefinition>> filterViewElementFactory)
+        ISynonymScriptElementFactory<TableDefinition> tableViewElementFactory,
+        ISynonymScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
+        ISynonymScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
@@ -102,8 +101,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var synonym in tableDefinition.Synonyms)
       {
         AddElements (
-            _tableViewElementFactory.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (tableDefinition, synonym)),
-            _tableViewElementFactory.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition>(tableDefinition, synonym)));
+            _tableViewElementFactory.GetCreateElement (tableDefinition, synonym), _tableViewElementFactory.GetDropElement (tableDefinition, synonym));
       }
     }
 
@@ -112,8 +110,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var synonym in unionViewDefinition.Synonyms)
       {
         AddElements (
-            _unionViewElementFactory.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (unionViewDefinition, synonym)),
-            _unionViewElementFactory.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (unionViewDefinition, synonym)));
+            _unionViewElementFactory.GetCreateElement (unionViewDefinition, synonym),
+            _unionViewElementFactory.GetDropElement (unionViewDefinition, synonym));
       }
     }
 
@@ -122,8 +120,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var synonym in filterViewDefinition.Synonyms)
       {
         AddElements (
-            _filterViewElementFactory.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (filterViewDefinition, synonym)),
-            _filterViewElementFactory.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (filterViewDefinition, synonym)));
+            _filterViewElementFactory.GetCreateElement (filterViewDefinition, synonym),
+            _filterViewElementFactory.GetDropElement (filterViewDefinition, synonym));
       }
     }
 

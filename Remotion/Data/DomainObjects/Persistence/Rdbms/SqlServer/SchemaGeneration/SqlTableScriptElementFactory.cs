@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlTableScriptElementFactory"/> is responsible to create script-elements for tables in a sql-server database.
   /// </summary>
-  public class SqlTableScriptElementFactory : IScriptElementFactory<TableDefinition>
+  public class SqlTableScriptElementFactory : ITableScriptElementFactory
   {
     public IScriptElement GetCreateElement (TableDefinition tableDefinition)
     {

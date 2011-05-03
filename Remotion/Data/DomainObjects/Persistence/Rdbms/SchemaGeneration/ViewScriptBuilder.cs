@@ -26,9 +26,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class ViewScriptBuilder : IScriptBuilder2
   {
-    private readonly IScriptElementFactory<TableDefinition> _tableViewElementFactory;
-    private readonly IScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
-    private readonly IScriptElementFactory<FilterViewDefinition> _filterViewElementFactory;
+    private readonly IViewScriptElementFactory<TableDefinition> _tableViewElementFactory;
+    private readonly IViewScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
+    private readonly IViewScriptElementFactory<FilterViewDefinition> _filterViewElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -63,9 +63,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     public ViewScriptBuilder (
-        IScriptElementFactory<TableDefinition> tableViewElementFactory,
-        IScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
-        IScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
+        IViewScriptElementFactory<TableDefinition> tableViewElementFactory,
+        IViewScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
+        IViewScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);

@@ -224,10 +224,13 @@
     <Compile Include="Persistence\Rdbms\Model\IEntityDefinitionProvider.cs" />
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IForeignKeyConstraintScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder2.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ISynonymScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ITableScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\BatchDelimiterStatement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\IScriptElement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />

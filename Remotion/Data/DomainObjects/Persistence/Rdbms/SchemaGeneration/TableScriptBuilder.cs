@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class TableScriptBuilder : IScriptBuilder2
   {
-    private readonly IScriptElementFactory<TableDefinition> _elementFactory;
+    private readonly ITableScriptElementFactory _elementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    public TableScriptBuilder (IScriptElementFactory<TableDefinition> elementFactory)
+    public TableScriptBuilder (ITableScriptElementFactory elementFactory)
     {
       ArgumentUtility.CheckNotNull ("elementFactory", elementFactory);
 

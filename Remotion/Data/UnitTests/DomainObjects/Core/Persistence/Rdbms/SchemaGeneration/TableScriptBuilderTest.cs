@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [TestFixture]
   public class TableScriptBuilderTest : SchemaGenerationTestBase
   {
-    private IScriptElementFactory<TableDefinition> _factoryStub;
+    private ITableScriptElementFactory _factoryStub;
     private TableScriptBuilder _builder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _factoryStub = MockRepository.GenerateStub<IScriptElementFactory<TableDefinition>>();
+      _factoryStub = MockRepository.GenerateStub<ITableScriptElementFactory>();
       _builder = new TableScriptBuilder (_factoryStub);
 
       _tableDefinition1 = new TableDefinition (

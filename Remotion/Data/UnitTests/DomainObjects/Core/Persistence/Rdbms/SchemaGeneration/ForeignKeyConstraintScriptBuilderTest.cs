@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [TestFixture]
   public class ForeignKeyConstraintScriptBuilderTest : SchemaGenerationTestBase
   {
-    private IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>> _factoryStub;
+    private IForeignKeyConstraintScriptElementFactory _factoryStub;
     private ForeignKeyConstraintScriptBuilder _builder;
     private TableDefinition _tableDefinition1;
     private IScriptElement _fakeElement1;
@@ -43,8 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _factoryStub =
-          MockRepository.GenerateStub<IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>>>();
+      _factoryStub = MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory>();
 
       _builder = new ForeignKeyConstraintScriptBuilder (_factoryStub);
 
@@ -86,10 +85,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
       _factoryStub
-        .Stub (mock => mock.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _tableName)))
+        .Stub (mock => mock.GetCreateElement (_constraint1, _tableName))
         .Return (_fakeElement1);
       _factoryStub
-        .Stub (mock => mock.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _tableName)))
+        .Stub (mock => mock.GetDropElement (_constraint1, _tableName))
         .Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_tableDefinition1);
@@ -102,22 +101,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsAdded ()
     {
       _factoryStub
-        .Stub (mock => mock.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _tableName)))
+        .Stub (mock => mock.GetCreateElement (_constraint1, _tableName))
         .Return (_fakeElement1);
       _factoryStub
-        .Stub (mock => mock.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _tableName)))
+        .Stub (mock => mock.GetDropElement (_constraint1, _tableName))
         .Return (_fakeElement3);
       _factoryStub
-        .Stub (mock => mock.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint2, _tableName)))
+        .Stub (mock => mock.GetCreateElement (_constraint2, _tableName))
         .Return (_fakeElement2);
       _factoryStub
-        .Stub (mock => mock.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint2, _tableName)))
+        .Stub (mock => mock.GetDropElement (_constraint2, _tableName))
         .Return (_fakeElement2);
       _factoryStub
-        .Stub (mock => mock.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint3, _tableName)))
+        .Stub (mock => mock.GetCreateElement (_constraint3, _tableName))
         .Return (_fakeElement3);
       _factoryStub
-        .Stub (mock => mock.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint3, _tableName)))
+        .Stub (mock => mock.GetDropElement (_constraint3, _tableName))
         .Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_tableDefinition1);

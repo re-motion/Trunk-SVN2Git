@@ -26,9 +26,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   [TestFixture]
   public class ViewScriptBuilderTest : SchemaGenerationTestBase
   {
-    private IScriptElementFactory<TableDefinition> _tableViewElementFactoryStub;
-    private IScriptElementFactory<UnionViewDefinition> _unionViewElementFactoryStub;
-    private IScriptElementFactory<FilterViewDefinition> _filterViewElementFactoryStub;
+    private IViewScriptElementFactory<TableDefinition> _tableViewElementFactoryStub;
+    private IViewScriptElementFactory<UnionViewDefinition> _unionViewElementFactoryStub;
+    private IViewScriptElementFactory<FilterViewDefinition> _filterViewElementFactoryStub;
     private ViewScriptBuilder _builder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -45,9 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp ();
 
-      _tableViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<TableDefinition>>();
-      _unionViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<UnionViewDefinition>> ();
-      _filterViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<FilterViewDefinition>> ();
+      _tableViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<TableDefinition>>();
+      _unionViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>> ();
+      _filterViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>> ();
       
       _builder = new ViewScriptBuilder(_tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub);
 

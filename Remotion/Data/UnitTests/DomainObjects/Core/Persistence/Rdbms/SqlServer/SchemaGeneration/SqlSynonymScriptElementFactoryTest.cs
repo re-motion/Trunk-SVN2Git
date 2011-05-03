@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_TableDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetCreateElement (_tableDefinition1, _synonymWithCustomSchema);
 
       var expectedResult = "CREATE SYNONYM [SynonymSchemaName].[Synonym1] FOR [SchemaName].[TableName1]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_TableDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetCreateElement (_tableDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult = "CREATE SYNONYM [dbo].[Synonym2] FOR [dbo].[TableName2]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_TableDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetDropElement (_tableDefinition1, _synonymWithCustomSchema);
 
       var expectedResult = 
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'SynonymSchemaName' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_TableDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetDropElement (_tableDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_UnionViewDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetCreateElement (_unionViewDefinition1, _synonymWithCustomSchema);
 
       var expectedResult = "CREATE SYNONYM [SynonymSchemaName].[Synonym1] FOR [SchemaName].[UnionView1]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_UnionViewDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetCreateElement (_unionViewDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult = "CREATE SYNONYM [dbo].[Synonym2] FOR [dbo].[UnionView2]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_UnionViewDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetDropElement (_unionViewDefinition1, _synonymWithCustomSchema);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'SynonymSchemaName' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_UnionViewDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetDropElement (_unionViewDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_FilterViewDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetCreateElement (_filterViewDefinition1, _synonymWithCustomSchema);
 
       var expectedResult = "CREATE SYNONYM [SynonymSchemaName].[Synonym1] FOR [SchemaName].[FilterView1]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_FilterViewDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetCreateElement (_filterViewDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult = "CREATE SYNONYM [dbo].[Synonym2] FOR [dbo].[FilterView2]";
       Assert.That (result, Is.TypeOf (typeof (ScriptStatement)));
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_FilterViewDefinition_And_CustomSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonymWithCustomSchema));
+      var result = _factory.GetDropElement (_filterViewDefinition1, _synonymWithCustomSchema);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'SynonymSchemaName' AND SCHEMA_NAME(schema_id) = 'Synonym1')\r\n"
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_FilterViewDefinition_And_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonymWithDefaultSchema));
+      var result = _factory.GetDropElement (_filterViewDefinition2, _synonymWithDefaultSchema);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'Synonym2')\r\n"

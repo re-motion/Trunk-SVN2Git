@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class ForeignKeyConstraintScriptBuilder : IScriptBuilder2
   {
-    private readonly IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>> _foreignKeyConstraintElementFactory;
+    private readonly IForeignKeyConstraintScriptElementFactory _foreignKeyConstraintElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     public ForeignKeyConstraintScriptBuilder (
-        IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>> foreignKeyConstraintElementFactory)
+        IForeignKeyConstraintScriptElementFactory foreignKeyConstraintElementFactory)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintElementFactory", foreignKeyConstraintElementFactory);
 
@@ -100,12 +100,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
     private void AddForeignKeyConstraintDefinition (ForeignKeyConstraintDefinition foreignKeyConstraint, EntityNameDefinition tableName)
     {
-      _createScriptElements.AddElement (
-          _foreignKeyConstraintElementFactory.GetCreateElement (
-              new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (foreignKeyConstraint, tableName)));
-      _dropScriptElements.AddElement (
-          _foreignKeyConstraintElementFactory.GetDropElement (
-              new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (foreignKeyConstraint, tableName)));
+      _createScriptElements.AddElement (_foreignKeyConstraintElementFactory.GetCreateElement (foreignKeyConstraint, tableName));
+      _dropScriptElements.AddElement (_foreignKeyConstraintElementFactory.GetDropElement (foreignKeyConstraint, tableName));
     }
   }
 }

@@ -29,32 +29,34 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// The <see cref="SqlForeignKeyConstraintScriptElementFactory"/> is responsible to create script-elements for foreign-key constraints in a 
   /// sql-server database.
   /// </summary>
-  public class SqlForeignKeyConstraintScriptElementFactory : IScriptElementFactory<Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition>>
+  public class SqlForeignKeyConstraintScriptElementFactory : IForeignKeyConstraintScriptElementFactory
   {
-    public IScriptElement GetCreateElement (Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> item)
+    public IScriptElement GetCreateElement (ForeignKeyConstraintDefinition constraintDefinition, EntityNameDefinition tableName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull ("constraintDefinition", constraintDefinition);
+      ArgumentUtility.CheckNotNull ("tableName", tableName);
 
       return new ScriptStatement(
         string.Format (
             "ALTER TABLE [{0}].[{1}] ADD\r\n{2}",
-            item.Item2.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
-            item.Item2.EntityName,
-            GetConstraintDeclaration(item.Item1)));
+            tableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            tableName.EntityName,
+            GetConstraintDeclaration(constraintDefinition)));
     }
 
-    public IScriptElement GetDropElement (Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> item)
+    public IScriptElement GetDropElement (ForeignKeyConstraintDefinition constraintDefinition, EntityNameDefinition tableName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull ("constraintDefinition", constraintDefinition);
+      ArgumentUtility.CheckNotNull ("tableName", tableName);
 
       return new ScriptStatement (
           string.Format (
               "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' AND "
               + "fk.name = '{2}' AND schema_name (t.schema_id) = '{0}' AND t.name = '{1}')\r\n"
               + "  ALTER TABLE [{0}].[{1}] DROP CONSTRAINT {2}",
-              item.Item2.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
-              item.Item2.EntityName,
-              item.Item1.ConstraintName));
+              tableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+              tableName.EntityName,
+              constraintDefinition.ConstraintName));
     }
 
     private string GetConstraintDeclaration (ForeignKeyConstraintDefinition foreignKeyConstraintDefinition)

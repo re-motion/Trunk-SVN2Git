@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private IScriptElement _fakeElement1;
     private IScriptElement _fakeElement2;
     private IScriptElement _fakeElement3;
-    private IScriptElementFactory<Tuple<TableDefinition, EntityNameDefinition>> _tableViewElementFactoryStub;
-    private IScriptElementFactory<Tuple<UnionViewDefinition, EntityNameDefinition>> _unionViewElementFactoryStub;
-    private IScriptElementFactory<Tuple<FilterViewDefinition, EntityNameDefinition>> _filterViewElementFactoryStub;
+    private ISynonymScriptElementFactory<TableDefinition> _tableViewElementFactoryStub;
+    private ISynonymScriptElementFactory<UnionViewDefinition> _unionViewElementFactoryStub;
+    private ISynonymScriptElementFactory<FilterViewDefinition> _filterViewElementFactoryStub;
     private EntityNameDefinition _synonym1;
     private EntityNameDefinition _synonym2;
     private EntityNameDefinition _synonym3;
@@ -48,9 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _tableViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<Tuple<TableDefinition, EntityNameDefinition>>>();
-      _unionViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<Tuple<UnionViewDefinition, EntityNameDefinition>>>();
-      _filterViewElementFactoryStub = MockRepository.GenerateStub<IScriptElementFactory<Tuple<FilterViewDefinition, EntityNameDefinition>>>();
+      _tableViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<TableDefinition>>();
+      _unionViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<UnionViewDefinition>>();
+      _filterViewElementFactoryStub = MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>();
 
       _builder = new SynonymScriptBuilder (_tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub);
 
@@ -121,10 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_tableDefinition1, _synonym1)).Return (_fakeElement1);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (_fakeElement2);
+          .Stub (stub => stub.GetDropElement (_tableDefinition1, _synonym1)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
@@ -136,20 +135,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsAdded ()
     {
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_tableDefinition1, _synonym1)).Return (_fakeElement1);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (_fakeElement3);
+          .Stub (stub => stub.GetDropElement (_tableDefinition1, _synonym1)).Return (_fakeElement3);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonym2))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetCreateElement (_tableDefinition2, _synonym2)).Return (_fakeElement2);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonym2))).Return (_fakeElement2);
+          .Stub (stub => stub.GetDropElement (_tableDefinition2, _synonym2)).Return (_fakeElement2);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonym3))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetCreateElement (_tableDefinition2, _synonym3)).Return (_fakeElement3);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition2, _synonym3))).Return (_fakeElement1);
+          .Stub (stub => stub.GetDropElement (_tableDefinition2, _synonym3)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
@@ -162,11 +158,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_OneUnionViewDefinitionAdded ()
     {
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement1);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetDropElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
@@ -178,23 +172,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_SeveralUnionViewDefinitionsAdded ()
     {
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement1);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetDropElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement3);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonym2))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetCreateElement (_unionViewDefinition2, _synonym2)).Return (_fakeElement2);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonym2))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetDropElement (_unionViewDefinition2, _synonym2)).Return (_fakeElement2);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonym3))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetCreateElement (_unionViewDefinition2, _synonym3)).Return (_fakeElement3);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition2, _synonym3))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetDropElement (_unionViewDefinition2, _synonym3)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
@@ -207,11 +195,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_OneFilterViewDefinitionAdded ()
     {
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement1);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetDropElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
@@ -223,23 +209,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_SeveralFilterViewDefinitionsAdded ()
     {
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement1);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetDropElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement3);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonym2))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetCreateElement (_filterViewDefinition2, _synonym2)).Return (_fakeElement2);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonym2))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetDropElement (_filterViewDefinition2, _synonym2)).Return (_fakeElement2);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonym3))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetCreateElement (_filterViewDefinition2, _synonym3)).Return (_fakeElement3);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition2, _synonym3))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetDropElement (_filterViewDefinition2, _synonym3)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);
@@ -252,22 +232,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void GetCreateScript_GetDropScript_SeveralEntityDefinitionsAdded ()
     {
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetCreateElement (_tableDefinition1, _synonym1)).Return (_fakeElement1);
       _tableViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<TableDefinition, EntityNameDefinition> (_tableDefinition1, _synonym1))).Return (_fakeElement3);
+          .Stub (stub => stub.GetDropElement (_tableDefinition1, _synonym1)).Return (_fakeElement3);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetCreateElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement2);
       _unionViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<UnionViewDefinition, EntityNameDefinition> (_unionViewDefinition1, _synonym1))).Return (
-              _fakeElement2);
+          .Stub (stub => stub.GetDropElement (_unionViewDefinition1, _synonym1)).Return (_fakeElement2);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetCreateElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement3);
+          .Stub (stub => stub.GetCreateElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement3);
       _filterViewElementFactoryStub
-          .Stub (stub => stub.GetDropElement (new Tuple<FilterViewDefinition, EntityNameDefinition> (_filterViewDefinition1, _synonym1))).Return (
-              _fakeElement1);
+          .Stub (stub => stub.GetDropElement (_filterViewDefinition1, _synonym1)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition1);

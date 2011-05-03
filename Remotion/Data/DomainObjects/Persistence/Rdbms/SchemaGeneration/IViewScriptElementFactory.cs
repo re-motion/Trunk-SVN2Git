@@ -15,17 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="IScriptElementFactory{T}"/> defines the API for all factory classes that are responsible to create new script elements for a 
+  /// <see cref="IViewScriptElementFactory{T}"/> defines the API for all factory classes that are responsible to create view script elements for a 
   /// relational database.
   /// </summary>
-  public interface IScriptElementFactory<in T>
+  public interface IViewScriptElementFactory<in T> where T:IEntityDefinition
   {
-    IScriptElement GetCreateElement (T item);
-    IScriptElement GetDropElement (T item);
+    IScriptElement GetCreateElement (T entityDefinition);
+    IScriptElement GetDropElement (T entityDefinition);
   }
 }

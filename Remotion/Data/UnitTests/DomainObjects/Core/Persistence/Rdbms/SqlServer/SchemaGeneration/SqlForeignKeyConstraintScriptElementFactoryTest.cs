@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_DefaultSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _table1));
+      var result = _factory.GetCreateElement (_constraint1, _table1);
 
       var expectedResult = 
         "ALTER TABLE [dbo].[TableName1] ADD\r\n"
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetCreateElement_CustomSchema ()
     {
-      var result = _factory.GetCreateElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint2, _table2));
+      var result = _factory.GetCreateElement (_constraint2, _table2);
 
       var expectedResult =
         "ALTER TABLE [SchemaName].[TableName2] ADD\r\n"
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_DefaultSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint1, _table1));
+      var result = _factory.GetDropElement (_constraint1, _table1);
 
       var expectedResult =
         "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' "
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetDropElement_CustomSchema ()
     {
-      var result = _factory.GetDropElement (new Tuple<ForeignKeyConstraintDefinition, EntityNameDefinition> (_constraint2, _table2));
+      var result = _factory.GetDropElement (_constraint2, _table2);
 
       var expectedResult = 
         "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' "

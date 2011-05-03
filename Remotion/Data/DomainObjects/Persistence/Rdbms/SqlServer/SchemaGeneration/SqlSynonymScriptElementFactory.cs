@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -27,50 +26,56 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     /// The <see cref="SqlSynonymScriptElementFactory"/> is responsible to create script-elements for synonyms in a sql-server database.
     /// </summary>
   public class SqlSynonymScriptElementFactory :
-    IScriptElementFactory<Tuple<TableDefinition, EntityNameDefinition>>,
-    IScriptElementFactory<Tuple<UnionViewDefinition, EntityNameDefinition>>,
-    IScriptElementFactory<Tuple<FilterViewDefinition, EntityNameDefinition>>
+    ISynonymScriptElementFactory<TableDefinition>,
+    ISynonymScriptElementFactory<UnionViewDefinition>,
+    ISynonymScriptElementFactory<FilterViewDefinition>
   {
-    public IScriptElement GetCreateElement (Tuple<TableDefinition, EntityNameDefinition> item)
+    public IScriptElement GetCreateElement (TableDefinition tableDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
-
-      return GetSynonymCreateScriptStatement (item.Item1.TableName, item.Item2);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
+      
+      return GetSynonymCreateScriptStatement (tableDefinition.TableName, synonymName);
     }
 
-    public IScriptElement GetDropElement (Tuple<TableDefinition, EntityNameDefinition> item)
+    public IScriptElement GetDropElement (TableDefinition tableDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
 
-      return GetSynonymDropScriptStatement (item.Item2);
+      return GetSynonymDropScriptStatement (synonymName);
     }
 
-    public IScriptElement GetCreateElement (Tuple<UnionViewDefinition, EntityNameDefinition> item)
+    public IScriptElement GetCreateElement (UnionViewDefinition unionViewDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
-
-      return GetSynonymCreateScriptStatement (item.Item1.ViewName, item.Item2);
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
+      
+      return GetSynonymCreateScriptStatement (unionViewDefinition.ViewName, synonymName);
     }
 
-    public IScriptElement GetDropElement (Tuple<UnionViewDefinition, EntityNameDefinition> item)
+    public IScriptElement GetDropElement (UnionViewDefinition unionViewDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
 
-      return GetSynonymDropScriptStatement (item.Item2);
+      return GetSynonymDropScriptStatement(synonymName);
     }
 
-    public IScriptElement GetCreateElement (Tuple<FilterViewDefinition, EntityNameDefinition> item)
+    public IScriptElement GetCreateElement (FilterViewDefinition filterViewDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
-
-      return GetSynonymCreateScriptStatement (item.Item1.ViewName, item.Item2);
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
+      
+      return GetSynonymCreateScriptStatement (filterViewDefinition.ViewName, synonymName);
     }
 
-    public IScriptElement GetDropElement (Tuple<FilterViewDefinition, EntityNameDefinition> item)
+    public IScriptElement GetDropElement (FilterViewDefinition filterViewDefinition, EntityNameDefinition synonymName)
     {
-      ArgumentUtility.CheckNotNull ("item", item);
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+      ArgumentUtility.CheckNotNull ("synonymName", synonymName);
 
-      return GetSynonymDropScriptStatement (item.Item2);
+      return GetSynonymDropScriptStatement (synonymName);
     }
 
     private ScriptStatement GetSynonymCreateScriptStatement (EntityNameDefinition referencedEntityName, EntityNameDefinition synonymName)
