@@ -43,8 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
     public void IsVirtualEndRelationEndpoint_WithoutAttribute ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithRealRelationEndPoints).GetProperty ("NoAttribute");
-      RelationEndPointReflector relationEndPointReflector =
-          new RelationEndPointReflector (CreateClassDefinition (typeof (ClassWithRealRelationEndPoints)), propertyInfo, Configuration.NameResolver);
+      var relationEndPointReflector =
+          RelationEndPointReflector.CreateRelationEndPointReflector (
+              CreateClassDefinition (typeof (ClassWithRealRelationEndPoints)), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }
@@ -55,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       Type type = typeof(ClassWithInvalidUnidirectionalRelation);
 
       PropertyInfo propertyInfo = type.GetProperty ("LeftSide");
-      RelationEndPointReflector relationEndPointReflector =
-          new RelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
+      var relationEndPointReflector =
+          RelationEndPointReflector.CreateRelationEndPointReflector (CreateClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }

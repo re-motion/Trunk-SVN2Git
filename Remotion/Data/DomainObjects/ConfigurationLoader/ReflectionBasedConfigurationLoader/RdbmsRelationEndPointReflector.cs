@@ -14,36 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/> for types persisted in an <b>RDBMS</b>.</summary>
-  public class RdbmsRelationEndPointReflector : RelationEndPointReflector
+  public class RdbmsRelationEndPointReflector : RelationEndPointReflector<DBBidirectionalRelationAttribute>
   {
     public RdbmsRelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
-        : this (classDefinition, propertyInfo, typeof (DBBidirectionalRelationAttribute), nameResolver)
+        : base (classDefinition, propertyInfo, nameResolver)
     {
-    }
-
-    protected RdbmsRelationEndPointReflector (
-       ClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
-        : base (
-            classDefinition,
-            propertyInfo,
-            ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
-                "bidirectionalRelationAttributeType", bidirectionalRelationAttributeType, typeof (DBBidirectionalRelationAttribute)),
-            nameResolver)
-    {
-    }
-
-    public DBBidirectionalRelationAttribute DBBidirectionalRelationAttribute
-    {
-      get { return (DBBidirectionalRelationAttribute) BidirectionalRelationAttribute; }
     }
 
     public override bool IsVirtualEndRelationEndpoint ()
@@ -59,7 +40,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!IsBidirectionalRelation)
         return true;
 
-      if (DBBidirectionalRelationAttribute.ContainsForeignKey)
+      if (BidirectionalRelationAttribute.ContainsForeignKey)
         return true;
 
       if (ReflectionUtility.IsObjectList (PropertyInfo.PropertyType))
@@ -80,7 +61,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!IsBidirectionalRelation)
         return null;
 
-      return DBBidirectionalRelationAttribute.SortExpression;
+      return BidirectionalRelationAttribute.SortExpression;
     }
   }
 }

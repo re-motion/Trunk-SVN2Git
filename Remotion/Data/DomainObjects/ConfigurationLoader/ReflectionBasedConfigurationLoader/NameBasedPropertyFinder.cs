@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// Finds a property based on its name. This is used by <see cref="RelationReflectorBase"/> to find the opposite property for a relation end-point.
+  /// Finds a property based on its name. This is used by <see cref="RelationReflectorBase{T}"/> to find the opposite property for a relation end-point.
   /// </summary>
   public class NameBasedPropertyFinder : PropertyFinderBase
   {

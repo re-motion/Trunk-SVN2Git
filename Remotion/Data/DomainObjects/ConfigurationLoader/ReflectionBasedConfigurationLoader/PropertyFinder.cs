@@ -69,8 +69,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (!ReflectionUtility.IsRelationType (propertyInfo.PropertyType))
         return false;
-      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          _classDefinition, propertyInfo, NameResolver);
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (_classDefinition, propertyInfo, NameResolver);
       return relationEndPointReflector.IsVirtualEndRelationEndpoint();
     }
   }

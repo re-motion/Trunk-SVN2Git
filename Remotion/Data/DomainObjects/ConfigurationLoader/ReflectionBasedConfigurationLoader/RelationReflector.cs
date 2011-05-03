@@ -25,13 +25,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>Used to create the <see cref="RelationDefinition"/> from a <see cref="PropertyInfo"/>.</summary>
-  public class RelationReflector : RelationReflectorBase
+  public class RelationReflector : RelationReflectorBase<BidirectionalRelationAttribute>
   {
-    public RelationReflector (
-        ClassDefinition classDefinition,
-        PropertyInfo propertyInfo,
-        IMappingNameResolver nameResolver)
-        : base (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
+    public RelationReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+        : base (classDefinition, propertyInfo, nameResolver)
     {
     }
 

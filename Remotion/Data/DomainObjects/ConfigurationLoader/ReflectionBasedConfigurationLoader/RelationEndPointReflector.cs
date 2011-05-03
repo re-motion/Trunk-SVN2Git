@@ -14,27 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/>.</summary>
-  public class RelationEndPointReflector: RelationReflectorBase
+  public static class RelationEndPointReflector
   {
-    public static RelationEndPointReflector CreateRelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+    public static RdbmsRelationEndPointReflector CreateRelationEndPointReflector (
+        ClassDefinition classDefinition, 
+        PropertyInfo propertyInfo, 
+        IMappingNameResolver nameResolver)
     {
       return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver);
     }
+  }
 
-    public RelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
-      : this (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
-    {
-    }
-
-    protected RelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
-      : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType, nameResolver)
+  /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/>.</summary>
+  public abstract class RelationEndPointReflector<T>: RelationReflectorBase<T> where T: BidirectionalRelationAttribute
+  {
+    protected RelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+        : base (classDefinition, propertyInfo, nameResolver)
     {
     }
 

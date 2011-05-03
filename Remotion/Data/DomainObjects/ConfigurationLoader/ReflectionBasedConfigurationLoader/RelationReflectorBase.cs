@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -23,26 +22,19 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>Base class for reflecting on the relations of a class.</summary>
-  public abstract class RelationReflectorBase : MemberReflectorBase
+  public abstract class RelationReflectorBase<T> : MemberReflectorBase where T: BidirectionalRelationAttribute
   {
-    protected RelationReflectorBase (
-        ClassDefinition classDefinition,
-        PropertyInfo propertyInfo,
-        Type bidirectionalRelationAttributeType,
-        IMappingNameResolver nameResolver)
+    protected RelationReflectorBase (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
-          "bidirectionalRelationAttributeType", bidirectionalRelationAttributeType, typeof (BidirectionalRelationAttribute));
 
       ClassDefinition = classDefinition;
-      BidirectionalRelationAttribute =
-          (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
+      BidirectionalRelationAttribute = AttributeUtility.GetCustomAttribute<T> (PropertyInfo, true);
     }
 
     public ClassDefinition ClassDefinition { get; private set; }
-    public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
+    public T BidirectionalRelationAttribute { get; private set; }
 
     protected bool IsBidirectionalRelation
     {
