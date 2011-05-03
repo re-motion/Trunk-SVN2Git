@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -53,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           var classDefinition = relationEndPointDefinition.ClassDefinition;
           //TODO RM-3977
           var oppositeDomainObjectType = ReflectionUtility.GetRelatedObjectTypeFromRelationProperty (oppositePropertyInfo);
-          var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (((PropertyInfoAdapter) relationEndPointDefinition.PropertyInfo).PropertyInfo, classDefinition);
+          var declaringDomainObjectTypeForProperty = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (relationEndPointDefinition.PropertyInfo, classDefinition);
           bool isPropertyDeclaredByThisClassDefinition = declaringDomainObjectTypeForProperty == classDefinition.ClassType;
           if (isPropertyDeclaredByThisClassDefinition)
           {

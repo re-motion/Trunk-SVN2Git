@@ -233,7 +233,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the type of the related object (the type of the <see cref="DomainObject"/>) for a relation <paramref name="propertyInfo"/>.
     /// </summary>
-    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
+    /// <param name="propertyInfo">The <see cref="IPropertyInformation"/> to analyze.</param>
     /// <returns>the domain object type of the given property.</returns>
     public static Type GetRelatedObjectTypeFromRelationProperty (IPropertyInformation propertyInfo)
     {
@@ -248,10 +248,10 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the declaring domain object type for the given property.
     /// </summary>
-    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
-    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
+    /// <param name="propertyInfo">The <see cref="IPropertyInformation"/> to analyze.</param>
+    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="IPropertyInformation"/></param>
     /// <returns>the declaring domain object type for the given property.</returns>
-    public static Type GetDeclaringDomainObjectTypeForProperty (PropertyInfo propertyInfo, ClassDefinition classDefinition)
+    public static Type GetDeclaringDomainObjectTypeForProperty (IPropertyInformation propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -272,10 +272,10 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Checks if the given <see cref="PropertyInfo"/> on the given <see cref="ClassDefinition"/> is a mixed property.
     /// </summary>
-    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to analyze.</param>
-    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="PropertyInfo"/></param>
+    /// <param name="propertyInfo">The <see cref="IPropertyInformation"/> to analyze.</param>
+    /// <param name="classDefinition">The <see cref="ClassDefinition"/> of the given <see cref="IPropertyInformation"/></param>
     /// <returns><see langword="true" /> if the given <see cref="PropertyInfo"/> is a mixed property.</returns>
-    public static bool IsMixedProperty (PropertyInfo propertyInfo, ClassDefinition classDefinition)
+    public static bool IsMixedProperty (IPropertyInformation propertyInfo, ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

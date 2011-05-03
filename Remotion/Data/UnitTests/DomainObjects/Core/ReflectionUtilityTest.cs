@@ -26,6 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using File = System.IO.File;
 
@@ -162,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetDeclaringDomainObjectTypeForProperty_NoMixedProperty ()
     {
-      var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
+      var property = new PropertyInfoAdapter (typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty"));
 
       var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, _classDefinitionWithMixedproperty);
 
@@ -172,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetDeclaringDomainObjectTypeForProperty_MixedProperty ()
     {
-      var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
+      var property = new PropertyInfoAdapter (typeof (MixinAddingProperty).GetProperty ("MixedProperty"));
 
       var result = ReflectionUtility.GetDeclaringDomainObjectTypeForProperty (property, _classDefinitionWithMixedproperty);
 
@@ -182,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsMixedProperty_NoMixedProperty_ReturnsFalse ()
     {
-      var property = typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty");
+      var property = new PropertyInfoAdapter (typeof (ClassWithMixedProperty).GetProperty ("PublicNonMixedProperty"));
 
       var result = ReflectionUtility.IsMixedProperty (property, _classDefinitionWithMixedproperty);
 
@@ -192,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void IsMixedProperty_MixedProperty_ReturnsTrue ()
     {
-      var property = typeof (MixinAddingProperty).GetProperty ("MixedProperty");
+      var property = new PropertyInfoAdapter (typeof (MixinAddingProperty).GetProperty ("MixedProperty"));
 
       var result = ReflectionUtility.IsMixedProperty (property, _classDefinitionWithMixedproperty);
 
