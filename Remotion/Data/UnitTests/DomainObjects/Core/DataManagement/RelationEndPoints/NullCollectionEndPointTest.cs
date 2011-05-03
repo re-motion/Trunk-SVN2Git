@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -109,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CanBeCollected ()
     {
-      Assert.That (_nullEndPoint.CanBeCollected, Is.True);
+      Assert.That (_nullEndPoint.CanBeCollected, Is.False);
     }
 
     [Test]
@@ -207,17 +206,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void RegisterOriginalOppositeEndPoint ()
     {
-      _nullEndPoint.RegisterOriginalOppositeEndPoint (_relatedEndPointStub);
+      var relatedEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
+      relatedEndPointMock.Expect (mock => mock.MarkSynchronized());
+      relatedEndPointMock.Replay();
+
+      _nullEndPoint.RegisterOriginalOppositeEndPoint (relatedEndPointMock);
+
+      relatedEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void UnregisterOriginalOppositeEndPoint ()
     {
-      _nullEndPoint.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub);
+      var relatedEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
+      relatedEndPointMock.Expect (mock => mock.ResetSyncState());
+      relatedEndPointMock.Replay ();
+
+      _nullEndPoint.UnregisterOriginalOppositeEndPoint (relatedEndPointMock);
+
+      relatedEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]

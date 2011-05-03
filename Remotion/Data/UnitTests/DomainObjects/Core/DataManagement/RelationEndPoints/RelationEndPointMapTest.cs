@@ -354,6 +354,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Null ()
+    {
+      var endPointID = RelationEndPointID.Create (
+          null, 
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems"));
+
+      var result = _map.GetRelationEndPointWithMinimumLoading (endPointID);
+
+      Assert.That (result, Is.TypeOf<NullCollectionEndPoint>());
+    }
+
+    [Test]
     public void GetRelationEndPointWithMinimumLoading_EndPointNotAvailable_Virtual ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
@@ -492,7 +504,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetUnregisterCommandForDataContainer_Existing_IncludesRealObjectEndPoints_IgnoresVirtualEndPoints ()
+    public void CreateUnregisterCommandForDataContainer_Existing_IncludesRealObjectEndPoints_IgnoresVirtualEndPoints ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (realEndPointID, DomainObjectIDs.Order2);
@@ -508,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       collectionEndPointStub.Stub (stub => stub.ID).Return (collectionEndPointID);
       RelationEndPointMapTestHelper.AddEndPoint (_map, collectionEndPointStub);
 
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand>());
       Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
@@ -518,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetUnregisterCommandForDataContainer_New_IncludesRealObjectEndPoints_IncludesVirtualEndPoints ()
+    public void CreateUnregisterCommandForDataContainer_New_IncludesRealObjectEndPoints_IncludesVirtualEndPoints ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (realEndPointID);
@@ -530,7 +542,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (_map[collectionEndPointID], Is.Not.Null);
 
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
@@ -540,10 +552,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetUnregisterCommandForDataContainer_IgnoresNonRegisteredEndPoints ()
+    public void CreateUnregisterCommandForDataContainer_IgnoresNonRegisteredEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
@@ -551,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
     
     [Test]
-    public void GetUnregisterCommandForDataContainer_WithUnregisterableEndPoint ()
+    public void CreateUnregisterCommandForDataContainer_WithUnregisterableEndPoint ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -560,7 +572,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPoint.Stub (stub => stub.HasChanged).Return (true);
       RelationEndPointMapTestHelper.AddEndPoint (_map, endPoint);
 
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<ExceptionCommand> ());
       Assert.That (((ExceptionCommand) command).Exception, Is.TypeOf<InvalidOperationException>());
@@ -572,7 +584,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetUnregisterCommandForDataContainer_WithUnregisterableEndPoint_DueToChangedOpposite ()
+    public void CreateUnregisterCommandForDataContainer_WithUnregisterableEndPoint_DueToChangedOpposite ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -588,7 +600,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPoint.Stub (stub => stub.HasChanged).Return (true);
       RelationEndPointMapTestHelper.AddEndPoint (_map, oppositeEndPoint);
 
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<ExceptionCommand> ());
       Assert.That (((ExceptionCommand) command).Exception, Is.TypeOf<InvalidOperationException> ());
@@ -600,7 +612,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void GetUnregisterCommandForDataContainer_WithMultipleUnregisterableEndPoints ()
+    public void CreateUnregisterCommandForDataContainer_WithMultipleUnregisterableEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var endPoint1 = MockRepository.GenerateStub<IRelationEndPoint>();
@@ -621,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPoint3.Stub (stub => stub.HasChanged).Return (false);
       RelationEndPointMapTestHelper.AddEndPoint (_map, endPoint3);
 
-      var command = _map.GetUnregisterCommandForDataContainer (dataContainer);
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<ExceptionCommand> ());
       Assert.That (

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointMap2 _relationEndPoints;
 
     private RelationEndPointRegistrationAgent _agent;
-    private RelationEndPointID _realEndPointID;
+    private RelationEndPointID _realOneManyEndPointID;
     private RelationEndPointID _virtualEndPointID;
     private RelationEndPointID _unidirectionalEndPointID;
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
       _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
 
-      _realEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+      _realOneManyEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       _virtualEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       _unidirectionalEndPointID = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
 
@@ -67,14 +67,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void RegisterEndPoint_RealEndPoint_PointingToNull ()
     {
       var endPointMock = CreateRealObjectEndPointMock(null);
-      endPointMock.Expect (mock => mock.MarkSynchronized());
       endPointMock.Replay ();
 
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint>();
+      oppositeEndPointMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
+      oppositeEndPointMock.Replay();
+
+      _endPointProviderMock
+          .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (RelationEndPointID.Create (null, _virtualEndPointID.Definition)))
+          .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
       _agent.RegisterEndPoint (endPointMock);
 
       endPointMock.VerifyAllExpectations();
+      _endPointProviderMock.VerifyAllExpectations();
+      oppositeEndPointMock.VerifyAllExpectations();
       Assert.That (_relationEndPoints, Has.Member (endPointMock));
     }
 
@@ -203,23 +211,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void UnregisterEndPoint_NotUnregisterable ()
+    public void RegisterEndPoint_IDAlreadyRegistered ()
     {
-      var endPointMock = CreateVirtualEndPointMock();
-      endPointMock.Stub (stub => stub.HasChanged).Return (true);
-      endPointMock.Replay ();
+      var existingEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
+      existingEndPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      _relationEndPoints.AddEndPoint (existingEndPointStub);
 
-      _relationEndPoints.AddEndPoint (endPointMock);
-
-      _endPointProviderMock.Replay ();
-
-      Assert.That (() => _agent.UnregisterEndPoint (endPointMock), Throws.InstanceOf<InvalidOperationException> ()
-          .With.Message.EqualTo (
-              "Cannot remove end-point "
-              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
-              + "because it has changed. End-points can only be unregistered when they are unchanged."));
-
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (() => _agent.RegisterEndPoint (existingEndPointStub), Throws.InvalidOperationException.With.Message.EqualTo (
+          "A relation end-point with ID "
+          + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' has "
+          + "already been registered."));
     }
 
     [Test]
@@ -327,81 +328,94 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void IsUnregisterable_False_Changed ()
+    public void UnregisterEndPoint_NotRegistered ()
     {
-      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
-      endPointStub.Stub (stub => stub.HasChanged).Return (true);
+      var existingEndPoint = MockRepository.GenerateStub<IRelationEndPoint> ();
+      existingEndPoint.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
 
-      var result = _agent.IsUnregisterable (endPointStub);
-
-      Assert.That (result, Is.False);
+      Assert.That (() => _agent.UnregisterEndPoint (existingEndPoint), Throws.ArgumentException.With.Message.EqualTo (
+          "End-point 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
+          + "is not part of this map.\r\nParameter name: endPoint"));
     }
 
     [Test]
-    public void IsUnregisterable_True_NonReal_Unchanged ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
-      endPointStub.Stub (stub => stub.HasChanged).Return (false);
-      endPointStub.Stub (stub => stub.Definition).Return (_virtualEndPointID.Definition);
-
-      var result = _agent.IsUnregisterable (endPointStub);
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void IsUnregisterable_True_Real_OppositeNull ()
+    public void GetOppositeVirtualEndPoint_NullObjectID_OneMany ()
     {
       var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.HasChanged).Return (false);
-      endPointStub.Stub (stub => stub.OppositeObjectID).Return (null);
-      endPointStub.Stub (stub => stub.Definition).Return (_realEndPointID.Definition);
+      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
+      _relationEndPoints.AddEndPoint (endPointStub);
 
-      var result = _agent.IsUnregisterable (endPointStub);
+      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, null);
 
-      Assert.That (result, Is.True);
+      Assert.That (result, Is.TypeOf<NullCollectionEndPoint>());
     }
 
     [Test]
-    public void IsUnregisterable_True_Real_OppositeNonNull_AndUnchanged ()
+    public void GetOppositeVirtualEndPoint_NullObjectID_OneOne ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderTicket1, typeof (OrderTicket), "Order");
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      _relationEndPoints.AddEndPoint (endPointStub);
+
+      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, null);
+
+      Assert.That (result, Is.TypeOf<NullVirtualObjectEndPoint> ());
+    }
+
+    [Test]
+    public void GetOppositeVirtualEndPoint_NonNullObjectID_Unidirectional ()
     {
       var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.HasChanged).Return (false);
-      endPointStub.Stub (stub => stub.OppositeObjectID).Return (_virtualEndPointID.ObjectID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realEndPointID.Definition);
+      endPointStub.Stub (stub => stub.ID).Return (_unidirectionalEndPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (_unidirectionalEndPointID.Definition);
+      _relationEndPoints.AddEndPoint (endPointStub);
 
-      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
+      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, DomainObjectIDs.Client1);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetOppositeVirtualEndPoint_NonNullObjectID_Bidirectional_OppositeNotRegistered ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
+      _relationEndPoints.AddEndPoint (endPointStub);
+
+      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, DomainObjectIDs.Order2);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetOppositeVirtualEndPoint_NonNullObjectID_Bidirectional_Registered ()
+    {
+      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
+      _relationEndPoints.AddEndPoint (endPointStub);
+
+      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint>();
       oppositeEndPointStub.Stub (stub => stub.ID).Return (_virtualEndPointID);
-      oppositeEndPointStub.Stub (stub => stub.HasChanged).Return (false);
-
       _relationEndPoints.AddEndPoint (oppositeEndPointStub);
-      _endPointProviderMock.Replay();
 
-      var result = _agent.IsUnregisterable (endPointStub);
+      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, _virtualEndPointID.ObjectID);
 
-      _endPointProviderMock.VerifyAllExpectations ();
-      Assert.That (result, Is.True);
+      Assert.That (result, Is.SameAs (oppositeEndPointStub));
     }
 
     [Test]
-    public void IsUnregisterable_False_Real_OppositeNonNull_AndChanged ()
+    public void GetOppositeVirtualEndPoint_NotRegistered ()
     {
       var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.HasChanged).Return (false);
-      endPointStub.Stub (stub => stub.OppositeObjectID).Return (_virtualEndPointID.ObjectID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realEndPointID.Definition);
+      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
 
-      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
-      oppositeEndPointStub.Stub (stub => stub.ID).Return (_virtualEndPointID);
-      oppositeEndPointStub.Stub (stub => stub.HasChanged).Return (true);
-
-      _relationEndPoints.AddEndPoint (oppositeEndPointStub);
-      _endPointProviderMock.Replay ();
-
-      var result = _agent.IsUnregisterable (endPointStub);
-
-      _endPointProviderMock.VerifyAllExpectations();
-      Assert.That (result, Is.False);
+      Assert.That (() => _agent.GetOppositeVirtualEndPoint (endPointStub, _virtualEndPointID.ObjectID), Throws.Nothing);
     }
 
     private IVirtualEndPoint CreateVirtualEndPointMock ()
@@ -415,9 +429,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IRealObjectEndPoint CreateRealObjectEndPointMock (ObjectID oppositeObjectID)
     {
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      endPointMock.Stub (stub => stub.ID).Return (_realEndPointID);
-      endPointMock.Stub (stub => stub.Definition).Return (_realEndPointID.Definition);
-      endPointMock.Stub (stub => stub.OppositeObjectID).Return (oppositeObjectID);
+      endPointMock.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
+      endPointMock.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
+      endPointMock.Stub (stub => stub.OriginalOppositeObjectID).Return (oppositeObjectID);
       return endPointMock;
     }
 
@@ -426,7 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (_unidirectionalEndPointID);
       endPointMock.Stub (stub => stub.Definition).Return (_unidirectionalEndPointID.Definition);
-      endPointMock.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Client1);
+      endPointMock.Stub (stub => stub.OriginalOppositeObjectID).Return (DomainObjectIDs.Client1);
       return endPointMock;
     }
 

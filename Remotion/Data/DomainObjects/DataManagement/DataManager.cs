@@ -412,7 +412,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           else
           {
             commands.Add (new UnregisterDataContainerCommand (objectID, _dataContainerMap));
-            commands.Add (_relationEndPointMap.GetUnregisterCommandForDataContainer (dataContainer));
+            commands.Add (_relationEndPointMap.CreateUnregisterCommandForDataContainer (dataContainer));
           }
         }
       }

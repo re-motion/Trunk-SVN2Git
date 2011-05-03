@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections.Generic;
@@ -194,7 +195,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
     // If the DataContainer is New, the virtual end-points are unregistered as well.
-    public IDataManagementCommand GetUnregisterCommandForDataContainer (DataContainer dataContainer)
+    public IDataManagementCommand CreateUnregisterCommandForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
@@ -208,7 +209,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         {
           loadedEndPoints.Add (endPoint);
 
-          if (!_registrationAgent.IsUnregisterable (endPoint))
+          if (!IsUnregisterable (endPoint))
             notUnregisterableEndPoints.Add (endPoint);
         }
       }
@@ -272,6 +273,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       var existingEndPoint = this[endPointID];
       if (existingEndPoint != null)
         return existingEndPoint;
+      else if (endPointID.ObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
       else if (endPointID.Definition.IsVirtual)
         return GetVirtualEndPointOrRegisterEmpty (endPointID);
       else
@@ -390,6 +393,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         var message = string.Format ("{0} cannot be called for anonymous end points.", methodName);
         throw new ArgumentException (message, argumentName);
       }
+    }
+
+    private bool IsUnregisterable (IRelationEndPoint endPoint)
+    {
+      // An end-point must be unchanged to be unregisterable.
+      if (endPoint.HasChanged)
+        return false;
+
+      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
+      // must be unchanged. Virtual end-points cannot exist in changed state without their opposite real end-points.
+      // (This only affects 1:n relations: for those, the opposite virtual end-point can be changed although the (one of many) real end-point is 
+      // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
+
+      var maybeOppositeEndPoint =
+          Maybe
+            .ForValue (endPoint as IRealObjectEndPoint)
+            .Select (ep => _registrationAgent.GetOppositeVirtualEndPoint (ep, ep.OppositeObjectID));
+      if (maybeOppositeEndPoint.Where (ep => ep.HasChanged).HasValue)
+        return false;
+
+      return true;
     }
 
     #region Serialization

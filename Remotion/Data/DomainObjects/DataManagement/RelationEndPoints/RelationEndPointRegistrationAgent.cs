@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -54,6 +53,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void RegisterEndPoint (IRelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      if (_relationEndPoints[endPoint.ID] != null)
+      {
+        var message = string.Format ("A relation end-point with ID '{0}' has already been registered.", endPoint.ID);
+        throw new InvalidOperationException (message);
+      }
+      
       _relationEndPoints.AddEndPoint (endPoint);
 
       var realObjectEndPoint = endPoint as IRealObjectEndPoint;
@@ -64,13 +69,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void UnregisterEndPoint (IRelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (!IsUnregisterable (endPoint))
+      if (_relationEndPoints[endPoint.ID] != endPoint)
       {
-        var message = String.Format (
-            "Cannot remove end-point '{0}' because it has changed. End-points can only be unregistered when they are unchanged.",
-            endPoint.ID);
-        throw new InvalidOperationException (message);
+        var message = string.Format ("End-point '{0}' is not part of this map.\r\nParameter name: endPoint", endPoint.ID);
+        throw new ArgumentException (message);
       }
 
       _relationEndPoints.RemoveEndPoint (endPoint.ID);
@@ -80,30 +82,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         UnregisterOppositeForRealObjectEndPoint (realObjectEndPoint);
     }
 
-    public bool IsUnregisterable (IRelationEndPoint endPoint)
+    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint realObjectEndPoint, ObjectID oppositeObjectID)
     {
-      // An end-point must be unchanged to be unregisterable.
-      if (endPoint.HasChanged)
-        return false;
+      ArgumentUtility.CheckNotNull ("realObjectEndPoint", realObjectEndPoint);
 
-      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
-      // must be unchanged. Virtual end-points cannot exist in changed state without their opposite real end-points.
-      // (This only affects 1:n relations: for those, the opposite virtual end-point can be changed although the (one of many) real end-point is 
-      // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
+      var oppositeID = GetOppositeVirtualEndPointID (realObjectEndPoint, oppositeObjectID);
+      if (oppositeID == null)
+        return null; // return null for anonymous
 
-      var maybeOppositeEndPoint =
-          Maybe
-            .ForValue (endPoint as IRealObjectEndPoint)
-            .Select (GetOppositeVirtualEndPoint);
-      if (maybeOppositeEndPoint.Where (ep => ep.HasChanged).HasValue)
-        return false;
+      if (oppositeID.ObjectID == null)
+        return (IVirtualEndPoint) RelationEndPointMap.CreateNullEndPoint (_clientTransaction, oppositeID.Definition);
 
-      return true;
+      return (IVirtualEndPoint) _relationEndPoints[oppositeID]; // retzrn null for not registered
     }
 
     private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
-      var oppositeVirtualEndPointID = GetOppositeVirtualEndPointID (realObjectEndPoint);
+      var oppositeVirtualEndPointID = GetOppositeVirtualEndPointID (realObjectEndPoint, realObjectEndPoint.OriginalOppositeObjectID);
       if (oppositeVirtualEndPointID == null)
       {
         realObjectEndPoint.MarkSynchronized ();
@@ -124,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
-      var oppositeEndPoint = GetOppositeVirtualEndPoint (realObjectEndPoint);
+      var oppositeEndPoint = GetOppositeVirtualEndPoint (realObjectEndPoint, realObjectEndPoint.OriginalOppositeObjectID);
       if (oppositeEndPoint == null)
       {
         realObjectEndPoint.ResetSyncState();
@@ -133,33 +128,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
       if (oppositeEndPoint.CanBeCollected)
-      {
-        Assertion.IsTrue (IsUnregisterable (oppositeEndPoint), "Caller checks that this end-point is unregisterable.");
         _relationEndPoints.RemoveEndPoint (oppositeEndPoint.ID);
-      }
     }
 
-    private RelationEndPointID GetOppositeVirtualEndPointID (IRealObjectEndPoint realObjectEndPoint)
+    private RelationEndPointID GetOppositeVirtualEndPointID (IRealObjectEndPoint realObjectEndPoint, ObjectID oppositeObjectID)
     {
-      if (realObjectEndPoint.OppositeObjectID == null)
-        return null;
-
       var oppositeDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
       if (oppositeDefinition.IsAnonymous)
         return null;
 
-      return RelationEndPointID.Create (realObjectEndPoint.OppositeObjectID, oppositeDefinition);
-    }
-
-    private IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint realObjectEndPoint)
-    {
-      var oppositeID = GetOppositeVirtualEndPointID (realObjectEndPoint);
-      if (oppositeID == null)
-        return null;
-
-      var oppositeEndPoint = (IVirtualEndPoint) _relationEndPoints[oppositeID];
-      Assertion.IsNotNull (oppositeEndPoint, "RegisterEndPoint ensures that for every real end-point, the opposite virtual end-point exists.");
-      return oppositeEndPoint;
+      return RelationEndPointID.Create (oppositeObjectID, oppositeDefinition);
     }
   }
 }

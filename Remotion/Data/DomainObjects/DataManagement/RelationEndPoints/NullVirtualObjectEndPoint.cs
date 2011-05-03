@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public bool CanBeCollected
     {
-      get { return true; }
+      get { return false; }
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -46,12 +46,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("RegisterOriginalOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+      oppositeEndPoint.MarkSynchronized();
     }
 
     public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
-      throw new InvalidOperationException ("UnregisterOriginalOppositeEndPoint cannot be called on a NullVirtualObjectEndPoint.");
+      oppositeEndPoint.ResetSyncState();
     }
 
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
