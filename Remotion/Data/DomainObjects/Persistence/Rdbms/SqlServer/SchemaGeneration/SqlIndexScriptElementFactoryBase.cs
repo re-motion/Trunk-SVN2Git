@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
               + "WHERE so.[name] = '{0}' AND schema_name (so.schema_id)='{1}' AND si.[name] = '{2}')\r\n"
               + "  DROP INDEX [{2}] ON [{1}].[{0}]",
               indexDefinition.ObjectName.EntityName,
-              indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+              indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
               indexDefinition.IndexName));
     }
 

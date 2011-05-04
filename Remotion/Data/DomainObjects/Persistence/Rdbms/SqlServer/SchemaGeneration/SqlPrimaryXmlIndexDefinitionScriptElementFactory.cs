@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "CREATE PRIMARY XML INDEX [{0}]\r\n"
           + "  ON [{1}].[{2}] ([{3}]){4}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           GetCreateIndexOptions (GetCreateIndexOptionItems (indexDefinition))));

@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         string.Format (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{1}' AND TABLE_SCHEMA = '{0}')\r\n"
           + "  DROP VIEW [{0}].[{1}]",
-          entityDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          entityDefinition.ViewName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
           entityDefinition.ViewName.EntityName
           ));
     }
