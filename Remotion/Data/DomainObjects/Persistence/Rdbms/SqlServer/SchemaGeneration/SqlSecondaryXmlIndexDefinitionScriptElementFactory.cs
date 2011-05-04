@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  USING XML INDEX [{4}]\r\n"
           + "  FOR {5}{6}",
           indexDefinition.IndexName,
-          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+          indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           indexDefinition.ObjectName.EntityName,
           indexDefinition.XmlColumn.Name,
           indexDefinition.PrimaryIndexName,

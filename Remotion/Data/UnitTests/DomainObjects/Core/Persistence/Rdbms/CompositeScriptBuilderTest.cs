@@ -25,11 +25,11 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class CompositeScriptBuilder2Test : SchemaGenerationTestBase
+  public class CompositeScriptBuilderTest : SchemaGenerationTestBase
   {
     private IScriptBuilder2 _builder1Mock;
     private IScriptBuilder2 _builder2Mock;
-    private CompositeScriptBuilder2 _builder;
+    private CompositeScriptBuilder _builder;
     private ScriptElementCollection _fakeResultCollection1;
     private ScriptElementCollection _fakeResultCollection2;
     private ScriptStatement _fakeStatement1;
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder2>();
       _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder2>();
 
-      _builder = new CompositeScriptBuilder2 (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, _builder1Mock, _builder2Mock);
+      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, _builder1Mock, _builder2Mock);
 
       _fakeStatement1 = new ScriptStatement ("Fake1");
       _fakeStatement2 = new ScriptStatement ("Fake2");

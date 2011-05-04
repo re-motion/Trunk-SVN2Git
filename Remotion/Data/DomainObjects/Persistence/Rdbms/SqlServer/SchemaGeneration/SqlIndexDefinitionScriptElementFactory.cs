@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
          indexDefinition.IsUnique.HasValue && indexDefinition.IsUnique.Value ? "UNIQUE " : string.Empty,
          indexDefinition.IsClustered.HasValue && indexDefinition.IsClustered.Value ? "CLUSTERED" : "NONCLUSTERED",
          indexDefinition.IndexName,
-         indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+         indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
          indexDefinition.ObjectName.EntityName,
          GetIndexedColumnNames (indexDefinition.Columns),
          indexDefinition.IncludedColumns != null

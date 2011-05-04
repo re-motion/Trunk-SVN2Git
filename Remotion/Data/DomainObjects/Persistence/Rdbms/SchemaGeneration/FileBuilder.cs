@@ -100,10 +100,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath, fileName);
     }
 
-    private readonly Func<CompositeScriptBuilder2> _scriptBuilderFactory;
+    private readonly Func<CompositeScriptBuilder> _scriptBuilderFactory;
     private readonly IEntityDefinitionProvider _entityDefinitionProvider;
 
-    public FileBuilder (Func<CompositeScriptBuilder2> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+    public FileBuilder (Func<CompositeScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
       ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);

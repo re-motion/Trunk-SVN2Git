@@ -24,9 +24,9 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="CompositeScriptBuilder2"/> contains database-independent code to generate database-scripts for a relational database.
+  /// <see cref="CompositeScriptBuilder"/> contains database-independent code to generate database-scripts for a relational database.
   /// </summary>
-  public class CompositeScriptBuilder2 : IScriptBuilder2
+  public class CompositeScriptBuilder : IScriptBuilder2
   {
     public const string DefaultSchema = "dbo";
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ISqlDialect _sqlDialect;
 
-    public CompositeScriptBuilder2 (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder2[] scriptBuilders)
+    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder2[] scriptBuilders)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);

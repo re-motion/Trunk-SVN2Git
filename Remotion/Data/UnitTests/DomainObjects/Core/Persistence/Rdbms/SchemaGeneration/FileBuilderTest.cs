@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class FileBuilderTest : SchemaGenerationTestBase
   {
     private TestableFileBuilder _fileBuilder;
-    private CompositeScriptBuilder2 _scriptBuilderMock;
+    private CompositeScriptBuilder _scriptBuilderMock;
 
     private ClassDefinition _classDefinition1;
     private ClassDefinition _classDefinition2;
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _scriptBuilderMock = MockRepository.GenerateStrictMock<CompositeScriptBuilder2> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, new IScriptBuilder2[0]);
+      _scriptBuilderMock = MockRepository.GenerateStrictMock<CompositeScriptBuilder> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, new IScriptBuilder2[0]);
       //_scriptBuilderMock.Stub (stub => stub.RdbmsProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
       _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
 

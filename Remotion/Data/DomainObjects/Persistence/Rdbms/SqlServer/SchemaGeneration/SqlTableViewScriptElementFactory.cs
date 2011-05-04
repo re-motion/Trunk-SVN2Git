@@ -40,11 +40,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "  SELECT {2}\r\n"
           + "    FROM [{4}].[{5}]\r\n"
           + "  WITH CHECK OPTION",
-          tableDefinition.ViewName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+          tableDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           tableDefinition.ViewName.EntityName,
           GetColumnList (tableDefinition.Columns),
           UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
-          tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+          tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           tableDefinition.TableName.EntityName)));
       statements.AddElement (new BatchDelimiterStatement ());
       return statements;

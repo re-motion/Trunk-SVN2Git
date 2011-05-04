@@ -43,11 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           + "    FROM [{4}].[{5}]\r\n"
           + "    WHERE [ClassID] IN ({6})\r\n"
           + "  WITH CHECK OPTION",
-          filterViewDefinition.ViewName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+          filterViewDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           filterViewDefinition.ViewName.EntityName,
           GetColumnList (filterViewDefinition.Columns),
           UseSchemaBinding (filterViewDefinition) ? "WITH SCHEMABINDING " : string.Empty,
-          filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? CompositeScriptBuilder2.DefaultSchema,
+          filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
           filterViewDefinition.GetBaseTable ().TableName.EntityName,
           GetClassIDList (filterViewDefinition.ClassIDs))));
       statements.AddElement (new BatchDelimiterStatement());
