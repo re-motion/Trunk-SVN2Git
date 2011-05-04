@@ -118,9 +118,9 @@ namespace Remotion.UnitTests.Reflection
     public void GetAccessors ()
     {
       var objToReturn = new IMethodInformation[0];
-      _implementationPropertyInformationStub.Stub (stub => stub.GetAccessors ()).Return (objToReturn);
+      _implementationPropertyInformationStub.Stub (stub => stub.GetAccessors (false)).Return (objToReturn);
 
-      Assert.That (_interfaceImplementationPropertyInformation.GetAccessors (), Is.SameAs (objToReturn));
+      Assert.That (_interfaceImplementationPropertyInformation.GetAccessors (false), Is.SameAs (objToReturn));
     }
 
     [Test]

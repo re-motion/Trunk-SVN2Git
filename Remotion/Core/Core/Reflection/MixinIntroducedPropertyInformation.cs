@@ -90,9 +90,9 @@ namespace Remotion.Reflection
       return _mixinPropertyInfo.GetIndexParameters();
     }
 
-    public IMethodInformation[] GetAccessors ()
+    public IMethodInformation[] GetAccessors (bool nonPublic)
     {
-      return _mixinPropertyInfo.GetAccessors();
+      return _mixinPropertyInfo.GetAccessors(nonPublic);
     }
 
     public Type PropertyType

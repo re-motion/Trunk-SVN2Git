@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetAccessors ()
     {
-      Assert.That (_nullPropertyInformation.GetAccessors ().Length, Is.EqualTo (0));
+      Assert.That (_nullPropertyInformation.GetAccessors (false).Length, Is.EqualTo (0));
     }
 
     [Test]

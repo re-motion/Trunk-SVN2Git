@@ -98,7 +98,7 @@ namespace Remotion.Reflection
       return new ParameterInfo[0];
     }
 
-    public IMethodInformation[] GetAccessors ()
+    public IMethodInformation[] GetAccessors (bool nonPublic)
     {
       return new IMethodInformation[0];
     }

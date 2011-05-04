@@ -76,6 +76,12 @@ namespace Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter
       set { Scalar = value; }
     }
 
+    public T PropertyWithPrivateSetter
+    {
+      get { return Scalar; }
+      private set { Scalar = value; }
+    }
+
     T IInterfaceWithReferenceType<T>.ExplicitInterfaceMethod ()
     {
       return null;

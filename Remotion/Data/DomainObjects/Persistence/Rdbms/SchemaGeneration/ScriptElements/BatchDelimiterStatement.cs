@@ -26,6 +26,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
   /// </summary>
   public class BatchDelimiterStatement : IScriptElement
   {
+    public BatchDelimiterStatement ()
+    {
+      
+    }
     public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
     {
       ArgumentUtility.CheckNotNull ("script", script);

@@ -45,6 +45,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           ));
     }
 
+
+
     protected virtual bool UseSchemaBinding (T entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

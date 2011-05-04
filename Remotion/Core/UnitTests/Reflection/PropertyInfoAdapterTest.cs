@@ -656,7 +656,7 @@ namespace Remotion.UnitTests.Reflection
       var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceScalar");
       var adapter = new PropertyInfoAdapter (propertyInfo);
 
-      var result = adapter.GetAccessors();
+      var result = adapter.GetAccessors (false);
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (
@@ -671,7 +671,7 @@ namespace Remotion.UnitTests.Reflection
       var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceReadOnlyScalar");
       var adapter = new PropertyInfoAdapter (propertyInfo);
 
-      var result = adapter.GetAccessors();
+      var result = adapter.GetAccessors (false);
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (
@@ -685,12 +685,44 @@ namespace Remotion.UnitTests.Reflection
       var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceWriteOnlyScalar");
       var adapter = new PropertyInfoAdapter (propertyInfo);
 
-      var result = adapter.GetAccessors();
+      var result = adapter.GetAccessors (false);
 
       Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (
           ((MethodInfoAdapter) result[0]).MethodInfo,
           Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceWriteOnlyScalar")));
+    }
+
+    [Test]
+    public void GetAccessors_NonPublicSetter_NonPublicFalse ()
+    {
+      var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PropertyWithPrivateSetter");
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+
+      var result = adapter.GetAccessors (false);
+
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (
+          ((MethodInfoAdapter) result[0]).MethodInfo,
+          Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("get_PropertyWithPrivateSetter")));
+    }
+
+    [Test]
+    public void GetAccessors_NonPublicSetter_NonPublicTrue ()
+    {
+      var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("PropertyWithPrivateSetter");
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+
+      var result = adapter.GetAccessors (true);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (
+          ((MethodInfoAdapter) result[0]).MethodInfo,
+          Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("get_PropertyWithPrivateSetter")));
+      Assert.That (
+          ((MethodInfoAdapter) result[1]).MethodInfo,
+          Is.SameAs (
+              typeof (ClassWithReferenceType<object>).GetMethod ("set_PropertyWithPrivateSetter", BindingFlags.Instance | BindingFlags.NonPublic)));
     }
 
     [Test]
