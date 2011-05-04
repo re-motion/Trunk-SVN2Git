@@ -467,6 +467,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void GetRelationEndPointWithMinimumLoading_Anonymous ()
+    {
+      var unidirectionalRelationDefinition = Configuration
+          .GetTypeDefinition (typeof (Location))
+          .GetRelationEndPointDefinition (typeof (Location).FullName + ".Client")
+          .GetOppositeEndPointDefinition();
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, unidirectionalRelationDefinition);
+
+      Assert.That (() => _map.GetRelationEndPointWithMinimumLoading (endPointID), Throws.ArgumentException.With.Message.EqualTo (
+          "GetRelationEndPointWithMinimumLoading cannot be called for anonymous end points.\r\nParameter name: endPointID"));
+    }
+
+    [Test]
     public void RegisterEndPointsForDataContainer_Existing_RegistersRealObjectEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -634,6 +647,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void CreateUnregisterCommandForDataContainer_WithUnidirectionalEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
+      var unidirectionalEndPoint = (RealObjectEndPoint) _relationEndPoints[endPointID];
+      Assert.That (unidirectionalEndPoint, Is.Not.Null);
+
+      var command = _map.CreateUnregisterCommandForDataContainer (dataContainer);
+
+      Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent (_map)));
+      Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (unidirectionalEndPoint));
     }
     
     [Test]

@@ -249,7 +249,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-
       CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
       var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
@@ -263,6 +262,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
     {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckNotAnonymous (endPointID, "GetRelationEndPointWithMinimumLoading", "endPointID");
+
       var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
       if (existingEndPoint != null)
         return existingEndPoint;
@@ -382,7 +384,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       var maybeOppositeEndPoint =
           Maybe
             .ForValue (endPoint as IRealObjectEndPoint)
-            .Select (ep => _registrationAgent.GetOppositeVirtualEndPoint (ep, ep.OppositeObjectID));
+            .Select (ep => RelationEndPointID.CreateOpposite (ep.Definition, ep.OppositeObjectID))
+            .Where (oppositeEndPointID => !oppositeEndPointID.Definition.IsAnonymous)
+            .Select (GetRelationEndPointWithoutLoading);
       if (maybeOppositeEndPoint.Where (ep => ep.HasChanged).HasValue)
         return false;
 

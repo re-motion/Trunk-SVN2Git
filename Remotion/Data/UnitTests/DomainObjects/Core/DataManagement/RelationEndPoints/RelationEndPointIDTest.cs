@@ -179,10 +179,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var sourceEndPointDefinition =
           Configuration.GetTypeDefinition (typeof (Location)).GetRelationEndPointDefinition (typeof (Location).FullName + ".Client");
 
-      Assert.That (
-          () => RelationEndPointID.CreateOpposite (sourceEndPointDefinition, null),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "The end-point definition is not part of a bidirectional relation.\r\nParameter name: sourceEndPointDefinition"));
+      var endPointID = RelationEndPointID.CreateOpposite (sourceEndPointDefinition, DomainObjectIDs.Client1);
+
+      Assert.That (endPointID.Definition.IsAnonymous, Is.True);
     }
 
     [Test]

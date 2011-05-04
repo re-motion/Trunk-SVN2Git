@@ -1196,6 +1196,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void LoadOppositeVirtualEndPoint_Unidirectional ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+
+      var objectEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      objectEndPointStub.Stub (stub => stub.ID).Return (endPointID);
+      objectEndPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Client1);
+      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
+
+      Assert.That (() =>_dataManager.LoadOppositeVirtualEndPoint (objectEndPointStub), Throws.ArgumentException.With.Message.EqualTo (
+        "The given end-point is not part of a bidirectional relation.\r\nParameter name: objectEndPoint"));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been loaded.")]
     public void LoadOppositeVirtualEndPoint_AlreadLoaded ()
     {

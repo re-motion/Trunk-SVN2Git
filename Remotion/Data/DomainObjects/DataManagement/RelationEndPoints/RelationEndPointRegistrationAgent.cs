@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -82,24 +81,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         UnregisterOppositeForRealObjectEndPoint (realObjectEndPoint);
     }
 
-    public IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint realObjectEndPoint, ObjectID oppositeObjectID)
-    {
-      ArgumentUtility.CheckNotNull ("realObjectEndPoint", realObjectEndPoint);
-
-      var oppositeID = GetOppositeVirtualEndPointID (realObjectEndPoint, oppositeObjectID);
-      if (oppositeID == null)
-        return null; // return null for anonymous
-
-      if (oppositeID.ObjectID == null)
-        return (IVirtualEndPoint) RelationEndPointMap.CreateNullEndPoint (_clientTransaction, oppositeID.Definition);
-
-      return (IVirtualEndPoint) _relationEndPoints[oppositeID]; // retzrn null for not registered
-    }
-
     private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
-      var oppositeVirtualEndPointID = GetOppositeVirtualEndPointID (realObjectEndPoint, realObjectEndPoint.OriginalOppositeObjectID);
-      if (oppositeVirtualEndPointID == null)
+      var oppositeVirtualEndPointID = RelationEndPointID.CreateOpposite (realObjectEndPoint.Definition, realObjectEndPoint.OriginalOppositeObjectID);
+      if (oppositeVirtualEndPointID.Definition.IsAnonymous)
       {
         realObjectEndPoint.MarkSynchronized ();
         return;
@@ -119,25 +104,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
     {
-      var oppositeEndPoint = GetOppositeVirtualEndPoint (realObjectEndPoint, realObjectEndPoint.OriginalOppositeObjectID);
-      if (oppositeEndPoint == null)
+      ArgumentUtility.CheckNotNull ("realObjectEndPoint", realObjectEndPoint);
+
+      var oppositeEndPointID = RelationEndPointID.CreateOpposite (realObjectEndPoint.Definition, realObjectEndPoint.OriginalOppositeObjectID);
+      if (oppositeEndPointID.Definition.IsAnonymous)
       {
-        realObjectEndPoint.ResetSyncState();
+        realObjectEndPoint.ResetSyncState ();
         return;
       }
+      
+      var oppositeEndPoint = (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (oppositeEndPointID);
+      Assertion.IsNotNull (oppositeEndPoint, "RegisterEndPoint ensures that the opposite end-point always exists.");
 
       oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
       if (oppositeEndPoint.CanBeCollected)
         _relationEndPoints.RemoveEndPoint (oppositeEndPoint.ID);
-    }
-
-    private RelationEndPointID GetOppositeVirtualEndPointID (IRealObjectEndPoint realObjectEndPoint, ObjectID oppositeObjectID)
-    {
-      var oppositeDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
-      if (oppositeDefinition.IsAnonymous)
-        return null;
-
-      return RelationEndPointID.Create (oppositeObjectID, oppositeDefinition);
     }
   }
 }

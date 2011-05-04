@@ -9,6 +9,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   {
     void RegisterEndPoint (IRelationEndPoint endPoint);
     void UnregisterEndPoint (IRelationEndPoint endPoint);
-    IVirtualEndPoint GetOppositeVirtualEndPoint (IRealObjectEndPoint realObjectEndPoint, ObjectID oppositeObjectID);
   }
 }

@@ -249,11 +249,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _relationEndPoints.AddEndPoint (endPointMock);
 
+      var oppositeEndPointID = RelationEndPointID.CreateOpposite (endPointMock.Definition, null);
+      _endPointProviderMock
+          .Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointID))
+          .Return (new NullCollectionEndPoint (_clientTransaction, oppositeEndPointID.Definition));
       _endPointProviderMock.Replay ();
 
       _agent.UnregisterEndPoint (endPointMock);
 
       endPointMock.VerifyAllExpectations();
+      _endPointProviderMock.VerifyAllExpectations();
       Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
     }
 
@@ -290,6 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPoints.AddEndPoint (endPointMock);
       _relationEndPoints.AddEndPoint (oppositeEndPointMock);
 
+      _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointMock.ID)).Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
       _agent.UnregisterEndPoint (endPointMock);
@@ -302,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void UnregisterEndPoint_RealEndPoint_NotPointingToNull_CanBeCollectedFalse ()
+    public void UnregisterEndPoint_RealEndPoint_PointingToNonNull_NonUnidirectional_CanBeCollectedFalse ()
     {
       var endPointMock = CreateRealObjectEndPointMock (_virtualEndPointID.ObjectID);
       endPointMock.Stub (stub => stub.HasChanged).Return (false);
@@ -316,6 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPoints.AddEndPoint (endPointMock);
       _relationEndPoints.AddEndPoint (oppositeEndPointMock);
 
+      _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointMock.ID)).Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
       _agent.UnregisterEndPoint (endPointMock);
@@ -336,86 +343,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (() => _agent.UnregisterEndPoint (existingEndPoint), Throws.ArgumentException.With.Message.EqualTo (
           "End-point 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
           + "is not part of this map.\r\nParameter name: endPoint"));
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NullObjectID_OneMany ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
-      _relationEndPoints.AddEndPoint (endPointStub);
-
-      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, null);
-
-      Assert.That (result, Is.TypeOf<NullCollectionEndPoint>());
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NullObjectID_OneOne ()
-    {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderTicket1, typeof (OrderTicket), "Order");
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (endPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (endPointID.Definition);
-      _relationEndPoints.AddEndPoint (endPointStub);
-
-      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, null);
-
-      Assert.That (result, Is.TypeOf<NullVirtualObjectEndPoint> ());
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NonNullObjectID_Unidirectional ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (_unidirectionalEndPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (_unidirectionalEndPointID.Definition);
-      _relationEndPoints.AddEndPoint (endPointStub);
-
-      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, DomainObjectIDs.Client1);
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NonNullObjectID_Bidirectional_OppositeNotRegistered ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
-      _relationEndPoints.AddEndPoint (endPointStub);
-
-      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, DomainObjectIDs.Order2);
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NonNullObjectID_Bidirectional_Registered ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
-      _relationEndPoints.AddEndPoint (endPointStub);
-
-      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint>();
-      oppositeEndPointStub.Stub (stub => stub.ID).Return (_virtualEndPointID);
-      _relationEndPoints.AddEndPoint (oppositeEndPointStub);
-
-      var result = _agent.GetOppositeVirtualEndPoint (endPointStub, _virtualEndPointID.ObjectID);
-
-      Assert.That (result, Is.SameAs (oppositeEndPointStub));
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPoint_NotRegistered ()
-    {
-      var endPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
-      endPointStub.Stub (stub => stub.Definition).Return (_realOneManyEndPointID.Definition);
-
-      Assert.That (() => _agent.GetOppositeVirtualEndPoint (endPointStub, _virtualEndPointID.ObjectID), Throws.Nothing);
     }
 
     private IVirtualEndPoint CreateVirtualEndPointMock ()

@@ -87,9 +87,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("sourceEndPointDefinition", sourceEndPointDefinition);
 
       var oppositeEndPointDefinition = sourceEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
-      if (oppositeEndPointDefinition.IsAnonymous)
-        throw new ArgumentException ("The end-point definition is not part of a bidirectional relation.", "sourceEndPointDefinition");
-
       return Create (oppositeObjectID, oppositeEndPointDefinition);
     }
 
