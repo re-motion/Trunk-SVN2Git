@@ -658,14 +658,11 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.GetAccessors();
 
+      Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (
-          result,
-          Is.EquivalentTo (
-              new[]
-              {
-                  typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar"),
-                  typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceScalar")
-              }));
+          ((MethodInfoAdapter) result[0]).MethodInfo, Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar")));
+      Assert.That (
+          ((MethodInfoAdapter) result[1]).MethodInfo, Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceScalar")));
     }
 
     [Test]
@@ -674,9 +671,12 @@ namespace Remotion.UnitTests.Reflection
       var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceReadOnlyScalar");
       var adapter = new PropertyInfoAdapter (propertyInfo);
 
-      var result = adapter.GetAccessors ();
+      var result = adapter.GetAccessors();
 
-      Assert.That (result, Is.EqualTo (new[] { typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceReadOnlyScalar") }));
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (
+          ((MethodInfoAdapter) result[0]).MethodInfo,
+          Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceReadOnlyScalar")));
     }
 
     [Test]
@@ -685,9 +685,12 @@ namespace Remotion.UnitTests.Reflection
       var propertyInfo = typeof (ClassWithReferenceType<object>).GetProperty ("ImplicitInterfaceWriteOnlyScalar");
       var adapter = new PropertyInfoAdapter (propertyInfo);
 
-      var result = adapter.GetAccessors ();
+      var result = adapter.GetAccessors();
 
-      Assert.That (result, Is.EqualTo (new[] { typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceWriteOnlyScalar") }));
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (
+          ((MethodInfoAdapter) result[0]).MethodInfo,
+          Is.SameAs (typeof (ClassWithReferenceType<object>).GetMethod ("set_ImplicitInterfaceWriteOnlyScalar")));
     }
 
     [Test]

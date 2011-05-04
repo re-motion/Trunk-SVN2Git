@@ -206,7 +206,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetAccessors ()
     {
-      var objToReturn = new MethodInfo[0];
+      var objToReturn = new IMethodInformation[0];
       _implementationPropertyInformationStub.Stub (stub => stub.GetAccessors ()).Return (objToReturn);
 
       Assert.That (_mixinIntroducedPropertyInformation.GetAccessors (), Is.SameAs (objToReturn));

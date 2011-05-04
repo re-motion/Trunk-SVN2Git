@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -111,9 +113,9 @@ namespace Remotion.Reflection
       return _propertyInfo.GetIndexParameters();
     }
 
-    public MethodInfo[] GetAccessors ()
+    public IMethodInformation[] GetAccessors ()
     {
-      return _propertyInfo.GetAccessors();
+      return _propertyInfo.GetAccessors().Select (accessor => new MethodInfoAdapter (accessor)).Cast<IMethodInformation>().ToArray();
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)

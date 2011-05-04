@@ -98,9 +98,9 @@ namespace Remotion.Reflection
       return new ParameterInfo[0];
     }
 
-    public MethodInfo[] GetAccessors ()
+    public IMethodInformation[] GetAccessors ()
     {
-      return new MethodInfo[0];
+      return new IMethodInformation[0];
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

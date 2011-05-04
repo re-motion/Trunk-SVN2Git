@@ -120,6 +120,6 @@ namespace Remotion.Reflection
 
     ParameterInfo[] GetIndexParameters ();
 
-    MethodInfo[] GetAccessors ();
+    IMethodInformation[] GetAccessors ();
   }
 }
