@@ -25,10 +25,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   /// <summary>
-  /// <see cref="SqlViewScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script elements 
-  /// for creating views in a relational database.
+  /// <see cref="SqlViewScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script 
+  /// elements for creating views in a relational database.
   /// </summary>
-  public abstract class SqlViewScriptElementFactoryBase<T> : IViewScriptElementFactory<T> where T : IEntityDefinition
+  public abstract class SqlViewScriptElementFactoryBase<T> : SqlElementFactoryBase, IViewScriptElementFactory<T> where T : IEntityDefinition
   {
     public abstract IScriptElement GetCreateElement (T entityDefinition);
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         string.Format (
           "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = '{1}' AND TABLE_SCHEMA = '{0}')\r\n"
           + "  DROP VIEW [{0}].[{1}]",
-          entityDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          entityDefinition.ViewName.SchemaName ?? DefaultSchema,
           entityDefinition.ViewName.EntityName
           ));
     }

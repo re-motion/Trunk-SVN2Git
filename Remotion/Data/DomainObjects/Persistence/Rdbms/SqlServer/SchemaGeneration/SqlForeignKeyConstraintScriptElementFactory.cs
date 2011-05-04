@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -29,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// The <see cref="SqlForeignKeyConstraintScriptElementFactory"/> is responsible to create script-elements for foreign-key constraints in a 
   /// sql-server database.
   /// </summary>
-  public class SqlForeignKeyConstraintScriptElementFactory : IForeignKeyConstraintScriptElementFactory
+  public class SqlForeignKeyConstraintScriptElementFactory : SqlElementFactoryBase, IForeignKeyConstraintScriptElementFactory
   {
     public IScriptElement GetCreateElement (ForeignKeyConstraintDefinition constraintDefinition, EntityNameDefinition tableName)
     {
@@ -39,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return new ScriptStatement(
         string.Format (
             "ALTER TABLE [{0}].[{1}] ADD\r\n{2}",
-            tableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            tableName.SchemaName ?? DefaultSchema,
             tableName.EntityName,
             GetConstraintDeclaration(constraintDefinition)));
     }
@@ -54,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
               "IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' AND "
               + "fk.name = '{2}' AND schema_name (t.schema_id) = '{0}' AND t.name = '{1}')\r\n"
               + "  ALTER TABLE [{0}].[{1}] DROP CONSTRAINT {2}",
-              tableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+              tableName.SchemaName ?? DefaultSchema,
               tableName.EntityName,
               constraintDefinition.ConstraintName));
     }
@@ -68,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           "  CONSTRAINT [{0}] FOREIGN KEY ({1}) REFERENCES [{2}].[{3}] ({4})",
           foreignKeyConstraintDefinition.ConstraintName,
           referencedColumnNameList,
-          foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          foreignKeyConstraintDefinition.ReferencedTableName.SchemaName ?? DefaultSchema,
           foreignKeyConstraintDefinition.ReferencedTableName.EntityName,
           referencingColumnNameList);
     }

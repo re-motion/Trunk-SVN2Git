@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     /// The <see cref="SqlSynonymScriptElementFactory"/> is responsible to create script-elements for synonyms in a sql-server database.
     /// </summary>
   public class SqlSynonymScriptElementFactory :
+    SqlElementFactoryBase,
     ISynonymScriptElementFactory<TableDefinition>,
     ISynonymScriptElementFactory<UnionViewDefinition>,
     ISynonymScriptElementFactory<FilterViewDefinition>
@@ -83,9 +84,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return new ScriptStatement (
         string.Format (
             "CREATE SYNONYM [{0}].[{1}] FOR [{2}].[{3}]",
-            synonymName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            synonymName.SchemaName ?? DefaultSchema,
             synonymName.EntityName,
-            referencedEntityName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            referencedEntityName.SchemaName ?? DefaultSchema,
             referencedEntityName.EntityName));
     }
 
@@ -95,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         string.Format (
            "IF EXISTS (SELECT * FROM sys.synonyms WHERE name = '{0}' AND SCHEMA_NAME(schema_id) = '{1}')\r\n"
            + "  DROP SYNONYM [{0}].[{1}]",
-         synonymName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+         synonymName.SchemaName ?? DefaultSchema,
          synonymName.EntityName));
     }
   }

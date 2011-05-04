@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlIndexScriptElementFactory"/> is responsible to create script-elements for indexes in a sql-server database.
   /// </summary>
-  public class SqlIndexScriptElementFactory : IIndexScriptElementFactory
+  public class SqlIndexScriptElementFactory : SqlElementFactoryBase, IIndexScriptElementFactory
   {
     private readonly ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition> _indexDefinitionElementFactory;
     private readonly ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition> _primaryIndexDefinitionElementFactory;

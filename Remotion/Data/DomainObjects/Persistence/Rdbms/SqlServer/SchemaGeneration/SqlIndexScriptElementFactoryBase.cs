@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <see cref="SqlIndexScriptElementFactoryBase{T}"/> represents the base-class for all factory classes that are responsible to create new script 
   /// elements for creating indexes in a relational database.
   /// </summary>
-  public abstract class SqlIndexScriptElementFactoryBase<T> : ISqlIndexDefinitionScriptElementFactory<T>
+  public abstract class SqlIndexScriptElementFactoryBase<T> : SqlElementFactoryBase, ISqlIndexDefinitionScriptElementFactory<T>
       where T: SqlIndexDefinitionBase
   {
     public abstract IScriptElement GetCreateElement (T indexDefinition);
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
               + "WHERE so.[name] = '{0}' AND schema_name (so.schema_id)='{1}' AND si.[name] = '{2}')\r\n"
               + "  DROP INDEX [{2}] ON [{1}].[{0}]",
               indexDefinition.ObjectName.EntityName,
-              indexDefinition.ObjectName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+              indexDefinition.ObjectName.SchemaName ?? DefaultSchema,
               indexDefinition.IndexName));
     }
 

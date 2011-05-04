@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       createViewStringBuilder.AppendFormat (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
           + "  {3}AS\r\n",
-          unionViewDefinition.ViewName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+          unionViewDefinition.ViewName.SchemaName ?? DefaultSchema,
           unionViewDefinition.ViewName.EntityName,
           GetColumnList (unionViewDefinition.Columns),
           UseSchemaBinding (unionViewDefinition) ? "WITH SCHEMABINDING " : string.Empty);
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]",
             GetColumnList (unionedColumns),
-            tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+            tableDefinition.TableName.SchemaName ?? DefaultSchema,
             tableDefinition.TableName.EntityName);
 
         numberOfSelects++;

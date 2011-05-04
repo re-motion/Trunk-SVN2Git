@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// <summary>
   /// The <see cref="SqlTableScriptElementFactory"/> is responsible to create script-elements for tables in a sql-server database.
   /// </summary>
-  public class SqlTableScriptElementFactory : ITableScriptElementFactory
+  public class SqlTableScriptElementFactory : SqlElementFactoryBase, ITableScriptElementFactory
   {
     public IScriptElement GetCreateElement (TableDefinition tableDefinition)
     {
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           new ScriptStatement (
               string.Format (
                   "CREATE TABLE [{0}].[{1}]\r\n(\r\n{2}{3}\r\n)",
-                  tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+                  tableDefinition.TableName.SchemaName ?? DefaultSchema,
                   tableDefinition.TableName.EntityName,
                   columnDeclarationList,
                   primaryKeyConstraintString));
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       return new ScriptStatement(
         string.Format("IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = '{1}' AND TABLE_SCHEMA = '{0}')\r\n"
                          + "  DROP TABLE [{0}].[{1}]",
-                  tableDefinition.TableName.SchemaName ?? CompositeScriptBuilder.DefaultSchema,
+                  tableDefinition.TableName.SchemaName ?? DefaultSchema,
                   tableDefinition.TableName.EntityName));
     }
 

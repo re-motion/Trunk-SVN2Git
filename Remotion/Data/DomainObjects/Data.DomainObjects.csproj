@@ -245,6 +245,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\ISqlIndexDefinitionScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlElementFactoryBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlIndexDefinitionScriptElementFactory.cs" />
@@ -375,7 +376,6 @@
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Persistence\IStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlPrimaryXmlIndexDefinition.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\PrimaryKeyDeclarationTableConstraintDefinitionVisitor.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexDefinition.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexKind.cs" />

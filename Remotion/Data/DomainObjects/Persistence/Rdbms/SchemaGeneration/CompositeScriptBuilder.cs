@@ -28,8 +28,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class CompositeScriptBuilder : IScriptBuilder
   {
-    public const string DefaultSchema = "dbo";
-
     private readonly IScriptBuilder[] _scriptBuilders;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ISqlDialect _sqlDialect;
