@@ -27,13 +27,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// <summary>
   /// Holds a set of <see cref="IRelationEndPoint"/> instances and provides access to them.
   /// </summary>
-  public class RelationEndPointMap2 : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
+  public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
 
-    public RelationEndPointMap2 (ClientTransaction clientTransaction)
+    public RelationEndPointMap (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     #region Serialization
 
-    protected RelationEndPointMap2 (FlattenedDeserializationInfo info)
+    protected RelationEndPointMap (FlattenedDeserializationInfo info)
       : this (info.GetValueForHandle<ClientTransaction>())
     {
       var endPointArray = info.GetArray<IRelationEndPoint> ();

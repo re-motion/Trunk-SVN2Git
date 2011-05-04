@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _endPointProviderMock;
-    private RelationEndPointMap2 _relationEndPoints;
+    private RelationEndPointMap _relationEndPoints;
 
     private RelationEndPointRegistrationAgent _agent;
     private RelationEndPointID _realOneManyEndPointID;
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _endPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
-      _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
+      _relationEndPoints = new RelationEndPointMap (_clientTransaction);
 
       _realOneManyEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       _virtualEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Replay ();
 
       var subTransaction = _clientTransaction.CreateSubTransaction();
-      var relationEndPoints = new RelationEndPointMap2 (subTransaction);
+      var relationEndPoints = new RelationEndPointMap (subTransaction);
       var agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, relationEndPoints, subTransaction);
 
       _endPointProviderMock

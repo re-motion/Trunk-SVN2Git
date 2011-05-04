@@ -3,7 +3,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Provides a read-only API to access the <see cref="RelationEndPoint"/> instances loaded into a <see cref="RelationEndPointManager"/>.
+  /// Provides an API to manage the <see cref="IRelationEndPoint"/> instances loaded into a <see cref="ClientTransaction"/>.
   /// </summary>
   public interface IRelationEndPointManager : IFlattenedSerializable
   {

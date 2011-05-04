@@ -29,7 +29,11 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
-  public class RelationEndPointManager : IRelationEndPointManager, IFlattenedSerializable
+  /// <summary>
+  /// Manages the <see cref="IRelationEndPoint"/> instances loaded into a <see cref="ClientTransaction"/>, encapsulating the details of registration
+  /// and loading.
+  /// </summary>
+  public class RelationEndPointManager : IRelationEndPointManager
   {
     public static IRelationEndPoint CreateNullEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition endPointDefinition)
     {
@@ -50,7 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
 
-    private readonly RelationEndPointMap2 _relationEndPoints;
+    private readonly RelationEndPointMap _relationEndPoints;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
     public RelationEndPointManager (
@@ -72,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
       _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
 
-      _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
+      _relationEndPoints = new RelationEndPointMap (_clientTransaction);
       _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
     }
 
@@ -381,7 +385,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())
     {
-      _relationEndPoints = info.GetValue<RelationEndPointMap2> ();
+      _relationEndPoints = info.GetValue<RelationEndPointMap> ();
       _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
     }
 

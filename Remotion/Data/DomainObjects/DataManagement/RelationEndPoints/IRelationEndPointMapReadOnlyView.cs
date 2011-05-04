@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Provides read-only access to a <see cref="RelationEndPointMap2"/>.
+  /// Provides read-only access to a <see cref="RelationEndPointMap"/>.
   /// </summary>
   public interface IRelationEndPointMapReadOnlyView : IEnumerable<IRelationEndPoint>
   {

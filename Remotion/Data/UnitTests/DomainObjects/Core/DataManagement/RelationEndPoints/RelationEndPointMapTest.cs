@@ -28,10 +28,10 @@ using System.Collections.Generic;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
   [TestFixture]
-  public class RelationEndPointMap2Test : StandardMappingTest
+  public class RelationEndPointMapTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
-    private RelationEndPointMap2 _map;
+    private RelationEndPointMap _map;
 
     private RelationEndPointID _endPointID1;
     private RelationEndPointID _endPointID2;
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _map = new RelationEndPointMap2 (_clientTransaction);
+      _map = new RelationEndPointMap (_clientTransaction);
 
       _endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
       _endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "Customer");

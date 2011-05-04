@@ -25,10 +25,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public class RelationEndPointRegistrationAgent : IRelationEndPointRegistrationAgent
   {
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly RelationEndPointMap2 _relationEndPoints;
+    private readonly RelationEndPointMap _relationEndPoints;
     private readonly ClientTransaction _clientTransaction;
 
-    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider, RelationEndPointMap2 relationEndPoints, ClientTransaction clientTransaction)
+    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider, RelationEndPointMap relationEndPoints, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("relationEndPoints", relationEndPoints);

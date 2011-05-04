@@ -43,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       return (IRelationEndPointRegistrationAgent) PrivateInvoke.GetNonPublicField (manager, "_registrationAgent");
     }
 
-    public static RelationEndPointMap2 GetMap (RelationEndPointManager manager)
+    public static RelationEndPointMap GetMap (RelationEndPointManager manager)
     {
-      return (RelationEndPointMap2) PrivateInvoke.GetNonPublicField (manager, "_relationEndPoints");
+      return (RelationEndPointMap) PrivateInvoke.GetNonPublicField (manager, "_relationEndPoints");
     }
   }
 }
