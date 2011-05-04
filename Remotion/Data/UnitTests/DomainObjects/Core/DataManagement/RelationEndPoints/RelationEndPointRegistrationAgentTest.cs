@@ -335,6 +335,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void UnregisterEndPoint_RealEndPoint_PointingToNonNull_NonUnidirectional_OppositeEndPointNotFound ()
+    {
+      var endPointMock = CreateRealObjectEndPointMock (_virtualEndPointID.ObjectID);
+      endPointMock.Stub (stub => stub.HasChanged).Return (false);
+      endPointMock.Replay ();
+
+      _relationEndPoints.AddEndPoint (endPointMock);
+
+      _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (_virtualEndPointID)).Return (null);
+      _endPointProviderMock.Replay ();
+
+      Assert.That (() => _agent.UnregisterEndPoint (endPointMock), Throws.InvalidOperationException.With.Message.EqualTo (
+          "Opposite end-point of "
+          + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
+          + "not found. When unregistering a non-virtual bidirectional end-point, the opposite end-point must exist."));
+      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+    }
+
+    [Test]
     public void UnregisterEndPoint_NotRegistered ()
     {
       var existingEndPoint = MockRepository.GenerateStub<IRelationEndPoint> ();

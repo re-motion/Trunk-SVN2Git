@@ -74,11 +74,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException (message);
       }
 
-      _relationEndPoints.RemoveEndPoint (endPoint.ID);
-
       var realObjectEndPoint = endPoint as IRealObjectEndPoint;
       if (realObjectEndPoint != null)
         UnregisterOppositeForRealObjectEndPoint (realObjectEndPoint);
+
+      _relationEndPoints.RemoveEndPoint (endPoint.ID);
     }
 
     private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
@@ -114,7 +114,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
       
       var oppositeEndPoint = (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (oppositeEndPointID);
-      Assertion.IsNotNull (oppositeEndPoint, "RegisterEndPoint ensures that the opposite end-point always exists.");
+      if (oppositeEndPoint == null)
+      {
+        var message = string.Format (
+            "Opposite end-point of '{0}' not found. When unregistering a non-virtual bidirectional end-point, the opposite end-point must exist.", 
+            realObjectEndPoint.ID);
+        throw new InvalidOperationException (message);
+      }
 
       oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
       if (oppositeEndPoint.CanBeCollected)
