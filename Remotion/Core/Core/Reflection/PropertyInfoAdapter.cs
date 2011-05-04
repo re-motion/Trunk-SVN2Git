@@ -115,7 +115,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation[] GetAccessors ()
     {
-      return _propertyInfo.GetAccessors().Select (accessor => new MethodInfoAdapter (accessor)).Cast<IMethodInformation>().ToArray();
+      return Array.ConvertAll (_propertyInfo.GetAccessors (), mi => (IMethodInformation) new MethodInfoAdapter (mi));
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
