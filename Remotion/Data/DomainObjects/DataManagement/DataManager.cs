@@ -314,25 +314,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         virtualObjectEndPoint.MarkDataComplete (domainObject);
     }
 
-    public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
-
-      if (objectEndPoint.OppositeObjectID == null)
-        throw new InvalidOperationException ("The end-point's opposite object is null, so no opposite end-point can be loaded.");
-
-      var oppositeID = RelationEndPointID.CreateOpposite (objectEndPoint.Definition, objectEndPoint.OppositeObjectID);
-      if (oppositeID.Definition.IsAnonymous)
-        throw new ArgumentException ("The given end-point is not part of a bidirectional relation.", "objectEndPoint");
-
-      var oppositeEndPoint = (IVirtualEndPoint) GetRelationEndPointWithLazyLoad (oppositeID);
-      
-      if (oppositeEndPoint.IsDataComplete)
-        throw new InvalidOperationException ("The opposite end-point has already been loaded.");
-
-      oppositeEndPoint.EnsureDataComplete ();
-    }
-
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);

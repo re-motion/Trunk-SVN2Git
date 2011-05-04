@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -28,11 +29,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   [TestFixture]
   public class UnknownRealObjectEndPointSyncStateTest : StandardMappingTest
   {
-    private IRelationEndPointLazyLoader _lazyLoaderMock;
-    private UnknownRealObjectEndPointSyncState _state;
-    private IRealObjectEndPoint _endPointMock;
     private MockRepository _mockRepository;
-    private IVirtualEndPoint _oppositeEndPointStub;
+
+    private IRelationEndPointProvider _endPointProviderMock;
+    private UnknownRealObjectEndPointSyncState _state;
+
+    private RelationEndPointID _endPointID;
+    private IRealObjectEndPoint _endPointMock;
+    private IVirtualEndPoint _oppositeEndPointMock;
 
     [SetUp]
     public override void SetUp ()
@@ -40,10 +44,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
 
       _mockRepository = new MockRepository();
+      _endPointProviderMock = _mockRepository.StrictMock<IRelationEndPointProvider>();
+      _state = new UnknownRealObjectEndPointSyncState(_endPointProviderMock);
+
+      _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
       _endPointMock = _mockRepository.StrictMock<IRealObjectEndPoint> ();
-      _oppositeEndPointStub = _mockRepository.Stub<IVirtualEndPoint> ();
-      _lazyLoaderMock = _mockRepository.StrictMock<IRelationEndPointLazyLoader> ();
-      _state = new UnknownRealObjectEndPointSyncState(_lazyLoaderMock);
+      _endPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _endPointMock.Stub (stub => stub.Definition).Return (_endPointID.Definition);
+      _endPointMock.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Customer1);
+
+      _oppositeEndPointMock = _mockRepository.StrictMock<IVirtualEndPoint>();
     }
 
     [Test]
@@ -51,16 +61,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
+        ExpectLoadOpposite();
         _endPointMock.Expect (mock => mock.IsSynchronized).Return (true);
       }
-      _lazyLoaderMock.Replay ();
-      _endPointMock.Replay ();
+      _mockRepository.ReplayAll ();
 
       var result = _state.IsSynchronized (_endPointMock);
 
-      _lazyLoaderMock.VerifyAllExpectations();
-      _endPointMock.VerifyAllExpectations();
+      _mockRepository.VerifyAll();
       Assert.That (result, Is.True);
     }
 
@@ -69,17 +77,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
+        ExpectLoadOpposite ();
         _endPointMock.Expect (mock => mock.Synchronize ());
       }
 
-      _lazyLoaderMock.Replay ();
-      _endPointMock.Replay ();
+      _mockRepository.ReplayAll();
 
-      _state.Synchronize(_endPointMock, _oppositeEndPointStub);
+      _state.Synchronize(_endPointMock, _oppositeEndPointMock);
 
-      _lazyLoaderMock.VerifyAllExpectations ();
-      _endPointMock.VerifyAllExpectations ();
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -88,16 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
+        ExpectLoadOpposite ();
         _endPointMock.Expect (mock => mock.CreateDeleteCommand ()).Return(fakeCommand);
       }
-      _lazyLoaderMock.Replay ();
-      _endPointMock.Replay ();
+      _mockRepository.ReplayAll ();
 
       var result = _state.CreateDeleteCommand (_endPointMock, id => Assert.Fail ("should not be called."));
 
-      _lazyLoaderMock.VerifyAllExpectations ();
-      _endPointMock.VerifyAllExpectations ();
+      _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs (fakeCommand));
     }
 
@@ -108,16 +112,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
+        ExpectLoadOpposite ();
         _endPointMock.Expect (mock => mock.CreateSetCommand (newRelatedObject)).Return (fakeCommand);
       }
-      _lazyLoaderMock.Replay ();
-      _endPointMock.Replay ();
+      _mockRepository.ReplayAll ();
 
       var result = _state.CreateSetCommand(_endPointMock, newRelatedObject, id => Assert.Fail ("should not be called."));
 
-      _lazyLoaderMock.VerifyAllExpectations ();
-      _endPointMock.VerifyAllExpectations ();
+      _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs (fakeCommand));
     }
 
@@ -127,29 +129,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
       using (_mockRepository.Ordered ())
       {
-        _lazyLoaderMock.Expect (mock => mock.LoadOppositeVirtualEndPoint (_endPointMock));
+        ExpectLoadOpposite ();
         _endPointMock.Expect (mock => mock.CreateSetCommand (null)).Return (fakeCommand);
       }
-      _lazyLoaderMock.Replay ();
-      _endPointMock.Replay ();
+      _mockRepository.ReplayAll ();
 
       var result = _state.CreateSetCommand (_endPointMock, null, id => Assert.Fail ("should not be called."));
 
-      _lazyLoaderMock.VerifyAllExpectations ();
-      _endPointMock.VerifyAllExpectations ();
+      _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
     public void FlattenedSerializable ()
     {
-      var fakeLazyLoader = new SerializableRelationEndPointLazyLoaderFake();
-      var state = new UnknownRealObjectEndPointSyncState (fakeLazyLoader);
+      var fakeProvider = new SerializableRelationEndPointProviderFake();
+      var state = new UnknownRealObjectEndPointSyncState (fakeProvider);
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.LazyLoader, Is.Not.Null);
+      Assert.That (result.EndPointProvider, Is.Not.Null);
+    }
+
+    private void ExpectLoadOpposite ()
+    {
+      var oppositeID = RelationEndPointID.CreateOpposite (_endPointID.Definition, DomainObjectIDs.Customer1);
+      _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithMinimumLoading (oppositeID)).Return (_oppositeEndPointMock);
+      _oppositeEndPointMock.Expect (mock => mock.EnsureDataComplete());
     }
   }
 }

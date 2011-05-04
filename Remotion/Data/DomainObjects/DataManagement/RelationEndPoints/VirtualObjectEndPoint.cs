@@ -29,6 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualObjectEndPoint
   {
+    private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
 
     private IVirtualObjectEndPointLoadState _loadState;
@@ -44,20 +45,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
             ArgumentUtility.CheckNotNull ("id", id),
-            ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
             ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
+      _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
 
       var dataKeeper = _dataKeeperFactory.Create (ID);
       SetIncompleteState(dataKeeper);
 
       _hasBeenTouched = false;
+    }
+
+    public IRelationEndPointLazyLoader LazyLoader
+    {
+      get { return _lazyLoader; }
     }
     
     public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> DataKeeperFactory
@@ -220,6 +227,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected VirtualObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
+      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
 
@@ -230,6 +238,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       base.SerializeIntoFlatStructure (info);
 
+      info.AddHandle (_lazyLoader);
       info.AddHandle (_dataKeeperFactory);
       info.AddValue (_loadState);
 

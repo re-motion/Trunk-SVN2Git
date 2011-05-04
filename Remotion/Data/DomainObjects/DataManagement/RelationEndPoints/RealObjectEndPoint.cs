@@ -54,12 +54,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ClientTransaction clientTransaction, 
         RelationEndPointID id,
         DataContainer foreignKeyDataContainer,
-        IRelationEndPointLazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
           ArgumentUtility.CheckNotNull ("id", id),
-          ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader),
           ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
       ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
@@ -69,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _foreignKeyDataContainer = foreignKeyDataContainer;
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
-      _syncState = new UnknownRealObjectEndPointSyncState (LazyLoader);
+      _syncState = new UnknownRealObjectEndPointSyncState (EndPointProvider);
     }
 
     public DataContainer ForeignKeyDataContainer
@@ -154,7 +152,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public void ResetSyncState ()
     {
-      _syncState = new UnknownRealObjectEndPointSyncState (LazyLoader);
+      _syncState = new UnknownRealObjectEndPointSyncState (EndPointProvider);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()

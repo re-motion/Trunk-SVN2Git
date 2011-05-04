@@ -20,6 +20,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   {
     void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint);
     void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint);
-    void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint);
   }
 }

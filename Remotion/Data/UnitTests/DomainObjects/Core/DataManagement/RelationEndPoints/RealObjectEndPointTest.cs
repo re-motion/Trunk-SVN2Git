@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class RealObjectEndPointTest : ClientTransactionBaseTest
   {
     private DataContainer _foreignKeyDataContainer;
-    private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
     private IRealObjectEndPointSyncState _syncStateMock;
 
@@ -45,11 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       _foreignKeyDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
-      _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _syncStateMock = MockRepository.GenerateStrictMock<IRealObjectEndPointSyncState> ();
     
-      _endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
+      _endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _endPointProviderStub);
       PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
     }
 
@@ -60,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _endPointProviderStub);
     }
 
     [Test]
@@ -70,17 +68,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer, _endPointProviderStub);
     }
 
     [Test]
     public void Initialization_SyncState ()
     {
-      var endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _lazyLoaderStub, _endPointProviderStub);
+      var endPoint = new RealObjectEndPoint (ClientTransactionMock, _endPointID, _foreignKeyDataContainer, _endPointProviderStub);
 
       var syncState = RealObjectEndPointTestHelper.GetSyncState (endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]
@@ -327,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var syncState = RealObjectEndPointTestHelper.GetSyncState (_endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
-      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).LazyLoader, Is.SameAs (_lazyLoaderStub));
+      Assert.That (((UnknownRealObjectEndPointSyncState) syncState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
     [Test]

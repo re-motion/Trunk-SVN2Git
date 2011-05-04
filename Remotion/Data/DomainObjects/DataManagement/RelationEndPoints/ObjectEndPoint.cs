@@ -25,23 +25,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
 
     protected ObjectEndPoint (
-        ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider)
+        ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider)
         : base (clientTransaction, id)
     {
-      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
-      _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
-    }
-
-    public IRelationEndPointLazyLoader LazyLoader
-    {
-      get { return _lazyLoader; }
     }
 
     public IRelationEndPointProvider EndPointProvider
@@ -136,13 +128,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
     }
 

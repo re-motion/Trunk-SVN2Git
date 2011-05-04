@@ -62,9 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
     {
       var clientTransaction = dataContainer.ClientTransaction;
-      var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, lazyLoader, endPointProvider);
+      return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, endPointProvider);
     }
 
     public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ClientTransaction clientTransaction)

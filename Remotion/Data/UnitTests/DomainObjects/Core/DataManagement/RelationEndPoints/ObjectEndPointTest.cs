@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class ObjectEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
-    private IRelationEndPointLazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
     private TestableObjectEndPoint _endPoint;
 
@@ -38,11 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
       var oppositeObject = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _lazyLoaderStub, _endPointProviderStub, oppositeObject);
+      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _endPointProviderStub, oppositeObject);
     }
 
     [Test]

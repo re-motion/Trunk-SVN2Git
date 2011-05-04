@@ -121,15 +121,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void LazyLoader ()
-    {
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
-
-      var lazyLoader = deserializedEndPoint.LazyLoader;
-      Assert.That (lazyLoader, Is.Not.Null);
-    }
-
-    [Test]
     public void EndPointProvider ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);

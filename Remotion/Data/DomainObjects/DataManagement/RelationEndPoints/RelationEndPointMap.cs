@@ -298,7 +298,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private IRelationEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
     {
-      return new RealObjectEndPoint (_clientTransaction, endPointID, dataContainer, _lazyLoader, _endPointProvider);
+      return new RealObjectEndPoint (_clientTransaction, endPointID, dataContainer, _endPointProvider);
     }
 
     private IVirtualEndPoint CreateVirtualEndPoint (RelationEndPointID endPointID, bool markComplete)

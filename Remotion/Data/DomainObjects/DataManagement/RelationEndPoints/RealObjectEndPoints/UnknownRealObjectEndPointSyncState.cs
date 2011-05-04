@@ -30,18 +30,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (UnknownRealObjectEndPointSyncState));
 
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly IRelationEndPointProvider _endPointProvider;
 
-    public UnknownRealObjectEndPointSyncState (IRelationEndPointLazyLoader lazyLoader)
+    public UnknownRealObjectEndPointSyncState (IRelationEndPointProvider endPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-
-      _lazyLoader = lazyLoader;
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      _endPointProvider = endPointProvider;
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public IRelationEndPointProvider EndPointProvider
     {
-      get { return _lazyLoader; }
+      get { return _endPointProvider; }
     }
 
     public bool IsSynchronized (IRealObjectEndPoint endPoint)
@@ -54,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
             "Opposite end-point of ObjectEndPoint '{0}' is lazily loaded due to a call to IsSynchronized.", endPoint.ID);
       }
 
-      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
+      LoadOppositeEndPoint (endPoint);
 
       return endPoint.IsSynchronized;
     }
@@ -64,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
+      LoadOppositeEndPoint (endPoint);
 
       endPoint.Synchronize();
     }
@@ -74,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 
-      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
+      LoadOppositeEndPoint (endPoint);
 
       return endPoint.CreateDeleteCommand();
     }
@@ -84,23 +83,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeObjectIDSetter", oppositeObjectIDSetter);
 
-      _lazyLoader.LoadOppositeVirtualEndPoint (endPoint);
+      LoadOppositeEndPoint (endPoint);
 
       return endPoint.CreateSetCommand (newRelatedObject);
     }
 
+    private void LoadOppositeEndPoint (IRealObjectEndPoint endPoint)
+    {
+      var oppositeID = RelationEndPointID.CreateOpposite (endPoint.Definition, endPoint.OppositeObjectID);
+      Assertion.IsFalse (oppositeID.Definition.IsAnonymous, "Unidirectional end-points don't get used in unknown state.");
+
+      var oppositeEndPoint = _endPointProvider.GetRelationEndPointWithMinimumLoading (oppositeID);
+      oppositeEndPoint.EnsureDataComplete();
+    }
+    
     #region Serialization
 
     public UnknownRealObjectEndPointSyncState (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_lazyLoader);
+      info.AddHandle (_endPointProvider);
     }
 
     #endregion

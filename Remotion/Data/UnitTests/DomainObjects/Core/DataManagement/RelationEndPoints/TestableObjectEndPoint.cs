@@ -32,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private bool _hasBeenTouched;
     private bool _isSetOppositeObjectFromExpected;
 
-    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointLazyLoader lazyLoader, IRelationEndPointProvider endPointProvider, DomainObject oppositeObject)
-        : base (clientTransaction, id, lazyLoader, endPointProvider)
+    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider, DomainObject oppositeObject)
+        : base (clientTransaction, id, endPointProvider)
     {
       _originalOppositeObject = oppositeObject;
       _oppositeObject = oppositeObject;
