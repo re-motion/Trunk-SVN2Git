@@ -67,12 +67,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+      var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (this, _clientTransaction);
       _relationEndPointManager = new RelationEndPointManager (
           clientTransaction, 
           this, 
           this, 
           collectionEndPointDataKeeperFactory,
-          virtualObjectEndPointDataKeeperFactory);
+          virtualObjectEndPointDataKeeperFactory,
+          relationEndPointRegistrationAgent);
 
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
