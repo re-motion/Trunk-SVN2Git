@@ -100,7 +100,7 @@ namespace Remotion.Reflection
 
     public IMethodInformation GetBaseDefinition ()
     {
-      return null;
+      return this;
     }
 
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)

@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetBaseDefinition ()
     {
-      Assert.That (_nullMethodInformation.GetBaseDefinition (), Is.Null);
+      Assert.That (_nullMethodInformation.GetBaseDefinition (), Is.SameAs(_nullMethodInformation));
     }
 
     [Test]
