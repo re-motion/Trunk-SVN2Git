@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var newRelatedObject = ArgumentUtility.CheckType<DomainObject> ("value", value);
 
       var endPointID = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
 
       RelationEndPointValueChecker.CheckClientTransaction (
           endPoint,

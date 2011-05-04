@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Represents a collection-valued relation end-point in the <see cref="RelationEndPointMap"/>.
+  /// Represents a collection-valued relation end-point in the <see cref="RelationEndPointManager"/>.
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {

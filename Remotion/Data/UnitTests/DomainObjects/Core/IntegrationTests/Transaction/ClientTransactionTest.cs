@@ -1038,7 +1038,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      int loadedObjectsBefore = ClientTransactionMock.DataManager.DataContainerMap.Count;
+      int loadedObjectsBefore = ClientTransactionMock.DataManager.DataContainers.Count;
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
@@ -1048,7 +1048,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransaction.Current.CopyCollectionEventHandlers (order, ClientTransactionMock);
       }
 
-      int loadedObjectsAfter = ClientTransactionMock.DataManager.DataContainerMap.Count;
+      int loadedObjectsAfter = ClientTransactionMock.DataManager.DataContainers.Count;
       Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
     }
 
@@ -1066,9 +1066,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (innerTransaction);
         
-        int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;
+        int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
         innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
-        int loadedObjectsAfter = innerTransaction.DataManager.DataContainerMap.Count;
+        int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
         Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
       }
     }
@@ -1106,9 +1106,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.EnsureDataAvailable (); // preload order, but not orderItems
 
         innerTransaction.AddListener (listenerMock);
-        int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;
+        int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
         innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
-        int loadedObjectsAfter = innerTransaction.DataManager.DataContainerMap.Count;
+        int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
         Assert.That (loadedObjectsAfter, Is.Not.EqualTo (loadedObjectsBefore));
       }
 

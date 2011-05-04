@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectLoaderStub = MockRepository.GenerateStub<IObjectLoader> ();
       var dataManager = _factory.CreateDataManager (new ClientTransactionMock (), invalidDomainObjectManagerStub, objectLoaderStub);
 
-      var dataKeeperFactory = ((RelationEndPointMap) dataManager.RelationEndPointMap).CollectionEndPointDataKeeperFactory;
+      var dataKeeperFactory = ((RelationEndPointManager) dataManager.RelationEndPointManager).CollectionEndPointDataKeeperFactory;
       Assert.That (
           ((CollectionEndPointDataKeeperFactory) dataKeeperFactory).ChangeDetectionStrategy,
           Is.InstanceOf (typeof (SubCollectionEndPointChangeDetectionStrategy)));

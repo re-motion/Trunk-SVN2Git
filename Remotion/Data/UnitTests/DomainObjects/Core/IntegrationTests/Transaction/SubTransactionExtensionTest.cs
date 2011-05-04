@@ -1516,23 +1516,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Expect (mock => mock.ObjectsUnloading (
                         Arg.Is (_subTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] != null));
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainers[_order1.ID] != null));
         _extensionMock
             .Expect (mock => mock.ObjectsUnloaded (
                         Arg.Is (_subTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] == null));
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainers[_order1.ID] == null));
 
         _extensionMock
             .Expect (mock => mock.ObjectsUnloading (
                         Arg.Is (_subTransaction.ParentTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainerMap[_order1.ID] != null));
+            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainers[_order1.ID] != null));
         _extensionMock
             .Expect (mock => mock.ObjectsUnloaded (
                         Arg.Is (_subTransaction.ParentTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainerMap[_order1.ID] == null));
+            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainers[_order1.ID] == null));
       }
 
       _mockRepository.ReplayAll ();

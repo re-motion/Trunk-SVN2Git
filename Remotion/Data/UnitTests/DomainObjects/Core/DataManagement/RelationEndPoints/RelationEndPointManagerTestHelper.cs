@@ -19,33 +19,33 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
-  public static class RelationEndPointMapTestHelper
+  public static class RelationEndPointManagerTestHelper
   {
-    public static void AddEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
+    public static void AddEndPoint (RelationEndPointManager endPointManager, IRelationEndPoint endPoint)
     {
-      var map = GetMap (endPointMap);
+      var map = GetMap (endPointManager);
       map.AddEndPoint (endPoint);
     }
 
-    public static void ReplaceEndPoint (RelationEndPointMap endPointMap, IRelationEndPoint endPoint)
+    public static void ReplaceEndPoint (RelationEndPointManager endPointManager, IRelationEndPoint endPoint)
     {
-      endPointMap.RemoveEndPoint (endPoint.ID);
-      AddEndPoint (endPointMap, endPoint);
+      endPointManager.RemoveEndPoint (endPoint.ID);
+      AddEndPoint (endPointManager, endPoint);
     }
 
-    public static void RemoveEndPoint (RelationEndPointMap map, RelationEndPointID relationEndPointID)
+    public static void RemoveEndPoint (RelationEndPointManager manager, RelationEndPointID relationEndPointID)
     {
-      map.RemoveEndPoint (relationEndPointID);
+      manager.RemoveEndPoint (relationEndPointID);
     }
 
-    public static IRelationEndPointRegistrationAgent GetRegistrationAgent (RelationEndPointMap map)
+    public static IRelationEndPointRegistrationAgent GetRegistrationAgent (RelationEndPointManager manager)
     {
-      return (IRelationEndPointRegistrationAgent) PrivateInvoke.GetNonPublicField (map, "_registrationAgent");
+      return (IRelationEndPointRegistrationAgent) PrivateInvoke.GetNonPublicField (manager, "_registrationAgent");
     }
 
-    public static RelationEndPointMap2 GetMap (RelationEndPointMap map)
+    public static RelationEndPointMap2 GetMap (RelationEndPointManager manager)
     {
-      return (RelationEndPointMap2) PrivateInvoke.GetNonPublicField (map, "_relationEndPoints");
+      return (RelationEndPointMap2) PrivateInvoke.GetNonPublicField (manager, "_relationEndPoints");
     }
   }
 }

@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNotNull (ClientTransactionMock.DataManager.DataContainerMap[obj.ID]);
+      Assert.IsNotNull (ClientTransactionMock.DataManager.DataContainers[obj.ID]);
       Assert.AreEqual (StateType.Unchanged, obj.State);
     }
 
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNull (ClientTransactionMock.DataManager.DataContainerMap[obj.ID]);
+      Assert.IsNull (ClientTransactionMock.DataManager.DataContainers[obj.ID]);
     }
 
     [Test]

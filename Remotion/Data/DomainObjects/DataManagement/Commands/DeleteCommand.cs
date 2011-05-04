@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       
       _endPointDeleteCommands = new CompositeCommand (
           from endPointID in _dataContainer.AssociatedRelationEndPointIDs
-          let endPoint = _clientTransaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
+          let endPoint = _clientTransaction.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID)
           select endPoint.CreateDeleteCommand());
     }
 

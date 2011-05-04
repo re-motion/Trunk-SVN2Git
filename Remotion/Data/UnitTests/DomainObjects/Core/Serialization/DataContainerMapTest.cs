@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
        + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void DataContainerMapIsNotSerializable ()
     {
-      Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager.DataContainerMap);
+      Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager.DataContainers);
     }
 
     [Test]

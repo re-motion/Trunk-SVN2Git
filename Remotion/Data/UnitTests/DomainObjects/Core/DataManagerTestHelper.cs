@@ -24,12 +24,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   {
     public static DataContainerMap GetDataContainerMap (IDataManager dataManager)
     {
-      return (DataContainerMap) dataManager.DataContainerMap;
+      return (DataContainerMap) dataManager.DataContainers;
     }
 
-    public static RelationEndPointMap GetRelationEndPointMap (IDataManager dataManager)
+    public static RelationEndPointManager GetRelationEndPointMap (IDataManager dataManager)
     {
-      return (RelationEndPointMap) dataManager.RelationEndPointMap;
+      return (RelationEndPointManager) dataManager.RelationEndPointManager;
     }
 
     public static void RemoveEndPoint (IDataManager dataManager, RelationEndPointID endPointID)

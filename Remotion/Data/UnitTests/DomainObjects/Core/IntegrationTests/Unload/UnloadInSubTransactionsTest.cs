@@ -551,7 +551,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     private void CheckDataContainerExists (ClientTransaction clientTransaction, DomainObject domainObject, bool dataContainerShouldExist)
     {
-      var dataContainer = ClientTransactionTestHelper.GetDataManager (clientTransaction).DataContainerMap[domainObject.ID];
+      var dataContainer = ClientTransactionTestHelper.GetDataManager (clientTransaction).DataContainers[domainObject.ID];
       if (dataContainerShouldExist)
         Assert.That (dataContainer, Is.Not.Null, "Data container '{0}' does not exist.", domainObject.ID);
       else

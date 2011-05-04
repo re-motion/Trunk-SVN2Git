@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void Serialization_IntegrationWithRelationEndPointMap ()
     {
       var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
-      var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
+      var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointManager;
       var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
       Assert.That (deserializedCollectionEndPoint, Is.Not.Null);
     }

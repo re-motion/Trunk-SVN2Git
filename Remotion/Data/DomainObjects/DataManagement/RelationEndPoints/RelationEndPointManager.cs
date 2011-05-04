@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
@@ -30,7 +29,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
-  public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
+  public class RelationEndPointManager : IRelationEndPointManager, IFlattenedSerializable
   {
     public static IRelationEndPoint CreateNullEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition endPointDefinition)
     {
@@ -54,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly RelationEndPointMap2 _relationEndPoints;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
-    public RelationEndPointMap (
+    public RelationEndPointManager (
         ClientTransaction clientTransaction,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
@@ -75,12 +74,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
       _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
-    }
-
-    // TODO 3642: Remove
-    public int Count
-    {
-      get { return _relationEndPoints.Count; }
     }
 
     public ClientTransaction ClientTransaction
@@ -108,19 +101,110 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _virtualObjectEndPointDataKeeperFactory; }
     }
 
-    public bool Contains (RelationEndPointID id)
+    public IRelationEndPointMapReadOnlyView RelationEndPoints
     {
-      return _relationEndPoints[id] != null;
+      get { return _relationEndPoints; }
     }
 
-    public void CommitAllEndPoints ()
+    // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
+    // If the DataContainer is New, the virtual end-points are registered as well.
+    public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
     {
-      _relationEndPoints.CommitAllEndPoints();
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      {
+        IRelationEndPoint endPoint;
+        if (!endPointID.Definition.IsVirtual)
+          endPoint = CreateRealObjectEndPoint (endPointID, dataContainer);
+        else
+          endPoint = CreateVirtualEndPoint (endPointID, true);
+
+        _registrationAgent.RegisterEndPoint (endPoint);
+      }
     }
 
-    public void RollbackAllEndPoints ()
+    // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
+    // If the DataContainer is New, the virtual end-points are unregistered as well.
+    public IDataManagementCommand CreateUnregisterCommandForDataContainer (DataContainer dataContainer)
     {
-      _relationEndPoints.RollbackAllEndPoints();
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      var loadedEndPoints = new List<IRelationEndPoint> ();
+      var notUnregisterableEndPoints = new List<IRelationEndPoint> ();
+
+      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
+      {
+        var endPoint = GetRelationEndPointWithoutLoading (endPointID);
+        if (endPoint != null)
+        {
+          loadedEndPoints.Add (endPoint);
+
+          if (!IsUnregisterable (endPoint))
+            notUnregisterableEndPoints.Add (endPoint);
+        }
+      }
+
+      if (notUnregisterableEndPoints.Count > 0)
+      {
+        var message = string.Format (
+            "Object '{0}' cannot be unloaded because its relations have been changed. Only unchanged objects that are not part of changed "
+            + "relations can be unloaded."
+            + Environment.NewLine
+            + "Changed relations: {1}.",
+            dataContainer.ID,
+            SeparatedStringBuilder.Build (", ", notUnregisterableEndPoints.Select (endPoint => "'" + endPoint.Definition.PropertyName + "'")));
+        return new ExceptionCommand (new InvalidOperationException (message));
+      }
+      else
+      {
+        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent);
+      }
+    }
+
+    public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (endPointID.ObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
+
+      return _relationEndPoints[endPointID];
+    }
+
+    public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
+
+      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
+      if (existingEndPoint != null)
+        return existingEndPoint;
+
+      var endPoint = GetRelationEndPointWithMinimumLoading (endPointID);
+      endPoint.EnsureDataComplete ();
+      return endPoint;
+    }
+
+    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckNotAnonymous (endPointID, "GetRelationEndPointWithMinimumLoading", "endPointID");
+
+      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
+      if (existingEndPoint != null)
+      {
+        return existingEndPoint;
+      }
+      else if (endPointID.Definition.IsVirtual)
+      {
+        return GetVirtualEndPointOrRegisterEmpty (endPointID);
+      }
+      else
+      {
+        _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
+        return Assertion.IsNotNull (_relationEndPoints[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+      }
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
@@ -159,60 +243,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return collectionEndPoint.GetCollectionWithOriginalData();
     }
 
-    // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
-    // If the DataContainer is New, the virtual end-points are registered as well.
-    public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
+    public void CommitAllEndPoints ()
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-      {
-        IRelationEndPoint endPoint;
-        if (!endPointID.Definition.IsVirtual)
-          endPoint = CreateRealObjectEndPoint (endPointID, dataContainer);
-        else
-          endPoint = CreateVirtualEndPoint (endPointID, true);
-
-        _registrationAgent.RegisterEndPoint (endPoint);
-      }
+      _relationEndPoints.CommitAllEndPoints();
     }
 
-    // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
-    // If the DataContainer is New, the virtual end-points are unregistered as well.
-    public IDataManagementCommand CreateUnregisterCommandForDataContainer (DataContainer dataContainer)
+    public void RollbackAllEndPoints ()
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      var loadedEndPoints = new List<IRelationEndPoint>();
-      var notUnregisterableEndPoints = new List<IRelationEndPoint>();
-
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-      {
-        var endPoint = GetRelationEndPointWithoutLoading (endPointID);
-        if (endPoint != null)
-        {
-          loadedEndPoints.Add (endPoint);
-
-          if (!IsUnregisterable (endPoint))
-            notUnregisterableEndPoints.Add (endPoint);
-        }
-      }
-
-      if (notUnregisterableEndPoints.Count > 0)
-      {
-        var message = string.Format (
-            "Object '{0}' cannot be unloaded because its relations have been changed. Only unchanged objects that are not part of changed "
-            + "relations can be unloaded."
-            + Environment.NewLine
-            + "Changed relations: {1}.",
-            dataContainer.ID,
-            SeparatedStringBuilder.Build (", ", notUnregisterableEndPoints.Select (endPoint => "'" + endPoint.Definition.PropertyName + "'")));
-        return new ExceptionCommand (new InvalidOperationException (message));
-      }
-      else
-      {
-        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent);
-      }
+      _relationEndPoints.RollbackAllEndPoints();
     }
 
     public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)
@@ -226,62 +264,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       endPoint.MarkDataComplete (items);
     }
 
-    public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-
-      if (endPointID.ObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
-
-      return _relationEndPoints[endPointID];
-    }
-
-    public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
-
-      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
-      if (existingEndPoint != null)
-        return existingEndPoint;
-
-      var endPoint = GetRelationEndPointWithMinimumLoading (endPointID);
-      endPoint.EnsureDataComplete();
-      return endPoint;
-    }
-
-    public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckNotAnonymous (endPointID, "GetRelationEndPointWithMinimumLoading", "endPointID");
-
-      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
-      if (existingEndPoint != null)
-      {
-        return existingEndPoint;
-      }
-      else if (endPointID.Definition.IsVirtual)
-      {
-        return GetVirtualEndPointOrRegisterEmpty (endPointID);
-      }
-      else
-      {
-        _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
-        return Assertion.IsNotNull (_relationEndPoints[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
-      }
-    }
-
-    public IEnumerator<IRelationEndPoint> GetEnumerator ()
-    {
-      return _relationEndPoints.GetEnumerator ();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
-    }
-
-    // TODO: Remove
+    // TODO 3634: Remove
     public void RemoveEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -389,8 +372,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     #region Serialization
 
-    // Note: RelationEndPointMap should never be serialized on its own; always start from the DataManager.
-    protected RelationEndPointMap (FlattenedDeserializationInfo info)
+    // Note: RelationEndPointManager should never be serialized on its own; always start from the DataManager.
+    protected RelationEndPointManager (FlattenedDeserializationInfo info)
         : this (
             info.GetValueForHandle<ClientTransaction>(),
             info.GetValueForHandle<ILazyLoader>(),

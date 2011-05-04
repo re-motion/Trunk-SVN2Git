@@ -24,7 +24,7 @@ using System.Linq;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Unregisters a set of end-points from a <see cref="RelationEndPointMap"/>.
+  /// Unregisters a set of end-points from a <see cref="RelationEndPointManager"/>.
   /// </summary>
   public class UnregisterEndPointsCommand : IDataManagementCommand
   {

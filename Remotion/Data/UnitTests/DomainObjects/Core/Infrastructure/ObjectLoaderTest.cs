@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _persistenceStrategyMock
           .Expect (mock => mock.LoadRelatedDataContainer (
-              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]), 
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainers[dc.ID]), 
               Arg.Is (endPointID)))
           .Return (_orderTicket1DataContainer);
       _persistenceStrategyMock.Replay ();
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       
       _persistenceStrategyMock
           .Expect (mock => mock.LoadRelatedDataContainer (
-              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]),
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainers[dc.ID]),
               Arg.Is (endPointID)))
           .Return (_orderTicket1DataContainer);
       _persistenceStrategyMock.Replay ();
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _persistenceStrategyMock
           .Stub (mock => mock.LoadRelatedDataContainer (
-              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainerMap[dc.ID]), 
+              Arg<DataContainer>.Matches (dc => dc == _clientTransaction.DataManager.DataContainers[dc.ID]), 
               Arg.Is (endPointID)))
           .Return (null);
 
@@ -738,7 +738,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _eventSinkMock
           .Expect (mock => mock.ObjectsLoading (Arg.Is (_clientTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (expectedIDs)))
           .WhenCalled (mi => Assert.That (
-              expectedIDs.All (id => _clientTransaction.DataManager.DataContainerMap[id] == null), 
+              expectedIDs.All (id => _clientTransaction.DataManager.DataContainers[id] == null), 
               "ObjectsLoading must be raised before IDs are registered"));
     }
 
@@ -752,7 +752,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .WhenCalled (mi =>
           {
             Assert.That (
-                expectedDataContainers.All (dc => _clientTransaction.DataManager.DataContainerMap[dc.ID] == dc),
+                expectedDataContainers.All (dc => _clientTransaction.DataManager.DataContainers[dc.ID] == dc),
                 "ObjectsLoaded must be raised after IDs are registered");
             Assert.That (
                 ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((TestDomainBase) item).OnLoadedCalled),

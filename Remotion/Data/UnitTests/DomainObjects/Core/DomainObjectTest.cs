@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var instance = _transaction.Execute (() => Order.NewObject ());
 
-      var dataContainer = _transaction.DataManager.DataContainerMap[instance.ID];
+      var dataContainer = _transaction.DataManager.DataContainers[instance.ID];
       Assert.That (dataContainer, Is.Not.Null);
       Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
@@ -347,12 +347,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       _transaction.EnlistDomainObject (order);
-      Assert.That (_transaction.DataManager.DataContainerMap[order.ID], Is.Null);
+      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Null);
       
       _transaction.Execute (order.EnsureDataAvailable);
 
-      Assert.That (_transaction.DataManager.DataContainerMap[order.ID], Is.Not.Null);
-      Assert.That (_transaction.DataManager.DataContainerMap[order.ID].DomainObject, Is.SameAs (order));
+      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
+      Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
     }
 
     [Test]

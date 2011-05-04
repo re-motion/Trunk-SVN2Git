@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (_clientTransaction.IsInvalid (objectID))
         return StateType.Invalid;
 
-      var dataContainer = _clientTransaction.DataManager.DataContainerMap[objectID];
+      var dataContainer = _clientTransaction.DataManager.DataContainers[objectID];
       if (dataContainer == null)
         return StateType.NotLoadedYet;
 

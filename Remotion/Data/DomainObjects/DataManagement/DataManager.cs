@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private IClientTransactionListener _transactionEventSink;
 
     private DataContainerMap _dataContainerMap;
-    private RelationEndPointMap _relationEndPointMap;
+    private IRelationEndPointManager _relationEndPointManager;
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private IObjectLoader _objectLoader;
     private DomainObjectStateCache _domainObjectStateCache;
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
-      _relationEndPointMap = new RelationEndPointMap (
+      _relationEndPointManager = new RelationEndPointManager (
           clientTransaction, 
           this, 
           this, 
@@ -84,24 +84,30 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _clientTransaction; }
     }
 
+    public IDataContainerMapReadOnlyView DataContainers
+    {
+      get { return _dataContainerMap; }
+    }
+
+    public IRelationEndPointMapReadOnlyView RelationEndPoints
+    {
+      get { return _relationEndPointManager.RelationEndPoints; }
+    }
+
+    // TODO 3649: Remove
+    public IRelationEndPointManager RelationEndPointManager
+    {
+      get { return _relationEndPointManager; }
+    }
+
     public DomainObjectStateCache DomainObjectStateCache
     {
       get { return _domainObjectStateCache; }
     }
 
-    public IDataContainerMapReadOnlyView DataContainerMap
-    {
-      get { return _dataContainerMap; }
-    }
-
-    public IRelationEndPointMapReadOnlyView RelationEndPointMap
-    {
-      get { return _relationEndPointMap; }
-    }
-
     public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
     {
-      return DataContainerMap.Select (dc => Tuple.Create (dc.DomainObject, dc));
+      return DataContainers.Select (dc => Tuple.Create (dc.DomainObject, dc));
     }
 
     public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedDataByObjectState (params StateType[] domainObjectStates)
@@ -142,16 +148,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IEnumerable<IRelationEndPoint> GetChangedRelationEndPoints ()
     {
-      return _relationEndPointMap.Where (endPoint => endPoint.HasChanged);
+      return _relationEndPointManager.RelationEndPoints.Where (endPoint => endPoint.HasChanged);
     }
 
     public IEnumerable<IRelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
     {
       return from endPointID in dataContainer.AssociatedRelationEndPointIDs
-             let endPoint = RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
+             let endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID)
              let oppositeRelationEndPointIDs = endPoint.GetOppositeRelationEndPointIDs ()
              from oppositeEndPointID in oppositeRelationEndPointIDs
-             select RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+             select _relationEndPointManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
     public bool HasRelationChanged (DataContainer dataContainer)
@@ -191,7 +197,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       dataContainer.SetClientTransaction (_clientTransaction);
 
       _dataContainerMap.Register (dataContainer);
-      _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
+      _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
     }
 
     public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items)
@@ -199,14 +205,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("items", items);
 
-      _relationEndPointMap.MarkCollectionEndPointComplete (relationEndPointID, items);
+      _relationEndPointManager.MarkCollectionEndPointComplete (relationEndPointID, items);
     }
 
     public void Commit ()
     {
       var deletedDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.Deleted).ToList();
 
-      _relationEndPointMap.CommitAllEndPoints();
+      _relationEndPointManager.CommitAllEndPoints();
 
       foreach (var deletedDataContainer in deletedDataContainers)
         Discard (deletedDataContainer);
@@ -219,7 +225,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var newDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.New).ToList();
 
       // roll back end point state before discarding data containers because Discard checks that no dangling end points are created
-      _relationEndPointMap.RollbackAllEndPoints();
+      _relationEndPointManager.RollbackAllEndPoints();
 
       // discard new data containers before rolling back data container state - new data containers cannot be rolled back
       foreach (var newDataContainer in newDataContainers)
@@ -247,7 +253,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       foreach (var endPoint in endPoints)
-        _relationEndPointMap.RemoveEndPoint (endPoint.ID);
+        _relationEndPointManager.RemoveEndPoint (endPoint.ID);
 
       _dataContainerMap.Remove (dataContainer.ID);
 
@@ -273,7 +279,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_invalidDomainObjectManager.IsInvalid (id))
         throw new ObjectInvalidException (id);
 
-      return DataContainerMap[id];
+      return DataContainers[id];
     }
 
     public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
@@ -301,7 +307,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
       var domainObject = _objectLoader.LoadRelatedObject (virtualObjectEndPoint.ID, this);
-      // Since RelationEndPointMap.RegisterOppositeForRealObjectEndPoint contains a query optimization for 1:1 relations, it is possible that
+      // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that
       // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).
       if (!virtualObjectEndPoint.IsDataComplete)
         virtualObjectEndPoint.MarkDataComplete (domainObject);
@@ -324,19 +330,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      return _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
     }
 
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return _relationEndPointMap.GetRelationEndPointWithoutLoading (endPointID);
+      return _relationEndPointManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return _relationEndPointMap.GetRelationEndPointWithMinimumLoading (endPointID);
+      return _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
@@ -399,7 +405,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           else
           {
             commands.Add (new UnregisterDataContainerCommand (objectID, _dataContainerMap));
-            commands.Add (_relationEndPointMap.CreateUnregisterCommandForDataContainer (dataContainer));
+            commands.Add (_relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer));
           }
         }
       }
@@ -443,7 +449,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = doInfo.GetValueForHandle<ClientTransaction>();
       _transactionEventSink = _clientTransaction.TransactionEventSink;
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
-      _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap>();
+      _relationEndPointManager = doInfo.GetValueForHandle<RelationEndPointManager>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
       _invalidDomainObjectManager = doInfo.GetValue<IInvalidDomainObjectManager> ();
       _objectLoader = doInfo.GetValueForHandle<IObjectLoader>();
@@ -457,7 +463,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var doInfo = new FlattenedSerializationInfo();
       doInfo.AddHandle (_clientTransaction);
       doInfo.AddValue (_dataContainerMap);
-      doInfo.AddHandle (_relationEndPointMap);
+      doInfo.AddHandle (_relationEndPointManager);
       doInfo.AddValue (_domainObjectStateCache);
       doInfo.AddValue (_invalidDomainObjectManager);
       doInfo.AddHandle (_objectLoader);

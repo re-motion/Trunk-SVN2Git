@@ -20,7 +20,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Registers and unregisters end-points in/from a <see cref="RelationEndPointMap"/>.
+  /// Registers and unregisters end-points in/from a <see cref="RelationEndPointManager"/>.
   /// </summary>
   public class RelationEndPointRegistrationAgent : IRelationEndPointRegistrationAgent
   {

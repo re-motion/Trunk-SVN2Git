@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 
@@ -28,8 +27,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface IDataManager : IRelationEndPointProvider
   {
-    IDataContainerMapReadOnlyView DataContainerMap { get; }
-    IRelationEndPointMapReadOnlyView RelationEndPointMap { get; }
+    IDataContainerMapReadOnlyView DataContainers { get; }
+    IRelationEndPointMapReadOnlyView RelationEndPoints { get; }
+
+    // TODO 3649: Remove
+    IRelationEndPointManager RelationEndPointManager { get; }
+
     DomainObjectStateCache DomainObjectStateCache { get; }
 
     void Discard (DataContainer dataContainer);

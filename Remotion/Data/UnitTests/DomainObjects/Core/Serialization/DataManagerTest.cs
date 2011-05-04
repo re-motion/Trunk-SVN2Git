@@ -54,15 +54,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Dev.Null = order.OrderItems[0];
 
       Assert.That (dataManager.DomainObjectStateCache, Is.Not.Null);
-      Assert.That (dataManager.DataContainerMap.Count, Is.Not.EqualTo (0));
-      Assert.That (dataManager.RelationEndPointMap.Count, Is.Not.EqualTo (0));
+      Assert.That (dataManager.DataContainers.Count, Is.Not.EqualTo (0));
+      Assert.That (dataManager.RelationEndPoints.Count, Is.Not.EqualTo (0));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
       Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
-      Assert.That (deserializedData.Item2.DataContainerMap.Count, Is.Not.EqualTo (0));
-      Assert.That (deserializedData.Item2.RelationEndPointMap.Count, Is.Not.EqualTo (0));
+      Assert.That (deserializedData.Item2.DataContainers.Count, Is.Not.EqualTo (0));
+      Assert.That (deserializedData.Item2.RelationEndPoints.Count, Is.Not.EqualTo (0));
 
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);

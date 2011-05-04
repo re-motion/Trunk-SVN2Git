@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       ClientTransaction.EnsureDataAvailable (DomainObject.ID);
 
-      var dataContainer = ClientTransaction.DataManager.DataContainerMap[DomainObject.ID];
+      var dataContainer = ClientTransaction.DataManager.DataContainers[DomainObject.ID];
       Assertion.IsNotNull (dataContainer);
       Assertion.IsTrue (dataContainer.DomainObject == DomainObject, "Guaranteed because CheckIfRightTransaction ensures that domainObject is enlisted");
 

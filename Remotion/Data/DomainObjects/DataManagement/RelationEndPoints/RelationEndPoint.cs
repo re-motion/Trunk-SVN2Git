@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Provides an abstract base implementation of non-transient relation end points that can be stored in the <see cref="RelationEndPointMap"/>.
+  /// Provides an abstract base implementation of non-transient relation end points that can be stored in the <see cref="RelationEndPointManager"/>.
   /// </summary>
   public abstract class RelationEndPoint : IRelationEndPoint
   {

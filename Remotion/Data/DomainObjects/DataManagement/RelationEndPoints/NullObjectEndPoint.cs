@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
   /// object, this end point (or <see cref="NullCollectionEndPoint"/>) is used to represent the object's part in the relation, and a 
   /// <see cref="NullEndPointModificationCommand"/> is used to represent the modification. The end point is created on the fly by 
-  /// <see cref="RelationEndPointMap.GetRelationEndPointWithLazyLoad"/> and is usually discarded after it's used.
+  /// <see cref="RelationEndPointManager.GetRelationEndPointWithLazyLoad"/> and is usually discarded after it's used.
   /// </summary>
   public class NullObjectEndPoint : IObjectEndPoint
   {

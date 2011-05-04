@@ -222,12 +222,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EnsureDataAvailable ()
     {
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Null);
 
       _notYetLoadedOrder2Context.EnsureDataAvailable ();
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
+      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
     }
 
     [Test]

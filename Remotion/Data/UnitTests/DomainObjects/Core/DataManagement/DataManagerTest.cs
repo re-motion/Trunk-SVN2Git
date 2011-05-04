@@ -68,8 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var dataManager = new DataManager (clientTransaction, collectionEndPointChangeDetectionStrategy, invalidDomainObjectManager, objectLoader);
 
-      Assert.That (dataManager.RelationEndPointMap, Is.TypeOf (typeof (RelationEndPointMap)));
-      var map = (RelationEndPointMap) dataManager.RelationEndPointMap;
+      Assert.That (dataManager.RelationEndPointManager, Is.TypeOf (typeof (RelationEndPointManager)));
+      var map = (RelationEndPointManager) dataManager.RelationEndPointManager;
 
       Assert.That (map.ClientTransaction, Is.SameAs (clientTransaction));
       Assert.That (map.EndPointProvider, Is.SameAs (dataManager));
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
 
       var propertyName = ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber");
-      _dataManager.DataContainerMap[order1.ID].PropertyValues[propertyName].Value = 100;
+      _dataManager.DataContainers[order1.ID].PropertyValues[propertyName].Value = 100;
 
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Changed));
     }
@@ -277,11 +277,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
 
       _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
     }
 
     [Test]
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
 
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
       var collectionEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
       var realEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID), Is.Null);
@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID).ObjectID, Is.EqualTo (dataContainer.ID));
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (realEndPointID).ObjectID, Is.EqualTo (dataContainer.ID));
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
       SetDomainObject (dataContainer);
 
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
       var collectionEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
       var realEndPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID), Is.Null);
@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID), Is.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (realEndPointID).ObjectID, Is.EqualTo (dataContainer.ID));
@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (otherTransaction));
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -400,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       SetDomainObject (otherDataContainer);
 
       _dataManager.RegisterDataContainer (otherDataContainer);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (otherDataContainer));
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (otherDataContainer));
 
       _dataManager.RegisterDataContainer (dataContainer);
     }
@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (dataContainer.IsRegistered, Is.False);
       Assert.That (otherDataContainer.IsRegistered, Is.True);
       Assert.That (otherDataContainer.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (otherDataContainer));
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (otherDataContainer));
     }
 
     [Test]
@@ -442,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
-      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) _dataManager.RelationEndPointManager, endPointMock);
       endPointMock.Expect (mock => mock.MarkDataComplete (items));
       endPointMock.Replay ();
 
@@ -471,11 +471,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (dataContainer));
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (dataContainer));
 
       _dataManager.Discard (dataContainer);
 
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -530,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPointMock.Expect (mock => mock.Commit());
       endPointMock.Replay();
 
-      RelationEndPointMapTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
 
       endPointMock.Replay();
     }
@@ -573,12 +573,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.Delete ();
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Not.Null);
 
       _dataManager.Commit ();
 
       Assert.That (dataContainer.IsDiscarded, Is.True);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -621,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPointMock.Expect (mock => mock.Rollback ());
       endPointMock.Replay ();
 
-      RelationEndPointMapTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint (DataManagerTestHelper.GetRelationEndPointMap (_dataManager), endPointMock);
 
       endPointMock.Replay ();
 
@@ -669,7 +669,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Rollback ();
 
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -779,21 +779,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unloadDataCommandSteps, Has.Count.EqualTo (4));
 
       Assert.That (unloadDataCommandSteps[0], Is.TypeOf<UnregisterDataContainerCommand> ());
-      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).Map, Is.SameAs (_dataManager.DataContainerMap));
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).Map, Is.SameAs (_dataManager.DataContainers));
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[0]).ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
 
       Assert.That (unloadDataCommandSteps[1], Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).RegistrationAgent, 
-          Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent ((RelationEndPointMap) _dataManager.RelationEndPointMap)));
+          Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent ((RelationEndPointManager) _dataManager.RelationEndPointManager)));
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).EndPoints, Has.Count.EqualTo (2));
 
       Assert.That (unloadDataCommandSteps[2], Is.TypeOf<UnregisterDataContainerCommand> ());
-      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).Map, Is.SameAs (_dataManager.DataContainerMap));
+      Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).Map, Is.SameAs (_dataManager.DataContainers));
       Assert.That (((UnregisterDataContainerCommand) unloadDataCommandSteps[2]).ObjectID, Is.EqualTo (DomainObjectIDs.Order2));
 
       Assert.That (unloadDataCommandSteps[3], Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).RegistrationAgent, 
-          Is.SameAs (RelationEndPointMapTestHelper.GetRegistrationAgent ((RelationEndPointMap) _dataManager.RelationEndPointMap)));
+          Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent ((RelationEndPointManager) _dataManager.RelationEndPointManager)));
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPoints, Has.Count.EqualTo (2));
     }
 
@@ -931,7 +931,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"),
         RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders"),
       };
-      var expectedEndPoints = expectedIDs.Select (id => _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id)).ToArray();
+      var expectedEndPoints = expectedIDs.Select (id => _dataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (id)).ToArray();
       Assert.That (endPoints, Is.EquivalentTo (expectedEndPoints));
     }
 
@@ -1035,7 +1035,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
-      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) _dataManagerWitLoaderMock.RelationEndPointManager, endPointMock);
       endPointMock.Stub(stub => stub.IsDataComplete).Return(false);
       endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
       endPointMock.Replay();
@@ -1070,7 +1070,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
       endPointStub.Stub (stub => stub.ID).Return (endPointID);
       endPointStub.Stub (stub => stub.IsDataComplete).Return (true);
-      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, endPointStub);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) _dataManager.RelationEndPointManager, endPointStub);
 
       _dataManager.LoadLazyCollectionEndPoint (endPointStub);
     }
@@ -1087,7 +1087,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       endPointMock.Stub (stub => stub.IsDataComplete).Return (false).Repeat.Once();
       endPointMock.Replay ();
-      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) _dataManagerWitLoaderMock.RelationEndPointManager, endPointMock);
 
       _objectLoaderMock
           .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWitLoaderMock))
@@ -1116,7 +1116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPointMock.Stub (stub => stub.IsDataComplete).Return (false);
       endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
       endPointMock.Replay ();
-      RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManagerWitLoaderMock.RelationEndPointMap, endPointMock);
+      RelationEndPointManagerTestHelper.AddEndPoint ((RelationEndPointManager) _dataManagerWitLoaderMock.RelationEndPointManager, endPointMock);
 
       _objectLoaderMock
           .Expect (mock => mock.LoadRelatedObject (endPointID, _dataManagerWitLoaderMock))
@@ -1145,7 +1145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void LoadLazyVirtualObjectEndPoint_AlreadyLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var endPoint = (IVirtualObjectEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (IVirtualObjectEndPoint) _dataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (endPoint.IsDataComplete, Is.True);
 
       _dataManager.LoadLazyVirtualObjectEndPoint (endPoint);
@@ -1263,7 +1263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
-      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
+      var dataContainer = ClientTransactionMock.DataManager.DataContainers[domainObject.ID];
       return Tuple.Create (domainObject, dataContainer, domainObject.State);
     }
 

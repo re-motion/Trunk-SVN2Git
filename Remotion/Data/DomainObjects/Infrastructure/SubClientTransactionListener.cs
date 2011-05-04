@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         Assertion.IsTrue (
             clientTransaction.ParentTransaction.CreateSequence (tx => tx.ParentTransaction)
-                .All (ancestor => ancestor.DataManager.DataContainerMap[container.DomainObject.ID] == null));
+                .All (ancestor => ancestor.DataManager.DataContainers[container.DomainObject.ID] == null));
         _parentInvalidDomainObjectManager.MarkInvalidThroughHierarchy (container.DomainObject);
       }
     }

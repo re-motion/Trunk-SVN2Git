@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var domainObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
       _transaction.EnlistDomainObject (domainObject);
-      Assert.That (_dataManager.DataContainerMap[domainObject.ID], Is.Null);
+      Assert.That (_dataManager.DataContainers[domainObject.ID], Is.Null);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
@@ -343,8 +343,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
           Arg.Is (_transaction),
           Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject })));
-      Assert.That (_dataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
-      Assert.That (_dataManager.DataContainerMap[domainObject.ID].DomainObject, Is.SameAs (domainObject));
+      Assert.That (_dataManager.DataContainers[domainObject.ID], Is.Not.Null);
+      Assert.That (_dataManager.DataContainers[domainObject.ID].DomainObject, Is.SameAs (domainObject));
     }
 
     [Test]
@@ -370,11 +370,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnsureDataAvailable_NotEnlisted ()
     {
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
 
       _transaction.EnsureDataAvailable (DomainObjectIDs.Order1);
 
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
     }
 
     [Test]
@@ -472,11 +472,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnsureDataAvailable_Many_NotEnlisted ()
     {
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
 
       _transaction.EnsureDataAvailable (new[] { DomainObjectIDs.Order1 });
 
-      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
     }
 
     [Test]

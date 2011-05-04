@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       var relationEndPointID = RelationEndPointID.Create(_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
-      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
       var steps = bidirectionalModification.GetNestedCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));

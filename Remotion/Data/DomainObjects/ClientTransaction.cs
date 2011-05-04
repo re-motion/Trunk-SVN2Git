@@ -649,7 +649,7 @@ public class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="endPointID"/> parameter is <see langword="null" />.</exception>
   public void EnsureDataComplete (RelationEndPointID endPointID)
   {
-    var endPoint = DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+    var endPoint = DataManager.GetRelationEndPointWithLazyLoad (endPointID);
     endPoint.EnsureDataComplete();
 
     Assertion.IsTrue (endPoint.IsDataComplete);
@@ -682,13 +682,13 @@ public class ClientTransaction
     {
       if (property.PropertyData.Kind == PropertyKind.RelatedObjectCollection)
       {
-        // access source property via RelationEndPointMap, we don't want to load any objects and we don't want to raise any events
+        // access source property via RelationEndPointManager, we don't want to load any objects and we don't want to raise any events
         var endPointID = RelationEndPointID.Create(domainObject.ID, property.PropertyData.RelationEndPointDefinition);
         var sourceEndPoint = (ICollectionEndPoint) sourceTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
         if (sourceEndPoint != null)
         {
           var sourceRelatedObjectCollection = sourceEndPoint.Collection;
-          var destinationRelatedObjectCollection = DataManager.RelationEndPointMap.GetRelatedObjects (endPointID);
+          var destinationRelatedObjectCollection = DataManager.RelationEndPointManager.GetRelatedObjects (endPointID);
           destinationRelatedObjectCollection.CopyEventHandlersFrom (sourceRelatedObjectCollection);
         }
       }
@@ -843,7 +843,7 @@ public class ClientTransaction
     var objectReference = GetObjectReference (id);
     EnsureDataAvailable (id);
 
-    if (DataManager.DataContainerMap[id].State == StateType.Deleted && !includeDeleted)
+    if (DataManager.DataContainers[id].State == StateType.Deleted && !includeDeleted)
       throw new ObjectDeletedException (id);
 
     return objectReference;
@@ -990,7 +990,7 @@ public class ClientTransaction
     EnsureDataAvailable (objectIDs, throwOnNotFound); // this performs a bulk load operation
 
     var result = from id in objectIDs
-                 let maybeDataContainer = Maybe.ForValue (DataManager.DataContainerMap[id])
+                 let maybeDataContainer = Maybe.ForValue (DataManager.DataContainers[id])
                  let maybeDomainObject = maybeDataContainer.Select (dc => (T) dc.DomainObject)
                  select maybeDomainObject.ValueOrDefault ();
     return result.ToArray ();
@@ -1012,7 +1012,7 @@ public class ClientTransaction
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
-      DomainObject relatedObject = _dataManager.RelationEndPointMap.GetRelatedObject (relationEndPointID, false);
+      DomainObject relatedObject = _dataManager.RelationEndPointManager.GetRelatedObject (relationEndPointID, false);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
 
       return relatedObject;
@@ -1034,7 +1034,7 @@ public class ClientTransaction
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
-      DomainObject relatedObject = _dataManager.RelationEndPointMap.GetOriginalRelatedObject (relationEndPointID);
+      DomainObject relatedObject = _dataManager.RelationEndPointManager.GetOriginalRelatedObject (relationEndPointID);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
 
       return relatedObject;
@@ -1056,7 +1056,7 @@ public class ClientTransaction
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
-      var relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
+      var relatedObjects = _dataManager.RelationEndPointManager.GetRelatedObjects (relationEndPointID);
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
 
@@ -1079,7 +1079,7 @@ public class ClientTransaction
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
-      DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetOriginalRelatedObjects (relationEndPointID);
+      DomainObjectCollection relatedObjects = _dataManager.RelationEndPointManager.GetOriginalRelatedObjects (relationEndPointID);
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
 

@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class EagerFetcherTest : StandardMappingTest
   {
     private IDataManager _dataManagerMock;
-    private IRelationEndPointMapReadOnlyView _relationEndPointMapStub;
+    private IRelationEndPointManager _relationEndPointMapStub;
     private EagerFetcher _eagerFetcher;
     private IObjectLoader _objectLoaderMock;
 
@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       base.SetUp();
 
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager>();
-      _relationEndPointMapStub = MockRepository.GenerateStub<IRelationEndPointMapReadOnlyView>();
-      _dataManagerMock.Stub ((stub => stub.RelationEndPointMap)).Return (_relationEndPointMapStub);
+      _relationEndPointMapStub = MockRepository.GenerateStub<IRelationEndPointManager>();
+      _dataManagerMock.Stub ((stub => stub.RelationEndPointManager)).Return (_relationEndPointMapStub);
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader>();
 
       _eagerFetcher = new EagerFetcher();

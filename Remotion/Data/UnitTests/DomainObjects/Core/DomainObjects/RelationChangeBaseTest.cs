@@ -29,13 +29,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     protected void CheckTouching (Action modification, TestDomainBase foreignKeyObject, string simpleForeignKeyPropertyName,
                                 params RelationEndPointID[] endPointsInvolved)
     {
-      // Ensure all end points are loaded into the RelationEndPointMap before trying to check them
+      // Ensure all end points are loaded into the RelationEndPointManager before trying to check them
       foreach (RelationEndPointID id in endPointsInvolved)
       {
         if (id.Definition.Cardinality == CardinalityType.One)
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelatedObject (id, true);
+          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelatedObject (id, true);
         else
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelatedObjects (id);
+          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelatedObjects (id);
       }
 
       if (foreignKeyObject != null)

@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       // check that related objects have been loaded
       foreach (var id in objectIDs)
-        Assert.That (ClientTransactionMock.DataManager.DataContainerMap[id], Is.Not.Null);
+        Assert.That (ClientTransactionMock.DataManager.DataContainers[id], Is.Not.Null);
     }
 
     protected void CheckCollectionRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)

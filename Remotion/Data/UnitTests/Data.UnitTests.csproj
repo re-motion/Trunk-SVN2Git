@@ -251,7 +251,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RealObjectEndPoints\UnknownRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RealObjectEndPoints\UnsynchronizedRealObjectEndPointSyncStateTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RealObjectEndPointTestHelper.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointMapTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\TestableObjectEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualObjectEndPointTestHelper.cs" />
@@ -1140,7 +1140,7 @@
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializer.cs" />
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializableStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\ObjectIDTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\RelationEndPointMapTest.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\RelationEndPointManagerTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\OppositeClassDefinitionRetrieverTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
@@ -1235,13 +1235,13 @@
     <Compile Include="DomainObjects\Core\DataManagement\PropertyValueTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\RegisterInRelationEndPointMapTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\RegisterInRelationEndPointManagerTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointIDTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointMapTest.cs">
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointManagerTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DomainObjects\AddToOneToManyRelationTest.cs">

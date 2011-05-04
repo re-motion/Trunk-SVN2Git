@@ -1460,12 +1460,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Expect (mock => mock.ObjectsUnloading (
                         Arg.Is (ClientTransactionMock),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_order1.ID] != null));
+            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainers[_order1.ID] != null));
         _extensionMock
             .Expect (mock => mock.ObjectsUnloaded (
                         Arg.Is (ClientTransactionMock),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_order1.ID] == null));
+            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainers[_order1.ID] == null));
       }
 
       _mockRepository.ReplayAll ();

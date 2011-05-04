@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           originatingObject.Collection.Add (objects[i]);
 
         var dataContainers = objects
-            .Select (obj => ((DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, "DataManager")).DataContainerMap[obj.ID])
+            .Select (obj => ((DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, "DataManager")).DataContainers[obj.ID])
             .ToArray ();
         Assert.That (dataContainers.Length, Is.EqualTo (testSetSize));
 

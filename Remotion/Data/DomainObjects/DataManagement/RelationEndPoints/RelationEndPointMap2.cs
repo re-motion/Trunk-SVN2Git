@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// <summary>
   /// Holds a set of <see cref="IRelationEndPoint"/> instances and provides access to them.
   /// </summary>
-  public class RelationEndPointMap2 : IEnumerable<IRelationEndPoint>, IFlattenedSerializable
+  public class RelationEndPointMap2 : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionListener _transactionEventSink;
@@ -50,11 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IClientTransactionListener TransactionEventSink
     {
       get { return _transactionEventSink; }
-    }
-
-    public Dictionary<RelationEndPointID, IRelationEndPoint> RelationEndPoints
-    {
-      get { return _relationEndPoints; }
     }
 
     public IRelationEndPoint this[RelationEndPointID endPointID]

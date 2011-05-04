@@ -696,7 +696,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject ());
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID).HasChanged, Is.True);
 
@@ -1245,7 +1245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     private void CheckDataContainerExists (DomainObject domainObject, bool dataContainerShouldExist)
     {
-      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
+      var dataContainer = ClientTransactionMock.DataManager.DataContainers[domainObject.ID];
       if (dataContainerShouldExist)
         Assert.That (dataContainer, Is.Not.Null, "Data container '{0}' does not exist.", domainObject.ID);
       else

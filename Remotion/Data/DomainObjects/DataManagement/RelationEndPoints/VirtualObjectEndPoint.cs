@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
   /// Represents an <see cref="ObjectEndPoint"/> that does not hold the foreign key in a relation. The <see cref="VirtualObjectEndPoint"/> is
-  /// constructed by the <see cref="RelationEndPointMap"/> as an in-memory representation of the opposite of the <see cref="RealObjectEndPoint"/> 
+  /// constructed by the <see cref="RelationEndPointManager"/> as an in-memory representation of the opposite of the <see cref="RealObjectEndPoint"/> 
   /// holding the foreign key.
   /// </summary>
   public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualObjectEndPoint

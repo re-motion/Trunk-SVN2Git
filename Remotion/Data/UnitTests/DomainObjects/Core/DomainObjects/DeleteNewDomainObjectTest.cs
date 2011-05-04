@@ -58,8 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _newOrderTicket.Delete ();
 
-      Assert.AreEqual (0, ClientTransactionMock.DataManager.DataContainerMap.Count);
-      Assert.AreEqual (0, ClientTransactionMock.DataManager.RelationEndPointMap.Count);
+      Assert.AreEqual (0, ClientTransactionMock.DataManager.DataContainers.Count);
+      Assert.AreEqual (0, ClientTransactionMock.DataManager.RelationEndPoints.Count);
     }
 
     [Test]

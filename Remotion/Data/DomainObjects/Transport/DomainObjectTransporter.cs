@@ -252,7 +252,7 @@ namespace Remotion.Data.DomainObjects.Transport
     private IEnumerable<DataContainer> GetTransportedContainers ()
     {
       foreach (ObjectID id in _transportedObjects)
-        yield return _transportTransaction.DataManager.DataContainerMap[id];
+        yield return _transportTransaction.DataManager.DataContainers[id];
     }
   }
 }

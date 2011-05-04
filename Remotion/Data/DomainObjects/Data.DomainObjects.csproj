@@ -178,6 +178,7 @@
     <Compile Include="DataManagement\Commands\ExceptionCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointMapReadOnlyView.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\NullRealObjectEndPoint.cs" />
@@ -333,7 +334,7 @@
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\IDataManager.cs" />
-    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointMapReadOnlyView.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointManager.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointDataKeeper.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointExtensions.cs" />
@@ -687,7 +688,7 @@
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointID.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointMap.cs">
+    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObject.cs">
