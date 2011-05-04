@@ -25,17 +25,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public class RelationEndPointRegistrationAgent : IRelationEndPointRegistrationAgent
   {
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly RelationEndPointMap _relationEndPoints;
     private readonly ClientTransaction _clientTransaction;
 
-    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider, RelationEndPointMap relationEndPoints, ClientTransaction clientTransaction)
+    public RelationEndPointRegistrationAgent (IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      ArgumentUtility.CheckNotNull ("relationEndPoints", relationEndPoints);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _endPointProvider = endPointProvider;
-      _relationEndPoints = relationEndPoints;
       _clientTransaction = clientTransaction;
     }
 
@@ -49,26 +46,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _clientTransaction; }
     }
 
-    public void RegisterEndPoint (IRelationEndPoint endPoint)
+    public void RegisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      if (_relationEndPoints[endPoint.ID] != null)
+      if (map[endPoint.ID] != null)
       {
         var message = string.Format ("A relation end-point with ID '{0}' has already been registered.", endPoint.ID);
         throw new InvalidOperationException (message);
       }
       
-      _relationEndPoints.AddEndPoint (endPoint);
+      map.AddEndPoint (endPoint);
 
       var realObjectEndPoint = endPoint as IRealObjectEndPoint;
       if (realObjectEndPoint != null)
         RegisterOppositeForRealObjectEndPoint (realObjectEndPoint);
     }
 
-    public void UnregisterEndPoint (IRelationEndPoint endPoint)
+    public void UnregisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      if (_relationEndPoints[endPoint.ID] != endPoint)
+      if (map[endPoint.ID] != endPoint)
       {
         var message = string.Format ("End-point '{0}' is not part of this map.\r\nParameter name: endPoint", endPoint.ID);
         throw new ArgumentException (message);
@@ -76,9 +73,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       var realObjectEndPoint = endPoint as IRealObjectEndPoint;
       if (realObjectEndPoint != null)
-        UnregisterOppositeForRealObjectEndPoint (realObjectEndPoint);
+        UnregisterOppositeForRealObjectEndPoint (realObjectEndPoint, map);
 
-      _relationEndPoints.RemoveEndPoint (endPoint.ID);
+      map.RemoveEndPoint (endPoint.ID);
     }
 
     private void RegisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
@@ -102,7 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         oppositeVirtualObjectEndPoint.MarkDataComplete (realObjectEndPoint.GetDomainObjectReference ());
     }
 
-    private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint)
+    private void UnregisterOppositeForRealObjectEndPoint (IRealObjectEndPoint realObjectEndPoint, RelationEndPointMap map)
     {
       ArgumentUtility.CheckNotNull ("realObjectEndPoint", realObjectEndPoint);
 
@@ -124,7 +121,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       oppositeEndPoint.UnregisterOriginalOppositeEndPoint (realObjectEndPoint);
       if (oppositeEndPoint.CanBeCollected)
-        _relationEndPoints.RemoveEndPoint (oppositeEndPoint.ID);
+        map.RemoveEndPoint (oppositeEndPoint.ID);
     }
   }
 }

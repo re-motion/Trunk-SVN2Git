@@ -784,7 +784,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (unloadDataCommandSteps[1], Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).RegistrationAgent, 
-          Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent ((RelationEndPointManager) _dataManager.RelationEndPointManager)));
+          Is.SameAs (((RelationEndPointManager) _dataManager.RelationEndPointManager).RegistrationAgent));
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[1]).EndPoints, Has.Count.EqualTo (2));
 
       Assert.That (unloadDataCommandSteps[2], Is.TypeOf<UnregisterDataContainerCommand> ());
@@ -793,7 +793,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (unloadDataCommandSteps[3], Is.TypeOf<UnregisterEndPointsCommand> ());
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).RegistrationAgent, 
-          Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent ((RelationEndPointManager) _dataManager.RelationEndPointManager)));
+          Is.SameAs (((RelationEndPointManager) _dataManager.RelationEndPointManager).RegistrationAgent));
       Assert.That (((UnregisterEndPointsCommand) unloadDataCommandSteps[3]).EndPoints, Has.Count.EqualTo (2));
     }
 

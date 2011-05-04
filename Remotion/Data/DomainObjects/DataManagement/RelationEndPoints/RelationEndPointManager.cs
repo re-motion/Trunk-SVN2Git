@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
 
-    private readonly RelationEndPointMap _relationEndPoints;
+    private readonly RelationEndPointMap _map;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
     public RelationEndPointManager (
@@ -76,8 +76,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
       _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
 
-      _relationEndPoints = new RelationEndPointMap (_clientTransaction);
-      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
+      _map = new RelationEndPointMap (_clientTransaction);
+      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _clientTransaction);
     }
 
     public ClientTransaction ClientTransaction
@@ -107,7 +107,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public IRelationEndPointMapReadOnlyView RelationEndPoints
     {
-      get { return _relationEndPoints; }
+      get { return _map; }
+    }
+
+    public IRelationEndPointRegistrationAgent RegistrationAgent
+    {
+      get { return _registrationAgent; }
     }
 
     // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
@@ -124,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         else
           endPoint = CreateVirtualEndPoint (endPointID, true);
 
-        _registrationAgent.RegisterEndPoint (endPoint);
+        _registrationAgent.RegisterEndPoint (endPoint, _map);
       }
     }
 
@@ -162,7 +167,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
       else
       {
-        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent);
+        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent, _map);
       }
     }
 
@@ -173,7 +178,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (endPointID.ObjectID == null)
         return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
 
-      return _relationEndPoints[endPointID];
+      return _map[endPointID];
     }
 
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
@@ -207,7 +212,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       else
       {
         _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
-        return Assertion.IsNotNull (_relationEndPoints[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+        return Assertion.IsNotNull (_map[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
       }
     }
 
@@ -249,12 +254,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public void CommitAllEndPoints ()
     {
-      _relationEndPoints.CommitAllEndPoints();
+      _map.CommitAllEndPoints();
     }
 
     public void RollbackAllEndPoints ()
     {
-      _relationEndPoints.RollbackAllEndPoints();
+      _map.RollbackAllEndPoints();
     }
 
     public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)
@@ -272,7 +277,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void RemoveEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _relationEndPoints.RemoveEndPoint (endPointID);
+      _map.RemoveEndPoint (endPointID);
     }
 
     private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
@@ -283,7 +288,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
     {
       var endPoint = CreateVirtualEndPoint (endPointID, false);
-      _registrationAgent.RegisterEndPoint (endPoint);
+      _registrationAgent.RegisterEndPoint (endPoint, _map);
       return endPoint;
     }
 
@@ -385,8 +390,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())
     {
-      _relationEndPoints = info.GetValue<RelationEndPointMap> ();
-      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
+      _map = info.GetValue<RelationEndPointMap> ();
+      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _clientTransaction);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -397,7 +402,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_endPointProvider);
       info.AddHandle (_collectionEndPointDataKeeperFactory);
       info.AddHandle (_virtualObjectEndPointDataKeeperFactory);
-      info.AddValue (_relationEndPoints);
+      info.AddValue (_map);
     }
 
     #endregion

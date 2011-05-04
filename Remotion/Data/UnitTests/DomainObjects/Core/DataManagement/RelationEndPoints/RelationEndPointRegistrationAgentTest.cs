@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _endPointProviderMock;
-    private RelationEndPointMap _relationEndPoints;
+    private RelationEndPointMap _map;
 
     private RelationEndPointRegistrationAgent _agent;
     private RelationEndPointID _realOneManyEndPointID;
@@ -41,13 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _endPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
-      _relationEndPoints = new RelationEndPointMap (_clientTransaction);
+      _map = new RelationEndPointMap (_clientTransaction);
 
       _realOneManyEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       _virtualEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       _unidirectionalEndPointID = RelationEndPointID.Create (DomainObjectIDs.Location1, typeof (Location), "Client");
 
-      _agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, _relationEndPoints, _clientTransaction);
+      _agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, _clientTransaction);
     }
 
     [Test]
@@ -58,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointProviderMock.Replay();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -78,12 +78,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations();
       _endPointProviderMock.VerifyAllExpectations();
       oppositeEndPointMock.VerifyAllExpectations();
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -95,10 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointProviderMock.Replay ();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -116,12 +116,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations();
       oppositeEndPointMock.VerifyAllExpectations();
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -144,12 +144,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -171,13 +171,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      _agent.RegisterEndPoint (endPointMock);
+      _agent.RegisterEndPoint (endPointMock, _map);
 
       oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (objectReference));
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -194,14 +194,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var subTransaction = _clientTransaction.CreateSubTransaction();
       var relationEndPoints = new RelationEndPointMap (subTransaction);
-      var agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, relationEndPoints, subTransaction);
+      var agent = new RelationEndPointRegistrationAgent (_endPointProviderMock, subTransaction);
 
       _endPointProviderMock
           .Expect (mock => mock.GetRelationEndPointWithMinimumLoading (_virtualEndPointID))
           .Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      agent.RegisterEndPoint (endPointMock);
+      agent.RegisterEndPoint (endPointMock, relationEndPoints);
 
       oppositeEndPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (objectReference));
       endPointMock.VerifyAllExpectations ();
@@ -215,9 +215,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var existingEndPointStub = MockRepository.GenerateStub<IRelationEndPoint>();
       existingEndPointStub.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
-      _relationEndPoints.AddEndPoint (existingEndPointStub);
+      _map.AddEndPoint (existingEndPointStub);
 
-      Assert.That (() => _agent.RegisterEndPoint (existingEndPointStub), Throws.InvalidOperationException.With.Message.EqualTo (
+      Assert.That (() => _agent.RegisterEndPoint (existingEndPointStub, _map), Throws.InvalidOperationException.With.Message.EqualTo (
           "A relation end-point with ID "
           + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' has "
           + "already been registered."));
@@ -230,13 +230,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Stub (stub => stub.HasChanged).Return (false);
       endPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
+      _map.AddEndPoint (endPointMock);
 
       _endPointProviderMock.Replay ();
 
-      _agent.UnregisterEndPoint (endPointMock);
+      _agent.UnregisterEndPoint (endPointMock, _map);
 
-      Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
+      Assert.That (_map, Has.No.Member (endPointMock));
     }
 
     [Test]
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.ResetSyncState());
       endPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
+      _map.AddEndPoint (endPointMock);
 
       var oppositeEndPointID = RelationEndPointID.CreateOpposite (endPointMock.Definition, null);
       _endPointProviderMock
@@ -255,11 +255,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (new NullCollectionEndPoint (_clientTransaction, oppositeEndPointID.Definition));
       _endPointProviderMock.Replay ();
 
-      _agent.UnregisterEndPoint (endPointMock);
+      _agent.UnregisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations();
       _endPointProviderMock.VerifyAllExpectations();
-      Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
+      Assert.That (_map, Has.No.Member (endPointMock));
     }
 
     [Test]
@@ -270,14 +270,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.ResetSyncState ());
       endPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
+      _map.AddEndPoint (endPointMock);
 
       _endPointProviderMock.Replay ();
 
-      _agent.UnregisterEndPoint (endPointMock);
+      _agent.UnregisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
+      Assert.That (_map, Has.No.Member (endPointMock));
     }
 
     [Test]
@@ -292,19 +292,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (endPointMock));
       oppositeEndPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
-      _relationEndPoints.AddEndPoint (oppositeEndPointMock);
+      _map.AddEndPoint (endPointMock);
+      _map.AddEndPoint (oppositeEndPointMock);
 
       _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointMock.ID)).Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      _agent.UnregisterEndPoint (endPointMock);
+      _agent.UnregisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations();
       oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
-      Assert.That (_relationEndPoints, Has.No.Member (oppositeEndPointMock));
+      Assert.That (_map, Has.No.Member (endPointMock));
+      Assert.That (_map, Has.No.Member (oppositeEndPointMock));
     }
 
     [Test]
@@ -319,19 +319,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       oppositeEndPointMock.Expect (mock => mock.UnregisterOriginalOppositeEndPoint (endPointMock));
       oppositeEndPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
-      _relationEndPoints.AddEndPoint (oppositeEndPointMock);
+      _map.AddEndPoint (endPointMock);
+      _map.AddEndPoint (oppositeEndPointMock);
 
       _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (oppositeEndPointMock.ID)).Return (oppositeEndPointMock);
       _endPointProviderMock.Replay ();
 
-      _agent.UnregisterEndPoint (endPointMock);
+      _agent.UnregisterEndPoint (endPointMock, _map);
 
       endPointMock.VerifyAllExpectations ();
       _endPointProviderMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
-      Assert.That (_relationEndPoints, Has.No.Member (endPointMock));
-      Assert.That (_relationEndPoints, Has.Member (oppositeEndPointMock));
+      Assert.That (_map, Has.No.Member (endPointMock));
+      Assert.That (_map, Has.Member (oppositeEndPointMock));
     }
 
     [Test]
@@ -341,16 +341,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Stub (stub => stub.HasChanged).Return (false);
       endPointMock.Replay ();
 
-      _relationEndPoints.AddEndPoint (endPointMock);
+      _map.AddEndPoint (endPointMock);
 
       _endPointProviderMock.Expect (mock => mock.GetRelationEndPointWithoutLoading (_virtualEndPointID)).Return (null);
       _endPointProviderMock.Replay ();
 
-      Assert.That (() => _agent.UnregisterEndPoint (endPointMock), Throws.InvalidOperationException.With.Message.EqualTo (
+      Assert.That (() => _agent.UnregisterEndPoint (endPointMock, _map), Throws.InvalidOperationException.With.Message.EqualTo (
           "Opposite end-point of "
           + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
           + "not found. When unregistering a non-virtual bidirectional end-point, the opposite end-point must exist."));
-      Assert.That (_relationEndPoints, Has.Member (endPointMock));
+      Assert.That (_map, Has.Member (endPointMock));
     }
 
     [Test]
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var existingEndPoint = MockRepository.GenerateStub<IRelationEndPoint> ();
       existingEndPoint.Stub (stub => stub.ID).Return (_realOneManyEndPointID);
 
-      Assert.That (() => _agent.UnregisterEndPoint (existingEndPoint), Throws.ArgumentException.With.Message.EqualTo (
+      Assert.That (() => _agent.UnregisterEndPoint (existingEndPoint, _map), Throws.ArgumentException.With.Message.EqualTo (
           "End-point 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
           + "is not part of this map.\r\nParameter name: endPoint"));
     }

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -38,14 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       manager.RemoveEndPoint (relationEndPointID);
     }
 
-    public static IRelationEndPointRegistrationAgent GetRegistrationAgent (RelationEndPointManager manager)
-    {
-      return (IRelationEndPointRegistrationAgent) PrivateInvoke.GetNonPublicField (manager, "_registrationAgent");
-    }
-
     public static RelationEndPointMap GetMap (RelationEndPointManager manager)
     {
-      return (RelationEndPointMap) PrivateInvoke.GetNonPublicField (manager, "_relationEndPoints");
+      return (RelationEndPointMap) manager.RelationEndPoints;
     }
   }
 }

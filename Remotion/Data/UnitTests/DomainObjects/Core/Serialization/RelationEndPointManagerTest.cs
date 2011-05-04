@@ -18,7 +18,6 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -67,11 +66,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);
 
-      var deserializedAgent = (RelationEndPointRegistrationAgent) RelationEndPointManagerTestHelper.GetRegistrationAgent (deserializedMap);
+      var deserializedAgent = (RelationEndPointRegistrationAgent) deserializedMap.RegistrationAgent;
       Assert.That (deserializedAgent, Is.Not.Null);
       Assert.That (deserializedAgent.EndPointProvider, Is.SameAs (deserializedMap.EndPointProvider));
       Assert.That (deserializedAgent.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedAgent, "_relationEndPoints"), Is.SameAs (RelationEndPointManagerTestHelper.GetMap (deserializedMap)));
       Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointManager.CollectionEndPointDataKeeperFactory.GetType ()));

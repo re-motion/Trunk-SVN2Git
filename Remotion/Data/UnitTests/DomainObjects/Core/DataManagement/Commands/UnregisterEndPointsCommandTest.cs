@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Rhino.Mocks;
@@ -25,9 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   [TestFixture]
   public class UnregisterEndPointsCommandTest : StandardMappingTest
   {
-    private IRelationEndPointRegistrationAgent _registrationAgentMock;
     private IRelationEndPoint _endPoint1;
     private IRelationEndPoint _endPoint2;
+
+    private IRelationEndPointRegistrationAgent _registrationAgentMock;
+    private RelationEndPointMap _map;
 
     private UnregisterEndPointsCommand _command;
 
@@ -35,12 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       base.SetUp();
 
-      _registrationAgentMock = MockRepository.GenerateStrictMock<IRelationEndPointRegistrationAgent>();
-
       _endPoint1 = MockRepository.GenerateStub<IRelationEndPoint> ();
       _endPoint2 = MockRepository.GenerateStub<IRelationEndPoint> ();
 
-      _command = new UnregisterEndPointsCommand (new[] { _endPoint1, _endPoint2 }, _registrationAgentMock);
+      _registrationAgentMock = MockRepository.GenerateStrictMock<IRelationEndPointRegistrationAgent>();
+      _map = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
+
+      _command = new UnregisterEndPointsCommand (new[] { _endPoint1, _endPoint2 }, _registrationAgentMock, _map);
     }
 
     [Test]
@@ -64,8 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Perform ()
     {
-      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPoint1));
-      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPoint2));
+      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPoint1, _map));
+      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPoint2, _map));
       _registrationAgentMock.Replay();
 
       _command.Perform();

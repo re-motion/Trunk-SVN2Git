@@ -30,14 +30,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   {
     private readonly IRelationEndPoint[] _endPoints;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
+    private readonly RelationEndPointMap _map;
 
-    public UnregisterEndPointsCommand (IEnumerable<IRelationEndPoint> endPoints, IRelationEndPointRegistrationAgent registrationAgent)
+    public UnregisterEndPointsCommand (
+        IEnumerable<IRelationEndPoint> endPoints, 
+        IRelationEndPointRegistrationAgent registrationAgent, 
+        RelationEndPointMap map)
     {
       ArgumentUtility.CheckNotNull ("endPoints", endPoints);
       ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
+      ArgumentUtility.CheckNotNull ("map", map);
 
       _endPoints = endPoints.ToArray ();
       _registrationAgent = registrationAgent;
+      _map = map;
     }
 
     public ReadOnlyCollection<IRelationEndPoint> EndPoints
@@ -48,6 +54,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public IRelationEndPointRegistrationAgent RegistrationAgent
     {
       get { return _registrationAgent; }
+    }
+
+    public IRelationEndPointMapReadOnlyView Map
+    {
+      get { return _map; }
     }
 
     public IEnumerable<Exception> GetAllExceptions ()
@@ -69,7 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       foreach (var endPoint in _endPoints)
       {
-        _registrationAgent.UnregisterEndPoint (endPoint);
+        _registrationAgent.UnregisterEndPoint (endPoint, _map);
       }
     }
 

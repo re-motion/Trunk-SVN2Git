@@ -205,7 +205,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent (_relationEndPointManager)));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (_relationEndPointManager.RegistrationAgent));
+      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_relationEndPointManager.RelationEndPoints));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (realEndPoint));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.No.Member (virtualObjectEndPointStub));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.No.Member (collectionEndPointStub));
@@ -231,7 +232,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent (_relationEndPointManager)));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (_relationEndPointManager.RegistrationAgent));
+      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_relationEndPointManager.RelationEndPoints));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (realEndPoint));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (virtualObjectEndPoint));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (collectionEndPoint));
@@ -244,7 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent (_relationEndPointManager)));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (_relationEndPointManager.RegistrationAgent));
+      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_relationEndPointManager.RelationEndPoints));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Is.Empty);
     }
 
@@ -260,7 +263,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
 
       Assert.That (command, Is.TypeOf<UnregisterEndPointsCommand> ());
-      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (RelationEndPointManagerTestHelper.GetRegistrationAgent (_relationEndPointManager)));
+      Assert.That (((UnregisterEndPointsCommand) command).RegistrationAgent, Is.SameAs (_relationEndPointManager.RegistrationAgent));
+      Assert.That (((UnregisterEndPointsCommand) command).Map, Is.SameAs (_relationEndPointManager.RelationEndPoints));
       Assert.That (((UnregisterEndPointsCommand) command).EndPoints, Has.Member (unidirectionalEndPoint));
     }
 

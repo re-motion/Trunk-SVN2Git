@@ -7,7 +7,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public interface IRelationEndPointRegistrationAgent
   {
-    void RegisterEndPoint (IRelationEndPoint endPoint);
-    void UnregisterEndPoint (IRelationEndPoint endPoint);
+    void RegisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map);
+    void UnregisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map);
   }
 }
