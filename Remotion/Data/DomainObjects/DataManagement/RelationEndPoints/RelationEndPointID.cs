@@ -82,6 +82,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           cache => cache.GetMandatoryPropertyAccessorData (propertyAccessExpression));
     }
 
+    public static RelationEndPointID CreateOpposite (IRelationEndPointDefinition sourceEndPointDefinition, ObjectID oppositeObjectID)
+    {
+      ArgumentUtility.CheckNotNull ("sourceEndPointDefinition", sourceEndPointDefinition);
+
+      var oppositeEndPointDefinition = sourceEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+      if (oppositeEndPointDefinition.IsAnonymous)
+        throw new ArgumentException ("The end-point definition is not part of a bidirectional relation.", "sourceEndPointDefinition");
+
+      return Create (oppositeObjectID, oppositeEndPointDefinition);
+    }
+
     private static RelationEndPointID CreateViaPropertyAccessorData (
         ObjectID objectID, 
         string argumentName, 
@@ -99,7 +110,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       if (data.RelationEndPointDefinition == null)
       {
-        var message = string.Format ("The property '{0}' is not a relation property.", data.PropertyIdentifier);
+        var message = String.Format ("The property '{0}' is not a relation property.", data.PropertyIdentifier);
         throw new ArgumentException (message, argumentName);
       }
 
@@ -189,7 +200,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override string ToString ()
     {
-      return string.Format ("{0}/{1}", _objectID != null ? _objectID.ToString() : "null", Definition.PropertyName);
+      return String.Format ("{0}/{1}", _objectID != null ? _objectID.ToString() : "null", Definition.PropertyName);
     }
 
     private int CalculateHashCode ()

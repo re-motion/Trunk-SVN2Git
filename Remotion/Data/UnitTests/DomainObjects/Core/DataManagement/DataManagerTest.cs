@@ -1165,7 +1165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (oppositeEndPointID.ObjectID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
-      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      var oppositeEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
       oppositeEndPointMock.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointMock.Stub (stub => stub.ObjectID).Return (oppositeEndPointID.ObjectID);
       oppositeEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
@@ -1208,7 +1208,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       objectEndPointStub.Stub (stub => stub.OppositeObjectID).Return (oppositeEndPointID.ObjectID);
       RelationEndPointMapTestHelper.AddEndPoint ((RelationEndPointMap) _dataManager.RelationEndPointMap, objectEndPointStub);
 
-      var oppositeEndPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       oppositeEndPointStub.Stub (stub => stub.ID).Return (oppositeEndPointID);
       oppositeEndPointStub.Stub (stub => stub.ObjectID).Return (oppositeEndPointID.ObjectID);
       oppositeEndPointStub.Stub (stub => stub.IsDataComplete).Return (true);
@@ -1290,37 +1290,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result, Is.SameAs (_dataManager.GetRelationEndPointWithoutLoading (endPointID)));
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPointWithLazyLoad ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
-      var originatingEndPoint = (IRealObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
-      var oppositeEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var oppositeEndPoint = _dataManager.GetRelationEndPointWithoutLoading (oppositeEndPointID);
-      Assert.That (oppositeEndPoint, Is.Not.Null);
-
-      var result = _dataManager.GetOppositeVirtualEndPointWithLazyLoad (originatingEndPoint, oppositeEndPointID.ObjectID);
-
-      Assert.That (result, Is.SameAs (oppositeEndPoint));
-    }
-
-    [Test]
-    public void GetOppositeVirtualEndPointWithLazyLoad_NullEndPoint ()
-    {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      dataContainer.SetDomainObject (DomainObjectMother.CreateFakeObject<OrderTicket> (dataContainer.ID));
-      _dataManager.RegisterDataContainer (dataContainer);
-
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Order");
-      var originatingEndPoint = (IRealObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (originatingEndPoint.OppositeObjectID, Is.Null);
-
-      var result = _dataManager.GetOppositeVirtualEndPointWithLazyLoad (originatingEndPoint, null);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (NullVirtualObjectEndPoint)));
     }
 
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)

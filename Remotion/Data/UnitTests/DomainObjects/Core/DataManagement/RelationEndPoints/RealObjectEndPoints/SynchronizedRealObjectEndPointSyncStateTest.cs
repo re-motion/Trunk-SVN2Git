@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
@@ -114,11 +113,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oldOppositeEndPointStub = MockRepository.GenerateStrictMock<IVirtualEndPoint>();
       var newOppositeEndPointStub = MockRepository.GenerateStrictMock<IVirtualEndPoint> ();
 
+      var oldOppositeEndPointID = RelationEndPointID.CreateOpposite (realDefinition, DomainObjectIDs.Order1);
+      var newOppositeEndPointID = RelationEndPointID.CreateOpposite (realDefinition, null);
+
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, DomainObjectIDs.Order1))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldOppositeEndPointID))
           .Return (oldOppositeEndPointStub);
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, null))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (newOppositeEndPointID))
           .Return (newOppositeEndPointStub);
 
       var command = _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
@@ -216,11 +218,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oldOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       var newOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
 
+      var oldOppositeEndPointID = RelationEndPointID.CreateOpposite (_orderOrderTicketEndPointDefinition, oldRelatedObject.ID);
+      var newOppositeEndPointID = RelationEndPointID.CreateOpposite (_orderOrderTicketEndPointDefinition, newRelatedObject.ID);
+
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, oldRelatedObject.ID))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldOppositeEndPointID))
           .Return (oldOppositeEndPointStub);
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, newRelatedObject.ID))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (newOppositeEndPointID))
           .Return (newOppositeEndPointStub);
 
       var command = _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
@@ -256,11 +261,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oldOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       var newOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
 
+      var oldOppositeEndPointID = RelationEndPointID.CreateOpposite (_orderCustomerEndPointDefinition, oldRelatedObject.ID);
+      var newOppositeEndPointID = RelationEndPointID.CreateOpposite (_orderCustomerEndPointDefinition, newRelatedObject.ID);
+
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, oldRelatedObject.ID))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldOppositeEndPointID))
           .Return (oldOppositeEndPointStub);
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPointMock, newRelatedObject.ID))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (newOppositeEndPointID))
           .Return (newOppositeEndPointStub);
 
       var command = _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);

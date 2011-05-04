@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader, IRelationEndPointProvider
+  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionEventSink;
@@ -319,9 +319,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
 
-      var oppositeEndPoint = _relationEndPointMap.GetOppositeEndPointWithLazyLoad (objectEndPoint, objectEndPoint.OppositeObjectID);
-      if (oppositeEndPoint.ObjectID == null)
+      if (objectEndPoint.OppositeObjectID == null)
         throw new InvalidOperationException ("The end-point's opposite object is null, so no opposite end-point can be loaded.");
+
+      var oppositeID = RelationEndPointID.CreateOpposite (objectEndPoint.Definition, objectEndPoint.OppositeObjectID);
+      var oppositeEndPoint = (IVirtualEndPoint) GetRelationEndPointWithLazyLoad (oppositeID);
+      
       if (oppositeEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The opposite end-point has already been loaded.");
 
@@ -344,12 +347,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       return _relationEndPointMap.GetRelationEndPointWithMinimumLoading (endPointID);
-    }
-
-    public IVirtualEndPoint GetOppositeVirtualEndPointWithLazyLoad (IRealObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
-      return (IVirtualEndPoint) _relationEndPointMap.GetOppositeEndPointWithLazyLoad (objectEndPoint, oppositeObjectID);
     }
 
     private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)

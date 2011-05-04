@@ -137,7 +137,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override void Synchronize ()
     {
-      var oppositeEndPoint = EndPointProvider.GetOppositeVirtualEndPointWithLazyLoad (this, OppositeObjectID);
+      var oppositeID = RelationEndPointID.CreateOpposite (Definition, OppositeObjectID);
+      var oppositeEndPoint = (IVirtualEndPoint) EndPointProvider.GetRelationEndPointWithLazyLoad (oppositeID);
       _syncState.Synchronize (this, oppositeEndPoint);
     }
 

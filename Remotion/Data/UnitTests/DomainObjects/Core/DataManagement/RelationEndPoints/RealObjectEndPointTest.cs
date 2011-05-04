@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -283,8 +284,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Synchronize ()
     {
       var oppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      var oppositeEndPointID = RelationEndPointID.Create (_endPoint.OppositeObjectID, _endPointID.Definition.GetOppositeEndPointDefinition());
       _endPointProviderStub
-          .Stub (stub => stub.GetOppositeVirtualEndPointWithLazyLoad (_endPoint, _endPoint.OppositeObjectID))
+          .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oppositeEndPointID))
           .Return (oppositeEndPointStub);
 
       _syncStateMock

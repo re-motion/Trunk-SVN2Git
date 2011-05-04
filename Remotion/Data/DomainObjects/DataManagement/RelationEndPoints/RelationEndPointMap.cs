@@ -292,24 +292,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _relationEndPoints.RemoveEndPoint (endPointID);
     }
 
-    public IRelationEndPoint GetOppositeEndPointWithLazyLoad (IObjectEndPoint objectEndPoint, ObjectID oppositeObjectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
-
-      if (_relationEndPoints[objectEndPoint.ID] != objectEndPoint)
-        throw new ArgumentException ("The end-point is not registered in this map.", "objectEndPoint");
-
-      var oppositeEndPointDefinition = objectEndPoint.Definition.GetMandatoryOppositeEndPointDefinition();
-      if (oppositeEndPointDefinition.IsAnonymous)
-        throw new ArgumentException ("The end-point is not part of a bidirectional relation.", "objectEndPoint");
-
-      if (oppositeObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, oppositeEndPointDefinition);
-
-      var oppositeEndPointID = RelationEndPointID.Create (oppositeObjectID, oppositeEndPointDefinition);
-      return GetRelationEndPointWithLazyLoad (oppositeEndPointID);
-    }
-
     private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
       return (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID) ?? RegisterVirtualEndPoint (endPointID);

@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -147,6 +146,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
       RelationEndPointID.Create (instance, o => o.OrderNumber);
+    }
+
+    [Test]
+    public void CreateOpposite ()
+    {
+      var sourceEndPointDefinition =
+          Configuration.GetTypeDefinition (typeof (OrderItem)).GetRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
+      
+      var endPointID = RelationEndPointID.CreateOpposite (sourceEndPointDefinition, DomainObjectIDs.Order1);
+
+      Assert.That (endPointID, Is.EqualTo (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems")));
+    }
+
+    [Test]
+    public void CreateOpposite_Null ()
+    {
+      var sourceEndPointDefinition =
+          Configuration.GetTypeDefinition (typeof (OrderItem)).GetRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
+
+      var endPointID = RelationEndPointID.CreateOpposite (sourceEndPointDefinition, null);
+
+      var expected = RelationEndPointID.Create (
+          null, 
+          Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems"));
+      Assert.That (endPointID, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void CreateOpposite_Unidirectional ()
+    {
+      var sourceEndPointDefinition =
+          Configuration.GetTypeDefinition (typeof (Location)).GetRelationEndPointDefinition (typeof (Location).FullName + ".Client");
+
+      Assert.That (
+          () => RelationEndPointID.CreateOpposite (sourceEndPointDefinition, null),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The end-point definition is not part of a bidirectional relation.\r\nParameter name: sourceEndPointDefinition"));
     }
 
     [Test]

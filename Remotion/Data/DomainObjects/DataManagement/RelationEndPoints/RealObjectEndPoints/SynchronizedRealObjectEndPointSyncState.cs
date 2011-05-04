@@ -65,8 +65,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
 
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {
-        var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
-        var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, null);
+        var oldRelatedEndPoint = GetOppositeEndPoint (endPoint, endPoint.OppositeObjectID);
+        var newRelatedEndPoint = GetOppositeEndPoint (endPoint, null);
         return new RealObjectEndPointRegistrationCommandDecorator (objectEndPointDeleteCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);
       }
       else
@@ -92,10 +92,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
         var setCommand = oppositeEndPointDefinition.Cardinality == CardinalityType.One
                              ? (IDataManagementCommand) new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectSetter)
                              : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectSetter, _endPointProvider);
-        var oldRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, endPoint.OppositeObjectID);
-        var newRelatedEndPoint = _endPointProvider.GetOppositeVirtualEndPointWithLazyLoad (endPoint, newRelatedObjectID);
+
+        var oldRelatedEndPoint = GetOppositeEndPoint (endPoint, endPoint.OppositeObjectID);
+        var newRelatedEndPoint = GetOppositeEndPoint (endPoint, newRelatedObjectID);
         return new RealObjectEndPointRegistrationCommandDecorator (setCommand, endPoint, oldRelatedEndPoint, newRelatedEndPoint);
       }
+    }
+
+    private IVirtualEndPoint GetOppositeEndPoint (IRealObjectEndPoint sourceEndPoint, ObjectID oppositeObjectID)
+    {
+      var newOppositeID = RelationEndPointID.CreateOpposite (sourceEndPoint.Definition, oppositeObjectID);
+      return (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithLazyLoad (newOppositeID);
     }
 
     #region Serialization
