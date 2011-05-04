@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public IncompleteVirtualObjectEndPointLoadState (
         IVirtualObjectEndPointDataKeeper dataKeeper,
-        IRelationEndPointLazyLoader lazyLoader,
+        ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
         : base (
             CreateEndPointSequence (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoint), lazyLoader, dataKeeperFactory)

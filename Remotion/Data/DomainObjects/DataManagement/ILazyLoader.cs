@@ -14,11 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+
+namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public interface IRelationEndPointLazyLoader
+  /// <summary>
+  /// Provides an interface for classes implementing lazy loading of data. These methods must only be called for data that has not been loaded yet.
+  /// </summary>
+  public interface ILazyLoader
   {
     void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint);
     void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint);
+    DataContainer LoadLazyDataContainer (ObjectID objectID);
   }
 }

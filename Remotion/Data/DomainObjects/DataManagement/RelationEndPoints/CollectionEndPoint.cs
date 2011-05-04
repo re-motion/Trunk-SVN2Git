@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
     
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        IRelationEndPointLazyLoader lazyLoader,
+        ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public ILazyLoader LazyLoader
     {
       get { return _lazyLoader; }
     }
@@ -336,7 +336,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader>();
+      _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();

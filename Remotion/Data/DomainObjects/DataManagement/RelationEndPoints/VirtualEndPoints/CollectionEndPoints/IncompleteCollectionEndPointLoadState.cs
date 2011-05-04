@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   {
     public IncompleteCollectionEndPointLoadState (
         ICollectionEndPointDataKeeper dataKeeper, 
-        IRelationEndPointLazyLoader lazyLoader, 
+        ILazyLoader lazyLoader, 
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
       : base (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoints, lazyLoader, dataKeeperFactory)
     {

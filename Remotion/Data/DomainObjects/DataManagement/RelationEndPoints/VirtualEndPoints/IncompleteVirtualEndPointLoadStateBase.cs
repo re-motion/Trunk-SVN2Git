@@ -25,13 +25,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return s_log; }
     }
 
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<TDataKeeper> _dataKeeperFactory;
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints;
 
     protected IncompleteVirtualEndPointLoadStateBase (
         IEnumerable<IRealObjectEndPoint> originalOppositeEndPoints,
-        IRelationEndPointLazyLoader lazyLoader,
+        ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<TDataKeeper> dataKeeperFactory)
     {
       ArgumentUtility.CheckNotNull ("originalOppositeEndPoints", originalOppositeEndPoints);
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _originalOppositeEndPoints.Values; }
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public ILazyLoader LazyLoader
     {
       get { return _lazyLoader; }
     }
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     protected IncompleteVirtualEndPointLoadStateBase (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
+      _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
 
       var realObjectEndPoints = new List<IRealObjectEndPoint>();
       info.FillCollection (realObjectEndPoints);

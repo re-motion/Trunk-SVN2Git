@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualObjectEndPoint
   {
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
 
     private IVirtualObjectEndPointLoadState _loadState;
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public VirtualObjectEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        IRelationEndPointLazyLoader lazyLoader,
+        ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
         : base (
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _hasBeenTouched = false;
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public ILazyLoader LazyLoader
     {
       get { return _lazyLoader; }
     }
@@ -227,7 +227,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected VirtualObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _lazyLoader = info.GetValueForHandle<IRelationEndPointLazyLoader> ();
+      _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
 

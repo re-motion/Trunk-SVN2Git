@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableRelationEndPointLazyLoaderFake : IRelationEndPointLazyLoader
+  public class SerializableLazyLoaderFake : ILazyLoader
   {
     public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
     {
@@ -33,12 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public void LoadLazyVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void LoadOppositeVirtualEndPoint (IRealObjectEndPoint objectEndPoint)
+    public DataContainer LoadLazyDataContainer (ObjectID objectID)
     {
       throw new NotImplementedException();
     }

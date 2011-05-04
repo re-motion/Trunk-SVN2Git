@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private Order _order1; // Customer1
     private Order _order2; // Customer3
     
-    private IRelationEndPointLazyLoader _lazyLoaderMock;
+    private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
 
     private ICollectionEndPointLoadState _loadStateMock;
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _lazyLoaderMock = MockRepository.GenerateMock<IRelationEndPointLazyLoader> ();
+      _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointWithLoadStateMock = new CollectionEndPoint (
           ClientTransactionMock,
           _customerEndPointID,
-          MockRepository.GenerateStub<IRelationEndPointLazyLoader> (),
+          MockRepository.GenerateStub<ILazyLoader> (),
           _endPointProviderStub,
           new CollectionEndPointDataKeeperFactory (ClientTransactionMock, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (_endPointWithLoadStateMock, "_loadState", _loadStateMock);
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Initialize ()
     {
-      var lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
+      var lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
@@ -827,9 +827,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointWithLoadStateMock.CheckMandatory ();
     }
 
-    private IRelationEndPointLazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)
+    private ILazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)
     {
-      return (IRelationEndPointLazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
+      return (ILazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
     }
 
     private void AssertDidNotLoadData ()

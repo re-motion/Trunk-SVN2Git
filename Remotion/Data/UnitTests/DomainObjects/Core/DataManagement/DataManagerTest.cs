@@ -1152,6 +1152,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void LoadLazyDataContainer ()
+    {
+      var fakeObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fakeDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      fakeDataContainer.SetDomainObject (fakeObject);
+
+      _objectLoaderMock
+          .Expect (mock => mock.LoadObject (DomainObjectIDs.Order1, _dataManagerWitLoaderMock))
+          .Return (fakeObject)
+          .WhenCalled (mi => _dataManagerWitLoaderMock.RegisterDataContainer (fakeDataContainer));
+      _objectLoaderMock.Replay();
+
+      var result = _dataManagerWitLoaderMock.LoadLazyDataContainer (DomainObjectIDs.Order1);
+
+      _objectLoaderMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeDataContainer));
+    }
+
+    [Test]
+    public void LoadLazyDataContainer_AlreadyLoaded ()
+    {
+      var fakeObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fakeDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      fakeDataContainer.SetDomainObject (fakeObject);
+      _dataManagerWitLoaderMock.RegisterDataContainer (fakeDataContainer);
+
+      _objectLoaderMock.Replay();
+
+      Assert.That (
+          () => _dataManagerWitLoaderMock.LoadLazyDataContainer (DomainObjectIDs.Order1),
+          Throws.InvalidOperationException.With.Message.EquivalentTo (
+              "The given DataContainer cannot be loaded, its data is already available."));
+    }
+
+    [Test]
     public void GetRelationEndPointWithLazyLoad ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");

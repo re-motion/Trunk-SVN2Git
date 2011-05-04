@@ -241,7 +241,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointDataKeeperFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRealObjectEndPointFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointLazyLoaderFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLazyLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\CollectionEndPointTestHelper.cs" />

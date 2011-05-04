@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private RelationEndPointID _endPointID;
 
-    private IRelationEndPointLazyLoader _lazyLoaderStub;
+    private ILazyLoader _lazyLoaderStub;
     private IRelationEndPointProvider _endPointProviderStub;
     private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
     private IVirtualObjectEndPointLoadState _loadStateMock;
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
     
-      _lazyLoaderStub = MockRepository.GenerateStub<IRelationEndPointLazyLoader> ();
+      _lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (ClientTransactionMock);
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();

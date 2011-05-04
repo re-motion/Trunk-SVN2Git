@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     }
 
     private readonly ClientTransaction _clientTransaction;
-    private readonly IRelationEndPointLazyLoader _lazyLoader;
+    private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public RelationEndPointMap (
         ClientTransaction clientTransaction,
-        IRelationEndPointLazyLoader lazyLoader,
+        ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory,
         IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory)
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _clientTransaction; }
     }
 
-    public IRelationEndPointLazyLoader LazyLoader
+    public ILazyLoader LazyLoader
     {
       get { return _lazyLoader; }
     }
@@ -257,14 +257,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
       if (existingEndPoint != null)
+      {
         return existingEndPoint;
+      }
       else if (endPointID.Definition.IsVirtual)
+      {
         return GetVirtualEndPointOrRegisterEmpty (endPointID);
+      }
       else
       {
-        // TODO 3647: _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
-
-        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID);
+        _lazyLoader.LoadLazyDataContainer (endPointID.ObjectID); // will trigger indirect call to RegisterEndPointsForDataContainer
         return Assertion.IsNotNull (_relationEndPoints[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
       }
     }
@@ -391,7 +393,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
         : this (
             info.GetValueForHandle<ClientTransaction>(),
-            info.GetValueForHandle<IRelationEndPointLazyLoader>(),
+            info.GetValueForHandle<ILazyLoader>(),
             info.GetValueForHandle<IRelationEndPointProvider>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())

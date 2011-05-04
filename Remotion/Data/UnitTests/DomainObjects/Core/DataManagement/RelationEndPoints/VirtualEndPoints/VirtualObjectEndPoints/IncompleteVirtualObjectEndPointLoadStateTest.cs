@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _endPointID;
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
 
-    private IRelationEndPointLazyLoader _lazyLoaderMock;
+    private ILazyLoader _lazyLoaderMock;
     private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
 
     private IncompleteVirtualObjectEndPointLoadState _loadState;
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       _virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
     
-      _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader> ();
+      _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader> ();
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
 
       var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void FlattenedSerializable ()
     {
       var dataKeeper = new SerializableVirtualObjectEndPointDataKeeperFake ();
-      var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
+      var lazyLoader = new SerializableLazyLoaderFake ();
       var dataKeeperFactory = new SerializableVirtualObjectEndPointDataKeeperFactoryFake ();
 
       var state = new IncompleteVirtualObjectEndPointLoadState (dataKeeper, lazyLoader, dataKeeperFactory);

@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, IRelationEndPointLazyLoader
+  public class DataManager : ISerializable, IDeserializationCallback, IDataManager, ILazyLoader
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionListener _transactionEventSink;
@@ -263,14 +263,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var dataContainer = GetDataContainerWithoutLoading (objectID);
-      if (dataContainer == null)
-      {
-        _objectLoader.LoadObject (objectID, this);
-        dataContainer = GetDataContainerWithoutLoading (objectID);
-        Assertion.IsNotNull (dataContainer);
-      }
-
-      return dataContainer;
+      return dataContainer ?? LoadLazyDataContainer (objectID);
     }
 
     public DataContainer GetDataContainerWithoutLoading (ObjectID id)
@@ -312,6 +305,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).
       if (!virtualObjectEndPoint.IsDataComplete)
         virtualObjectEndPoint.MarkDataComplete (domainObject);
+    }
+
+    public DataContainer LoadLazyDataContainer (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (_dataContainerMap[objectID] != null)
+        throw new InvalidOperationException ("The given DataContainer cannot be loaded, its data is already available.");
+
+      _objectLoader.LoadObject (objectID, this);
+
+      var dataContainer = _dataContainerMap[objectID];
+      Assertion.IsNotNull (dataContainer);
+      return dataContainer;
     }
 
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class IncompleteVirtualEndPointLoadStateBaseTest : StandardMappingTest
   {
     private IVirtualEndPoint<object> _virtualEndPointMock;
-    private IRelationEndPointLazyLoader _lazyLoaderMock;
+    private ILazyLoader _lazyLoaderMock;
     private IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> _dataKeeperFactoryStub;
 
     private TestableIncompleteVirtualEndPointLoadState _loadState;
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
 
       _virtualEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint<object>>();
-      _lazyLoaderMock = MockRepository.GenerateStrictMock<IRelationEndPointLazyLoader>();
+      _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader>();
 
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper>>();
 
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var lazyLoader = new SerializableRelationEndPointLazyLoaderFake ();
+      var lazyLoader = new SerializableLazyLoaderFake ();
       var dataKeeperFactory = new SerializableVirtualEndPointDataKeeperFactoryFake();
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (

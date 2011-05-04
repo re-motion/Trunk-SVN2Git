@@ -203,7 +203,7 @@
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointDeleteCommand.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRealObjectEndPoint.cs" />
-    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointLazyLoader.cs" />
+    <Compile Include="DataManagement\ILazyLoader.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\NullVirtualObjectEndPoint.cs" />
