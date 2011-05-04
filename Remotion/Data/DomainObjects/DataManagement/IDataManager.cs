@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Provides an interface for classes managing the data inside a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IDataManager
+  public interface IDataManager : IRelationEndPointProvider
   {
     IDataContainerMapReadOnlyView DataContainerMap { get; }
     IRelationEndPointMapReadOnlyView RelationEndPointMap { get; }

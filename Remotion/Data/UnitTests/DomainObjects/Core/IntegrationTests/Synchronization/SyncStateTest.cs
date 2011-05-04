@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var endPointID = RelationEndPointID.Create (orderItem, oi => oi.Order);
-      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var orderItemID = DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (order.ID, (oi, o) => oi.Order = o);
       var orderItem = OrderItem.GetObject (orderItemID);
       var endPointID = RelationEndPointID.Create (orderItem, oi => oi.Order);
-      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (endPoint), Is.TypeOf (typeof (UnsynchronizedRealObjectEndPointSyncState)));

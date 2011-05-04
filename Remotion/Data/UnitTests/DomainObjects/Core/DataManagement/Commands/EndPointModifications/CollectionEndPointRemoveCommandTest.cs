@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects ()
     {
       var removedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_removedRelatedObject.ID, "Customer");
-      var removedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[removedEndPointID];
+      var removedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (removedEndPointID);
       Assert.That (removedEndPoint, Is.Not.Null);
 
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (removedEndPoint.ID)).Return (removedEndPoint);

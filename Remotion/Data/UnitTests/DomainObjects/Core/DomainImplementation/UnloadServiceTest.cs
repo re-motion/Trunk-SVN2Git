@@ -44,36 +44,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPoint_CollectionEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
     public void UnloadCollectionEndPoint_VirtualObjectEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_virtualObjectEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID].IsDataComplete, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID).IsDataComplete, Is.True);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _virtualObjectEndPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
     public void UnloadCollectionEndPoint_NotLoadedYet ()
     {
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
     }
 
     [Test]
@@ -81,13 +81,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
@@ -111,8 +111,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orders = Customer.GetObject (_collectionEndPointID.ObjectID).Orders;
       orders.Clear ();
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
     }
@@ -127,13 +127,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       EnsureEndPointLoadedAndComplete (subDataManager,_collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
 
       UnloadService.UnloadVirtualEndPoint (subTransaction, _collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
@@ -146,41 +146,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       EnsureEndPointLoadedAndComplete (subDataManager, _collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
 
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
     public void TryUnloadCollectionEndPoint_CollectionEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
       Assert.That (result, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
     public void TryUnloadCollectionEndPoint_VirtualObject ()
     {
       EnsureEndPointLoadedAndComplete (_virtualObjectEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID].IsDataComplete, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID).IsDataComplete, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (ClientTransactionMock, _virtualObjectEndPointID);
 
       Assert.That (result, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_virtualObjectEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
@@ -188,14 +188,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
       Assert.That (result, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
@@ -204,15 +204,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orders = Customer.GetObject (_collectionEndPointID.ObjectID).Orders;
       orders.Clear ();
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
       Assert.That (result, Is.False);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
     }
 
     [Test]
@@ -225,14 +225,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       EnsureEndPointLoadedAndComplete (subDataManager, _collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (ClientTransactionMock, _collectionEndPointID);
 
       Assert.That (result, Is.True);
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
     }
 
     [Test]
@@ -247,18 +247,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       EnsureEndPointLoadedAndComplete (subDataManager, _collectionEndPointID);
 
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (subTransaction, _collectionEndPointID);
 
       Assert.That (result, Is.False);
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].IsDataComplete, Is.True);
-      Assert.That (subDataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.False);
-      Assert.That (parentDataManager.RelationEndPointMap[_collectionEndPointID].HasChanged, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.False);
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
     }
 
     [Test]
@@ -427,13 +427,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_DoesNothing_IfEndPointNotLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
     }
 
     [Test]
@@ -601,14 +601,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void TryUnloadCollectionEndPointAndData_Success_IfEndPointNotLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       var result = UnloadService.TryUnloadCollectionEndPointAndData (ClientTransactionMock, endPointID);
 
       Assert.That (result, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
     }
 
     [Test]
@@ -728,8 +728,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     private void EnsureEndPointLoadedAndComplete (IDataManager dataManager, RelationEndPointID endPointID)
     {
       dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-      Assert.That (dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
-      dataManager.RelationEndPointMap[endPointID].EnsureDataComplete();
+      Assert.That (dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
+      dataManager.GetRelationEndPointWithoutLoading (endPointID).EnsureDataComplete();
     }
   }
 }

@@ -41,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       base.SetUp();
 
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      _endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"))];
+      var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"));
+      _endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     [Test]

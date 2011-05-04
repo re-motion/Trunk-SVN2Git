@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      return transaction.DataManager.RelationEndPointMap[CreateRelationEndPointID (propertyAccessor)];
+      return transaction.DataManager.GetRelationEndPointWithoutLoading (CreateRelationEndPointID (propertyAccessor));
     }
 
     public bool HasChanged (PropertyAccessor propertyAccessor, ClientTransaction transaction)

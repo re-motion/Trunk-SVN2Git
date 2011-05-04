@@ -698,7 +698,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject ());
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID].HasChanged, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID).HasChanged, Is.True);
 
       UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1);
     }
@@ -1255,7 +1255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     private void CheckEndPointExists (DomainObject owningObject, string shortPropertyName, bool endPointShouldExist)
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
-      var endPoint = ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       if (endPointShouldExist)
         Assert.That (endPoint, Is.Not.Null, "End point '{0}' does not exist.", endPointID);
       else
@@ -1267,7 +1267,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckEndPointExists (owningObject, shortPropertyName, true);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
-      var endPoint = ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       if (shouldDataBeComplete)
         Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' should have complete data.", endPoint.ID);
       else

@@ -17,9 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -38,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       base.SetUp();
 
       Computer.GetObject (DomainObjectIDs.Computer1);
-      _endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"))];
+      var endPointID = RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
+      _endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     [Test]

@@ -117,18 +117,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var id1 = RelationEndPointID.Create(DomainObjectIDs.Order1, relationEndPointDefinition);
       var id2 = RelationEndPointID.Create(DomainObjectIDs.Order2, relationEndPointDefinition);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id1], Is.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id2], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Null);
 
       var result = ClientTransactionMock.QueryManager.GetCollection (ordersQuery);
       Assert.That (result.ToArray(), Is.EquivalentTo (new[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2)} ));
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id1], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id2], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1), Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2), Is.Not.Null);
 
-      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id1]).Collection,
+      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id1)).Collection,
           Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
-      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id2]).Collection,
+      Assert.That (((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id2)).Collection,
           Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
     }
 

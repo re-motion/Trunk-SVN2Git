@@ -544,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           _strictListenerMock
               .Expect (mock => mock.RelationEndPointMapUnregistering (ClientTransactionMock, orderTicketEndPointID));
           _strictListenerMock
-              .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, ClientTransactionMock.DataManager.RelationEndPointMap[orderTicketEndPointID]));
+              .Expect (mock => mock.RelationEndPointUnloading (ClientTransactionMock, ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (orderTicketEndPointID)));
           _strictListenerMock
               .Expect (mock => mock.DataContainerMapUnregistering (ClientTransactionMock, orderTicket1.InternalDataContainer));
         }

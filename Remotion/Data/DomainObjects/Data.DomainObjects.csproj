@@ -180,6 +180,7 @@
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualObjectEndPoint.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\NullRealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointMap2.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />

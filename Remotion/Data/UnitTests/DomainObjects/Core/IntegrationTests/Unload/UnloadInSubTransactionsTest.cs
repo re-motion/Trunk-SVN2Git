@@ -561,7 +561,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     private void CheckEndPointExists (ClientTransaction clientTransaction, DomainObject owningObject, string shortPropertyName, bool endPointShouldExist)
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
-      var endPoint = ClientTransactionTestHelper.GetDataManager (clientTransaction).RelationEndPointMap[endPointID];
+      var endPoint = ClientTransactionTestHelper.GetDataManager (clientTransaction).GetRelationEndPointWithoutLoading (endPointID);
       if (endPointShouldExist)
         Assert.That (endPoint, Is.Not.Null, "End point '{0}' does not exist.", endPointID);
       else
@@ -577,7 +577,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckEndPointExists (clientTransaction, owningObject, shortPropertyName, true);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
-      var endPoint = ClientTransactionTestHelper.GetDataManager (clientTransaction).RelationEndPointMap[endPointID];
+      var endPoint = ClientTransactionTestHelper.GetDataManager (clientTransaction).GetRelationEndPointWithoutLoading (endPointID);
       if (shouldDataBeComplete)
         Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' does not have any data.", endPoint.ID);
       else

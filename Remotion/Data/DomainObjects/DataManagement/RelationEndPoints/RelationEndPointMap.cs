@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       else if (endPointDefinition.IsVirtual)
         return new NullVirtualObjectEndPoint (clientTransaction, endPointDefinition);
       else
-        return new NullObjectEndPoint (clientTransaction, endPointDefinition);
+        return new NullRealObjectEndPoint (clientTransaction, endPointDefinition);
     }
 
     private readonly ClientTransaction _clientTransaction;
@@ -80,12 +80,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _relationEndPoints = new RelationEndPointMap2 (_clientTransaction);
       _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _relationEndPoints, _clientTransaction);
-    }
-
-    // TODO 3642: To method: GetRelationEndPointWithoutLoading
-    public IRelationEndPoint this[RelationEndPointID endPointID]
-    {
-      get { return _relationEndPoints[endPointID]; }
     }
 
     // TODO 3642: Remove
@@ -204,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
       {
-        var endPoint = this[endPointID];
+        var endPoint = GetRelationEndPointWithoutLoading (endPointID);
         if (endPoint != null)
         {
           loadedEndPoints.Add (endPoint);
@@ -242,45 +236,42 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       endPoint.MarkDataComplete (items);
     }
 
+    public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (endPointID.ObjectID == null)
+        return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
+
+      return _relationEndPoints[endPointID];
+    }
+
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       CheckNotAnonymous (endPointID, "GetRelationEndPointWithLazyLoad", "endPointID");
 
-      if (endPointID.ObjectID == null)
-        return CreateNullEndPoint(ClientTransaction, endPointID.Definition);
-
-      var existingEndPoint = this[endPointID];
+      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
       if (existingEndPoint != null)
-        return _relationEndPoints[endPointID];
+        return existingEndPoint;
 
-      if (endPointID.Definition.IsVirtual)
-      {
-        IVirtualEndPoint endPoint = RegisterVirtualEndPoint (endPointID);
-        endPoint.EnsureDataComplete();
-        return endPoint;
-      }
-      else
-      {
-        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
-        return Assertion.IsNotNull (this[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
-      }
+      var endPoint = GetRelationEndPointWithMinimumLoading (endPointID);
+      endPoint.EnsureDataComplete();
+      return endPoint;
     }
 
     public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)
     {
-      var existingEndPoint = this[endPointID];
+      var existingEndPoint = GetRelationEndPointWithoutLoading (endPointID);
       if (existingEndPoint != null)
         return existingEndPoint;
-      else if (endPointID.ObjectID == null)
-        return CreateNullEndPoint (_clientTransaction, endPointID.Definition);
       else if (endPointID.Definition.IsVirtual)
         return GetVirtualEndPointOrRegisterEmpty (endPointID);
       else
       {
         ClientTransaction.EnsureDataAvailable (endPointID.ObjectID);
-        return Assertion.IsNotNull (this[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
+        return Assertion.IsNotNull (_relationEndPoints[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
       }
     }
 
@@ -305,7 +296,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("objectEndPoint", objectEndPoint);
 
-      if (this[objectEndPoint.ID] != objectEndPoint)
+      if (_relationEndPoints[objectEndPoint.ID] != objectEndPoint)
         throw new ArgumentException ("The end-point is not registered in this map.", "objectEndPoint");
 
       var oppositeEndPointDefinition = objectEndPoint.Definition.GetMandatoryOppositeEndPointDefinition();
@@ -321,7 +312,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
-      return (IVirtualEndPoint) this[endPointID] ?? RegisterVirtualEndPoint (endPointID);
+      return (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID) ?? RegisterVirtualEndPoint (endPointID);
     }
 
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)

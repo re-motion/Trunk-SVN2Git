@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       return dataContainer.AssociatedRelationEndPointIDs
-          .Select (endPointID => _relationEndPointMap[endPointID])
+          .Select (GetRelationEndPointWithoutLoading)
           .Any (endPoint => endPoint != null && endPoint.HasChanged);
     }
 
@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         if (endPointID.Definition.IsMandatory)
         {
-          IRelationEndPoint endPoint = _relationEndPointMap[endPointID];
+          IRelationEndPoint endPoint = GetRelationEndPointWithoutLoading (endPointID);
           if (endPoint != null && endPoint.IsDataComplete)
             endPoint.CheckMandatory();
         }
@@ -237,7 +237,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       try
       {
         endPoints = (from endPointID in dataContainer.AssociatedRelationEndPointIDs
-                     let endPoint = _relationEndPointMap[endPointID]
+                     let endPoint = GetRelationEndPointWithoutLoading (endPointID)
                      where endPoint != null
                      select EnsureEndPointReferencesNothing (endPoint)).ToArray();
       }
@@ -288,7 +288,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
 
-      if (collectionEndPoint != _relationEndPointMap[collectionEndPoint.ID])
+      if (collectionEndPoint != GetRelationEndPointWithoutLoading (collectionEndPoint.ID))
         throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
 
       if (collectionEndPoint.IsDataComplete)
@@ -302,7 +302,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
 
-      if (virtualObjectEndPoint != _relationEndPointMap[virtualObjectEndPoint.ID])
+      if (virtualObjectEndPoint != GetRelationEndPointWithoutLoading (virtualObjectEndPoint.ID))
         throw new ArgumentException ("The given end-point is not managed by this DataManager.", "virtualObjectEndPoint");
 
       if (virtualObjectEndPoint.IsDataComplete)
@@ -337,7 +337,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return _relationEndPointMap[endPointID];
+      return _relationEndPointMap.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     public IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID)

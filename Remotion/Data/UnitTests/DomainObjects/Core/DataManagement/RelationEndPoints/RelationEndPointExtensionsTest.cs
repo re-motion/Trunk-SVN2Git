@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (customer);
 
       var oppositeID = RelationEndPointID.Create(customer.ID, endPoint.Definition.GetOppositeEndPointDefinition());
-      Assert.That (oppositeEndPoint, Is.SameAs (ClientTransactionMock.DataManager.RelationEndPointMap[oppositeID]));
+      Assert.That (oppositeEndPoint, Is.SameAs (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (oppositeID)));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (customer.ID);
 
       var oppositeID = RelationEndPointID.Create(customer.ID, endPoint.Definition.GetOppositeEndPointDefinition ());
-      Assert.That (oppositeEndPoint, Is.SameAs (ClientTransactionMock.DataManager.RelationEndPointMap[oppositeID]));
+      Assert.That (oppositeEndPoint, Is.SameAs (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (oppositeID)));
     }
 
     [Test]

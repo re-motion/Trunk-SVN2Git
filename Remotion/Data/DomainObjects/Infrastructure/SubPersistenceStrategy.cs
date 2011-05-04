@@ -294,7 +294,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       foreach (var endPoint in endPoints)
       {
-        var parentEndPoint = _parentTransaction.DataManager.RelationEndPointMap[endPoint.ID];
+        var parentEndPoint = _parentTransaction.DataManager.GetRelationEndPointWithoutLoading (endPoint.ID);
 
         // Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of both parent and child transaction now
         // contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known

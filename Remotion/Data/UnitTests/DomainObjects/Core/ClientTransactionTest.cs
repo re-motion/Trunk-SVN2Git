@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -484,22 +483,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void EnsureDataComplete_EndPoint_Virtual ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       _transaction.EnsureDataComplete (endPointID);
 
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataComplete_EndPoint_Real ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       _transaction.EnsureDataComplete (endPointID);
 
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
     }
 
     [Test]
@@ -508,10 +507,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
 
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
 
       _transaction.EnsureDataComplete (endPointID);
-      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
     }
 
     [Test]
@@ -520,7 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
       
-      var endPoint = (ICollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      var endPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
       endPoint.MarkDataIncomplete ();
       Assert.That (endPoint.IsDataComplete, Is.False);

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -227,7 +226,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
     private static IRelationEndPoint GetEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      var endPoint = clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       return endPoint != null && !endPoint.IsDataComplete ? null : endPoint;
     }
   }

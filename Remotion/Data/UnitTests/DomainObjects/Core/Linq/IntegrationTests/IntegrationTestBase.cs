@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Text;
@@ -81,9 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
               originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
 
-      var collectionEndPoint = (ICollectionEndPoint)
-                               ClientTransactionMock.DataManager.RelationEndPointMap[
-                                   RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition)];
+      var endPointID = RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition);
+      var collectionEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (collectionEndPoint, Is.Not.Null);
 
       var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (ClientTransactionMock, id, false)).ToArray ();
@@ -106,8 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
               longPropertyName);
 
-      var objectEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-                                                RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition)];
+      var endPointID = RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition);
+      var objectEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));
     }

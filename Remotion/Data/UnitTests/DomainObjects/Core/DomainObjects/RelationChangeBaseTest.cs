@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
 
       foreach (RelationEndPointID id in endPointsInvolved)
-        Assert.IsFalse (ClientTransactionMock.DataManager.RelationEndPointMap[id].HasBeenTouched, id + " before modification");
+        Assert.IsFalse (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " before modification");
 
       modification ();
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
 
       foreach (RelationEndPointID id in endPointsInvolved)
-        Assert.IsTrue (ClientTransactionMock.DataManager.RelationEndPointMap[id].HasBeenTouched, id + " after modification");
+        Assert.IsTrue (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " after modification");
     }
   }
 }

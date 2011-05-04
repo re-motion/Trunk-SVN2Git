@@ -297,7 +297,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         throw new ArgumentException (message, "endPointID");
       }
 
-      return (IVirtualEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      return (IVirtualEndPoint) clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     private static bool CanUnloadVirtualEndPoint (IVirtualEndPoint virtualEndPoint)

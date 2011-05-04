@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _domainObject = DomainObjectMother.CreateObjectInTransaction<Client> (ClientTransactionMock);
       _dataContainer = _domainObject.GetInternalDataContainerForTransaction (ClientTransactionMock);
       _propertyValue = _dataContainer.PropertyValues[0];
-      _relationEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap[_dataContainer.AssociatedRelationEndPointIDs[0]];
+      _relationEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_dataContainer.AssociatedRelationEndPointIDs[0]);
     }
 
     [Test]

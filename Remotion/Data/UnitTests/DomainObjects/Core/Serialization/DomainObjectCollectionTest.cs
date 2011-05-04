@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedCollection = deserializedCollectionAndTransaction.Item1;
       var deserializedTransaction = deserializedCollectionAndTransaction.Item2;
 
-      var deserializedEndPoint = deserializedTransaction.DataManager.RelationEndPointMap[endPointID];
+      var deserializedEndPoint = deserializedTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedCollection), Is.SameAs (deserializedEndPoint));
 
       var deserializedData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (deserializedCollection);

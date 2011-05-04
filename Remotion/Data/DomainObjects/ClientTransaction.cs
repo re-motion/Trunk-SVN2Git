@@ -684,7 +684,7 @@ public class ClientTransaction
       {
         // access source property via RelationEndPointMap, we don't want to load any objects and we don't want to raise any events
         var endPointID = RelationEndPointID.Create(domainObject.ID, property.PropertyData.RelationEndPointDefinition);
-        var sourceEndPoint = (ICollectionEndPoint) sourceTransaction.DataManager.RelationEndPointMap[endPointID];
+        var sourceEndPoint = (ICollectionEndPoint) sourceTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
         if (sourceEndPoint != null)
         {
           var sourceRelatedObjectCollection = sourceEndPoint.Collection;

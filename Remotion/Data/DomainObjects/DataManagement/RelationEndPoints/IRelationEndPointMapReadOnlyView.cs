@@ -8,17 +8,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public interface IRelationEndPointMapReadOnlyView : IEnumerable<IRelationEndPoint>
   {
     int Count { get; }
-    IRelationEndPoint this[RelationEndPointID endPointID] { get; }
 
     bool Contains (RelationEndPointID id);
 
+    IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID);
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);
+    IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID);
 
     DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted);
     DomainObject GetOriginalRelatedObject (RelationEndPointID endPointID);
     DomainObjectCollection GetRelatedObjects (RelationEndPointID endPointID);
     DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID endPointID);
     IRelationEndPoint GetOppositeEndPointWithLazyLoad (IObjectEndPoint objectEndPoint, ObjectID oppositeObjectID);
-    IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID);
   }
 }
