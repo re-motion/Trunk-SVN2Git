@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -84,12 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
-      _factoryStub
-        .Stub (mock => mock.GetCreateElement (_constraint1, _tableName))
-        .Return (_fakeElement1);
-      _factoryStub
-        .Stub (mock => mock.GetDropElement (_constraint1, _tableName))
-        .Return (_fakeElement2);
+      _factoryStub.Stub (mock => mock.GetCreateElement (_constraint1, _tableName)).Return (_fakeElement1);
+      _factoryStub.Stub (mock => mock.GetDropElement (_constraint1, _tableName)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
@@ -100,24 +95,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsAdded ()
     {
-      _factoryStub
-        .Stub (mock => mock.GetCreateElement (_constraint1, _tableName))
-        .Return (_fakeElement1);
-      _factoryStub
-        .Stub (mock => mock.GetDropElement (_constraint1, _tableName))
-        .Return (_fakeElement3);
-      _factoryStub
-        .Stub (mock => mock.GetCreateElement (_constraint2, _tableName))
-        .Return (_fakeElement2);
-      _factoryStub
-        .Stub (mock => mock.GetDropElement (_constraint2, _tableName))
-        .Return (_fakeElement2);
-      _factoryStub
-        .Stub (mock => mock.GetCreateElement (_constraint3, _tableName))
-        .Return (_fakeElement3);
-      _factoryStub
-        .Stub (mock => mock.GetDropElement (_constraint3, _tableName))
-        .Return (_fakeElement1);
+      _factoryStub.Stub (mock => mock.GetCreateElement (_constraint1, _tableName)).Return (_fakeElement1);
+      _factoryStub.Stub (mock => mock.GetDropElement (_constraint1, _tableName)).Return (_fakeElement3);
+      _factoryStub.Stub (mock => mock.GetCreateElement (_constraint2, _tableName)).Return (_fakeElement2);
+      _factoryStub.Stub (mock => mock.GetDropElement (_constraint2, _tableName)).Return (_fakeElement2);
+      _factoryStub.Stub (mock => mock.GetCreateElement (_constraint3, _tableName)).Return (_fakeElement3);
+      _factoryStub.Stub (mock => mock.GetDropElement (_constraint3, _tableName)).Return (_fakeElement1);
 
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
