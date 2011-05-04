@@ -27,8 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   [TestFixture]
   public class CompositeScriptBuilderTest : SchemaGenerationTestBase
   {
-    private IScriptBuilder2 _builder1Mock;
-    private IScriptBuilder2 _builder2Mock;
+    private IScriptBuilder _builder1Mock;
+    private IScriptBuilder _builder2Mock;
     private CompositeScriptBuilder _builder;
     private ScriptElementCollection _fakeResultCollection1;
     private ScriptElementCollection _fakeResultCollection2;
@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp ();
 
-      _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder2>();
-      _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder2>();
+      _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
+      _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
 
       _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, _builder1Mock, _builder2Mock);
 

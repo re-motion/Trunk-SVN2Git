@@ -232,7 +232,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IForeignKeyConstraintScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilder.cs" />
-    <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder2.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ISynonymScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ITableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IViewScriptElementFactory.cs" />

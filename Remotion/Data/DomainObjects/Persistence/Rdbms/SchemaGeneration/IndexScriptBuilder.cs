@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="IndexScriptBuilder"/> contains database-independent code to generate scripts to create and drop indexes in a relational database.
   /// </summary>
-  public class IndexScriptBuilder : IScriptBuilder2
+  public class IndexScriptBuilder : IScriptBuilder
   {
     private readonly IIndexScriptElementFactory _indexScriptElementFactory;
     private readonly ScriptElementCollection _createScriptElements;

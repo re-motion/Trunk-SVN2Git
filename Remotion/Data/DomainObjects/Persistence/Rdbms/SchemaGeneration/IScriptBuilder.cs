@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// Defines an interface for classes generating script files for several <see cref="IEntityDefinition"/>s.
   /// </summary>
-  public interface IScriptBuilder2
+  public interface IScriptBuilder
   {
     void AddEntityDefinition (IEntityDefinition entityDefinition);
     ScriptElementCollection GetCreateScript ();

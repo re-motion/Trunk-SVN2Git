@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <see cref="ForeignKeyConstraintScriptBuilder"/> contains database-independent code to generate scripts to create and drop foreign constraints in 
   /// a relational database.
   /// </summary>
-  public class ForeignKeyConstraintScriptBuilder : IScriptBuilder2
+  public class ForeignKeyConstraintScriptBuilder : IScriptBuilder
   {
     private readonly IForeignKeyConstraintScriptElementFactory _foreignKeyConstraintElementFactory;
     private readonly ScriptElementCollection _createScriptElements;

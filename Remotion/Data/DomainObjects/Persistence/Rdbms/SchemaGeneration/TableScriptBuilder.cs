@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="TableScriptBuilder"/> contains database-independent code to generate scripts to create and drop tables in a relational database.
   /// </summary>
-  public class TableScriptBuilder : IScriptBuilder2
+  public class TableScriptBuilder : IScriptBuilder
   {
     private readonly ITableScriptElementFactory _elementFactory;
     private readonly ScriptElementCollection _createScriptElements;

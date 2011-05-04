@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="SynonymScriptBuilder"/> contains database-independent code to generate scripts to create and drop synonyms in a relational database.
   /// </summary>
-  public class SynonymScriptBuilder : IScriptBuilder2
+  public class SynonymScriptBuilder : IScriptBuilder
   {
     private readonly ISynonymScriptElementFactory<TableDefinition> _tableViewElementFactory;
     private readonly ISynonymScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;

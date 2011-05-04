@@ -26,15 +26,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="CompositeScriptBuilder"/> contains database-independent code to generate database-scripts for a relational database.
   /// </summary>
-  public class CompositeScriptBuilder : IScriptBuilder2
+  public class CompositeScriptBuilder : IScriptBuilder
   {
     public const string DefaultSchema = "dbo";
 
-    private readonly IScriptBuilder2[] _scriptBuilders;
+    private readonly IScriptBuilder[] _scriptBuilders;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
     private readonly ISqlDialect _sqlDialect;
 
-    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder2[] scriptBuilders)
+    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder[] scriptBuilders)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _sqlDialect; }
     }
 
-    public IScriptBuilder2[] ScriptBuilders
+    public IScriptBuilder[] ScriptBuilders
     {
       get { return _scriptBuilders; }
     }

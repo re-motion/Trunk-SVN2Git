@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _scriptBuilderMock = MockRepository.GenerateStrictMock<CompositeScriptBuilder> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, new IScriptBuilder2[0]);
+      _scriptBuilderMock = MockRepository.GenerateStrictMock<CompositeScriptBuilder> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, new IScriptBuilder[0]);
       //_scriptBuilderMock.Stub (stub => stub.RdbmsProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
       _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
 

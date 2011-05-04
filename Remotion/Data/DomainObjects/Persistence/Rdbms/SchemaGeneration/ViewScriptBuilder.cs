@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="ViewScriptBuilder"/> contains database-independent code to generate scripts to create and drop views in a relational database.
   /// </summary>
-  public class ViewScriptBuilder : IScriptBuilder2
+  public class ViewScriptBuilder : IScriptBuilder
   {
     private readonly IViewScriptElementFactory<TableDefinition> _tableViewElementFactory;
     private readonly IViewScriptElementFactory<UnionViewDefinition> _unionViewElementFactory;
