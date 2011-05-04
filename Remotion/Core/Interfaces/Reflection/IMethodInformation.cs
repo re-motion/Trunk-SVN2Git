@@ -88,5 +88,7 @@ namespace Remotion.Reflection
     Delegate GetFastInvoker (Type delegateType);
 
     ParameterInfo[] GetParameters ();
+
+    IMethodInformation GetBaseDefinition ();
   }
 }

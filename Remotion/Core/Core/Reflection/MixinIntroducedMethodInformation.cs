@@ -103,6 +103,11 @@ namespace Remotion.Reflection
       return _mixinMethodInfo.GetParameters();
     }
 
+    public IMethodInformation GetBaseDefinition ()
+    {
+      return _mixinMethodInfo.GetBaseDefinition();
+    }
+
     public IPropertyInformation FindDeclaringProperty ()
     {
       return _mixinMethodInfo.FindDeclaringProperty ();

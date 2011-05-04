@@ -464,6 +464,32 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetBaseDefinition_NoBaseDefinition ()
+    {
+      var method = typeof (object).GetMethod ("GetType");
+      var adapter = new MethodInfoAdapter (method);
+
+      var result = adapter.GetBaseDefinition();
+
+      Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
+      Assert.That (((MethodInfoAdapter) result).MethodInfo, Is.SameAs (method));
+    }
+
+    [Test]
+    public void GetBaseDefinition_WithBaseDefinition ()
+    {
+      var method = typeof (DerivedClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar");
+      var adapter = new MethodInfoAdapter (method);
+
+      var result = adapter.GetBaseDefinition();
+
+      Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
+      Assert.That (
+          ((MethodInfoAdapter) result).MethodInfo,
+          Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar")));
+    }
+
+    [Test]
     public void Equals ()
     {
       Assert.That (_adapter.Equals (null), Is.False);
@@ -481,8 +507,8 @@ namespace Remotion.UnitTests.Reflection
           _adapter.GetHashCode(),
           Is.EqualTo (new MethodInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod")).GetHashCode()));
       Assert.That (
-          new MethodInfoAdapter (typeof (int[]).GetMethod ("ToString")).GetHashCode (),
-          Is.EqualTo (new MethodInfoAdapter (typeof (int[]).GetMethod ("ToString")).GetHashCode ()));
+          new MethodInfoAdapter (typeof (int[]).GetMethod ("ToString")).GetHashCode(),
+          Is.EqualTo (new MethodInfoAdapter (typeof (int[]).GetMethod ("ToString")).GetHashCode()));
     }
 
     [Test]

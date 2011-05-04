@@ -97,6 +97,11 @@ namespace Remotion.Reflection
       return _implementationMethodInfo.GetParameters();
     }
 
+    public IMethodInformation GetBaseDefinition ()
+    {
+      return _implementationMethodInfo.GetBaseDefinition();
+    }
+
     public IPropertyInformation FindDeclaringProperty ()
     {
       return _implementationMethodInfo.FindDeclaringProperty();

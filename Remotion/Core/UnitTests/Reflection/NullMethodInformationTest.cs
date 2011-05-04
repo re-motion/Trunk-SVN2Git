@@ -107,6 +107,12 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetBaseDefinition ()
+    {
+      Assert.That (_nullMethodInformation.GetBaseDefinition (), Is.Null);
+    }
+
+    [Test]
     public void TestEquals ()
     {
       var nullMethodInformation2 = new NullMethodInformation();

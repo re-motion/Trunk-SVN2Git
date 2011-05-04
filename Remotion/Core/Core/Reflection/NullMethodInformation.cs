@@ -98,6 +98,11 @@ namespace Remotion.Reflection
       return new ParameterInfo[0];
     }
 
+    public IMethodInformation GetBaseDefinition ()
+    {
+      return null;
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);

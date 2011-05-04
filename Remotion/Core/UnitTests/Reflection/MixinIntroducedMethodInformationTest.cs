@@ -158,6 +158,15 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
+    public void GetBaseDefinition ()
+    {
+      var objToReturn = new MethodInfoAdapter(typeof (string).GetMethod ("get_Length"));
+      _implementationMethodInformationStub.Stub (stub => stub.GetBaseDefinition ()).Return (objToReturn);
+
+      Assert.That (_mixinIntroducedMethodInformation.GetBaseDefinition (), Is.SameAs (objToReturn));
+    }
+
+    [Test]
     public void Equals ()
     {
       Assert.That (_mixinIntroducedMethodInformation.Equals (null), Is.False);

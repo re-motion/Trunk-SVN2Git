@@ -150,6 +150,11 @@ namespace Remotion.Reflection
       return _methodInfo.GetParameters();
     }
 
+    public IMethodInformation GetBaseDefinition ()
+    {
+      return new MethodInfoAdapter (_methodInfo.GetBaseDefinition());
+    }
+
     IMemberInformation IMemberInformation.FindInterfaceImplementation (Type implementationType)
     {
       return FindInterfaceImplementation (implementationType);
