@@ -101,7 +101,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var synonym in tableDefinition.Synonyms)
       {
         AddElements (
-            _tableViewElementFactory.GetCreateElement (tableDefinition, synonym), _tableViewElementFactory.GetDropElement (tableDefinition, synonym));
+            _tableViewElementFactory.GetCreateElement (tableDefinition, synonym), 
+            _tableViewElementFactory.GetDropElement (tableDefinition, synonym));
       }
     }
 
