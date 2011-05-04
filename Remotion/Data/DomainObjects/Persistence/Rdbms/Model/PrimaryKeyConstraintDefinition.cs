@@ -35,10 +35,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNullOrEmpty ("constraintName", constraintName);
       ArgumentUtility.CheckNotNull ("columns", columns);
-
+      //TODO RM-3975
+      var columnList = ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns.ToList());
+      
       _constraintName = constraintName;
       _isClustered = isClustered;
-      _columns = columns.ToList().AsReadOnly();
+      _columns = columnList.AsReadOnly();
     }
 
     public string ConstraintName

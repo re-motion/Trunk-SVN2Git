@@ -43,7 +43,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _scriptBuilders = scriptBuilders;
     }
 
-    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    public RdbmsProviderDefinition RdbmsProviderDefinition
+    {
+      get { return _rdbmsProviderDefinition; }
+    }
+
+    public ISqlDialect SqlDialect
+    {
+      get { return _sqlDialect; }
+    }
+
+    public IScriptBuilder2[] ScriptBuilders
+    {
+      get { return _scriptBuilders; }
+    }
+
+    public virtual void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
@@ -51,14 +66,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         scriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
-    public ScriptElementCollection GetCreateScript ()
+    public virtual ScriptElementCollection GetCreateScript ()
     {
       return GetFullScriptCollection (_scriptBuilders.Select (builder => builder.GetCreateScript ()));
     }
 
-    public ScriptElementCollection GetDropScript ()
+    public virtual ScriptElementCollection GetDropScript ()
     {
-      return GetFullScriptCollection (_scriptBuilders.Select (builder => builder.GetDropScript()));
+      return GetFullScriptCollection (_scriptBuilders.Reverse().Select (builder => builder.GetDropScript()));
     }
 
     private ScriptElementCollection GetFullScriptCollection (IEnumerable<ScriptElementCollection> elementCollection)

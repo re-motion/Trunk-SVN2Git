@@ -1,6 +1,4 @@
 USE SchemaGenerationTestDomain1
-GO
-
 -- Create all tables
 CREATE TABLE [dbo].[Address]
 (
@@ -13,7 +11,6 @@ CREATE TABLE [dbo].[Address]
   [Country] nvarchar (100) NOT NULL,
   CONSTRAINT [PK_Address] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[Ceo]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -24,7 +21,6 @@ CREATE TABLE [dbo].[Ceo]
   [CompanyIDClassID] varchar (100) NULL,
   CONSTRAINT [PK_Ceo] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[TableWithAllDataTypes]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -77,7 +73,6 @@ CREATE TABLE [dbo].[TableWithAllDataTypes]
   [NullableBinaryWithoutMaxLength] varbinary (max) NULL,
   CONSTRAINT [PK_TableWithAllDataTypes] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[TableWithoutProperties]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -85,7 +80,6 @@ CREATE TABLE [dbo].[TableWithoutProperties]
   [Timestamp] rowversion NOT NULL,
   CONSTRAINT [PK_TableWithoutProperties] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[TableWithRelations]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -95,7 +89,6 @@ CREATE TABLE [dbo].[TableWithRelations]
   [DerivedClassIDClassID] varchar (100) NULL,
   CONSTRAINT [PK_TableWithRelations] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[Customer]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -110,7 +103,6 @@ CREATE TABLE [dbo].[Customer]
   [LicenseCode] nvarchar (max) NULL,
   CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[AbstractClass]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -121,7 +113,6 @@ CREATE TABLE [dbo].[AbstractClass]
   [PropertyInDerivedConcreteClass] nvarchar (max) NULL,
   CONSTRAINT [PK_AbstractClass] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[ConcreteClass]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -138,7 +129,6 @@ CREATE TABLE [dbo].[ConcreteClass]
   [ClassWithRelationsInSecondDerivedClassIDClassID] varchar (100) NULL,
   CONSTRAINT [PK_ConcreteClass] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[DevelopmentPartner]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -153,7 +143,6 @@ CREATE TABLE [dbo].[DevelopmentPartner]
   [LicenseCode] nvarchar (max) NULL,
   CONSTRAINT [PK_DevelopmentPartner] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[Employee]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -163,7 +152,6 @@ CREATE TABLE [dbo].[Employee]
   [SupervisorID] uniqueidentifier NULL,
   CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[FirstClass]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -173,7 +161,6 @@ CREATE TABLE [dbo].[FirstClass]
   [ThirdClassID] uniqueidentifier NULL,
   CONSTRAINT [PK_FirstClass] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[Order]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -186,7 +173,6 @@ CREATE TABLE [dbo].[Order]
   [OfficialID] varchar (255) NULL,
   CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[OrderItem]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -197,7 +183,6 @@ CREATE TABLE [dbo].[OrderItem]
   [OrderID] uniqueidentifier NULL,
   CONSTRAINT [PK_OrderItem] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[SecondClass]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -205,7 +190,6 @@ CREATE TABLE [dbo].[SecondClass]
   [Timestamp] rowversion NOT NULL,
   CONSTRAINT [PK_SecondClass] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[SiblingOfTableWithRelations]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -214,7 +198,6 @@ CREATE TABLE [dbo].[SiblingOfTableWithRelations]
   [IntProperty] int NOT NULL,
   CONSTRAINT [PK_SiblingOfTableWithRelations] PRIMARY KEY CLUSTERED ([ID])
 )
-
 CREATE TABLE [dbo].[ThirdClass]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -223,36 +206,30 @@ CREATE TABLE [dbo].[ThirdClass]
   CONSTRAINT [PK_ThirdClass] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
-
--- Create constraints for tables that were created above
+-- Create foreign key constraints for tables that were created above
 ALTER TABLE [dbo].[TableWithRelations] ADD
   CONSTRAINT [FK_TableWithRelations_DerivedClassID] FOREIGN KEY ([DerivedClassID]) REFERENCES [dbo].[ConcreteClass] ([ID])
-
 ALTER TABLE [dbo].[Customer] ADD
   CONSTRAINT [FK_Customer_AddressID] FOREIGN KEY ([AddressID]) REFERENCES [dbo].[Address] ([ID])
-
 ALTER TABLE [dbo].[ConcreteClass] ADD
-  CONSTRAINT [FK_ConcreteClass_ClassWithRelationsInDerivedOfDerivedClassID] FOREIGN KEY ([ClassWithRelationsInDerivedOfDerivedClassID]) REFERENCES [dbo].[TableWithRelations] ([ID]),
+  CONSTRAINT [FK_ConcreteClass_ClassWithRelationsInDerivedOfDerivedClassID] FOREIGN KEY ([ClassWithRelationsInDerivedOfDerivedClassID]) REFERENCES [dbo].[TableWithRelations] ([ID])
+ALTER TABLE [dbo].[ConcreteClass] ADD
   CONSTRAINT [FK_ConcreteClass_ClassWithRelationsInSecondDerivedClassID] FOREIGN KEY ([ClassWithRelationsInSecondDerivedClassID]) REFERENCES [dbo].[TableWithRelations] ([ID])
-
 ALTER TABLE [dbo].[DevelopmentPartner] ADD
   CONSTRAINT [FK_DevelopmentPartner_AddressID] FOREIGN KEY ([AddressID]) REFERENCES [dbo].[Address] ([ID])
-
 ALTER TABLE [dbo].[Employee] ADD
   CONSTRAINT [FK_Employee_SupervisorID] FOREIGN KEY ([SupervisorID]) REFERENCES [dbo].[Employee] ([ID])
-
 ALTER TABLE [dbo].[FirstClass] ADD
-  CONSTRAINT [FK_FirstClass_SecondClassID] FOREIGN KEY ([SecondClassID]) REFERENCES [dbo].[SecondClass] ([ID]),
+  CONSTRAINT [FK_FirstClass_SecondClassID] FOREIGN KEY ([SecondClassID]) REFERENCES [dbo].[SecondClass] ([ID])
+ALTER TABLE [dbo].[FirstClass] ADD
   CONSTRAINT [FK_FirstClass_ThirdClassID] FOREIGN KEY ([ThirdClassID]) REFERENCES [dbo].[ThirdClass] ([ID])
-
 ALTER TABLE [dbo].[Order] ADD
   CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])
-
 ALTER TABLE [dbo].[OrderItem] ADD
   CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])
 GO
-
 -- Create a view for every class
+GO
 CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], NULL, NULL, NULL
@@ -261,35 +238,30 @@ CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNum
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], NULL, NULL, NULL, [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences]
     FROM [dbo].[DevelopmentPartner]
 GO
-
 CREATE VIEW [dbo].[AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country]
     FROM [dbo].[Address]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[CeoView] ([ID], [ClassID], [Timestamp], [Name], [CompanyID], [CompanyIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [CompanyID], [CompanyIDClassID]
     FROM [dbo].[Ceo]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[ClassWithAllDataTypesView] ([ID], [ClassID], [Timestamp], [Boolean], [Byte], [Date], [DateTime], [Decimal], [Double], [Enum], [ExtensibleEnum], [Guid], [Int16], [Int32], [Int64], [Single], [String], [StringWithoutMaxLength], [Binary], [BinaryWithoutMaxLength], [NaBoolean], [NaByte], [NaDate], [NaDateTime], [NaDecimal], [NaDouble], [NaEnum], [NaGuid], [NaInt16], [NaInt32], [NaInt64], [NaSingle], [StringWithNullValue], [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary], [NullableBinaryWithoutMaxLength])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Boolean], [Byte], [Date], [DateTime], [Decimal], [Double], [Enum], [ExtensibleEnum], [Guid], [Int16], [Int32], [Int64], [Single], [String], [StringWithoutMaxLength], [Binary], [BinaryWithoutMaxLength], [NaBoolean], [NaByte], [NaDate], [NaDateTime], [NaDecimal], [NaDouble], [NaEnum], [NaGuid], [NaInt16], [NaInt32], [NaInt64], [NaSingle], [StringWithNullValue], [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary], [NullableBinaryWithoutMaxLength]
     FROM [dbo].[TableWithAllDataTypes]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[ClassWithoutPropertiesView] ([ID], [ClassID], [Timestamp])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp]
     FROM [dbo].[TableWithoutProperties]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[ClassWithRelationsBaseView] ([ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID], [IntProperty])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID], NULL
@@ -298,28 +270,24 @@ CREATE VIEW [dbo].[ClassWithRelationsBaseView] ([ID], [ClassID], [Timestamp], [D
   SELECT [ID], [ClassID], [Timestamp], NULL, NULL, [IntProperty]
     FROM [dbo].[SiblingOfTableWithRelations]
 GO
-
 CREATE VIEW [dbo].[ClassWithRelationsView] ([ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [DerivedClassID], [DerivedClassIDClassID]
     FROM [dbo].[TableWithRelations]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode]
     FROM [dbo].[Customer]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[AbstractClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
     FROM [dbo].[AbstractClass]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[DerivedAbstractClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
@@ -327,7 +295,6 @@ CREATE VIEW [dbo].[DerivedAbstractClassView] ([ID], [ClassID], [Timestamp], [Pro
     WHERE [ClassID] IN ('DerivedAbstractClass', 'DerivedDerivedConcreteClass')
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[DerivedDerivedConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInAbstractClass], [PropertyInAbstractDerivedClass], [PropertyInDerivedConcreteClass]
@@ -335,14 +302,12 @@ CREATE VIEW [dbo].[DerivedDerivedConcreteClassView] ([ID], [ClassID], [Timestamp
     WHERE [ClassID] IN ('DerivedDerivedConcreteClass')
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[ConcreteClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID]
     FROM [dbo].[ConcreteClass]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID]
@@ -350,7 +315,6 @@ CREATE VIEW [dbo].[DerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInC
     WHERE [ClassID] IN ('DerivedClass', 'DerivedOfDerivedClass')
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[DerivedOfDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInDerivedClass], [PersistentProperty], [PropertyInDerivedOfDerivedClass], [ClassWithRelationsInDerivedOfDerivedClassID], [ClassWithRelationsInDerivedOfDerivedClassIDClassID]
@@ -358,56 +322,48 @@ CREATE VIEW [dbo].[DerivedOfDerivedClassView] ([ID], [ClassID], [Timestamp], [Pr
     WHERE [ClassID] IN ('DerivedOfDerivedClass')
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[PartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]
     FROM [dbo].[DevelopmentPartner]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[DevelopmentPartnerView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences], [LicenseCode]
     FROM [dbo].[DevelopmentPartner]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[EmployeeView] ([ID], [ClassID], [Timestamp], [Name], [SupervisorID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [SupervisorID]
     FROM [dbo].[Employee]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[FirstClassView] ([ID], [ClassID], [Timestamp], [SecondClassID], [ThirdClassID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [SecondClassID], [ThirdClassID]
     FROM [dbo].[FirstClass]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Number], [Priority], [CustomerID], [CustomerIDClassID], [OfficialID]
     FROM [dbo].[Order]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[OrderItemView] ([ID], [ClassID], [Timestamp], [Position], [Product], [OrderID])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Position], [Product], [OrderID]
     FROM [dbo].[OrderItem]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[SecondClassView] ([ID], [ClassID], [Timestamp])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp]
     FROM [dbo].[SecondClass]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[SecondDerivedClassView] ([ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID], [PersistentProperty])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyInConcreteClass], [PropertyInSecondDerivedClass], [ClassWithRelationsInSecondDerivedClassID], [ClassWithRelationsInSecondDerivedClassIDClassID], [PersistentProperty]
@@ -415,24 +371,19 @@ CREATE VIEW [dbo].[SecondDerivedClassView] ([ID], [ClassID], [Timestamp], [Prope
     WHERE [ClassID] IN ('SecondDerivedClass')
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[SiblingOfClassWithRelationsView] ([ID], [ClassID], [Timestamp], [IntProperty])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [IntProperty]
     FROM [dbo].[SiblingOfTableWithRelations]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[ThirdClassView] ([ID], [ClassID], [Timestamp])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp]
     FROM [dbo].[ThirdClass]
   WITH CHECK OPTION
 GO
-
 -- Create indexes for tables that were created above
 GO
-
 -- Create synonyms for tables that were created above
 GO
-

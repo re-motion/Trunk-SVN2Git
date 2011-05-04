@@ -75,7 +75,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
       _createScriptElements = new ScriptElementCollection();
+      _createScriptElements.AddElement (new ScriptStatement ("-- Create a view for every class"));
       _dropScriptElements = new ScriptElementCollection();
+      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all views"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

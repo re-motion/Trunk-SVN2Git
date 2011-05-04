@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  //TODO RM-3975 Drop
   /// <summary>
   /// Visits <see cref="IColumnDefinition"/> objects and generates a list of column names for the visited columns.
   /// </summary>

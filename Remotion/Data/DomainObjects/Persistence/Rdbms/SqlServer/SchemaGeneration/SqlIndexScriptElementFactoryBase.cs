@@ -61,10 +61,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
               cd => "[" + cd.Columnn.Name + "]" + (cd.IndexOrder.HasValue ? " " + cd.IndexOrder.ToString().ToUpper() : string.Empty)));
     }
 
+    //TODO RM-3975 NullChecks
     protected virtual string GetCreateIndexOptions (IEnumerable<string> optionItems)
     {
+      //optionItems.Except (new[] { string.Empty, null });
       var filteredItems = optionItems.Where (oi => !string.IsNullOrEmpty (oi)).ToList();
-      return filteredItems.Any() ? "\r\n  WITH (" + SeparatedStringBuilder.Build (", ", filteredItems) + ")" : string.Empty;
+      if (filteredItems.Any())
+        return "\r\n  WITH (" + SeparatedStringBuilder.Build (", ", filteredItems) + ")";
+      else
+        return string.Empty;
     }
 
     protected virtual IEnumerable<string> GetCreateIndexOptionItems (T indexDefinition)

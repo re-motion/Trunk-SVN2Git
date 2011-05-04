@@ -106,8 +106,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      Assert.That (_builder.GetCreateScript ().Elements, Is.Empty);
-      Assert.That (_builder.GetDropScript ().Elements, Is.Empty);
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
     }
 
     [Test]
@@ -118,8 +123,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
     }
 
     [Test]
@@ -132,9 +145,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
+
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
       
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1, _fakeElement2 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2, _fakeElement1 }));
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement1));
     }
 
     [Test]
@@ -145,8 +168,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
     }
 
     [Test]
@@ -160,8 +191,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1, _fakeElement2 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2, _fakeElement1 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement1));
     }
 
     [Test]
@@ -172,8 +213,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
     }
 
     [Test]
@@ -187,8 +236,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1, _fakeElement2 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement2, _fakeElement1 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement1));
     }
 
     [Test]
@@ -205,8 +264,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.EqualTo (new[] { _fakeElement1, _fakeElement2, _fakeElement3 }));
-      Assert.That (_builder.GetDropScript ().Elements, Is.EqualTo (new[] { _fakeElement3, _fakeElement2, _fakeElement1 }));
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (createScriptResult.Elements[3], Is.SameAs (_fakeElement3));
+
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (4));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement3));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (dropScriptResult.Elements[3], Is.SameAs (_fakeElement1));
     }
 
     [Test]
@@ -215,8 +286,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
-      Assert.That (_builder.GetCreateScript ().Elements, Is.Empty);
-      Assert.That (_builder.GetDropScript ().Elements, Is.Empty);
+      var createScriptResult = _builder.GetCreateScript ();
+      var dropScriptResult = _builder.GetDropScript ();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
     }
   }
 }

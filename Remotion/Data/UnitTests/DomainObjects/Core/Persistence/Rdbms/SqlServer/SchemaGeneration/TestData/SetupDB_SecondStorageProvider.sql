@@ -1,6 +1,4 @@
 USE SchemaGenerationTestDomain2
-GO
-
 -- Create all tables
 CREATE TABLE [dbo].[Official]
 (
@@ -14,18 +12,16 @@ CREATE TABLE [dbo].[Official]
   CONSTRAINT [PK_Official] PRIMARY KEY CLUSTERED ([ID])
 )
 GO
-
--- Create constraints for tables that were created above
+-- Create foreign key constraints for tables that were created above
 GO
-
 -- Create a view for every class
+GO
 CREATE VIEW [dbo].[OfficialView] ([ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality]
     FROM [dbo].[Official]
   WITH CHECK OPTION
 GO
-
 CREATE VIEW [dbo].[SpecialOfficialView] ([ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality])
   WITH SCHEMABINDING AS
   SELECT [ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality]
@@ -33,10 +29,7 @@ CREATE VIEW [dbo].[SpecialOfficialView] ([ID], [ClassID], [Timestamp], [Name], [
     WHERE [ClassID] IN ('SpecialOfficial')
   WITH CHECK OPTION
 GO
-
 -- Create indexes for tables that were created above
 GO
-
 -- Create synonyms for tables that were created above
 GO
-

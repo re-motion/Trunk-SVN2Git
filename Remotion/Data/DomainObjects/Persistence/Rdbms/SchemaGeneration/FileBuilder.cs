@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
@@ -98,10 +100,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath, fileName);
     }
 
-    private readonly Func<IScriptBuilder> _scriptBuilderFactory;
+    private readonly Func<CompositeScriptBuilder2> _scriptBuilderFactory;
     private readonly IEntityDefinitionProvider _entityDefinitionProvider;
 
-    public FileBuilder (Func<IScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+    public FileBuilder (Func<CompositeScriptBuilder2> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
       ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);
@@ -126,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
       // TODO Review 3932: Add a test showing that when GetScript is called twice, the _scriptBuilderFactory is also called twice.
-      var scriptBuilder =  _scriptBuilderFactory();
+      var scriptBuilder = _scriptBuilderFactory();
 
       var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
 
@@ -134,7 +136,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       foreach (var entityDefinition in entityDefintions)
         scriptBuilder.AddEntityDefinition (entityDefinition);
 
-      return new ScriptPair (scriptBuilder.GetCreateScript (), scriptBuilder.GetDropScript ());
+      var createScriptStatements = new List<ScriptStatement>();
+      var dropScriptStatements = new List<ScriptStatement>();
+      var createScriptCollection = scriptBuilder.GetCreateScript();
+      var dropScriptCollection = scriptBuilder.GetDropScript();
+
+      createScriptCollection.AppendToScript (createScriptStatements, scriptBuilder.SqlDialect);
+      dropScriptCollection.AppendToScript (dropScriptStatements, scriptBuilder.SqlDialect);
+
+      return new ScriptPair (
+          createScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString(),
+          dropScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString());
     }
 
     protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (

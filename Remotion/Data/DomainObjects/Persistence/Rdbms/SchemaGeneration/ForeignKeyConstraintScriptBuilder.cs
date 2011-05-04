@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
@@ -70,7 +69,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       _foreignKeyConstraintElementFactory = foreignKeyConstraintElementFactory;
       _createScriptElements = new ScriptElementCollection();
+      _createScriptElements.AddElement (new ScriptStatement ("-- Create foreign key constraints for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
+      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop foreign keys of all tables"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

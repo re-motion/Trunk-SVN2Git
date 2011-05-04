@@ -86,6 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _columns; }
     }
 
+    //TODO RM-3975 SimpleColumn
     public ReadOnlyCollection<IColumnDefinition> IncludedColumns
     {
       get { return _includedColumns; }

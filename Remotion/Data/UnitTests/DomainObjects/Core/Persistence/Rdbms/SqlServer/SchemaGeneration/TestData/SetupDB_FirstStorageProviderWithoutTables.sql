@@ -1,6 +1,4 @@
 USE SchemaGenerationTestDomain1
-GO
-
 -- Create all tables
 GO
 

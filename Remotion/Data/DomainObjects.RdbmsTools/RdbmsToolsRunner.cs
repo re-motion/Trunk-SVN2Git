@@ -130,16 +130,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
           _rdbmsToolsParameters.SchemaOutputDirectory,
           pd =>
-          new FileBuilder (
-              () => new CompositeScriptBuilder (
-                        pd,
-                        SqlDialect.Instance,
-                        new SqlTableScriptBuilder(),
-                        new SqlViewScriptBuilder(),
-                        new SqlConstraintScriptBuilder(),
-                        new SqlIndexScriptBuilder(),
-                        new SqlSynonymScriptBuilder()),
-              new EntityDefinitionProvider()));
+          new FileBuilder (() => pd.Factory.CreateSchemaScriptBuilder(pd), new EntityDefinitionProvider()));
     }
   }
 }

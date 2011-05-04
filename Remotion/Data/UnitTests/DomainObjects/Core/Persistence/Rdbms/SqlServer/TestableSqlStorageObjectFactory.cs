@@ -15,25 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class TestableSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    private readonly SqlTableScriptBuilder _tableBuilder;
-    private readonly SqlViewScriptBuilder _viewBuilder;
-    private readonly SqlConstraintScriptBuilder _constraintBuilder;
-    private readonly SqlIndexScriptBuilder _indexBuilder;
-    private readonly SqlSynonymScriptBuilder _synonymBuilder;
+    private readonly TableScriptBuilder _tableBuilder;
+    private readonly ViewScriptBuilder _viewBuilder;
+    private readonly ForeignKeyConstraintScriptBuilder _constraintBuilder;
+    private readonly IndexScriptBuilder _indexBuilder;
+    private readonly SynonymScriptBuilder _synonymBuilder;
 
     public TestableSqlStorageObjectFactory (
-        SqlTableScriptBuilder tableBuilder,
-        SqlViewScriptBuilder viewBuilder,
-        SqlConstraintScriptBuilder constraintBuilder,
-        SqlIndexScriptBuilder indexBuilder,
-        SqlSynonymScriptBuilder synonymBuilder)
+        TableScriptBuilder tableBuilder,
+        ViewScriptBuilder viewBuilder,
+        ForeignKeyConstraintScriptBuilder constraintBuilder,
+        IndexScriptBuilder indexBuilder,
+        SynonymScriptBuilder synonymBuilder)
     {
       _indexBuilder = indexBuilder;
       _constraintBuilder = constraintBuilder;
@@ -42,27 +42,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder = synonymBuilder;
     }
 
-    protected override SqlTableScriptBuilder CreateTableBuilder ()
+    protected override TableScriptBuilder CreateTableBuilder ()
     {
       return _tableBuilder;
     }
 
-    protected override SqlViewScriptBuilder CreateViewBuilder ()
+    protected override ViewScriptBuilder CreateViewBuilder ()
     {
       return _viewBuilder;
     }
 
-    protected override SqlConstraintScriptBuilder CreateConstraintBuilder ()
+    protected override ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
     {
       return _constraintBuilder;
     }
 
-    protected override SqlIndexScriptBuilder CreateIndexBuilder ()
+    protected override IndexScriptBuilder CreateIndexBuilder ()
     {
       return _indexBuilder;
     }
 
-    protected override SqlSynonymScriptBuilder CreateSynonymBuilder ()
+    protected override SynonymScriptBuilder CreateSynonymBuilder ()
     {
       return _synonymBuilder;
     }

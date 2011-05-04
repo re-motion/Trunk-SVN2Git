@@ -1,18 +1,11 @@
 USE SchemaGenerationTestDomain1
+-- Drop all synonyms
 GO
-
--- Drop all synonyms that will be created below
+-- Drop all indexes
 GO
-
--- Drop all indexes that will be created below
+-- Drop all views
 GO
-
--- Drop all views that will be created below
+-- Drop foreign keys of all tables
 GO
-
--- Drop foreign keys of all tables that will be created below
+-- Drop all tables
 GO
-
--- Drop all tables that will be created below
-GO
-

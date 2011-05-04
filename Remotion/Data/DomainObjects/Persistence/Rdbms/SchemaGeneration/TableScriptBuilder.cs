@@ -66,7 +66,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       _elementFactory = elementFactory;
       _createScriptElements = new ScriptElementCollection();
+      _createScriptElements.AddElement (new ScriptStatement ("-- Create all tables"));
       _dropScriptElements = new ScriptElementCollection();
+      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all tables"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

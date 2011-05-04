@@ -58,6 +58,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    public void Initialization ()
+    {
+      Assert.That (_builder.RdbmsProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
+      Assert.That (_builder.SqlDialect, Is.SameAs (SqlDialect.Instance));
+      Assert.That (_builder.ScriptBuilders, Is.EqualTo(new[]{_builder1Mock, _builder2Mock}));
+    }
+
+    [Test]
     public void GetCreateScript ()
     {
       var entityDefinition1 = MockRepository.GenerateStub<IEntityDefinition> ();
@@ -116,10 +124,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Assert.That (result.Elements.Count, Is.EqualTo (6));
       Assert.That (((ScriptStatement) result.Elements[0]).Statement, Is.EqualTo ("USE SchemaGenerationTestDomain1"));
-      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement1));
-      Assert.That (((ScriptStatement) result.Elements[2]).Statement, Is.EqualTo ("GO"));
-      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[4], Is.SameAs (_fakeStatement3));
+      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement2));
+      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement3));
+      Assert.That (((ScriptStatement) result.Elements[3]).Statement, Is.EqualTo ("GO"));
+      Assert.That (result.Elements[4], Is.SameAs (_fakeStatement1));
       Assert.That (((ScriptStatement) result.Elements[5]).Statement, Is.EqualTo ("GO"));
     }
 

@@ -67,7 +67,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       _indexScriptElementFactory = indexScriptElementFactory;
       _createScriptElements = new ScriptElementCollection();
+      _createScriptElements.AddElement (new ScriptStatement ("-- Create indexes for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
+      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all indexes"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

@@ -23,8 +23,8 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class FileBuilderTest : SchemaGenerationTestBase
   {
     private TestableFileBuilder _fileBuilder;
-    private IScriptBuilder _scriptBuilderMock;
+    private CompositeScriptBuilder2 _scriptBuilderMock;
 
     private ClassDefinition _classDefinition1;
     private ClassDefinition _classDefinition2;
@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _scriptBuilderMock = MockRepository.GenerateStrictMock<IScriptBuilder> ();
-      _scriptBuilderMock.Stub (stub => stub.RdbmsProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
+      _scriptBuilderMock = MockRepository.GenerateStrictMock<CompositeScriptBuilder2> (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, new IScriptBuilder2[0]);
+      //_scriptBuilderMock.Stub (stub => stub.RdbmsProviderDefinition).Return (SchemaGenerationFirstStorageProviderDefinition);
       _entityDefinitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
 
       _fileBuilder = new TestableFileBuilder (() => _scriptBuilderMock, _entityDefinitionProviderMock);
@@ -228,10 +228,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderMock
           .Expect (
               mock => mock.GetCreateScript())
-          .Return ("DummyCreate");
+          .Return (new ScriptElementCollection (new[]{ new ScriptStatement ("DummyCreate")}));
       _scriptBuilderMock
           .Expect (mock => mock.GetDropScript())
-          .Return ("DummyDrop");
+          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DummyDrop") }));
 
       _entityDefinitionProviderMock
           .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { _classDefinition1 })))
@@ -244,8 +244,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.That (File.Exists (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.True);
       try
       {
-        Assert.That (File.ReadAllText (@"SetupDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyCreate"));
-        Assert.That (File.ReadAllText (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyDrop"));
+        Assert.That (File.ReadAllText (@"SetupDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyCreate\r\n"));
+        Assert.That (File.ReadAllText (@"TearDownDB_FileBuilderTest_Build_InstanceMethod.sql"), Is.EqualTo ("DummyDrop\r\n"));
       }
       finally
       {
@@ -262,13 +262,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderMock
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
       _scriptBuilderMock
-          .Expect (
-              mock => mock.GetCreateScript())
-          .Return ("CreateResult");
+          .Expect (mock => mock.GetCreateScript())
+          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("CreateResult") }));
       _scriptBuilderMock
-          .Expect (
-              mock => mock.GetDropScript())
-          .Return ("DropResult");
+          .Expect (mock => mock.GetDropScript())
+          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DropResult") }));
       _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
@@ -280,8 +278,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult"));
-      Assert.That (result.DropScript, Is.EqualTo ("DropResult"));
+      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult\r\n"));
+      Assert.That (result.DropScript, Is.EqualTo ("DropResult\r\n"));
     }
 
     [Test]
@@ -291,10 +289,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock
           .Expect (mock => mock.GetCreateScript())
-          .Return ("CreateResult");
+          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("CreateResult") }));
       _scriptBuilderMock
           .Expect (mock => mock.GetDropScript())
-          .Return ("DropResult");
+          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DropResult") }));
       _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
@@ -306,8 +304,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult"));
-      Assert.That (result.DropScript, Is.EqualTo ("DropResult"));
+      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult\r\n"));
+      Assert.That (result.DropScript, Is.EqualTo ("DropResult\r\n"));
     }
 
     [Test]
