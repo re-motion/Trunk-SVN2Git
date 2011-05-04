@@ -390,8 +390,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
             info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>())
     {
+      _registrationAgent = info.GetValueForHandle<IRelationEndPointRegistrationAgent>();
       _map = info.GetValue<RelationEndPointMap> ();
-      _registrationAgent = new RelationEndPointRegistrationAgent (_endPointProvider, _clientTransaction);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -402,6 +402,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_endPointProvider);
       info.AddHandle (_collectionEndPointDataKeeperFactory);
       info.AddHandle (_virtualObjectEndPointDataKeeperFactory);
+      info.AddHandle (_registrationAgent);
       info.AddValue (_map);
     }
 

@@ -66,14 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);
 
-      var deserializedAgent = (RelationEndPointRegistrationAgent) deserializedMap.RegistrationAgent;
-      Assert.That (deserializedAgent, Is.Not.Null);
-      Assert.That (deserializedAgent.EndPointProvider, Is.SameAs (deserializedMap.EndPointProvider));
-      Assert.That (deserializedAgent.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
       Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointManager.CollectionEndPointDataKeeperFactory.GetType ()));
       Assert.That (deserializedMap.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointManager.VirtualObjectEndPointDataKeeperFactory.GetType ()));
+      Assert.That (deserializedMap.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType()));
 
       Assert.That (deserializedMap.RelationEndPoints.Count, Is.EqualTo (7));
 
