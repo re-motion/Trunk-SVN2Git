@@ -35,6 +35,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
 
     public ScriptElementCollection (IEnumerable<IScriptElement> elements)
     {
+      ArgumentUtility.CheckNotNull ("elements", elements);
+
       _elements = new List<IScriptElement> (elements);
     }
 
