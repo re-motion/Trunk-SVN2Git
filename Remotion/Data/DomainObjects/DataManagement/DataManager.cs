@@ -69,7 +69,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
       _relationEndPointMap = new RelationEndPointMap (
           clientTransaction, 
-          objectLoader, 
           this, 
           this, 
           collectionEndPointDataKeeperFactory,

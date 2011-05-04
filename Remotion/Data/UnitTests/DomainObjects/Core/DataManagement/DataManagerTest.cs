@@ -73,7 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var map = (RelationEndPointMap) dataManager.RelationEndPointMap;
 
       Assert.That (map.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (map.ObjectLoader, Is.SameAs (objectLoader));
       Assert.That (map.EndPointProvider, Is.SameAs (dataManager));
       Assert.That (map.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
       Assert.That (((CollectionEndPointDataKeeperFactory) map.CollectionEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
