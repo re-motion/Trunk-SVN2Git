@@ -16,11 +16,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);
     IRelationEndPoint GetRelationEndPointWithMinimumLoading (RelationEndPointID endPointID);
 
-    DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted);
-    DomainObject GetOriginalRelatedObject (RelationEndPointID endPointID);
-    DomainObjectCollection GetRelatedObjects (RelationEndPointID endPointID);
-    DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID endPointID);
-
     void CommitAllEndPoints ();
     void RollbackAllEndPoints ();
     

@@ -859,5 +859,154 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
+
+    [Test]
+    public void GetRelatedObject ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPoint = ((IVirtualObjectEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
+      endPoint.CreateSetCommand (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2))).ExpandToAllRelatedObjects ().Perform ();
+      
+      DomainObject orderTicket = ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+
+      Assert.That (orderTicket, Is.Not.Null);
+      Assert.That (orderTicket, Is.SameAs (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2))));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void GetRelatedObject_Deleted ()
+    {
+      Location location = _transaction.Execute (() => Location.GetObject (DomainObjectIDs.Location1));
+
+      _transaction.Execute (() => location.Client.Delete());
+
+      var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void GetRelatedObject_Invalid ()
+    {
+      Location location = _transaction.Execute (() => Location.GetObject (DomainObjectIDs.Location1));
+      Client newClient = _transaction.Execute (() => Client.NewObject ());
+      _transaction.Execute (() => location.Client = newClient);
+      _transaction.Execute (() => location.Client.Delete ());
+
+      var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "The given end-point ID does not denote a related object (cardinality one).\r\nParameter name: relationEndPointID")]
+    public void GetRelatedObject_WrongCardinality ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      ClientTransactionTestHelper.CallGetRelatedObject (
+          _transaction, 
+          RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+    }
+
+    [Test]
+    public void GetOriginalRelatedObject ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+
+      var endPoint = ((IVirtualObjectEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
+      endPoint.CreateSetCommand (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2))).ExpandToAllRelatedObjects().Perform();
+
+      DomainObject orderTicket = ClientTransactionTestHelper.CallGetOriginalRelatedObject (_transaction, endPointID);
+
+      Assert.That (orderTicket, Is.Not.Null);
+      Assert.That (orderTicket, Is.SameAs (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1))));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "The given end-point ID does not denote a related object (cardinality one).\r\nParameter name: relationEndPointID")]
+    public void GetOriginalRelatedObject_WrongCardinality ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      ClientTransactionTestHelper.CallGetOriginalRelatedObject (
+          _transaction,
+          RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+    }
+
+    [Test]
+    public void GetRelatedObjects ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+      var endPoint = ((ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
+      endPoint.CreateAddCommand (_transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem3))).ExpandToAllRelatedObjects ().Perform ();
+
+      var orderItems = ClientTransactionTestHelper.CallGetRelatedObjects (_transaction, endPointID);
+
+      Assert.That (orderItems, Is.TypeOf<ObjectList<OrderItem>>());
+      Assert.That (
+          orderItems,
+          Is.EquivalentTo (
+              new[]
+              {
+                  _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1)),
+                  _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2)),
+                  _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem3))
+              }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "The given end-point ID does not denote a related object collection (cardinality many).\r\nParameter name: relationEndPointID")]
+    public void GetRelatedObjects_WrongCardinality ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      ClientTransactionTestHelper.CallGetRelatedObjects (
+          _transaction,
+          RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+    }
+
+    [Test]
+    public void GetOriginalRelatedObjects ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+      var endPoint = ((ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
+      endPoint.CreateAddCommand (_transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem3))).ExpandToAllRelatedObjects ().Perform ();
+
+      var orderItems = ClientTransactionTestHelper.CallGetOriginalRelatedObjects (_transaction, endPointID);
+
+      Assert.That (orderItems, Is.TypeOf<ObjectList<OrderItem>> ());
+      Assert.That (
+        orderItems,
+        Is.EquivalentTo (
+            new[]
+              {
+                  _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1)),
+                  _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2))
+              }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "The given end-point ID does not denote a related object collection (cardinality many).\r\nParameter name: relationEndPointID")]
+    public void GetOriginalRelatedObjects_WrongCardinality ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+
+      ClientTransactionTestHelper.CallGetOriginalRelatedObjects (
+          _transaction,
+          RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+    }
+
   }
 }

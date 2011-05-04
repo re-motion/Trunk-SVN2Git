@@ -217,43 +217,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         return Assertion.IsNotNull (_map[endPointID], "Non-virtual end-points are registered when the DataContainer is loaded.");
       }
     }
-
-    public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "GetRelatedObject", "endPointID");
-
-      var objectEndPoint = (IObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return objectEndPoint.GetOppositeObject (includeDeleted);
-    }
-
-    public DomainObject GetOriginalRelatedObject (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.One, "GetOriginalRelatedObject", "endPointID");
-
-      var objectEndPoint = (IObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return objectEndPoint.GetOriginalOppositeObject ();
-    }
-
-    public DomainObjectCollection GetRelatedObjects (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.Many, "GetRelatedObjects", "endPointID");
-
-      var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return collectionEndPoint.Collection;
-    }
-
-    public DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      CheckCardinality (endPointID, CardinalityType.Many, "GetOriginalRelatedObjects", "endPointID");
-
-      var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
-      return collectionEndPoint.GetCollectionWithOriginalData();
-    }
-
+    
     public void CommitAllEndPoints ()
     {
       _map.CommitAllEndPoints();

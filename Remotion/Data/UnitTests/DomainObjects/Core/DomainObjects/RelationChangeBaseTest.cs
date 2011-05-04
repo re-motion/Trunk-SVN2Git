@@ -16,10 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
@@ -32,10 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       // Ensure all end points are loaded into the RelationEndPointManager before trying to check them
       foreach (RelationEndPointID id in endPointsInvolved)
       {
-        if (id.Definition.Cardinality == CardinalityType.One)
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelatedObject (id, true);
-        else
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelatedObjects (id);
+        ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (id);
       }
 
       if (foreignKeyObject != null)

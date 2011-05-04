@@ -688,7 +688,9 @@ public class ClientTransaction
         if (sourceEndPoint != null)
         {
           var sourceRelatedObjectCollection = sourceEndPoint.Collection;
-          var destinationRelatedObjectCollection = DataManager.RelationEndPointManager.GetRelatedObjects (endPointID);
+          
+          var destinationCollectionEndPoint = (ICollectionEndPoint) DataManager.GetRelationEndPointWithLazyLoad (endPointID);
+          var destinationRelatedObjectCollection = destinationCollectionEndPoint.Collection;
           destinationRelatedObjectCollection.CopyEventHandlersFrom (sourceRelatedObjectCollection);
         }
       }
@@ -1007,12 +1009,17 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
+    if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
+      throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
+
     using (EnterNonDiscardingScope ())
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
-      DomainObject relatedObject = _dataManager.RelationEndPointManager.GetRelatedObject (relationEndPointID, false);
+
+      var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      DomainObject relatedObject = objectEndPoint.GetOppositeObject (false);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
 
       return relatedObject;
@@ -1029,12 +1036,17 @@ public class ClientTransaction
   protected internal virtual DomainObject GetOriginalRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+    if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
+      throw new ArgumentException ("The given end-point ID does not denote a related object (cardinality one).", "relationEndPointID");
+
     using (EnterNonDiscardingScope ())
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
-      DomainObject relatedObject = _dataManager.RelationEndPointManager.GetOriginalRelatedObject (relationEndPointID);
+      var objectEndPoint = (IObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      DomainObject relatedObject = objectEndPoint.GetOriginalOppositeObject ();
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
 
       return relatedObject;
@@ -1051,12 +1063,18 @@ public class ClientTransaction
   protected internal virtual DomainObjectCollection GetRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+    if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+      throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
+
     using (EnterNonDiscardingScope ())
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
-      var relatedObjects = _dataManager.RelationEndPointManager.GetRelatedObjects (relationEndPointID);
+
+      var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      var relatedObjects = collectionEndPoint.Collection;
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
 
@@ -1074,12 +1092,17 @@ public class ClientTransaction
   protected internal virtual DomainObjectCollection GetOriginalRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+    if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+      throw new ArgumentException ("The given end-point ID does not denote a related object collection (cardinality many).", "relationEndPointID");
+
     using (EnterNonDiscardingScope ())
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
-      DomainObjectCollection relatedObjects = _dataManager.RelationEndPointManager.GetOriginalRelatedObjects (relationEndPointID);
+      var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      var relatedObjects = collectionEndPoint.GetCollectionWithOriginalData();
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
 
