@@ -119,5 +119,7 @@ namespace Remotion.Reflection
     new IPropertyInformation FindInterfaceDeclaration ();
 
     ParameterInfo[] GetIndexParameters ();
+
+    MethodInfo[] GetAccessors ();
   }
 }

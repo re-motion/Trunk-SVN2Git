@@ -111,6 +111,11 @@ namespace Remotion.Reflection
       return _propertyInfo.GetIndexParameters();
     }
 
+    public MethodInfo[] GetAccessors ()
+    {
+      return _propertyInfo.GetAccessors();
+    }
+
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);

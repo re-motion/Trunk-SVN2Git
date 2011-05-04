@@ -87,6 +87,11 @@ namespace Remotion.Reflection
       return _implementationPropertyInfo.GetIndexParameters();
     }
 
+    public MethodInfo[] GetAccessors ()
+    {
+      return _implementationPropertyInfo.GetAccessors();
+    }
+
     public Type PropertyType
     {
       get { return _implementationPropertyInfo.PropertyType; }
