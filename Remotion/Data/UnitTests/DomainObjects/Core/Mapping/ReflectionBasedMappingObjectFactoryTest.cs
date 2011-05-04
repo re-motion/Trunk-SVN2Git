@@ -65,12 +65,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePropertyDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = typeof (Order).GetProperty ("OrderItems");
+      var propertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo)));
+      Assert.That (result.PropertyInfo, Is.SameAs (propertyInfo));
     }
 
     [Test]
@@ -79,12 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var orderClassDefinition = MappingConfiguration.Current.GetClassDefinition ("Order");
       var orderItemClassDefinition = MappingConfiguration.Current.GetClassDefinition ("OrderItem");
 
-      //TODO RM-3977
       var result =
           _factory.CreateRelationDefinition (
               new[] { orderClassDefinition, orderItemClassDefinition }.ToDictionary (cd => cd.ClassType),
               orderItemClassDefinition,
-              ((PropertyInfoAdapter) orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo).PropertyInfo);
+               orderItemClassDefinition.MyRelationEndPointDefinitions[0].PropertyInfo);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.EndPointDefinitions[0], 
@@ -97,12 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateRelationEndPointDefinition ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo = typeof (Order).GetProperty ("OrderItems");
+      var propertyInfo = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
 
       Assert.That (result, Is.TypeOf (typeof (VirtualRelationEndPointDefinition)));
-      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.EqualTo (new PropertyInfoAdapter (propertyInfo)));
+      Assert.That (((VirtualRelationEndPointDefinition) result).PropertyInfo, Is.SameAs(propertyInfo));
     }
 
     [Test]
@@ -119,14 +118,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreatePropertyDefinitionCollection ()
     {
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (Order), null);
-      var propertyInfo1 = typeof (Order).GetProperty ("OrderNumber");
-      var propertyInfo2 = typeof (Order).GetProperty ("DeliveryDate");
+      var propertyInfo1 = new PropertyInfoAdapter (typeof (Order).GetProperty ("OrderNumber"));
+      var propertyInfo2 = new PropertyInfoAdapter (typeof (Order).GetProperty ("DeliveryDate"));
 
       var result = _factory.CreatePropertyDefinitionCollection (classDefinition, new[] { propertyInfo1, propertyInfo2 });
 
       Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result[0].PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo1)));
-      Assert.That (result[1].PropertyInfo, Is.EqualTo(new PropertyInfoAdapter (propertyInfo2)));
+      Assert.That (result[0].PropertyInfo, Is.SameAs (propertyInfo1));
+      Assert.That (result[1].PropertyInfo, Is.SameAs (propertyInfo2));
     }
 
     [Test]

@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
@@ -25,16 +23,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
   [TestFixture]
-  public class PropertyFinderTest
+  public class PropertyFinderTest : PropertyFinderBaseTestBase
   {
-    private PersistentMixinFinder _emptyPersistentMixinFinder;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _emptyPersistentMixinFinder = new PersistentMixinFinder (typeof (object));
-    }
-
     [Test]
     public void Initialize ()
     {
@@ -84,21 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
               classDefinition.PersistentMixinFinder);
 
       Assert.That (propertyFinder.FindPropertyInfos(), Is.Empty);
-    }
-
-    private PropertyInfo GetProperty (Type type, string propertyName)
-    {
-      PropertyInfo propertyInfo =
-          type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      Assert.That (propertyInfo, Is.Not.Null, "Property '{0}' was not found on type '{1}'.", propertyName, type);
-
-      return propertyInfo;
-    }
-
-    private ClassDefinition CreateClassDefinition (Type type)
-    {
-      return ClassDefinitionFactory.CreateClassDefinition (
-          type.Name, type.Name, DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition, type, false);
     }
   }
 }

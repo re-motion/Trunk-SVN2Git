@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -82,9 +83,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder);
 
-    public PropertyInfo[] FindPropertyInfos ()
+    public IPropertyInformation[] FindPropertyInfos ()
     {
-      var propertyInfos = new List<PropertyInfo>();
+      var propertyInfos = new List<IPropertyInformation>();
 
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
@@ -106,27 +107,28 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return propertyInfos.ToArray();
     }
 
-    protected virtual bool FindPropertiesFilter (PropertyInfo propertyInfo)
+    protected virtual bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
+      //TODO RM-3977
+      var pi = ((PropertyInfoAdapter) propertyInfo).PropertyInfo;
+      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (pi))
         return false;
 
       if (IsUnmanagedProperty (propertyInfo))
         return false;
 
-      if (IsUnmanagedExplictInterfaceImplementation (propertyInfo))
+      if (IsUnmanagedExplictInterfaceImplementation (pi))
         return false;
 
       return true;
     }
 
-    protected bool IsUnmanagedProperty (PropertyInfo propertyInfo)
+    protected bool IsUnmanagedProperty (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      StorageClassAttribute storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, false);
+      var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
       if (storageClassAttribute == null)
         return false;
 
@@ -139,7 +141,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       bool isExplicitInterfaceImplementation = Array.Exists (
           propertyInfo.GetAccessors (true),
-          delegate (MethodInfo accessor) { return _explicitInterfaceImplementations.Contains (accessor); });
+          accessor => _explicitInterfaceImplementations.Contains (accessor));
       if (!isExplicitInterfaceImplementation)
         return false;
 
@@ -150,23 +152,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
-    public IList<PropertyInfo> FindPropertyInfosDeclaredOnThisType ()
+    public IEnumerable<IPropertyInformation> FindPropertyInfosDeclaredOnThisType ()
     {
-    
       MemberInfo[] memberInfos = _type.FindMembers (
           MemberTypes.Property,
           PropertyBindingFlags | BindingFlags.DeclaredOnly,
           FindPropertiesFilter, 
           null);
 
-      PropertyInfo[] propertyInfos = Array.ConvertAll (memberInfos, delegate (MemberInfo input) { return (PropertyInfo) input; });
+      var propertyInfos = Array.ConvertAll (memberInfos, input => new PropertyInfoAdapter ((PropertyInfo) input));
 
       return propertyInfos;
     }
 
     private bool FindPropertiesFilter (MemberInfo member, object filterCriteria)
     {
-      return FindPropertiesFilter ((PropertyInfo) member);
+      return FindPropertiesFilter (new PropertyInfoAdapter ((PropertyInfo) member));
     }
 
     private Set<MethodInfo> GetExplicitInterfaceImplementations (Type type)
@@ -178,7 +179,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         InterfaceMapping interfaceMapping = type.GetInterfaceMap (interfaceType);
         MethodInfo[] explicitInterfaceImplementations = Array.FindAll (
             interfaceMapping.TargetMethods,
-            delegate (MethodInfo targetMethod) { return targetMethod.IsSpecialName && !targetMethod.IsPublic; });
+            targetMethod => targetMethod.IsSpecialName && !targetMethod.IsPublic);
         explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations);
       }
 

@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -30,11 +29,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingNameResolver _nameResolver;
     private readonly StorageClassAttribute _storageClassAttribute;
 
-    protected MemberReflectorBase (PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+    protected MemberReflectorBase (IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
-      _propertyInfo = new PropertyInfoAdapter (propertyInfo);
+
+      _propertyInfo = propertyInfo;
       _nameResolver = nameResolver;
       _storageClassAttribute = PropertyInfo.GetCustomAttribute<StorageClassAttribute> (true);
     }

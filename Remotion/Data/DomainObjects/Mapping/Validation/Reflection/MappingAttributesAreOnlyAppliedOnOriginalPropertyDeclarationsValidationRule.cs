@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
@@ -48,17 +48,19 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           classDefinition.PersistentMixinFinder);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 
-      return propertyInfos.Select (propertyInfo => Validate (propertyInfo));
+      return from IPropertyInformation propertyInfo in propertyInfos 
+             select Validate (propertyInfo);
     }
 
-    private MappingValidationResult Validate (PropertyInfo propertyInfo)
+    private MappingValidationResult Validate (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
+      //TODO RM-3977
+      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (((PropertyInfoAdapter)propertyInfo).PropertyInfo))
       {
-        IMappingAttribute[] mappingAttributes = AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false);
-        if (mappingAttributes.Length > 0)
+        var mappingAttributes = propertyInfo.GetCustomAttributes<IMappingAttribute> (false);
+        if (mappingAttributes.Any())
         {
           return MappingValidationResult.CreateInvalidResultForProperty (
               propertyInfo,

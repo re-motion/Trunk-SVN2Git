@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
@@ -26,7 +24,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Base class for reflecting on the relations of a class.</summary>
   public abstract class RelationReflectorBase<T> : MemberReflectorBase where T: BidirectionalRelationAttribute
   {
-    protected RelationReflectorBase (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+    protected RelationReflectorBase (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -54,7 +52,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           NameResolver, 
           new PersistentMixinFinder (type, true));
       
-      return Maybe.ForValue (propertyFinder.FindPropertyInfos().LastOrDefault()).Select (pi => new PropertyInfoAdapter (pi)).ValueOrDefault();
+      return propertyFinder.FindPropertyInfos().LastOrDefault();
     }
   }
 }

@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using ReflectionUtility = Remotion.Data.DomainObjects.ReflectionUtility;
 
@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       ArgumentUtility.CheckNotNullOrEmpty ("property", property);
 
       Type type = typeof (T);
-      PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var propertyInfo = new PropertyInfoAdapter (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
       ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
         classDefinition = ClassDefinitionFactory.CreateClassDefinition (type.Name, type.Name, TestDomainStorageProviderDefinition, type, true);

@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -47,20 +47,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _includeBaseMixins = includeBaseMixins;
     }
 
-    public IEnumerable<PropertyInfo> FindPropertyInfosOnMixins ()
+    public IEnumerable<IPropertyInformation> FindPropertyInfosOnMixins ()
     {
       if (_persistentMixinFinder != null)
       {
-        var processedMixins = new Set<Type>();
-        return from mixin in _persistentMixinFinder.GetPersistentMixins()
+        var processedMixins = new Set<Type> ();
+        return from mixin in _persistentMixinFinder.GetPersistentMixins ()
                from propertyInfo in FindPropertyInfosOnMixin (mixin, processedMixins)
                select propertyInfo;
       }
       else
-        return Enumerable.Empty<PropertyInfo>();
+      {
+        return Enumerable.Empty<IPropertyInformation>();
+      }
     }
 
-    private IEnumerable<PropertyInfo> FindPropertyInfosOnMixin (Type mixin, Set<Type> processedMixins)
+    private IEnumerable<IPropertyInformation> FindPropertyInfosOnMixin (Type mixin, Set<Type> processedMixins)
     {
       Type current = mixin;
       while (current != null && !IsMixinBaseClass (current))
@@ -69,7 +71,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         {
           // Note: mixins on mixins are not checked
           var mixinPropertyFinder = _propertyFinderFactory (current, false, false, _nameResolver, _persistentMixinFinder);
-          foreach (PropertyInfo propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType ())
+          foreach (var propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType ())
             yield return propertyInfo;
 
           processedMixins.Add (current);

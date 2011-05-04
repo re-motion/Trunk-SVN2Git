@@ -15,14 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// The <see cref="RelationPropertyFinder"/> is used to find all <see cref="PropertyInfo"/> objects that constitute a 
+  /// The <see cref="RelationPropertyFinder"/> is used to find all <see cref="IPropertyInformation"/> objects that constitute a 
   /// <see cref="RelationEndPointDefinition"/>.
   /// </summary>
   public class RelationPropertyFinder : PropertyFinderBase
@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
     }
 
-    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 

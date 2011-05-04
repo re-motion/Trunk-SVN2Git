@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classReflector.GetMetadata (baseClass);
     }
 
-    public PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo)
+    public PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     public RelationDefinition CreateRelationDefinition (
-        IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, PropertyInfo propertyInfo)
+        IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return relationReflector.GetMetadata (classDefinitions);
     }
 
-    public IRelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo)
+    public IRelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return classDefinitionCollectionFactory.CreateClassDefinitionCollection (types);
     }
 
-    public PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos)
+    public PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);

@@ -14,15 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/> for types persisted in an <b>RDBMS</b>.</summary>
+  /// <summary>
+  /// Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="IPropertyInformation"/> for types persisted in an <b>RDBMS</b>.
+  /// </summary>
   public class RdbmsRelationEndPointReflector : RelationEndPointReflector<DBBidirectionalRelationAttribute>
   {
-    public RdbmsRelationEndPointReflector (ClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+    public RdbmsRelationEndPointReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMappingNameResolver nameResolver)
         : base (classDefinition, propertyInfo, nameResolver)
     {
     }

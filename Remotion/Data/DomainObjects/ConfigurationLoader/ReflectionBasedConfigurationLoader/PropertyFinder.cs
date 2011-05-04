@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -42,7 +43,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _classDefinition = classDefinition;
     }
 
-    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
@@ -65,7 +66,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new PropertyFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
 
-    private bool IsVirtualRelationEndPoint (PropertyInfo propertyInfo)
+    private bool IsVirtualRelationEndPoint (IPropertyInformation propertyInfo)
     {
       if (!ReflectionUtility.IsRelationType (propertyInfo.PropertyType))
         return false;

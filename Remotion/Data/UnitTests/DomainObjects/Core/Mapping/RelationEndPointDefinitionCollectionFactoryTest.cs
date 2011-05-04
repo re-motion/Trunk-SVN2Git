@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -46,11 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classDefinition = ClassDefinitionFactory.CreateClassDefinitionWithoutStorageEntity (typeof (OrderTicket), null);
       var propertyDefinition = PropertyDefinitionFactory.Create (classDefinition, typeof (OrderTicket), "Order", "OrderID", typeof (ObjectID));
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection(new[]{propertyDefinition},true));
-      var expectedPropertyInfo = typeof (OrderTicket).GetProperty ("Order");
+      var expectedPropertyInfo = new PropertyInfoAdapter (typeof (OrderTicket).GetProperty ("Order"));
       var fakeRelationEndPoint = new RelationEndPointDefinition (propertyDefinition, false);
       
       _mappingObjectFactoryMock
-          .Expect (mock => mock.CreateRelationEndPointDefinition (Arg.Is (classDefinition), Arg<PropertyInfo>.Is.Equal (expectedPropertyInfo)))
+          .Expect (mock => mock.CreateRelationEndPointDefinition (Arg.Is (classDefinition), Arg.Is (expectedPropertyInfo)))
           .Return (fakeRelationEndPoint);
       _mappingObjectFactoryMock.Replay();
 

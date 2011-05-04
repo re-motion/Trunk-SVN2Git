@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _propertyName = propertyName;
     }
 
-    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
@@ -59,8 +59,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IMappingNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new NameBasedPropertyFinder (
-          _propertyName, type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+      return new NameBasedPropertyFinder (_propertyName, type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
     }
   }
 }

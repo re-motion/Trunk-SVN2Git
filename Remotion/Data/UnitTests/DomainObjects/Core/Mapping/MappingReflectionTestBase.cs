@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using System.Reflection;
+using System;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 
@@ -30,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private ReflectionBasedMappingObjectFactory _mappingObjectFactory;
     public const string DefaultStorageProviderID = "DefaultStorageProvider";
-    public const string TestDomainProviderID = "TestDomain";
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
@@ -55,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
       ConfigurationWrapper.SetCurrent (null);
-      FakeMappingConfiguration.Reset ();
+      FakeMappingConfiguration.Reset();
     }
 
     protected DomainObjectIDs DomainObjectIDs
@@ -81,17 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     protected ReflectionBasedMappingObjectFactory MappingObjectFactory
     {
       get { return _mappingObjectFactory; }
-    }
-
-    protected IEnumerable<PropertyInfo> GetRelationPropertyInfos (ClassDefinition classDefinition)
-    {
-      var relationPropertyFinder = new RelationPropertyFinder (
-          classDefinition.ClassType,
-          classDefinition.BaseClass == null,
-          true,
-          Configuration.NameResolver,
-          classDefinition.PersistentMixinFinder);
-      return relationPropertyFinder.FindPropertyInfos ();
     }
   }
 }

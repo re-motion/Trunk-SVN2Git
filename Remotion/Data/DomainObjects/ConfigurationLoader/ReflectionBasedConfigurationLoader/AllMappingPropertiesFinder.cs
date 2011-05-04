@@ -15,14 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
+using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   /// <summary>
-  /// The <see cref="AllMappingPropertiesFinder"/> is used to find all <see cref="PropertyInfo"/> objects that have a mapping attribute applied.
+  /// The <see cref="AllMappingPropertiesFinder"/> is used to find all <see cref="IPropertyInformation"/> objects that have a mapping attribute applied.
   /// </summary>
   public class AllMappingPropertiesFinder : PropertyFinderBase
   {
@@ -37,9 +38,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     
     }
 
-    protected override bool FindPropertiesFilter (PropertyInfo propertyInfo)
+    protected override bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
-      return AttributeUtility.GetCustomAttributes<IMappingAttribute> (propertyInfo, false).Length > 0;
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      return propertyInfo.GetCustomAttributes<IMappingAttribute> (false).Any();
     }
 
     protected override PropertyFinderBase CreateNewFinder (

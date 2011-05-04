@@ -28,15 +28,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
   public class ManySideRelationProperty : MappingReflectionTestBase
   {
     private ClassDefinition _classDefinition;
+    private Type _classType;
 
     public override void SetUp ()
     {
       base.SetUp();
 
+      _classType = typeof (ClassWithRealRelationEndPoints);
       _classDefinition = ClassDefinitionFactory.CreateClassDefinition ("ClassWithManySideRelationProperties",
           "ClassWithManySideRelationProperties",
           UnitTestDomainStorageProviderDefinition,
-          typeof (ClassWithRealRelationEndPoints),
+          _classType,
           false);
     }
 
@@ -134,20 +136,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      return new RdbmsRelationEndPointReflector (_classDefinition, ((PropertyInfoAdapter)propertyReflector.PropertyInfo).PropertyInfo, Configuration.NameResolver);
+      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver);
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
-      Type type = typeof (ClassWithRealRelationEndPoints);
-      PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var propertyInfo = 
+          new PropertyInfoAdapter (_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
       return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)
     {
-      return _classDefinition.MyPropertyDefinitions[string.Format ("{0}.{1}", typeof (ClassWithRealRelationEndPoints).FullName, propertyName)];
+      return _classDefinition.MyPropertyDefinitions[string.Format ("{0}.{1}", _classType.FullName, propertyName)];
     }
   }
 }

@@ -19,15 +19,17 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 {
   public class PropertyFinderBaseTestBase
   {
-    protected PropertyInfo GetProperty (Type type, string propertyName)
+    protected IPropertyInformation GetProperty (Type type, string propertyName)
     {
-      PropertyInfo propertyInfo =
-          type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      var propertyInfo =
+          new PropertyInfoAdapter (
+              type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
       Assert.That (propertyInfo, Is.Not.Null, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
       return propertyInfo;

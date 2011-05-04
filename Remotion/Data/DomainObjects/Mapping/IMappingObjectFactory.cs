@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -26,13 +26,13 @@ namespace Remotion.Data.DomainObjects.Mapping
   public interface IMappingObjectFactory
   {
     ClassDefinition CreateClassDefinition (Type type, ClassDefinition baseClass);
-    PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo);
+    PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo);
     RelationDefinition CreateRelationDefinition (
-        IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, PropertyInfo propertyInfo);
-    IRelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, PropertyInfo propertyInfo);
+        IDictionary<Type, ClassDefinition> classDefinitions, ClassDefinition classDefinition, IPropertyInformation propertyInfo);
+    IRelationEndPointDefinition CreateRelationEndPointDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo);
 
     ClassDefinition[] CreateClassDefinitionCollection (IEnumerable<Type> types);
-    PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos);
+    PropertyDefinitionCollection CreatePropertyDefinitionCollection (ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos);
     RelationDefinition[] CreateRelationDefinitionCollection (IDictionary<Type, ClassDefinition> classDefinitions);
     RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition);
   }

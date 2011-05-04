@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -101,7 +102,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return false;
     }
 
-    private PropertyInfo[] GetPropertyInfos (ClassDefinition classDefinition)
+    private IEnumerable<IPropertyInformation> GetPropertyInfos (ClassDefinition classDefinition)
     {
       PropertyFinder propertyFinder = new PropertyFinder (
           classDefinition.ClassType,

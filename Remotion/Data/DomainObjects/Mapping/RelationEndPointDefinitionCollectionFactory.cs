@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return endPoints;
     }
 
-    private IEnumerable<PropertyInfo> GetRelationPropertyInfos (ClassDefinition classDefinition)
+    private IEnumerable<IPropertyInformation> GetRelationPropertyInfos (ClassDefinition classDefinition)
     {
       var relationPropertyFinder = new RelationPropertyFinder (
           classDefinition.ClassType,

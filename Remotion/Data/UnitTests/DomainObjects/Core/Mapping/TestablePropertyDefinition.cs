@@ -32,5 +32,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       : base (classDefinition, new PropertyInfoAdapter (propertyInfo), propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
     {
     }
+
+    public TestablePropertyDefinition (ClassDefinition classDefinition, IPropertyInformation propertyInfo, int? maxLength, StorageClass storageClass)
+      : base (classDefinition, propertyInfo, propertyInfo.Name, propertyInfo.PropertyType, false, maxLength, storageClass)
+    {
+    }
   }
 }

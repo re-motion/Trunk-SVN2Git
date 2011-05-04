@@ -17,14 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   /// <summary>
   /// The <see cref="PropertyDefinitionCollectionFactory"/> is used to get a <see cref="PropertyDefinitionCollection"/> for a set of 
-  /// <see cref="PropertyInfo"/>s.
+  /// <see cref="IPropertyInformation"/>s.
   /// </summary>
   public class PropertyDefinitionCollectionFactory
   {
@@ -37,13 +37,13 @@ namespace Remotion.Data.DomainObjects.Mapping
       _mappingObjectFactory = mappingObjectFactory;
     }
 
-    public PropertyDefinitionCollection CreatePropertyDefinitions (ClassDefinition classDefinition, IEnumerable<PropertyInfo> propertyInfos)
+    public PropertyDefinitionCollection CreatePropertyDefinitions (ClassDefinition classDefinition, IEnumerable<IPropertyInformation> propertyInfos)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfos", propertyInfos);
 
-      var propertyDefinitionsForClass = 
-          from PropertyInfo propertyInfo in propertyInfos
+      var propertyDefinitionsForClass =
+          from IPropertyInformation propertyInfo in propertyInfos
           select _mappingObjectFactory.CreatePropertyDefinition(classDefinition, propertyInfo);
       return new PropertyDefinitionCollection (propertyDefinitionsForClass, true);
     }

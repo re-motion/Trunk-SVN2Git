@@ -113,13 +113,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
-      return new RdbmsRelationEndPointReflector (_classDefinition, ((PropertyInfoAdapter)propertyReflector.PropertyInfo).PropertyInfo, Configuration.NameResolver);
+      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver);
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
     {
-      Type type = typeof (ClassWithRealRelationEndPointsNotInMapping);
-      PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var type = typeof (ClassWithRealRelationEndPointsNotInMapping);
+      var propertyInfo =
+          new PropertyInfoAdapter (type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
       return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver);
     }
