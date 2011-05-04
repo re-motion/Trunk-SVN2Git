@@ -33,11 +33,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly IMappingNameResolver _nameResolver;
 
-    public static ClassReflector CreateClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
-    {
-      return new ClassReflector (type, mappingObjectFactory, nameResolver);
-    }
-
     public ClassReflector (Type type, IMappingObjectFactory mappingObjectFactory, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
