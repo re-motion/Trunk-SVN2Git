@@ -28,8 +28,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlElementFactoryBase
   {
-    public readonly string DefaultSchema = "dbo";
-    protected readonly string BatchDelimiter = "GO";
+    protected readonly string DefaultSchema = "dbo";
+    private readonly string BatchDelimiter = "GO";
     
     protected BatchDelimiterStatement CreateBatchDelimiterStatement ()
     {
