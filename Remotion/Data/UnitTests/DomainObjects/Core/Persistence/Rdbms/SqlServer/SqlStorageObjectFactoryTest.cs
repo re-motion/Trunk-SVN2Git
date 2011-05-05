@@ -127,10 +127,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           MockRepository.GenerateStub<IViewScriptElementFactory<TableDefinition>>(),
           MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>>(),
           MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>>(),
-          new SqlCommentScriptElementFactory ());
+          new SqlCommentScriptElementFactory());
       var constraintBuilderStub =
           MockRepository.GenerateStub<ForeignKeyConstraintScriptBuilder> (
-              MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory> (), new SqlCommentScriptElementFactory ());
+              MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory>(), new SqlCommentScriptElementFactory());
       var indexScriptElementFactoryStub = MockRepository.GenerateStub<SqlIndexScriptElementFactory> (
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition>>(),
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition>>(),
@@ -141,17 +141,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
               MockRepository.GenerateStub<ISynonymScriptElementFactory<TableDefinition>>(),
               MockRepository.GenerateStub<ISynonymScriptElementFactory<UnionViewDefinition>>(),
               MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>(),
-              new SqlCommentScriptElementFactory ());
+              new SqlCommentScriptElementFactory());
 
       var sqlProviderFactory = new TestableSqlStorageObjectFactory (
           tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub, synonymBuilderStub);
 
       var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result, Is.TypeOf (typeof (CompositeScriptBuilder)));
-      Assert.That (((CompositeScriptBuilder) result).RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (result, Is.TypeOf (typeof (SqlDatabaseSelectionScriptElementBuilder)));
+      Assert.That (((SqlDatabaseSelectionScriptElementBuilder) result).InnerScriptBuilder, Is.TypeOf (typeof (CompositeScriptBuilder)));
       Assert.That (
-          ((CompositeScriptBuilder) result).ScriptBuilders,
+          ((CompositeScriptBuilder) ((SqlDatabaseSelectionScriptElementBuilder) result).InnerScriptBuilder).RdbmsProviderDefinition,
+          Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (
+          ((CompositeScriptBuilder) ((SqlDatabaseSelectionScriptElementBuilder) result).InnerScriptBuilder).ScriptBuilders,
           Is.EqualTo (
               new IScriptBuilder[]
               {

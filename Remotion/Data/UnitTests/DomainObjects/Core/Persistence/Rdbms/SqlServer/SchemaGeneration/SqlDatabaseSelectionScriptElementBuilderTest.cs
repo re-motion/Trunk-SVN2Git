@@ -16,34 +16,75 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
   public class SqlDatabaseSelectionScriptElementBuilderTest : SchemaGenerationTestBase
   {
+    private IScriptBuilder _innerScriptBuilderMock;
+    private SqlDatabaseSelectionScriptElementBuilder _builder;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      var connectionString = "Data Source=myServerAddress;Initial Catalog=MyDataBase;User Id=myUsername;Password=myPassword;";
+      _innerScriptBuilderMock = MockRepository.GenerateMock<IScriptBuilder> ();
+      _builder = new SqlDatabaseSelectionScriptElementBuilder (_innerScriptBuilderMock, connectionString);
+    }
+
+    [Test]
+    public void AddEntityDefinition ()
+    {
+      var entityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
+
+      _innerScriptBuilderMock.Expect (mock => mock.AddEntityDefinition (entityDefinitionStub));
+      _innerScriptBuilderMock.Replay();
+
+      _builder.AddEntityDefinition (entityDefinitionStub);
+
+      _innerScriptBuilderMock.VerifyAllExpectations();
+    }
+
     [Test]
     public void GetCreateScript_GetDropScript_ValidConnectionString ()
     {
-      var connectionString = "Data Source=myServerAddress;Initial Catalog=MyDataBase;User Id=myUsername;Password=myPassword;";
-      var builder = new SqlDatabaseSelectionScriptElementBuilder (connectionString);
+      var statement1 = new ScriptStatement ("Test1");
+      var statement2 = new ScriptStatement ("Test2");
+      var fakeCreateResult = new ScriptElementCollection ();
+      fakeCreateResult.AddElement (statement1);
+      fakeCreateResult.AddElement (statement2);
+      var fakeDropResult = new ScriptElementCollection();
+      fakeDropResult.AddElement (statement2);
+      fakeDropResult.AddElement (statement1);
 
-      var createScriptResult = builder.GetCreateScript();
-      var dropScriptResult = builder.GetDropScript();
+      _innerScriptBuilderMock.Expect (mock => mock.GetCreateScript()).Return(fakeCreateResult);
+      _innerScriptBuilderMock.Expect (mock => mock.GetDropScript ()).Return (fakeDropResult);
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
+
+      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
+      Assert.That (createScriptResult.Elements[1], Is.SameAs(statement1));
+      Assert.That (createScriptResult.Elements[2], Is.SameAs(statement2));
+      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
+      Assert.That (dropScriptResult.Elements[1], Is.SameAs (statement2));
+      Assert.That (dropScriptResult.Elements[2], Is.SameAs (statement1));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
     public void GetCreateScript_InvalidConnectionString ()
     {
-      var builder = new SqlDatabaseSelectionScriptElementBuilder ("Test1234");
+      var builder = new SqlDatabaseSelectionScriptElementBuilder (_innerScriptBuilderMock, "Test1234");
 
       builder.GetCreateScript();
     }
@@ -52,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
     public void GetDropScript_InvalidConnectionString ()
     {
-      var builder = new SqlDatabaseSelectionScriptElementBuilder ("Test1234");
+      var builder = new SqlDatabaseSelectionScriptElementBuilder (_innerScriptBuilderMock, "Test1234");
 
       builder.GetDropScript ();
     }

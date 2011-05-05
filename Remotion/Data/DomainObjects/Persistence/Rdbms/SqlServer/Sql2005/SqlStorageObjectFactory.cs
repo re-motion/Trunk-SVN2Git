@@ -125,14 +125,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      return new CompositeScriptBuilder (
+      var compositeScriptBuilder = new CompositeScriptBuilder (
           storageProviderDefinition,
-          SqlDialect.Instance,
-          CreateTableBuilder(),
-          CreateConstraintBuilder(),
-          CreateViewBuilder(),
-          CreateIndexBuilder(),
-          CreateSynonymBuilder());
+          CreateTableBuilder (),
+          CreateConstraintBuilder (),
+          CreateViewBuilder (),
+          CreateIndexBuilder (),
+          CreateSynonymBuilder ());
+
+      return new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString);
     }
 
     public virtual IStorageNameProvider CreateStorageNameProvider ()
@@ -184,13 +185,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       return new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
-    }
-
-    protected virtual IScriptBuilder CreateDatabaseSelectionBuilder (RdbmsProviderDefinition storageProviderDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      return new SqlDatabaseSelectionScriptElementBuilder (storageProviderDefinition.ConnectionString);
     }
 
     protected virtual TableScriptBuilder CreateTableBuilder ()

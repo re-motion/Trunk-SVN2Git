@@ -30,27 +30,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   {
     private readonly IScriptBuilder[] _scriptBuilders;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
-    private readonly ISqlDialect _sqlDialect;
 
-    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, ISqlDialect sqlDialect, params IScriptBuilder[] scriptBuilders)
+    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, params IScriptBuilder[] scriptBuilders)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("scriptBuilders", scriptBuilders);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _sqlDialect = sqlDialect;
       _scriptBuilders = scriptBuilders;
     }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
     {
       get { return _rdbmsProviderDefinition; }
-    }
-
-    public ISqlDialect SqlDialect
-    {
-      get { return _sqlDialect; }
     }
 
     public IScriptBuilder[] ScriptBuilders
@@ -81,8 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var script = new List<ScriptStatement> ();
       foreach (var partialScript in elementCollection)
         partialScript.AppendToScript (script);
-
-      _sqlDialect.AdjustForConnectionString (script, _rdbmsProviderDefinition.ConnectionString);
 
       var scriptElementCollection = new ScriptElementCollection();
       foreach (var statement in script)

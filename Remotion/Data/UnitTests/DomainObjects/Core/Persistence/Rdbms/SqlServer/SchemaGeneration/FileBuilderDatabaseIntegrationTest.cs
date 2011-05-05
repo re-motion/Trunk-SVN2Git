@@ -43,37 +43,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _sqlFileBuilderForFirstStorageProvider =
-          new FileBuilder (
-              () => new CompositeScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-              new EntityDefinitionProvider());
+         new FileBuilder (
+             () => new SqlDatabaseSelectionScriptElementBuilder (new CompositeScriptBuilder (
+                       SchemaGenerationFirstStorageProviderDefinition,
+                       CreateTableBuilder (),
+                       CreateConstraintBuilder (),
+                       CreateViewBuilder (),
+                       CreateIndexBuilder (),
+                       CreateSynonymBuilder ()), SchemaGenerationFirstStorageProviderDefinition.ConnectionString),
+             new EntityDefinitionProvider ());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
-              () => new CompositeScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-              new EntityDefinitionProvider());
+              () => new SqlDatabaseSelectionScriptElementBuilder (
+                        new CompositeScriptBuilder (
+                            SchemaGenerationSecondStorageProviderDefinition,
+                            CreateTableBuilder (),
+                            CreateConstraintBuilder (),
+                            CreateViewBuilder (),
+                            CreateIndexBuilder (),
+                            CreateSynonymBuilder ()),
+                        SchemaGenerationSecondStorageProviderDefinition.ConnectionString),
+              new EntityDefinitionProvider ());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
-              () => new CompositeScriptBuilder (
+              () => new SqlDatabaseSelectionScriptElementBuilder (new CompositeScriptBuilder (
                         SchemaGenerationThirdStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()));
+                        CreateTableBuilder (),
+                        CreateConstraintBuilder (),
+                        CreateExtendedViewBuilder (),
+                        CreateIndexBuilder (),
+                        CreateSynonymBuilder ()), SchemaGenerationThirdStorageProviderDefinition.ConnectionString));
 
       _classesInFirstStorageProvider = MappingConfiguration.GetTypeDefinitions()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)

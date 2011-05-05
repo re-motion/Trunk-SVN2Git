@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
 
-      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, SqlDialect.Instance, _builder1Mock, _builder2Mock);
+      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, _builder1Mock, _builder2Mock);
 
       _fakeStatement1 = new ScriptStatement ("Fake1");
       _fakeStatement2 = new ScriptStatement ("Fake2");
@@ -61,7 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Initialization ()
     {
       Assert.That (_builder.RdbmsProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (_builder.SqlDialect, Is.SameAs (SqlDialect.Instance));
       Assert.That (_builder.ScriptBuilders, Is.EqualTo(new[]{_builder1Mock, _builder2Mock}));
     }
 
@@ -89,11 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
       
-      Assert.That (result.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) result.Elements[0]).Statement, Is.EqualTo ("USE SchemaGenerationTestDomain1"));
-      Assert.That (result.Elements[1], Is.SameAs(_fakeStatement1));
-      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement3));
+      Assert.That (result.Elements.Count, Is.EqualTo (3));
+      Assert.That (result.Elements[0], Is.SameAs(_fakeStatement1));
+      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement2));
+      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement3));
     }
     
     [Test]
@@ -120,11 +118,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
 
-      Assert.That (result.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) result.Elements[0]).Statement, Is.EqualTo ("USE SchemaGenerationTestDomain1"));
-      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement3));
-      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement1));
+      Assert.That (result.Elements.Count, Is.EqualTo (3));
+      Assert.That (result.Elements[0], Is.SameAs (_fakeStatement2));
+      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement3));
+      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement1));
     }
 
   }

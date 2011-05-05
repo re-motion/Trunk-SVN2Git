@@ -106,7 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       return new CompositeScriptBuilder (
           storageProviderDefinition,
-          SqlDialect.Instance,
           CreateTableBuilder(),
           CreateViewBuilder(),
           CreateConstraintBuilder(),

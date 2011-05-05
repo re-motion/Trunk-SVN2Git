@@ -21,6 +21,8 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Development.UnitTesting.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -46,37 +48,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _sqlFileBuilderForFirstStorageProvider =
-          new FileBuilder (
-              () => new CompositeScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-              new EntityDefinitionProvider());
+         new FileBuilder (
+             () => new SqlDatabaseSelectionScriptElementBuilder(new CompositeScriptBuilder (
+                       SchemaGenerationFirstStorageProviderDefinition,
+                       CreateTableBuilder (),
+                       CreateConstraintBuilder (),
+                       CreateViewBuilder (),
+                       CreateIndexBuilder (),
+                       CreateSynonymBuilder ()), SchemaGenerationFirstStorageProviderDefinition.ConnectionString),
+             new EntityDefinitionProvider ());
       _sqlFileBuilderForSecondStorageProvider =
           new FileBuilder (
-              () => new CompositeScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-              new EntityDefinitionProvider());
+              () => new SqlDatabaseSelectionScriptElementBuilder (
+                        new CompositeScriptBuilder (
+                            SchemaGenerationSecondStorageProviderDefinition,
+                            CreateTableBuilder(),
+                            CreateConstraintBuilder(),
+                            CreateViewBuilder(),
+                            CreateIndexBuilder(),
+                            CreateSynonymBuilder()),
+                        SchemaGenerationSecondStorageProviderDefinition.ConnectionString),
+              new EntityDefinitionProvider ());
       _sqlFileBuilderForThirdStorageProvider =
           new ExtendedFileBuilder (
-              () => new CompositeScriptBuilder (
+              () => new SqlDatabaseSelectionScriptElementBuilder(new CompositeScriptBuilder (
                         SchemaGenerationThirdStorageProviderDefinition,
-                        SqlDialect.Instance,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateExtendedViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()));
+                        CreateTableBuilder (),
+                        CreateConstraintBuilder (),
+                        CreateExtendedViewBuilder (),
+                        CreateIndexBuilder (),
+                        CreateSynonymBuilder ()), SchemaGenerationThirdStorageProviderDefinition.ConnectionString));
 
       _firstStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_FirstStorageProvider.sql");
       _firstStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_FirstStorageProvider.sql");

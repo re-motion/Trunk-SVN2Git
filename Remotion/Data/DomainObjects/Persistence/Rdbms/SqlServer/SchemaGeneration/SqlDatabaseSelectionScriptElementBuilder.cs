@@ -29,23 +29,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   public class SqlDatabaseSelectionScriptElementBuilder : IScriptBuilder
   {
     private readonly string _connectionString;
+    private readonly IScriptBuilder _innerScriptBuilder;
 
-    public SqlDatabaseSelectionScriptElementBuilder (string connectionString)
+    public SqlDatabaseSelectionScriptElementBuilder (IScriptBuilder innerScriptBuilder, string connectionString)
     {
+      ArgumentUtility.CheckNotNull ("innerScriptBuilder", innerScriptBuilder);
       ArgumentUtility.CheckNotNull ("connectionString", connectionString);
 
+      _innerScriptBuilder = innerScriptBuilder;
       _connectionString = connectionString;
+    }
+
+    public IScriptBuilder InnerScriptBuilder
+    {
+      get { return _innerScriptBuilder; }
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)
     {
-      //Nothing to do
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+
+      _innerScriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
     public ScriptElementCollection GetCreateScript ()
     {
       var createScriptElements = new ScriptElementCollection ();
       createScriptElements.AddElement (new ScriptStatement ("USE " + GetDatabaseName()));
+      foreach (var scriptElement in _innerScriptBuilder.GetCreateScript ().Elements)
+        createScriptElements.AddElement (scriptElement);
 
       return createScriptElements;
     }
@@ -54,6 +66,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     {
       var dropScriptElements = new ScriptElementCollection ();
       dropScriptElements.AddElement (new ScriptStatement ("USE " + GetDatabaseName ()));
+      foreach (var scriptElement in _innerScriptBuilder.GetDropScript ().Elements)
+        dropScriptElements.AddElement (scriptElement);
 
       return dropScriptElements;
     }
