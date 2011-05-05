@@ -146,11 +146,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.That (result, Is.TypeOf (typeof (CompositeScriptBuilder)));
       Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (result.ScriptBuilders[0], Is.SameAs (tableBuilderStub));
-      Assert.That (result.ScriptBuilders[1], Is.SameAs (constraintBuilderStub));
-      Assert.That (result.ScriptBuilders[2], Is.SameAs (viewBuilderStub));
-      Assert.That (result.ScriptBuilders[3], Is.SameAs (indexBuilderStub));
-      Assert.That (result.ScriptBuilders[4], Is.SameAs (synonymBuilderStub));
+      Assert.That (
+          result.ScriptBuilders,
+          Is.EqualTo (
+              new IScriptBuilder[]
+              {
+                  tableBuilderStub,
+                  constraintBuilderStub,
+                  viewBuilderStub,
+                  indexBuilderStub,
+                  synonymBuilderStub
+              }));
     }
 
     [Test]
