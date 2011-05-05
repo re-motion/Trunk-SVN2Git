@@ -17,6 +17,8 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -27,14 +29,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataContainerMap) dataManager.DataContainers;
     }
 
-    public static RelationEndPointManager GetRelationEndPointMap (IDataManager dataManager)
+    public static RelationEndPointManager GetRelationEndPointManager (IDataManager dataManager)
     {
-      return (RelationEndPointManager) dataManager.RelationEndPointManager;
+      return (RelationEndPointManager) PrivateInvoke.GetNonPublicField (dataManager, "_relationEndPointManager");
     }
 
     public static void RemoveEndPoint (IDataManager dataManager, RelationEndPointID endPointID)
     {
-      GetRelationEndPointMap (dataManager).RemoveEndPoint (endPointID);
+      GetRelationEndPointManager (dataManager).RemoveEndPoint (endPointID);
+    }
+
+    public static void AddEndPoint (DataManager dataManager, IRelationEndPoint endPoint)
+    {
+      RelationEndPointManagerTestHelper.AddEndPoint (GetRelationEndPointManager (dataManager), endPoint);
     }
   }
 }

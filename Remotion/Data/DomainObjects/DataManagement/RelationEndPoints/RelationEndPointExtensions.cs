@@ -36,9 +36,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       var oppositeDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointManager;
       var id = RelationEndPointID.Create(oppositeObjectID, oppositeDefinition);
-      var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      var oppositeEndPoint = endPoint.ClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
 
       if (!(oppositeEndPoint is T))
       {

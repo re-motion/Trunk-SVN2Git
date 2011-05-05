@@ -32,20 +32,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override void SetUp ()
     {
       base.SetUp ();
-      _relationEndPointManager = (RelationEndPointManager) ClientTransactionMock.DataManager.RelationEndPointManager;
+      _relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
     }
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = 
         "Type 'Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RelationEndPointManager' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
-    public void RelationEndPointMapIsNotSerializable ()
+    public void RelationEndPointManagerIsNotSerializable ()
     {
       Serializer.SerializeAndDeserialize (_relationEndPointManager);
     }
 
     [Test]
-    public void RelationEndPointMapIsFlattenedSerializable ()
+    public void RelationEndPointManagerIsFlattenedSerializable ()
     {
       RelationEndPointManager deserializedManager = FlattenedSerializer.SerializeAndDeserialize (_relationEndPointManager);
       Assert.That (deserializedManager, Is.Not.Null);
@@ -53,12 +53,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void RelationEndPointMap_Content ()
+    public void RelationEndPointManager_Content ()
     {
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       Assert.That (_relationEndPointManager.RelationEndPoints.Count, Is.EqualTo (7));
 
-      var deserializedMap = (RelationEndPointManager) Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointManager;
+      var deserializedMap = DataManagerTestHelper.GetRelationEndPointManager (Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
 
       Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedMap.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));

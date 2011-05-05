@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var unidirectionalEndPointID = RelationEndPointID.Create (client, c => c.ParentClient);
       var unidirectionalEndPoint =
-          (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
+          (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint, mi => { });
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects_SetSame_Bidirectional ()
     {
       var oppositeEndPointID = RelationEndPointID.Create (_relatedObject, e => e.Computer);
-      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+      var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 

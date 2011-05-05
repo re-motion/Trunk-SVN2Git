@@ -30,9 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataContainerMapReadOnlyView DataContainers { get; }
     IRelationEndPointMapReadOnlyView RelationEndPoints { get; }
 
-    // TODO 3649: Remove
-    IRelationEndPointManager RelationEndPointManager { get; }
-
     DomainObjectStateCache DomainObjectStateCache { get; }
 
     void Discard (DataContainer dataContainer);

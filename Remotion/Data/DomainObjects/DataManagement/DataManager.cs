@@ -96,12 +96,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _relationEndPointManager.RelationEndPoints; }
     }
 
-    // TODO 3649: Remove
-    public IRelationEndPointManager RelationEndPointManager
-    {
-      get { return _relationEndPointManager; }
-    }
-
     public DomainObjectStateCache DomainObjectStateCache
     {
       get { return _domainObjectStateCache; }

@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var client = Client.GetObject (DomainObjectIDs.Client1);
       var id = RelationEndPointID.Create (client.ID, definition);
       var endPoint = (IObjectEndPoint)
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (id);
+          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (id);
       new ObjectEndPointSetOneOneCommand (endPoint, Client.NewObject (), mi => { });
     }
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
       var relationEndPointID = RelationEndPointID.Create (OrderItem.GetObject (DomainObjectIDs.OrderItem1).ID, definition);
       var endPoint =
-          (IObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+          (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetOneOneCommand (endPoint, Order.NewObject (), mi => { });
     }
 
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var orderOfOldOrderTicketEndPointID = RelationEndPointID.Create (_oldRelatedObject, ot => ot.Order);
       var orderOfOldOrderTicketEndPoint =
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (orderOfOldOrderTicketEndPointID);
+          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (orderOfOldOrderTicketEndPointID);
 
       Assert.That (steps[1], Is.InstanceOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
       var setOrderOfOldOrderTicketCommand = (ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[1]).DecoratedCommand;
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var orderOfNewOrderTicketEndPointID = RelationEndPointID.Create (_newRelatedObject, ot => ot.Order);
       var orderOfNewOrderTicketEndPoint =
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (orderOfNewOrderTicketEndPointID);
+          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (orderOfNewOrderTicketEndPointID);
 
       Assert.That (steps[2], Is.InstanceOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
       var setOrderOfNewOrderTicketCommand = (ObjectEndPointSetCommand) ((RealObjectEndPointRegistrationCommandDecorator) steps[2]).DecoratedCommand;
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var orderTicketOfOldOrderOfNewOrderTicketEndPointID = RelationEndPointID.Create (_newRelatedObject.Order.ID, _endPoint.Definition);
       var orderTicketOfOldOrderOfNewOrderTicketEndPoint =
-          ClientTransactionMock.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (orderTicketOfOldOrderOfNewOrderTicketEndPointID);
+          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (orderTicketOfOldOrderOfNewOrderTicketEndPointID);
 
       Assert.That (steps[3], Is.InstanceOf (typeof (ObjectEndPointSetCommand)));
       var setOrderTicketOfOldOrderOfNewOrderTicketCommand = ((ObjectEndPointSetCommand) steps[3]);

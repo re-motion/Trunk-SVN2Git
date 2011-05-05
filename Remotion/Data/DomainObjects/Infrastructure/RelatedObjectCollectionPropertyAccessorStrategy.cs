@@ -82,12 +82,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DomainObjectCheckUtility.EnsureNotDeleted (propertyAccessor.DomainObject, transaction);
 
       RelationEndPointID id = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (ICollectionEndPoint) transaction.DataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (id);
+      var endPoint = (ICollectionEndPoint) transaction.DataManager.GetRelationEndPointWithLazyLoad (id);
 
       if (!newCollection.IsAssociatedWith (null) && !newCollection.IsAssociatedWith (endPoint))
         throw new ArgumentException ("The given collection is already associated with an end point.", "value");
 
-      // TODO 3742: Check what these read-only checks are for
       if (newCollection.RequiredItemType != endPoint.Collection.RequiredItemType
           && !newCollection.IsReadOnly
           && !endPoint.Collection.IsReadOnly)

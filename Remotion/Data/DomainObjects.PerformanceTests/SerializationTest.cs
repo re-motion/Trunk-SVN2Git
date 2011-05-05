@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
         ClientTransaction transaction = transactionInitializer();
         DataManager dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");
         dataContainers += dataManager.DataContainers.Count;
-        relationEndPoints += dataManager.RelationEndPointManager.RelationEndPoints.Count;
+        relationEndPoints += dataManager.RelationEndPoints.Count;
 
         serializationStopwatch.Start ();
         byte[] data = Serializer.Serialize (transaction);

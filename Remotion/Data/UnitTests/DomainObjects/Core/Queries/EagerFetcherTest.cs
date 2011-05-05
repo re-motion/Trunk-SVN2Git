@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -33,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class EagerFetcherTest : StandardMappingTest
   {
     private IDataManager _dataManagerMock;
-    private IRelationEndPointManager _relationEndPointMapStub;
     private EagerFetcher _eagerFetcher;
     private IObjectLoader _objectLoaderMock;
 
@@ -60,8 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       base.SetUp();
 
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager>();
-      _relationEndPointMapStub = MockRepository.GenerateStub<IRelationEndPointManager>();
-      _dataManagerMock.Stub ((stub => stub.RelationEndPointManager)).Return (_relationEndPointMapStub);
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader>();
 
       _eagerFetcher = new EagerFetcher();

@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       foreach (var domainObject in domainObjects)
       {
         var oppositeEndPointID = RelationEndPointID.Create (domainObject.ID, endPoint.Definition.GetOppositeEndPointDefinition());
-        var oppositeEndPoint = (IRealObjectEndPoint) dataManager.RelationEndPointManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+        var oppositeEndPoint = (IRealObjectEndPoint) dataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       }
       endPoint.MarkDataComplete (domainObjects);
