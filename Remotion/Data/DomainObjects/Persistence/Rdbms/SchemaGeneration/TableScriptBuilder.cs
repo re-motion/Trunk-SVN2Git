@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public class TableScriptBuilder : IScriptBuilder
   {
     private readonly ITableScriptElementFactory _elementFactory;
+    private readonly ICommentScriptElementFactory _commentFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
 
@@ -60,15 +61,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    public TableScriptBuilder (ITableScriptElementFactory elementFactory)
+    public TableScriptBuilder (ITableScriptElementFactory elementFactory, ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("elementFactory", elementFactory);
+      ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
 
       _elementFactory = elementFactory;
+      _commentFactory = commentFactory;
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (new ScriptStatement ("-- Create all tables"));
+      _createScriptElements.AddElement (commentFactory.GetCommentElement ("Create all tables"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all tables"));
+      _dropScriptElements.AddElement (commentFactory.GetCommentElement ("Drop all tables"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

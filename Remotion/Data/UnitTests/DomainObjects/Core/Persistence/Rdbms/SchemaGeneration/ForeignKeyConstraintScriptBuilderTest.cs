@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -44,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _factoryStub = MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory>();
 
-      _builder = new ForeignKeyConstraintScriptBuilder (_factoryStub);
+      _builder = new ForeignKeyConstraintScriptBuilder (_factoryStub, new SqlCommentScriptElementFactory());
 
       _tableName = new EntityNameDefinition (null, "Table");
       _constraint1 = new ForeignKeyConstraintDefinition ("FK1", _tableName, new SimpleColumnDefinition[0], new SimpleColumnDefinition[0]);

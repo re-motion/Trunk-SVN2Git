@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -43,71 +44,72 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _tableViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<TableDefinition>>();
-      _unionViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>> ();
-      _filterViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>> ();
-      
-      _builder = new ViewScriptBuilder(_tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub);
+      _unionViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>>();
+      _filterViewElementFactoryStub = MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>>();
+
+      _builder = new ViewScriptBuilder (
+          _tableViewElementFactoryStub, _unionViewElementFactoryStub, _filterViewElementFactoryStub, new SqlCommentScriptElementFactory());
 
       _tableDefinition1 = new TableDefinition (
-         SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition (null, "Table1"),
-         new EntityNameDefinition (null, "TableView1"),
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new IIndexDefinition[0],
-         new EntityNameDefinition[0]);
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Table1"),
+          new EntityNameDefinition (null, "TableView1"),
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
       _tableDefinition2 = new TableDefinition (
-         SchemaGenerationFirstStorageProviderDefinition,
-         new EntityNameDefinition (null, "Table2"),
-         new EntityNameDefinition (null, "TableView2"),
-         new SimpleColumnDefinition[0],
-         new ITableConstraintDefinition[0],
-         new IIndexDefinition[0],
-         new EntityNameDefinition[0]);
-       _unionViewDefinition1 = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "Table2"),
+          new EntityNameDefinition (null, "TableView2"),
+          new SimpleColumnDefinition[0],
+          new ITableConstraintDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+      _unionViewDefinition1 = new UnionViewDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
           new EntityNameDefinition (null, "UnionView1"),
           new[] { _tableDefinition1 },
           new SimpleColumnDefinition[0],
           new IIndexDefinition[0],
           new EntityNameDefinition[0]);
-       _unionViewDefinition2 = new UnionViewDefinition (
-           SchemaGenerationFirstStorageProviderDefinition,
-           new EntityNameDefinition (null, "UnionView2"),
-           new[] { _tableDefinition2 },
-           new SimpleColumnDefinition[0],
-           new IIndexDefinition[0],
-           new EntityNameDefinition[0]);
-       _filterViewDefinition1 = new FilterViewDefinition (
-           SchemaGenerationFirstStorageProviderDefinition,
-           new EntityNameDefinition (null, "FilterView1"),
-           _tableDefinition1,
-           new[] { "ClassID" },
-           new SimpleColumnDefinition[0],
-           new IIndexDefinition[0],
-           new EntityNameDefinition[0]);
-       _filterViewDefinition2 = new FilterViewDefinition (
-            SchemaGenerationFirstStorageProviderDefinition,
-            new EntityNameDefinition (null, "FilterView2"),
-            _tableDefinition2,
-            new[] { "ClassID" },
-            new SimpleColumnDefinition[0],
-            new IIndexDefinition[0],
-            new EntityNameDefinition[0]);
+      _unionViewDefinition2 = new UnionViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "UnionView2"),
+          new[] { _tableDefinition2 },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+      _filterViewDefinition1 = new FilterViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "FilterView1"),
+          _tableDefinition1,
+          new[] { "ClassID" },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
+      _filterViewDefinition2 = new FilterViewDefinition (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new EntityNameDefinition (null, "FilterView2"),
+          _tableDefinition2,
+          new[] { "ClassID" },
+          new SimpleColumnDefinition[0],
+          new IIndexDefinition[0],
+          new EntityNameDefinition[0]);
 
-       _fakeElement1 = MockRepository.GenerateStub<IScriptElement> ();
-       _fakeElement2 = MockRepository.GenerateStub<IScriptElement> ();
-       _fakeElement3 = MockRepository.GenerateStub<IScriptElement> ();
+      _fakeElement1 = MockRepository.GenerateStub<IScriptElement>();
+      _fakeElement2 = MockRepository.GenerateStub<IScriptElement>();
+      _fakeElement3 = MockRepository.GenerateStub<IScriptElement>();
     }
 
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -118,13 +120,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
-      _tableViewElementFactoryStub.Stub(stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
+      _tableViewElementFactoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
       _tableViewElementFactoryStub.Stub (stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement2);
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -146,14 +148,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
       Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
       Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
-      
+
       Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop all views"));
       Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
@@ -168,8 +170,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -191,8 +193,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -213,8 +215,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -236,8 +238,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -264,8 +266,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));
@@ -286,8 +288,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create a view for every class"));

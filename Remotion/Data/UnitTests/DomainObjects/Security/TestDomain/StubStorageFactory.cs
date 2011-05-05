@@ -121,18 +121,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     private TableScriptBuilder CreateTableBuilder ()
     {
-      return new TableScriptBuilder (new SqlTableScriptElementFactory ());
+      return new TableScriptBuilder (new SqlTableScriptElementFactory (), new SqlCommentScriptElementFactory ());
     }
 
     private ViewScriptBuilder CreateViewBuilder ()
     {
       return new ViewScriptBuilder (
-          new SqlTableViewScriptElementFactory (), new SqlUnionViewScriptElementFactory (), new SqlFilterViewScriptElementFactory ());
+          new SqlTableViewScriptElementFactory(),
+          new SqlUnionViewScriptElementFactory(),
+          new SqlFilterViewScriptElementFactory(),
+          new SqlCommentScriptElementFactory());
     }
 
     private ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
     {
-      return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory ());
+      return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
     private IndexScriptBuilder CreateIndexBuilder ()
@@ -140,14 +143,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return
           new IndexScriptBuilder (
               new SqlIndexScriptElementFactory (
-                  new SqlIndexDefinitionScriptElementFactory (),
-                  new SqlPrimaryXmlIndexDefinitionScriptElementFactory (),
-                  new SqlSecondaryXmlIndexDefinitionScriptElementFactory ()));
+                  new SqlIndexDefinitionScriptElementFactory(),
+                  new SqlPrimaryXmlIndexDefinitionScriptElementFactory(),
+                  new SqlSecondaryXmlIndexDefinitionScriptElementFactory()),
+              new SqlCommentScriptElementFactory());
     }
 
     private SynonymScriptBuilder CreateSynonymBuilder ()
     {
-      return new SynonymScriptBuilder (new SqlSynonymScriptElementFactory (), new SqlSynonymScriptElementFactory (), new SqlSynonymScriptElementFactory ());
+      return new SynonymScriptBuilder (
+          new SqlSynonymScriptElementFactory(),
+          new SqlSynonymScriptElementFactory(),
+          new SqlSynonymScriptElementFactory(),
+          new SqlCommentScriptElementFactory());
     }
   }
 }

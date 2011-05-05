@@ -186,20 +186,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageNameProvider, columnDefinitionResolver, columnDefinitionFactory, storageProviderDefinitionFinder);
     }
 
+    protected virtual IScriptBuilder CreateDatabaseSelectionBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      return new SqlDatabaseSelectionScriptElementBuilder (storageProviderDefinition.ConnectionString);
+    }
+
     protected virtual TableScriptBuilder CreateTableBuilder ()
     {
-      return new TableScriptBuilder (new SqlTableScriptElementFactory());
+      return new TableScriptBuilder (new SqlTableScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
     protected virtual ViewScriptBuilder CreateViewBuilder ()
     {
       return new ViewScriptBuilder (
-          new SqlTableViewScriptElementFactory(), new SqlUnionViewScriptElementFactory(), new SqlFilterViewScriptElementFactory());
+          new SqlTableViewScriptElementFactory(),
+          new SqlUnionViewScriptElementFactory(),
+          new SqlFilterViewScriptElementFactory(),
+          new SqlCommentScriptElementFactory());
     }
 
     protected virtual ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
     {
-      return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory());
+      return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
     protected virtual IndexScriptBuilder CreateIndexBuilder ()
@@ -208,12 +218,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlIndexScriptElementFactory (
               new SqlIndexDefinitionScriptElementFactory(),
               new SqlPrimaryXmlIndexDefinitionScriptElementFactory(),
-              new SqlSecondaryXmlIndexDefinitionScriptElementFactory()));
+              new SqlSecondaryXmlIndexDefinitionScriptElementFactory()),
+          new SqlCommentScriptElementFactory());
     }
 
     protected virtual SynonymScriptBuilder CreateSynonymBuilder ()
     {
-      return new SynonymScriptBuilder(new SqlSynonymScriptElementFactory(), new SqlSynonymScriptElementFactory(), new SqlSynonymScriptElementFactory());
+      return new SynonymScriptBuilder (
+          new SqlSynonymScriptElementFactory(),
+          new SqlSynonymScriptElementFactory(),
+          new SqlSynonymScriptElementFactory(),
+          new SqlCommentScriptElementFactory());
     }
   }
 }

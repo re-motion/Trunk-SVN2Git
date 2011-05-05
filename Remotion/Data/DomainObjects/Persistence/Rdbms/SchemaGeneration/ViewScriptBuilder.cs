@@ -65,19 +65,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     public ViewScriptBuilder (
         IViewScriptElementFactory<TableDefinition> tableViewElementFactory,
         IViewScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
-        IViewScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
+        IViewScriptElementFactory<FilterViewDefinition> filterViewElementFactory,
+        ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
       ArgumentUtility.CheckNotNull ("filterViewElementFactory", filterViewElementFactory);
+      ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
       
       _tableViewElementFactory = tableViewElementFactory;
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (new ScriptStatement ("-- Create a view for every class"));
+      _createScriptElements.AddElement (commentFactory.GetCommentElement("Create a view for every class"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all views"));
+      _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all views"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

@@ -31,13 +31,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     private readonly IForeignKeyConstraintScriptElementFactory _foreignKeyConstraintElementFactory;
     private readonly ScriptElementCollection _createScriptElements;
     private readonly ScriptElementCollection _dropScriptElements;
+    private readonly ICommentScriptElementFactory _commentFactory;
 
     private class EntityDefinitionVisitor : IEntityDefinitionVisitor
     {
       private readonly ForeignKeyConstraintScriptBuilder _builder;
-
+      
       public EntityDefinitionVisitor (ForeignKeyConstraintScriptBuilder builder)
       {
+        ArgumentUtility.CheckNotNull ("builder", builder);
+
         _builder = builder;
       }
 
@@ -63,15 +66,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     }
 
     public ForeignKeyConstraintScriptBuilder (
-        IForeignKeyConstraintScriptElementFactory foreignKeyConstraintElementFactory)
+        IForeignKeyConstraintScriptElementFactory foreignKeyConstraintElementFactory, ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("foreignKeyConstraintElementFactory", foreignKeyConstraintElementFactory);
+      ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
 
       _foreignKeyConstraintElementFactory = foreignKeyConstraintElementFactory;
+      _commentFactory = commentFactory;
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (new ScriptStatement ("-- Create foreign key constraints for tables that were created above"));
+      _createScriptElements.AddElement (_commentFactory.GetCommentElement ("Create foreign key constraints for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop foreign keys of all tables"));
+      _dropScriptElements.AddElement (_commentFactory.GetCommentElement("Drop foreign keys of all tables"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

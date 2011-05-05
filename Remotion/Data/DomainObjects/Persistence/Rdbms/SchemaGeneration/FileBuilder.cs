@@ -149,6 +149,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           dropScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString());
     }
 
+    //TODO: static, use in static build method, change _scriptBuilderFactory and SqlStorageObjectFactory to return IScriptElementFactory
     protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (
         IEnumerable<ClassDefinition> classDefinitions,
         RdbmsProviderDefinition rdbmsProviderDefinition)

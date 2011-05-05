@@ -230,6 +230,7 @@
     <Compile Include="Persistence\Rdbms\Model\IndexOrder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\CompositeScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ForeignKeyConstraintScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ICommentScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IForeignKeyConstraintScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilder.cs" />
@@ -245,6 +246,8 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\ISqlIndexDefinitionScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlCommentScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlDatabaseSelectionScriptElementBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlElementFactoryBase.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlFilterViewScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlForeignKeyConstraintScriptElementFactory.cs" />

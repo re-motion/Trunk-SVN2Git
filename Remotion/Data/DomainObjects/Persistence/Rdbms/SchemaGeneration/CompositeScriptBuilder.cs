@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var script = new List<ScriptStatement> ();
       foreach (var partialScript in elementCollection)
         partialScript.AppendToScript (script);
- 
+
       _sqlDialect.AdjustForConnectionString (script, _rdbmsProviderDefinition.ConnectionString);
 
       var scriptElementCollection = new ScriptElementCollection();

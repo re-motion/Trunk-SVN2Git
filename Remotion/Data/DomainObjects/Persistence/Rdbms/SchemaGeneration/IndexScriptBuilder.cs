@@ -61,15 +61,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       }
     }
 
-    public IndexScriptBuilder (IIndexScriptElementFactory indexScriptElementFactory)
+    public IndexScriptBuilder (IIndexScriptElementFactory indexScriptElementFactory, ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("indexScriptElementFactory", indexScriptElementFactory);
+      ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
 
       _indexScriptElementFactory = indexScriptElementFactory;
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (new ScriptStatement ("-- Create indexes for tables that were created above"));
+      _createScriptElements.AddElement (commentFactory.GetCommentElement("Create indexes for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all indexes"));
+      _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all indexes"));
     }
 
     public void AddEntityDefinition (IEntityDefinition entityDefinition)

@@ -19,15 +19,15 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
 {
   [TestFixture]
   public class TableScriptBuilderTest : SchemaGenerationTestBase
   {
-    private ITableScriptElementFactory _factoryStub;
+    private ITableScriptElementFactory _tableScriptfactoryStub;
     private TableScriptBuilder _builder;
     private TableDefinition _tableDefinition1;
     private TableDefinition _tableDefinition2;
@@ -40,8 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       base.SetUp();
 
-      _factoryStub = MockRepository.GenerateStub<ITableScriptElementFactory>();
-      _builder = new TableScriptBuilder (_factoryStub);
+      _tableScriptfactoryStub = MockRepository.GenerateStub<ITableScriptElementFactory>();
+      _builder = new TableScriptBuilder (_tableScriptfactoryStub, new SqlCommentScriptElementFactory());
 
       _tableDefinition1 = new TableDefinition (
           SchemaGenerationFirstStorageProviderDefinition,
@@ -88,8 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_OneTableDefinitionAdded ()
     {
-      _factoryStub.Stub(stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
-      _factoryStub.Stub(stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement2);
+      _tableScriptfactoryStub.Stub(stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
+      _tableScriptfactoryStub.Stub(stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement2);
       
       _builder.AddEntityDefinition (_tableDefinition1);
 
@@ -108,12 +108,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_SeveralTableDefinitionsAdded ()
     {
-      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
-      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement3);
-      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition2)).Return (_fakeElement2);
-      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition2)).Return (_fakeElement2);
-      _factoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition3)).Return (_fakeElement3);
-      _factoryStub.Stub (stub => stub.GetDropElement (_tableDefinition3)).Return (_fakeElement1);
+      _tableScriptfactoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition1)).Return (_fakeElement1);
+      _tableScriptfactoryStub.Stub (stub => stub.GetDropElement (_tableDefinition1)).Return (_fakeElement3);
+      _tableScriptfactoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition2)).Return (_fakeElement2);
+      _tableScriptfactoryStub.Stub (stub => stub.GetDropElement (_tableDefinition2)).Return (_fakeElement2);
+      _tableScriptfactoryStub.Stub (stub => stub.GetCreateElement (_tableDefinition3)).Return (_fakeElement3);
+      _tableScriptfactoryStub.Stub (stub => stub.GetDropElement (_tableDefinition3)).Return (_fakeElement1);
       
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);

@@ -121,23 +121,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void CreateSchemaFileBuilder ()
     {
-      var tableBuilderStub = MockRepository.GenerateStub<TableScriptBuilder> (MockRepository.GenerateStub<ITableScriptElementFactory>());
+      var tableBuilderStub = MockRepository.GenerateStub<TableScriptBuilder> (
+          MockRepository.GenerateStub<ITableScriptElementFactory>(), new SqlCommentScriptElementFactory());
       var viewBuilderStub = MockRepository.GenerateStub<ViewScriptBuilder> (
           MockRepository.GenerateStub<IViewScriptElementFactory<TableDefinition>>(),
           MockRepository.GenerateStub<IViewScriptElementFactory<UnionViewDefinition>>(),
-          MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>>());
+          MockRepository.GenerateStub<IViewScriptElementFactory<FilterViewDefinition>>(),
+          new SqlCommentScriptElementFactory ());
       var constraintBuilderStub =
-          MockRepository.GenerateStub<ForeignKeyConstraintScriptBuilder> (MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory>());
+          MockRepository.GenerateStub<ForeignKeyConstraintScriptBuilder> (
+              MockRepository.GenerateStub<IForeignKeyConstraintScriptElementFactory> (), new SqlCommentScriptElementFactory ());
       var indexScriptElementFactoryStub = MockRepository.GenerateStub<SqlIndexScriptElementFactory> (
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlIndexDefinition>>(),
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlPrimaryXmlIndexDefinition>>(),
           MockRepository.GenerateStub<ISqlIndexDefinitionScriptElementFactory<SqlSecondaryXmlIndexDefinition>>());
-      var indexBuilderStub = MockRepository.GenerateStub<IndexScriptBuilder> (indexScriptElementFactoryStub);
+      var indexBuilderStub = MockRepository.GenerateStub<IndexScriptBuilder> (indexScriptElementFactoryStub, new SqlCommentScriptElementFactory());
       var synonymBuilderStub =
           MockRepository.GenerateStub<SynonymScriptBuilder> (
               MockRepository.GenerateStub<ISynonymScriptElementFactory<TableDefinition>>(),
               MockRepository.GenerateStub<ISynonymScriptElementFactory<UnionViewDefinition>>(),
-              MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>());
+              MockRepository.GenerateStub<ISynonymScriptElementFactory<FilterViewDefinition>>(),
+              new SqlCommentScriptElementFactory ());
 
       var sqlProviderFactory = new TestableSqlStorageObjectFactory (
           tableBuilderStub, viewBuilderStub, constraintBuilderStub, indexBuilderStub, synonymBuilderStub);

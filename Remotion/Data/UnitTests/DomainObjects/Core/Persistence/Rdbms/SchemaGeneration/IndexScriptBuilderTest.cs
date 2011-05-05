@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration
@@ -47,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _indexScriptElementFactoryStub = MockRepository.GenerateStub<IIndexScriptElementFactory> ();
 
-      _builder = new IndexScriptBuilder (_indexScriptElementFactoryStub);
+      _builder = new IndexScriptBuilder (_indexScriptElementFactoryStub, new SqlCommentScriptElementFactory ());
 
       _indexDefinition1 = MockRepository.GenerateStub<IIndexDefinition>();
       _indexDefinition2 = MockRepository.GenerateStub<IIndexDefinition> ();

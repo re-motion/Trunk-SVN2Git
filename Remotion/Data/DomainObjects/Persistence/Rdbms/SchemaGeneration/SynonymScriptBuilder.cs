@@ -35,19 +35,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     public SynonymScriptBuilder (
         ISynonymScriptElementFactory<TableDefinition> tableViewElementFactory,
         ISynonymScriptElementFactory<UnionViewDefinition> unionViewElementFactory,
-        ISynonymScriptElementFactory<FilterViewDefinition> filterViewElementFactory)
+        ISynonymScriptElementFactory<FilterViewDefinition> filterViewElementFactory,
+        ICommentScriptElementFactory commentFactory)
     {
       ArgumentUtility.CheckNotNull ("tableViewElementFactory", tableViewElementFactory);
       ArgumentUtility.CheckNotNull ("unionViewElementFactory", unionViewElementFactory);
       ArgumentUtility.CheckNotNull ("filterViewElementFactory", filterViewElementFactory);
+      ArgumentUtility.CheckNotNull ("commentFactory", commentFactory);
 
       _tableViewElementFactory = tableViewElementFactory;
       _unionViewElementFactory = unionViewElementFactory;
       _filterViewElementFactory = filterViewElementFactory;
       _createScriptElements = new ScriptElementCollection();
-      _createScriptElements.AddElement (new ScriptStatement ("-- Create synonyms for tables that were created above"));
+      _createScriptElements.AddElement (commentFactory.GetCommentElement("Create synonyms for tables that were created above"));
       _dropScriptElements = new ScriptElementCollection();
-      _dropScriptElements.AddElement (new ScriptStatement ("-- Drop all synonyms"));
+      _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all synonyms"));
     }
 
     private class EntityDefinitionVisitor : IEntityDefinitionVisitor
