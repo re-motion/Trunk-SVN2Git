@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -52,38 +52,43 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       MarkCollectionEndPointsComplete (relationEndPointDefinition, dataManager, originatingObjects, groupRelatedObjects);
     }
 
-    private MultiDictionary<ObjectID, DomainObject> GroupRelatedObjectsByForeignKey (
+    private ILookup<ObjectID, DomainObject> GroupRelatedObjectsByForeignKey (
         IEnumerable<DomainObject> relatedObjects, 
         IRelationEndPointDefinition relationEndPointDefinition,
         IDataManager dataManager)
     {
-      var result = new MultiDictionary<ObjectID, DomainObject> ();
       var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
 
-      foreach (var relatedObject in relatedObjects)
-      {
-        if (relatedObject != null)
-        {
-          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
+      // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
+      // objects with the originating objects.
+      // Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
+      var relatedObjectsWithForeignKey =
+          from relatedObject in relatedObjects
+          where relatedObject != null
+          let dataContainer =
+              CheckRelatedObjectAndGetDataContainer (relatedObject, relationEndPointDefinition, oppositeEndPointDefinition, dataManager)
+          let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyName]
+          let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
+          select new { originatingObjectID, relatedObject };
+      
+      return relatedObjectsWithForeignKey.ToLookup (k => k.originatingObjectID, k => k.relatedObject);
+    }
 
-          // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query
-          var dataContainer = dataManager.GetDataContainerWithoutLoading (relatedObject.ID);
-          Assertion.IsNotNull (dataContainer);
-
-          var propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyName];
-          var originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current);
-          if (originatingObjectID != null)
-            result.Add (originatingObjectID, relatedObject);
-        }
-      }
-      return result;
+    private DataContainer CheckRelatedObjectAndGetDataContainer (
+        DomainObject relatedObject,
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        IRelationEndPointDefinition oppositeEndPointDefinition, 
+        IDataManager dataManager)
+    {
+      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
+      return dataManager.GetDataContainerWithoutLoading (relatedObject.ID);
     }
 
     private void MarkCollectionEndPointsComplete (
        IRelationEndPointDefinition relationEndPointDefinition,
        IDataManager dataManager,
        IEnumerable<DomainObject> originatingObjects,
-       MultiDictionary<ObjectID, DomainObject> groupedRelatedObjects)
+       ILookup<ObjectID, DomainObject> groupedRelatedObjects)
     {
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
       foreach (var originalObject in originatingObjects)
