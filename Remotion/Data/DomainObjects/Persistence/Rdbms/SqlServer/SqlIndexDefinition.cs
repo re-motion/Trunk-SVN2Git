@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
     private readonly string _indexName;
     private readonly EntityNameDefinition _objectName;
     private readonly ReadOnlyCollection<SqlIndexedColumnDefinition> _columns;
-    private readonly ReadOnlyCollection<IColumnDefinition> _includedColumns;
+    private readonly ReadOnlyCollection<SimpleColumnDefinition> _includedColumns;
     private readonly bool? _isClustered;
     private readonly bool? _isUnique;
     private readonly bool? _ignoreDupKey;
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
         string indexName,
         EntityNameDefinition objectName,
         IEnumerable<SqlIndexedColumnDefinition> columns,
-        IEnumerable<IColumnDefinition> includedColumns = null,
+        IEnumerable<SimpleColumnDefinition> includedColumns = null,
         bool? isClustered = false,
         bool? isUnique = false,
         bool? ignoreDupKey = null,
@@ -86,8 +86,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return _columns; }
     }
 
-    //TODO RM-3975 SimpleColumn
-    public ReadOnlyCollection<IColumnDefinition> IncludedColumns
+    public ReadOnlyCollection<SimpleColumnDefinition> IncludedColumns
     {
       get { return _includedColumns; }
     }

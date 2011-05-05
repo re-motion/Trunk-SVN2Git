@@ -67,13 +67,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       if (primaryKeyConstraint == null)
         return string.Empty;
 
-      //TODO RM-3975
-      var columnNameList = SeparatedStringBuilder.Build (", ", primaryKeyConstraint.Columns.Select (c => "[" + c.Name + "]"));
       return string.Format (
           ",\r\n  CONSTRAINT [{0}] PRIMARY KEY {1} ({2})",
           primaryKeyConstraint.ConstraintName,
           primaryKeyConstraint.IsClustered ? "CLUSTERED" : "NONCLUSTERED",
-          columnNameList);
+          GetColumnList (primaryKeyConstraint.Columns));
     }
   }
 }

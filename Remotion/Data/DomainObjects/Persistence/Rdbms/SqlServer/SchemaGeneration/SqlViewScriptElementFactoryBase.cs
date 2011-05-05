@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -44,19 +42,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           entityDefinition.ViewName.EntityName
           ));
     }
-
-
-
+    
     protected virtual bool UseSchemaBinding (T entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
       return true;
-    }
-
-    protected string GetColumnList (IEnumerable<SimpleColumnDefinition> columns)
-    {
-      ArgumentUtility.CheckNotNull ("columns", columns);
-      return SeparatedStringBuilder.Build (", ", columns, cd => cd != null ? ("["+ cd.Name + "]") : "NULL");
     }
   }
 }
