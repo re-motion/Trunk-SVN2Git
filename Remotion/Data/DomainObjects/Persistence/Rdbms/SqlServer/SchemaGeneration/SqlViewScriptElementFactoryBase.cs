@@ -28,7 +28,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public abstract class SqlViewScriptElementFactoryBase<T> : SqlElementFactoryBase, IViewScriptElementFactory<T> where T : IEntityDefinition
   {
-    public abstract IScriptElement GetCreateElement (T entityDefinition);
+    public IScriptElement GetCreateElement (T entityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+
+      var statements = new ScriptElementCollection ();
+      statements.AddElement (CreateBatchDelimiterStatement ());
+      statements.AddElement (
+          new ScriptStatement (
+              string.Format (
+                  "CREATE VIEW [{0}].[{1}] ({2})\r\n"
+                  + "  {3}AS\r\n{4}{5}",
+                  entityDefinition.ViewName.SchemaName ?? DefaultSchema,
+                  entityDefinition.ViewName.EntityName,
+                  GetColumnList (entityDefinition.Columns),
+                  UseSchemaBinding (entityDefinition) ? "WITH SCHEMABINDING " : string.Empty,
+                  GetSelectStatements(entityDefinition),
+                  WithCheckOption(entityDefinition) ? "\r\n  WITH CHECK OPTION" : string.Empty)));
+      statements.AddElement (CreateBatchDelimiterStatement ());
+      return statements;
+    }
 
     public virtual IScriptElement GetDropElement (T entityDefinition)
     {
@@ -42,6 +61,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           entityDefinition.ViewName.EntityName
           ));
     }
+
+    protected abstract string GetSelectStatements (T entityDefinition);
+    protected abstract bool WithCheckOption (T entityDefinition);
     
     protected virtual bool UseSchemaBinding (T entityDefinition)
     {

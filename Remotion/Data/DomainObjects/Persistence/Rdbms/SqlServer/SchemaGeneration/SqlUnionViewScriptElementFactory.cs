@@ -17,7 +17,6 @@
 using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -27,31 +26,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlUnionViewScriptElementFactory : SqlViewScriptElementFactoryBase<UnionViewDefinition>
   {
-    public override IScriptElement GetCreateElement (UnionViewDefinition unionViewDefinition)
+    protected override string GetSelectStatements (UnionViewDefinition unionViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
-      var statements = new ScriptElementCollection ();
-      statements.AddElement (CreateBatchDelimiterStatement());
-
-      var createViewStringBuilder = new StringBuilder();
-      createViewStringBuilder.AppendFormat (
-          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
-          + "  {3}AS\r\n",
-          unionViewDefinition.ViewName.SchemaName ?? DefaultSchema,
-          unionViewDefinition.ViewName.EntityName,
-          GetColumnList (unionViewDefinition.Columns),
-          UseSchemaBinding (unionViewDefinition) ? "WITH SCHEMABINDING " : string.Empty);
-
-      int numberOfSelects = 0;
+      var createSelectStringBuilder = new StringBuilder ();
+      
+      var numberOfSelects = 0;
       foreach (var tableDefinition in unionViewDefinition.GetAllTables ())
       {
         if (numberOfSelects > 0)
-          createViewStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
+          createSelectStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
 
         var availableTableColumns = tableDefinition.Columns;
         var unionedColumns = unionViewDefinition.CreateFullColumnList (availableTableColumns);
-        createViewStringBuilder.AppendFormat (
+        createSelectStringBuilder.AppendFormat (
             "  SELECT {0}\r\n"
             + "    FROM [{1}].[{2}]",
             GetColumnList (unionedColumns),
@@ -61,11 +50,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
         numberOfSelects++;
       }
       if (numberOfSelects == 1)
-        createViewStringBuilder.Append ("\r\n  WITH CHECK OPTION");
-      statements.AddElement (new ScriptStatement (createViewStringBuilder.ToString()));
+        createSelectStringBuilder.Append ("\r\n  WITH CHECK OPTION");
+      
+      return createSelectStringBuilder.ToString ();
+    }
 
-      statements.AddElement (CreateBatchDelimiterStatement());
-      return statements;
+    protected override bool WithCheckOption (UnionViewDefinition unionViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
+
+      return false;
     }
   }
 }

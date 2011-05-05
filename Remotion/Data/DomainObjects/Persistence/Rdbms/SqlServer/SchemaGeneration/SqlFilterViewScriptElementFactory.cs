@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -28,29 +27,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlFilterViewScriptElementFactory : SqlViewScriptElementFactoryBase<FilterViewDefinition>
   {
-    public override IScriptElement GetCreateElement (FilterViewDefinition filterViewDefinition)
+    protected override string GetSelectStatements (FilterViewDefinition filterViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
-      var statements = new ScriptElementCollection();
-      statements.AddElement (CreateBatchDelimiterStatement());
-      statements.AddElement(new ScriptStatement(
-       string.Format (
-          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
-          + "  {3}AS\r\n"
-          + "  SELECT {2}\r\n"
-          + "    FROM [{4}].[{5}]\r\n"
-          + "    WHERE [ClassID] IN ({6})\r\n"
-          + "  WITH CHECK OPTION",
-          filterViewDefinition.ViewName.SchemaName ?? DefaultSchema,
-          filterViewDefinition.ViewName.EntityName,
-          GetColumnList (filterViewDefinition.Columns),
-          UseSchemaBinding (filterViewDefinition) ? "WITH SCHEMABINDING " : string.Empty,
-          filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? DefaultSchema,
-          filterViewDefinition.GetBaseTable ().TableName.EntityName,
-          GetClassIDList (filterViewDefinition.ClassIDs))));
-      statements.AddElement (CreateBatchDelimiterStatement());
-      return statements;
+      return string.Format (
+            "  SELECT {0}\r\n"
+          + "    FROM [{1}].[{2}]\r\n"
+          + "    WHERE [ClassID] IN ({3})",
+            GetColumnList (filterViewDefinition.Columns),
+            filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? DefaultSchema,
+            filterViewDefinition.GetBaseTable ().TableName.EntityName,
+            GetClassIDList (filterViewDefinition.ClassIDs));
+    }
+
+    protected override bool WithCheckOption (FilterViewDefinition filterViewDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
+
+      return true;
     }
 
     private string GetClassIDList (IEnumerable<string> classIDs)

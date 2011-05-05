@@ -16,8 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
@@ -27,27 +25,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
   /// </summary>
   public class SqlTableViewScriptElementFactory : SqlViewScriptElementFactoryBase<TableDefinition>
   {
-    public override IScriptElement GetCreateElement (TableDefinition tableDefinition)
+    protected override string GetSelectStatements (TableDefinition tableDefinition)
     {
       ArgumentUtility.CheckNotNull ("tableDefinition", tableDefinition);
 
-      var statements = new ScriptElementCollection ();
-      statements.AddElement (CreateBatchDelimiterStatement());
-      statements.AddElement (new ScriptStatement (
-       string.Format (
-          "CREATE VIEW [{0}].[{1}] ({2})\r\n"
-          + "  {3}AS\r\n"
-          + "  SELECT {2}\r\n"
-          + "    FROM [{4}].[{5}]\r\n"
-          + "  WITH CHECK OPTION",
-          tableDefinition.ViewName.SchemaName ?? DefaultSchema,
-          tableDefinition.ViewName.EntityName,
+      return string.Format (
+          "  SELECT {0}\r\n    FROM [{1}].[{2}]",
           GetColumnList (tableDefinition.Columns),
-          UseSchemaBinding (tableDefinition) ? "WITH SCHEMABINDING " : string.Empty,
           tableDefinition.TableName.SchemaName ?? DefaultSchema,
-          tableDefinition.TableName.EntityName)));
-      statements.AddElement (CreateBatchDelimiterStatement());
-      return statements;
+          tableDefinition.TableName.EntityName);
+    }
+
+    protected override bool WithCheckOption (TableDefinition tableDefinition)
+    {
+      return true;
     }
   }
 }
