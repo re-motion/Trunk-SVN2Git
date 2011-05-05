@@ -15,11 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
 using Remotion.Utilities;
+using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 {
@@ -49,10 +52,57 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
             "relationEndPointDefinition");
       }
 
-      // TODO 3646: Register data
-
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
-      CheckRelatedObjects (relationEndPointDefinition, relatedObjects);
+
+      var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataManager);
+      RegisterEndPointData (relationEndPointDefinition, dataManager, originatingObjects, groupedRelatedObjects);
+    }
+
+    private IDictionary<ObjectID, DomainObject> CorrelateRelatedObjects (
+        IEnumerable<DomainObject> relatedObjects,
+        VirtualRelationEndPointDefinition relationEndPointDefinition,
+        IDataManager dataManager)
+    {
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, dataManager);
+      var dictionary = new Dictionary<ObjectID, DomainObject>();
+      foreach (var tuple in relatedObjectsWithForeignKey.Where (tuple => tuple.Item1 != null))
+      {
+        try
+        {
+          dictionary.Add (tuple.Item1, tuple.Item2);
+        }
+        catch (ArgumentException ex)
+        {
+          var message = string.Format (
+              "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
+              + "Object 1: '{0}'. Object 2: '{1}'. Foreign key property: '{2}'",
+              dictionary[tuple.Item1].ID,
+              tuple.Item2,
+              relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyName);
+          throw new InvalidOperationException (message, ex);
+        }
+      }
+      return dictionary;
+    }
+
+    private void RegisterEndPointData (
+       IRelationEndPointDefinition relationEndPointDefinition,
+       IDataManager dataManager,
+       IEnumerable<DomainObject> originatingObjects,
+       IDictionary<ObjectID, DomainObject> groupedRelatedObjects)
+    {
+      var relatedObjectsByOriginalObject = groupedRelatedObjects;
+      foreach (var originalObject in originatingObjects)
+      {
+        if (originalObject != null)
+        {
+          var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
+          var relatedObject = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ID);
+          if (!dataManager.TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject))
+            s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
+        }
+      }
     }
   }
 }

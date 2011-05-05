@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order> ();
       _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _fetchedOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
-      _fetchedOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
-      _fetchedOrderTicket3 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      _fetchedOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
+      _fetchedOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
+      _fetchedOrderTicket3 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket3);
 
       _fetchedOrderTicketDataContainer1 = CreateFetchedOrderTicketDataContainer (_fetchedOrderTicket1, _originatingOrder1.ID);
       _fetchedOrderTicketDataContainer2 = CreateFetchedOrderTicketDataContainer (_fetchedOrderTicket2, _originatingOrder2.ID);
@@ -158,6 +158,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     }
 
     [Test]
+    public void GroupAndRegisterRelatedObjects_WithInvalidDuplicateForeignKey ()
+    {
+      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket1.ID)).Return (_fetchedOrderTicketDataContainer1);
+      _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderTicket2.ID)).Return (_fetchedOrderTicketDataContainer1);
+
+      _dataManagerMock.Replay ();
+
+      Assert.That (
+          () => _agent.GroupAndRegisterRelatedObjects (
+              _endPointDefinition,
+              new[] { _originatingOrder1, _originatingOrder2 },
+              new[] { _fetchedOrderTicket1, _fetchedOrderTicket2 },
+              _dataManagerMock),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
+              + "Object 1: 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid'. "
+              + "Object 2: 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid'. "
+              + "Foreign key property: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'"));
+
+      _dataManagerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot register relation end-point "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' for domain object "
@@ -220,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private void ExpectMarkVirtualObjectEndPointComplete (ObjectID objectID, IRelationEndPointDefinition endPointDefinition, bool result, DomainObject item)
     {
       var relationEndPointID = RelationEndPointID.Create (objectID, endPointDefinition);
-      // TODO 3646: _dataManagerMock.Expect (mock => mock.TrySetVirtualObjectEndPointData (relationEndPointID, item)).Return (result);
+      _dataManagerMock.Expect (mock => mock.TrySetVirtualObjectEndPointData (relationEndPointID, item)).Return (result);
     }
   }
 }

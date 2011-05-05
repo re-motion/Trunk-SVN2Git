@@ -45,46 +45,24 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many || relationEndPointDefinition.IsAnonymous)
         throw new ArgumentException ("Only collection-valued relations can be handled by this registration agent.", "relationEndPointDefinition");
-
+      
       CheckOriginatingObjects (relationEndPointDefinition, originatingObjects);
 
-      var groupRelatedObjects = GroupRelatedObjectsByForeignKey (relatedObjects, relationEndPointDefinition, dataManager);
-      MarkCollectionEndPointsComplete (relationEndPointDefinition, dataManager, originatingObjects, groupRelatedObjects);
+      var virtualRelationEndPointDefinition = (VirtualRelationEndPointDefinition) relationEndPointDefinition;
+      var groupedRelatedObjects = CorrelateRelatedObjects (relatedObjects, virtualRelationEndPointDefinition, dataManager);
+      RegisterEndPointData (relationEndPointDefinition, dataManager, originatingObjects, groupedRelatedObjects);
     }
 
-    private ILookup<ObjectID, DomainObject> GroupRelatedObjectsByForeignKey (
+    private ILookup<ObjectID, DomainObject> CorrelateRelatedObjects (
         IEnumerable<DomainObject> relatedObjects, 
-        IRelationEndPointDefinition relationEndPointDefinition,
+        VirtualRelationEndPointDefinition relationEndPointDefinition,
         IDataManager dataManager)
     {
-      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
-
-      // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
-      // objects with the originating objects.
-      // Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
-      var relatedObjectsWithForeignKey =
-          from relatedObject in relatedObjects
-          where relatedObject != null
-          let dataContainer =
-              CheckRelatedObjectAndGetDataContainer (relatedObject, relationEndPointDefinition, oppositeEndPointDefinition, dataManager)
-          let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyName]
-          let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
-          select new { originatingObjectID, relatedObject };
-      
-      return relatedObjectsWithForeignKey.ToLookup (k => k.originatingObjectID, k => k.relatedObject);
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition(relatedObjects, relationEndPointDefinition, dataManager);
+      return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2);
     }
 
-    private DataContainer CheckRelatedObjectAndGetDataContainer (
-        DomainObject relatedObject,
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        IRelationEndPointDefinition oppositeEndPointDefinition, 
-        IDataManager dataManager)
-    {
-      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
-      return dataManager.GetDataContainerWithoutLoading (relatedObject.ID);
-    }
-
-    private void MarkCollectionEndPointsComplete (
+    private void RegisterEndPointData (
        IRelationEndPointDefinition relationEndPointDefinition,
        IDataManager dataManager,
        IEnumerable<DomainObject> originatingObjects,

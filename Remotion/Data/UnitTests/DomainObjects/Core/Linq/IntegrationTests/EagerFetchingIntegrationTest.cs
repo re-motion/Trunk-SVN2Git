@@ -203,5 +203,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, DomainObjectIDs.Order1);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
+
+    [Test]
+    public void EagerFetching_FetchNull_VirtualSide ()
+    {
+      var query = (from employee in QueryFactory.CreateLinqQuery<Employee> ()
+                   where employee.ID == DomainObjectIDs.Employee1
+                   select employee).FetchOne (e => e.Computer);
+
+      CheckQueryResult (query, DomainObjectIDs.Employee1);
+
+      CheckDataContainersRegistered (DomainObjectIDs.Employee1);
+      CheckObjectRelationRegistered (DomainObjectIDs.Employee1, "Computer", null);
+    }
+
+    [Test]
+    public void EagerFetching_FetchNull_NonVirtualSide ()
+    {
+      var query = (from computer in QueryFactory.CreateLinqQuery<Computer> ()
+                   where computer.ID == DomainObjectIDs.Computer4
+                   select computer).FetchOne (c => c.Employee);
+
+      CheckQueryResult (query, DomainObjectIDs.Computer4);
+
+      CheckDataContainersRegistered (DomainObjectIDs.Computer4);
+      CheckObjectRelationRegistered (DomainObjectIDs.Computer4, "Employee", null);
+    }
+
+    [Test]
+    public void EagerFetching_FetchEmptyCollection ()
+    {
+      var query = (from order in QueryFactory.CreateLinqQuery<Order> ()
+                   where order.ID == DomainObjectIDs.OrderWithoutOrderItem
+                   select order).FetchMany (o => o.OrderItems);
+
+      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItem);
+
+      CheckDataContainersRegistered (DomainObjectIDs.OrderWithoutOrderItem);
+      CheckCollectionRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
+    }
   }
 }

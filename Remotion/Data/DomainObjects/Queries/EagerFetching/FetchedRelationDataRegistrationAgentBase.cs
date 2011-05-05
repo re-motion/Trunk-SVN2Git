@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -80,6 +82,35 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
         throw new InvalidOperationException (message);
       }
+    }
+
+    protected IEnumerable<Tuple<ObjectID, DomainObject>> GetForeignKeysForVirtualEndPointDefinition (
+        IEnumerable<DomainObject> domainObjects, 
+        VirtualRelationEndPointDefinition virtualEndPointDefinition, 
+        IDataManager dataManager)
+    {
+      var oppositeEndPointDefinition = (RelationEndPointDefinition) virtualEndPointDefinition.GetOppositeEndPointDefinition ();
+
+      // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
+      // objects with the originating objects.
+      // Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
+      return from relatedObject in domainObjects
+             where relatedObject != null
+             let dataContainer =
+                 CheckRelatedObjectAndGetDataContainer (relatedObject, virtualEndPointDefinition, oppositeEndPointDefinition, dataManager)
+             let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
+             let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
+             select Tuple.Create (originatingObjectID, relatedObject);
+    }
+
+    private DataContainer CheckRelatedObjectAndGetDataContainer (
+        DomainObject relatedObject,
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        IRelationEndPointDefinition oppositeEndPointDefinition, 
+        IDataManager dataManager)
+    {
+      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
+      return dataManager.GetDataContainerWithoutLoading (relatedObject.ID);
     }
   }
 }
