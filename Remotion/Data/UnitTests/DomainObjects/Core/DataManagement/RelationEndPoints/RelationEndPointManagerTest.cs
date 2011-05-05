@@ -218,15 +218,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (realEndPointID);
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      var realEndPoint = relationEndPoints[realEndPointID];
+      var realEndPoint = _relationEndPointManager.RelationEndPoints[realEndPointID];
 
       var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var virtualObjectEndPoint = relationEndPoints[virtualObjectEndPointID];
+      var virtualObjectEndPoint = _relationEndPointManager.RelationEndPoints[virtualObjectEndPointID];
       Assert.That (virtualObjectEndPoint, Is.Not.Null);
 
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var collectionEndPoint = relationEndPoints[collectionEndPointID];
+      var collectionEndPoint = _relationEndPointManager.RelationEndPoints[collectionEndPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
 
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
@@ -468,14 +467,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
 
       var orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[orderItemsEndPointID], Is.Null);
+      Assert.That (_relationEndPointManager.RelationEndPoints[orderItemsEndPointID], Is.Null);
 
       var endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
 
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (relationEndPoints[orderItemsEndPointID], Is.SameAs (endPoint));
+      Assert.That (_relationEndPointManager.RelationEndPoints[orderItemsEndPointID], Is.SameAs (endPoint));
     }
 
     [Test]
@@ -484,14 +482,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
 
       var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[orderTicketEndPointID], Is.Null);
+      Assert.That (_relationEndPointManager.RelationEndPoints[orderTicketEndPointID], Is.Null);
 
       var endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
 
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (endPoint.IsDataComplete, Is.True);
-      Assert.That (relationEndPoints[orderTicketEndPointID], Is.SameAs (endPoint));
+      Assert.That (_relationEndPointManager.RelationEndPoints[orderTicketEndPointID], Is.SameAs (endPoint));
     }
 
     [Test]
@@ -500,13 +497,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPointManager.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Employee1); // preload Employee before lazily loading its virtual end point
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.Null);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
       var endPoint = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
 
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (endPoint));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPoint));
       Assert.That (((ObjectEndPoint) endPoint).OppositeObjectID, Is.Null);
     }
 
@@ -565,13 +561,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointMock);
 
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (endPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
 
       var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
 
       Assert.That (result, Is.SameAs (endPointMock));
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (endPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPointMock));
     }
 
     [Test]
@@ -591,13 +586,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.Null);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
       var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (result));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.False);
     }
 
@@ -607,14 +601,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
 
       Assert.That (ClientTransactionMock.DataManager.DataContainers[endPointID.ObjectID], Is.Null);
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.Null);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
 
       var result = _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.DataContainers[endPointID.ObjectID], Is.Not.Null);
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (result));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.True);
     }
 
@@ -688,8 +681,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       collectionEndPointMock.Stub (stub => stub.ID).Return (endPointID);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, collectionEndPointMock);
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
 
       var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order>() };
 
@@ -701,7 +693,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       collectionEndPointMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
     }
 
     [Test]
@@ -712,8 +704,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
       collectionEndPointMock.Stub (stub => stub.ID).Return (endPointID);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, collectionEndPointMock);
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
 
       var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
 
@@ -728,7 +719,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "SetCollectionEndPointData can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
+        "TrySetCollectionEndPointData can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
     public void TrySetCollectionEndPointData_ChecksCardinality ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
@@ -737,12 +728,116 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "SetCollectionEndPointData cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+        "TrySetCollectionEndPointData cannot be called for anonymous end points.\r\nParameter name: endPointID")]
     public void TrySetCollectionEndPointData_ChecksAnonymity ()
     {
       var endPointID = RelationEndPointID.Create (
           DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
       _relationEndPointManager.TrySetCollectionEndPointData (endPointID, new DomainObject[0]);
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_EndPointNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var result = _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, item);
+
+      Assert.That (result, Is.True);
+      var virtualObjectEndPoint = (IVirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
+      Assert.That (virtualObjectEndPoint, Is.Not.Null);
+      Assert.That (virtualObjectEndPoint.IsDataComplete, Is.True);
+      Assert.That (virtualObjectEndPoint.GetData (), Is.SameAs (item));
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_EndPointRegistered_NotComplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, virtualObjectEndPointMock);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (virtualObjectEndPointMock));
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
+      virtualObjectEndPointMock.Expect (mock => mock.MarkDataComplete (item));
+      virtualObjectEndPointMock.Replay ();
+
+      var result = _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, item);
+
+      virtualObjectEndPointMock.VerifyAllExpectations ();
+      Assert.That (result, Is.True);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (virtualObjectEndPointMock));
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_EndPointRegistered_AlreadyComplete ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
+      virtualObjectEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, virtualObjectEndPointMock);
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (virtualObjectEndPointMock));
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      virtualObjectEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
+      virtualObjectEndPointMock.Replay ();
+
+      var result = _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, item);
+
+      virtualObjectEndPointMock.VerifyAllExpectations ();
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_WithNull ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
+
+      var result = _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, null);
+
+      Assert.That (result, Is.True);
+      var virtualObjectEndPoint = (IVirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
+      Assert.That (virtualObjectEndPoint, Is.Not.Null);
+      Assert.That (virtualObjectEndPoint.IsDataComplete, Is.True);
+      Assert.That (virtualObjectEndPoint.GetData (), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "TrySetVirtualObjectEndPointData can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
+    public void TrySetVirtualObjectEndPointData_ChecksCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given RelationEndPointID must denote a virtual end-point.\r\nParameter name: endPointID")]
+    public void TrySetVirtualObjectEndPointData_ChecksVirtuality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "TrySetVirtualObjectEndPointData cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+    public void TrySetVirtualObjectEndPointData_ChecksAnonymity ()
+    {
+      var endPointID = RelationEndPointID.Create (
+          DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
+      _relationEndPointManager.TrySetVirtualObjectEndPointData (endPointID, null);
     }
   }
 }

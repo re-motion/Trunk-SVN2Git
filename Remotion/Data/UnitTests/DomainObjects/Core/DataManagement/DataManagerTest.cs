@@ -463,6 +463,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void TrySetVirtualObjectEndPointData_True ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var result = _dataManager.TrySetVirtualObjectEndPointData (endPointID, item);
+
+      Assert.That (result, Is.True);
+      var endPoint = (IVirtualObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      Assert.That (endPoint.GetData (), Is.SameAs (item));
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_True_Null ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var result = _dataManager.TrySetVirtualObjectEndPointData (endPointID, null);
+
+      Assert.That (result, Is.True);
+      var endPoint = (IVirtualObjectEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      Assert.That (endPoint.GetData (), Is.Null);
+    }
+
+    [Test]
+    public void TrySetVirtualObjectEndPointData_False ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPoint = (IVirtualObjectEndPoint) _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      endPoint.EnsureDataComplete ();
+
+      var item = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var result = _dataManager.TrySetVirtualObjectEndPointData (endPointID, item);
+
+      Assert.That (result, Is.False);
+      Assert.That (endPoint.GetData (), Is.Not.SameAs (item));
+    }
+
+    [Test]
     public void Discard_RemovesEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);

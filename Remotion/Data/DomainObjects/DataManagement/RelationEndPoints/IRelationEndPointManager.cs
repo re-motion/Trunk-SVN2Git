@@ -20,6 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     void RollbackAllEndPoints ();
     
     bool TrySetCollectionEndPointData (RelationEndPointID endPointID, DomainObject[] items);
+    bool TrySetVirtualObjectEndPointData (RelationEndPointID endPointID, DomainObject item);
    
     // TODO 3634: Remove
     void RemoveEndPoint (RelationEndPointID endPointID);

@@ -232,14 +232,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("items", items);
-      CheckCardinality (endPointID, CardinalityType.Many, "SetCollectionEndPointData", "endPointID");
-      CheckNotAnonymous (endPointID, "SetCollectionEndPointData", "endPointID");
+      CheckNotAnonymous (endPointID, "TrySetCollectionEndPointData", "endPointID");
+      CheckCardinality (endPointID, CardinalityType.Many, "TrySetCollectionEndPointData", "endPointID");
 
       var endPoint = (ICollectionEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
       if (endPoint.IsDataComplete)
         return false;
 
       endPoint.MarkDataComplete (items);
+      return true;
+    }
+
+    public bool TrySetVirtualObjectEndPointData (RelationEndPointID endPointID, DomainObject item)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckNotAnonymous (endPointID, "TrySetVirtualObjectEndPointData", "endPointID");
+      CheckCardinality (endPointID, CardinalityType.One, "TrySetVirtualObjectEndPointData", "endPointID");
+      if (!endPointID.Definition.IsVirtual)
+        throw new ArgumentException ("The given RelationEndPointID must denote a virtual end-point.", "endPointID");
+      
+      var endPoint = (IVirtualObjectEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
+      if (endPoint.IsDataComplete)
+        return false;
+
+      endPoint.MarkDataComplete (item);
       return true;
     }
 

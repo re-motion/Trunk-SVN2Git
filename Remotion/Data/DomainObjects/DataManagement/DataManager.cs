@@ -204,6 +204,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointManager.TrySetCollectionEndPointData (relationEndPointID, items);
     }
 
+    public bool TrySetVirtualObjectEndPointData (RelationEndPointID relationEndPointID, DomainObject item)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+      return _relationEndPointManager.TrySetVirtualObjectEndPointData (relationEndPointID, item);
+    }
+
     public void Commit ()
     {
       var deletedDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.Deleted).ToList();

@@ -47,6 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void RegisterDataContainer (DataContainer dataContainer);
 
     bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items);
+    bool TrySetVirtualObjectEndPointData (RelationEndPointID relationEndPointID, DomainObject item);
     
     void Commit ();
     void Rollback ();
