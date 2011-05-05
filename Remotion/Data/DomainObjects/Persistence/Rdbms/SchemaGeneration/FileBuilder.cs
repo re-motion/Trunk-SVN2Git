@@ -101,7 +101,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return Path.Combine (outputPath, fileName);
     }
 
-    //TODO: change _scriptBuilderFactory and SqlStorageObjectFactory to return IScriptElementFactory
     public static IEnumerable<ClassDefinition> GetClassesInStorageProvider (
         IEnumerable<ClassDefinition> classDefinitions,
         RdbmsProviderDefinition rdbmsProviderDefinition)
@@ -109,10 +108,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
     }
 
-    private readonly Func<CompositeScriptBuilder> _scriptBuilderFactory;
+    private readonly Func<IScriptBuilder> _scriptBuilderFactory;
     private readonly IEntityDefinitionProvider _entityDefinitionProvider;
 
-    public FileBuilder (Func<CompositeScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
+    public FileBuilder (Func<IScriptBuilder> scriptBuilderFactory, IEntityDefinitionProvider entityDefinitionProvider)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
       ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);

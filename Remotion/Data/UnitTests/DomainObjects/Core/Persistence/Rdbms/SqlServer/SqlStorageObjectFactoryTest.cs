@@ -149,9 +149,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = sqlProviderFactory.CreateSchemaScriptBuilder (_rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (CompositeScriptBuilder)));
-      Assert.That (result.RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
+      Assert.That (((CompositeScriptBuilder) result).RdbmsProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
       Assert.That (
-          result.ScriptBuilders,
+          ((CompositeScriptBuilder) result).ScriptBuilders,
           Is.EqualTo (
               new IScriptBuilder[]
               {
