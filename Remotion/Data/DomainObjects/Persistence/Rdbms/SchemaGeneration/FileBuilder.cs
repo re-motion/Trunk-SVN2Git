@@ -79,7 +79,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           var fileBuilder = fileBuilderFactory (rdbmsProviderDefinition);
           var setupDbFileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles, "SetupDB");
           var tearDownDbFileName = GetFileName (rdbmsProviderDefinition, outputPath, createMultipleFiles, "TearDownDB");
-          fileBuilder.Build (classDefinitions, setupDbFileName, tearDownDbFileName);
+
+          fileBuilder.Build (GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition), setupDbFileName, tearDownDbFileName);
         }
       }
     }
@@ -98,6 +99,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         fileName = fileNamePrefix+ ".sql";
 
       return Path.Combine (outputPath, fileName);
+    }
+
+    //TODO: change _scriptBuilderFactory and SqlStorageObjectFactory to return IScriptElementFactory
+    public static IEnumerable<ClassDefinition> GetClassesInStorageProvider (
+        IEnumerable<ClassDefinition> classDefinitions,
+        RdbmsProviderDefinition rdbmsProviderDefinition)
+    {
+      return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
     }
 
     private readonly Func<CompositeScriptBuilder> _scriptBuilderFactory;
@@ -130,9 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       // TODO Review 3932: Add a test showing that when GetScript is called twice, the _scriptBuilderFactory is also called twice.
       var scriptBuilder = _scriptBuilderFactory();
 
-      var classDefinitionsForStorageProvider = GetClassesInStorageProvider (classDefinitions, scriptBuilder.RdbmsProviderDefinition);
-
-      var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitionsForStorageProvider);
+      var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitions);
       foreach (var entityDefinition in entityDefintions)
         scriptBuilder.AddEntityDefinition (entityDefinition);
 
@@ -148,13 +155,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           createScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString(),
           dropScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString());
     }
-
-    //TODO: static, use in static build method, change _scriptBuilderFactory and SqlStorageObjectFactory to return IScriptElementFactory
-    protected virtual IEnumerable<ClassDefinition> GetClassesInStorageProvider (
-        IEnumerable<ClassDefinition> classDefinitions,
-        RdbmsProviderDefinition rdbmsProviderDefinition)
-    {
-      return classDefinitions.Where (currentClass => currentClass.StorageEntityDefinition.StorageProviderDefinition == rdbmsProviderDefinition);
-    }
+    
   }
 }
