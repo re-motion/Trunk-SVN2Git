@@ -1,8 +1,6 @@
 USE SchemaGenerationTestDomain1
 -- Drop all synonyms
-GO
 -- Drop all indexes
-GO
 -- Drop all views
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[CompanyView]
@@ -52,7 +50,6 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SiblingOfC
   DROP VIEW [dbo].[SiblingOfClassWithRelationsView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ThirdClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[ThirdClassView]
-GO
 -- Drop foreign keys of all tables
 IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' AND fk.name = 'FK_TableWithRelations_DerivedClassID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'TableWithRelations')
   ALTER TABLE [dbo].[TableWithRelations] DROP CONSTRAINT FK_TableWithRelations_DerivedClassID
@@ -74,7 +71,6 @@ IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_ob
   ALTER TABLE [dbo].[Order] DROP CONSTRAINT FK_Order_CustomerID
 IF EXISTS (SELECT * FROM sys.objects fk INNER JOIN sys.objects t ON fk.parent_object_id = t.object_id WHERE fk.type = 'F' AND fk.name = 'FK_OrderItem_OrderID' AND schema_name (t.schema_id) = 'dbo' AND t.name = 'OrderItem')
   ALTER TABLE [dbo].[OrderItem] DROP CONSTRAINT FK_OrderItem_OrderID
-GO
 -- Drop all tables
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Address' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Address]
@@ -108,4 +104,3 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SiblingOf
   DROP TABLE [dbo].[SiblingOfTableWithRelations]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'ThirdClass' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[ThirdClass]
-GO

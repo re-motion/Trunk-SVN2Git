@@ -11,9 +11,7 @@ CREATE TABLE [dbo].[Official]
   [Speciality] nvarchar (255) NULL,
   CONSTRAINT [PK_Official] PRIMARY KEY CLUSTERED ([ID])
 )
-GO
 -- Create foreign key constraints for tables that were created above
-GO
 -- Create a view for every class
 GO
 CREATE VIEW [dbo].[OfficialView] ([ID], [ClassID], [Timestamp], [Name], [ResponsibleForOrderPriority], [ResponsibleForCustomerType], [Speciality])
@@ -30,6 +28,4 @@ CREATE VIEW [dbo].[SpecialOfficialView] ([ID], [ClassID], [Timestamp], [Name], [
   WITH CHECK OPTION
 GO
 -- Create indexes for tables that were created above
-GO
 -- Create synonyms for tables that were created above
-GO

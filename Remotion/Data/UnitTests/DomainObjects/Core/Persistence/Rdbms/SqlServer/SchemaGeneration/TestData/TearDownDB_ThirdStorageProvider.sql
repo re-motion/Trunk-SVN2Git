@@ -5,7 +5,6 @@ USE SchemaGenerationTestDomain3
 -- Drop all synonyms
 IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'Test' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
   DROP SYNONYM [Test].[AddedViewSynonym]
-GO
 -- Drop all indexes
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' AND schema_name (so.schema_id)='dbo' AND si.[name] = 'IDX_NonClusteredUniqueIndex')
   DROP INDEX [IDX_NonClusteredUniqueIndex] ON [dbo].[IndexTestTable]
@@ -23,7 +22,6 @@ IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = s
   DROP INDEX [IDX_SecondaryXmlIndex3] ON [dbo].[IndexTestTable]
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'PKTestTable' AND schema_name (so.schema_id)='dbo' AND si.[name] = 'IDX_ClusteredUniqueIndex')
   DROP INDEX [IDX_ClusteredUniqueIndex] ON [dbo].[PKTestTable]
-GO
 -- Drop all views
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AboveInheritanceRootView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[AboveInheritanceRootView]
@@ -37,9 +35,7 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'IndexTestV
   DROP VIEW [dbo].[IndexTestView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PKTestView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[PKTestView]
-GO
 -- Drop foreign keys of all tables
-GO
 -- Drop all tables
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'InheritanceRoot' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[InheritanceRoot]
@@ -47,4 +43,3 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'IndexTest
   DROP TABLE [dbo].[IndexTestTable]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'PKTestTable' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[PKTestTable]
-GO

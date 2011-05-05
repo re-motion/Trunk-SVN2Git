@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 
       var statements = new ScriptElementCollection();
-      statements.AddElement (new BatchDelimiterStatement());
+      statements.AddElement (CreateBatchDelimiterStatement());
       statements.AddElement(new ScriptStatement(
        string.Format (
           "CREATE VIEW [{0}].[{1}] ({2})\r\n"
@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           filterViewDefinition.GetBaseTable ().TableName.SchemaName ?? DefaultSchema,
           filterViewDefinition.GetBaseTable ().TableName.EntityName,
           GetClassIDList (filterViewDefinition.ClassIDs))));
-      statements.AddElement (new BatchDelimiterStatement());
+      statements.AddElement (CreateBatchDelimiterStatement());
       return statements;
     }
 

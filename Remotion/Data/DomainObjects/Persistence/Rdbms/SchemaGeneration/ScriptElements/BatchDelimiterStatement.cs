@@ -26,18 +26,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
   /// </summary>
   public class BatchDelimiterStatement : IScriptElement
   {
-    public BatchDelimiterStatement ()
+    private readonly string _delimiter;
+
+    public BatchDelimiterStatement (string delimiter)
     {
-      
+      ArgumentUtility.CheckNotNullOrEmpty ("delimiter", delimiter);
+
+      _delimiter = delimiter;
     }
-    public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
+
+    public string Delimiter
+    {
+      get { return _delimiter; }
+    }
+
+    public void AppendToScript (List<ScriptStatement> script)
     {
       ArgumentUtility.CheckNotNull ("script", script);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
-
+ 
       var lastStatement = script.LastOrDefault();
-      if (lastStatement != null && lastStatement.Statement != sqlDialect.BatchDelimiter)
-        script.Add (new ScriptStatement (sqlDialect.BatchDelimiter));
+      if (lastStatement != null && lastStatement.Statement != _delimiter)
+        script.Add (new ScriptStatement (_delimiter));
     }
   }
 }

@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
   /// </summary>
   public interface IScriptElement
   {
-    void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect);
+    void AppendToScript (List<ScriptStatement> script);
   }
 }

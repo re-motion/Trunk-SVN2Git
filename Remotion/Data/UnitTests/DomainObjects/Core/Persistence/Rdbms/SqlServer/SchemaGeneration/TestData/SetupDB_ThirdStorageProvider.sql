@@ -24,9 +24,7 @@ CREATE TABLE [dbo].[PKTestTable]
   [Name] varchar(100) NOT NULL,
   CONSTRAINT [PK_PKTestTable_ID] PRIMARY KEY NONCLUSTERED ([ID])
 )
-GO
 -- Create foreign key constraints for tables that were created above
-GO
 -- Create a view for every class
 GO
 CREATE VIEW [dbo].[AboveInheritanceRootView] ([ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot])
@@ -99,8 +97,6 @@ CREATE XML INDEX [IDX_SecondaryXmlIndex3]
 CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
   ON [dbo].[PKTestTable] ([Name])
   WITH (IGNORE_DUP_KEY = ON, ONLINE = OFF)
-GO
 -- Create synonyms for tables that were created above
 CREATE SYNONYM [Test].[AddedViewSynonym] FOR [Test].[AddedView]
-GO
 --Extendend file-builder comment at the end

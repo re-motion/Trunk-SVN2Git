@@ -80,13 +80,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
     {
       var script = new List<ScriptStatement> ();
       foreach (var partialScript in elementCollection)
-      {
-        partialScript.AppendToScript (script, _sqlDialect);
-        new BatchDelimiterStatement ().AppendToScript (script, _sqlDialect);
-      }
+        partialScript.AppendToScript (script);
+ 
       _sqlDialect.AdjustForConnectionString (script, _rdbmsProviderDefinition.ConnectionString);
 
-      return new ScriptElementCollection (script.Cast<IScriptElement> ());
+      var scriptElementCollection = new ScriptElementCollection();
+      foreach (var statement in script)
+        scriptElementCollection.AddElement (statement);
+
+      return scriptElementCollection;
     }
   }
 }

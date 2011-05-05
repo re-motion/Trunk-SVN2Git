@@ -89,13 +89,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
       
-      Assert.That (result.Elements.Count, Is.EqualTo (6));
+      Assert.That (result.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) result.Elements[0]).Statement, Is.EqualTo ("USE SchemaGenerationTestDomain1"));
       Assert.That (result.Elements[1], Is.SameAs(_fakeStatement1));
-      Assert.That (((ScriptStatement) result.Elements[2]).Statement, Is.EqualTo ("GO"));
-      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[4], Is.SameAs (_fakeStatement3));
-      Assert.That (((ScriptStatement) result.Elements[5]).Statement, Is.EqualTo ("GO"));
+      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement2));
+      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement3));
     }
     
     [Test]
@@ -122,13 +120,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
 
-      Assert.That (result.Elements.Count, Is.EqualTo (6));
+      Assert.That (result.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) result.Elements[0]).Statement, Is.EqualTo ("USE SchemaGenerationTestDomain1"));
       Assert.That (result.Elements[1], Is.SameAs (_fakeStatement2));
       Assert.That (result.Elements[2], Is.SameAs (_fakeStatement3));
-      Assert.That (((ScriptStatement) result.Elements[3]).Statement, Is.EqualTo ("GO"));
-      Assert.That (result.Elements[4], Is.SameAs (_fakeStatement1));
-      Assert.That (((ScriptStatement) result.Elements[5]).Statement, Is.EqualTo ("GO"));
+      Assert.That (result.Elements[3], Is.SameAs (_fakeStatement1));
     }
 
   }

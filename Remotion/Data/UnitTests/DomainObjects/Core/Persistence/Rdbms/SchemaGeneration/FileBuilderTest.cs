@@ -46,6 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private IEntityDefinition _firstProviderStorageEntityDefinitionStub;
     private IEntityDefinition _secondProviderStorageEntityDefinitionStub;
     private IEntityDefinitionProvider _entityDefinitionProviderMock;
+    private ScriptElementCollection _createScriptDummy;
+    private ScriptElementCollection _dropScriptDummy;
 
     public override void TestFixtureSetUp ()
     {
@@ -75,6 +77,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _secondProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IEntityDefinition>();
       _secondProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (
           SchemaGenerationSecondStorageProviderDefinition);
+
+      _createScriptDummy = new ScriptElementCollection ();
+      _createScriptDummy.AddElement (new ScriptStatement ("DummyCreate"));
+      _dropScriptDummy = new ScriptElementCollection ();
+      _dropScriptDummy.AddElement (new ScriptStatement ("DummyDrop"));
     }
 
     public override void TearDown ()
@@ -226,12 +233,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
 
       _scriptBuilderMock
-          .Expect (
-              mock => mock.GetCreateScript())
-          .Return (new ScriptElementCollection (new[]{ new ScriptStatement ("DummyCreate")}));
+          .Expect (mock => mock.GetCreateScript())
+          .Return (_createScriptDummy);
       _scriptBuilderMock
           .Expect (mock => mock.GetDropScript())
-          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DummyDrop") }));
+          .Return (_dropScriptDummy);
 
       _entityDefinitionProviderMock
           .Expect (mock => mock.GetEntityDefinitions (Arg<IEnumerable<ClassDefinition>>.List.Equal (new[] { _classDefinition1 })))
@@ -263,10 +269,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           .Expect (mock => mock.AddEntityDefinition (_firstProviderStorageEntityDefinitionStub));
       _scriptBuilderMock
           .Expect (mock => mock.GetCreateScript())
-          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("CreateResult") }));
+          .Return (_createScriptDummy);
       _scriptBuilderMock
           .Expect (mock => mock.GetDropScript())
-          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DropResult") }));
+          .Return (_dropScriptDummy);
       _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
@@ -278,8 +284,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult\r\n"));
-      Assert.That (result.DropScript, Is.EqualTo ("DropResult\r\n"));
+      Assert.That (result.CreateScript, Is.EqualTo ("DummyCreate\r\n"));
+      Assert.That (result.DropScript, Is.EqualTo ("DummyDrop\r\n"));
     }
 
     [Test]
@@ -289,10 +295,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock
           .Expect (mock => mock.GetCreateScript())
-          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("CreateResult") }));
+          .Return (_createScriptDummy);
       _scriptBuilderMock
           .Expect (mock => mock.GetDropScript())
-          .Return (new ScriptElementCollection (new[] { new ScriptStatement ("DropResult") }));
+          .Return (_dropScriptDummy);
       _scriptBuilderMock.Replay();
 
       _entityDefinitionProviderMock
@@ -304,8 +310,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _scriptBuilderMock.VerifyAllExpectations();
       _entityDefinitionProviderMock.VerifyAllExpectations();
-      Assert.That (result.CreateScript, Is.EqualTo ("CreateResult\r\n"));
-      Assert.That (result.DropScript, Is.EqualTo ("DropResult\r\n"));
+      Assert.That (result.CreateScript, Is.EqualTo ("DummyCreate\r\n"));
+      Assert.That (result.DropScript, Is.EqualTo ("DummyDrop\r\n"));
     }
 
     [Test]

@@ -141,8 +141,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       var createScriptCollection = scriptBuilder.GetCreateScript();
       var dropScriptCollection = scriptBuilder.GetDropScript();
 
-      createScriptCollection.AppendToScript (createScriptStatements, scriptBuilder.SqlDialect);
-      dropScriptCollection.AppendToScript (dropScriptStatements, scriptBuilder.SqlDialect);
+      createScriptCollection.AppendToScript (createScriptStatements);
+      dropScriptCollection.AppendToScript (dropScriptStatements);
 
       return new ScriptPair (
           createScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString(),

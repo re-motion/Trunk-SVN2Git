@@ -205,7 +205,6 @@ CREATE TABLE [dbo].[ThirdClass]
   [Timestamp] rowversion NOT NULL,
   CONSTRAINT [PK_ThirdClass] PRIMARY KEY CLUSTERED ([ID])
 )
-GO
 -- Create foreign key constraints for tables that were created above
 ALTER TABLE [dbo].[TableWithRelations] ADD
   CONSTRAINT [FK_TableWithRelations_DerivedClassID] FOREIGN KEY ([DerivedClassID]) REFERENCES [dbo].[ConcreteClass] ([ID])
@@ -227,7 +226,6 @@ ALTER TABLE [dbo].[Order] ADD
   CONSTRAINT [FK_Order_CustomerID] FOREIGN KEY ([CustomerID]) REFERENCES [dbo].[Customer] ([ID])
 ALTER TABLE [dbo].[OrderItem] ADD
   CONSTRAINT [FK_OrderItem_OrderID] FOREIGN KEY ([OrderID]) REFERENCES [dbo].[Order] ([ID])
-GO
 -- Create a view for every class
 GO
 CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [PhoneNumber], [AddressID], [CustomerType], [CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches], [PrimaryOfficialID], [LicenseCode], [Description], [PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches], [Competences])
@@ -384,6 +382,4 @@ CREATE VIEW [dbo].[ThirdClassView] ([ID], [ClassID], [Timestamp])
   WITH CHECK OPTION
 GO
 -- Create indexes for tables that were created above
-GO
 -- Create synonyms for tables that were created above
-GO

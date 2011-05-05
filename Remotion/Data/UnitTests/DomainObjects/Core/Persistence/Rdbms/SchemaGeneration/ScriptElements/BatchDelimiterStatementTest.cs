@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGeneration.ScriptElements
 {
@@ -27,22 +25,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class BatchDelimiterStatementTest
   {
     private BatchDelimiterStatement _batchDelimiterStatement;
-    private ISqlDialect _sqlDialectStub;
     private List<ScriptStatement> _script;
 
     [SetUp]
     public void SetUp ()
     {
-      _batchDelimiterStatement = new BatchDelimiterStatement();
-      _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect>();
-      _sqlDialectStub.Stub (stub => stub.BatchDelimiter).Return ("SEPARATOR");
+      _batchDelimiterStatement = new BatchDelimiterStatement("GO");
       _script = new List<ScriptStatement> ();
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_batchDelimiterStatement.Delimiter, Is.EqualTo ("GO"));
     }
 
     [Test]
     public void AppendToScript_EmptyScript ()
     {
-      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script);
 
       Assert.That (_script, Is.Empty);
     }
@@ -55,23 +56,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _script.Add (statement1);
       _script.Add (statement2);
 
-      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script);
 
       Assert.That (_script.Count, Is.EqualTo (3));
       Assert.That (_script[0], Is.SameAs(statement1));
       Assert.That (_script[1], Is.EqualTo (statement2));
-      Assert.That (_script[2].Statement, Is.EqualTo ("SEPARATOR"));
+      Assert.That (_script[2].Statement, Is.EqualTo ("GO"));
     }
 
     [Test]
     public void AppendToScript_NonEmptyScript_LastStatementIsBatchStatement ()
     {
       var statement1 = new ScriptStatement ("1");
-      var statement2 = new ScriptStatement ("SEPARATOR");
+      var statement2 = new ScriptStatement ("GO");
       _script.Add (statement1);
       _script.Add (statement2);
 
-      _batchDelimiterStatement.AppendToScript (_script, _sqlDialectStub);
+      _batchDelimiterStatement.AppendToScript (_script);
 
       Assert.That (_script.Count, Is.EqualTo (2));
       Assert.That (_script[0], Is.SameAs (statement1));

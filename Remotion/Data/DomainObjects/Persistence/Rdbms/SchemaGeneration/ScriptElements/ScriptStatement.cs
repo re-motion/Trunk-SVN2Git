@@ -39,10 +39,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
       get { return _statement; }
     }
 
-    public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
+    public void AppendToScript (List<ScriptStatement> script)
     {
       ArgumentUtility.CheckNotNull ("script", script);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       script.Add (this);
     }

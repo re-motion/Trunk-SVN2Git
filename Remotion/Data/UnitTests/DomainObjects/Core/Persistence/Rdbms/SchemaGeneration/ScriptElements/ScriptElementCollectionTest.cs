@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Rhino.Mocks;
 
@@ -27,7 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
   public class ScriptElementCollectionTest
   {
     private ScriptElementCollection _elementCollection;
-    private ISqlDialect _sqlDialectMock;
     private IScriptElement _elementMock1;
     private IScriptElement _elementMock2;
     private IScriptElement _elementMock3;
@@ -36,7 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void SetUp ()
     {
       _elementCollection = new ScriptElementCollection();
-      _sqlDialectMock = MockRepository.GenerateStrictMock<ISqlDialect>();
 
       _elementMock1 = MockRepository.GenerateStrictMock<IScriptElement> ();
       _elementMock2 = MockRepository.GenerateStrictMock<IScriptElement> ();
@@ -50,29 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     }
 
     [Test]
-    public void Initialization_IEnumerableOverload ()
-    {
-      var element1 = new ScriptStatement ("Test1");
-      var element2 = new ScriptStatement ("Test2");
-
-      var elements = new List<IScriptElement>();
-      elements.Add (element1);
-      elements.Add (element2);
-
-      var elementCollection = new ScriptElementCollection (elements);
-
-      Assert.That(elementCollection.Elements, Is.EqualTo(new[]{element1, element2}));
-    }
-
-    [Test]
     public void AppendToScript_NoElements ()
     {
       var script = new List<ScriptStatement>();
-      _sqlDialectMock.Replay();
 
-      _elementCollection.AppendToScript (script, _sqlDialectMock);
+      _elementCollection.AppendToScript (script);
 
-      _sqlDialectMock.VerifyAllExpectations();
       Assert.That (script, Is.Empty);
     }
 
@@ -81,14 +61,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var script = new List<ScriptStatement> ();
       _elementCollection.AddElement (_elementMock1);
-      _sqlDialectMock.Replay ();
 
-      _elementMock1.Expect (mock => mock.AppendToScript (script, _sqlDialectMock));
+      _elementMock1.Expect (mock => mock.AppendToScript (script));
       _elementMock1.Replay();
 
-      _elementCollection.AppendToScript (script, _sqlDialectMock);
+      _elementCollection.AppendToScript (script);
 
-      _sqlDialectMock.VerifyAllExpectations ();
       _elementMock1.VerifyAllExpectations ();
       Assert.That (script, Is.Empty);
     }
@@ -100,18 +78,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _elementCollection.AddElement (_elementMock1);
       _elementCollection.AddElement (_elementMock2);
       _elementCollection.AddElement (_elementMock3);
-      _sqlDialectMock.Replay ();
 
-      _elementMock1.Expect (mock => mock.AppendToScript (script, _sqlDialectMock));
-      _elementMock2.Expect (mock => mock.AppendToScript (script, _sqlDialectMock));
-      _elementMock3.Expect (mock => mock.AppendToScript (script, _sqlDialectMock));
+      _elementMock1.Expect (mock => mock.AppendToScript (script));
+      _elementMock2.Expect (mock => mock.AppendToScript (script));
+      _elementMock3.Expect (mock => mock.AppendToScript (script));
       _elementMock1.Replay ();
       _elementMock2.Replay ();
       _elementMock3.Replay ();
       
-      _elementCollection.AppendToScript (script, _sqlDialectMock);
+      _elementCollection.AppendToScript (script);
 
-      _sqlDialectMock.VerifyAllExpectations ();
       _elementMock1.VerifyAllExpectations ();
       _elementMock2.VerifyAllExpectations ();
       _elementMock3.VerifyAllExpectations ();

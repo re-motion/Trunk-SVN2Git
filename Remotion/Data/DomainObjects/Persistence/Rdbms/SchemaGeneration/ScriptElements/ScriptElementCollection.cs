@@ -33,25 +33,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptE
       _elements = new List<IScriptElement>();
     }
 
-    public ScriptElementCollection (IEnumerable<IScriptElement> elements)
-    {
-      ArgumentUtility.CheckNotNull ("elements", elements);
-
-      _elements = new List<IScriptElement> (elements);
-    }
-
     public ReadOnlyCollection<IScriptElement> Elements
     {
       get { return _elements.AsReadOnly(); }
     }
 
-    public void AppendToScript (List<ScriptStatement> script, ISqlDialect sqlDialect)
+    public void AppendToScript (List<ScriptStatement> script)
     {
       ArgumentUtility.CheckNotNull ("script", script);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
 
       foreach (var element in _elements)
-        element.AppendToScript (script, sqlDialect);
+        element.AppendToScript (script);
     }
 
     public void AddElement (IScriptElement element)
