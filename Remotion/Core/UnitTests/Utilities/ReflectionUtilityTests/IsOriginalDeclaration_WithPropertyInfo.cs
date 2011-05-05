@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 {
   [TestFixture]
-  public class IsOriginalDeclaration
+  public class IsOriginalDeclaration_WithPropertyInfo
   {
     [Test]
     public void IsOriginalDeclaration_ForPropertyOnBaseClass ()

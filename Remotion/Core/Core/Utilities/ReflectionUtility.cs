@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Reflection;
 
 namespace Remotion.Utilities
 {
@@ -157,7 +158,7 @@ namespace Remotion.Utilities
         throw new ArgumentException ("Argument must be FieldInfo or PropertyInfo.", "fieldOrProperty");
     }
 
-    /// <summary>
+        /// <summary>
     /// Returns the <see cref="Type"/> where the property was initially decelared.
     /// </summary>
     /// <param name="propertyInfo">The property whose identifier should be returned. Must not be <see langword="null" />.</param>
@@ -166,7 +167,19 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      MethodInfo[] accessors = propertyInfo.GetAccessors (true);
+      return GetOriginalDeclaringType (new PropertyInfoAdapter (propertyInfo));
+    }
+
+    /// <summary>
+    /// Returns the <see cref="Type"/> where the property was initially decelared.
+    /// </summary>
+    /// <param name="propertyInfo">The property whose identifier should be returned. Must not be <see langword="null" />.</param>
+    /// <returns>The <see cref="Type"/> where the property was declared for the first time.</returns>
+    public static Type GetOriginalDeclaringType (IPropertyInformation propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      var accessors = propertyInfo.GetAccessors (true);
       if (accessors.Length == 0)
       {
         throw new ArgumentException (
@@ -193,19 +206,44 @@ namespace Remotion.Utilities
     public static Type GetOriginalDeclaringType (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      return GetOriginalDeclaringType (new MethodInfoAdapter (methodInfo));
+    }
+
+    /// <summary>
+    /// Returns the <see cref="Type"/> where the method was initially declared.
+    /// </summary>
+    /// <param name="methodInfo">The method whose type should be returned. Must not be <see langword="null" />.</param>
+    /// <returns>The <see cref="Type"/> where the method was declared for the first time.</returns>
+    public static Type GetOriginalDeclaringType (IMethodInformation methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       return methodInfo.GetBaseDefinition ().DeclaringType;
     }
 
-    
     /// <summary>
     /// Determines whether the given <see cref="PropertyInfo"/> is the original base declaration.
     /// </summary>
     /// <param name="propertyInfo">The property info to check.</param>
     /// <returns>
-    /// 	<see langword="true"/> if the <paramref name="propertyInfo"/> is the first declaration of the property; <see langword="false"/> if it is an 
-    /// 	overrride.
+    ///   <see langword="true"/> if the <paramref name="propertyInfo"/> is the first declaration of the property; <see langword="false"/> if it is an 
+    ///   overrride.
     /// </returns>
     public static bool IsOriginalDeclaration (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      return IsOriginalDeclaration (new PropertyInfoAdapter (propertyInfo));
+    }
+    
+    /// <summary>
+    /// Determines whether the given <see cref="IPropertyInformation"/> is the original base declaration.
+    /// </summary>
+    /// <param name="propertyInfo">The property info to check.</param>
+    /// <returns>
+    ///   <see langword="true"/> if the <paramref name="propertyInfo"/> is the first declaration of the property; <see langword="false"/> if it is an 
+    ///   overrride.
+    /// </returns>
+    public static bool IsOriginalDeclaration (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
