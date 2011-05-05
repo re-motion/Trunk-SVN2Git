@@ -56,8 +56,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      //TODO RM-3977
-      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (((PropertyInfoAdapter)propertyInfo).PropertyInfo))
+      if (! propertyInfo.IsOriginalDeclaration())
       {
         var mappingAttributes = propertyInfo.GetCustomAttributes<IMappingAttribute> (false);
         if (mappingAttributes.Any())

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
-    private readonly Set<MethodInfo> _explicitInterfaceImplementations;
+    private readonly Set<IMethodInformation> _explicitInterfaceImplementations;
     private readonly IMappingNameResolver _nameResolver;
     private readonly bool _includeMixinProperties;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
@@ -110,15 +111,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     protected virtual bool FindPropertiesFilter (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      //TODO RM-3977
-      var pi = ((PropertyInfoAdapter) propertyInfo).PropertyInfo;
-      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (pi))
+      if (!propertyInfo.IsOriginalDeclaration())
         return false;
 
       if (IsUnmanagedProperty (propertyInfo))
         return false;
 
-      if (IsUnmanagedExplictInterfaceImplementation (pi))
+      if (IsUnmanagedExplictInterfaceImplementation (propertyInfo))
         return false;
 
       return true;
@@ -135,7 +134,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
-    protected bool IsUnmanagedExplictInterfaceImplementation (PropertyInfo propertyInfo)
+    protected bool IsUnmanagedExplictInterfaceImplementation (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
@@ -145,7 +144,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (!isExplicitInterfaceImplementation)
         return false;
 
-      StorageClassAttribute storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (propertyInfo, false);
+      var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
       if (storageClassAttribute == null)
         return true;
 
@@ -170,9 +169,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return FindPropertiesFilter (new PropertyInfoAdapter ((PropertyInfo) member));
     }
 
-    private Set<MethodInfo> GetExplicitInterfaceImplementations (Type type)
+    private Set<IMethodInformation> GetExplicitInterfaceImplementations (Type type)
     {
-      Set<MethodInfo> explicitInterfaceImplementationSet = new Set<MethodInfo>();
+      var explicitInterfaceImplementationSet = new Set<IMethodInformation> ();
 
       foreach (Type interfaceType in type.GetInterfaces())
       {
@@ -180,7 +179,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         MethodInfo[] explicitInterfaceImplementations = Array.FindAll (
             interfaceMapping.TargetMethods,
             targetMethod => targetMethod.IsSpecialName && !targetMethod.IsPublic);
-        explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations);
+        explicitInterfaceImplementationSet.AddRange (explicitInterfaceImplementations.Select (mi => (IMethodInformation) new MethodInfoAdapter (mi)));
       }
 
       return explicitInterfaceImplementationSet;
