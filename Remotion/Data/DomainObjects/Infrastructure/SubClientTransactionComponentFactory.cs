@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -73,7 +74,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IPersistenceStrategy persistenceStrategy,
         IClientTransactionListener eventSink)
     {
-      var eagerFetcher = new EagerFetcher ();
+      IFetchedRelationDataRegistrationAgent registrationAgent =
+          new DelegatingFetchedRelationDataRegistrationAgent (
+              new FetchedRealObjectRelationDataRegistrationAgent (),
+              new FetchedVirtualObjectRelationDataRegistrationAgent (),
+              new FetchedCollectionRelationDataRegistrationAgent ());
+      var eagerFetcher = new EagerFetcher (registrationAgent);
       return new ObjectLoader (clientTransaction, persistenceStrategy, eventSink, eagerFetcher);
     }
 

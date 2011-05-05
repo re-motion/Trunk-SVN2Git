@@ -429,8 +429,14 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SqlDialect.cs" />
     <Compile Include="Persistence\Rdbms\SqlServer\Sql2005\SqlStorageObjectFactory.cs" />
     <Compile Include="PropertyChangeEventArgs.cs" />
+    <Compile Include="Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgent.cs" />
+    <Compile Include="Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgent.cs" />
+    <Compile Include="Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgent.cs" />
+    <Compile Include="Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgent.cs" />
+    <Compile Include="Queries\EagerFetching\IFetchedRelationDataRegistrationAgent.cs" />
     <Compile Include="Queries\ILinqParserCustomizer.cs" />
-    <Compile Include="Queries\IEagerFetcher.cs" />
+    <Compile Include="Queries\EagerFetching\IEagerFetcher.cs" />
+    <Compile Include="Queries\EagerFetching\FetchedRelationDataRegistrationAgentBase.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommand.cs" />
@@ -528,8 +534,8 @@
     <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
     <Compile Include="Tracing\TracingDataReader.cs" />
     <Compile Include="Tracing\TracingDbCommand.cs" />
-    <Compile Include="Queries\EagerFetcher.cs" />
-    <Compile Include="Queries\EagerFetchQueryCollection.cs" />
+    <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
+    <Compile Include="Queries\EagerFetching\EagerFetchQueryCollection.cs" />
     <Compile Include="Queries\UnexpectedQueryResultException.cs" />
     <Compile Include="Queries\QueryResult.cs" />
     <Compile Include="Queries\IQueryResult.cs" />

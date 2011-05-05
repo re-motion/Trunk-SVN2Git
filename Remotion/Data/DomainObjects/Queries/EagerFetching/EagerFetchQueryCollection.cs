@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Queries
+namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 {
   /// <summary>
   /// Holds the eager fetch queries for a given <see cref="IQuery"/> instance. See <see cref="IQuery.EagerFetchQueries"/> for more information about

@@ -17,10 +17,12 @@
 using System;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Utilities;
 using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainObjectIDs;
 
 namespace Remotion.Data.UnitTests.DomainObjects
@@ -68,6 +70,17 @@ namespace Remotion.Data.UnitTests.DomainObjects
     protected StorageProviderDefinition UnitTestStorageProviderDefinition
     {
       get { return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[DatabaseTest.c_unitTestStorageProviderStubID]; }
+    }
+
+    protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
+    {
+      var endPointDefinition = Configuration
+          .GetTypeDefinition (declaringType)
+          .PropertyAccessorDataCache
+          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .RelationEndPointDefinition;
+      Assertion.IsNotNull (endPointDefinition, "Property '{0}.{1}' is not a relation end-point.", declaringType, shortPropertyName);
+      return endPointDefinition;
     }
   }
 }

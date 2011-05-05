@@ -309,6 +309,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgentTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgentTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedCollectionRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificObjectLoader.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
@@ -924,8 +928,8 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
-    <Compile Include="DomainObjects\Core\Queries\EagerFetcherTest.cs" />
-    <Compile Include="DomainObjects\Core\Queries\EagerFetchQueryCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
