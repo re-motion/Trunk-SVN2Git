@@ -14,10 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   /// <summary>
@@ -32,15 +28,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     /// <summary> Surrounds an identifier with delimiters according to the database's syntax. </summary>
     string DelimitIdentifier (string identifier);
-
-
-    
-    
-    /// <summary> A delimiter to end a SQL batch if the database. </summary>
-    string BatchDelimiter { get; }
-
-    /// <summary> Inserts the USE 'database'-statement at the beginning of the script. </summary>
-    void AdjustForConnectionString (List<ScriptStatement> script, string connectionString);
-
   }
 }

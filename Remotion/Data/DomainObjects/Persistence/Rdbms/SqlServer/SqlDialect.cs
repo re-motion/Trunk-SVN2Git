@@ -15,9 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
@@ -38,11 +35,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return ";"; }
     }
 
-    public string BatchDelimiter
-    {
-      get { return "GO"; }
-    }
-
     public virtual string GetParameterName (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
@@ -58,20 +50,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       ArgumentUtility.CheckNotNullOrEmpty ("identifier", identifier);
 
       return "[" + identifier + "]";
-    }
-
-    public void AdjustForConnectionString (List<ScriptStatement> script, string connectionString)
-    {
-      var initialCatalogMarker = "Initial Catalog=";
-
-      if (!connectionString.Contains (initialCatalogMarker))
-        throw new InvalidOperationException ("No database-name could be found in the given connection-string.");
-
-      var startIndex = connectionString.IndexOf (initialCatalogMarker) + initialCatalogMarker.Length;
-      var temp = connectionString.Substring (startIndex);
-      var databaseName = temp.Substring (0, temp.IndexOf (";"));
-
-      script.Insert (0, new ScriptStatement ("USE " + databaseName));
     }
     
   }
