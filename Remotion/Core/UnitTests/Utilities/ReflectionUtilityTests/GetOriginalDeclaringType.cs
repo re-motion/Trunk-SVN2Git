@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
 {
   [TestFixture]
-  public class GetOriginalDeclaringType_WithPropertyInfo
+  public class GetOriginalDeclaringType
   {
     [Test]
     public void GetOriginalDeclaringType_ForPropertyOnBaseClass ()
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests
           ReflectionUtility.GetOriginalDeclaringType (propertyInfo));
     }
 
-    private PropertyInfo GetPropertyInfo<T> (string property)
+    protected PropertyInfo GetPropertyInfo<T> (string property)
     {
       return typeof (T).GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
     }

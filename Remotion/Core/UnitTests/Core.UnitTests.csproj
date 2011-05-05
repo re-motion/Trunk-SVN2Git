@@ -1100,12 +1100,10 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType_WithIPropertyInformation.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration_WithPropertyInfo.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTest.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithProperties.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithMethods.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration_WithIPropertyInformation.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithFields.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithFields.cs" />
@@ -1120,7 +1118,7 @@
     <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericInterface.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType_WithPropertyInfo.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GuessIsExplicitInterfaceProperty.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\GenericClassWithMethods.cs" />
