@@ -38,11 +38,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       get { return ";"; }
     }
 
-    public virtual string ConstraintDelimiter
-    {
-      get { return ","; }
-    }
-
     public string BatchDelimiter
     {
       get { return "GO"; }
@@ -65,13 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
       return "[" + identifier + "]";
     }
 
-    public void AddBatchForScript (StringBuilder createScript)
-    {
-      ArgumentUtility.CheckNotNull ("createScript", createScript);
-
-      createScript.Append (BatchDelimiter + "\r\n\r\n");
-    }
-
     public void AdjustForConnectionString (List<ScriptStatement> script, string connectionString)
     {
       var initialCatalogMarker = "Initial Catalog=";
@@ -85,22 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
 
       script.Insert (0, new ScriptStatement ("USE " + databaseName));
     }
-
-    public void CreateScriptForConnectionString (StringBuilder script, string connectionString)
-    {
-      ArgumentUtility.CheckNotNull ("script", script);
-      ArgumentUtility.CheckNotNullOrEmpty ("connectionString", connectionString);
-
-      //TODO improve this logic
-      var initialCatalogMarker = "Initial Catalog=";
-
-      if (!connectionString.Contains (initialCatalogMarker))
-        throw new InvalidOperationException ("No database-name could be found in the given connection-string.");
-
-      var startIndex = connectionString.IndexOf (initialCatalogMarker) + initialCatalogMarker.Length;
-      var temp = connectionString.Substring (startIndex);
-      var databaseName = temp.Substring (0, temp.IndexOf (";"));
-      script.Insert(0, "USE " + databaseName + "\r\n");
-    }
+    
   }
 }

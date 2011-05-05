@@ -61,16 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void AddBatchForScript ()
-    {
-      var script = new StringBuilder ("test");
-
-      _dialect.AddBatchForScript (script);
-
-      Assert.That (script.ToString(), Is.EqualTo ("testGO\r\n\r\n"));
-    }
-
-    [Test]
     public void AdjustForConnectionString ()
     {
       var script = new List<ScriptStatement>();
@@ -89,23 +79,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       _dialect.AdjustForConnectionString (new List<ScriptStatement> (), "Teststring");
     }
-
-    [Test]
-    public void CreateScriptForConnectioString ()
-    {
-      var script = new StringBuilder("test");
-      var connectionString = "Data Source=myServerAddress;Initial Catalog=MyDataBase;User Id=myUsername;Password=myPassword;";
-
-      _dialect.CreateScriptForConnectionString (script, connectionString);
-
-      Assert.That (script.ToString(), Is.EqualTo ("USE MyDataBase\r\ntest"));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No database-name could be found in the given connection-string.")]
-    public void CreateScriptForConnectionString_NoMarkerFound ()
-    {
-      _dialect.CreateScriptForConnectionString (new StringBuilder("test"), "Teststring");
-    }
+    
   }
 }

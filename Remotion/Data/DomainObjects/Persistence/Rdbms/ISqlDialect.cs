@@ -34,21 +34,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     string DelimitIdentifier (string identifier);
 
 
-
-
-
-    /// <summary> A delimiter to split constraints in a SQL statement if the database requires one, an empty string otherwise. </summary>
-    string ConstraintDelimiter { get; }
-
+    
+    
     /// <summary> A delimiter to end a SQL batch if the database. </summary>
     string BatchDelimiter { get; }
-
-    /// <summary> Appends a GO-statement to the script. </summary>
-    void AddBatchForScript (StringBuilder createScript);
 
     /// <summary> Inserts the USE 'database'-statement at the beginning of the script. </summary>
     void AdjustForConnectionString (List<ScriptStatement> script, string connectionString);
 
-    void CreateScriptForConnectionString (StringBuilder script, string connectionString);
   }
 }
