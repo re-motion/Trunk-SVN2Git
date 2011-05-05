@@ -228,15 +228,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _map.RollbackAllEndPoints();
     }
 
-    public void MarkCollectionEndPointComplete (RelationEndPointID endPointID, DomainObject[] items)
+    public bool TrySetCollectionEndPointData (RelationEndPointID endPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("items", items);
-      CheckCardinality (endPointID, CardinalityType.Many, "MarkCollectionEndPointComplete", "endPointID");
-      CheckNotAnonymous (endPointID, "MarkCollectionEndPointComplete", "endPointID");
+      CheckCardinality (endPointID, CardinalityType.Many, "SetCollectionEndPointData", "endPointID");
+      CheckNotAnonymous (endPointID, "SetCollectionEndPointData", "endPointID");
 
       var endPoint = (ICollectionEndPoint) GetVirtualEndPointOrRegisterEmpty (endPointID);
+      if (endPoint.IsDataComplete)
+        return false;
+
       endPoint.MarkDataComplete (items);
+      return true;
     }
 
     // TODO 3634: Remove

@@ -434,21 +434,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void MarkCollectionEndPointComplete ()
+    public void TrySetCollectionEndPointData_True ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       
       var items = new[] { DomainObjectMother.CreateFakeObject<Order>() };
 
-      var endPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
-      endPointMock.Stub (stub => stub.ID).Return (endPointID);
-      DataManagerTestHelper.AddEndPoint (_dataManager, endPointMock);
-      endPointMock.Expect (mock => mock.MarkDataComplete (items));
-      endPointMock.Replay ();
+      var result = _dataManager.TrySetCollectionEndPointData (endPointID, items);
 
-      _dataManager.MarkCollectionEndPointComplete (endPointID, items);
+      Assert.That (result, Is.True);
+      var endPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithoutLoading (endPointID);
+      Assert.That (endPoint.GetData(), Is.EqualTo (items));
+    }
 
-      endPointMock.VerifyAllExpectations();
+    [Test]
+    public void TrySetCollectionEndPointData_False ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithMinimumLoading (endPointID);
+      endPoint.EnsureDataComplete();
+
+      var items = new[] { DomainObjectMother.CreateFakeObject<Order> () };
+
+      var result = _dataManager.TrySetCollectionEndPointData (endPointID, items);
+
+      Assert.That (result, Is.False);
+      Assert.That (endPoint.GetData (), Is.Not.EqualTo (items));
     }
 
     [Test]

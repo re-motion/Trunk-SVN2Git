@@ -196,12 +196,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
     }
 
-    public void MarkCollectionEndPointComplete (RelationEndPointID relationEndPointID, DomainObject[] items)
+    public bool TrySetCollectionEndPointData (RelationEndPointID relationEndPointID, DomainObject[] items)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("items", items);
-
-      _relationEndPointManager.MarkCollectionEndPointComplete (relationEndPointID, items);
+      
+      return _relationEndPointManager.TrySetCollectionEndPointData (relationEndPointID, items);
     }
 
     public void Commit ()

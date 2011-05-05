@@ -632,21 +632,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void MarkCollectionEndPointComplete_EndPointNotRegistered ()
-    {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
-      Assert.That (relationEndPoints[endPointID], Is.Null);
-
-      _relationEndPointManager.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
-
-      var collectionEndPoint = (ICollectionEndPoint) relationEndPoints[endPointID];
-      Assert.That (collectionEndPoint, Is.Not.Null);
-      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
-      Assert.That (collectionEndPoint.Collection, Is.Empty);
-    }
-
-    [Test]
     public void CommitAllEndPoints_CommitsEndPoints ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
@@ -679,7 +664,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void MarkCollectionEndPointComplete_EndPointRegistered_Incomplete ()
+    public void TrySetCollectionEndPointData_EndPointNotRegistered ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.Null);
+
+      var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
+
+      var result = _relationEndPointManager.TrySetCollectionEndPointData (endPointID, items);
+
+      Assert.That (result, Is.True);
+      var collectionEndPoint = (ICollectionEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
+      Assert.That (collectionEndPoint, Is.Not.Null);
+      Assert.That (collectionEndPoint.IsDataComplete, Is.True);
+      Assert.That (collectionEndPoint.GetData(), Is.EqualTo (items));
+    }
+
+    [Test]
+    public void TrySetCollectionEndPointData_EndPointRegistered_NotComplete ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
 
@@ -691,32 +693,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order>() };
 
+      collectionEndPointMock.Stub (stub => stub.IsDataComplete).Return (false);
       collectionEndPointMock.Expect (mock => mock.MarkDataComplete (items));
       collectionEndPointMock.Replay();
 
-      _relationEndPointManager.MarkCollectionEndPointComplete (endPointID, items);
+      var result = _relationEndPointManager.TrySetCollectionEndPointData (endPointID, items);
 
       collectionEndPointMock.VerifyAllExpectations();
+      Assert.That (result, Is.True);
       Assert.That (relationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "MarkCollectionEndPointComplete can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
-    public void MarkCollectionEndPointComplete_ChecksCardinality ()
+    public void TrySetCollectionEndPointData_EndPointRegistered_AlreadyComplete ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      _relationEndPointManager.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+
+      var collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
+      collectionEndPointMock.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, collectionEndPointMock);
+      var relationEndPoints = _relationEndPointManager.RelationEndPoints;
+      Assert.That (relationEndPoints[endPointID], Is.SameAs (collectionEndPointMock));
+
+      var items = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
+
+      collectionEndPointMock.Stub (stub => stub.IsDataComplete).Return (true);
+      collectionEndPointMock.Replay ();
+
+      var result = _relationEndPointManager.TrySetCollectionEndPointData (endPointID, items);
+
+      collectionEndPointMock.VerifyAllExpectations ();
+      Assert.That (result, Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "MarkCollectionEndPointComplete cannot be called for anonymous end points.\r\nParameter name: endPointID")]
-    public void MarkCollectionEndPointComplete_ChecksAnonymity ()
+        "SetCollectionEndPointData can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
+    public void TrySetCollectionEndPointData_ChecksCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      _relationEndPointManager.TrySetCollectionEndPointData (endPointID, new DomainObject[0]);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "SetCollectionEndPointData cannot be called for anonymous end points.\r\nParameter name: endPointID")]
+    public void TrySetCollectionEndPointData_ChecksAnonymity ()
     {
       var endPointID = RelationEndPointID.Create (
           DomainObjectIDs.Order1, new AnonymousRelationEndPointDefinition (DomainObjectIDs.Customer1.ClassDefinition));
-      _relationEndPointManager.MarkCollectionEndPointComplete (endPointID, new DomainObject[0]);
+      _relationEndPointManager.TrySetCollectionEndPointData (endPointID, new DomainObject[0]);
     }
   }
 }

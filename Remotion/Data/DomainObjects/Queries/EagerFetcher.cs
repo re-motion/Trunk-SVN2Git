@@ -82,14 +82,9 @@ namespace Remotion.Data.DomainObjects.Queries
         {
           var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
           var relatedObjects = relatedObjectsByOriginalObject[originalObject.ID];
-          try
+          if (!dataManager.TrySetCollectionEndPointData (relationEndPointID, relatedObjects.ToArray ()))
           {
-            dataManager.MarkCollectionEndPointComplete (relationEndPointID, relatedObjects.ToArray ());
-          }
-          catch (InvalidOperationException ex)
-          {
-            s_log.WarnFormat (
-                ex, 
+            s_log.DebugFormat (
                 "Eager fetch result for relation end-point '{0}' is discarded; the end-point has already been loaded.", 
                 relationEndPointID);
           }

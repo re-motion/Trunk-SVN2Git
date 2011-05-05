@@ -51,8 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private DataContainer _fetchedOrderItemDataContainer1;
     private DataContainer _fetchedOrderItemDataContainer2;
     private DataContainer _fetchedOrderItemDataContainer3;
-
-
+    
     public override void SetUp ()
     {
       base.SetUp();
@@ -111,14 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderItem2.ID)).Return (_fetchedOrderItemDataContainer2);
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderItem3.ID)).Return (_fetchedOrderItemDataContainer3);
 
-      _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (
-              RelationEndPointID.Create(_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany),
-              new[] { _fetchedOrderItem1, _fetchedOrderItem3 }));
-      _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (
-              RelationEndPointID.Create (_originatingOrder2.ID, _endPointDefinitionWithCardinalityMany),
-              new[] { _fetchedOrderItem2 }));
+      ExpectMarkCollectionEndPointComplete (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany, true, _fetchedOrderItem1, _fetchedOrderItem3);
+      ExpectMarkCollectionEndPointComplete (_originatingOrder2.ID, _endPointDefinitionWithCardinalityMany, true, _fetchedOrderItem2);
       _dataManagerMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
@@ -157,10 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Return (new DomainObject[] { null });
       _objectLoaderMock.Replay();
 
-      _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (
-              RelationEndPointID.Create (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany), 
-              new DomainObject[0]));
+      ExpectMarkCollectionEndPointComplete (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany, true);
       _dataManagerMock.Replay();
 
       _eagerFetcher.PerformEagerFetching (
@@ -181,10 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var dataContainerPointingToNull = CreateFetchedOrderItemDataContainer (_fetchedOrderItem1, null);
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderItem1.ID)).Return (dataContainerPointingToNull);
 
-      _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (
-              RelationEndPointID.Create (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany),
-              new DomainObject[0]));
+      ExpectMarkCollectionEndPointComplete (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany, true);
       _dataManagerMock.Replay ();
 
       _eagerFetcher.PerformEagerFetching (
@@ -210,16 +197,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderItem2.ID)).Return (_fetchedOrderItemDataContainer2);
       _dataManagerMock.Stub (stub => stub.GetDataContainerWithoutLoading (_fetchedOrderItem3.ID)).Return (_fetchedOrderItemDataContainer3);
 
-      _dataManagerMock
-          .Expect (
-              mock => mock.MarkCollectionEndPointComplete (
-                  RelationEndPointID.Create (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany),
-                  new[] { _fetchedOrderItem1, _fetchedOrderItem3 }))
-          .Throw (new InvalidOperationException ("Already complete."));
-      _dataManagerMock.Expect (
-          mock => mock.MarkCollectionEndPointComplete (
-              RelationEndPointID.Create (_originatingOrder2.ID, _endPointDefinitionWithCardinalityMany),
-              new[] { _fetchedOrderItem2 }));
+      ExpectMarkCollectionEndPointComplete (_originatingOrder1.ID, _endPointDefinitionWithCardinalityMany, false, _fetchedOrderItem1, _fetchedOrderItem3);
+      ExpectMarkCollectionEndPointComplete (_originatingOrder2.ID, _endPointDefinitionWithCardinalityMany, true, _fetchedOrderItem2);
       _dataManagerMock.Replay ();
 
       _eagerFetcher.PerformEagerFetching (
@@ -269,6 +248,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (fetchedOrderItem.ID, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, originatingOrderID);
       return dataContainer;
+    }
+
+    private void ExpectMarkCollectionEndPointComplete (ObjectID objectID, IRelationEndPointDefinition endPointDefinition, bool result, params DomainObject[] items)
+    {
+      var relationEndPointID = RelationEndPointID.Create (objectID, endPointDefinition);
+      _dataManagerMock.Expect (mock => mock.TrySetCollectionEndPointData (relationEndPointID, items)).Return (result);
     }
   }
 }
