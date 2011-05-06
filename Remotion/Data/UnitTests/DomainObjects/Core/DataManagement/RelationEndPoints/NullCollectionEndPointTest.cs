@@ -112,6 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CanBeMarkedIncomplete ()
+    {
+      Assert.That (_nullEndPoint.CanBeMarkedIncomplete, Is.False);
+    }
+
+    [Test]
     public void HasChanged ()
     {
       Assert.That (_nullEndPoint.HasChanged, Is.False);

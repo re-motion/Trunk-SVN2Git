@@ -22,6 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public interface IVirtualEndPoint : IRelationEndPoint
   {
     bool CanBeCollected { get; }
+    bool CanBeMarkedIncomplete { get; }
 
     void MarkDataIncomplete ();
 

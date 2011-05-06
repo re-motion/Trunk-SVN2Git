@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -84,13 +83,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CanDataBeMarkedIncomplete_True ()
+    {
+      _virtualEndPointMock.Replay();
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged()).Return (false);
+      _dataKeeperMock.Replay();
+
+      Assert.That (_loadState.CanDataBeMarkedIncomplete (_virtualEndPointMock), Is.True);
+    }
+
+    [Test]
+    public void CanDataBeMarkedIncomplete_False ()
+    {
+      _virtualEndPointMock.Replay ();
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (true);
+      _dataKeeperMock.Replay ();
+
+      Assert.That (_loadState.CanDataBeMarkedIncomplete (_virtualEndPointMock), Is.False);
+    }
+
+    [Test]
     public void MarkDataIncomplete_RaisesEvent ()
     {
       _virtualEndPointMock
           .Stub (stub => stub.ID)
           .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
       _virtualEndPointMock.Replay();
-      _dataKeeperMock.Replay();
+
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
 
       _loadState.StubOriginalOppositeEndPoints (new IRealObjectEndPoint[0]);
 
@@ -130,7 +151,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
       _virtualEndPointMock.Replay();
 
-      _dataKeeperMock.Replay();
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataKeeperMock.Replay ();
 
       _loadState.MarkDataIncomplete (
           _virtualEndPointMock,
@@ -147,6 +169,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (stateSetterCalled, Is.True);
       // ReSharper restore AccessToModifiedClosure
+    }
+
+    [Test]
+    public void MarkDataIncomplete_Throws_WithChangedData ()
+    {
+      _virtualEndPointMock
+          .Stub (stub => stub.ID)
+          .Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
+      _virtualEndPointMock.Replay ();
+
+      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (true);
+      _dataKeeperMock.Replay ();
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_clientTransaction);
+
+      Assert.That (
+          () =>_loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => Assert.Fail ("Must not be called.")),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+          "Cannot mark virtual end-point "
+          + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' incomplete "
+          + "because it has been changed."));
     }
 
     [Test]

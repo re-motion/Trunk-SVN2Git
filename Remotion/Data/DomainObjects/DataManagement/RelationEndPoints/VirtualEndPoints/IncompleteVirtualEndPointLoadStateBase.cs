@@ -70,12 +70,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return false;
     }
 
+    public bool CanDataBeMarkedIncomplete (TEndPoint endPoint)
+    {
+      return true;
+    }
+
     public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
-      throw new InvalidOperationException ("The data is already incomplete.");
+      // Do nothing - data is already incomplete
     }
 
     public virtual TData GetData (TEndPoint endPoint)

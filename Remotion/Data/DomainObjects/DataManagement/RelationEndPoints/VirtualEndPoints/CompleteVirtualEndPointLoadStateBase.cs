@@ -86,10 +86,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       // Data is already complete
     }
 
+    public bool CanDataBeMarkedIncomplete (TEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      return !HasChanged();
+    }
+
     public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
+
+      if (HasChanged ())
+      {
+        var message = string.Format ("Cannot mark virtual end-point '{0}' incomplete because it has been changed.", endPoint.ID);
+        throw new InvalidOperationException (message);
+      }
 
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, endPoint);
 

@@ -76,9 +76,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The data is already incomplete.")]
-    public void MarkDataIncomplete_ThrowsException ()
+    public void CanDataBeMarkedIncomplete ()
     {
+      _virtualEndPointMock.Replay ();
+
+      Assert.That (_loadState.CanDataBeMarkedIncomplete (_virtualEndPointMock), Is.True);
+    }
+
+    [Test]
+    public void MarkDataIncomplete_DoesNothing ()
+    {
+      _virtualEndPointMock.Replay();
+
       _loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => Assert.Fail ("Must not be called."));
     }
 

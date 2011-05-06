@@ -48,6 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CanBeMarkedIncomplete ()
+    {
+      Assert.That (_nullEndPoint.CanBeMarkedIncomplete, Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "A NullObjectEndPoint cannot be used to synchronize an opposite end-point.")]
     public void SynchronizeOppositeEndPoint ()

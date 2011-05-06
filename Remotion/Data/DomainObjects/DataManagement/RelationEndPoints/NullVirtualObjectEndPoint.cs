@@ -34,6 +34,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return false; }
     }
 
+    public bool CanBeMarkedIncomplete
+    {
+      get { return false; }
+    }
+
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new InvalidOperationException ("A NullObjectEndPoint cannot be used to synchronize an opposite end-point.");

@@ -361,12 +361,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub1.Stub (stub => stub.ID).Return (endPointID1);
-      endPointStub1.Stub (stub => stub.HasChanged).Return (false);
+      endPointStub1.Stub (stub => stub.CanBeMarkedIncomplete).Return (true);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub1);
 
       var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
-      endPointStub2.Stub (stub => stub.HasChanged).Return (false);
+      endPointStub2.Stub (stub => stub.CanBeMarkedIncomplete).Return (true);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
 
       var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2 });
@@ -397,7 +397,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
-      endPointStub2.Stub (stub => stub.HasChanged).Return (false);
+      endPointStub2.Stub (stub => stub.CanBeMarkedIncomplete).Return (true);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
 
       var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2 });
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void CreateUnloadVirtualEndPointsCommand_ChangedEndPoints ()
+    public void CreateUnloadVirtualEndPointsCommand_NonUnloadableEndPoints ()
     {
       var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
@@ -414,17 +414,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub1.Stub (stub => stub.ID).Return (endPointID1);
-      endPointStub1.Stub (stub => stub.HasChanged).Return (true);
+      endPointStub1.Stub (stub => stub.CanBeMarkedIncomplete).Return (false);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub1);
 
       var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
-      endPointStub2.Stub (stub => stub.HasChanged).Return (true);
+      endPointStub2.Stub (stub => stub.CanBeMarkedIncomplete).Return (false);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
 
       var endPointStub3 = MockRepository.GenerateStub<IVirtualEndPoint> ();
       endPointStub3.Stub (stub => stub.ID).Return (endPointID3);
-      endPointStub3.Stub (stub => stub.HasChanged).Return (false);
+      endPointStub3.Stub (stub => stub.CanBeMarkedIncomplete).Return (true);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub3);
 
       var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2, endPointID3 });

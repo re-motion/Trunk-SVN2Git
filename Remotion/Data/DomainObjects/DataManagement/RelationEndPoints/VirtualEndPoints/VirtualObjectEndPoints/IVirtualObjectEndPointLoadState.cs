@@ -27,6 +27,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject);
     IDataManagementCommand CreateDeleteCommand (IVirtualObjectEndPoint virtualObjectEndPoint);
-
   }
 }

@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         var virtualEndPoint = (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID);
         if (virtualEndPoint != null)
         {
-          if (virtualEndPoint.HasChanged)
+          if (!virtualEndPoint.CanBeMarkedIncomplete)
           {
             var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
             exceptionCommands.Add (new ExceptionCommand (new InvalidOperationException (message)));

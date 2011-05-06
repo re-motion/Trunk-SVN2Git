@@ -80,6 +80,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return false; }
     }
 
+    public bool CanBeMarkedIncomplete
+    {
+      get { return false; }
+    }
+
     public bool HasChanged
     {
       get { return false; }

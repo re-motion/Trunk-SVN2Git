@@ -148,6 +148,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _loadState.CanEndPointBeCollected (this); }
     }
 
+    public bool CanBeMarkedIncomplete
+    {
+      get { return _loadState.CanDataBeMarkedIncomplete (this); }
+    }
+
     public void MarkDataIncomplete ()
     {
       _loadState.MarkDataIncomplete (this, SetIncompleteState);

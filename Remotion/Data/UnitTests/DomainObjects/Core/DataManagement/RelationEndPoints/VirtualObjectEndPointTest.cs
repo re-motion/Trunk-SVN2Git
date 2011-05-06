@@ -189,6 +189,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CanBeMarkedIncomplete ()
+    {
+      _loadStateMock.Expect (mock => mock.CanDataBeMarkedIncomplete (_endPoint)).Return (true).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.CanDataBeMarkedIncomplete (_endPoint)).Return (false).Repeat.Once ();
+      _loadStateMock.Replay ();
+
+      var result1 = _endPoint.CanBeMarkedIncomplete;
+      var result2 = _endPoint.CanBeMarkedIncomplete;
+
+      _loadStateMock.VerifyAllExpectations ();
+      Assert.That (result1, Is.True);
+      Assert.That (result2, Is.False);
+    }
+
+    [Test]
     public void GetOppositeObject ()
     {
       _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (_oppositeObject);

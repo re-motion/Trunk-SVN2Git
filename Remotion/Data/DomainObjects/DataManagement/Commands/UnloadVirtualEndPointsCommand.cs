@@ -79,8 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       foreach (var virtualEndPoint in _virtualEndPoints)
       {
-        if (virtualEndPoint.IsDataComplete)
-          virtualEndPoint.MarkDataIncomplete ();
+        virtualEndPoint.MarkDataIncomplete ();
 
         if (virtualEndPoint.CanBeCollected)
           _registrationAgent.UnregisterEndPoint (virtualEndPoint, _relationEndPointMap);
