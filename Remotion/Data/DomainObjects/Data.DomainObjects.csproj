@@ -235,13 +235,16 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IIndexScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IndexScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptBuilder.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\IScriptToStringConverter.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ISynonymScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ITableScriptElementFactory.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\IViewScriptElementFactory.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\Script.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\BatchDelimiterStatement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\IScriptElement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptToStringConverter.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ViewScriptBuilder.cs" />

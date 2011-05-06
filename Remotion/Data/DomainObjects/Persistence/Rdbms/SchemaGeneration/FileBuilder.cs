@@ -67,9 +67,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("storageProviders", storageProviders);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
+      #region FileBuilder
       if (outputPath != String.Empty && !Directory.Exists (outputPath))
         Directory.CreateDirectory (outputPath);
+      #endregion
 
+      #region ScriptGenerator
       bool createMultipleFiles = storageProviders.Count > 1;
       foreach (var storageProviderDefinition in storageProviders)
       {
@@ -83,8 +86,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
           fileBuilder.Build (GetClassesInStorageProvider (classDefinitions, rdbmsProviderDefinition), setupDbFileName, tearDownDbFileName);
         }
       }
+      #endregion
     }
 
+    #region FileBuilder
     public static string GetFileName (
         StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders, string fileNamePrefix)
     {
@@ -100,7 +105,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 
       return Path.Combine (outputPath, fileName);
     }
+    #endregion
 
+    #region ScriptGenerator
     public static IEnumerable<ClassDefinition> GetClassesInStorageProvider (
         IEnumerable<ClassDefinition> classDefinitions,
         RdbmsProviderDefinition rdbmsProviderDefinition)
@@ -119,7 +126,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _scriptBuilderFactory = scriptBuilderFactory;
       _entityDefinitionProvider = entityDefinitionProvider;
     }
+    #endregion
 
+
+    #region FileBuilder
     public void Build (IEnumerable<ClassDefinition> classDefinitions, string setupDBFileName, string tearDownDBFileName)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
@@ -130,18 +140,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       File.WriteAllText (setupDBFileName, script.CreateScript);
       File.WriteAllText (tearDownDBFileName, script.DropScript);
     }
+    #endregion
 
     public virtual ScriptPair GetScript (IEnumerable<ClassDefinition> classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
+      #region ScriptGenerator
       // TODO Review 3932: Add a test showing that when GetScript is called twice, the _scriptBuilderFactory is also called twice.
       var scriptBuilder = _scriptBuilderFactory();
 
       var entityDefintions = _entityDefinitionProvider.GetEntityDefinitions (classDefinitions);
       foreach (var entityDefinition in entityDefintions)
         scriptBuilder.AddEntityDefinition (entityDefinition);
+      #endregion
 
+      #region ScriptToStringConverter
       var createScriptStatements = new List<ScriptStatement>();
       var dropScriptStatements = new List<ScriptStatement>();
       var createScriptCollection = scriptBuilder.GetCreateScript();
@@ -153,6 +167,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return new ScriptPair (
           createScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString(),
           dropScriptStatements.Aggregate (new StringBuilder(), (sb, stmt) => sb.AppendLine (stmt.Statement)).ToString());
+
+      #endregion
     }
     
   }
