@@ -28,7 +28,7 @@ using File=System.IO.File;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
   [TestFixture]
-  public class InterceptedDomainObjectFactoryTest : ClientTransactionBaseTest
+  public class InterceptedDomainObjectTypeFactoryTest : ClientTransactionBaseTest
   {
     public override void TestFixtureSetUp ()
     {

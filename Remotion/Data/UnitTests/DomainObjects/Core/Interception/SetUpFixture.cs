@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public static void CleanupAssemblyDirectory()
     {
       if (Directory.Exists (AssemblyDirectory))
-        Directory.Delete (InterceptedDomainObjectFactoryTest.AssemblyDirectory, true);
+        Directory.Delete (InterceptedDomainObjectTypeFactoryTest.AssemblyDirectory, true);
       Assert.That (Directory.Exists (AssemblyDirectory), Is.False);
     }
   }

@@ -1074,7 +1074,7 @@
     <Compile Include="DomainObjects\Core\Interception\SerializationHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\Throws.cs" />
     <Compile Include="DomainObjects\Core\Interception\TypeGeneratorTest.cs" />
-    <Compile Include="DomainObjects\Core\Interception\InterceptedDomainObjectFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Interception\InterceptedDomainObjectTypeFactoryTest.cs" />
     <Compile Include="DomainObjects\Factories\BaseConfiguration.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\BehavioralMixinTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />
