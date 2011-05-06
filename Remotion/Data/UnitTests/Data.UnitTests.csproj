@@ -210,6 +210,7 @@
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\MarkVirtualEndPointsIncompleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\TransactionHierarchyCommandExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnregisterEndPointsCommandTest.cs" />

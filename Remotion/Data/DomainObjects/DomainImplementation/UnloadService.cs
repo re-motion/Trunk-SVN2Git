@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
@@ -258,7 +257,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         return new ExceptionCommand (new InvalidOperationException (message));
       }
 
-      return new UnloadVirtualEndPointCommand (virtualEndPoint);
+      return new MarkVirtualEndPointsIncompleteCommand (new[] { virtualEndPoint });
     }
 
     private static IDataManagementCommand CreateUnloadCollectionEndPointAndDataCommand (ClientTransaction tx, RelationEndPointID endPointID)
@@ -274,54 +273,6 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       var unloadEndPointCommand = CreateUnloadVirtualEndPointCommand (tx, endPointID);
       return new CompositeCommand (unloadDataCommand, unloadEndPointCommand);
-    }
-
-
-    public class UnloadVirtualEndPointCommand : IDataManagementCommand
-    {
-      private readonly IVirtualEndPoint _virtualEndPoint;
-
-      public UnloadVirtualEndPointCommand (IVirtualEndPoint virtualEndPoint)
-      {
-        ArgumentUtility.CheckNotNull ("virtualEndPoint", virtualEndPoint);
-        _virtualEndPoint = virtualEndPoint;
-      }
-
-      public IEnumerable<Exception> GetAllExceptions ()
-      {
-        return Enumerable.Empty<Exception>();
-      }
-
-      public void NotifyClientTransactionOfBegin ()
-      {
-        // Nothing to do here
-      }
-
-      public void Begin ()
-      {
-        // Nothing to do here
-      }
-
-      public void Perform ()
-      {
-        if (_virtualEndPoint.IsDataComplete)
-          _virtualEndPoint.MarkDataIncomplete ();
-      }
-
-      public void End ()
-      {
-        // Nothing to do here
-      }
-
-      public void NotifyClientTransactionOfEnd ()
-      {
-        // Nothing to do here
-      }
-
-      public ExpandedCommand ExpandToAllRelatedObjects ()
-      {
-        return new ExpandedCommand (this);
-      }
     }
   }
 }
