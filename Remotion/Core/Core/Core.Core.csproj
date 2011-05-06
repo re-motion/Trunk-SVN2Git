@@ -136,6 +136,7 @@
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
