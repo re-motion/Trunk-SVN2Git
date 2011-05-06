@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -54,11 +56,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (!TryUnloadVirtualEndPoint (clientTransaction, endPointID))
-      {
-        var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
-        throw new InvalidOperationException (message);
-      }
+      CheckVirtualEndPointID (endPointID);
+
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
     /// <summary>
@@ -86,21 +87,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var virtualEndPoint = CheckAndGetVirtualEndPoint (tx, endPointID);
-            if (virtualEndPoint != null)
-            {
-              if (!CanUnloadVirtualEndPoint (virtualEndPoint))
-                return false;
+      CheckVirtualEndPointID (endPointID);
 
-              if (virtualEndPoint.IsDataComplete)
-                virtualEndPoint.MarkDataIncomplete();
-            }
-            return true;
-          });
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
     /// <summary>
@@ -133,14 +123,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = tx.DataManager.CreateUnloadCommand (objectID);
-            command.NotifyAndPerform();
-            return true;
-          });
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadCommand (objectID);
+      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
     /// <summary>
@@ -173,17 +157,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = tx.DataManager.CreateUnloadCommand (objectID);
-            if (!command.CanExecute())
-              return false;
-
-            command.NotifyAndPerform();
-            return true;
-          });
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadCommand (objectID);
+      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
     /// <summary>
@@ -210,23 +185,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var endPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
-            if (endPoint != null && endPoint.IsDataComplete)
-            {
-              var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
-              var command = tx.DataManager.CreateUnloadCommand (unloadedIDs);
-              command.NotifyAndPerform();
+      CheckCollectionEndPointID (endPointID);
 
-              // Still unload the end point, in case the unloadedIDs is empty (if it isn't, the data unload will have unloaded the end point anyway)
-              if (endPoint.IsDataComplete)
-                endPoint.MarkDataIncomplete();
-            }
-            return true;
-          });
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadCollectionEndPointAndDataCommand(tx, endPointID);
+      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
     /// <summary>
@@ -253,56 +215,36 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var endPoint = CheckAndGetCollectionEndPoint (tx, endPointID);
-            if (endPoint != null && endPoint.IsDataComplete)
-            {
-              if (!CanUnloadVirtualEndPoint (endPoint))
-                return false;
+      CheckCollectionEndPointID (endPointID);
 
-              var unloadedIDs = endPoint.Collection.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
-              var command = tx.DataManager.CreateUnloadCommand (unloadedIDs);
-              if (!command.CanExecute())
-                return false;
-
-              command.NotifyAndPerform();
-
-              // Still unload the end point, in case the unloadedIDs is empty (if it isn't, the data unload will have unloaded the end point anyway)
-              if (endPoint.IsDataComplete)
-                endPoint.MarkDataIncomplete();
-            }
-            return true;
-          });
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadCollectionEndPointAndDataCommand (tx, endPointID);
+      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
     }
 
-    private static ICollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    private static IVirtualEndPoint CheckAndGetVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
+      CheckVirtualEndPointID (endPointID);
+
+      return (IVirtualEndPoint) clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+    }
+
+    private static void CheckCollectionEndPointID (RelationEndPointID endPointID)
+    {
+      // TODO: Check for IsAnyonymous
       if (endPointID.Definition.Cardinality != CardinalityType.Many)
       {
         var message = string.Format ("The given end point ID '{0}' does not denote a collection-valued end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
       }
-
-      return (ICollectionEndPoint) CheckAndGetVirtualEndPoint (clientTransaction, endPointID);
     }
 
-    private static IVirtualEndPoint CheckAndGetVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    private static void CheckVirtualEndPointID (RelationEndPointID endPointID)
     {
       if (!endPointID.Definition.IsVirtual)
       {
         var message = string.Format ("The given end point ID '{0}' does not denote a virtual end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
       }
-
-      return (IVirtualEndPoint) clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
-    }
-
-    private static bool CanUnloadVirtualEndPoint (IVirtualEndPoint virtualEndPoint)
-    {
-      return !virtualEndPoint.HasChanged;
     }
 
     private static bool ApplyToTransactionHierarchy (ClientTransaction clientTransaction, Func<ClientTransaction, bool> operation)
@@ -319,14 +261,122 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
           }
         }
         else
-        {
           result = operation (currentTransaction);
-        }
 
         currentTransaction = currentTransaction.ParentTransaction;
       }
 
       return result;
+    }
+
+    private static bool TryApplyCommandToTransactionHierarchy (
+        ClientTransaction clientTransaction,
+        Func<ClientTransaction, IDataManagementCommand> commandFactory)
+    {
+      return ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var command = commandFactory (tx);
+            if (!command.CanExecute())
+              return false;
+
+            command.NotifyAndPerform();
+            return true;
+          });
+    }
+
+    private static void ApplyCommandToTransactionHierarchy (
+        ClientTransaction clientTransaction,
+        Func<ClientTransaction, IDataManagementCommand> commandFactory)
+    {
+      ApplyToTransactionHierarchy (
+          clientTransaction,
+          delegate (ClientTransaction tx)
+          {
+            var command = commandFactory (tx);
+            command.NotifyAndPerform();
+            return true;
+          });
+    }
+
+    private static IDataManagementCommand CreateUnloadVirtualEndPointCommand (ClientTransaction tx, RelationEndPointID endPointID)
+    {
+      CheckVirtualEndPointID (endPointID);
+      var virtualEndPoint = (IVirtualEndPoint) tx.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      if (virtualEndPoint == null)
+        return new NopCommand();
+
+      if (virtualEndPoint.HasChanged)
+      {
+        var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
+        return new ExceptionCommand (new InvalidOperationException (message));
+      }
+
+      return new UnloadVirtualEndPointCommand (virtualEndPoint);
+    }
+
+    private static IDataManagementCommand CreateUnloadCollectionEndPointAndDataCommand (ClientTransaction tx, RelationEndPointID endPointID)
+    {
+      CheckCollectionEndPointID (endPointID);
+      var endPoint = (ICollectionEndPoint) tx.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+
+      if (endPoint == null || !endPoint.IsDataComplete)
+        return new NopCommand ();
+
+      var unloadedObjectIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
+      var unloadDataCommand = tx.DataManager.CreateUnloadCommand (unloadedObjectIDs);
+
+      var unloadEndPointCommand = CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      return new CompositeCommand (unloadDataCommand, unloadEndPointCommand);
+    }
+
+
+    public class UnloadVirtualEndPointCommand : IDataManagementCommand
+    {
+      private readonly IVirtualEndPoint _virtualEndPoint;
+
+      public UnloadVirtualEndPointCommand (IVirtualEndPoint virtualEndPoint)
+      {
+        ArgumentUtility.CheckNotNull ("virtualEndPoint", virtualEndPoint);
+        _virtualEndPoint = virtualEndPoint;
+      }
+
+      public IEnumerable<Exception> GetAllExceptions ()
+      {
+        return Enumerable.Empty<Exception>();
+      }
+
+      public void NotifyClientTransactionOfBegin ()
+      {
+        // Nothing to do here
+      }
+
+      public void Begin ()
+      {
+        // Nothing to do here
+      }
+
+      public void Perform ()
+      {
+        if (_virtualEndPoint.IsDataComplete)
+          _virtualEndPoint.MarkDataIncomplete ();
+      }
+
+      public void End ()
+      {
+        // Nothing to do here
+      }
+
+      public void NotifyClientTransactionOfEnd ()
+      {
+        // Nothing to do here
+      }
+
+      public ExpandedCommand ExpandToAllRelatedObjects ()
+      {
+        return new ExpandedCommand (this);
+      }
     }
   }
 }
