@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -24,6 +25,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.
   /// </summary>
+  [TypeConverter (typeof (PropertyInfoAdapterConverter))]
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;

@@ -754,6 +754,14 @@ namespace Remotion.UnitTests.Reflection
           Is.EqualTo (new PropertyInfoAdapter (typeof (int[]).GetProperty ("Length")).GetHashCode()));
     }
 
+    [Test]
+    public void IsSupportedByTypeConversionProvider ()
+    {
+      var typeConversionProvider = TypeConversionProvider.Create ();
+
+      Assert.That (typeConversionProvider.CanConvert (typeof (PropertyInfoAdapter), typeof (PropertyInfo)), Is.True);
+    }
+
     private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
     {
       adapter.SetValue (instance, value, null);
