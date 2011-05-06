@@ -173,6 +173,7 @@
     <Compile Include="DataManagement\CollectionData\ObservableCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionData\ObservableCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\CollectionData\CopyOnWriteDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\Commands\TransactionHierarchyCommandExecutor.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\RealObjectEndPointRegistrationCommandDecorator.cs" />
     <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\Commands\ExceptionCommand.cs" />

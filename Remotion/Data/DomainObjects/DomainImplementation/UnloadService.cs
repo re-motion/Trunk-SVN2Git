@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -59,7 +58,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       CheckVirtualEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
-      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -90,7 +90,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       CheckVirtualEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
-      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -124,7 +125,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadCommand (objectID);
-      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -158,7 +160,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadCommand (objectID);
-      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -188,7 +191,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       CheckCollectionEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadCollectionEndPointAndDataCommand(tx, endPointID);
-      ApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -218,14 +222,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       CheckCollectionEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadCollectionEndPointAndDataCommand (tx, endPointID);
-      return TryApplyCommandToTransactionHierarchy (clientTransaction, commandFactory);
-    }
-
-    private static IVirtualEndPoint CheckAndGetVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-      CheckVirtualEndPointID (endPointID);
-
-      return (IVirtualEndPoint) clientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     private static void CheckCollectionEndPointID (RelationEndPointID endPointID)
@@ -245,59 +243,6 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         var message = string.Format ("The given end point ID '{0}' does not denote a virtual end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
       }
-    }
-
-    private static bool ApplyToTransactionHierarchy (ClientTransaction clientTransaction, Func<ClientTransaction, bool> operation)
-    {
-      var currentTransaction = clientTransaction.LeafTransaction;
-      bool result = true;
-      while (currentTransaction != null && result)
-      {
-        if (currentTransaction.IsReadOnly)
-        {
-          using (TransactionUnlocker.MakeWriteable (currentTransaction))
-          {
-            result = operation (currentTransaction);
-          }
-        }
-        else
-          result = operation (currentTransaction);
-
-        currentTransaction = currentTransaction.ParentTransaction;
-      }
-
-      return result;
-    }
-
-    private static bool TryApplyCommandToTransactionHierarchy (
-        ClientTransaction clientTransaction,
-        Func<ClientTransaction, IDataManagementCommand> commandFactory)
-    {
-      return ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = commandFactory (tx);
-            if (!command.CanExecute())
-              return false;
-
-            command.NotifyAndPerform();
-            return true;
-          });
-    }
-
-    private static void ApplyCommandToTransactionHierarchy (
-        ClientTransaction clientTransaction,
-        Func<ClientTransaction, IDataManagementCommand> commandFactory)
-    {
-      ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = commandFactory (tx);
-            command.NotifyAndPerform();
-            return true;
-          });
     }
 
     private static IDataManagementCommand CreateUnloadVirtualEndPointCommand (ClientTransaction tx, RelationEndPointID endPointID)
