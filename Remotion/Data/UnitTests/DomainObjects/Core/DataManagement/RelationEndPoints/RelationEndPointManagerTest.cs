@@ -354,6 +354,107 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CreateUnloadVirtualEndPointsCommand ()
+    {
+      var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+
+      var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub1.Stub (stub => stub.ID).Return (endPointID1);
+      endPointStub1.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub1);
+
+      var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
+      endPointStub2.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
+
+      var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2 });
+
+      Assert.That (
+          result,
+          Is.TypeOf<MarkVirtualEndPointsIncompleteCommand>()
+              .With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub1, endPointStub2 }));
+    }
+
+    [Test]
+    public void CreateUnloadVirtualEndPointsCommand_NonLoadedEndPoints ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+
+      var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID });
+
+      Assert.That (result, Is.TypeOf<NopCommand>());
+    }
+
+    [Test]
+    public void CreateUnloadVirtualEndPointsCommand_SomeNonLoadedEndPoints ()
+    {
+      var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+
+      var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
+      endPointStub2.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
+
+      var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2 });
+
+      Assert.That (result, Is.TypeOf<MarkVirtualEndPointsIncompleteCommand> ().With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub2 }));
+    }
+
+    [Test]
+    public void CreateUnloadVirtualEndPointsCommand_ChangedEndPoints ()
+    {
+      var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+
+      var endPointStub1 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub1.Stub (stub => stub.ID).Return (endPointID1);
+      endPointStub1.Stub (stub => stub.HasChanged).Return (true);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub1);
+
+      var endPointStub2 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub2.Stub (stub => stub.ID).Return (endPointID2);
+      endPointStub2.Stub (stub => stub.HasChanged).Return (true);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub2);
+
+      var endPointStub3 = MockRepository.GenerateStub<IVirtualEndPoint> ();
+      endPointStub3.Stub (stub => stub.ID).Return (endPointID3);
+      endPointStub3.Stub (stub => stub.HasChanged).Return (false);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub3);
+
+      var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2, endPointID3 });
+
+      Assert.That (result, Is.TypeOf<CompositeCommand> ());
+      var exceptionCommands = ((CompositeCommand) result).GetNestedCommands();
+      Assert.That (exceptionCommands[0], Is.TypeOf<ExceptionCommand>());
+      Assert.That (((ExceptionCommand) exceptionCommands[0]).Exception, Is.TypeOf<InvalidOperationException>().With.Message.EqualTo (
+          "The end point with ID "
+          + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
+          + "has been changed. Changed end points cannot be unloaded."));
+      Assert.That (exceptionCommands[1], Is.TypeOf<ExceptionCommand> ());
+      Assert.That (((ExceptionCommand) exceptionCommands[1]).Exception, Is.TypeOf<InvalidOperationException> ().With.Message.EqualTo (
+          "The end point with ID "
+          + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' "
+          + "has been changed. Changed end points cannot be unloaded."));
+    }
+
+    [Test]
+    public void CreateUnloadVirtualEndPointsCommand_NonVirtualIDs ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
+
+      Assert.That (
+          () => _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The given end point ID "
+              + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
+              + "does not denote a virtual end-point.\r\nParameter name: endPointIDs"));
+    }
+
+    [Test]
     public void GetRelationEndPointWithoutLoading_NullRealObjectEndPoint ()
     {
       var endPointDefinition =

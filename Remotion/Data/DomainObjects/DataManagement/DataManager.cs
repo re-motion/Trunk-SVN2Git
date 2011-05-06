@@ -434,6 +434,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public IDataManagementCommand CreateUnloadVirtualEndPointsCommand (params RelationEndPointID[] endPointIDs)
+    {
+      ArgumentUtility.CheckNotNull ("endPointIDs", endPointIDs);
+
+      return _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
+    }
+
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
     {
       return new ClientTransactionsDifferException (String.Format (message, args));

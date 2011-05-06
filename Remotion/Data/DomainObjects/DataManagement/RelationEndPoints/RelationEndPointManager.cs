@@ -173,6 +173,44 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
+    public IDataManagementCommand CreateUnloadVirtualEndPointsCommand (IEnumerable<RelationEndPointID> endPointIDs)
+    {
+      ArgumentUtility.CheckNotNull ("endPointIDs", endPointIDs);
+
+      var virtualEndPoints = new List<IVirtualEndPoint>();
+      var exceptionCommands = new List<ExceptionCommand>();
+      foreach (var endPointID in endPointIDs)
+      {
+        if (!endPointID.Definition.IsVirtual)
+        {
+          var message = string.Format ("The given end point ID '{0}' does not denote a virtual end-point.", endPointID);
+          throw new ArgumentException (message, "endPointIDs");
+        }
+
+        var virtualEndPoint = (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID);
+        if (virtualEndPoint != null)
+        {
+          if (virtualEndPoint.HasChanged)
+          {
+            var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
+            exceptionCommands.Add (new ExceptionCommand (new InvalidOperationException (message)));
+          }
+          else
+          {
+            virtualEndPoints.Add (virtualEndPoint);
+          }
+        }
+      }
+
+      if (exceptionCommands.Count > 0)
+        return new CompositeCommand (exceptionCommands.Cast<IDataManagementCommand>());
+
+      if (virtualEndPoints.Count == 0)
+        return new NopCommand ();
+      
+      return new MarkVirtualEndPointsIncompleteCommand (virtualEndPoints);
+    }
+
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);

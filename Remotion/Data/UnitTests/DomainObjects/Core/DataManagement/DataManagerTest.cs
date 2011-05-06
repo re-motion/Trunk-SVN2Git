@@ -871,6 +871,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateUnloadVirtualEndPointCommand ()
+    {
+      var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+
+      var endPoint1 = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID1);
+      var endPoint2 = _dataManager.GetRelationEndPointWithMinimumLoading (endPointID2);
+      
+      var command = _dataManager.CreateUnloadVirtualEndPointsCommand (endPointID1, endPointID2, endPointID3);
+
+      Assert.That (
+          command, Is.TypeOf<MarkVirtualEndPointsIncompleteCommand>().With.Property ("VirtualEndPoints").EqualTo (new[] { endPoint1, endPoint2 }));
+    }
+
+    [Test]
     public void CheckMandatoryRelations_AllRelationsOk ()
     {
       var dataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;

@@ -56,5 +56,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DataContainer GetDataContainerWithoutLoading (ObjectID id);
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
     IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs);
+    IDataManagementCommand CreateUnloadVirtualEndPointsCommand (params RelationEndPointID[] endPointIDs);
   }
 }

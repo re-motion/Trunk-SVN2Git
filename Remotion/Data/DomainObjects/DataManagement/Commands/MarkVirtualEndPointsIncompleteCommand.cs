@@ -36,6 +36,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _virtualEndPoints = virtualEndPoints.ToArray();
     }
 
+    public IVirtualEndPoint[] VirtualEndPoints
+    {
+      get { return _virtualEndPoints; }
+    }
+
     public IEnumerable<Exception> GetAllExceptions ()
     {
       return Enumerable.Empty<Exception>();

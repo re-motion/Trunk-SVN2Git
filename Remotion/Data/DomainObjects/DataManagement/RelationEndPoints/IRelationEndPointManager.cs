@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -11,6 +12,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     void RegisterEndPointsForDataContainer (DataContainer dataContainer);
     IDataManagementCommand CreateUnregisterCommandForDataContainer (DataContainer dataContainer);
+    IDataManagementCommand CreateUnloadVirtualEndPointsCommand (IEnumerable<RelationEndPointID> endPointIDs);
 
     IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID);
     IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID);

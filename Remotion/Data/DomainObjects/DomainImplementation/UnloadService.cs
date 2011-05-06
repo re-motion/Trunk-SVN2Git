@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckVirtualEndPointID (endPointID);
 
-      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
       var executor = new TransactionHierarchyCommandExecutor (commandFactory);
       executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
       CheckVirtualEndPointID (endPointID);
 
-      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
       var executor = new TransactionHierarchyCommandExecutor (commandFactory);
       return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
     }
@@ -243,22 +243,6 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       }
     }
 
-    private static IDataManagementCommand CreateUnloadVirtualEndPointCommand (ClientTransaction tx, RelationEndPointID endPointID)
-    {
-      CheckVirtualEndPointID (endPointID);
-      var virtualEndPoint = (IVirtualEndPoint) tx.DataManager.GetRelationEndPointWithoutLoading (endPointID);
-      if (virtualEndPoint == null)
-        return new NopCommand();
-
-      if (virtualEndPoint.HasChanged)
-      {
-        var message = string.Format ("The end point with ID '{0}' has been changed. Changed end points cannot be unloaded.", endPointID);
-        return new ExceptionCommand (new InvalidOperationException (message));
-      }
-
-      return new MarkVirtualEndPointsIncompleteCommand (new[] { virtualEndPoint });
-    }
-
     private static IDataManagementCommand CreateUnloadCollectionEndPointAndDataCommand (ClientTransaction tx, RelationEndPointID endPointID)
     {
       CheckCollectionEndPointID (endPointID);
@@ -270,7 +254,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       var unloadedObjectIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
       var unloadDataCommand = tx.DataManager.CreateUnloadCommand (unloadedObjectIDs);
 
-      var unloadEndPointCommand = CreateUnloadVirtualEndPointCommand (tx, endPointID);
+      var unloadEndPointCommand = tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
       return new CompositeCommand (unloadDataCommand, unloadEndPointCommand);
     }
   }
