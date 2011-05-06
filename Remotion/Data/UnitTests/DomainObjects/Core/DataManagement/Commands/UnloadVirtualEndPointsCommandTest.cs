@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Rhino.Mocks;
@@ -23,13 +24,16 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
   [TestFixture]
-  public class MarkVirtualEndPointsIncompleteCommandTest
+  public class UnloadVirtualEndPointsCommandTest
   {
     private MockRepository _mockRepository;
     private IVirtualEndPoint _endPointMock1;
     private IVirtualEndPoint _endPointMock2;
 
-    private MarkVirtualEndPointsIncompleteCommand _command;
+    private IRelationEndPointRegistrationAgent _registrationAgentMock;
+    private RelationEndPointMap _relationEndPointMap;
+
+    private UnloadVirtualEndPointsCommand _command;
 
     [SetUp]
     public void SetUp ()
@@ -38,7 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _endPointMock1 = _mockRepository.StrictMock<IVirtualEndPoint> ();
       _endPointMock2 = _mockRepository.StrictMock<IVirtualEndPoint> ();
 
-      _command = new MarkVirtualEndPointsIncompleteCommand (new[] { _endPointMock1, _endPointMock2 });
+      _registrationAgentMock = _mockRepository.StrictMock<IRelationEndPointRegistrationAgent>();
+      _relationEndPointMap = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
+
+      _command = new UnloadVirtualEndPointsCommand (new[] { _endPointMock1, _endPointMock2 }, _registrationAgentMock, _relationEndPointMap);
     }
 
     [Test]
@@ -58,13 +65,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Perform_WithCompleteEndPoints ()
+    public void Perform_WithCompleteEndPoints_NonCollectible ()
     {
       _endPointMock1.Stub (stub => stub.IsDataComplete).Return (true);
       _endPointMock1.Expect (mock => mock.MarkDataIncomplete ());
+      _endPointMock1.Stub (stub => stub.CanBeCollected).Return (false);
       
       _endPointMock2.Stub (stub => stub.IsDataComplete).Return (true);
       _endPointMock2.Expect (mock => mock.MarkDataIncomplete ());
+      _endPointMock2.Stub (stub => stub.CanBeCollected).Return (false);
       _mockRepository.ReplayAll ();
 
       _command.Perform();
@@ -73,10 +82,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void Perform_WithCompleteEndPoints_Collectible ()
+    {
+      _endPointMock1.Stub (stub => stub.IsDataComplete).Return (true);
+      _endPointMock1.Expect (mock => mock.MarkDataIncomplete ());
+      _endPointMock1.Stub (stub => stub.CanBeCollected).Return (true);
+
+      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPointMock1, _relationEndPointMap));
+
+      _endPointMock2.Stub (stub => stub.IsDataComplete).Return (true);
+      _endPointMock2.Expect (mock => mock.MarkDataIncomplete ());
+      _endPointMock2.Stub (stub => stub.CanBeCollected).Return (false);
+      _mockRepository.ReplayAll ();
+
+      _command.Perform ();
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void Perform_WithIncompleteEndPoints ()
     {
       _endPointMock1.Stub (stub => stub.IsDataComplete).Return (false);
+      _endPointMock1.Stub (stub => stub.CanBeCollected).Return (false);
       _endPointMock2.Stub (stub => stub.IsDataComplete).Return (false);
+      _endPointMock2.Stub (stub => stub.CanBeCollected).Return (true);
+
+      _registrationAgentMock.Expect (mock => mock.UnregisterEndPoint (_endPointMock2, _relationEndPointMap));
+
       _mockRepository.ReplayAll ();
 
       _command.Perform ();

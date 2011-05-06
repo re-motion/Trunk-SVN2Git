@@ -23,17 +23,36 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Marks a virtual end-point incomplete.
+  /// Marks a virtual end-point incomplete and unregisters it if it can be collected.
   /// </summary>
-  public class MarkVirtualEndPointsIncompleteCommand : IDataManagementCommand
+  public class UnloadVirtualEndPointsCommand : IDataManagementCommand
   {
+    private readonly IRelationEndPointRegistrationAgent _registrationAgent;
+    private readonly RelationEndPointMap _relationEndPointMap;
     private readonly IVirtualEndPoint[] _virtualEndPoints;
 
-    public MarkVirtualEndPointsIncompleteCommand (IEnumerable<IVirtualEndPoint> virtualEndPoints)
+    public UnloadVirtualEndPointsCommand (
+        IEnumerable<IVirtualEndPoint> virtualEndPoints, 
+        IRelationEndPointRegistrationAgent registrationAgent, 
+        RelationEndPointMap relationEndPointMap)
     {
       ArgumentUtility.CheckNotNull ("virtualEndPoints", virtualEndPoints);
+      ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
+      ArgumentUtility.CheckNotNull ("relationEndPointMap", relationEndPointMap);
       
       _virtualEndPoints = virtualEndPoints.ToArray();
+      _registrationAgent = registrationAgent;
+      _relationEndPointMap = relationEndPointMap;
+    }
+
+    public IRelationEndPointRegistrationAgent RegistrationAgent
+    {
+      get { return _registrationAgent; }
+    }
+
+    public RelationEndPointMap RelationEndPointMap
+    {
+      get { return _relationEndPointMap; }
     }
 
     public IVirtualEndPoint[] VirtualEndPoints
@@ -62,6 +81,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       {
         if (virtualEndPoint.IsDataComplete)
           virtualEndPoint.MarkDataIncomplete ();
+
+        if (virtualEndPoint.CanBeCollected)
+          _registrationAgent.UnregisterEndPoint (virtualEndPoint, _relationEndPointMap);
       }
     }
 

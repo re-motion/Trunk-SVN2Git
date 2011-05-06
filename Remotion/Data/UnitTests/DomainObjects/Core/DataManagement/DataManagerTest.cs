@@ -883,7 +883,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var command = _dataManager.CreateUnloadVirtualEndPointsCommand (endPointID1, endPointID2, endPointID3);
 
       Assert.That (
-          command, Is.TypeOf<MarkVirtualEndPointsIncompleteCommand>().With.Property ("VirtualEndPoints").EqualTo (new[] { endPoint1, endPoint2 }));
+          command, Is.TypeOf<UnloadVirtualEndPointsCommand>().With.Property ("VirtualEndPoints").EqualTo (new[] { endPoint1, endPoint2 }));
     }
 
     [Test]

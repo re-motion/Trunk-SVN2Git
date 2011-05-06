@@ -251,11 +251,12 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       if (endPoint == null || !endPoint.IsDataComplete)
         return new NopCommand ();
 
+      var unloadEndPointCommand = tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
+
       var unloadedObjectIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
       var unloadDataCommand = tx.DataManager.CreateUnloadCommand (unloadedObjectIDs);
 
-      var unloadEndPointCommand = tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
-      return new CompositeCommand (unloadDataCommand, unloadEndPointCommand);
+      return new CompositeCommand (unloadEndPointCommand, unloadDataCommand);
     }
   }
 }

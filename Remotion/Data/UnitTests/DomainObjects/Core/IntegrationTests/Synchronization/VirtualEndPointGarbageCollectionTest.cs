@@ -136,7 +136,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    [Ignore ("TODO 3914")]
     public void UnloadCollectionEndPoint_WithoutReferences_CausesEndPointToBeRemoved ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
@@ -170,7 +169,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    [Ignore ("TODO 3914")]
     public void UnloadVirtualObjectEndPoint_WithoutReferences_CausesEndPointToBeRemoved ()
     {
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);

@@ -373,8 +373,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (
           result,
-          Is.TypeOf<MarkVirtualEndPointsIncompleteCommand>()
-              .With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub1, endPointStub2 }));
+          Is.TypeOf<UnloadVirtualEndPointsCommand>()
+              .With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub1, endPointStub2 })
+              .And.Property ("RelationEndPointMap").SameAs (_relationEndPointManager.RelationEndPoints)
+              .And.Property ("RegistrationAgent").SameAs (_relationEndPointManager.RegistrationAgent));
     }
 
     [Test]
@@ -400,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var result = _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (new[] { endPointID1, endPointID2 });
 
-      Assert.That (result, Is.TypeOf<MarkVirtualEndPointsIncompleteCommand> ().With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub2 }));
+      Assert.That (result, Is.TypeOf<UnloadVirtualEndPointsCommand> ().With.Property ("VirtualEndPoints").EqualTo (new[] { endPointStub2 }));
     }
 
     [Test]

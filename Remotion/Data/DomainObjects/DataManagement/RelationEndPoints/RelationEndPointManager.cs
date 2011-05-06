@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (virtualEndPoints.Count == 0)
         return new NopCommand ();
       
-      return new MarkVirtualEndPointsIncompleteCommand (virtualEndPoints);
+      return new UnloadVirtualEndPointsCommand (virtualEndPoints, _registrationAgent, _map);
     }
 
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID endPointID)

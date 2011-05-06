@@ -255,9 +255,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var result = UnloadService.TryUnloadVirtualEndPoint (subTransaction, _collectionEndPointID);
 
       Assert.That (result, Is.False);
-      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.False);
+
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
+      
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
       Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
-      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.False);
       Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
     }
 

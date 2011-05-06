@@ -177,7 +177,7 @@
     <Compile Include="DataManagement\Commands\EndPointModifications\RealObjectEndPointRegistrationCommandDecorator.cs" />
     <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\Commands\ExceptionCommand.cs" />
-    <Compile Include="DataManagement\Commands\MarkVirtualEndPointsIncompleteCommand.cs" />
+    <Compile Include="DataManagement\Commands\UnloadVirtualEndPointsCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointMapReadOnlyView.cs" />
