@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 {
@@ -420,6 +421,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       EnsureEndPointLoadedAndComplete (objectEndPointID);
 
       UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end point ID 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid/' does not denote a collection-valued end-point.\r\n"
+        + "Parameter name: endPointID")]
+    public void UnloadCollectionEndPointAndData_AnonymousEndPoint ()
+    {
+      var anonymousEndPointDefinition = GetEndPointDefinition (typeof (Location), "Client").GetOppositeEndPointDefinition();
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, anonymousEndPointDefinition);
+
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID);
     }
 
     [Test]

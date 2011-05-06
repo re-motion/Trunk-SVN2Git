@@ -227,8 +227,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
     private static void CheckCollectionEndPointID (RelationEndPointID endPointID)
     {
-      // TODO: Check for IsAnyonymous
-      if (endPointID.Definition.Cardinality != CardinalityType.Many)
+      if (endPointID.Definition.Cardinality != CardinalityType.Many || endPointID.Definition.IsAnonymous)
       {
         var message = string.Format ("The given end point ID '{0}' does not denote a collection-valued end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
