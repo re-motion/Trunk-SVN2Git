@@ -67,17 +67,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Assertion.IsNotNull (s_getObjectDataForGeneratedTypesMethod);
     }
 
-    public TypeGenerator (Type publicDomainObjectType, Type typeToDeriveFrom, ModuleScope scope)
+    public TypeGenerator (Type publicDomainObjectType, Type typeToDeriveFrom, ModuleScope scope, TypeConversionProvider typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("publicDomainObjectType", publicDomainObjectType);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("typeToDeriveFrom", typeToDeriveFrom, publicDomainObjectType);
       ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       _publicDomainObjectType = publicDomainObjectType;
       _baseType = typeToDeriveFrom;
 
       // Analyze type before creating the class emitter; that way, we won't have half-created types lying around in case of configuration errors
-      Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (publicDomainObjectType).GetProperties ();
+      Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (publicDomainObjectType, typeConversionProvider).GetProperties ();
 
       string typeName = typeToDeriveFrom.FullName + "_WithInterception_" + Guid.NewGuid ().ToString ("N");
       var interfaces = new[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };

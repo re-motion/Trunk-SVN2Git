@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -31,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void SetUp()
     {
       s_assemblyDirectory = Path.Combine (Environment.CurrentDirectory, "Interception.TestDlls");
-      s_factory = new InterceptedDomainObjectTypeFactory (s_assemblyDirectory);
+      s_factory = new InterceptedDomainObjectTypeFactory (s_assemblyDirectory, TypeConversionProvider.Create ());
     }
 
     [TearDown]

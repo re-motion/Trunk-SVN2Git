@@ -48,19 +48,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Initializes a new instance of the <see cref="InterceptedDomainObjectTypeFactory"/> class.
     /// </summary>
-    public InterceptedDomainObjectTypeFactory ()
-        : this (Environment.CurrentDirectory)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InterceptedDomainObjectTypeFactory"/> class.
-    /// </summary>
     /// <param name="assemblyDirectory">The directory to save the generated assemblies to. This directory is only used when
     /// <see cref="SaveGeneratedAssemblies"/> is used.</param>
-    public InterceptedDomainObjectTypeFactory (string assemblyDirectory)
+    /// <param name="typeConversionProvider"></param>
+    public InterceptedDomainObjectTypeFactory (string assemblyDirectory, TypeConversionProvider typeConversionProvider)
     {
-      _scope = new ModuleManager (assemblyDirectory);
+      ArgumentUtility.CheckNotNullOrEmpty ("assemblyDirectory", assemblyDirectory);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
+      _scope = new ModuleManager (assemblyDirectory, typeConversionProvider);
     }
 
     /// <summary>

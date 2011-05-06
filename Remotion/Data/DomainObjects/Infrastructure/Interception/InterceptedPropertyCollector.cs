@@ -43,11 +43,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private readonly Set<Tuple<PropertyInfo, string>> _properties = new Set<Tuple<PropertyInfo, string>> ();
     private readonly Set<MethodInfo> _validatedMethods = new Set<MethodInfo> ();
     private readonly ClassDefinition _classDefinition;
+    private readonly TypeConversionProvider _typeConversionProvider;
 
-    public InterceptedPropertyCollector (Type baseType)
+    public InterceptedPropertyCollector (Type baseType, TypeConversionProvider typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("baseType", baseType);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
+
       _baseType = baseType;
+      _typeConversionProvider = typeConversionProvider;
 
       _classDefinition = MappingConfiguration.Current.GetTypeDefinition (
           _baseType,
@@ -97,8 +101,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
     private void AnalyzeAndValidateProperty (IPropertyInformation propertyInformation, string propertyIdentifier)
     {
-      //TODO RM-3977
-      var property = ((PropertyInfoAdapter) propertyInformation).PropertyInfo;
+      if (!_typeConversionProvider.CanConvert (propertyInformation.GetType (), typeof (PropertyInfo)))
+        return;
+
+      var property = (PropertyInfo) _typeConversionProvider.Convert (propertyInformation.GetType(), typeof (PropertyInfo), propertyInformation);
 
       if (!property.DeclaringType.IsAssignableFrom (_baseType)) // we cannot intercept properties added from another class (mixin)
         return;

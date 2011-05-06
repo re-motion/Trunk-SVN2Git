@@ -16,15 +16,21 @@
 // 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Mapping.Validation;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -32,6 +38,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -121,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void EachGeneratedTypeHasDifferentName ()
     {
       Type type1 = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      Type type2 = new InterceptedDomainObjectTypeFactory(Environment.CurrentDirectory).GetConcreteDomainObjectType (typeof (DOWithVirtualProperties));
+      Type type2 = new InterceptedDomainObjectTypeFactory(Environment.CurrentDirectory, TypeConversionProvider.Create ()).GetConcreteDomainObjectType (typeof (DOWithVirtualProperties));
       Assert.AreNotSame (type1, type2);
       Assert.AreNotEqual (type1.Name, type2.Name);
     }
@@ -699,6 +706,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       var instance =
           (DOWithVirtualStorageClassNoneProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualStorageClassNoneProperties), ParamList.Empty);
       PrivateInvoke.InvokeNonPublicMethod (instance, "PerformConstructorCheck");
+    }
+
+    [Test]
+    public void InterceptedPropertyCollectorIgnoresPropertyInformationObjectsWhichCannotBeConvertedToPropertyInfo ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateClassDefinition (typeof (DOWithVirtualProperties));
+      var propertyDefinitionCollection = new PropertyDefinitionCollection();
+      propertyDefinitionCollection.Add (
+          new PropertyDefinition (
+              classDefinition,
+              MockRepository.GenerateStub<IPropertyInformation>(),
+              "CustomProperty",
+              typeof (int),
+              false,
+              null,
+              StorageClass.Transaction));
+      classDefinition.SetPropertyDefinitions (propertyDefinitionCollection);
+      classDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
+      classDefinition.SetDerivedClasses (Enumerable.Empty<ClassDefinition>());
+      var mappingLoaderStub = CreatekMappingLoaderStub (new[] { classDefinition });
+      var persistenceModelLoaderStub = CreatePersistenceModelLoaderStub();
+      var configuration = new MappingConfiguration (mappingLoaderStub, persistenceModelLoaderStub);
+      MappingConfiguration.SetCurrent (configuration);
+
+      CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
+    }
+
+    private IMappingLoader CreatekMappingLoaderStub (ClassDefinition[] classDefinitions)
+    {
+      var mappingLoaderStub = MockRepository.GenerateStub<IMappingLoader>();
+      mappingLoaderStub.Stub (stub => stub.GetClassDefinitions()).Return (classDefinitions);
+      mappingLoaderStub.Stub (stub => stub.GetRelationDefinitions (null)).IgnoreArguments().Return (new RelationDefinition[0]);
+      mappingLoaderStub.Stub (stub => stub.ResolveTypes).Return (true);
+      mappingLoaderStub.Stub (stub => stub.NameResolver).Return (new ReflectionBasedNameResolver());
+      mappingLoaderStub.Stub (stub => stub.CreateClassDefinitionValidator()).Return (new ClassDefinitionValidator());
+      mappingLoaderStub.Stub (stub => stub.CreatePropertyDefinitionValidator()).Return (new PropertyDefinitionValidator());
+      mappingLoaderStub.Stub (stub => stub.CreateRelationDefinitionValidator()).Return (new RelationDefinitionValidator());
+      mappingLoaderStub.Stub (stub => stub.CreateSortExpressionValidator()).Return (new SortExpressionValidator());
+      return mappingLoaderStub;
+    }
+
+    private IPersistenceModelLoader CreatePersistenceModelLoaderStub ()
+    {
+      var persistenceModelLoaderStub = MockRepository.GenerateStub<IPersistenceModelLoader>();
+      persistenceModelLoaderStub.Stub (stub => stub.ApplyPersistenceModelToHierarchy (Arg<ClassDefinition>.Is.Anything));
+      persistenceModelLoaderStub
+          .Stub (stub => stub.CreatePersistenceMappingValidator (Arg<ClassDefinition>.Is.Anything))
+          .Return (new PersistenceMappingValidator());
+      return persistenceModelLoaderStub;
     }
   }
 }

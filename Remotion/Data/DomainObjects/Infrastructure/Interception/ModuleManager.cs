@@ -29,13 +29,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
     private readonly string _directory;
     private ModuleScope _scope;
+    private readonly TypeConversionProvider _typeConversionProvider;
 
-    public ModuleManager (string directory)
+    public ModuleManager (string directory, TypeConversionProvider typeConversionProvider)
     {
       ArgumentUtility.CheckNotNull ("directory", directory);
+      ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
 
       _directory = directory;
       _scope = CreateModuleScope();
+      _typeConversionProvider = typeConversionProvider;
     }
 
     private ModuleScope CreateModuleScope ()
@@ -48,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     {
       ArgumentUtility.CheckNotNull ("publicDomainObjectType", publicDomainObjectType);
       ArgumentUtility.CheckNotNull ("typeToDeriveFrom", typeToDeriveFrom);
-      return new TypeGenerator (publicDomainObjectType, typeToDeriveFrom, _scope);
+      return new TypeGenerator (publicDomainObjectType, typeToDeriveFrom, _scope, _typeConversionProvider);
     }
 
     public string[] SaveAssemblies ()

@@ -29,11 +29,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public class InterceptedDomainObjectCreator : IDomainObjectCreator
   {
-    public static readonly InterceptedDomainObjectCreator Instance = new InterceptedDomainObjectCreator ();
+    public static readonly InterceptedDomainObjectCreator Instance =
+        new InterceptedDomainObjectCreator (Environment.CurrentDirectory, TypeConversionProvider.Create());
 
-    private InterceptedDomainObjectCreator ()
+    private InterceptedDomainObjectCreator (string assemblyDirectory, TypeConversionProvider typeConversionProvider)
     {
-      Factory = new InterceptedDomainObjectTypeFactory ();
+      Factory = new InterceptedDomainObjectTypeFactory (assemblyDirectory, typeConversionProvider);
     }
 
     public InterceptedDomainObjectTypeFactory Factory { get; set; }
