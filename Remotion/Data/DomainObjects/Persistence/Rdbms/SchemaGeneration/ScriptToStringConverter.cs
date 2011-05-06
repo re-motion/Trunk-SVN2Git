@@ -23,6 +23,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
 {
+  /// <summary>
+  /// The <see cref="ScriptToStringConverter"/> is responsible to convert the script statements, that are returned by the <see cref="IScriptBuilder"/>
+  /// instance, to strings.
+  /// </summary>
   public class ScriptToStringConverter : IScriptToStringConverter
   {
     public struct ScriptPair
