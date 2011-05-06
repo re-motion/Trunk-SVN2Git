@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
@@ -32,10 +33,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
 
       var createSelectStringBuilder = new StringBuilder ();
       
-      var numberOfSelects = 0;
       foreach (var tableDefinition in unionViewDefinition.GetAllTables ())
       {
-        if (numberOfSelects > 0)
+        if (createSelectStringBuilder.Length > 0)
           createSelectStringBuilder.AppendFormat ("\r\n  UNION ALL\r\n");
 
         var availableTableColumns = tableDefinition.Columns;
@@ -46,20 +46,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             GetColumnList (unionedColumns),
             tableDefinition.TableName.SchemaName ?? DefaultSchema,
             tableDefinition.TableName.EntityName);
-
-        numberOfSelects++;
       }
-      if (numberOfSelects == 1)
-        createSelectStringBuilder.Append ("\r\n  WITH CHECK OPTION");
-      
       return createSelectStringBuilder.ToString ();
     }
 
-    protected override bool WithCheckOption (UnionViewDefinition unionViewDefinition)
+    protected override bool UseCheckOption (UnionViewDefinition unionViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("unionViewDefinition", unionViewDefinition);
 
-      return false;
+      return unionViewDefinition.GetAllTables().Count() == 1;
     }
   }
 }

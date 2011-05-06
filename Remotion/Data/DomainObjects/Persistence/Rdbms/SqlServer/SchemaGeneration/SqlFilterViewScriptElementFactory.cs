@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
             GetClassIDList (filterViewDefinition.ClassIDs));
     }
 
-    protected override bool WithCheckOption (FilterViewDefinition filterViewDefinition)
+    protected override bool UseCheckOption (FilterViewDefinition filterViewDefinition)
     {
       ArgumentUtility.CheckNotNull ("filterViewDefinition", filterViewDefinition);
 

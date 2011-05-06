@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
                   GetColumnList (entityDefinition.Columns),
                   UseSchemaBinding (entityDefinition) ? "WITH SCHEMABINDING " : string.Empty,
                   GetSelectStatements(entityDefinition),
-                  WithCheckOption(entityDefinition) ? "\r\n  WITH CHECK OPTION" : string.Empty)));
+                  UseCheckOption(entityDefinition) ? "\r\n  WITH CHECK OPTION" : string.Empty)));
       statements.AddElement (CreateBatchDelimiterStatement ());
       return statements;
     }
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
     }
 
     protected abstract string GetSelectStatements (T entityDefinition);
-    protected abstract bool WithCheckOption (T entityDefinition);
+    protected abstract bool UseCheckOption (T entityDefinition);
     
     protected virtual bool UseSchemaBinding (T entityDefinition)
     {

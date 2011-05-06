@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
           tableDefinition.TableName.EntityName);
     }
 
-    protected override bool WithCheckOption (TableDefinition tableDefinition)
+    protected override bool UseCheckOption (TableDefinition tableDefinition)
     {
       return true;
     }
