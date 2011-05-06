@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -28,7 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
   public class VirtualEndPointGarbageCollectionTest : ClientTransactionBaseTest
   {
     [Test]
-    [Ignore ("TODO 3914")]
     public void UnloadLastFK_CausesCollectionEndPointToBeRemoved ()
     {
       SetDatabaseModifyable();

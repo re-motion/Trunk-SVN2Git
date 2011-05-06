@@ -90,7 +90,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
     }
 
-    // TODO 3914: Test
     public ICollectionEndPoint AssociatedEndPoint
     {
       get { return (ICollectionEndPoint) _endPointProvider.GetRelationEndPointWithMinimumLoading (_endPointID); }

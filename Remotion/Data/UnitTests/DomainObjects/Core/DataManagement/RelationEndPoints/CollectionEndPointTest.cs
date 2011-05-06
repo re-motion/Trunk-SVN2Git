@@ -767,11 +767,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 3914")]
     public void CanBeCollected ()
     {
-      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPointWithLoadStateMock)).Return (true).Repeat.Once ();
-      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPointWithLoadStateMock)).Return (false).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPointWithLoadStateMock)).Return (true).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPointWithLoadStateMock)).Return (false).Repeat.Once ();
       _loadStateMock.Replay();
 
       var result1 = _endPointWithLoadStateMock.CanBeCollected;

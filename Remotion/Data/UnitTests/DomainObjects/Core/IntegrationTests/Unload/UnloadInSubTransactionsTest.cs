@@ -18,10 +18,8 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -433,7 +431,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (_subTransaction, orderItem1, false);
       CheckDataContainerExists (_subTransaction, orderItem2, false);
 
-      CheckVirtualEndPoint (_subTransaction, order, "OrderItems", false);
+      CheckEndPointExists (_subTransaction, order, "OrderItems", false);
       CheckEndPointExists (_subTransaction, orderItem1, "Order", false);
       CheckEndPointExists (_subTransaction, orderItem2, "Order", false);
 
@@ -441,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (_subTransaction.ParentTransaction, orderItem1, false);
       CheckDataContainerExists (_subTransaction.ParentTransaction, orderItem2, false);
 
-      CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", false);
+      CheckEndPointExists (_subTransaction.ParentTransaction, order, "OrderItems", false);
       CheckEndPointExists (_subTransaction.ParentTransaction, orderItem1, "Order", false);
       CheckEndPointExists (_subTransaction.ParentTransaction, orderItem2, "Order", false);
 

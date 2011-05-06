@@ -150,9 +150,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void CanBeCollected ()
+    public void CanEndPointBeCollected ()
     {
-      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+      var result = _loadState.CanEndPointBeCollected (_virtualEndPointMock);
       Assert.That (result, Is.False);
     }
 

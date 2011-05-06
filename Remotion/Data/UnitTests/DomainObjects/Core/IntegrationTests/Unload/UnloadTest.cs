@@ -18,11 +18,9 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -719,7 +717,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (orderItem1, false);
       CheckDataContainerExists (orderItem2, false);
 
-      CheckVirtualEndPoint (order, "OrderItems", false);
+      CheckEndPointExists (order, "OrderItems", false);
       CheckEndPointExists (orderItem1, "Order", false);
       CheckEndPointExists (orderItem2, "Order", false);
 
@@ -990,6 +988,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
+      customerOrders.EnsureDataComplete();
 
       UnloadService.UnloadData (ClientTransactionMock, order1.ID);
 

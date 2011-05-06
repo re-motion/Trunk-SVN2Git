@@ -124,8 +124,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public bool CanBeCollected
     {
-      // TODO 3914: As long as EndPointDelegatingCollectionData holds a direct reference to ICollectionEndPoint, we cannot return true here - a DomainObjectCollection would lose its connection!
-      get { return false; }
+      get { return _loadState.CanEndPointBeCollected (this); }
     }
 
     public override bool HasChanged

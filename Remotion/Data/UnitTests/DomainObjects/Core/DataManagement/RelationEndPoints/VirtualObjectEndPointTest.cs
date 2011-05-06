@@ -176,8 +176,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CanBeCollected ()
     {
-      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPoint)).Return (true).Repeat.Once ();
-      _loadStateMock.Expect (mock => mock.GetCanEndPointBeCollected (_endPoint)).Return (false).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPoint)).Return (true).Repeat.Once ();
+      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPoint)).Return (false).Repeat.Once ();
       _loadStateMock.Replay ();
 
       var result1 = _endPoint.CanBeCollected;

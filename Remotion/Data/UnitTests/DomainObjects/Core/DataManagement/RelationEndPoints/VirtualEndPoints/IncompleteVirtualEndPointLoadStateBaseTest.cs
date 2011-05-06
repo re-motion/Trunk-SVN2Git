@@ -83,19 +83,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void CanBeCollected_False ()
+    public void CanEndPointBeCollected_False ()
     {
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1);
       
-      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+      var result = _loadState.CanEndPointBeCollected (_virtualEndPointMock);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void CanBeCollected_True ()
+    public void CanEndPointBeCollected_True ()
     {
-      var result = _loadState.GetCanEndPointBeCollected (_virtualEndPointMock);
+      var result = _loadState.CanEndPointBeCollected (_virtualEndPointMock);
       Assert.That (result, Is.True);
     }
 
