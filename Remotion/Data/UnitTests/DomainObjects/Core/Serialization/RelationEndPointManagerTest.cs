@@ -58,26 +58,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       Assert.That (_relationEndPointManager.RelationEndPoints.Count, Is.EqualTo (7));
 
-      var deserializedMap = DataManagerTestHelper.GetRelationEndPointManager (Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
+      var deserializedManager = DataManagerTestHelper.GetRelationEndPointManager (Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
 
-      Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedMap.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));
-      Assert.That (deserializedMap.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
+      Assert.That (deserializedManager.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedManager.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));
+      Assert.That (deserializedManager.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
 
-      var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedMap.ClientTransaction);
+      var deserializedDataManager = ClientTransactionTestHelper.GetDataManager (deserializedManager.ClientTransaction);
 
-      Assert.That (deserializedMap.LazyLoader, Is.SameAs (deserializedDataManager));
-      Assert.That (deserializedMap.EndPointProvider, Is.SameAs (deserializedDataManager));
-      Assert.That (deserializedMap.CollectionEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointManager.CollectionEndPointDataKeeperFactory.GetType ()));
-      Assert.That (deserializedMap.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (_relationEndPointManager.VirtualObjectEndPointDataKeeperFactory.GetType ()));
-      Assert.That (deserializedMap.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType()));
+      Assert.That (deserializedManager.LazyLoader, Is.SameAs (deserializedDataManager));
+      Assert.That (deserializedManager.EndPointFactory, Is.Not.Null);
+      Assert.That (deserializedManager.EndPointFactory, Is.TypeOf (_relationEndPointManager.EndPointFactory.GetType()));
+      Assert.That (deserializedManager.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType()));
 
-      Assert.That (deserializedMap.RelationEndPoints.Count, Is.EqualTo (7));
+      Assert.That (deserializedManager.RelationEndPoints.Count, Is.EqualTo (7));
 
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"));
-      var endPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithoutLoading (endPointID);
+      var endPoint = (CollectionEndPoint) deserializedManager.GetRelationEndPointWithoutLoading (endPointID);
 
-      Assert.That (endPoint.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
+      Assert.That (endPoint.ClientTransaction, Is.SameAs (deserializedManager.ClientTransaction));
     }
   }
 }

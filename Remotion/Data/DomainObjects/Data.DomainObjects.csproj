@@ -180,10 +180,13 @@
     <Compile Include="DataManagement\Commands\UnloadVirtualEndPointsCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterDataContainerCommand.cs" />
     <Compile Include="DataManagement\Commands\UnregisterEndPointsCommand.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointMapReadOnlyView.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPointRegistrationAgent.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\IDataContainerEndPointsRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\NullRealObjectEndPoint.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\RelationEndPointFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointMap.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointRegistrationAgent.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IncompleteVirtualEndPointLoadStateBase.cs" />

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
@@ -50,7 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectLoaderStub = MockRepository.GenerateStub<IObjectLoader> ();
       var dataManager = _factory.CreateDataManager (new ClientTransactionMock(), invalidDomainObjectManagerStub, objectLoaderStub);
 
-      var dataKeeperFactory = DataManagerTestHelper.GetRelationEndPointManager (dataManager).CollectionEndPointDataKeeperFactory;
+      var relationEndPointManager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
+      var dataKeeperFactory = ((RelationEndPointFactory) relationEndPointManager.EndPointFactory).CollectionEndPointDataKeeperFactory;
       Assert.That (
           ((CollectionEndPointDataKeeperFactory) dataKeeperFactory).ChangeDetectionStrategy,
           Is.InstanceOf (typeof (RootCollectionEndPointChangeDetectionStrategy)));

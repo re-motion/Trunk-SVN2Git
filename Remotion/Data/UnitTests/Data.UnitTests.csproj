@@ -219,6 +219,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExceptionCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\NopCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnregisterDataContainerCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointMapTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFactoryFake.cs" />

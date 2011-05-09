@@ -17,9 +17,6 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
@@ -50,33 +47,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private readonly ClientTransaction _clientTransaction;
     private readonly ILazyLoader _lazyLoader;
-    private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
-    private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
-
+    private readonly IRelationEndPointFactory _endPointFactory;
+    
     private readonly RelationEndPointMap _map;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
 
     public RelationEndPointManager (
         ClientTransaction clientTransaction,
         ILazyLoader lazyLoader,
-        IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory,
-        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory,
+        IRelationEndPointFactory endPointFactory,
         IRelationEndPointRegistrationAgent registrationAgent)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
-      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("endPointFactory", endPointFactory);
       ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
 
       _clientTransaction = clientTransaction;
       _lazyLoader = lazyLoader;
-      _endPointProvider = endPointProvider;
-      _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
-      _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
+      _endPointFactory = endPointFactory;
       _registrationAgent = registrationAgent;
 
       _map = new RelationEndPointMap (_clientTransaction);
@@ -92,29 +81,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _lazyLoader; }
     }
 
-    public IRelationEndPointProvider EndPointProvider
+    public IRelationEndPointFactory EndPointFactory
     {
-      get { return _endPointProvider; }
-    }
-
-    public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> CollectionEndPointDataKeeperFactory
-    {
-      get { return _collectionEndPointDataKeeperFactory; }
-    }
-
-    public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> VirtualObjectEndPointDataKeeperFactory
-    {
-      get { return _virtualObjectEndPointDataKeeperFactory; }
-    }
-
-    public IRelationEndPointMapReadOnlyView RelationEndPoints
-    {
-      get { return _map; }
+      get { return _endPointFactory; }
     }
 
     public IRelationEndPointRegistrationAgent RegistrationAgent
     {
       get { return _registrationAgent; }
+    }
+
+    public IRelationEndPointMapReadOnlyView RelationEndPoints
+    {
+      get { return _map; }
     }
 
     // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
@@ -127,9 +106,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         IRelationEndPoint endPoint;
         if (!endPointID.Definition.IsVirtual)
-          endPoint = CreateRealObjectEndPoint (endPointID, dataContainer);
+          endPoint = _endPointFactory.CreateRealObjectEndPoint (endPointID, dataContainer);
         else
-          endPoint = CreateVirtualEndPoint (endPointID, true);
+          endPoint = _endPointFactory.CreateVirtualEndPoint (endPointID, true);
 
         _registrationAgent.RegisterEndPoint (endPoint, _map);
       }
@@ -311,44 +290,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
     {
-      var endPoint = CreateVirtualEndPoint (endPointID, false);
+      var endPoint = _endPointFactory.CreateVirtualEndPoint (endPointID, false);
       _registrationAgent.RegisterEndPoint (endPoint, _map);
       return endPoint;
-    }
-
-    private IRelationEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
-    {
-      return new RealObjectEndPoint (_clientTransaction, endPointID, dataContainer, _endPointProvider);
-    }
-
-    private IVirtualEndPoint CreateVirtualEndPoint (RelationEndPointID endPointID, bool markComplete)
-    {
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-      {
-        var virtualObjectEndPoint = CreateVirtualObjectEndPoint (endPointID);
-        if (markComplete)
-          virtualObjectEndPoint.MarkDataComplete (null);
-        return virtualObjectEndPoint;
-      }
-      else
-      {
-        var collectionEndPoint = CreateCollectionEndPoint (endPointID);
-        if (markComplete)
-          collectionEndPoint.MarkDataComplete (new DomainObject[0]);
-        return collectionEndPoint;
-      }
-    }
-
-    private VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID)
-    {
-      return new VirtualObjectEndPoint (_clientTransaction,
-                                        endPointID, _lazyLoader, _endPointProvider, _virtualObjectEndPointDataKeeperFactory);
-    }
-
-    private CollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID)
-    {
-      return new CollectionEndPoint (_clientTransaction,
-                                     endPointID, _lazyLoader, _endPointProvider, _collectionEndPointDataKeeperFactory);
     }
 
     private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
@@ -410,9 +354,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         : this (
             info.GetValueForHandle<ClientTransaction>(),
             info.GetValueForHandle<ILazyLoader>(),
-            info.GetValueForHandle<IRelationEndPointProvider>(),
-            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>>(),
-            info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>>(),
+            info.GetValueForHandle<IRelationEndPointFactory>(),
             info.GetValueForHandle<IRelationEndPointRegistrationAgent> ())
     {
       _map = info.GetValue<RelationEndPointMap> ();
@@ -423,9 +365,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_clientTransaction);
       info.AddHandle (_lazyLoader);
-      info.AddHandle (_endPointProvider);
-      info.AddHandle (_collectionEndPointDataKeeperFactory);
-      info.AddHandle (_virtualObjectEndPointDataKeeperFactory);
+      info.AddHandle (_endPointFactory);
       info.AddHandle (_registrationAgent);
       info.AddValue (_map);
     }

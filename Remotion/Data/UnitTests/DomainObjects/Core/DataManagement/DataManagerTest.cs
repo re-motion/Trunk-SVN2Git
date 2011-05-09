@@ -72,13 +72,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (manager, Is.TypeOf (typeof (RelationEndPointManager)));
 
       Assert.That (manager.ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (manager.EndPointProvider, Is.SameAs (dataManager));
-      Assert.That (manager.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
-      Assert.That (((CollectionEndPointDataKeeperFactory) manager.CollectionEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
-      Assert.That (((CollectionEndPointDataKeeperFactory) manager.CollectionEndPointDataKeeperFactory).ChangeDetectionStrategy, 
-          Is.SameAs (collectionEndPointChangeDetectionStrategy));
-      Assert.That (manager.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (typeof (VirtualObjectEndPointDataKeeperFactory)));
-      Assert.That (((VirtualObjectEndPointDataKeeperFactory) manager.VirtualObjectEndPointDataKeeperFactory).ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (manager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
+      
+      var endPointFactory = ((RelationEndPointFactory) manager.EndPointFactory);
+      Assert.That (endPointFactory.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (endPointFactory.LazyLoader, Is.SameAs (dataManager));
+      Assert.That (endPointFactory.EndPointProvider, Is.SameAs (dataManager));
+      Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
+
+      var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
+      Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.SameAs (collectionEndPointChangeDetectionStrategy));
+      Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf (typeof (VirtualObjectEndPointDataKeeperFactory)));
+
+      var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
+      Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (clientTransaction));
     }
 
     [Test]
