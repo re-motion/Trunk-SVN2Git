@@ -28,13 +28,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public static void ReplaceEndPoint (RelationEndPointManager endPointManager, IRelationEndPoint endPoint)
     {
-      endPointManager.RemoveEndPoint (endPoint.ID);
+      RemoveEndPoint (endPointManager, endPoint.ID);
       AddEndPoint (endPointManager, endPoint);
     }
 
     public static void RemoveEndPoint (RelationEndPointManager manager, RelationEndPointID relationEndPointID)
     {
-      manager.RemoveEndPoint (relationEndPointID);
+      var map = GetMap (manager);
+      map.RemoveEndPoint (relationEndPointID);
     }
 
     public static RelationEndPointMap GetMap (RelationEndPointManager manager)

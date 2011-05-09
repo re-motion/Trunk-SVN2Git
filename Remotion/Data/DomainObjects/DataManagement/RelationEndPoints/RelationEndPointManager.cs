@@ -241,13 +241,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return true;
     }
 
-    // TODO 3634: Remove
-    public void RemoveEndPoint (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _map.RemoveEndPoint (endPointID);
-    }
-
     private IVirtualEndPoint GetVirtualEndPointOrRegisterEmpty (RelationEndPointID endPointID)
     {
       return (IVirtualEndPoint) GetRelationEndPointWithoutLoading (endPointID) ?? RegisterVirtualEndPoint (endPointID);

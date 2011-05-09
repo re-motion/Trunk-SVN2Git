@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void RemoveEndPoint (IDataManager dataManager, RelationEndPointID endPointID)
     {
-      GetRelationEndPointManager (dataManager).RemoveEndPoint (endPointID);
+      RelationEndPointManagerTestHelper.RemoveEndPoint (GetRelationEndPointManager (dataManager), endPointID);
     }
 
     public static void AddEndPoint (DataManager dataManager, IRelationEndPoint endPoint)
