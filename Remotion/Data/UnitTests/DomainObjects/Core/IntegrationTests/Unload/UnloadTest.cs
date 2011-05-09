@@ -688,9 +688,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because its relations have been changed. Only "
-        + "unchanged objects that are not part of changed relations can be unloaded.\r\nChanged relations: "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order'.")]
+        "The relations of object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded.\r\n"
+        + "The opposite relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of relation end-point "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' has "
+        + "changed. Non-virtual end-points that are part of changed relations cannot be unloaded.")]
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject ());

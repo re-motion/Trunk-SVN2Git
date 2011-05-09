@@ -270,9 +270,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateUnregisterCommandForDataContainer_WithUnregisterableEndPoint ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      endPoint.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "OrderTicket"));
+      endPoint.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "Customer"));
       endPoint.Stub (stub => stub.Definition).Return (endPoint.ID.Definition);
       endPoint.Stub (stub => stub.HasChanged).Return (true);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPoint);
@@ -282,16 +282,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.TypeOf<ExceptionCommand> ());
       Assert.That (((ExceptionCommand) command).Exception, Is.TypeOf<InvalidOperationException> ());
       Assert.That (((ExceptionCommand) command).Exception.Message, Is.EqualTo (
-          "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because its relations have been changed. Only "
-          + "unchanged objects that are not part of changed relations can be unloaded."
-          + Environment.NewLine
-          + "Changed relations: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'."));
+          "The relations of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded.\r\n"
+          + "Relation end-point "
+          + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' has changed. "
+          + "Only unchanged relation end-points can be unregistered."));
     }
 
     [Test]
     public void CreateUnregisterCommandForDataContainer_WithUnregisterableEndPoint_DueToChangedOpposite ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       var endPoint = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       endPoint.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "Customer"));
       endPoint.Stub (stub => stub.Definition).Return (endPoint.ID.Definition);
@@ -310,33 +310,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.TypeOf<ExceptionCommand> ());
       Assert.That (((ExceptionCommand) command).Exception, Is.TypeOf<InvalidOperationException> ());
       Assert.That (((ExceptionCommand) command).Exception.Message, Is.EqualTo (
-          "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because its relations have been changed. Only "
-          + "unchanged objects that are not part of changed relations can be unloaded."
-          + Environment.NewLine
-          + "Changed relations: 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer'."));
+          "The relations of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded.\r\n"
+          + "The opposite relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' of relation end-point "
+          + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' has changed. "
+          + "Non-virtual end-points that are part of changed relations cannot be unloaded."));
     }
 
     [Test]
     public void CreateUnregisterCommandForDataContainer_WithMultipleUnregisterableEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var endPoint1 = MockRepository.GenerateStub<IRelationEndPoint> ();
+      var endPoint1 = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
       endPoint1.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "OrderTicket"));
       endPoint1.Stub (stub => stub.Definition).Return (endPoint1.ID.Definition);
-      endPoint1.Stub (stub => stub.HasChanged).Return (true);
+      endPoint1.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.OrderTicket1);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPoint1);
 
-      var endPoint2 = MockRepository.GenerateStub<IRelationEndPoint> ();
-      endPoint2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "OrderItems"));
+      var endPoint2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      endPoint2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "Customer"));
       endPoint2.Stub (stub => stub.Definition).Return (endPoint2.ID.Definition);
-      endPoint2.Stub (stub => stub.HasChanged).Return (true);
+      endPoint2.Stub (stub => stub.OriginalOppositeObjectID).Return (DomainObjectIDs.Customer1);
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPoint2);
-
-      var endPoint3 = MockRepository.GenerateStub<IRelationEndPoint> ();
-      endPoint3.Stub (stub => stub.ID).Return (RelationEndPointID.Create (dataContainer.ID, typeof (Order), "Customer"));
-      endPoint3.Stub (stub => stub.Definition).Return (endPoint3.ID.Definition);
-      endPoint3.Stub (stub => stub.HasChanged).Return (false);
-      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPoint3);
 
       var command = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
 
@@ -344,12 +338,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (
           ((ExceptionCommand) command).Exception.Message,
           Is.EqualTo (
-              "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because its relations have been changed. Only "
-              + "unchanged objects that are not part of changed relations can be unloaded."
-              + Environment.NewLine
-              + "Changed relations: "
-              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket', "
-              + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'."));
+              "The relations of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded.\r\n"
+              + "Relation end-point "
+              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' "
+              + "would leave a dangling reference.\r\n"
+              + "Relation end-point "
+              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' "
+              + "would leave a dangling reference."));
 
     }
 

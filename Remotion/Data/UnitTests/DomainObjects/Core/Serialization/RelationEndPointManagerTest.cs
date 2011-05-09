@@ -69,7 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedManager.LazyLoader, Is.SameAs (deserializedDataManager));
       Assert.That (deserializedManager.EndPointFactory, Is.Not.Null);
       Assert.That (deserializedManager.EndPointFactory, Is.TypeOf (_relationEndPointManager.EndPointFactory.GetType()));
-      Assert.That (deserializedManager.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType()));
+      Assert.That (deserializedManager.RegistrationAgent, Is.TypeOf (_relationEndPointManager.RegistrationAgent.GetType ()));
+      Assert.That (deserializedManager.DataContainerEndPointsRegistrationAgent, Is.Not.Null);
 
       Assert.That (deserializedManager.RelationEndPoints.Count, Is.EqualTo (7));
 

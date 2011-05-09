@@ -14,14 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
+using System;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Encapsulates logic for registering and unregistering the relation end-points for a <see cref="DataContainer"/>.
-  /// </summary>
-  public interface IDataContainerEndPointsRegistrationAgent
+  [Serializable]
+  public class SerializableRelationEndPointRegistrationAgentFake : IRelationEndPointRegistrationAgent
   {
-    void RegisterEndPoints (DataContainer dataContainer, RelationEndPointMap relationEndPointMap);
-    IDataManagementCommand CreateUnregisterEndPointsCommand (DataContainer dataContainer, RelationEndPointMap relationEndPointMap);
+    public void RegisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void UnregisterEndPoint (IRelationEndPoint endPoint, RelationEndPointMap map)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

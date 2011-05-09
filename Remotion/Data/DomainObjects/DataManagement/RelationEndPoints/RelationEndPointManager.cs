@@ -19,8 +19,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
-using Remotion.Text;
 using Remotion.Utilities;
 using System.Collections.Generic;
 
@@ -51,6 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     
     private readonly RelationEndPointMap _map;
     private readonly IRelationEndPointRegistrationAgent _registrationAgent;
+    private readonly DelegatingDataContainerEndPointsRegistrationAgent _dataContainerEndPointsRegistrationAgent;
 
     public RelationEndPointManager (
         ClientTransaction clientTransaction,
@@ -67,6 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _lazyLoader = lazyLoader;
       _endPointFactory = endPointFactory;
       _registrationAgent = registrationAgent;
+      _dataContainerEndPointsRegistrationAgent = new DelegatingDataContainerEndPointsRegistrationAgent (endPointFactory, registrationAgent);
 
       _map = new RelationEndPointMap (_clientTransaction);
     }
@@ -91,27 +91,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _registrationAgent; }
     }
 
+    public IDataContainerEndPointsRegistrationAgent DataContainerEndPointsRegistrationAgent
+    {
+      get { return _dataContainerEndPointsRegistrationAgent; }
+    }
+
     public IRelationEndPointMapReadOnlyView RelationEndPoints
     {
       get { return _map; }
     }
 
-    // When registering a DataContainer, its real end-points are always registered, too. This may indirectly register opposite virtual end-points.
-    // If the DataContainer is New, the virtual end-points are registered as well.
     public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-      {
-        IRelationEndPoint endPoint;
-        if (!endPointID.Definition.IsVirtual)
-          endPoint = _endPointFactory.CreateRealObjectEndPoint (endPointID, dataContainer);
-        else
-          endPoint = _endPointFactory.CreateVirtualEndPoint (endPointID, true);
-
-        _registrationAgent.RegisterEndPoint (endPoint, _map);
-      }
+      _dataContainerEndPointsRegistrationAgent.RegisterEndPoints (dataContainer, _map);
     }
 
     // When unregistering a DataContainer, its real end-points are always unregistered. This may indirectly unregister opposite virtual end-points.
@@ -120,36 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      var loadedEndPoints = new List<IRelationEndPoint> ();
-      var notUnregisterableEndPoints = new List<IRelationEndPoint> ();
-
-      foreach (var endPointID in GetEndPointIDsOwnedByDataContainer (dataContainer))
-      {
-        var endPoint = GetRelationEndPointWithoutLoading (endPointID);
-        if (endPoint != null)
-        {
-          loadedEndPoints.Add (endPoint);
-
-          if (!IsUnregisterable (endPoint))
-            notUnregisterableEndPoints.Add (endPoint);
-        }
-      }
-
-      if (notUnregisterableEndPoints.Count > 0)
-      {
-        var message = string.Format (
-            "Object '{0}' cannot be unloaded because its relations have been changed. Only unchanged objects that are not part of changed "
-            + "relations can be unloaded."
-            + Environment.NewLine
-            + "Changed relations: {1}.",
-            dataContainer.ID,
-            SeparatedStringBuilder.Build (", ", notUnregisterableEndPoints.Select (endPoint => "'" + endPoint.Definition.PropertyName + "'")));
-        return new ExceptionCommand (new InvalidOperationException (message));
-      }
-      else
-      {
-        return new UnregisterEndPointsCommand (loadedEndPoints, _registrationAgent, _map);
-      }
+      return _dataContainerEndPointsRegistrationAgent.CreateUnregisterEndPointsCommand (dataContainer, _map);
     }
 
     public IDataManagementCommand CreateUnloadVirtualEndPointsCommand (IEnumerable<RelationEndPointID> endPointIDs)
@@ -295,13 +260,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return endPoint;
     }
 
-    private IEnumerable<RelationEndPointID> GetEndPointIDsOwnedByDataContainer (DataContainer dataContainer)
-    {
-      // DataContainers usually own all non-virtual end-points. New DataContainers also own all virtual end-points.
-      var includeVirtualEndPoints = dataContainer.State == StateType.New;
-      return dataContainer.AssociatedRelationEndPointIDs.Where (endPointID => !endPointID.Definition.IsVirtual || includeVirtualEndPoints);
-    }
-
     private void CheckCardinality (
         RelationEndPointID endPointID,
         CardinalityType expectedCardinality,
@@ -324,28 +282,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
-    private bool IsUnregisterable (IRelationEndPoint endPoint)
-    {
-      // An end-point must be unchanged to be unregisterable.
-      if (endPoint.HasChanged)
-        return false;
-
-      // If it is a real object end-point pointing to a non-null object, and the opposite end-point is loaded, the opposite (virtual) end-point 
-      // must be unchanged. Virtual end-points cannot exist in changed state without their opposite real end-points.
-      // (This only affects 1:n relations: for those, the opposite virtual end-point can be changed although the (one of many) real end-point is 
-      // unchanged. For 1:1 relations, the real and virtual end-points always have an equal HasChanged flag.)
-
-      var maybeOppositeEndPoint =
-          Maybe
-            .ForValue (endPoint as IRealObjectEndPoint)
-            .Select (ep => RelationEndPointID.CreateOpposite (ep.Definition, ep.OppositeObjectID))
-            .Where (oppositeEndPointID => !oppositeEndPointID.Definition.IsAnonymous)
-            .Select (GetRelationEndPointWithoutLoading);
-      if (maybeOppositeEndPoint.Where (ep => ep.HasChanged).HasValue)
-        return false;
-
-      return true;
-    }
 
     #region Serialization
 
@@ -357,6 +293,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             info.GetValueForHandle<IRelationEndPointFactory>(),
             info.GetValueForHandle<IRelationEndPointRegistrationAgent> ())
     {
+      _dataContainerEndPointsRegistrationAgent = new DelegatingDataContainerEndPointsRegistrationAgent (_endPointFactory, _registrationAgent);
       _map = info.GetValue<RelationEndPointMap> ();
     }
 
