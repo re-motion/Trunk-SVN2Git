@@ -297,7 +297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
-      ClientTransactionMock.DataManager.Discard (order1.InternalDataContainer);
+      ClientTransactionMock.DataManager.Commit();
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",

@@ -245,24 +245,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      IRelationEndPoint[] endPoints;
+      var unregisterEndPointsCommand = _relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer);
+      var unregisterDataContainerCommand = CreateUnregisterDataContainerCommand (dataContainer.ID);
+      var compositeCommand = new CompositeCommand (unregisterEndPointsCommand, unregisterDataContainerCommand);
+
       try
       {
-        endPoints = (from endPointID in dataContainer.AssociatedRelationEndPointIDs
-                     let endPoint = GetRelationEndPointWithoutLoading (endPointID)
-                     where endPoint != null
-                     select EnsureEndPointReferencesNothing (endPoint)).ToArray();
+        compositeCommand.NotifyAndPerform ();
       }
-      catch (InvalidOperationException ex)
+      catch (Exception ex)
       {
-        var message = String.Format ("Cannot discard data container '{0}', it might leave dangling references: '{1}'", dataContainer.ID, ex.Message);
-        throw new ArgumentException (message, "dataContainer", ex);
+        var message = string.Format ("Cannot discard data for object '{0}': {1}", dataContainer.ID, ex.Message);
+        throw new InvalidOperationException (message, ex);
       }
-
-      foreach (var endPoint in endPoints)
-        _relationEndPointManager.RemoveEndPoint (endPoint.ID);
-
-      _dataContainerMap.Remove (dataContainer.ID);
 
       dataContainer.Discard();
 
@@ -411,7 +406,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           }
           else
           {
-            commands.Add (new UnregisterDataContainerCommand (objectID, _dataContainerMap));
+            commands.Add (CreateUnregisterDataContainerCommand (objectID));
             commands.Add (_relationEndPointManager.CreateUnregisterCommandForDataContainer (dataContainer));
           }
         }
@@ -448,6 +443,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
     {
       return new ClientTransactionsDifferException (String.Format (message, args));
+    }
+
+    private UnregisterDataContainerCommand CreateUnregisterDataContainerCommand (ObjectID objectID)
+    {
+      return new UnregisterDataContainerCommand (objectID, _dataContainerMap);
     }
 
     #region Serialization
