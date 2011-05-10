@@ -357,7 +357,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ModificationCheckingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\EndPointDelegatingCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\DomainObjectCollectionDataTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionData\DomainObjectCollectionEventRaiserFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionData\SerializableDomainObjectCollectionEventRaiserFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\EventRaisingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTestHelper.cs" />
@@ -886,7 +886,7 @@
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.EventRaiser.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.EventRaiserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\CollectionDeletionState.cs" />
@@ -1773,7 +1773,7 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.IList.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.IListTest.cs" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />

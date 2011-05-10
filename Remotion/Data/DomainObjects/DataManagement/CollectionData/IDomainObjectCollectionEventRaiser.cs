@@ -29,5 +29,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
 
     void BeginDelete ();
     void EndDelete ();
+
+    void WithinCommit ();
+    void WithinRollback ();
+    void WithinAddItemThroughSynchronization (DomainObject domainObject);
+    void WithinRemoveItemThroughSynchronization (DomainObject domainObject);
+    void WithinMarkComplete ();
+    void WithinMarkIncomplete ();
   }
 }

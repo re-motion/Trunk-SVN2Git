@@ -24,6 +24,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [Serializable]
   public class OrderCollection : ObjectList<Order>
   {
+    public interface ICollectionEventReceiver
+    {
+      void OnAdding (DomainObjectCollectionChangeEventArgs args);
+      void OnAdded (DomainObjectCollectionChangeEventArgs args);
+      void OnRemoving (DomainObjectCollectionChangeEventArgs args);
+      void OnRemoved (DomainObjectCollectionChangeEventArgs args);
+
+      void OnDeleting ();
+      void OnDeleted ();
+
+      void OnCommit ();
+      void OnRollback ();
+      void OnAddItemThroughSynchronization (DomainObject item);
+      void OnRemoveItemThroughSynchronization (DomainObject item);
+      void OnMarkComplete ();
+      void OnMarkIncomplete ();
+    }
+
+    private ICollectionEventReceiver _eventReceiver;
+
     public OrderCollection ()
     {
     }
@@ -37,6 +57,95 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public OrderCollection (IDomainObjectCollectionData dataStrategy)
         : base(dataStrategy)
     {
+    }
+
+    public void SetEventReceiver (ICollectionEventReceiver eventReceiver)
+    {
+      _eventReceiver = eventReceiver;
+    }
+
+    protected override void OnAdding (DomainObjectCollectionChangeEventArgs args)
+    {
+      base.OnAdding (args);
+      if (_eventReceiver != null)
+        _eventReceiver.OnAdding (args);
+    }
+
+    protected override void OnAdded (DomainObjectCollectionChangeEventArgs args)
+    {
+      base.OnAdded (args);
+      if (_eventReceiver != null)
+        _eventReceiver.OnAdded (args);
+    }
+
+    protected override void OnRemoving (DomainObjectCollectionChangeEventArgs args)
+    {
+      base.OnRemoving (args);
+      if (_eventReceiver != null)
+        _eventReceiver.OnRemoving (args);
+    }
+
+    protected override void OnRemoved (DomainObjectCollectionChangeEventArgs args)
+    {
+      base.OnRemoved (args);
+      if (_eventReceiver != null)
+        _eventReceiver.OnRemoved (args);
+    }
+
+    protected override void OnDeleting ()
+    {
+      base.OnDeleting();
+      if (_eventReceiver != null)
+        _eventReceiver.OnDeleting ();
+    }
+
+    protected override void OnDeleted ()
+    {
+      base.OnDeleted();
+      if (_eventReceiver != null)
+        _eventReceiver.OnDeleted ();
+    }
+
+    protected override void OnCommit ()
+    {
+      base.OnCommit();
+      if (_eventReceiver != null)
+        _eventReceiver.OnCommit ();
+    }
+
+    protected override void OnRollback ()
+    {
+      base.OnRollback();
+      if (_eventReceiver != null)
+        _eventReceiver.OnRollback ();
+    }
+
+    protected override void OnAddItemThroughSynchronization (DomainObject item)
+    {
+      base.OnAddItemThroughSynchronization (item);
+      if (_eventReceiver != null)
+        _eventReceiver.OnAddItemThroughSynchronization(item);
+    }
+
+    protected override void OnRemoveItemThroughSynchronization (DomainObject item)
+    {
+      base.OnRemoveItemThroughSynchronization (item);
+      if (_eventReceiver != null)
+        _eventReceiver.OnRemoveItemThroughSynchronization(item);
+    }
+
+    protected override void OnMarkComplete ()
+    {
+      base.OnMarkComplete();
+      if (_eventReceiver != null)
+        _eventReceiver.OnMarkComplete();
+    }
+
+    protected override void OnMarkIncomplete ()
+    {
+      base.OnMarkIncomplete();
+      if (_eventReceiver != null)
+        _eventReceiver.OnMarkIncomplete ();
     }
   }
 }

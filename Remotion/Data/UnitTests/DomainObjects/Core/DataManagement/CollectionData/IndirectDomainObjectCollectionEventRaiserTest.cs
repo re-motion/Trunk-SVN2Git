@@ -59,7 +59,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckDelegation (raiser => raiser.BeginRemove (1, _order));
       CheckDelegation (raiser => raiser.EndRemove (1, _order));
       CheckDelegation (raiser => raiser.BeginDelete());
-      CheckDelegation (raiser => raiser.EndDelete());
+      CheckDelegation (raiser => raiser.EndDelete ());
+      CheckDelegation (raiser => raiser.WithinCommit ());
+      CheckDelegation (raiser => raiser.WithinRollback ());
+      CheckDelegation (raiser => raiser.WithinAddItemThroughSynchronization (_order));
+      CheckDelegation (raiser => raiser.WithinRemoveItemThroughSynchronization (_order));
+      CheckDelegation (raiser => raiser.WithinMarkComplete ());
+      CheckDelegation (raiser => raiser.WithinMarkIncomplete ());
     }
 
     [Test]
@@ -71,6 +77,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckThrowOnNoEventRaiser (raiser => raiser.EndRemove (1, _order));
       CheckThrowOnNoEventRaiser (raiser => raiser.BeginDelete ());
       CheckThrowOnNoEventRaiser (raiser => raiser.EndDelete ());
+      CheckDelegation (raiser => raiser.WithinCommit ());
+      CheckDelegation (raiser => raiser.WithinRollback ());
+      CheckDelegation (raiser => raiser.WithinAddItemThroughSynchronization (_order));
+      CheckDelegation (raiser => raiser.WithinRemoveItemThroughSynchronization (_order));
+      CheckDelegation (raiser => raiser.WithinMarkComplete ());
+      CheckDelegation (raiser => raiser.WithinMarkIncomplete ());
     }
 
     [Test]

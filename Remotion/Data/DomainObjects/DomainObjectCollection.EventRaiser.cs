@@ -55,5 +55,37 @@ namespace Remotion.Data.DomainObjects
     {
       OnDeleted ();
     }
+
+    void IDomainObjectCollectionEventRaiser.WithinCommit ()
+    {
+      OnCommit();
+    }
+
+    void IDomainObjectCollectionEventRaiser.WithinRollback ()
+    {
+      OnRollback();
+    }
+
+    void IDomainObjectCollectionEventRaiser.WithinAddItemThroughSynchronization (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnAddItemThroughSynchronization (domainObject);
+    }
+
+    void IDomainObjectCollectionEventRaiser.WithinRemoveItemThroughSynchronization (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnRemoveItemThroughSynchronization (domainObject);
+    }
+
+    void IDomainObjectCollectionEventRaiser.WithinMarkComplete ()
+    {
+      OnMarkComplete();
+    }
+
+    void IDomainObjectCollectionEventRaiser.WithinMarkIncomplete ()
+    {
+      OnMarkIncomplete ();
+    }
   }
 }

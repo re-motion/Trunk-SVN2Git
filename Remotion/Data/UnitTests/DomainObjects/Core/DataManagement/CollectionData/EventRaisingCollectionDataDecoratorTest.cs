@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Serializable ()
     {
-      var source = new EventRaisingCollectionDataDecorator (new DomainObjectCollectionEventRaiserFake (), new DomainObjectCollectionData ());
+      var source = new EventRaisingCollectionDataDecorator (new SerializableDomainObjectCollectionEventRaiserFake (), new DomainObjectCollectionData ());
       source.Insert (0, _order1);
       source.Insert (1, _order2);
       source.Insert (2, _order3);

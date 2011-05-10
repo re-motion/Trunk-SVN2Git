@@ -18,18 +18,14 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -482,25 +478,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void GetNonNotifyingData ()
-    {
-      var dataStore = new DomainObjectCollectionData ();
-      var originalDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
-      originalDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Customer));
-      originalDataStub.Stub (stub => stub.GetDataStore()).Return (dataStore);
-
-      var collection = new DomainObjectCollection (originalDataStub);
-
-      var nonNotifyingData = (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
-      Assert.That (nonNotifyingData, Is.InstanceOf (typeof (ModificationCheckingCollectionDataDecorator)));
-      Assert.That (nonNotifyingData.RequiredItemType, Is.SameAs (typeof (Customer)));
-
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (
-          (ModificationCheckingCollectionDataDecorator) nonNotifyingData);
-      Assert.That (wrappedData, Is.SameAs (dataStore));
-    }
-
-    [Test]
     public void Clone ()
     {
       var clonedCollection = _collection.Clone();
@@ -612,38 +589,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void ReplaceItemsWithoutNotifications ()
-    {
-      var sourceCollection = new[] { _customer3NotInCollection };
-      CallReplaceItemsWithoutNotifications (_collection, sourceCollection);
-
-      Assert.That (_collection, Is.EqualTo (sourceCollection));
-    }
-
-    [Test]
-    public void ReplaceItemsWithoutNotifications_NoNotifications ()
-    {
-      var sourceCollection = new[] { _customer3NotInCollection };
-
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection);
-      CallReplaceItemsWithoutNotifications (_collection, sourceCollection);
-
-      Assert.That (eventReceiver.AddingDomainObject, Is.Null);
-      Assert.That (eventReceiver.AddedDomainObject, Is.Null);
-    }
-
-    [Test]
-    public void ReplaceItemsWithoutNotifications_ReadOnly ()
-    {
-      var readOnlyCollection = _collection.Clone (true);
-      var sourceCollection = new[] { _customer3NotInCollection };
-      CallReplaceItemsWithoutNotifications (readOnlyCollection, sourceCollection);
-
-      Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
-      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
-    }
-
-    [Test]
     public void CopyEventHandlersFrom ()
     {
       var source = new DomainObjectCollection ();
@@ -696,11 +641,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (eventSender, Is.SameAs (_collection));
       Assert.That (eventArgs, Is.EqualTo (EventArgs.Empty));
-    }
-
-    private void CallReplaceItemsWithoutNotifications (DomainObjectCollection collection, IEnumerable<DomainObject> newItems)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (collection, "ReplaceItemsWithoutNotifications", newItems);
     }
 
     private void CallCopyEventHandlersFrom (DomainObjectCollection source, DomainObjectCollection destination)

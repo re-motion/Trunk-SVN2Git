@@ -315,14 +315,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Touch();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
-      var collectionBefore = _endPoint.Collection;
+      var collectionBefore = (OrderCollection) _endPoint.Collection;
 
       _endPoint.Rollback ();
 
       _loadStateMock.VerifyAllExpectations();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
       Assert.That (_endPoint.Collection, Is.SameAs (collectionBefore));
-      Assert.That (fakeCurrentData, Is.EqualTo (new[] { _order2 }));
     }
     
     [Test]
@@ -385,7 +384,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       commandMock.VerifyAllExpectations();
 
       Assert.That (_endPoint.Collection, Is.SameAs (oldCollection));
-      Assert.That (fakeCurrentData, Is.EquivalentTo (new[] { _order2 }));
     }
 
     [Test]

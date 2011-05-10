@@ -15,15 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -301,73 +296,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (eventReceiver.RemovedDomainObjects[_customer1.ID], Is.SameAs (_customer1));
       Assert.That (eventReceiver.RemovedDomainObjects[_customer2.ID], Is.SameAs (_customer2));
     }
-
-    [Test]
-    public void GetNonNotifyingData_DoesNotRaiseEvents ()
-    {
-      IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (_collection);
-
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection);
-
-      nonNotifyingData.Insert (1, _customer3NotInCollection);
-
-      Assert.That (eventReceiver.AddingDomainObject, Is.Null);
-      Assert.That (eventReceiver.AddedDomainObject, Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\nParameter name: domainObject"
-        )]
-    public void GetNonNotifyingData_PerformsArgumentChecks ()
-    {
-      IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (_collection);
-
-      nonNotifyingData.Insert (1, _customer1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
-    public void GetNonNotifyingData_PerformsTypeChecks ()
-    {
-      IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (_collection);
-
-      nonNotifyingData.Insert (1, Order.NewObject ());
-    }
-
-    [Test]
-    public void GetNonNotifyingData_RepresentsCollectionData ()
-    {
-      IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (_collection);
-
-      _collection.Add (_customer3NotInCollection);
-      Assert.That (nonNotifyingData.ToArray (), Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
-
-      nonNotifyingData.Remove (_customer1.ID);
-      Assert.That (_collection, Is.EqualTo (new[] { _customer2, _customer3NotInCollection }));
-    }
-
-    [Test]
-    public void GetNonNotifyingData_UsesUndecoratedDataStore ()
-    {
-      var dataStore = new DomainObjectCollectionData ();
-
-      var dataDecoratorMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
-      dataDecoratorMock.Stub (mock => mock.GetDataStore ()).Return (dataStore);
-
-      var collection = new DomainObjectCollection (dataDecoratorMock);
-      IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (collection);
-
-      nonNotifyingData.Insert (0, _customer1);
-      dataDecoratorMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-
-      Assert.That (dataStore.ToArray (), Is.EqualTo (new[] { _customer1 }));
-    }
-
-    private IDomainObjectCollectionData CallGetNonNotifyingData (DomainObjectCollection collection)
-    {
-      return (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
-    }
-
   }
 }

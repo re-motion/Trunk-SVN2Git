@@ -249,8 +249,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public void Commit ()
     {
-      Assertion.IsTrue (
-          !HasUnsynchronizedCurrentOppositeEndPoints(),
+      Assertion.IsFalse (
+          HasUnsynchronizedCurrentOppositeEndPoints(),
           "We assume that it is not possible to register opposite end-points that are out-of-sync.");
       _dataKeeper.Commit ();
     }

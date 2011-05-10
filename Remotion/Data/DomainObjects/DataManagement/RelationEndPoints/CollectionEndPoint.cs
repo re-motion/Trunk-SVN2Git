@@ -197,7 +197,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         }
         Assertion.IsTrue (_collection == _originalCollection);
 
-        _collection.ReplaceItemsWithoutNotifications (GetOriginalData());
+        //_collection.ReplaceItemsWithoutNotifications (GetOriginalData());
 
         _loadState.Rollback();
       }

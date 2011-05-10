@@ -120,8 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     /// <param name="content">The initial content of the collection. This must not contain duplicates or <see langword="null" /> values.</param>
     /// <returns>A stand-alone read-only instance of <paramref name="collectionType"/>.</returns>
     /// <remarks>
-    /// The <see cref="DomainObjectCollection"/> returned is read-only, its public APIs cannot be used to change its contents. Its contents can be
-    /// changed via <see cref="DomainObjectCollection.GetNonNotifyingData"/>, however. The collection will not raise any add/remove events.
+    /// The <see cref="DomainObjectCollection"/> returned is read-only, its content cannot be changed.
     /// </remarks>
     public DomainObjectCollection CreateReadOnlyCollection (Type collectionType, IEnumerable<DomainObject> content)
     {

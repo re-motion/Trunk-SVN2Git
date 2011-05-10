@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -67,12 +66,13 @@ namespace Remotion.Data.DomainObjects
   ///     </description>
   ///   </item>
   ///   <item>
-  ///     <term><see cref="ReplaceItemsWithoutNotifications"/></term>
+  ///     <term><see cref="OnRollback"/>, <see cref="OnAddItemThroughSynchronization"/>, <see cref="OnRemoveItemThroughSynchronization"/>, 
+  ///     <see cref="OnMarkComplete"/>, <see cref="OnMarkIncomplete"/></term>
   ///     <description>
-  ///       This method is automatically called on <see cref="DomainObjectCollection"/>s representing the current values 
-  ///       of a one-to-many relation during the rollback operation of the associated <see cref="ClientTransaction"/>. 
-  ///       A derived collection should recalculate its internal state to match the new items passed 
-  ///       as an argument to this method.
+  ///       These methods are automatically called when the state of a <see cref="DomainObjectCollection"/> that represents an end-point in a
+  ///       bidirectional relation changes due to data management events. Implementations can use this method to initialize, discard, and adapt 
+  ///       their internal state in reaction to these events. Since these methods are called in the middle of data management operations, special
+  ///       constraints exist for their implementations. See the documentation for the specific methods for details.
   ///     </description>
   ///   </item>
   /// </list>
@@ -630,45 +630,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
-    /// not raise any notifications. This means that no events wil be raised when the data is manipulated and no bidirectional notifications will be
-    /// performed. The returned object also does not check whether this collection is read-only.
-    /// </summary>
-    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
-    /// not raise any notifications and manipulation.</returns>
-    /// <remarks>
-    /// <para>
-    /// When the collection is part of a
-    /// <see cref="CollectionEndPoint"/>, the manipulations performed on the data will not trigger bidirectional modifications on related objects,
-    /// so manipulations must be performed with care, otherwise inconsistent state might arise. The end point will also not be marked as touched by 
-    /// manipulations performed on the returned data. (The end point's <see cref="CollectionEndPoint.HasChanged"/> method might still return 
-    /// <see langword="true" />, though, since it compares the original data with the collection's contents.)
-    /// </para>
-    /// </remarks>
-    protected IDomainObjectCollectionData GetNonNotifyingData ()
-    {
-      // For associated collections, _dataStrategy.GetDataStore() will usually return the ChangeCachingDomainObjectCollectionData.
-      return new ModificationCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore ());
-    }
-
-    /// <summary>
-    /// Replaces the items in the collection with a given set of new items.
-    /// </summary>
-    /// <param name="newItems">The items to be put into the collection. Must not be <see langword="null"/>.</param>
-    /// <remarks>
-    ///   This method is called for collections associated to a collection end point during the rollback operation of the associated 
-    ///   <see cref="ClientTransaction"/>. A derived collection should recalculate its internal state to match the <paramref name="newItems"/>.
-    /// </remarks>
-    /// <exception cref="System.ArgumentNullException"><paramref name="newItems"/> is <see langword="null"/>.</exception>
-    protected internal virtual void ReplaceItemsWithoutNotifications (IEnumerable<DomainObject> newItems)
-    {
-      ArgumentUtility.CheckNotNull ("newItems", newItems);
-
-      var nonNotifyingData = GetNonNotifyingData ();
-      nonNotifyingData.ReplaceContents (newItems);
-    }
-
-    /// <summary>
     /// Raises the <see cref="Adding"/> event.
     /// </summary>
     /// <param name="args">A <see cref="DomainObjectCollectionChangeEventArgs"/> object that contains the event data.</param>
@@ -745,6 +706,115 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Called when the associated relation end-point is committed. Override this method to react to the contents of this collection becoming the
+    /// new original data. 
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
+    /// (which is in the middle of being committed).
+    /// </para>
+    /// </remarks>
+    protected virtual void OnCommit ()
+    {
+      // Nothing to do here
+    }
+
+    /// <summary>
+    /// Called when the associated relation end-point is rolled back. Override this method to react to the contents of this collection being replaced
+    /// with the original collection data.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
+    /// (which is in the middle of rollback).
+    /// </para>
+    /// </remarks>
+    protected virtual void OnRollback()
+    {
+      // Nothing to do here
+    }
+
+    /// <summary>
+    /// Called when an item is added due to the associated relation end-point being synchronized. Override this method to react to the contents of 
+    /// this collection changing due to a synchronization operation between relation end-points.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
+    /// (which is in the middle of a synchronization operation).
+    /// </para>
+    /// </remarks>
+    protected virtual void OnAddItemThroughSynchronization (DomainObject item)
+    {
+      // Nothing to do here
+    }
+
+    /// <summary>
+    /// Called when an item is removed due to the associated relation end-point being synchronized. Override this method to react to the contents of 
+    /// this collection changing due to a synchronization operation between relation end-points.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
+    /// (which is in the middle of a synchronization operation).
+    /// </para>
+    /// </remarks>
+    protected virtual void OnRemoveItemThroughSynchronization (DomainObject item)
+    {
+      // Nothing to do here
+    }
+
+    /// <summary>
+    /// Called when the associated relation end-point is marked as complete, i.e., when its data has completely been loaded. Override this method to 
+    /// react to the contents of this collection being initialized.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
+    /// (which is in the middle of a load operation).
+    /// </para>
+    /// </remarks>
+    protected virtual void OnMarkComplete ()
+    {
+      // Nothing to do here
+    }
+
+    /// <summary>
+    /// Called when the associated relation end-point is marked as incomplete, i.e., when its data has is being unloaded. Override this method to 
+    /// react to the contents of this collection being discarded.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For stand-alone collections, this method is not invoked by the framework. 
+    /// </para>
+    /// <para>
+    /// This method must not throw an exception, and it
+    /// must not access or modify any data in the current <see cref="ClientTransaction"/> (which is in the middle of an unload operation).
+    /// In addition, the method must not access the collection's contents because that content is not available at that time.
+    /// </para>
+    /// </remarks>
+    protected virtual void OnMarkIncomplete ()
+    {
+      // Nothing to do here
     }
 
     internal void CopyEventHandlersFrom (DomainObjectCollection source)

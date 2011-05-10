@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionData
 {
   [Serializable]
-  internal class DomainObjectCollectionEventRaiserFake : IDomainObjectCollectionEventRaiser
+  internal class SerializableDomainObjectCollectionEventRaiserFake : IDomainObjectCollectionEventRaiser
   {
     public void BeginAdd (int index, DomainObject domainObject)
     {
@@ -44,6 +44,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     public void EndDelete ()
+    {
+    }
+
+    public void WithinCommit ()
+    {
+    }
+
+    public void WithinRollback ()
+    {
+    }
+
+    public void WithinAddItemThroughSynchronization (DomainObject domainObject)
+    {
+    }
+
+    public void WithinRemoveItemThroughSynchronization (DomainObject domainObject)
+    {
+    }
+
+    public void WithinMarkComplete ()
+    {
+    }
+
+    public void WithinMarkIncomplete ()
     {
     }
   }
