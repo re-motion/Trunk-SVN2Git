@@ -33,13 +33,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     bool IsSynchronized (TEndPoint endPoint);
     void Synchronize (TEndPoint endPoint);
 
-    void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint);
+    void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint);
 
     void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState);
 
     bool HasChanged ();
 
-    void Commit ();
-    void Rollback ();
+    void Commit (TEndPoint endPoint);
+    void Rollback (TEndPoint endPoint);
   }
 }

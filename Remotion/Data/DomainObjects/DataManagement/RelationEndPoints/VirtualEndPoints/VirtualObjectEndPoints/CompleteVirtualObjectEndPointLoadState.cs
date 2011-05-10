@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       MarkDataComplete (endPoint, new[] { item }, stateSetter);
     }
 
-    public override void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    public override void SynchronizeOppositeEndPoint (IVirtualObjectEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      base.SynchronizeOppositeEndPoint (oppositeEndPoint);
+      base.SynchronizeOppositeEndPoint (endPoint, oppositeEndPoint);
     }
 
     public IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject)

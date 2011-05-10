@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       endPoint.Synchronize ();
     }
 
-    public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    public void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
@@ -171,12 +171,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return false; 
     }
 
-    public void Commit ()
+    public void Commit (TEndPoint endPoint)
     {
       Assertion.IsTrue (!HasChanged());
     }
 
-    public void Rollback ()
+    public void Rollback (TEndPoint endPoint)
     {
       Assertion.IsTrue (!HasChanged ());
     }

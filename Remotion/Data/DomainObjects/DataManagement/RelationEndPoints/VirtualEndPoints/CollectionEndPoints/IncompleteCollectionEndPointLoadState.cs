@@ -54,6 +54,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       base.MarkDataComplete (endPoint, items, stateSetter);
+
+      var eventRaiser = endPoint.GetCollectionEventRaiser();
+      eventRaiser.WithinReplaceData();
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)

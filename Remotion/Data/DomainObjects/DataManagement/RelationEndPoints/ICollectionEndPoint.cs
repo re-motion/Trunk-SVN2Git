@@ -26,6 +26,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
 
+    IDomainObjectCollectionEventRaiser GetCollectionEventRaiser ();
+
     DomainObjectCollection GetCollectionWithOriginalData ();
 
     void MarkDataComplete (DomainObject[] items);

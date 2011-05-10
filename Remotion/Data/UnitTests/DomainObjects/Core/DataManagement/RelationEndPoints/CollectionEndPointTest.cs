@@ -271,14 +271,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPoint.Commit();
 
-      _loadStateMock.AssertWasNotCalled (mock => mock.Commit());
+      _loadStateMock.AssertWasNotCalled (mock => mock.Commit(_endPoint));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
     [Test]
     public void Commit_Changed ()
     {
-      _loadStateMock.Expect (mock => mock.Commit ());
+      _loadStateMock.Expect (mock => mock.Commit (_endPoint));
       _loadStateMock.Replay ();
 
       _endPoint.Touch ();
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock
           .Stub (stub => stub.GetOriginalData (_endPoint))
           .Return (new ReadOnlyCollectionDataDecorator (fakeOriginalData, true));
-      _loadStateMock.Expect (mock => mock.Rollback());
+      _loadStateMock.Expect (mock => mock.Rollback (_endPoint));
       _loadStateMock.Replay ();
 
       _endPoint.Touch();
@@ -372,7 +372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock
           .Stub (stub => stub.GetOriginalData (_endPoint))
           .Return (new ReadOnlyCollectionDataDecorator (fakeOriginalData, true));
-      _loadStateMock.Expect (mock => mock.Rollback ());
+      _loadStateMock.Expect (mock => mock.Rollback (_endPoint));
       _loadStateMock.Replay ();
 
       commandMock.Expect (mock => mock.Perform());
@@ -543,7 +543,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void SynchronizeOppositeEndPoint ()
     {
       var fakeEndPoint = _relatedEndPointStub;
-      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint(fakeEndPoint));
+      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_endPoint, fakeEndPoint));
       _loadStateMock.Replay ();
 
       _endPoint.SynchronizeOppositeEndPoint (fakeEndPoint);
@@ -746,6 +746,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void GetCollectionEventRaiser ()
+    {
+      var result = _endPoint.GetCollectionEventRaiser();
+
+      Assert.That (result, Is.SameAs (_endPoint.Collection));
     }
 
     [Test]

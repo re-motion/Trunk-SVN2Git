@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         "Cannot synchronize an opposite end-point with a virtual end-point in incomplete state.")]
     public void SynchronizeOppositeEndPoint ()
     {
-      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub1);
+      _loadState.SynchronizeOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub1);
     }
 
     [Test]
@@ -233,13 +233,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Commit ()
     {
-      _loadState.Commit ();
+      _loadState.Commit (_virtualEndPointMock);
     }
 
     [Test]
     public void Rollback ()
     {
-      _loadState.Rollback ();
+      _loadState.Rollback (_virtualEndPointMock);
     }
 
     [Test]

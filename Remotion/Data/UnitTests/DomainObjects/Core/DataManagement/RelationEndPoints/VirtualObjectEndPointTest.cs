@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SynchronizeOppositeEndPoint ()
     {
-      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_oppositeEndPointStub));
+      _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_endPoint, _oppositeEndPointStub));
       _loadStateMock.Replay ();
 
       _endPoint.SynchronizeOppositeEndPoint (_oppositeEndPointStub);
@@ -431,7 +431,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
       _loadStateMock.Stub(mock => mock.HasChanged()).Return (true);
-      _loadStateMock.Expect (mock => mock.Commit ());
+      _loadStateMock.Expect (mock => mock.Commit (_endPoint));
       _loadStateMock.Replay ();
       
       _endPoint.Commit ();
@@ -451,7 +451,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPoint.Commit ();
 
-      _loadStateMock.AssertWasNotCalled (mock => mock.Commit ());
+      _loadStateMock.AssertWasNotCalled (mock => mock.Commit (_endPoint));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
@@ -461,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
-      _loadStateMock.Expect (mock => mock.Rollback ());
+      _loadStateMock.Expect (mock => mock.Rollback (_endPoint));
       _loadStateMock.Replay ();
 
       _endPoint.Rollback ();

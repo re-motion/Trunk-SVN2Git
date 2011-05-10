@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -114,6 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       bool stateSetterCalled = false;
 
       _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (MockRepository.GenerateStub<IDomainObjectCollectionEventRaiser>());
       _collectionEndPointMock.Replay ();
 
       var newKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper> ();
@@ -142,6 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub2);
       
       _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (MockRepository.GenerateStub<IDomainObjectCollectionEventRaiser> ());
       // ReSharper disable AccessToModifiedClosure
       _collectionEndPointMock
           .Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub))
@@ -172,6 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, oppositeEndPointForItem1Mock);
       
       _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (MockRepository.GenerateStub<IDomainObjectCollectionEventRaiser> ());
       _collectionEndPointMock.Replay ();
       
       var newKeeperMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeper> ();
@@ -189,6 +193,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       newKeeperMock.VerifyAllExpectations ();
       oppositeEndPointForItem1Mock.VerifyAllExpectations ();
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
+    }
+
+    [Test]
+    public void MarkDataComplete_RaisesEvent ()
+    {
+      var counter = new OrderedExpectationCounter ();
+
+      _loadState.RegisterOriginalOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
+
+      var eventRaiserMock = MockRepository.GenerateStrictMock<IDomainObjectCollectionEventRaiser> ();
+
+      _collectionEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser()).Return (eventRaiserMock);
+      _collectionEndPointMock.Replay ();
+
+      var newKeeperMock = MockRepository.GenerateMock<ICollectionEndPointDataKeeper> ();
+      newKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub)).Ordered (counter);
+      newKeeperMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (_relatedObject2)).Ordered (counter);
+      newKeeperMock.Replay ();
+
+      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+
+      var expectedKeeperPosition = counter.GetNextExpectedPosition ();
+      Action<ICollectionEndPointDataKeeper> stateSetter = keeper => counter.CheckPosition ("stateSetter", expectedKeeperPosition);
+
+      eventRaiserMock.Expect (mock => mock.WithinReplaceData()).Ordered(counter);
+      eventRaiserMock.Replay();
+
+      _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[] { _relatedObject, _relatedObject2 }, stateSetter);
+
+      newKeeperMock.VerifyAllExpectations ();
+      eventRaiserMock.VerifyAllExpectations();
     }
 
     [Test]

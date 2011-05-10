@@ -360,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.Member(endPointMock));
 
-      _loadState.SynchronizeOppositeEndPoint (endPointMock);
+      _loadState.SynchronizeOppositeEndPoint (_virtualEndPointMock, endPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
@@ -382,7 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Stub (stub => stub.ObjectID)
           .Return (DomainObjectIDs.OrderItem1);
 
-      _loadState.SynchronizeOppositeEndPoint (endPointStub);
+      _loadState.SynchronizeOppositeEndPoint (_virtualEndPointMock, endPointStub);
     }
     
     [Test]
@@ -403,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperMock.Expect (mock => mock.Commit());
       _dataKeeperMock.Replay();
 
-      _loadState.Commit();
+      _loadState.Commit (_virtualEndPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
     }
@@ -414,7 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperMock.Expect (mock => mock.Rollback());
       _dataKeeperMock.Replay();
 
-      _loadState.Rollback();
+      _loadState.Rollback (_virtualEndPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
     }

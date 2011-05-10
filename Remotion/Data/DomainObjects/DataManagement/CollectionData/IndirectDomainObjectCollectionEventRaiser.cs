@@ -67,34 +67,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       GetAndCheckEventRaiser().EndDelete();
     }
 
-    public void WithinCommit ()
+    public void WithinReplaceData ()
     {
-      GetAndCheckEventRaiser ().WithinCommit();
-    }
-
-    public void WithinRollback ()
-    {
-      GetAndCheckEventRaiser ().WithinRollback ();
-    }
-
-    public void WithinAddItemThroughSynchronization (DomainObject domainObject)
-    {
-      GetAndCheckEventRaiser ().WithinAddItemThroughSynchronization (domainObject);
-    }
-
-    public void WithinRemoveItemThroughSynchronization (DomainObject domainObject)
-    {
-      GetAndCheckEventRaiser ().WithinRemoveItemThroughSynchronization (domainObject);
-    }
-
-    public void WithinMarkComplete ()
-    {
-      GetAndCheckEventRaiser ().WithinMarkComplete ();
-    }
-
-    public void WithinMarkIncomplete ()
-    {
-      GetAndCheckEventRaiser ().WithinMarkIncomplete ();
+      GetAndCheckEventRaiser ().WithinReplaceData();
     }
 
     private IDomainObjectCollectionEventRaiser GetAndCheckEventRaiser()

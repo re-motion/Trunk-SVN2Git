@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         ICollectionEndPointDataKeeper dataKeeper,
         IRelationEndPointProvider endPointProvider,
         ClientTransaction clientTransaction)
-        : base(dataKeeper, endPointProvider, clientTransaction)
+        : base (dataKeeper, endPointProvider, clientTransaction)
     {
     }
 
@@ -58,6 +58,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteCollectionEndPointLoadState> ("sourceLoadState", sourceLoadState);
 
       DataKeeper.SetDataFromSubTransaction (sourceCompleteLoadState.DataKeeper, EndPointProvider);
+
+      RaiseReplaceDataEvent (collectionEndPoint);
     }
 
     public new void MarkDataComplete (ICollectionEndPoint endPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
@@ -67,6 +69,29 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
 
       base.MarkDataComplete (endPoint, items, stateSetter);
+    }
+
+    public override void Synchronize (ICollectionEndPoint endPoint)
+    {
+      base.Synchronize (endPoint);
+
+      RaiseReplaceDataEvent (endPoint);
+    }
+
+    public override void SynchronizeOppositeEndPoint (ICollectionEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
+    {
+      base.SynchronizeOppositeEndPoint (endPoint, oppositeEndPoint);
+
+      RaiseReplaceDataEvent (endPoint);
+    }
+
+    public override void Rollback (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      
+      base.Rollback (endPoint);
+
+      RaiseReplaceDataEvent (endPoint);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (
@@ -256,6 +281,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
     }
+
+    private void RaiseReplaceDataEvent (ICollectionEndPoint endPoint)
+    {
+      var eventRaiser = endPoint.GetCollectionEventRaiser ();
+      eventRaiser.WithinReplaceData ();
+    }
+
 
     #region Serialization
 

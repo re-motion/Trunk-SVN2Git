@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
@@ -140,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       _dataKeeperMock.Replay ();
 
-      _loadState.SynchronizeOppositeEndPoint (endPointMock);
+      _loadState.SynchronizeOppositeEndPoint (_virtualObjectEndPointMock, endPointMock);
 
       _dataKeeperMock.VerifyAllExpectations ();
       endPointMock.VerifyAllExpectations ();
@@ -161,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _dataKeeperMock.Stub (stub => stub.OriginalOppositeEndPoint).Return (_relatedEndPointStub);
 
-      _loadState.SynchronizeOppositeEndPoint (_relatedEndPointStub2);
+      _loadState.SynchronizeOppositeEndPoint (_virtualObjectEndPointMock, _relatedEndPointStub2);
     }
 
     [Test]

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -39,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPointDataKeeper _dataKeeperMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private ClientTransaction _clientTransaction;
+    private IDomainObjectCollectionEventRaiser _eventRaiserMock;
 
     private CompleteCollectionEndPointLoadState _loadState;
 
@@ -59,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _clientTransaction = ClientTransaction.CreateRootTransaction ();
+      _eventRaiserMock = MockRepository.GenerateStrictMock<IDomainObjectCollectionEventRaiser>();
 
       _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock, _endPointProviderStub, _clientTransaction);
 
@@ -96,14 +97,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetDataFromSubTransaction ()
     {
+      var counter = new OrderedExpectationCounter ();
+
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
+
       var sourceDataKeeper = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
       var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataKeeper, _endPointProviderStub, _clientTransaction);
-      _dataKeeperMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataKeeper, _endPointProviderStub));
+      _dataKeeperMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataKeeper, _endPointProviderStub)).Ordered (counter);
       _dataKeeperMock.Replay ();
+
+      _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
+      _eventRaiserMock.Replay ();
 
       _loadState.SetDataFromSubTransaction (_collectionEndPointMock, sourceLoadState);
 
       _dataKeeperMock.VerifyAllExpectations();
+      _eventRaiserMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -112,6 +121,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var items = new DomainObject[] { _relatedObject };
       _loadState.MarkDataComplete (_collectionEndPointMock, items, keeper => Assert.Fail ("Must not be called"));
+    }
+
+    [Test]
+    public void Rollback_RaisesEvent ()
+    {
+      var counter = new OrderedExpectationCounter ();
+
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
+
+      _dataKeeperMock.Expect (mock => mock.Rollback ()).Ordered (counter);
+      _dataKeeperMock.Replay ();
+
+      _eventRaiserMock.Expect (mock => mock.WithinReplaceData()).Ordered (counter);
+      _eventRaiserMock.Replay ();
+
+      _loadState.Rollback (_collectionEndPointMock);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      _eventRaiserMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Synchronize ()
+    {
+      var counter = new OrderedExpectationCounter ();
+
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
+
+      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+
+      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject)).Ordered (counter);
+      _dataKeeperMock.Replay ();
+
+      _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
+      _eventRaiserMock.Replay();
+
+      _loadState.Synchronize (_collectionEndPointMock);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      _eventRaiserMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void SynchronizeOppositeEndPoint ()
+    {
+      var counter = new OrderedExpectationCounter ();
+
+      _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
+
+      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub)).Ordered (counter);
+      _dataKeeperMock.Replay ();
+
+      _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
+      _eventRaiserMock.Replay ();
+
+      AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
+
+      _loadState.SynchronizeOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
+
+      _dataKeeperMock.VerifyAllExpectations ();
+      _eventRaiserMock.VerifyAllExpectations ();
     }
 
     [Test]

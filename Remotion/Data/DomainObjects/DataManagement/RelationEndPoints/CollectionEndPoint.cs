@@ -112,6 +112,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return _loadState.GetOriginalData (this);
     }
 
+    public IDomainObjectCollectionEventRaiser GetCollectionEventRaiser ()
+    {
+      return Collection;
+    }
+
     public DomainObjectCollection GetCollectionWithOriginalData ()
     {
       return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyType, _loadState.GetOriginalData (this));
@@ -179,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (HasChanged)
       {
-        _loadState.Commit();
+        _loadState.Commit(this);
         _originalCollection = _collection;
       }
 
@@ -199,7 +204,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
         //_collection.ReplaceItemsWithoutNotifications (GetOriginalData());
 
-        _loadState.Rollback();
+        _loadState.Rollback(this);
       }
 
       _hasBeenTouched = false;
@@ -274,7 +279,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _loadState.SynchronizeOppositeEndPoint (oppositeEndPoint);
+      _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)

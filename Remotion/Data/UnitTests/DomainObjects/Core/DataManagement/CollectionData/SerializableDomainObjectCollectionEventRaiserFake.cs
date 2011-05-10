@@ -47,27 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
     }
 
-    public void WithinCommit ()
-    {
-    }
-
-    public void WithinRollback ()
-    {
-    }
-
-    public void WithinAddItemThroughSynchronization (DomainObject domainObject)
-    {
-    }
-
-    public void WithinRemoveItemThroughSynchronization (DomainObject domainObject)
-    {
-    }
-
-    public void WithinMarkComplete ()
-    {
-    }
-
-    public void WithinMarkIncomplete ()
+    public void WithinReplaceData ()
     {
     }
   }

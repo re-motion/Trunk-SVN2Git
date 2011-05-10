@@ -34,12 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       void OnDeleting ();
       void OnDeleted ();
 
-      void OnCommit ();
-      void OnRollback ();
-      void OnAddItemThroughSynchronization (DomainObject item);
-      void OnRemoveItemThroughSynchronization (DomainObject item);
-      void OnMarkComplete ();
-      void OnMarkIncomplete ();
+      void OnReplaceData ();
     }
 
     private ICollectionEventReceiver _eventReceiver;
@@ -106,46 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
         _eventReceiver.OnDeleted ();
     }
 
-    protected override void OnCommit ()
+    protected override void OnReplaceData ()
     {
-      base.OnCommit();
+      base.OnReplaceData ();
       if (_eventReceiver != null)
-        _eventReceiver.OnCommit ();
-    }
-
-    protected override void OnRollback ()
-    {
-      base.OnRollback();
-      if (_eventReceiver != null)
-        _eventReceiver.OnRollback ();
-    }
-
-    protected override void OnAddItemThroughSynchronization (DomainObject item)
-    {
-      base.OnAddItemThroughSynchronization (item);
-      if (_eventReceiver != null)
-        _eventReceiver.OnAddItemThroughSynchronization(item);
-    }
-
-    protected override void OnRemoveItemThroughSynchronization (DomainObject item)
-    {
-      base.OnRemoveItemThroughSynchronization (item);
-      if (_eventReceiver != null)
-        _eventReceiver.OnRemoveItemThroughSynchronization(item);
-    }
-
-    protected override void OnMarkComplete ()
-    {
-      base.OnMarkComplete();
-      if (_eventReceiver != null)
-        _eventReceiver.OnMarkComplete();
-    }
-
-    protected override void OnMarkIncomplete ()
-    {
-      base.OnMarkIncomplete();
-      if (_eventReceiver != null)
-        _eventReceiver.OnMarkIncomplete ();
+        _eventReceiver.OnReplaceData ();
     }
   }
 }

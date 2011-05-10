@@ -66,13 +66,12 @@ namespace Remotion.Data.DomainObjects
   ///     </description>
   ///   </item>
   ///   <item>
-  ///     <term><see cref="OnRollback"/>, <see cref="OnAddItemThroughSynchronization"/>, <see cref="OnRemoveItemThroughSynchronization"/>, 
-  ///     <see cref="OnMarkComplete"/>, <see cref="OnMarkIncomplete"/></term>
+  ///     <term><see cref="OnReplaceData"/></term>
   ///     <description>
-  ///       These methods are automatically called when the state of a <see cref="DomainObjectCollection"/> that represents an end-point in a
-  ///       bidirectional relation changes due to data management events. Implementations can use this method to initialize, discard, and adapt 
-  ///       their internal state in reaction to these events. Since these methods are called in the middle of data management operations, special
-  ///       constraints exist for their implementations. See the documentation for the specific methods for details.
+  ///       This method is automatically called when the state of a <see cref="DomainObjectCollection"/> that represents an end-point in a
+  ///       bidirectional relation changes due to data management events. Implementations can use this method to re-initialize or adapt 
+  ///       their internal state in reaction to these events. Since this method is called in the middle of a data management operation, special
+  ///       constraints exist for its implementation. See the method's documentation for details.
   ///     </description>
   ///   </item>
   /// </list>
@@ -708,111 +707,24 @@ namespace Remotion.Data.DomainObjects
         Deleted (this, EventArgs.Empty);
     }
 
-    /// <summary>
-    /// Called when the associated relation end-point is committed. Override this method to react to the contents of this collection becoming the
-    /// new original data. 
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
-    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of being committed).
-    /// </para>
-    /// </remarks>
-    protected virtual void OnCommit ()
-    {
-      // Nothing to do here
-    }
 
     /// <summary>
-    /// Called when the associated relation end-point is rolled back. Override this method to react to the contents of this collection being replaced
-    /// with the original collection data.
+    /// Called when the data of this collection changes due to a state change in the associated bidirectional relation, for example when the relation
+    /// is rolled back, reloaded, or synchronized with opposite end-points. Override this method to react to the contents of 
+    /// this collection changing due to such an operation.
     /// </summary>
     /// <remarks>
     /// <para>
     /// For stand-alone collections, this method is not invoked by the framework. 
     /// </para>
     /// <para>
+    /// <note type="inotes">
     /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of rollback).
+    /// (which is in the middle of a data management operation).
+    /// </note>
     /// </para>
     /// </remarks>
-    protected virtual void OnRollback()
-    {
-      // Nothing to do here
-    }
-
-    /// <summary>
-    /// Called when an item is added due to the associated relation end-point being synchronized. Override this method to react to the contents of 
-    /// this collection changing due to a synchronization operation between relation end-points.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
-    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of a synchronization operation).
-    /// </para>
-    /// </remarks>
-    protected virtual void OnAddItemThroughSynchronization (DomainObject item)
-    {
-      // Nothing to do here
-    }
-
-    /// <summary>
-    /// Called when an item is removed due to the associated relation end-point being synchronized. Override this method to react to the contents of 
-    /// this collection changing due to a synchronization operation between relation end-points.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
-    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of a synchronization operation).
-    /// </para>
-    /// </remarks>
-    protected virtual void OnRemoveItemThroughSynchronization (DomainObject item)
-    {
-      // Nothing to do here
-    }
-
-    /// <summary>
-    /// Called when the associated relation end-point is marked as complete, i.e., when its data has completely been loaded. Override this method to 
-    /// react to the contents of this collection being initialized.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
-    /// This method must not throw an exception, and it must not access or modify any data in the current <see cref="ClientTransaction"/> 
-    /// (which is in the middle of a load operation).
-    /// </para>
-    /// </remarks>
-    protected virtual void OnMarkComplete ()
-    {
-      // Nothing to do here
-    }
-
-    /// <summary>
-    /// Called when the associated relation end-point is marked as incomplete, i.e., when its data has is being unloaded. Override this method to 
-    /// react to the contents of this collection being discarded.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For stand-alone collections, this method is not invoked by the framework. 
-    /// </para>
-    /// <para>
-    /// This method must not throw an exception, and it
-    /// must not access or modify any data in the current <see cref="ClientTransaction"/> (which is in the middle of an unload operation).
-    /// In addition, the method must not access the collection's contents because that content is not available at that time.
-    /// </para>
-    /// </remarks>
-    protected virtual void OnMarkIncomplete ()
+    protected virtual void OnReplaceData ()
     {
       // Nothing to do here
     }

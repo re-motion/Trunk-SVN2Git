@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
-      _loadState.SynchronizeOppositeEndPoint (oppositeEndPoint);
+      _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
     }
 
     public void MarkDataComplete (DomainObject item)
@@ -200,14 +200,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Commit ()
     {
       if (HasChanged)
-        _loadState.Commit();
+        _loadState.Commit(this);
 
       _hasBeenTouched = false;
     }
 
     public override void Rollback ()
     {
-      _loadState.Rollback();
+      _loadState.Rollback(this);
       _hasBeenTouched = false;
     }
 

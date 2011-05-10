@@ -113,81 +113,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void EventRaiser_WithinCommit ()
+    public void EventRaiser_WithinReplaceData ()
     {
 
       var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
       collectionMock.Replay ();
 
       var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinCommit();
+      eventRaiser.WithinReplaceData();
 
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnCommit"));
-    }
-
-    [Test]
-    public void EventRaiser_WithinRollback ()
-    {
-
-      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
-      collectionMock.Replay ();
-
-      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinRollback ();
-
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnRollback"));
-    }
-
-    [Test]
-    public void EventRaiser_WithinAddItemThroughSynchronization ()
-    {
-
-      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
-      collectionMock.Replay ();
-
-      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinAddItemThroughSynchronization (_customer1);
-
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnAddItemThroughSynchronization", _customer1));
-    }
-
-    [Test]
-    public void EventRaiser_WithinRemoveItemThroughSynchronization ()
-    {
-
-      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
-      collectionMock.Replay ();
-
-      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinRemoveItemThroughSynchronization (_customer1);
-
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnRemoveItemThroughSynchronization", _customer1));
-    }
-
-    [Test]
-    public void EventRaiser_WithinMarkComplete ()
-    {
-
-      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
-      collectionMock.Replay ();
-
-      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinMarkComplete();
-
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnMarkComplete"));
-    }
-
-    [Test]
-    public void EventRaiser_WithinMarkIncomplete ()
-    {
-
-      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
-      collectionMock.Replay ();
-
-      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
-      eventRaiser.WithinMarkIncomplete ();
-
-      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnMarkIncomplete"));
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnReplaceData"));
     }
   }
 }

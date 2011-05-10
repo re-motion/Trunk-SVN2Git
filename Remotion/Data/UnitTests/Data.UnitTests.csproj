@@ -266,6 +266,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionReplaceDataEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesInSubtransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\ObjectRelationInconsistenciesTest.cs" />
@@ -370,7 +371,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\BigRelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\BigRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqCastMethodAttributeTest.cs" />
@@ -949,7 +950,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TypeProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\CollectionSetterTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\CollectionSetterTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\ClassWithNonVirtualAutomaticPropertyGetter.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\ClassWithNonVirtualAutomaticPropertySetter.cs" />
@@ -1189,6 +1190,8 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceFirstDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
+    <Compile Include="MethodOptionsExtensions.cs" />
+    <Compile Include="OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1287,7 +1290,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DeleteNewDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.cs">
@@ -1373,7 +1376,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\RelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\RelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\SerializationTest.cs">
       <SubType>Code</SubType>
     </Compile>

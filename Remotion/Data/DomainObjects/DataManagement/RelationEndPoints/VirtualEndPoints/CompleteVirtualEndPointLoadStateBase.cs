@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return !HasChanged();
     }
 
-    public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
+    public virtual void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
@@ -217,18 +217,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       if (Log.IsDebugEnabled)
-        Log.DebugFormat ("End-point '{0}' is synchronized.", endPoint.ID);
+        Log.DebugFormat ("End-point '{0}' is being synchronized.", endPoint.ID);
 
       foreach (var item in GetOriginalItemsWithoutEndPoints ())
         DataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
-    public virtual void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    public virtual void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectEndPoint '{0}' is marked as synchronized.", oppositeEndPoint.ID);
+        s_log.DebugFormat ("ObjectEndPoint '{0}' is being marked as synchronized.", oppositeEndPoint.ID);
 
       if (!_unsynchronizedOppositeEndPoints.Remove (oppositeEndPoint.ObjectID))
       {
@@ -247,7 +247,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return _dataKeeper.HasDataChanged ();
     }
 
-    public void Commit ()
+    public virtual void Commit (TEndPoint endPoint)
     {
       Assertion.IsFalse (
           HasUnsynchronizedCurrentOppositeEndPoints(),
@@ -255,7 +255,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _dataKeeper.Commit ();
     }
 
-    public void Rollback ()
+    public virtual void Rollback (TEndPoint endPoint)
     {
       _dataKeeper.Rollback ();
     }
@@ -289,6 +289,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      SerializeIntoFlatStructure(info);
+    }
+
+    protected virtual void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
