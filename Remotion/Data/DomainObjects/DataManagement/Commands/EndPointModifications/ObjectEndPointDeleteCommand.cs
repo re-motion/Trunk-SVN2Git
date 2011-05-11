@@ -25,15 +25,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class ObjectEndPointDeleteCommand : RelationEndPointModificationCommand
   {
-    private readonly Action<DomainObject> _oppositeObjectSetter;
+    private readonly Action _oppositeObjectNullSetter;
 
-    public ObjectEndPointDeleteCommand (IObjectEndPoint modifiedEndPoint, Action<DomainObject> oppositeObjectSetter)
+    public ObjectEndPointDeleteCommand (IObjectEndPoint modifiedEndPoint, Action oppositeObjectNullSetter)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
             null)
     {
-      _oppositeObjectSetter = oppositeObjectSetter;
+      ArgumentUtility.CheckNotNull ("oppositeObjectNullSetter", oppositeObjectNullSetter);
+
+      _oppositeObjectNullSetter = oppositeObjectNullSetter;
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
     }
@@ -50,7 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      _oppositeObjectSetter (null);
+      _oppositeObjectNullSetter();
       ModifiedEndPoint.Touch();
     }
 

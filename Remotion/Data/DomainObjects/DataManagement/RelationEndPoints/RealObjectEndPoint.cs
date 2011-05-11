@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _syncState.CreateDeleteCommand (this, domainObject => SetOppositeObjectID (DomainObject.GetIDOrNull (domainObject)));
+      return _syncState.CreateDeleteCommand (this, () => SetOppositeObjectID (null));
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)

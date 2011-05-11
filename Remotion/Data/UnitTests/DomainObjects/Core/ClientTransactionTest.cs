@@ -866,8 +866,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      var endPoint = ((IVirtualObjectEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
-      endPoint.CreateSetCommand (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2))).ExpandToAllRelatedObjects ().Perform ();
+      _transaction.Execute (() => order.OrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
       
       DomainObject orderTicket = ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
 
@@ -918,8 +917,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
 
-      var endPoint = ((IVirtualObjectEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
-      endPoint.CreateSetCommand (_transaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket2))).ExpandToAllRelatedObjects().Perform();
+      _transaction.Execute (() => order.OrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
 
       DomainObject orderTicket = ClientTransactionTestHelper.CallGetOriginalRelatedObject (_transaction, endPointID);
 

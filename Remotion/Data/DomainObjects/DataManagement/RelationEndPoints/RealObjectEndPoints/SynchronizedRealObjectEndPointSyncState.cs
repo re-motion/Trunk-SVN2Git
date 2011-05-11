@@ -54,14 +54,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       // nothing to do here - the end-point is already syncrhonized
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<DomainObject> oppositeObjectSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action oppositeObjectNullSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectNullSetter", oppositeObjectNullSetter);
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectSetter);
+      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectNullSetter);
 
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {

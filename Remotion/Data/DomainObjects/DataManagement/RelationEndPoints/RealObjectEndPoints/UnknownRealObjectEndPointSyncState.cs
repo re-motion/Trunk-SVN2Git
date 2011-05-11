@@ -68,10 +68,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       endPoint.Synchronize();
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<DomainObject> oppositeObjectSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action oppositeObjectNullSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectNullSetter", oppositeObjectNullSetter);
 
       LoadOppositeEndPoint (endPoint);
 

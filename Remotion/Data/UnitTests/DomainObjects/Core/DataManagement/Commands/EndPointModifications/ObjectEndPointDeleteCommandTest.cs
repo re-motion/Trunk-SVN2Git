@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -31,9 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _endPointID;
     private DomainObject _domainObject;
 
-    private bool _oppositeObjectSetterCalled;
-    private DomainObject _oppositeObjectSetterObject;
-    private Action<DomainObject> _oppositeObjectSetter;
+    private bool _oppositeObjectNullSetterCalled;
+    private Action _oppositeObjectNullSetter;
 
     private ObjectEndPointDeleteCommand _command;
 
@@ -45,14 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.OrderTicket1);
       _domainObject = _endPoint.GetDomainObject();
       
-      _oppositeObjectSetterCalled = false;
-      _oppositeObjectSetter = domainObject =>
+      _oppositeObjectNullSetterCalled = false;
+      _oppositeObjectNullSetter = () =>
       {
-        _oppositeObjectSetterCalled = true;
-        _oppositeObjectSetterObject = domainObject;
+        _oppositeObjectNullSetterCalled = true;
       };
       
-      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectSetter);
+      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectNullSetter);
     }
 
     [Test]
@@ -69,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointDeleteCommand (endPoint, id => { });
+      new ObjectEndPointDeleteCommand (endPoint, () => { });
     }
 
     [Test]
@@ -127,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _domainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       _domainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      Assert.That (_oppositeObjectSetterCalled, Is.False);
+      Assert.That (_oppositeObjectNullSetterCalled, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _command.Perform ();
@@ -135,8 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (_oppositeObjectSetterCalled, Is.True);
-      Assert.That (_oppositeObjectSetterObject, Is.Null);
+      Assert.That (_oppositeObjectNullSetterCalled, Is.True);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 

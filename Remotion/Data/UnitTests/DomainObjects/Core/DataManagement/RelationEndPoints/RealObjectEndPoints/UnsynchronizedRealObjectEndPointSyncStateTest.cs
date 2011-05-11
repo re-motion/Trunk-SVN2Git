@@ -16,8 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -34,8 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private UnsynchronizedRealObjectEndPointSyncState _state;
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
 
-    private Action<DomainObject> _fakeSetter;
-
     public override void SetUp ()
     {
       base.SetUp ();
@@ -47,7 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointStub.Stub (stub => stub.Definition).Return (_orderOrderTicketEndPointDefinition);
       
       _state = new UnsynchronizedRealObjectEndPointSyncState ();
-      _fakeSetter = domainObject => { };
     }
 
     [Test]
@@ -77,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' property.")]
     public void CreateDeleteCommand ()
     {
-      _state.CreateDeleteCommand(_endPointStub, _fakeSetter);
+      _state.CreateDeleteCommand(_endPointStub, () => { });
     }
 
     [Test]
@@ -91,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
 
-      _state.CreateSetCommand (_endPointStub, relatedObject, _fakeSetter);
+      _state.CreateSetCommand (_endPointStub, relatedObject, domainObject => { });
     }
 
     [Test]

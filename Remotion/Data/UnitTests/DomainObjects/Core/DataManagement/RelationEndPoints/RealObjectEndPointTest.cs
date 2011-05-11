@@ -358,11 +358,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
 
-      Action<DomainObject> oppositeObjectSetter = null;
+      Action oppositeObjectSetter = null;
       _syncStateMock
-          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPoint), Arg<Action<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.CreateDeleteCommand (Arg.Is (_endPoint), Arg<Action>.Is.Anything))
           .Return (fakeResult)
-          .WhenCalled (mi => { oppositeObjectSetter = (Action<DomainObject>) mi.Arguments[1]; });
+          .WhenCalled (mi => { oppositeObjectSetter = (Action) mi.Arguments[1]; });
       _syncStateMock.Replay ();
 
       var result = _endPoint.CreateDeleteCommand ();
@@ -370,10 +370,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _syncStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
 
-      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      var newRelatedObject = DomainObjectMother.CreateFakeObject<Order>();
-      oppositeObjectSetter (newRelatedObject);
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newRelatedObject.ID));
+      _foreignKeyDataContainer.PropertyValues[_endPointID.Definition.PropertyName].Value = DomainObjectIDs.Order1;
+
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.Null);
+      oppositeObjectSetter ();
+      Assert.That (_endPoint.OppositeObjectID, Is.Null);
     }
 
     [Test]

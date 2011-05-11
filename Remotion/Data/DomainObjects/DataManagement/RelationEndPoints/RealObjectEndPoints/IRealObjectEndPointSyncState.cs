@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
     bool IsSynchronized (IRealObjectEndPoint endPoint);
     void Synchronize (IRealObjectEndPoint endPoint, IVirtualEndPoint oppositeEndPoint);
 
-    IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<DomainObject> oppositeObjectSetter);
+    IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action oppositeObjectNullSetter);
     IDataManagementCommand CreateSetCommand (IRealObjectEndPoint endPoint, DomainObject newRelatedObject, Action<DomainObject> oppositeObjectSetter);
   }
 }

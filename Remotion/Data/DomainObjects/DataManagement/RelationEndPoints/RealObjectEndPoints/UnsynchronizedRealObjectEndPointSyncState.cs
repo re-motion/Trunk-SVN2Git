@@ -43,10 +43,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       oppositeEndPoint.SynchronizeOppositeEndPoint (endPoint);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action<DomainObject> oppositeObjectSetter)
+    public IDataManagementCommand CreateDeleteCommand (IRealObjectEndPoint endPoint, Action oppositeObjectNullSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
+      ArgumentUtility.CheckNotNull ("oppositeObjectNullSetter", oppositeObjectNullSetter);
 
       throw new InvalidOperationException (
           string.Format (

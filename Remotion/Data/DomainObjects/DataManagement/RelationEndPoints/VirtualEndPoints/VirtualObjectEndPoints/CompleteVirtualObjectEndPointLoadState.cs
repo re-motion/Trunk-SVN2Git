@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, () => DataKeeper.CurrentOppositeObject = null);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()

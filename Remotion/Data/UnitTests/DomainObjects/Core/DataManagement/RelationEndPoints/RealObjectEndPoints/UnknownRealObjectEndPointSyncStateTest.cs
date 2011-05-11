@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       _mockRepository.ReplayAll ();
 
-      var result = _state.CreateDeleteCommand (_endPointMock, id => Assert.Fail ("should not be called."));
+      var result = _state.CreateDeleteCommand (_endPointMock, () => Assert.Fail ("should not be called."));
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs (fakeCommand));

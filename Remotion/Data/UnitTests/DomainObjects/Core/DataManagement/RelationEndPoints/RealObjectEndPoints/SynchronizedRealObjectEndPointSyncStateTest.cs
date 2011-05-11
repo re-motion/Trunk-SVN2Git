@@ -44,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IRelationEndPointProvider _endPointProviderStub;
 
     private Action<DomainObject> _fakeSetter;
+    private Action _fakeNullSetter;
 
     public override void SetUp ()
     {
@@ -62,6 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _orderCustomerEndPointDefinition = GetRelationEndPointDefinition (typeof (Order), "Customer");
 
       _fakeSetter = domainObject => { };
+      _fakeNullSetter = () => { };
     }
 
     [Test]
@@ -91,12 +93,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.Definition).Return (virtualDefinition);
       _endPointMock.Replay();
 
-      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
+      var command = (RelationEndPointModificationCommand) _state.CreateDeleteCommand (_endPointMock, _fakeNullSetter);
 
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_order));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+      Assert.That (GetOppositeObjectNullSetter ((ObjectEndPointDeleteCommand) command), Is.SameAs (_fakeNullSetter));
     }
 
     [Test]
@@ -123,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Stub (stub => stub.GetRelationEndPointWithLazyLoad (newOppositeEndPointID))
           .Return (newOppositeEndPointStub);
 
-      var command = _state.CreateDeleteCommand (_endPointMock, _fakeSetter);
+      var command = _state.CreateDeleteCommand (_endPointMock, _fakeNullSetter);
 
       Assert.That (command, Is.TypeOf (typeof (RealObjectEndPointRegistrationCommandDecorator)));
       var decorator = (RealObjectEndPointRegistrationCommandDecorator) command;
@@ -135,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var decoratedCommand = (ObjectEndPointDeleteCommand) decorator.DecoratedCommand;
       Assert.That (decoratedCommand.DomainObject, Is.SameAs (_order));
       Assert.That (decoratedCommand.ModifiedEndPoint, Is.SameAs (_endPointMock));
-      Assert.That (GetOppositeObjectIDSetter (decoratedCommand), Is.SameAs (_fakeSetter));
+      Assert.That (GetOppositeObjectNullSetter (decoratedCommand), Is.SameAs (_fakeNullSetter));
     }
 
     [Test]
@@ -157,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (relatedObject));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+      Assert.That (GetOppositeObjectIDSetter ((ObjectEndPointSetCommand) command), Is.SameAs (_fakeSetter));
     }
 
     [Test]
@@ -177,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.OldRelatedObject, Is.Null);
       Assert.That (command.NewRelatedObject, Is.Null);
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+      Assert.That (GetOppositeObjectIDSetter ((ObjectEndPointSetCommand) command), Is.SameAs (_fakeSetter));
     }
 
     [Test]
@@ -199,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
-      Assert.That (GetOppositeObjectIDSetter (command), Is.SameAs (_fakeSetter));
+      Assert.That (GetOppositeObjectIDSetter ((ObjectEndPointSetCommand) command), Is.SameAs (_fakeSetter));
     }
 
     [Test]
@@ -306,9 +308,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       return Configuration.GetTypeDefinition (classType).GetRelationEndPointDefinition (classType.FullName + "." + shortPropertyName);
     }
 
-    private Action<DomainObject> GetOppositeObjectIDSetter (RelationEndPointModificationCommand command)
+    private Action<DomainObject> GetOppositeObjectIDSetter (ObjectEndPointSetCommand command)
     {
       return (Action<DomainObject>) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectSetter");
+    }
+
+    private Action GetOppositeObjectNullSetter (ObjectEndPointDeleteCommand command)
+    {
+      return (Action) PrivateInvoke.GetNonPublicField (command, "_oppositeObjectNullSetter");
     }
 
   }
