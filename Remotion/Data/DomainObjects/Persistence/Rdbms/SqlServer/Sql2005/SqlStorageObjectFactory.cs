@@ -41,36 +41,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
-    private readonly Type _storageProviderType;
-
-    public SqlStorageObjectFactory ()
-        : this (typeof (SqlProvider))
-    {
-    }
-
-    protected SqlStorageObjectFactory (Type storageProviderType)
-    {
-      ArgumentUtility.CheckNotNull ("storageProviderType", storageProviderType);
-
-      _storageProviderType = storageProviderType;
-    }
-
-    public Type StorageProviderType
-    {
-      get { return _storageProviderType; }
-    }
-
-    public virtual StorageProvider CreateStorageProvider (
+    public StorageProvider CreateStorageProvider (
         IPersistenceListener persistenceListener, StorageProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
-      var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
-          "storageProviderDefinition", storageProviderDefinition);
+      var rdbmsProviderDefinition = 
+          ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition",  storageProviderDefinition);
+
       var storageNameProvider = CreateStorageNameProvider();
 
-      return
-          (StorageProvider)
-          ObjectFactory.Create (StorageProviderType, ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener));
+      return CreateStorageProvider(persistenceListener, rdbmsProviderDefinition, storageNameProvider);
+    }
+
+    protected virtual StorageProvider CreateStorageProvider (
+        IPersistenceListener persistenceListener, 
+        RdbmsProviderDefinition rdbmsProviderDefinition, 
+        IStorageNameProvider storageNameProvider)
+    {
+      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
+      return ObjectFactory.Create <SqlProvider> (ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener));
     }
 
     public virtual TypeConversionProvider CreateTypeConversionProvider ()

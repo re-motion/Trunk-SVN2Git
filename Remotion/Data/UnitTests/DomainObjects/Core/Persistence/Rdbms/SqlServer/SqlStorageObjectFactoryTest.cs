@@ -58,12 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void StorageProviderType ()
-    {
-      Assert.That (_sqlProviderFactory.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
-    }
-
-    [Test]
     public void CreateStorageProvider ()
     {
       var result = _sqlProviderFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);

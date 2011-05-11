@@ -15,16 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Implementation;
+using Remotion.Mixins;
+using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Persistence
 {
   [ConcreteImplementation (typeof (SecurityManagerSqlStorageObjectFactory))]
   public class SecurityManagerSqlStorageObjectFactory : SqlStorageObjectFactory
   {
-    public SecurityManagerSqlStorageObjectFactory () : base (typeof(SecurityManagerSqlProvider))
+    protected override Data.DomainObjects.Persistence.StorageProvider CreateStorageProvider (
+        IPersistenceListener persistenceListener, 
+        RdbmsProviderDefinition rdbmsProviderDefinition, 
+        IStorageNameProvider storageNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
+      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+
+      return ObjectFactory.Create<SecurityManagerSqlProvider> (ParamList.Create (rdbmsProviderDefinition, storageNameProvider, persistenceListener));
     }
   }
 }

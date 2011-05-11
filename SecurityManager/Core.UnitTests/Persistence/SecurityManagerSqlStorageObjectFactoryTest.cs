@@ -41,12 +41,6 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     }
 
     [Test]
-    public void StorageProviderType ()
-    {
-      Assert.That (_securityManagerSqlStorageObjectFactory.StorageProviderType, Is.SameAs (typeof (SecurityManagerSqlProvider)));
-    }
-
-    [Test]
     public void CreateStorageProvider ()
     {
       var result = _securityManagerSqlStorageObjectFactory.CreateStorageProvider (_persistenceListenerStub, _rdbmsProviderDefinition);
