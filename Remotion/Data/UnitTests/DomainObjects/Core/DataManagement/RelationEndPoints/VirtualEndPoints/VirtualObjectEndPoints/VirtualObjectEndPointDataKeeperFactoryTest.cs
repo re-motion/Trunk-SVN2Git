@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints
 {
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public override void SetUp ()
     {
       _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _factory = new VirtualObjectEndPointDataKeeperFactory (_clientTransaction);
+      _factory = new VirtualObjectEndPointDataKeeperFactory (_clientTransaction, MockRepository.GenerateStub<IRelationEndPointProvider>());
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
     }
 

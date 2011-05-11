@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -70,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+      var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction, endPointProvider);
       return new VirtualObjectEndPoint (clientTransaction, endPointID, lazyLoader, endPointProvider, dataKeeperFactory);
     }
 

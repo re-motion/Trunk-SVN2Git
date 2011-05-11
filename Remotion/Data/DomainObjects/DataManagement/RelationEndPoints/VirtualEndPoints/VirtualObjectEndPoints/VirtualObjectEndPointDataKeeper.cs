@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   {
     private readonly RelationEndPointID _endPointID;
     private readonly IVirtualEndPointStateUpdateListener _updateListener;
+    private readonly IRelationEndPointProvider _endPointProvider; // TODO 3906: Remove
+    private readonly ClientTransaction _clientTransaction; // TODO 3906: Remove
 
     private DomainObject _currentOppositeObject;
     private DomainObject _originalOppositeObject;
@@ -34,13 +36,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private IRealObjectEndPoint _currentOppositeEndPoint;
     private IRealObjectEndPoint _originalOppositeEndPoint;
 
-    public VirtualObjectEndPointDataKeeper (RelationEndPointID endPointID, IVirtualEndPointStateUpdateListener updateListener)
+    public VirtualObjectEndPointDataKeeper (RelationEndPointID endPointID, IVirtualEndPointStateUpdateListener updateListener, IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("updateListener", updateListener);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _endPointID = endPointID;
       _updateListener = updateListener;
+      _endPointProvider = endPointProvider;
+      _clientTransaction = clientTransaction;
     }
 
     public RelationEndPointID EndPointID
@@ -51,6 +57,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public IVirtualEndPointStateUpdateListener UpdateListener
     {
       get { return _updateListener; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
     }
 
     public DomainObject CurrentOppositeObject
@@ -239,6 +255,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _originalOppositeObject = info.GetValueForHandle<DomainObject>();
       _currentOppositeEndPoint = info.GetValue<IRealObjectEndPoint>();
       _currentOppositeObject = info.GetValueForHandle<DomainObject> ();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _clientTransaction = info.GetValueForHandle<ClientTransaction>();
     }
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -251,6 +269,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       info.AddHandle (_originalOppositeObject);
       info.AddValue (_currentOppositeEndPoint);
       info.AddHandle (_currentOppositeObject);
+      info.AddHandle (_endPointProvider);
+      info.AddHandle (_clientTransaction);
     }
 
     #endregion

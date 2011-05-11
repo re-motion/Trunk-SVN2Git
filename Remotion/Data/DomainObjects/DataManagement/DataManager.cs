@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataContainerMap = new DataContainerMap (clientTransaction);
 
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, collectionEndPointChangeDetectionStrategy);
-      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
+      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction, this);
       var relationEndPointFactory = new RelationEndPointFactory (
           clientTransaction,
           this,
@@ -345,25 +345,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       return _relationEndPointManager.GetRelationEndPointWithMinimumLoading (endPointID);
-    }
-
-    private IRelationEndPoint EnsureEndPointReferencesNothing (IRelationEndPoint relationEndPoint)
-    {
-      Maybe.ForValue (relationEndPoint as IObjectEndPoint)
-          .Where (endPoint => endPoint.OppositeObjectID != null)
-          .Select (endPoint => String.Format ("End point '{0}' still references object '{1}'.", endPoint.ID, endPoint.OppositeObjectID))
-          .Do (message => { throw new InvalidOperationException (message); });
-
-      Maybe.ForValue (relationEndPoint as ICollectionEndPoint)
-          .Where (endPoint => endPoint.Collection.Count != 0)
-          .Select (
-              endPoint => String.Format (
-                  "End point '{0}' still references objects '{1}'.",
-                  endPoint.ID,
-                  SeparatedStringBuilder.Build (", ", endPoint.Collection, (DomainObject obj) => obj.ID.ToString())))
-          .Do (message => { throw new InvalidOperationException (message); });
-
-      return relationEndPoint;
     }
 
     public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)
