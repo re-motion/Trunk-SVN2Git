@@ -182,7 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-      CheckOppositeObjectIDSetter ((ObjectEndPointSetCommand) command);
     }
 
     [Test]
@@ -232,8 +231,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.OldRelatedObject, Is.Null);
       Assert.That (command.NewRelatedObject, Is.Null);
-
-      CheckOppositeObjectIDSetter ((ObjectEndPointSetCommand) command);
     }
 
     [Test]

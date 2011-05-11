@@ -24,10 +24,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
   /// <see cref="ExpandToAllRelatedObjects"/> results in a <see cref="IDataManagementCommand"/> that does not raise any events.
   /// </summary>
-  public class ObjectEndPointSetSameCommand : ObjectEndPointSetCommand
+  public class ObjectEndPointSetSameCommand : RelationEndPointModificationCommand
   {
-    public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint, Action<DomainObject> oppositeObjectSetter)
-        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true), oppositeObjectSetter)
+    public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint)
+        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true), modifiedEndPoint.GetOppositeObject (true))
     {
     }
 
@@ -49,6 +49,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     protected override void ScopedNotifyClientTransactionOfEnd ()
     {
       // do not issue any change notifications, a same-set is not a change
+    }
+
+    public override void Perform ()
+    {
+      ModifiedEndPoint.Touch();
     }
 
     /// <summary>

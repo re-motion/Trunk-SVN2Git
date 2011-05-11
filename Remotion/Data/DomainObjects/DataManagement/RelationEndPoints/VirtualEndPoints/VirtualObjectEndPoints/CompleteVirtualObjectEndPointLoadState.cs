@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       if (oldRelatedObject == newRelatedObject)
       {
-        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
+        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint);
       }
       else
       {

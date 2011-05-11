@@ -20,7 +20,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -33,7 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class ObjectEndPointSetSameCommandTest : ObjectEndPointSetCommandTestBase
+  public class ObjectEndPointSetSameCommandTest : ClientTransactionBaseTest
   {
     private Computer _domainObject;
     private Employee _relatedObject;
@@ -41,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
 
-    private ObjectEndPointSetCommand _command;
+    private ObjectEndPointSetSameCommand _command;
 
     public override void SetUp ()
     {
@@ -53,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Create (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
       
-      _command = new ObjectEndPointSetSameCommand (_endPoint, OppositeObjectSetter);
+      _command = new ObjectEndPointSetSameCommand (_endPoint);
     }
 
     [Test]
@@ -62,15 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.AreSame (_endPoint, _command.ModifiedEndPoint);
       Assert.AreSame (_relatedObject, _command.OldRelatedObject);
       Assert.AreSame (_relatedObject, _command.NewRelatedObject);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModificationCommand is needed.\r\n"
-                                                                      + "Parameter name: modifiedEndPoint")]
-    public void Initialization_FromNullEndPoint ()
-    {
-      var endPoint = new NullObjectEndPoint (ClientTransactionMock, _endPointID.Definition);
-      new ObjectEndPointSetSameCommand (endPoint, OppositeObjectSetter);
     }
 
     [Test]
@@ -93,17 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
-    }
-
-    [Test]
-    public void Perform_InvokesPerformRelationChange ()
-    {
-      Assert.That (OppositeObjectSetterCalled, Is.False);
-
-      _command.Perform ();
-      
-      Assert.That (OppositeObjectSetterCalled, Is.True);
-      Assert.That (OppositeObjectSetterObject, Is.EqualTo (_relatedObject));
     }
 
     [Test]
@@ -153,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
-      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint, mi => { });
+      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
 
       var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects ();
       Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setSameModification }));
