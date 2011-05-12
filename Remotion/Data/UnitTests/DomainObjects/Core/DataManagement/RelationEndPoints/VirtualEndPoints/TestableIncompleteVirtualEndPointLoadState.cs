@@ -29,10 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IRealObjectEndPoint[] _stubbedOriginalOppositeEndPoints;
 
     public TestableIncompleteVirtualEndPointLoadState (
-        IEnumerable<IRealObjectEndPoint> originalOppositeEndPoints,
         ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
-        : base (originalOppositeEndPoints, lazyLoader, dataKeeperFactory)
+        : base (lazyLoader, dataKeeperFactory)
     {
     }
 

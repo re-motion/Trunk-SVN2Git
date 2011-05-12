@@ -31,13 +31,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         ICollectionEndPointLoadState
   {
     public IncompleteCollectionEndPointLoadState (
-        ICollectionEndPointDataKeeper dataKeeper, 
         ILazyLoader lazyLoader, 
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
-      : base (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoints, lazyLoader, dataKeeperFactory)
+      : base (lazyLoader, dataKeeperFactory)
     {
-      if (dataKeeper.HasDataChanged ())
-        throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
     public override void EnsureDataComplete (ICollectionEndPoint endPoint)

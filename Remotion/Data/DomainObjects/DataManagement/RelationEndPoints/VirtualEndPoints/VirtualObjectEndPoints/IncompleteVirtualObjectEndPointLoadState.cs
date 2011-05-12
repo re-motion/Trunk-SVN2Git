@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
@@ -28,20 +27,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   public class IncompleteVirtualObjectEndPointLoadState
       : IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper>, IVirtualObjectEndPointLoadState
   {
-    private static IEnumerable<IRealObjectEndPoint> CreateEndPointSequence (IRealObjectEndPoint endPoint)
-    {
-      return endPoint == null ? new IRealObjectEndPoint[0] : new[] { endPoint };
-    }
-
     public IncompleteVirtualObjectEndPointLoadState (
-        IVirtualObjectEndPointDataKeeper dataKeeper,
         ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
-        : base (
-            CreateEndPointSequence (ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper).OriginalOppositeEndPoint), lazyLoader, dataKeeperFactory)
+        : base (lazyLoader, dataKeeperFactory)
     {
-      if (dataKeeper.HasDataChanged())
-        throw new NotSupportedException ("This implementation does not support changed data in incomplete state.");
     }
 
     public override void EnsureDataComplete (IVirtualObjectEndPoint endPoint)

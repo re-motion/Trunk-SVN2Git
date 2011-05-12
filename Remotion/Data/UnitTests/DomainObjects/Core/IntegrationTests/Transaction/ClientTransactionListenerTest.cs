@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -415,11 +414,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                 Arg.Is (ClientTransactionMock), 
                 Arg<IRelationEndPoint>.Matches (
                     rep => rep.Definition.PropertyName == typeof (Company).FullName + ".IndustrialSector" && rep.ObjectID == DomainObjectIDs.Customer1)));
-        _strictListenerMock.Expect (
-            mock => mock.VirtualRelationEndPointStateUpdated (
-                ClientTransactionMock,
-                RelationEndPointID.Create (DomainObjectIDs.IndustrialSector1, typeof (IndustrialSector), "Companies"),
-                false));
         _strictListenerMock.Expect (
             mock => mock.RelationEndPointMapRegistering (
                 Arg.Is (ClientTransactionMock),

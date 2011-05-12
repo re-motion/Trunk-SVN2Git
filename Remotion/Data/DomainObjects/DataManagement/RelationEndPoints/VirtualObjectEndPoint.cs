@@ -56,8 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
 
-      var dataKeeper = _dataKeeperFactory.Create (ID);
-      SetIncompleteState(dataKeeper);
+      SetIncompleteState();
 
       _hasBeenTouched = false;
     }
@@ -217,9 +216,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);
     }
 
-    private void SetIncompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)
+    private void SetIncompleteState ()
     {
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (dataKeeper, LazyLoader, _dataKeeperFactory);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (LazyLoader, _dataKeeperFactory);
     }
 
     private void SetCompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)

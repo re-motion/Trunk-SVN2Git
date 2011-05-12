@@ -30,17 +30,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints;
 
     protected IncompleteVirtualEndPointLoadStateBase (
-        IEnumerable<IRealObjectEndPoint> originalOppositeEndPoints,
         ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<TDataKeeper> dataKeeperFactory)
     {
-      ArgumentUtility.CheckNotNull ("originalOppositeEndPoints", originalOppositeEndPoints);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
-      _originalOppositeEndPoints = originalOppositeEndPoints.ToDictionary(ep=>ep.ObjectID);
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
+      _originalOppositeEndPoints = new Dictionary<ObjectID, IRealObjectEndPoint>();
     }
 
     public abstract void EnsureDataComplete (TEndPoint endPoint);
@@ -75,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return true;
     }
 
-    public void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
+    public void MarkDataIncomplete (TEndPoint endPoint, Action stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);

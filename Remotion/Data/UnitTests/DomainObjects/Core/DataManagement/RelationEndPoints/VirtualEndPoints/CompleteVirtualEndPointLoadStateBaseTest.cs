@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
 
-      _loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => { });
+      _loadState.MarkDataIncomplete (_virtualEndPointMock, () => { });
 
       _virtualEndPointMock.VerifyAllExpectations();
       _dataKeeperMock.VerifyAllExpectations();
@@ -131,12 +131,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       // ReSharper disable AccessToModifiedClosure
       bool stateSetterCalled = false;
 
-      var synchronizedOppositeEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
-      synchronizedOppositeEndPointMock
-          .Expect (mock => mock.ResetSyncState())
-          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.False));
-      synchronizedOppositeEndPointMock.Replay();
-      _loadState.StubOriginalOppositeEndPoints (new[] { synchronizedOppositeEndPointMock });
+      var synchronizedOppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      _loadState.StubOriginalOppositeEndPoints (new[] { synchronizedOppositeEndPointStub });
 
       var unsynchronizedOppositeEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint> ();
       unsynchronizedOppositeEndPointMock.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
@@ -147,6 +143,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Stub (stub => stub.ID)
           .Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _virtualEndPointMock
+          .Expect (mock => mock.RegisterOriginalOppositeEndPoint (synchronizedOppositeEndPointStub))
+          .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
+      _virtualEndPointMock
           .Expect (mock => mock.RegisterOriginalOppositeEndPoint (unsynchronizedOppositeEndPointMock))
           .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
       _virtualEndPointMock.Replay();
@@ -154,16 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataKeeperMock.Replay ();
 
-      _loadState.MarkDataIncomplete (
-          _virtualEndPointMock,
-          keeper =>
-          {
-            stateSetterCalled = true;
-            Assert.That (keeper, Is.SameAs (_dataKeeperMock));
-          });
+      _loadState.MarkDataIncomplete (_virtualEndPointMock, () => stateSetterCalled = true);
 
       _virtualEndPointMock.VerifyAllExpectations();
-      synchronizedOppositeEndPointMock.VerifyAllExpectations ();
       unsynchronizedOppositeEndPointMock.VerifyAllExpectations ();
       _dataKeeperMock.VerifyAllExpectations();
 
@@ -185,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_clientTransaction);
 
       Assert.That (
-          () =>_loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => Assert.Fail ("Must not be called.")),
+          () =>_loadState.MarkDataIncomplete (_virtualEndPointMock, () => Assert.Fail ("Must not be called.")),
           Throws.InvalidOperationException.With.Message.EqualTo (
           "Cannot mark virtual end-point "
           + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' incomplete "

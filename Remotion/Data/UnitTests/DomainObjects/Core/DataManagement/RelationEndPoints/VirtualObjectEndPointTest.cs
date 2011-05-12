@@ -307,11 +307,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void MarkDataIncomplete ()
     {
-      Action<IVirtualObjectEndPointDataKeeper> stateSetter = null;
+      Action stateSetter = null;
 
       _loadStateMock
-          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPoint), Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action<IVirtualObjectEndPointDataKeeper>) mi.Arguments[1]; });
+          .Expect (mock => mock.MarkDataIncomplete (Arg.Is (_endPoint), Arg<Action>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action) mi.Arguments[1]; });
       _loadStateMock.Replay ();
 
       _endPoint.MarkDataIncomplete ();
@@ -320,8 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (VirtualObjectEndPointTestHelper.GetLoadState (_endPoint), Is.SameAs (_loadStateMock));
 
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      stateSetter (dataKeeperStub);
+      stateSetter();
 
       var newLoadState = VirtualObjectEndPointTestHelper.GetLoadState (_endPoint);
       Assert.That (newLoadState, Is.Not.SameAs (_loadStateMock));

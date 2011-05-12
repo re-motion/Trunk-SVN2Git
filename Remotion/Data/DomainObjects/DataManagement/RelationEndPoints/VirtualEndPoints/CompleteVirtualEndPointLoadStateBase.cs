@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return !HasChanged();
     }
 
-    public virtual void MarkDataIncomplete (TEndPoint endPoint, Action<TDataKeeper> stateSetter)
+    public virtual void MarkDataIncomplete (TEndPoint endPoint, Action stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
@@ -105,12 +105,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, endPoint);
 
-      foreach (var originalOppositeEndPoint in GetOriginalOppositeEndPoints ())
-        originalOppositeEndPoint.ResetSyncState ();
+      stateSetter ();
 
-      stateSetter (_dataKeeper);
-
-      foreach (var oppositeEndPoint in _unsynchronizedOppositeEndPoints.Values)
+      var allOppositeEndPoints = UnsynchronizedOppositeEndPoints.Concat (GetOriginalOppositeEndPoints());
+      foreach (var oppositeEndPoint in allOppositeEndPoints)
         endPoint.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
     }
 

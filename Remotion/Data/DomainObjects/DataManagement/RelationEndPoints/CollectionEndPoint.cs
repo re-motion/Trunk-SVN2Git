@@ -64,8 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _originalCollection = _collection;
 
-      var dataKeeper = _dataKeeperFactory.Create (id);
-      SetIncompleteLoadState (dataKeeper);
+      SetIncompleteLoadState ();
     }
 
     public DomainObjectCollection Collection
@@ -332,9 +331,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _loadState = new CompleteCollectionEndPointLoadState (dataKeeper, _endPointProvider, ClientTransaction);
     }
 
-    private void SetIncompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
+    private void SetIncompleteLoadState ()
     {
-      _loadState = new IncompleteCollectionEndPointLoadState (dataKeeper, _lazyLoader, _dataKeeperFactory);
+      _loadState = new IncompleteCollectionEndPointLoadState (_lazyLoader, _dataKeeperFactory);
     }
 
     #region Serialization

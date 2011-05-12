@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper>>();
 
-      _loadState = new TestableIncompleteVirtualEndPointLoadState (new IRealObjectEndPoint[0], _lazyLoaderMock, _dataKeeperFactoryStub);
+      _loadState = new TestableIncompleteVirtualEndPointLoadState (_lazyLoaderMock, _dataKeeperFactoryStub);
 
       _relatedEndPointStub1 = MockRepository.GenerateStub<IRealObjectEndPoint>();
       _relatedEndPointStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
@@ -58,15 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
       _relatedEndPointStub2.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "Customer"));
-    }
-
-    [Test]
-    public void Initialization ()
-    {
-      var loadState = new TestableIncompleteVirtualEndPointLoadState (
-          new[] { _relatedEndPointStub1, _relatedEndPointStub2 }, _lazyLoaderMock, _dataKeeperFactoryStub);
-
-      Assert.That (loadState.OriginalOppositeEndPoints.ToArray(), Is.EqualTo (new[] { _relatedEndPointStub1, _relatedEndPointStub2 }));
     }
 
     [Test]
@@ -88,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _virtualEndPointMock.Replay();
 
-      _loadState.MarkDataIncomplete (_virtualEndPointMock, keeper => Assert.Fail ("Must not be called."));
+      _loadState.MarkDataIncomplete (_virtualEndPointMock, () => Assert.Fail ("Must not be called."));
     }
 
     [Test]
@@ -248,11 +239,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var lazyLoader = new SerializableLazyLoaderFake ();
       var dataKeeperFactory = new SerializableVirtualEndPointDataKeeperFactoryFake();
 
-      var oppositeEndPoint = new SerializableRealObjectEndPointFake (
-          null, 
-          DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1));
-      var state = new TestableIncompleteVirtualEndPointLoadState (new[] { oppositeEndPoint }, lazyLoader, dataKeeperFactory);
+      var state = new TestableIncompleteVirtualEndPointLoadState (lazyLoader, dataKeeperFactory);
 
+      var oppositeEndPoint = new SerializableRealObjectEndPointFake (
+          null,
+          DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1));
+      state.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, oppositeEndPoint);
+      
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);

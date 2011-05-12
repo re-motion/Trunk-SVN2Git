@@ -59,9 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
 
       var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
       dataKeeperStub.Stub (stub => stub.HasDataChanged()).Return (false);
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (_lazyLoaderMock, _dataKeeperFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -70,39 +69,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relatedObject2 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
       _relatedEndPointStub2 = MockRepository.GenerateStub<IRealObjectEndPoint> ();
       _relatedEndPointStub2.Stub (stub => stub.ObjectID).Return (_relatedObject2.ID);
-    }
-
-    [Test]
-    public void Initialization_WithOriginalOppositeEndPoint ()
-    {
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoint).Return (_relatedEndPointStub);
-
-      var loadState = new IncompleteVirtualObjectEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
-
-      Assert.That (loadState.OriginalOppositeEndPoints, Is.EquivalentTo (new[] { _relatedEndPointStub}));
-    }
-
-    [Test]
-    public void Initialization_NoOriginalOppositeEndPoint ()
-    {
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
-
-      var loadState = new IncompleteVirtualObjectEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
-
-      Assert.That (loadState.OriginalOppositeEndPoints, Is.Empty);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void Initialization_WithChangedData ()
-    {
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.HasDataChanged ()).Return (true);
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
-
-      new IncompleteVirtualObjectEndPointLoadState (dataKeeperStub, _lazyLoaderMock, _dataKeeperFactoryStub);
     }
 
     [Test]
@@ -255,11 +221,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataKeeper = new SerializableVirtualObjectEndPointDataKeeperFake ();
       var lazyLoader = new SerializableLazyLoaderFake ();
       var dataKeeperFactory = new SerializableVirtualObjectEndPointDataKeeperFactoryFake ();
 
-      var state = new IncompleteVirtualObjectEndPointLoadState (dataKeeper, lazyLoader, dataKeeperFactory);
+      var state = new IncompleteVirtualObjectEndPointLoadState (lazyLoader, dataKeeperFactory);
       AddOriginalOppositeEndPoint (state, new SerializableRealObjectEndPointFake (null, _relatedObject));
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
