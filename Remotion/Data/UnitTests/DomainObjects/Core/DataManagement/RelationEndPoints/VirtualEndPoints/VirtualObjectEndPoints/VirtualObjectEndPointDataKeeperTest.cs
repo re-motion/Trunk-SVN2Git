@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
       _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
-      _dataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, _stateUpdateListenerMock, MockRepository.GenerateStub<IRelationEndPointProvider> (), ClientTransaction.CreateRootTransaction());
+      _dataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, _stateUpdateListenerMock);
 
       _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -467,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var sourceOppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
       sourceOppositeEndPointStub.Stub (stub => stub.ID).Return (_oppositeEndPointStub.ID);
 
-      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener>(), MockRepository.GenerateStub<IRelationEndPointProvider>(), ClientTransaction.CreateRootTransaction());
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener>());
       sourceDataKeeper.CurrentOppositeObject = _oppositeObject;
       sourceDataKeeper.RegisterCurrentOppositeEndPoint (sourceOppositeEndPointStub);
 
@@ -494,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CurrentOppositeObject = _oppositeObject;
       _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
 
-      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener> (), MockRepository.GenerateStub<IRelationEndPointProvider> (), ClientTransaction.CreateRootTransaction());
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener> ());
       Assert.That (sourceDataKeeper.CurrentOppositeObject, Is.Null);
       Assert.That (sourceDataKeeper.CurrentOppositeEndPoint, Is.Null);
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void FlattenedSerializable ()
     {
       var updateListener = new VirtualEndPointStateUpdateListener (ClientTransaction.CreateRootTransaction(), _endPointID);
-      var data = new VirtualObjectEndPointDataKeeper (_endPointID, updateListener, new SerializableRelationEndPointProviderFake(), ClientTransaction.CreateRootTransaction());
+      var data = new VirtualObjectEndPointDataKeeper (_endPointID, updateListener);
 
       var endPointFake = new SerializableRealObjectEndPointFake (null, DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
       data.RegisterOriginalOppositeEndPoint (endPointFake);

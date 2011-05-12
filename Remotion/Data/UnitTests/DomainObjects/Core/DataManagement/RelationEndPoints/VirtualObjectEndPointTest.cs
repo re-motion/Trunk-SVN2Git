@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
       _lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (ClientTransactionMock, _endPointProviderStub);
+      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (ClientTransactionMock);
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
       _endPoint = new VirtualObjectEndPoint (

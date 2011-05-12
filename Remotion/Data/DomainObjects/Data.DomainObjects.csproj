@@ -197,7 +197,6 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IVirtualEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CompleteVirtualEndPointLoadStateBase.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IVirtualEndPointDataKeeper.cs" />
-    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\MissingRealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\CompleteVirtualObjectEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IncompleteVirtualObjectEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataKeeper.cs" />

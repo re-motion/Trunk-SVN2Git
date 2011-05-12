@@ -226,7 +226,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointMapTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\TestableDataContainerEndPointsRegistrationAgentBase.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\MissingRealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointRegistrationAgentFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataKeeperFactoryFake.cs" />

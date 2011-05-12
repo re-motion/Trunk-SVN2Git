@@ -26,15 +26,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   public class VirtualObjectEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IRelationEndPointProvider _endPointProvider; // TODO 3906: Remove
 
-    public VirtualObjectEndPointDataKeeperFactory (ClientTransaction clientTransaction, IRelationEndPointProvider endPointProvider)
+    public VirtualObjectEndPointDataKeeperFactory (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-
       _clientTransaction = clientTransaction;
-      _endPointProvider = endPointProvider;
     }
 
     public ClientTransaction ClientTransaction
@@ -42,17 +38,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _clientTransaction; }
     }
 
-    public IRelationEndPointProvider EndPointProvider
-    {
-      get { return _endPointProvider; }
-    }
-
     public IVirtualObjectEndPointDataKeeper Create (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       var updateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID);
-      return new VirtualObjectEndPointDataKeeper (endPointID, updateListener, _endPointProvider, _clientTransaction);
+      return new VirtualObjectEndPointDataKeeper (endPointID, updateListener);
     }
   }
 }
