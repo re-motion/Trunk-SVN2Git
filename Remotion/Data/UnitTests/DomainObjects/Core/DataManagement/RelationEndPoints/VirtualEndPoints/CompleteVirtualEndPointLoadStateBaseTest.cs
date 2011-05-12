@@ -60,7 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference()).Return (_relatedObject);
+      _relatedEndPointStub.Stub (stub => stub.ID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer"));
+      _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
     }
 
@@ -409,6 +410,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadState.Rollback (_virtualEndPointMock);
 
       _dataKeeperMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void IsSynchronizedWithItem_False_EndPointNotFound ()
+    {
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (_relatedEndPointStub.ID))
+          .Return (null);
+
+      var result = _loadState.IsSynchronizedWithItem (_relatedObject.ID);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void IsSynchronizedWithItem_False_EndPointPointsSomewhereElse ()
+    {
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (_relatedEndPointStub.ID))
+          .Return (_relatedEndPointStub);
+      _relatedEndPointStub.Stub (stub => stub.OppositeObjectID).Return (null);
+
+      var result = _loadState.IsSynchronizedWithItem (_relatedObject.ID);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void IsSynchronizedWithItem_True ()
+    {
+      _endPointProviderStub
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (_relatedEndPointStub.ID))
+          .Return (_relatedEndPointStub);
+      _relatedEndPointStub.Stub (stub => stub.OriginalOppositeObjectID).Return (_dataKeeperMock.EndPointID.ObjectID);
+
+      var result = _loadState.IsSynchronizedWithItem (_relatedObject.ID);
+
+      Assert.That (result, Is.True);
     }
 
     [Test]

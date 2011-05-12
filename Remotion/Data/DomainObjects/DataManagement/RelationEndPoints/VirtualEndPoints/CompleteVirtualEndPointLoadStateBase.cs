@@ -272,6 +272,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return _unsynchronizedOppositeEndPoints.ContainsKey (objectID);
     }
 
+    protected bool IsSynchronizedWithItem (ObjectID itemID)
+    {
+      ArgumentUtility.CheckNotNull ("itemID", itemID);
+      
+      var endPointID = RelationEndPointID.CreateOpposite (_dataKeeper.EndPointID.Definition, itemID);
+      var endPoint = (IRealObjectEndPoint) _endPointProvider.GetRelationEndPointWithoutLoading (endPointID);
+      if (endPoint != null && endPoint.OriginalOppositeObjectID == _dataKeeper.EndPointID.ObjectID)
+        return true;
+      else
+        return false;
+    }
+
     #region Serialization
 
     protected CompleteVirtualEndPointLoadStateBase (FlattenedDeserializationInfo info)

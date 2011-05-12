@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -57,6 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void StubOriginalItemsWithoutEndPoints (DomainObject[] items)
     {
       _stubbedOriginalItemsWithoutEndPoints = items;
+    }
+
+    public new bool IsSynchronizedWithItem (ObjectID objectID)
+    {
+      return base.IsSynchronizedWithItem (objectID);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
