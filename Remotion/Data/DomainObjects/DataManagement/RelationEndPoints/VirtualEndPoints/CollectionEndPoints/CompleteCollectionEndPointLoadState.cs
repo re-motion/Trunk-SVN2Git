@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      if (DataKeeper.OriginalItemsWithoutEndPoints.Length != 0)
+      if (!IsSynchronized (collectionEndPoint))
       {
         var message = string.Format (
             "The collection of relation property '{0}' of domain object '{1}' cannot be replaced because the relation property is out of sync with "
@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      if (DataKeeper.OriginalItemsWithoutEndPoints.Length != 0)
+      if (!IsSynchronized (collectionEndPoint))
       {
         var message = string.Format (
             "The domain object '{0}' cannot be deleted because its collection property '{1}' is out of sync with "

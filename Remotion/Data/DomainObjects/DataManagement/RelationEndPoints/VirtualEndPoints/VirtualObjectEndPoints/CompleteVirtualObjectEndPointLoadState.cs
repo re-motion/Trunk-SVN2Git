@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      if (DataKeeper.OriginalItemWithoutEndPoint != null)
+      if (!IsSynchronized (virtualObjectEndPoint))
       {
         var message = string.Format (
             "The domain object '{0}' cannot be deleted because its virtual property '{1}' is out of sync with "
