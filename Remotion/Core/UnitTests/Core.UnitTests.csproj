@@ -219,8 +219,14 @@
     <Compile Include="Logging\ILogManagerImplementationTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\CompleteInterfaceTest.cs" />
     <Compile Include="Mixins\ComposedObjectTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
+    <Compile Include="Mixins\TestDomain\BaseClassWithHasCompleteInterface.cs" />
+    <Compile Include="Mixins\TestDomain\ClassWithCompleteInterface.cs" />
+    <Compile Include="Mixins\TestDomain\DerivedClassWithCompleteInterface.cs" />
+    <Compile Include="Mixins\TestDomain\ClassDerivedFromBaseClassWithHasComleteInterface.cs" />
+    <Compile Include="Mixins\TestDomain\DerivedClassDerivedFromBaseClassWithHasComleteInterface.cs" />
     <Compile Include="Mixins\TypeExtensionsTest.cs" />
     <Compile Include="Mixins\TestDomain\ClassDerivedFromComposedObject.cs" />
     <Compile Include="Mixins\TestDomain\ClassWithHasCompleteInterfaces.cs" />

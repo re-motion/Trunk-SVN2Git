@@ -223,6 +223,23 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
       }
     }
 
+    public interface IDerivedSimpleInterface : ISimpleInterface {}
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
+        "ISimpleInterface is not implemented...")]
+    [Ignore ("TODO 4024: Bug in requirements analysis")]
+    public void ThrowsIfDerivedRequiredInterfaceIsNotFullyImplemented ()
+    {
+      using (MixinConfiguration
+          .BuildFromActive ()
+          .ForClass<NullTarget> ().Clear ().AddMixin<NullMixin> ().AddCompleteInterface<IDerivedSimpleInterface> ()
+          .EnterScope ())
+      {
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
+      }
+    }
+
     [Test]
     public void WorksIfRequiredMethodIsProtected ()
     {

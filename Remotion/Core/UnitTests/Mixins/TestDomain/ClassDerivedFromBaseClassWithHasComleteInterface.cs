@@ -18,16 +18,18 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.TestDomain
 {
-  public class ClassWithHasCompleteInterfaces : 
-      IHasCompleteInterface<ClassWithHasCompleteInterfaces.ICompleteInterface1>, 
-      IHasCompleteInterface<ClassWithHasCompleteInterfaces.ICompleteInterface2>
+  [Uses (typeof (MixinImplementingSimpleInterface))]
+  public class ClassDerivedFromBaseClassWithHasComleteInterface 
+      : BaseClassWithHasCompleteInterface<ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface>
   {
-    public interface ICompleteInterface1
+    public interface ICompleteInterface : ISimpleInterface
     {
+      string M1 ();
     }
 
-    public interface ICompleteInterface2
+    public string M1()
     {
+      return "ClassDerivedFromBaseClassWithHasComleteInterface.M1";
     }
   }
 }

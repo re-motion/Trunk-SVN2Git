@@ -21,7 +21,6 @@ using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 {
@@ -114,7 +113,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       _configurationBuilderMock.Replay ();
 
       var analyzer = new CompleteInterfaceAnalyzer (_configurationBuilderMock);
-      analyzer.Analyze (typeof (BaseClassWithHasCompleteInterfaces<>));
+      analyzer.Analyze (typeof (BaseClassWithHasCompleteInterface<>));
 
       _configurationBuilderMock.AssertWasNotCalled (mock => mock.ForClass (Arg<Type>.Is.Anything));
     }

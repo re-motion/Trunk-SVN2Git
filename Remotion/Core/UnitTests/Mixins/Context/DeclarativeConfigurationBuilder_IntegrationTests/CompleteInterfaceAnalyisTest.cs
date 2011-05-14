@@ -25,6 +25,35 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
   public class CompleteInterfaceAnalyisTest
   {
     [Test]
+    public void CompleteInterface_ViaAttribute ()
+    {
+      var result = new DeclarativeConfigurationBuilder (null)
+          .AddType (typeof (ClassWithCompleteInterface))
+          .AddType (typeof (ClassWithCompleteInterface.ICompleteInterface))
+          .BuildConfiguration ();
+
+      var classContext = result.GetContext (typeof (ClassWithCompleteInterface));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ClassWithCompleteInterface.ICompleteInterface)));
+    }
+
+    [Test]
+    [Ignore ("TODO 3536")]
+    public void CompleteInterface_ViaAttribute_Derived ()
+    {
+      var result = new DeclarativeConfigurationBuilder (null)
+          .AddType (typeof (ClassWithCompleteInterface))
+          .AddType (typeof (ClassWithCompleteInterface.ICompleteInterface))
+          .AddType (typeof (DerivedClassWithCompleteInterface))
+          .BuildConfiguration ();
+
+      var baseClassContext = result.GetContext (typeof (ClassWithCompleteInterface));
+      Assert.That (baseClassContext.CompleteInterfaces, Has.Member (typeof (ClassWithCompleteInterface.ICompleteInterface)));
+
+      var derivedClassContext = result.GetContext (typeof (DerivedClassWithCompleteInterface));
+      Assert.That (derivedClassContext.CompleteInterfaces, Has.Member (typeof (ClassWithCompleteInterface.ICompleteInterface)));
+    }
+
+    [Test]
     public void CompleteInterface_ViaIHasCompleteInterface ()
     {
       var result = new DeclarativeConfigurationBuilder (null).AddType (typeof (ClassWithHasCompleteInterfaces)).BuildConfiguration ();
@@ -37,6 +66,30 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       var classContext2 = result.ResolveCompleteInterface (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2));
       Assert.That (classContext2, Is.SameAs (classContext));
       Assert.That (classContext2.CompleteInterfaces, Has.Member(typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)));
+    }
+
+    [Test]
+    public void CompleteInterface_ViaIHasCompleteInterface_ViaGenericBaseClass ()
+    {
+      var result = new DeclarativeConfigurationBuilder (null).AddType (typeof (ClassDerivedFromBaseClassWithHasComleteInterface)).BuildConfiguration ();
+
+      var classContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface)));
+    }
+
+    [Test]
+    [Ignore ("TODO 3536")]
+    public void CompleteInterface_ViaIHasCompleteInterface_Derived ()
+    {
+      var result = new DeclarativeConfigurationBuilder (null)
+          .AddType (typeof (ClassDerivedFromBaseClassWithHasComleteInterface))
+          .AddType (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface)).BuildConfiguration ();
+
+      var baseClassContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface));
+      Assert.That (baseClassContext.CompleteInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface)));
+
+      var derivedClassContext = result.GetContext (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface));
+      Assert.That (derivedClassContext.CompleteInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface)));
     }
   }
 }
