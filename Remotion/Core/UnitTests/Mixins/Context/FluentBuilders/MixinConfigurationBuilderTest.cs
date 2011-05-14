@@ -135,7 +135,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       var builder = new MixinConfigurationBuilder (parentConfiguration);
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      Assert.That (configuration.ResolveCompleteInterface (typeof (IBaseType31)), Is.SameAs (configuration.GetContext (typeof (BaseType3))));
+      Assert.That (configuration.GetContext (typeof (BaseType3)).CompleteInterfaces, Has.Member (typeof (IBaseType31)));
     }
 
     [Test]
@@ -281,20 +281,6 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.That (derivedContext2.Mixins.Count, Is.EqualTo (1));
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (DerivedNullMixin)), Is.True);
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (NullMixin)), Is.False);
-    }
-
-    [Test]
-    public void CompleteInterfaceRegistration ()
-    {
-      MixinConfiguration configuration = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType6))
-          .AddMixin (typeof (BT6Mixin1))
-          .AddCompleteInterface (typeof (ICBT6Mixin1)).BuildConfiguration();
-      ClassContext resolvedContext = configuration.ResolveCompleteInterface (typeof (ICBT6Mixin1));
-      Assert.That (resolvedContext, Is.Not.Null);
-      Assert.That (resolvedContext.Type, Is.EqualTo (typeof (BaseType6)));
-      Assert.That (resolvedContext.Mixins.Count, Is.EqualTo (1));
-      Assert.That (resolvedContext.Mixins.ContainsKey (typeof (BT6Mixin1)), Is.True);
     }
 
     [Test]

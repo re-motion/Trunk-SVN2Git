@@ -35,45 +35,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     }
 
     [Test]
-    public void ResolveType_ClassType ()
-    {
-      Type resolved = _implementation.ResolveType (typeof (object));
-      Assert.That (resolved, Is.EqualTo (typeof (object)));
-    }
-
-    [Test]
-    public void ResolveType_RegisteredInterfaceType ()
-    {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (TestServiceProvider)).AddCompleteInterface (typeof (IServiceProvider)).EnterScope ())
-      {
-        Type resolved = _implementation.ResolveType (typeof (IServiceProvider));
-        Assert.That (resolved, Is.EqualTo (typeof (TestServiceProvider)));
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The interface 'System.IServiceProvider' has not been registered in " 
-        + "the current configuration, no instances of the type can be created.")]
-    public void ResolveType_NonRegisteredInterfaceType ()
-    {
-      using (MixinConfiguration.BuildNew ().EnterScope ())
-      {
-        _implementation.ResolveType (typeof (IServiceProvider));
-      }
-    }
-
-    [Test]
-    public void CreateConstructorInvoker_ResolvesInterfaces ()
-    {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (TestServiceProvider)).AddCompleteInterface (typeof (IServiceProvider)).EnterScope ())
-      {
-        object instance = _implementation.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
-        Assert.That (instance, Is.InstanceOf (typeof (TestServiceProvider)));
-      }
-    }
-
-    [Test]
-    public void CreateConstructorInvoker_UsesConcreteType ()
+    public void CreateInstance_UsesConcreteType ()
     {
       object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (instance, Is.Not.SameAs (typeof (BaseType1)));
@@ -82,16 +44,16 @@ namespace Remotion.UnitTests.Mixins.Utilities
     }
 
     [Test]
-    public void CreateConstructorInvoker_UsesTargetType_ForUnmixedType ()
+    public void CreateInstance_UsesTargetType_ForUnmixedType ()
     {
       object instance = _implementation.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (instance.GetType(), Is.SameAs (typeof (object)));
     }
 
     [Test]
-    public void CreateConstructorInvoker_PassesPreparedMixinInstances ()
+    public void CreateInstance_PassesPreparedMixinInstances ()
     {
-      BT1Mixin1 mixin = new BT1Mixin1();
+      var mixin = new BT1Mixin1();
       object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
 
       Assert.That (Mixin.Get<BT1Mixin1> (instance), Is.SameAs (mixin));
@@ -99,19 +61,27 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void CreateConstructorInvoker_InvalidPreparedMixinInstances ()
+    public void CreateInstance_InvalidPreparedMixinInstances ()
     {
-      object mixin = new object ();
+      var mixin = new object ();
       _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "There is no mixin configuration for type System.Object, so no mixin " 
         + "instances must be specified.\r\nParameter name: preparedMixins")]
-    public void CreateConstructorInvoker_InvalidPreparedMixinInstances_UnmixedObject ()
+    public void CreateInstance_InvalidPreparedMixinInstances_UnmixedObject ()
     {
-      object mixin = new object ();
+      var mixin = new object ();
       _implementation.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, false, mixin);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Cannot instantiate type 'System.IServiceProvider', it's an interface.\r\nParameter name: targetOrConcreteType")]
+    public void CreateInstance_Interface ()
+    {
+      _implementation.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, false);
     }
 
     public class TestServiceProvider : IServiceProvider

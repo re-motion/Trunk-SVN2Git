@@ -58,14 +58,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     {
       var result = new DeclarativeConfigurationBuilder (null).AddType (typeof (ClassWithHasCompleteInterfaces)).BuildConfiguration ();
 
-      var classContext = result.ResolveCompleteInterface (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1));
-      Assert.That (classContext, Is.Not.Null);
-      Assert.That (classContext.Type, Is.SameAs (typeof (ClassWithHasCompleteInterfaces)));
-      Assert.That (classContext.CompleteInterfaces, Has.Member(typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1)));
-
-      var classContext2 = result.ResolveCompleteInterface (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2));
-      Assert.That (classContext2, Is.SameAs (classContext));
-      Assert.That (classContext2.CompleteInterfaces, Has.Member(typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)));
+      var classContext = result.GetContext (typeof (ClassWithHasCompleteInterfaces));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface1)));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ClassWithHasCompleteInterfaces.ICompleteInterface2)));
     }
 
     [Test]
@@ -78,7 +73,6 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     }
 
     [Test]
-    [Ignore ("TODO 3536")]
     public void CompleteInterface_ViaIHasCompleteInterface_Derived ()
     {
       var result = new DeclarativeConfigurationBuilder (null)

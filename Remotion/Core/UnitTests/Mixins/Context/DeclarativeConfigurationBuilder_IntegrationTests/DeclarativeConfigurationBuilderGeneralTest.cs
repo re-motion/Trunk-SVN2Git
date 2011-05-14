@@ -58,7 +58,6 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.True);
       Assert.That (configuration.GetContext (typeof (BaseType6)).CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)), Is.True);
-      Assert.That (configuration.ResolveCompleteInterface (typeof (ICBT6Mixin1)), Is.SameAs (configuration.GetContext (typeof (BaseType6))));
     }
 
     [Test]

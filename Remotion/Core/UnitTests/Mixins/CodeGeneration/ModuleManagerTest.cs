@@ -117,6 +117,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
     [Test]
+    public void CreateTypeGenerator_Interface ()
+    {
+      var configuration = new TargetClassDefinition (new ClassContext (typeof (IServiceProvider)));
+      Assert.That (
+          () => SavedTypeBuilder.Scope.CreateTypeGenerator (
+              ConcreteTypeBuilder.Current.Cache,
+              configuration,
+              GuidNameProvider.Instance,
+              GuidNameProvider.Instance),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Cannot generate a mixed type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: configuration"));
+    }
+
+    [Test]
     public void CreateMixinTypeGenerator ()
     {
       var mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (
@@ -129,6 +143,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           GuidNameProvider.Instance);
       Assert.IsNotNull (generator);
       Assert.IsTrue (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType));
+    }
+
+    [Test]
+    public void CreateMixinTypeGenerator_Interface ()
+    {
+      var configuration = new TargetClassDefinition (new ClassContext (typeof (object)));
+      var mixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (IServiceProvider), configuration, true);
+      var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
+
+      Assert.That (
+          () => SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, GuidNameProvider.Instance),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Cannot generate a mixin type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: concreteMixinTypeIdentifier"));
     }
 
     [Test]

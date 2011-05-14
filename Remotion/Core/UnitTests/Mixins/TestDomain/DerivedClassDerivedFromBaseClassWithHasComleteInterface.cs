@@ -20,7 +20,6 @@ namespace Remotion.UnitTests.Mixins.TestDomain
 {
   // Also supports ClassDerivedFromBaseClassWithHasComleteInterface.ICompleteInterface
   [Uses (typeof (NullMixin))] // Enforce a separate class context
-  [IgnoreForMixinConfiguration] // TODO 3536: Remove
   public class DerivedClassDerivedFromBaseClassWithHasComleteInterface : ClassDerivedFromBaseClassWithHasComleteInterface
   {
   }

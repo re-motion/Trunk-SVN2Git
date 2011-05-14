@@ -78,22 +78,12 @@ namespace Remotion.Mixins
     /// The constructor of the mixed object threw an exception.
     /// </para>
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class to instantiate.
-    /// </para>
-    /// </exception>
     /// <remarks>
     /// <para>
     /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// The <see cref="Create(Type,ParamList,object[])"/> method supports the creation of instances from their complete interfaces:
-    /// <typeparamref name="T"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
     public static T Create<T> ()
@@ -128,9 +118,6 @@ namespace Remotion.Mixins
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -144,11 +131,6 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// The <see cref="Create(Type,ParamList,object[])"/> method supports the creation of instances from their complete interfaces:
-    /// <typeparamref name="T"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
     public static T Create<T> (ParamList constructorParameters, params object[] preparedMixins)
@@ -184,10 +166,6 @@ namespace Remotion.Mixins
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -201,10 +179,6 @@ namespace Remotion.Mixins
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces: <typeparamref name="T"/> can be an
-    /// interface registered in the current mixin configuration. See also <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
     public static T Create<T> (ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
@@ -234,10 +208,6 @@ namespace Remotion.Mixins
     /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <para>
-    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
     /// </exception>
     /// <remarks>
     /// <para>
@@ -245,11 +215,6 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces:
-    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -288,10 +253,6 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -305,11 +266,6 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces:
-    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -349,10 +305,6 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -366,11 +318,6 @@ namespace Remotion.Mixins
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete
-    /// interfaces: <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when
@@ -416,10 +363,6 @@ namespace Remotion.Mixins
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -433,11 +376,6 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces:
-    /// <typeparamref name="T"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
     public static T Create<T> (bool allowNonPublicConstructors, ParamList constructorParameters, params object[] preparedMixins)
@@ -475,10 +413,6 @@ namespace Remotion.Mixins
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -492,10 +426,6 @@ namespace Remotion.Mixins
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces: <typeparamref name="T"/> can be an
-    /// interface registered in the current mixin configuration. See also <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// </remarks>
     public static T Create<T> (
@@ -534,10 +464,6 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -551,11 +477,6 @@ namespace Remotion.Mixins
     /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
     /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
     /// generation.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete interfaces:
-    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -599,10 +520,6 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
-    /// to instantiate.
-    /// </para>
-    /// <para>
     /// -or-
     /// </para>
     /// <para>
@@ -616,11 +533,6 @@ namespace Remotion.Mixins
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// This method supports the creation of instances from their complete
-    /// interfaces: <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
-    /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when

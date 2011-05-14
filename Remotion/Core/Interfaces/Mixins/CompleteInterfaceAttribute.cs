@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Implementation;
-using Remotion.Reflection;
 
 namespace Remotion.Mixins
 {
@@ -30,17 +29,13 @@ namespace Remotion.Mixins
   /// By implementing a complete interface that provides methods A, B, C, and D, users of the class can employ the full API in a simple way.
   /// </para>
   /// <para>
-  /// All methods specified by a complete interface must either be implemented on the target type or introduced via a mixin.
+  /// All methods directly specified by a complete interface must be implemented by the target type. If the complete interface extends a set of
+  /// other interfaces, those interfaces can either be implemented by the target class or be introduced by a mixin. This enables the complete 
+  /// interface to provide access both to methods on the target type and to those introduced by mixins.
   /// </para>
   /// <para>
-  /// This interface can be applied multiple times if an interface is to be a complete interface for multiple target types. The attribute is not
+  /// This attribute can be applied multiple times if an interface is to be a complete interface for multiple target types. The attribute is not
   /// inherited, i.e. an interface inheriting from a complete interface does not automatically constitute a complete interface as well.
-  /// </para>
-  /// <para>
-  /// When the default mixin configuration is built via analysis of the declarative attributes, all complete interfaces
-  /// are automatically registered with the active mixin configuration. This means that in the default mixin configuration,
-  /// <see cref="ObjectFactory.Create{T}(ParamList,object[])"/> will be able to create instances from these
-  /// interfaces.
   /// </para>
   /// </remarks>
   /// <example>
@@ -51,23 +46,26 @@ namespace Remotion.Mixins
   ///   public void B() { Console.WriteLine ("B"); }
   /// }
   /// 
+  /// public interface IMyMixin
+  /// {
+  ///   void C();
+  ///   void D();
+  /// }
+  /// 
   /// [Extends (typeof (MyMixinTarget))]
-  /// public class MyMixin : Mixin&lt;MyMixinTarget&gt;
+  /// public class MyMixin : Mixin&lt;MyMixinTarget&gt;, IMyMixin
   /// {
   ///   public void C() { Console.WriteLine ("D"); }
   ///   public void D() { Console.WriteLine ("D"); }
   /// }
   /// 
   /// [CompleteInterface (typeof (MyMixinTarget))]
-  /// public interface ICMyMixinTargetMyMixin
+  /// public interface ICMyMixinTargetMyMixin : IMyMixin
   /// {
   ///   void A();
   ///   void B();
-  ///   void C();
-  ///   void D();
   /// }
   /// </code>
-  /// Complete interfaces can also be defined by inheriting from existing interfaces rather than spelling all the methods out explicitly.
   /// </example>
   [AttributeUsage (AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
   public class CompleteInterfaceAttribute : Attribute
@@ -84,7 +82,7 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Gets the target tyoe for which this interface constitutes a complete interface.
+    /// Gets the target type for which this interface constitutes a complete interface.
     /// </summary>
     /// <value>The target type of this complete interface.</value>
     public Type TargetType

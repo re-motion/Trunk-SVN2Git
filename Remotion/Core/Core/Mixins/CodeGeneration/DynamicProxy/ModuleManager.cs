@@ -90,6 +90,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
+      if (configuration.Type.IsInterface)
+      {
+        var message = string.Format ("Cannot generate a mixed type for type '{0}' because it's an interface.", configuration.Type);
+        throw new ArgumentException (message, "configuration");
+      }
+
       return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
     }
 
@@ -99,6 +105,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+
+      if (concreteMixinTypeIdentifier.MixinType.IsInterface)
+      {
+        var message = string.Format ("Cannot generate a mixin type for type '{0}' because it's an interface.", concreteMixinTypeIdentifier.MixinType);
+        throw new ArgumentException (message, "concreteMixinTypeIdentifier");
+      }
 
       return new MixinTypeGenerator (this, concreteMixinTypeIdentifier, mixinNameProvider);
     }

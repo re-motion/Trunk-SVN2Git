@@ -83,42 +83,6 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void CompleteFaceInterfaceAddedImperativelyAsTypeArgument ()
-    {
-      using (MixinConfiguration.BuildNew()
-          .ForClass (typeof (BaseType6)).AddCompleteInterface (typeof (IEmptyInterface))
-          .EnterScope())
-      {
-        var complete = ObjectFactory.Create<IEmptyInterface> (ParamList.Empty);
-
-        Assert.That (complete, Is.Not.Null);
-        Assert.That (complete is BaseType6, Is.True);
-      }
-    }
-
-    [Test]
-    public void CompleteFaceInterfaceAsTypeArgument ()
-    {
-      var complete = ObjectFactory.Create<ICBT6Mixin1> (ParamList.Empty);
-
-      Assert.That (complete, Is.Not.Null);
-      Assert.That (complete is BaseType6, Is.True);
-      Assert.That (complete is ICBT6Mixin2, Is.True);
-      Assert.That (complete is ICBT6Mixin3, Is.True);
-    }
-
-    [Test]
-    public void CompleteFaceInterfaceAsTypeArgumentWithMixins ()
-    {
-      var complete = ObjectFactory.Create<ICBT6Mixin1> (ParamList.Empty, new BT6Mixin1());
-
-      Assert.That (complete, Is.Not.Null);
-      Assert.That (complete is BaseType6, Is.True);
-      Assert.That (complete is ICBT6Mixin2, Is.True);
-      Assert.That (complete is ICBT6Mixin3, Is.True);
-    }
-
-    [Test]
     public void CompleteFaceInterfacesAddedByMixins ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3>().Clear().AddMixins (typeof (Bt3Mixin7TargetCall), typeof (BT3Mixin4)).EnterScope())
@@ -187,17 +151,9 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "not been registered",
-        MatchType = MessageMatch.Contains)]
-    public void InterfaceAsTypeArgumentWithoutCompleteness ()
-    {
-      ObjectFactory.Create<IBaseType2> (ParamList.Empty);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "not been registered",
-        MatchType = MessageMatch.Regex)]
-    public void InterfaceAsTypeArgumentWithoutCompletenessWithMixins ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Cannot instantiate type 'Remotion.UnitTests.Mixins.TestDomain.IBaseType2', it's an interface.\r\nParameter name: targetOrConcreteType")]
+    public void InterfaceAsTypeArgument ()
     {
       ObjectFactory.Create<IBaseType2> (ParamList.Empty);
     }

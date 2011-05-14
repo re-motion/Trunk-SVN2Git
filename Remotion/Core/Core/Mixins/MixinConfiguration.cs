@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Context;
 using Remotion.Logging;
@@ -91,7 +90,6 @@ namespace Remotion.Mixins
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MixinConfiguration));
 
     private readonly ClassContextCollection _classContexts;
-    private readonly Dictionary<Type, ClassContext> _registeredInterfaces = new Dictionary<Type,ClassContext> ();
 
     /// <summary>
     /// Initializes an empty mixin configuration.
@@ -107,12 +105,6 @@ namespace Remotion.Mixins
     public MixinConfiguration (ClassContextCollection classContexts)
     {
       _classContexts = classContexts;
-
-      foreach (var classContext in classContexts)
-      {
-        foreach (Type completeInterface in classContext.CompleteInterfaces)
-          RegisterCompleteInterface (completeInterface, classContext);
-      }
     }
 
     /// <summary>
@@ -238,43 +230,11 @@ namespace Remotion.Mixins
       return Validator.Validate (definitions);
     }
 
-    /// <summary>
-    /// Resolves the given interface into a class context.
-    /// </summary>
-    /// <param name="interfaceType">The interface type to be resolved.</param>
-    /// <returns>The <see cref="ClassContext"/> previously registered for the given type, or <see langword="null"/> if the no context was registered.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="interfaceType"/> argument is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface.</exception>
+    [Obsolete ("This feature has been removed. Use an IOC container to resolve interfaces into implementations. (1.13.106)", true)]
     public ClassContext ResolveCompleteInterface (Type interfaceType)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
-
-      if (!interfaceType.IsInterface)
-        throw new ArgumentException ("The argument is not an interface.", "interfaceType");
-
-      if (_registeredInterfaces.ContainsKey (interfaceType))
-        return _registeredInterfaces[interfaceType];
-      else
-        return null;
-    }
-
-    private void RegisterCompleteInterface (Type interfaceType, ClassContext associatedClassContext)
-    {
-      ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
-      ArgumentUtility.CheckNotNull ("associatedClassContext", associatedClassContext);
-
-      if (_registeredInterfaces.ContainsKey (interfaceType))
-      {
-        string message = string.Format (
-            "There is an ambiguity in complete interfaces: interface '{0}' refers to both class '{1}' and '{2}'.",
-            interfaceType,
-            _registeredInterfaces[interfaceType].Type,
-            associatedClassContext.Type);
-        throw new ConfigurationException (message);
-      }
-
-      _registeredInterfaces.Add (interfaceType, associatedClassContext);
+      throw new NotImplementedException ("This feature has been removed. Use an IOC container to resolve interfaces into implementations.");
     }
   }
 }

@@ -17,7 +17,6 @@
 using System;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -26,47 +25,35 @@ namespace Remotion.Mixins.BridgeImplementations
 {
   public class ObjectFactoryImplementation : IObjectFactoryImplementation
   {
-    public Type ResolveType (Type baseType)
+    public object CreateInstance (
+        bool allowNonPublicConstructors, 
+        Type targetOrConcreteType, 
+        ParamList constructorParameters, 
+        GenerationPolicy generationPolicy, 
+        params object[] preparedMixins)
     {
-      ArgumentUtility.CheckNotNull ("baseType", baseType);
-
-      Type targetType;
-      if (baseType.IsInterface)
-      {
-        ClassContext registeredContext = MixinConfiguration.ActiveConfiguration.ResolveCompleteInterface (baseType);
-        if (registeredContext == null)
-        {
-          string message = string.Format ("The interface '{0}' has not been registered in the current configuration, no instances of the "
-              + "type can be created.", baseType.FullName);
-          throw new InvalidOperationException (message);
-        }
-        targetType = registeredContext.Type;
-      }
-      else
-        targetType = baseType;
-      return targetType;
-    }
-
-    public object CreateInstance (bool allowNonPublicConstructors, Type baseTypeOrInterfaceOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
-    {
-      ArgumentUtility.CheckNotNull ("baseTypeOrInterfaceOrConcreteType", baseTypeOrInterfaceOrConcreteType);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("preparedMixins", preparedMixins);
 
-      Type resolvedTargetType = ResolveType (baseTypeOrInterfaceOrConcreteType);
+      if (targetOrConcreteType.IsInterface)
+      {
+        var message = string.Format ("Cannot instantiate type '{0}', it's an interface.", targetOrConcreteType);
+        throw new ArgumentException (message, "targetOrConcreteType");
+      }
 
       var classContext =
           generationPolicy == GenerationPolicy.ForceGeneration
-              ? MixinConfiguration.ActiveConfiguration.GetContextForce (resolvedTargetType)
-              : MixinConfiguration.ActiveConfiguration.GetContext (resolvedTargetType);
+              ? MixinConfiguration.ActiveConfiguration.GetContextForce (targetOrConcreteType)
+              : MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
 
       IConstructorLookupInfo constructorLookupInfo;
       if (classContext == null)
       {
         if (preparedMixins.Length > 0)
           throw new ArgumentException (string.Format ("There is no mixin configuration for type {0}, so no mixin instances must be specified.",
-              baseTypeOrInterfaceOrConcreteType.FullName), "preparedMixins");
+              targetOrConcreteType.FullName), "preparedMixins");
 
-        constructorLookupInfo = new MixedTypeConstructorLookupInfo (resolvedTargetType, resolvedTargetType, allowNonPublicConstructors);
+        constructorLookupInfo = new MixedTypeConstructorLookupInfo (targetOrConcreteType, targetOrConcreteType, allowNonPublicConstructors);
       }
       else
         constructorLookupInfo = ConcreteTypeBuilder.Current.GetConstructorLookupInfo (classContext, allowNonPublicConstructors);
