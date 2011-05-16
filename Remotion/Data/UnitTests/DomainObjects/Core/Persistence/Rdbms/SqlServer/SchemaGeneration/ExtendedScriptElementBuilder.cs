@@ -16,17 +16,38 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
+using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
-  /// <summary>
-  /// Defines an interface for classes generating script files for several <see cref="IEntityDefinition"/>s.
-  /// </summary>
-  public interface IScriptBuilder
+  public class ExtendedScriptElementBuilder : IScriptBuilder
   {
-    void AddEntityDefinition (IEntityDefinition entityDefinition);
-    IScriptElement GetCreateScript ();
-    IScriptElement GetDropScript ();
+    private readonly IScriptBuilder _innerScriptBuilder;
+    
+    public ExtendedScriptElementBuilder (IScriptBuilder innerScriptBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("innerScriptBuilder", innerScriptBuilder);
+
+      _innerScriptBuilder = innerScriptBuilder;
+    }
+
+    public void AddEntityDefinition (IEntityDefinition entityDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
+
+      _innerScriptBuilder.AddEntityDefinition (entityDefinition);
+    }
+
+    public IScriptElement GetCreateScript ()
+    {
+     return new ScriptElementCollection();
+    }
+
+    public IScriptElement GetDropScript ()
+    {
+      return new ScriptElementCollection();
+    }
   }
 }

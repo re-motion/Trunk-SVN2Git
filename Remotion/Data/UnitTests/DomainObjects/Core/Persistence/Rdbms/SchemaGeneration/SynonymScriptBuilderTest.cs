@@ -114,8 +114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -133,8 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -158,8 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -182,8 +182,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_unionViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -207,8 +207,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_unionViewDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -231,8 +231,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -256,8 +256,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_filterViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -286,8 +286,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_unionViewDefinition1);
       _builder.AddEntityDefinition (_filterViewDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));
@@ -308,8 +308,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = _builder.GetCreateScript();
-      var dropScriptResult = _builder.GetDropScript();
+      var createScriptResult = (ScriptElementCollection) _builder.GetCreateScript ();
+      var dropScriptResult = (ScriptElementCollection) _builder.GetDropScript ();
 
       Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
       Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Create synonyms for tables that were created above"));

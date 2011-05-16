@@ -35,20 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           CreateIndexBuilder(),
           CreateSynonymBuilder());
 
-      var customCreateBeginningScript = "";
-      var customCreateEndScript = "--Extendend file-builder comment at the end";
-      var customDropBeginningScript = 
-        "IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END\r\nGO\r\n"
-       + "--Extendend file-builder comment at the beginning\r\n";
-      var customDropEndScript = "";
-
       return
-          new CustomCommentScriptElementBuilder (
-              new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString),
-              customCreateBeginningScript,
-              customCreateEndScript,
-              customDropBeginningScript,
-              customDropEndScript);
+          new ExtendedScriptElementBuilder (
+              new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString));
     }
   }
 }

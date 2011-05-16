@@ -70,14 +70,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var createScriptResult = _builder.GetCreateScript();
       var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (3));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
-      Assert.That (createScriptResult.Elements[1], Is.SameAs(statement1));
-      Assert.That (createScriptResult.Elements[2], Is.SameAs(statement2));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (3));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
-      Assert.That (dropScriptResult.Elements[1], Is.SameAs (statement2));
-      Assert.That (dropScriptResult.Elements[2], Is.SameAs (statement1));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements[1], Is.SameAs(fakeCreateResult));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (2));
+      Assert.That (((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("USE MyDataBase"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements[1], Is.SameAs (fakeDropResult));
     }
 
     [Test]

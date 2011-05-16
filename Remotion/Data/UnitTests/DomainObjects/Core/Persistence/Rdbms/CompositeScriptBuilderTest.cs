@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -83,15 +82,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder.AddEntityDefinition (entityDefinition1);
       _builder.AddEntityDefinition (entityDefinition2);
 
-      var result = _builder.GetCreateScript ();
+      var result = (ScriptElementCollection) _builder.GetCreateScript ();
 
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
       
-      Assert.That (result.Elements.Count, Is.EqualTo (3));
-      Assert.That (result.Elements[0], Is.SameAs(_fakeStatement1));
-      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement3));
+      Assert.That (result.Elements.Count, Is.EqualTo (2));
+      Assert.That (result.Elements[0], Is.SameAs (_fakeResultCollection1));
+      Assert.That (result.Elements[1], Is.SameAs (_fakeResultCollection2));
     }
     
     [Test]
@@ -113,15 +111,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _builder.AddEntityDefinition (entityDefinition1);
       _builder.AddEntityDefinition (entityDefinition2);
 
-      var result = _builder.GetDropScript ();
+      var result = (ScriptElementCollection) _builder.GetDropScript ();
 
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
 
-      Assert.That (result.Elements.Count, Is.EqualTo (3));
-      Assert.That (result.Elements[0], Is.SameAs (_fakeStatement2));
-      Assert.That (result.Elements[1], Is.SameAs (_fakeStatement3));
-      Assert.That (result.Elements[2], Is.SameAs (_fakeStatement1));
+      Assert.That (result.Elements.Count, Is.EqualTo (2));
+      Assert.That (result.Elements[0], Is.SameAs (_fakeResultCollection2));
+      Assert.That (result.Elements[1], Is.SameAs (_fakeResultCollection1));
     }
 
   }

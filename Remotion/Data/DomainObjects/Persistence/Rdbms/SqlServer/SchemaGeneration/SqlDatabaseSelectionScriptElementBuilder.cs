@@ -52,23 +52,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGenerati
       _innerScriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
-    public ScriptElementCollection GetCreateScript ()
+    public IScriptElement GetCreateScript ()
     {
       var createScriptElements = new ScriptElementCollection ();
       createScriptElements.AddElement (new ScriptStatement ("USE " + GetDatabaseName()));
-      foreach (var scriptElement in _innerScriptBuilder.GetCreateScript ().Elements)
-        createScriptElements.AddElement (scriptElement);
-
+      createScriptElements.AddElement (_innerScriptBuilder.GetCreateScript());
       return createScriptElements;
     }
 
-    public ScriptElementCollection GetDropScript ()
+    public IScriptElement GetDropScript ()
     {
       var dropScriptElements = new ScriptElementCollection ();
       dropScriptElements.AddElement (new ScriptStatement ("USE " + GetDatabaseName ()));
-      foreach (var scriptElement in _innerScriptBuilder.GetDropScript ().Elements)
-        dropScriptElements.AddElement (scriptElement);
-
+      dropScriptElements.AddElement (_innerScriptBuilder.GetDropScript());
       return dropScriptElements;
     }
 

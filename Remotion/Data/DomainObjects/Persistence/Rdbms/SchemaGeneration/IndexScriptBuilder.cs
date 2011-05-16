@@ -81,12 +81,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       entityDefinition.Accept (visitor);
     }
 
-    public ScriptElementCollection GetCreateScript ()
+    public IScriptElement GetCreateScript ()
     {
       return _createScriptElements;
     }
 
-    public ScriptElementCollection GetDropScript ()
+    public IScriptElement GetDropScript ()
     {
       return _dropScriptElements;
     }

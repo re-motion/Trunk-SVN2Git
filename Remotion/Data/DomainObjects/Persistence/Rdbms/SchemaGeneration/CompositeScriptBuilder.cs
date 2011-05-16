@@ -58,26 +58,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         scriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
-    public virtual ScriptElementCollection GetCreateScript ()
+    public virtual IScriptElement GetCreateScript ()
     {
-      return GetFullScriptCollection (_scriptBuilders.Select (builder => builder.GetCreateScript ()));
+      var scriptElementCollection = new ScriptElementCollection ();
+      foreach (var scriptBuilder in _scriptBuilders)
+        scriptElementCollection.AddElement (scriptBuilder.GetCreateScript());
+      return scriptElementCollection;
     }
 
-    public virtual ScriptElementCollection GetDropScript ()
+    public virtual IScriptElement GetDropScript ()
     {
-      return GetFullScriptCollection (_scriptBuilders.Reverse().Select (builder => builder.GetDropScript()));
-    }
-
-    private ScriptElementCollection GetFullScriptCollection (IEnumerable<ScriptElementCollection> elementCollection)
-    {
-      var script = new List<ScriptStatement> ();
-      foreach (var partialScript in elementCollection)
-        partialScript.AppendToScript (script);
-
-      var scriptElementCollection = new ScriptElementCollection();
-      foreach (var statement in script)
-        scriptElementCollection.AddElement (statement);
-
+      var scriptElementCollection = new ScriptElementCollection ();
+      foreach (var scriptBuilder in _scriptBuilders.Reverse ())
+        scriptElementCollection.AddElement (scriptBuilder.GetDropScript ());
       return scriptElementCollection;
     }
   }

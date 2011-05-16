@@ -77,14 +77,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     [Test]
     public void GetCreateScript_GetDropScript_NoEntitiesAdded ()
     {
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, 
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
     }
 
     [Test]
@@ -95,17 +97,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _builder.AddEntityDefinition (_tableDefinition1);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (2));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, 
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (2));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements[1], Is.SameAs (_fakeElement1));
 
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (2));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
-      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement2));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (2));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements[1], Is.SameAs (_fakeElement2));
     }
 
     [Test]
@@ -121,21 +125,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _builder.AddEntityDefinition (_tableDefinition1);
       _builder.AddEntityDefinition (_tableDefinition2);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement, 
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (createScriptResult.Elements[1], Is.SameAs (_fakeElement1));
-      Assert.That (createScriptResult.Elements[2], Is.SameAs (_fakeElement2));
-      Assert.That (createScriptResult.Elements[3], Is.SameAs (_fakeElement3));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (4));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements[1], Is.SameAs (_fakeElement1));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements[3], Is.SameAs (_fakeElement3));
 
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (4));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
-      Assert.That (dropScriptResult.Elements[1], Is.SameAs (_fakeElement3));
-      Assert.That (dropScriptResult.Elements[2], Is.SameAs (_fakeElement2));
-      Assert.That (dropScriptResult.Elements[3], Is.SameAs (_fakeElement1));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (4));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements[1], Is.SameAs (_fakeElement3));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements[2], Is.SameAs (_fakeElement2));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements[3], Is.SameAs (_fakeElement1));
     }
 
     [Test]
@@ -151,14 +157,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition[0]);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement,
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
     }
 
     [Test]
@@ -173,14 +181,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
           new EntityNameDefinition[0]);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement,
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
     }
 
     [Test]
@@ -189,14 +199,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       var entityDefinition = new NullEntityDefinition (SchemaGenerationFirstStorageProviderDefinition);
       _builder.AddEntityDefinition (entityDefinition);
 
-      var createScriptResult = _builder.GetCreateScript ();
-      var dropScriptResult = _builder.GetDropScript ();
+      var createScriptResult = _builder.GetCreateScript();
+      var dropScriptResult = _builder.GetDropScript();
 
-      Assert.That (createScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) createScriptResult.Elements[0]).Statement,
-        Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
-      Assert.That (dropScriptResult.Elements.Count, Is.EqualTo (1));
-      Assert.That (((ScriptStatement) dropScriptResult.Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
+      Assert.That (((ScriptElementCollection) createScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) createScriptResult).Elements[0]).Statement,
+          Is.EqualTo ("-- Create foreign key constraints for tables that were created above"));
+      Assert.That (((ScriptElementCollection) dropScriptResult).Elements.Count, Is.EqualTo (1));
+      Assert.That (
+          ((ScriptStatement) ((ScriptElementCollection) dropScriptResult).Elements[0]).Statement, Is.EqualTo ("-- Drop foreign keys of all tables"));
     }
   }
 }
