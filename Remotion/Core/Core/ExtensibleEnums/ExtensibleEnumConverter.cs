@@ -69,7 +69,8 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Returns whether this converter can convert the object to the <see cref="ExtensibleEnumType"/>, using the specified context. This
+    /// Returns whether this converter can convert an object of the <see cref="ExtensibleEnumType"/> to the given destination type, using the 
+    /// specified context. This
     /// method returns <see langword="true" /> if <paramref name="destinationType"/> is <see cref="string"/>; <see langword="false" /> otherwise.
     /// </summary>
     /// <param name="context">An <see cref="System.ComponentModel.ITypeDescriptorContext"/> that provides a format context. Ignored by this 
@@ -120,12 +121,12 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Converts the given value object to the <see cref="ExtensibleEnumType"/>, using the specified context and culture information.
+    /// Converts the given extensible enum object to the given destination type, using the specified context and culture information.
     /// </summary>
     /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context. Ignored
     /// by this implementation.</param>
-    /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/>. If null is passed, the current culture is assumed. Ignored
-    /// by this implementation.</param>
+    /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/>. If <see langword="null" /> is passed, the current culture is 
+    /// assumed. Ignored by this implementation.</param>
     /// <param name="value">The <see cref="T:System.Object"/> to convert. Must be an instance of <see cref="ExtensibleEnumType"/>.</param>
     /// <param name="destinationType">The <see cref="T:System.Type"/> to convert the <paramref name="value"/> parameter to. Must be
     /// <see cref="string"/>.</param>
