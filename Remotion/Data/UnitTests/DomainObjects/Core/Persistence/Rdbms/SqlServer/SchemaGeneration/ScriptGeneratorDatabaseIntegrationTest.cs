@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 using Remotion.Development.UnitTesting.Resources;
@@ -28,51 +27,57 @@ using Remotion.Development.UnitTesting.Resources;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.SchemaGeneration
 {
   [TestFixture]
-  public class FileBuilderDatabaseIntegrationTest : SchemaGenerationTestBase
+  public class ScriptGeneratorDatabaseIntegrationTest : SchemaGenerationTestBase
   {
-    private FileBuilder _sqlFileBuilderForFirstStorageProvider;
-    private FileBuilder _sqlFileBuilderForSecondStorageProvider;
-    private FileBuilder _sqlFileBuilderForThirdStorageProvider;
-
     private ClassDefinition[] _classesInFirstStorageProvider;
     private ClassDefinition[] _classesInSecondStorageProvider;
     private ClassDefinition[] _classesInThirdStorageProvider;
+    private ScriptGenerator _scriptGeneratorForFirstStorageProvider;
+    private ScriptGenerator _scriptGeneratorForSecondStorageProvider;
+    private ScriptGenerator _scriptGeneratorForThirdStorageProvider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _sqlFileBuilderForFirstStorageProvider =
-         new FileBuilder (
-             () => new SqlDatabaseSelectionScriptElementBuilder (new CompositeScriptBuilder (
-                       SchemaGenerationFirstStorageProviderDefinition,
-                       CreateTableBuilder (),
-                       CreateConstraintBuilder (),
-                       CreateViewBuilder (),
-                       CreateIndexBuilder (),
-                       CreateSynonymBuilder ()), SchemaGenerationFirstStorageProviderDefinition.ConnectionString),
-             new EntityDefinitionProvider ());
-      _sqlFileBuilderForSecondStorageProvider =
-          new FileBuilder (
-              () => new SqlDatabaseSelectionScriptElementBuilder (
-                        new CompositeScriptBuilder (
-                            SchemaGenerationSecondStorageProviderDefinition,
-                            CreateTableBuilder (),
-                            CreateConstraintBuilder (),
-                            CreateViewBuilder (),
-                            CreateIndexBuilder (),
-                            CreateSynonymBuilder ()),
-                        SchemaGenerationSecondStorageProviderDefinition.ConnectionString),
-              new EntityDefinitionProvider ());
-      _sqlFileBuilderForThirdStorageProvider =
-          new ExtendedFileBuilder (
-              () => new SqlDatabaseSelectionScriptElementBuilder (new CompositeScriptBuilder (
+      _scriptGeneratorForFirstStorageProvider = new ScriptGenerator (
+          pd => new SqlDatabaseSelectionScriptElementBuilder (
+                    new CompositeScriptBuilder (
+                        SchemaGenerationFirstStorageProviderDefinition,
+                        CreateTableBuilder(),
+                        CreateConstraintBuilder(),
+                        CreateViewBuilder(),
+                        CreateIndexBuilder(),
+                        CreateSynonymBuilder()),
+                    SchemaGenerationFirstStorageProviderDefinition.ConnectionString),
+          new EntityDefinitionProvider(),
+          new ScriptToStringConverter());
+
+      _scriptGeneratorForSecondStorageProvider = new ScriptGenerator (
+          pd => new SqlDatabaseSelectionScriptElementBuilder (
+                    new CompositeScriptBuilder (
+                        SchemaGenerationSecondStorageProviderDefinition,
+                        CreateTableBuilder(),
+                        CreateConstraintBuilder(),
+                        CreateViewBuilder(),
+                        CreateIndexBuilder(),
+                        CreateSynonymBuilder()),
+                    SchemaGenerationSecondStorageProviderDefinition.ConnectionString),
+          new EntityDefinitionProvider(),
+          new ScriptToStringConverter());
+
+      _scriptGeneratorForThirdStorageProvider = new ScriptGenerator (
+          pd => new SqlDatabaseSelectionScriptElementBuilder (
+                    new CompositeScriptBuilder (
                         SchemaGenerationThirdStorageProviderDefinition,
-                        CreateTableBuilder (),
-                        CreateConstraintBuilder (),
-                        CreateExtendedViewBuilder (),
-                        CreateIndexBuilder (),
-                        CreateSynonymBuilder ()), SchemaGenerationThirdStorageProviderDefinition.ConnectionString));
+                        CreateTableBuilder(),
+                        CreateConstraintBuilder(),
+                        CreateExtendedViewBuilder(),
+                        CreateIndexBuilder(),
+                        CreateSynonymBuilder()),
+                    SchemaGenerationThirdStorageProviderDefinition.ConnectionString),
+          new ExtendedEntityDefinitionProvider(),
+          new ScriptToStringConverter());
 
       _classesInFirstStorageProvider = MappingConfiguration.GetTypeDefinitions()
           .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
@@ -100,9 +105,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
 
-      var scripts = _sqlFileBuilderForFirstStorageProvider.GetScript (_classesInFirstStorageProvider);
+      var scripts =
+          _scriptGeneratorForFirstStorageProvider.GetScripts (_classesInFirstStorageProvider).Single (
+              s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
 
     [Test]
@@ -110,9 +117,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
 
-      var scripts = _sqlFileBuilderForSecondStorageProvider.GetScript (_classesInSecondStorageProvider);
+      var scripts =
+          _scriptGeneratorForSecondStorageProvider.GetScripts (_classesInSecondStorageProvider).Single (
+              s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
 
     [Test]
@@ -120,9 +129,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
 
-      var scripts = _sqlFileBuilderForThirdStorageProvider.GetScript (_classesInThirdStorageProvider);
+      var scripts =
+          _scriptGeneratorForThirdStorageProvider.GetScripts (_classesInThirdStorageProvider).Single (
+              s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
-      DatabaseAgent.ExecuteBatchString (scripts.DropScript + scripts.CreateScript, false);
+      DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
   }
 }

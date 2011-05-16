@@ -1,10 +1,7 @@
---Extendend file-builder comment at the beginning
-IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Test') BEGIN EXEC('CREATE SCHEMA Test') END
-GO
 USE SchemaGenerationTestDomain3
 -- Drop all synonyms
-IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'Test' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
-  DROP SYNONYM [Test].[AddedViewSynonym]
+IF EXISTS (SELECT * FROM sys.synonyms WHERE name = 'dbo' AND SCHEMA_NAME(schema_id) = 'AddedViewSynonym')
+  DROP SYNONYM [dbo].[AddedViewSynonym]
 -- Drop all indexes
 IF EXISTS (SELECT * FROM sys.objects so JOIN sysindexes si ON so.[object_id] = si.[id] WHERE so.[name] = 'IndexTestTable' AND schema_name (so.schema_id)='dbo' AND si.[name] = 'IDX_NonClusteredUniqueIndex')
   DROP INDEX [IDX_NonClusteredUniqueIndex] ON [dbo].[IndexTestTable]
@@ -29,8 +26,8 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'BelowInher
   DROP VIEW [dbo].[BelowInheritanceRootView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'NewViewName' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[NewViewName]
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AddedView' AND TABLE_SCHEMA = 'Test')
-  DROP VIEW [Test].[AddedView]
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AddedView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[AddedView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'IndexTestView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[IndexTestView]
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PKTestView' AND TABLE_SCHEMA = 'dbo')

@@ -319,11 +319,9 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\BelowInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ExtendedFileBuilder\InheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGenerationTestDomain\ThirdStorageGroupAttribute.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ExtendedFileBuilder.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SqlSecondaryXmlIndexDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderDatabaseIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SchemaGeneration\FileBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\FileBuilderIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorDatabaseIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\SchemaGeneration\ScriptGeneratorIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\TestableSqlStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />

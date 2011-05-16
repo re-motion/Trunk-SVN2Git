@@ -59,12 +59,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       return new FilterViewDefinition (
           tableDefinition.StorageProviderDefinition,
-          new EntityNameDefinition ("Test", "AddedView"),
+          new EntityNameDefinition (tableDefinition.TableName.SchemaName, "AddedView"),
           tableDefinition,
           new[] { "ClassID" },
           tableDefinition.Columns,
           new IIndexDefinition[0],
-          new[] { new EntityNameDefinition ("Test", "AddedViewSynonym") });
+          new[] { new EntityNameDefinition (tableDefinition.ViewName.SchemaName, "AddedViewSynonym") });
     }
 
     private TableDefinition CreateNewTableDefinitionWithIndexes (StorageProviderDefinition storageProviderDefinition)

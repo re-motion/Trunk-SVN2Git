@@ -46,7 +46,7 @@ CREATE VIEW [dbo].[NewViewName] ([ID], [ClassID], [Timestamp], [PropertyAboveInh
     FROM [dbo].[InheritanceRoot]
   WITH CHECK OPTION
 GO
-CREATE VIEW [Test].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot])
+CREATE VIEW [dbo].[AddedView] ([ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot])
   AS
   SELECT [ID], [ClassID], [Timestamp], [PropertyAboveInheritanceRoot], [PropertyInheritanceRoot], [PropertyBelowInheritanceRoot]
     FROM [dbo].[InheritanceRoot]
@@ -98,5 +98,4 @@ CREATE UNIQUE CLUSTERED INDEX [IDX_ClusteredUniqueIndex]
   ON [dbo].[PKTestTable] ([Name])
   WITH (IGNORE_DUP_KEY = ON, ONLINE = OFF)
 -- Create synonyms for tables that were created above
-CREATE SYNONYM [Test].[AddedViewSynonym] FOR [Test].[AddedView]
---Extendend file-builder comment at the end
+CREATE SYNONYM [dbo].[AddedViewSynonym] FOR [dbo].[AddedView]
