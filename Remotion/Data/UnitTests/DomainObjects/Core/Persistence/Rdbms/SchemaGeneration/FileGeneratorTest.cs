@@ -56,10 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var setupFileName = @"TestOutputPath\SetupDB_SchemaGenerationFirstStorageProvider.sql";
       var tearDownFileName = @"TestOutputPath\TearDownDB_SchemaGenerationFirstStorageProvider.sql";
-      if (File.Exists (setupFileName))
-        File.Delete (setupFileName);
-      if (File.Exists (tearDownFileName))
-        File.Delete (tearDownFileName);
 
       _fileGenerator.WriteScriptsToDisk (_script, true);
 
@@ -67,8 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.That (File.ReadAllText (setupFileName), Is.EqualTo ("SetupScript"));
       Assert.That (File.Exists (tearDownFileName), Is.True);
       Assert.That (File.ReadAllText (tearDownFileName), Is.EqualTo ("TearDownScript"));
-      File.Delete (setupFileName);
-      File.Delete (tearDownFileName);
     }
 
     [Test]
@@ -76,8 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     {
       var setupFileName = @"TestOutputPath\SetupDB.sql";
       var tearDownFileName = @"TestOutputPath\TearDownDB.sql";
-      if (File.Exists (setupFileName)) File.Delete (setupFileName);
-      if (File.Exists (tearDownFileName)) File.Delete (tearDownFileName);
       
       _fileGenerator.WriteScriptsToDisk (_script, false);
 
@@ -85,8 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       Assert.That (File.ReadAllText (setupFileName), Is.EqualTo ("SetupScript"));
       Assert.That (File.Exists (tearDownFileName), Is.True);
       Assert.That (File.ReadAllText (tearDownFileName), Is.EqualTo ("TearDownScript"));
-      File.Delete (setupFileName);
-      File.Delete (tearDownFileName);
     }
   }
 }
