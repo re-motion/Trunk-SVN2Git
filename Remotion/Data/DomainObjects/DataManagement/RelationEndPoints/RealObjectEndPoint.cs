@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return _syncState.CreateSetCommand (this, newRelatedObject, domainObject => SetOppositeObjectID (DomainObject.GetIDOrNull (domainObject)));
+      return _syncState.CreateSetCommand (this, newRelatedObject, domainObject => SetOppositeObjectID (domainObject.GetSafeID()));
     }
 
     public override void Touch ()

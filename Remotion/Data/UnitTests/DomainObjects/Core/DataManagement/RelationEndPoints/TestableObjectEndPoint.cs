@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override ObjectID OppositeObjectID
     {
-      get { return DomainObject.GetIDOrNull (_oppositeObject); }
+      get { return _oppositeObject.GetSafeID(); }
     }
 
     public void SetOppositeObject (DomainObject domainObject)
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return DomainObject.GetIDOrNull (_originalOppositeObject); }
+      get { return _originalOppositeObject.GetSafeID(); }
     }
 
     public override DomainObject GetOppositeObject (bool includeDeleted)

@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var newRelatedObjectID = DomainObject.GetIDOrNull (newRelatedObject);
+      var newRelatedObjectID = newRelatedObject.GetSafeID();
       if (endPoint.OppositeObjectID == newRelatedObjectID)
         return new ObjectEndPointSetSameCommand (endPoint);
       else if (oppositeEndPointDefinition.IsAnonymous)

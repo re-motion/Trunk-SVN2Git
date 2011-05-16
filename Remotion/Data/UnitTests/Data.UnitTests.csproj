@@ -265,6 +265,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\TestableRelationEndPoint.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualObjectEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\BidirectionalRelationSyncServiceTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjectExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\IUnloadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionReplaceDataEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionEndPointOppositeTrackingTest.cs" />

@@ -147,8 +147,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         DomainObject oppositeObject, 
         IRelationEndPointProvider endPointProvider)
     {
-      var oppositeEndPointDefinition = originatingEndPoint.Definition.GetMandatoryOppositeEndPointDefinition ();
-      var oppositeEndPointID = RelationEndPointID.Create (DomainObject.GetIDOrNull (oppositeObject), oppositeEndPointDefinition);
+      var oppositeEndPointID = RelationEndPointID.CreateOpposite (originatingEndPoint.Definition, oppositeObject.GetSafeID());
       return endPointProvider.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
   }

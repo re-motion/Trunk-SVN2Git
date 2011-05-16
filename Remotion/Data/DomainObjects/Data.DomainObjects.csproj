@@ -222,6 +222,7 @@
     <Compile Include="DataManagement\RelationEndPoints\RealObjectEndPoints\UnknownRealObjectEndPointSyncState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RealObjectEndPoints\UnsynchronizedRealObjectEndPointSyncState.cs" />
     <Compile Include="DomainImplementation\BidirectionalRelationSyncService.cs" />
+    <Compile Include="DomainObjectExtensions.cs" />
     <Compile Include="Infrastructure\InvalidObjects\SubInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\IInvalidDomainObjectManager.cs" />
     <Compile Include="Infrastructure\InvalidObjects\InvalidDomainObjectManagerBase.cs" />

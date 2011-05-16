@@ -44,15 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetIDOrNull ()
-    {
-      Assert.That (DomainObject.GetIDOrNull (null), Is.Null);
-
-      var domainObject = DomainObjectMother.CreateFakeObject<Order>();
-      Assert.That (DomainObject.GetIDOrNull (domainObject), Is.EqualTo (domainObject.ID));
-    }
-
-    [Test]
     public void Ctor_RaisesReferenceInitializing ()
     {
       var domainObject = _transaction.Execute (() => Order.NewObject ());

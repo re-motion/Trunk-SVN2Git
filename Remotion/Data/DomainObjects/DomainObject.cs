@@ -143,19 +143,6 @@ namespace Remotion.Data.DomainObjects
     #endregion
 
     /// <summary>
-    /// Returns the <see cref="DomainObject.ID"/> of the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if 
-    /// <paramref name="domainObjectOrNull"/> is itself <see langword="null" />.
-    /// </summary>
-    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> whose <see cref="DomainObject.ID"/> to get. If this parameter is 
-    /// <see langword="null" />, the method returns <see langword="null" />.</param>
-    /// <returns>The <paramref name="domainObjectOrNull"/>'s <see cref="DomainObject.ID"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
-    /// is <see langword="null" />.</returns>
-    public static ObjectID GetIDOrNull (DomainObject domainObjectOrNull)
-    {
-      return domainObjectOrNull != null ? domainObjectOrNull.ID : null;
-    }
-
-    /// <summary>
     /// Occurs before a <see cref="PropertyValue"/> of the <see cref="DomainObject"/> is changed.
     /// </summary>
     /// <remarks>
