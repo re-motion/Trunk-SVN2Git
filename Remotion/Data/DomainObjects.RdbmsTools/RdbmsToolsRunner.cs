@@ -16,7 +16,6 @@
 // 
 using System;
 using System.IO;
-using System.Linq;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
@@ -30,6 +29,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Logging;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools
 {
@@ -123,12 +123,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected virtual void BuildSchema ()
     {
-      FileBuilder.Build (
-          MappingConfiguration.Current.GetTypeDefinitions(),
-          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.Cast<StorageProviderDefinition>().ToList(),
-          _rdbmsToolsParameters.SchemaOutputDirectory,
-          pd =>
-          new FileBuilder (() => pd.Factory.CreateSchemaScriptBuilder(pd), new EntityDefinitionProvider()));
+      var scriptGenerator = new ScriptGenerator (
+          pd => pd.Factory.CreateSchemaScriptBuilder (pd), new EntityDefinitionProvider(), new ScriptToStringConverter());
+      var scripts = scriptGenerator.GetScripts (MappingConfiguration.Current.GetTypeDefinitions());
+      var fileGenerator = new FileGenerator (_rdbmsToolsParameters.SchemaOutputDirectory);
+      var includeStorageProviderName = scripts.Count() > 1;
+      foreach (var script in scripts)
+        fileGenerator.WriteScriptsToDisk (script, includeStorageProviderName);
     }
   }
 }

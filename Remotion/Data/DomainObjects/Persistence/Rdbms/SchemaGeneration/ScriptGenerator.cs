@@ -30,20 +30,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class ScriptGenerator
   {
-    private readonly Func<RdbmsProviderDefinition, IScriptBuilder> _fileBuilderFactory;
+    private readonly Func<RdbmsProviderDefinition, IScriptBuilder> _scriptBuilderFactory;
     private readonly IEntityDefinitionProvider _entityDefinitionProvider;
     private readonly IScriptToStringConverter _scriptToStringConverter;
 
     public ScriptGenerator (
-        Func<RdbmsProviderDefinition, IScriptBuilder> fileBuilderFactory,
+        Func<RdbmsProviderDefinition, IScriptBuilder> scriptBuilderFactory,
         IEntityDefinitionProvider entityDefinitionProvider,
         IScriptToStringConverter scriptToStringConverter)
     {
-      ArgumentUtility.CheckNotNull ("fileBuilderFactory", fileBuilderFactory);
+      ArgumentUtility.CheckNotNull ("scriptBuilderFactory", scriptBuilderFactory);
       ArgumentUtility.CheckNotNull ("entityDefinitionProvider", entityDefinitionProvider);
       ArgumentUtility.CheckNotNull ("scriptToStringConverter", scriptToStringConverter);
 
-      _fileBuilderFactory = fileBuilderFactory;
+      _scriptBuilderFactory = scriptBuilderFactory;
       _entityDefinitionProvider = entityDefinitionProvider;
       _scriptToStringConverter = scriptToStringConverter;
     }
@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       
       foreach (var group in classDefinitionsByStorageProvider)
       {
-        var scriptBuilder = _fileBuilderFactory (group.StorageProviderDefinition);
+        var scriptBuilder = _scriptBuilderFactory (group.StorageProviderDefinition);
         var entities = _entityDefinitionProvider.GetEntityDefinitions (group.ClassDefinitions);
         foreach (var entityDefinition in entities)
           scriptBuilder.AddEntityDefinition (entityDefinition);
