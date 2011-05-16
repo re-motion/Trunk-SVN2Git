@@ -29,31 +29,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class ScriptToStringConverter : IScriptToStringConverter
   {
-    public struct ScriptPair
-    {
-      private readonly string _createScript;
-      private readonly string _dropScript;
-
-      public ScriptPair (string createScript, string dropScript)
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("createScript", createScript);
-        ArgumentUtility.CheckNotNullOrEmpty ("dropScript", dropScript);
-
-        _createScript = createScript;
-        _dropScript = dropScript;
-      }
-
-      public string CreateScript
-      {
-        get { return _createScript; }
-      }
-
-      public string DropScript
-      {
-        get { return _dropScript; }
-      }
-    }
-
     public ScriptPair Convert (IScriptBuilder scriptBuilder)
     {
       ArgumentUtility.CheckNotNull ("scriptBuilder", scriptBuilder);

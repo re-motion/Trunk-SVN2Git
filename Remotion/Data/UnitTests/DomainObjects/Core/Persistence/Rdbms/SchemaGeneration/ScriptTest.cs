@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     public void Initialization ()
     {
       Assert.That (_script.StorageProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (_script.CreateScript, Is.EqualTo ("CreateScript"));
-      Assert.That (_script.DropScript, Is.EqualTo ("DropScript"));
+      Assert.That (_script.SetUpScript, Is.EqualTo ("CreateScript"));
+      Assert.That (_script.TearDownScript, Is.EqualTo ("DropScript"));
     }
   }
 }

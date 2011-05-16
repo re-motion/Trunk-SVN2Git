@@ -23,6 +23,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public interface IScriptToStringConverter
   {
-    ScriptToStringConverter.ScriptPair Convert (IScriptBuilder scriptBuilder);
+    ScriptPair Convert (IScriptBuilder scriptBuilder);
   }
 }

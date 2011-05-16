@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         foreach (var entityDefinition in entities)
           scriptBuilder.AddEntityDefinition (entityDefinition);
         var scripts = _scriptToStringConverter.Convert(scriptBuilder);
-        yield return new Script (group.StorageProviderDefinition, scripts.CreateScript, scripts.DropScript);
+        yield return new Script (group.StorageProviderDefinition, scripts.SetUpScript, scripts.TearDownScript);
       }
     }
   }

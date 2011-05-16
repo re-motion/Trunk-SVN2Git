@@ -43,9 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
     private IEntityDefinition _fakeEntityDefinition1;
     private IEntityDefinition _fakeEntityDefinition2;
     private IEntityDefinition _fakeEntityDefinition3;
-    private ScriptToStringConverter.ScriptPair _fakeScriptResult1;
-    private ScriptToStringConverter.ScriptPair _fakeScriptResult2;
-    private ScriptToStringConverter.ScriptPair _fakeScriptResult3;
+    private ScriptPair _fakeScriptResult1;
+    private ScriptPair _fakeScriptResult2;
+    private ScriptPair _fakeScriptResult3;
     private IScriptBuilder _scriptBuilderForFirstStorageProviderMock;
     private IScriptBuilder _scriptBuilderForSecondStorageProviderMock;
     private IScriptBuilder _scriptBuilderForThirdStorageProviderMock;
@@ -75,9 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _classDefinitionForSecondStorageProvider.SetStorageEntity (_secondProviderStorageEntityDefinitionStub);
       _classDefinitionForThirdStorageProvider.SetStorageEntity (_thirdProviderStorageEntityDefinitionStub);
 
-      _fakeScriptResult1 = new ScriptToStringConverter.ScriptPair ("CreateScript1", "DropScript1");
-      _fakeScriptResult2 = new ScriptToStringConverter.ScriptPair ("CreateScript2", "DropScript2");
-      _fakeScriptResult3 = new ScriptToStringConverter.ScriptPair ("CreateScript3", "DropScript3");
+      _fakeScriptResult1 = new ScriptPair ("CreateScript1", "DropScript1");
+      _fakeScriptResult2 = new ScriptPair ("CreateScript2", "DropScript2");
+      _fakeScriptResult3 = new ScriptPair ("CreateScript3", "DropScript3");
       _entityDefininitionProviderMock = MockRepository.GenerateStrictMock<IEntityDefinitionProvider>();
       _scriptBuilderForFirstStorageProviderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _scriptBuilderForSecondStorageProviderMock = MockRepository.GenerateStrictMock<IScriptBuilder>();
@@ -145,8 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForSecondStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (1));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationSecondStorageProviderDefinition));
-      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript2"));
-      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript2"));
+      Assert.That (result[0].SetUpScript, Is.EqualTo ("CreateScript2"));
+      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript2"));
     }
 
     [Test]
@@ -171,8 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForFirstStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (1));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript1"));
-      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript1"));
+      Assert.That (result[0].SetUpScript, Is.EqualTo ("CreateScript1"));
+      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript1"));
     }
 
     [Test]
@@ -216,11 +216,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForSecondStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (2));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript1"));
-      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript1"));
+      Assert.That (result[0].SetUpScript, Is.EqualTo ("CreateScript1"));
+      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript1"));
       Assert.That (result[1].StorageProviderDefinition, Is.SameAs (SchemaGenerationSecondStorageProviderDefinition));
-      Assert.That (result[1].CreateScript, Is.EqualTo ("CreateScript2"));
-      Assert.That (result[1].DropScript, Is.EqualTo ("DropScript2"));
+      Assert.That (result[1].SetUpScript, Is.EqualTo ("CreateScript2"));
+      Assert.That (result[1].TearDownScript, Is.EqualTo ("DropScript2"));
     }
   }
 }

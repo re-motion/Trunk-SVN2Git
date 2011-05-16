@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       var result = _converter.Convert (_scriptBuilderStub);
 
-      Assert.That (result.CreateScript, Is.EqualTo("Test1\r\n"));
-      Assert.That (result.DropScript, Is.EqualTo("Test2\r\n"));
+      Assert.That (result.SetUpScript, Is.EqualTo("Test1\r\n"));
+      Assert.That (result.TearDownScript, Is.EqualTo("Test2\r\n"));
     }
 
     [Test]
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       var result = _converter.Convert (_scriptBuilderStub);
 
-      Assert.That (result.CreateScript, Is.EqualTo ("Test1\r\nTest2\r\n"));
-      Assert.That (result.DropScript, Is.EqualTo ("Test2\r\nTest1\r\n"));
+      Assert.That (result.SetUpScript, Is.EqualTo ("Test1\r\nTest2\r\n"));
+      Assert.That (result.TearDownScript, Is.EqualTo ("Test2\r\nTest1\r\n"));
     }
   }
 }

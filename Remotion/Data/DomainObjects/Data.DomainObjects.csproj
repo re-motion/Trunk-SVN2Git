@@ -255,6 +255,7 @@
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptElementCollection.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptElements\ScriptStatement.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptGenerator.cs" />
+    <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptPair.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\ScriptToStringConverter.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\SynonymScriptBuilder.cs" />
     <Compile Include="Persistence\Rdbms\SchemaGeneration\TableScriptBuilder.cs" />
