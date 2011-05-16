@@ -145,8 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForSecondStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (1));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationSecondStorageProviderDefinition));
-      Assert.That (result[0].SetupScript, Is.EqualTo ("CreateScript2"));
-      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript2"));
+      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript2"));
+      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript2"));
     }
 
     [Test]
@@ -171,8 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForFirstStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (1));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (result[0].SetupScript, Is.EqualTo ("CreateScript1"));
-      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript1"));
+      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript1"));
+      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript1"));
     }
 
     [Test]
@@ -216,11 +216,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
       _scriptBuilderForSecondStorageProviderMock.VerifyAllExpectations();
       Assert.That (result.Count, Is.EqualTo (2));
       Assert.That (result[0].StorageProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (result[0].SetupScript, Is.EqualTo ("CreateScript1"));
-      Assert.That (result[0].TearDownScript, Is.EqualTo ("DropScript1"));
+      Assert.That (result[0].CreateScript, Is.EqualTo ("CreateScript1"));
+      Assert.That (result[0].DropScript, Is.EqualTo ("DropScript1"));
       Assert.That (result[1].StorageProviderDefinition, Is.SameAs (SchemaGenerationSecondStorageProviderDefinition));
-      Assert.That (result[1].SetupScript, Is.EqualTo ("CreateScript2"));
-      Assert.That (result[1].TearDownScript, Is.EqualTo ("DropScript2"));
+      Assert.That (result[1].CreateScript, Is.EqualTo ("CreateScript2"));
+      Assert.That (result[1].DropScript, Is.EqualTo ("DropScript2"));
     }
   }
 }

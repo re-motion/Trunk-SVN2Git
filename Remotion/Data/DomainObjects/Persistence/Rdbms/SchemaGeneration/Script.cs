@@ -25,18 +25,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   public class Script
   {
     private readonly RdbmsProviderDefinition _storageProviderDefinition;
-    private readonly string _setupScript;
-    private readonly string _tearDownScript;
+    private readonly string _createScript;
+    private readonly string _dropScript;
 
-    public Script (RdbmsProviderDefinition storageProviderDefinition, string setupScript, string tearDownScript)
+    public Script (RdbmsProviderDefinition storageProviderDefinition, string createScript, string dropScript)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("setupScript", setupScript);
-      ArgumentUtility.CheckNotNull ("tearDownScript", tearDownScript);
+      ArgumentUtility.CheckNotNull ("createScript", createScript);
+      ArgumentUtility.CheckNotNull ("dropScript", dropScript);
 
       _storageProviderDefinition = storageProviderDefinition;
-      _setupScript = setupScript;
-      _tearDownScript = tearDownScript;
+      _createScript = createScript;
+      _dropScript = dropScript;
     }
 
     public RdbmsProviderDefinition StorageProviderDefinition
@@ -44,14 +44,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _storageProviderDefinition; }
     }
 
-    public string SetupScript
+    public string CreateScript
     {
-      get { return _setupScript; }
+      get { return _createScript; }
     }
 
-    public string TearDownScript
+    public string DropScript
     {
-      get { return _tearDownScript; }
+      get { return _dropScript; }
     }
   }
 }
