@@ -105,9 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
 
-      var scripts =
-          _scriptGeneratorForFirstStorageProvider.GetScripts (_classesInFirstStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
+      var scripts = _scriptGeneratorForFirstStorageProvider.GetScripts (_classesInFirstStorageProvider)
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
@@ -117,9 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
 
-      var scripts =
-          _scriptGeneratorForSecondStorageProvider.GetScripts (_classesInSecondStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
+      var scripts = _scriptGeneratorForSecondStorageProvider.GetScripts (_classesInSecondStorageProvider)
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
@@ -129,9 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
 
-      var scripts =
-          _scriptGeneratorForThirdStorageProvider.GetScripts (_classesInThirdStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
+      var scripts = _scriptGeneratorForThirdStorageProvider.GetScripts (_classesInThirdStorageProvider)
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
     }
