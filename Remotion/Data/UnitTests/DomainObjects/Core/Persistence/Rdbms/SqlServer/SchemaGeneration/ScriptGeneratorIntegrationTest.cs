@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
@@ -34,9 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private string _firstStorageProviderTearDownDBScript;
     private string _secondStorageProviderTearDownDBScript;
     private string _thirdStorageProviderTearDownDBScript;
-    private ClassDefinition[] _classesInFirstStorageProvider;
-    private ClassDefinition[] _classesInSecondStorageProvider;
-    private ClassDefinition[] _classesInThirdStorageProvider;
     private ScriptGenerator _scriptGeneratorForFirstStorageProvider;
     private ScriptGenerator _scriptGeneratorForSecondStorageProvider;
     private ScriptGenerator _scriptGeneratorForThirdStorageProvider;
@@ -46,28 +42,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       base.SetUp();
 
       _scriptGeneratorForFirstStorageProvider = new ScriptGenerator (
-          pd => new SqlDatabaseSelectionScriptElementBuilder (
-                    new CompositeScriptBuilder (
-                        SchemaGenerationFirstStorageProviderDefinition,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-                    SchemaGenerationFirstStorageProviderDefinition.ConnectionString),
+          pd => pd.Factory.CreateSchemaScriptBuilder (pd),
           new EntityDefinitionProvider(),
           new ScriptToStringConverter());
 
       _scriptGeneratorForSecondStorageProvider = new ScriptGenerator (
-          pd => new SqlDatabaseSelectionScriptElementBuilder (
-                    new CompositeScriptBuilder (
-                        SchemaGenerationSecondStorageProviderDefinition,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-                    SchemaGenerationSecondStorageProviderDefinition.ConnectionString),
+          pd => pd.Factory.CreateSchemaScriptBuilder (pd),
           new EntityDefinitionProvider(),
           new ScriptToStringConverter());
 
@@ -92,24 +72,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _thirdStorageProviderSetupDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.SetupDB_ThirdStorageProvider.sql");
       _thirdStorageProviderTearDownDBScript = ResourceUtility.GetResourceString (GetType(), "TestData.TearDownDB_ThirdStorageProvider.sql");
-
-      _classesInFirstStorageProvider = MappingConfiguration.GetTypeDefinitions()
-          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition)
-          .ToArray();
-      _classesInSecondStorageProvider = MappingConfiguration.GetTypeDefinitions()
-          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition)
-          .ToArray();
-      _classesInThirdStorageProvider = MappingConfiguration.GetTypeDefinitions()
-          .Where (cd => cd.StorageEntityDefinition.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition)
-          .ToArray();
     }
 
     [Test]
     public void GetScriptForFirstStorageProvider ()
     {
-      var scripts =
-          _scriptGeneratorForFirstStorageProvider.GetScripts (_classesInFirstStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
+      var scripts = _scriptGeneratorForFirstStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
       Assert.AreEqual (_firstStorageProviderSetupDBScript, scripts.SetUpScript);
       Assert.AreEqual (_firstStorageProviderTearDownDBScript, scripts.TearDownScript);
@@ -118,9 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForSecondStorageProvider ()
     {
-      var scripts =
-          _scriptGeneratorForSecondStorageProvider.GetScripts (_classesInSecondStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
+      var scripts = _scriptGeneratorForSecondStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
       Assert.AreEqual (_secondStorageProviderSetupDBScript, scripts.SetUpScript);
       Assert.AreEqual (_secondStorageProviderTearDownDBScript, scripts.TearDownScript);
@@ -129,9 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [Test]
     public void GetScriptForThirdStorageProvider ()
     {
-      var scripts =
-          _scriptGeneratorForThirdStorageProvider.GetScripts (_classesInThirdStorageProvider).Single (
-              s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
+      var scripts = _scriptGeneratorForThirdStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+          .Single (s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
       Assert.AreEqual (_thirdStorageProviderSetupDBScript, scripts.SetUpScript);
       Assert.AreEqual (_thirdStorageProviderTearDownDBScript, scripts.TearDownScript);
