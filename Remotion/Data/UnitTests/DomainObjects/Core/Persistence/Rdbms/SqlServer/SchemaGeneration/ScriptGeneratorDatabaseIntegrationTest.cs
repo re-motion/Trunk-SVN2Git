@@ -28,25 +28,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
   [TestFixture]
   public class ScriptGeneratorDatabaseIntegrationTest : SchemaGenerationTestBase
   {
-    private ScriptGenerator _scriptGeneratorForFirstStorageProvider;
-    private ScriptGenerator _scriptGeneratorForSecondStorageProvider;
-    private ScriptGenerator _scriptGeneratorForThirdStorageProvider;
+    private ScriptGenerator _standardScriptGenerator;
+    private ScriptGenerator _extendedScriptGenerator;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _scriptGeneratorForFirstStorageProvider = new ScriptGenerator (
+      _standardScriptGenerator = new ScriptGenerator (
           pd => pd.Factory.CreateSchemaScriptBuilder (pd),
           new EntityDefinitionProvider(),
           new ScriptToStringConverter());
 
-      _scriptGeneratorForSecondStorageProvider = new ScriptGenerator (
-          pd => pd.Factory.CreateSchemaScriptBuilder (pd),
-          new EntityDefinitionProvider(),
-          new ScriptToStringConverter());
-
-      _scriptGeneratorForThirdStorageProvider = new ScriptGenerator (
+      _extendedScriptGenerator = new ScriptGenerator (
           pd => new SqlDatabaseSelectionScriptElementBuilder (
                     new CompositeScriptBuilder (
                         SchemaGenerationThirdStorageProviderDefinition,
@@ -75,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString1);
 
-      var scripts = _scriptGeneratorForFirstStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+      var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationFirstStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
@@ -86,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString2);
 
-      var scripts = _scriptGeneratorForSecondStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+      var scripts = _standardScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationSecondStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
@@ -97,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DatabaseAgent.SetConnectionString (SchemaGenerationConnectionString3);
 
-      var scripts = _scriptGeneratorForThirdStorageProvider.GetScripts (MappingConfiguration.GetTypeDefinitions ())
+      var scripts = _extendedScriptGenerator.GetScripts (MappingConfiguration.GetTypeDefinitions ())
           .Single (s => s.StorageProviderDefinition == SchemaGenerationThirdStorageProviderDefinition);
 
       DatabaseAgent.ExecuteBatchString (scripts.TearDownScript + scripts.SetUpScript, false);
