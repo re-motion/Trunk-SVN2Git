@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public ClassDefinition GetMandatoryOppositeClassDefinition (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      var classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition.StoragePropertyDefinition.Name);
+      var classIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (_propertyDefinition);
       var sourceStorageProviderDefinition = _classDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var relatedStorageProviderDefinition = _relatedClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       if (_relatedClassDefinition.IsPartOfInheritanceHierarchy && sourceStorageProviderDefinition == relatedStorageProviderDefinition)

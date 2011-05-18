@@ -39,6 +39,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     
     string GetPrimaryKeyConstraintName (ClassDefinition classDefinition);
     string GetForeignKeyConstraintName (ClassDefinition classDefinition, IStoragePropertyDefinition storagePropertyDefinition);
-    string GetRelationClassIDColumnName (string columnName);
   }
 }

@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
       {
-        string classIDColumnName = StorageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition.StoragePropertyDefinition.Name);
+        string classIDColumnName = StorageNameProvider.GetRelationClassIDColumnName (propertyValue.Definition);
         AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
 
         string classID = null;

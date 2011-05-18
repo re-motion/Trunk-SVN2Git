@@ -81,14 +81,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      return GetRelationClassIDColumnName (GetColumnName (propertyDefinition));
-    }
-
-    public string GetRelationClassIDColumnName (string columnName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
-
-      return columnName + "ClassID";
+      return GetColumnName (propertyDefinition) + "ClassID";
     }
 
     public string GetPrimaryKeyConstraintName (ClassDefinition classDefinition)
