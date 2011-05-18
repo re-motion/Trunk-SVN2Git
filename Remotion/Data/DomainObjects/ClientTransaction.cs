@@ -176,10 +176,10 @@ public class ClientTransaction
     foreach (var listener in componentFactory.CreateListeners (this))
       _eventSink.AddListener (listener);
 
-    _enlistedObjectManager = _componentFactory.CreateEnlistedObjectManager ();
+    _enlistedObjectManager = componentFactory.CreateEnlistedObjectManager ();
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager ();
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (_id);
-    _objectLoader = _componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
+    _objectLoader = componentFactory.CreateObjectLoader (this, _persistenceStrategy, _eventSink);
     _dataManager = componentFactory.CreateDataManager (this, _invalidDomainObjectManager, _objectLoader);
 
     TransactionEventSink.TransactionInitializing (this);

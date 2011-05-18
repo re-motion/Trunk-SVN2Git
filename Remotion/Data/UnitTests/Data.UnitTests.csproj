@@ -187,6 +187,10 @@
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj">
+      <Project>{81E5BEC0-B845-4470-BD19-9FCB121CB413}</Project>
+      <Name>Data.DomainObjects.UberProfIntegration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
@@ -1193,6 +1197,10 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceFirstDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritancePersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\SingleInheritance\SingleInheritanceSecondDerivedClass.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\FakeLinqToSqlProfiler.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\UberProfIntegrationTestBase.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\MockableLinqToSqlAppender.cs" />
+    <Compile Include="DomainObjects\UberProfIntegration\LinqToSqlListenerFactoryTest.cs" />
     <Compile Include="MethodOptionsExtensions.cs" />
     <Compile Include="OrderedExpectationCounter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

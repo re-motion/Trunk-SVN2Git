@@ -23,13 +23,13 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
   /// Implements <see cref="IPersistenceListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
-  /// <seealso cref="LinqToSqlAppender"/>
+  /// <seealso cref="LinqToSqlAppenderProxy"/>
   /// </summary>
   public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionListenerFactory
   {
     public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
     {
-      return new LinqToSqlListener (clientTransactionID);
+      return new LinqToSqlListener (clientTransactionID, LinqToSqlAppenderProxy.Instance);
     }
 
     public IClientTransactionListener CreateClientTransactionListener (ClientTransaction clientTransaction)
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       if (clientTransaction.ParentTransaction != null) // parent transaction will listen
         return NullClientTransactionListener.Instance;
       else
-        return new LinqToSqlListener (clientTransaction.ID);
+        return new LinqToSqlListener (clientTransaction.ID, LinqToSqlAppenderProxy.Instance);
     }
   }
 }

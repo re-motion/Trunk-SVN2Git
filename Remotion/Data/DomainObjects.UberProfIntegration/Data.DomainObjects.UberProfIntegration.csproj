@@ -76,7 +76,8 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="LinqToSqlAppender.cs" />
+    <Compile Include="LinqToSqlAppenderProxy.cs" />
+    <Compile Include="LateBoundDelegateFactory.cs" />
     <Compile Include="LinqToSqlListenerFactory.cs" />
     <Compile Include="LinqToSqlListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

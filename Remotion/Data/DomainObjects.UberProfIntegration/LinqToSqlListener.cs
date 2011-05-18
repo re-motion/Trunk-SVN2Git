@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
   /// Implements <see cref="IPersistenceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
-  /// <seealso cref="LinqToSqlAppender"/>
+  /// <seealso cref="LinqToSqlAppenderProxy"/>
   /// </summary>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
@@ -179,38 +179,50 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     
     #endregion
 
-    private readonly LinqToSqlAppender _appender;
+    private readonly LinqToSqlAppenderProxy _appenderProxy;
     private readonly Guid _clientTransactionID;
 
-    public LinqToSqlListener (Guid clientTransactionID)
+    public LinqToSqlListener (Guid clientTransactionID, LinqToSqlAppenderProxy appenderProxy)
     {
+      ArgumentUtility.CheckNotNull ("appenderProxy", appenderProxy);
+
       _clientTransactionID = clientTransactionID;
-      _appender = LinqToSqlAppender.Instance;
+      _appenderProxy = appenderProxy;
+    }
+
+    public LinqToSqlAppenderProxy AppenderProxy
+    {
+      get { return _appenderProxy; }
+    }
+
+    public Guid ClientTransactionID
+    {
+      get { return _clientTransactionID; }
     }
 
     public void TransactionInitializing (ClientTransaction clientTransaction)
     {
-      _appender.ConnectionStarted (_clientTransactionID);
+      _appenderProxy.ConnectionStarted (_clientTransactionID);
     }
 
     public void TransactionDiscarding (ClientTransaction clientTransaction)
     {
-      _appender.ConnectionDisposed (_clientTransactionID);
+      _appenderProxy.ConnectionDisposed (_clientTransactionID);
     }
 
     public void QueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
     {
-      _appender.StatementRowCount (_clientTransactionID, queryID, rowCount);
+      _appenderProxy.StatementRowCount (_clientTransactionID, queryID, rowCount);
     }
 
     public void QueryError (Guid connectionID, Guid queryID, Exception e)
     {
-      _appender.StatementError (_clientTransactionID, e);
+      _appenderProxy.StatementError (_clientTransactionID, e);
     }
 
     public void QueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
     {
-      _appender.CommandDurationAndRowCount (_clientTransactionID, durationOfQueryExecution.Milliseconds, null);
+      _appenderProxy.CommandDurationAndRowCount (_clientTransactionID, durationOfQueryExecution.Milliseconds, null);
     }
 
     public void QueryExecuting (
@@ -219,27 +231,27 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
-      _appender.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (queryID, commandText, parameters));
+      _appenderProxy.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (queryID, commandText, parameters));
     }
 
     public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
     {
-      _appender.TransactionBegan (_clientTransactionID, isolationLevel);
+      _appenderProxy.TransactionBegan (_clientTransactionID, isolationLevel);
     }
 
     public void TransactionCommitted (Guid connectionID)
     {
-      _appender.TransactionCommit (_clientTransactionID);
+      _appenderProxy.TransactionCommit (_clientTransactionID);
     }
 
     public void TransactionDisposed (Guid connectionID)
     {
-      _appender.TransactionDisposed (_clientTransactionID);
+      _appenderProxy.TransactionDisposed (_clientTransactionID);
     }
 
     public void TransactionRolledBack (Guid connectionID)
     {
-      _appender.TransactionRolledBack (_clientTransactionID);
+      _appenderProxy.TransactionRolledBack (_clientTransactionID);
     }
 
     private string AppendParametersToCommandText (Guid queryID, string commandText, IDictionary<string, object> parameters)

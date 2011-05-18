@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Data;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
@@ -31,14 +29,18 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public sealed class LinqToSqlAppender : IObjectReference
+  public sealed class LinqToSqlAppenderProxy : IObjectReference
   {
-    private static readonly DoubleCheckedLockingContainer<LinqToSqlAppender> s_instance =
-        new DoubleCheckedLockingContainer<LinqToSqlAppender> (() => new LinqToSqlAppender("re-store ClientTransaction"));
+    private static readonly DoubleCheckedLockingContainer<LinqToSqlAppenderProxy> s_instance =
+        new DoubleCheckedLockingContainer<LinqToSqlAppenderProxy> (() => new LinqToSqlAppenderProxy (
+            "re-store ClientTransaction", 
+            Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler, HibernatingRhinos.Profiler.Appender", true, false), 
+            Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlAppender, HibernatingRhinos.Profiler.Appender", true, false)));
 
-    public static LinqToSqlAppender Instance
+    public static LinqToSqlAppenderProxy Instance
     {
       get { return s_instance.Value; }
+      set { s_instance.Value = value; }
     }
 
     [NonSerialized]
@@ -74,31 +76,32 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     [NonSerialized]
     private readonly Action<Guid> _transactionRolledBack;
 
-    private LinqToSqlAppender (string name)
+    private LinqToSqlAppenderProxy (string name, Type linqToSqlProfilerType, Type linqToSqlAppenderType)
     {
       ArgumentUtility.CheckNotNull ("name", name);
 
-      Type linqToSqlProfilerType =
-          Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler, HibernatingRhinos.Profiler.Appender", true, false);
+      var initialize = LateBoundDelegateFactory.CreateDelegate<Action> (linqToSqlProfilerType, "Initialize");
+      initialize();
 
-      Type linqToSqlAppenderType =
-          Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlAppender, HibernatingRhinos.Profiler.Appender", true, false);
-
-      CreateDelegate<Action> (linqToSqlProfilerType, "Initialize")();
-      var getAppender = CreateDelegate (
+      var getAppender = LateBoundDelegateFactory.CreateDelegate (
           linqToSqlProfilerType, "GetAppender", typeof (Func<,>).MakeGenericType (typeof (string), linqToSqlAppenderType));
       _linqToSqlAppender = getAppender.DynamicInvoke (name);
 
-      _connectionStarted = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionStarted");
-      _connectionDisposed = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionDisposed");
-      _statementRowCount = CreateDelegate<Action<Guid, Guid, int>> (_linqToSqlAppender, "StatementRowCount");
-      _statementError = CreateDelegate<Action<Guid, Exception>> (_linqToSqlAppender, "StatementError");
-      _commandDurationAndRowCount = CreateDelegate<Action<Guid, long, int?>> (_linqToSqlAppender, "CommandDurationAndRowCount");
-      _statementExecuted = CreateDelegate<Action<Guid, Guid, string>> (_linqToSqlAppender, "StatementExecuted");
-      _transactionBegan = CreateDelegate<Action<Guid, IsolationLevel>> (_linqToSqlAppender, "TransactionBegan");
-      _transactionCommit = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionCommit");
-      _transactionDisposed = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionDisposed");
-      _transactionRolledBack = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionRolledBack");
+      _connectionStarted = LateBoundDelegateFactory.CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionStarted");
+      _connectionDisposed = LateBoundDelegateFactory.CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionDisposed");
+      _statementRowCount = LateBoundDelegateFactory.CreateDelegate<Action<Guid, Guid, int>> (_linqToSqlAppender, "StatementRowCount");
+      _statementError = LateBoundDelegateFactory.CreateDelegate<Action<Guid, Exception>> (_linqToSqlAppender, "StatementError");
+      _commandDurationAndRowCount = LateBoundDelegateFactory.CreateDelegate<Action<Guid, long, int?>> (_linqToSqlAppender, "CommandDurationAndRowCount");
+      _statementExecuted = LateBoundDelegateFactory.CreateDelegate<Action<Guid, Guid, string>> (_linqToSqlAppender, "StatementExecuted");
+      _transactionBegan = LateBoundDelegateFactory.CreateDelegate<Action<Guid, IsolationLevel>> (_linqToSqlAppender, "TransactionBegan");
+      _transactionCommit = LateBoundDelegateFactory.CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionCommit");
+      _transactionDisposed = LateBoundDelegateFactory.CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionDisposed");
+      _transactionRolledBack = LateBoundDelegateFactory.CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionRolledBack");
+    }
+
+    public object LinqToSqlAppender
+    {
+      get { return _linqToSqlAppender; }
     }
 
     public void ConnectionStarted (Guid sessionID)
@@ -151,57 +154,9 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       _transactionRolledBack (sessionID);
     }
 
-    private TSignature CreateDelegate<TSignature> (object target, string methodName)
-    {
-      try
-      {
-        return (TSignature) (object) Delegate.CreateDelegate (typeof (TSignature), target, methodName, false, true);
-      }
-      catch (ArgumentException ex)
-      {
-        throw CreateMissingMethodException (target, methodName, typeof (TSignature), ex);
-      }
-    }
-
-    private TSignature CreateDelegate<TSignature> (Type target, string methodName)
-    {
-      return (TSignature) (object) CreateDelegate (target, methodName, typeof (TSignature));
-    }
-
-    private Delegate CreateDelegate (Type target, string methodName, Type signature)
-    {
-      try
-      {
-        return Delegate.CreateDelegate (signature, target, methodName, false, true);
-      }
-      catch (ArgumentException ex)
-      {
-        throw CreateMissingMethodException (target, methodName, signature, ex);
-      }
-    }
-
-    private MissingMethodException CreateMissingMethodException (object target, string methodName, Type signatureType, Exception innerException)
-    {
-      Type targetType = (target is Type) ? (Type) target : target.GetType();
-
-      Assertion.IsTrue (typeof (Delegate).IsAssignableFrom (signatureType));
-      MethodInfo invoke = signatureType.GetMethod ("Invoke");
-      Type returnType = invoke.ReturnType;
-      Type[] parameters = invoke.GetParameters().Select (p => p.ParameterType).ToArray();
-
-      return new MissingMethodException (
-          string.Format (
-              "Type {0} does not define a method {3} {1}({2}).",
-              targetType.AssemblyQualifiedName,
-              methodName,
-              StringUtility.ConcatWithSeparator (parameters, ", "),
-              returnType == typeof (void) ? "void" : returnType.FullName),
-          innerException);
-    }
-
     object IObjectReference.GetRealObject (StreamingContext context)
     {
-      return LinqToSqlAppender.Instance;
+      return Instance;
     }
   }
 }
