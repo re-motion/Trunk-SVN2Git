@@ -57,13 +57,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       return true;
     }
-
-    protected override string GetSortExpression ()
-    {
-      if (!IsBidirectionalRelation)
-        return null;
-
-      return BidirectionalRelationAttribute.SortExpression;
-    }
+    
   }
 }

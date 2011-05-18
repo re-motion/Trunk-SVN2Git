@@ -76,9 +76,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return ReflectionUtility.IsObjectList (PropertyInfo.PropertyType) ? CardinalityType.Many : CardinalityType.One;
     }
 
-    protected virtual string GetSortExpression ()
+    protected string GetSortExpression ()
     {
-      return null;
+      if (!IsBidirectionalRelation)
+        return null;
+
+      return BidirectionalRelationAttribute.SortExpression;
     }
 
     private bool IsNullable ()
