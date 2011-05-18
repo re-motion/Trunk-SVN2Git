@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       if (string.IsNullOrEmpty (tableName))
         throw new MappingException (string.Format ("Class '{0}' has no table name defined.", classDefinition.ID));
 
-      var columns = SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions(GetColumnsDefinitionForEntity (classDefinition));
+      var columns = GetSimpleColumnDefinitions (GetColumnsDefinitionForEntity (classDefinition));
 
       var clusteredPrimaryKeyConstraint = new PrimaryKeyConstraintDefinition (
           _storageNameProvider.GetPrimaryKeyConstraintName (classDefinition),
@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           baseEntity,
           GetClassIDsForBranch (classDefinition),
-          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns),
+          GetSimpleColumnDefinitions(columns),
           new IIndexDefinition[0], 
           new EntityNameDefinition[0]);
     }
@@ -110,14 +110,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
           _storageProviderDefinition,
           new EntityNameDefinition (null, _storageNameProvider.GetViewName (classDefinition)),
           unionedEntities,
-          SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions(columns),
+          GetSimpleColumnDefinitions(columns),
           new IIndexDefinition[0], 
           new EntityNameDefinition[0]);
     }
 
     protected IEnumerable<string> GetClassIDsForBranch (ClassDefinition classDefinition)
     {
-      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses().Cast<ClassDefinition>()).Select (cd => cd.ID);
+      return new[] { classDefinition }.Concat (classDefinition.GetAllDerivedClasses()).Select (cd => cd.ID);
     }
 
     protected virtual IEnumerable<IColumnDefinition> GetColumnsDefinitionForEntity (ClassDefinition classDefinition)
@@ -127,6 +127,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       var columnDefinitionsForHierarchy = _columnDefinitionResolver.GetColumnDefinitionsForHierarchy (classDefinition);
 
       return new IColumnDefinition[] { idColumnDefinition, timestampColumnDefinition }.Concat (columnDefinitionsForHierarchy).ToList();
+    }
+
+    private IEnumerable<SimpleColumnDefinition> GetSimpleColumnDefinitions (IEnumerable<IColumnDefinition> columns)
+    {
+      return SimpleColumnDefinitionFindingVisitor.FindSimpleColumnDefinitions (columns);
     }
   }
 }

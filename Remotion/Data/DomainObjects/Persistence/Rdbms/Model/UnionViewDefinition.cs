@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
@@ -39,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, ArgumentUtility.CheckNotNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
+        : base (viewName, columns, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
@@ -95,14 +96,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
     {
       ArgumentUtility.CheckNotNull ("availableColumns", availableColumns);
 
+      var availableColumnsAsDictionary = availableColumns.ToDictionary (c => c);
       var fullColumnList = new List<SimpleColumnDefinition>();
-      foreach (var column in Columns)
-      {
-        if (availableColumns.Contains (column))
-          fullColumnList.Add (column);
-        else
-          fullColumnList.Add (null);
-      }
+
+      foreach (var columnDefinition in Columns)
+        fullColumnList.Add (availableColumnsAsDictionary.GetValueOrDefault (columnDefinition));
+
       return fullColumnList.ToArray();
     }
 

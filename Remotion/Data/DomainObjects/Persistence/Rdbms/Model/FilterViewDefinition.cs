@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
         IEnumerable<SimpleColumnDefinition> columns,
         IEnumerable<IIndexDefinition> indexes,
         IEnumerable<EntityNameDefinition> synonyms)
-        : base (viewName, ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns), ArgumentUtility.CheckNotNull ("synonyms", synonyms))
+        : base (viewName, columns, synonyms)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("baseEntity", baseEntity);

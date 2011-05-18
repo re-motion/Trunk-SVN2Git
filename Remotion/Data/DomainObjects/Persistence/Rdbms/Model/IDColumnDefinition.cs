@@ -25,10 +25,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   /// </summary>
   public class IDColumnDefinition : IColumnDefinition
   {
-    private readonly IColumnDefinition _objectIDColumn;
-    private readonly IColumnDefinition _classIDColumn;
+    private readonly SimpleColumnDefinition _objectIDColumn;
+    private readonly SimpleColumnDefinition _classIDColumn;
 
-    public IDColumnDefinition (IColumnDefinition objectIDColumn, IColumnDefinition classIDColumn)
+    public IDColumnDefinition (SimpleColumnDefinition objectIDColumn, SimpleColumnDefinition classIDColumn)
     {
       ArgumentUtility.CheckNotNull ("objectIDColumn", objectIDColumn);
 
@@ -41,12 +41,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _objectIDColumn.Name; }
     }
 
-    public IColumnDefinition ObjectIDColumn
+    public SimpleColumnDefinition ObjectIDColumn
     {
       get { return _objectIDColumn; }
     }
 
-    public IColumnDefinition ClassIDColumn
+    public SimpleColumnDefinition ClassIDColumn
     {
       get { return _classIDColumn; }
     }

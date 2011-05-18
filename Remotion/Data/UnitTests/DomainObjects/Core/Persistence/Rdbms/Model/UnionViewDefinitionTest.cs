@@ -190,25 +190,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     }
 
     [Test]
-    public void CreateFullColumnList_WithNullColumn ()
-    {
-      var unionViewDefinition = new UnionViewDefinition (
-          _storageProviderDefinition,
-          new EntityNameDefinition (null, "Test"),
-          new[] { _tableDefinition1, _tableDefinition2 },
-          new SimpleColumnDefinition[] { null },
-          new IIndexDefinition[0],
-          new EntityNameDefinition[0]);
-
-      var availableColumns = new[] { _column1 };
-
-      var result = unionViewDefinition.CreateFullColumnList (availableColumns).ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.Null);
-    }
-
-    [Test]
     public void CreateFullColumnList_OneColumnNotFound ()
     {
       var unionViewDefinition = new UnionViewDefinition (
